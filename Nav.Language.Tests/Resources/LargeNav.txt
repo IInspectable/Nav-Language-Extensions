@@ -1,0 +1,2870 @@
+[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelBearbeiten]
+[using System]
+[using System.Collections.Generic]
+[using Pharmatechnik.Apotheke.XTplus.Common.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Common.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Common.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.IBOL]
+
+[using Pharmatechnik.Apotheke.XTplus.Kontaktverwaltung.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Kontaktverwaltung.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Kontaktverwaltung.WFL]
+
+[using Pharmatechnik.Apotheke.XTplus.KundeArztverwaltung.IBOL]
+
+[using Pharmatechnik.Apotheke.XTplus.Kontaktverwaltung.StandardKontakteSuche.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Kontaktverwaltung.StandardKontakteSuche.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.LieferantAnbieterverwaltung.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Kostentraegerverwaltung.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelInfotexte.WFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelStatus.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelStatus.WFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.EANAuswahl.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.EANAuswahl.WFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.PackungsgroesseAnzeigen.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.PackungsgroesseAnzeigen.WFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelstammPlusV.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelstammPlusV.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelstammPlusV.IBOL]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.Artikelklassifikation.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.Artikelklassifikation.WFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Abda.FAMTrefferlisteAnzeigen.WFL]
+//[using Pharmatechnik.Apotheke.XTplus.Abda.FAMAnzeigen.IWFL]
+//[using Pharmatechnik.Apotheke.XTplus.Abda.FAMAnzeigen.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Abda.FAMVergleichssuche.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Abda.AbdaFAMDispatcher.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Abda.AbdaFAMDispatcher.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Abda.CommonFAM.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.IBOL.BusinessServices]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBearbeiten.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBearbeiten.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Artikelsuche.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Artikelsuche.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBearbeiten.ALL]
+
+[using Pharmatechnik.Apotheke.XTplus.Framework.Util]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelBearbeiten.WFL.Presenter]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBestellen.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Util.Collections.Generic]
+[using Pharmatechnik.Apotheke.XTplus.Abda.StoffTrefferlisteAnzeigen.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Abda.StoffInformationstextAnzeigen.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Abschreibebuch.MI.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.EtikettenDruck.IBOL]
+
+[using Pharmatechnik.Apotheke.XTplus.Verkauf.MI.Verkauf.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Verkauf.MI.Artikelstamm.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Verkauf.MI.Artikelstamm.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Verkauf.MI.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Verkauf.MI.Verkauf.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Verkauf.MI.Verkauf.WFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Bestandsverwaltung.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Security.Core.Model]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelErfassen.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelBearbeiten.WFL.TaskResult]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.WaWiExtra.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.WaWiExtra.IWFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.Sondeneigenschaften.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.Sondeneigenschaften.IWFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Kalkulationsmodelle.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Kalkulationsmodelle.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelstammHistorie]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelstammHistorie.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelstammHistorie.WFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Lager.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Lager.IBOL]
+
+taskref  "..\..\Application.Common\MessageBoxes.nav"
+taskref  "InteraktionSpeichern.nav"
+taskref  "InteraktionLoeschen.nav"
+taskref  "..\Common\NichtImplementiertMeldung.nav"
+taskref  "..\MehrkostenuebernahmeInfo\MehrkostenuebernahmeInfo.nav"
+taskref  "..\ArtikelErfassen\ArtikelErfassen.nav"
+taskref  "..\VerweisAnlegen\VerweisAnlegen.nav"
+taskref  "..\PackungsgroesseAnzeigen\PackungsgroesseAnzeigen.nav"
+taskref  "..\DarreichungsformAuswahl\DarreichungsformAuswahl.nav"
+taskref  "..\ImsWarengruppeAuswahl\ImsWarengruppeAuswahl.nav"
+taskref  "..\ImsWarengruppeInfo\ImsWarengruppeInfo.nav"
+taskref  "..\IndikationAbdaInfo\IndikationAbdaInfo.nav"
+taskref  "..\IndikationAutItemInfo\IndikationAutItemInfo.nav"
+taskref  "..\Verordnungsvorgaben\Verordnungsvorgaben.nav"
+taskref  "..\RohertragSpanne\RohertragSpanne.nav"
+taskref  "..\ArtikelInfotexte\ArtikelInfotexte.nav"
+taskref  "..\NormpackungAuswahl\NormpackungAuswahl.nav"
+taskref  "..\AbdaWarengruppeInfo\AbdaWarengruppeInfo.nav"
+taskref  "..\AbdaWarengruppeAuswahl\AbdaWarengruppeAuswahl.nav"
+taskref  "..\ListenAuswahl\ListenAuswahl.nav"
+taskref  "..\..\Kontaktverwaltung\StandardKontakteSuche\StandardKontakteSuche.nav"
+taskref  "..\..\LieferantAnbieterverwaltung\Anbieter\Anbieterverwaltung.nav"
+taskref  "..\EANAuswahl\EANAuswahl.nav"
+taskref  "..\ArtikelStatus\ArtikelStatus.nav"
+//taskref  "..\..\Abda\FAMAnzeigen\FAMAnzeigen.nav"
+taskref  "..\..\Abda\AbdaFAMDispatcher\AbdaFAMDispatcher.nav"
+taskref  "..\ArtikelstammPlusV\APlusVAuswahl.nav"
+taskref  "..\WaWiExtra\WawiExtraBestelloptimierung.nav"
+
+taskref  "..\..\Artikelstamm.MI\EtikettenDruck\EtikettenDruckAuswaehlen.nav"
+taskref  "..\Statistikuebertrag\StatistikUebertragen.nav"
+taskref  "..\Statistikuebertrag\StatistikgruppeBearbeiten.nav"
+taskref  "..\Artikelklassifikation\AuswahlArtikelklassifikation.nav"
+taskref "PznAendern.nav"
+taskref "../../Application.Common/BenutzerAuthentifizierungUndAutorisierung/Login.nav"
+taskref "VerbundweitPropagieren.nav"
+taskref "../ArtikelstammHistorie/PreisHistorie.nav"
+taskref "../NeinverkaufDurchfuehren\NeinverkaufDurchführen.nav";
+taskref "..\Sondeneigenschaften\Sondeneigenschaften.nav"
+
+taskref EtikettenDruckAuswaehlen [namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.EtikettenDruck]
+							  [result bool]
+{
+	init init1 [params BORef artikelId, int anzahl, EtikettType etikettType];
+	init init2 [params BORef artikelId];
+	exit		Done;
+}
+
+taskref ArtikelBestellen4Artikelstamm	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBestellen]			
+										[result bool]
+{
+	init [params BORef artikelOid, bool dummy];
+	exit	OK;
+	exit	Abbrechen;
+}
+
+taskref Bestandskontrolle	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Bestandskontrolle]			
+										[result bool]
+{
+	init [params BORef artikelOid];
+	exit	Exit;
+}
+
+taskref ArtikelAbschreiben	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Abschreibebuch.MI]			
+							[result bool]
+{
+	init	[params IArtikelAbschreibenParameter];
+	
+	exit	Abbruch;	
+	exit	Durchgefuehrt;
+}
+
+taskref LagerortAuswahl		[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Lager]
+                            [result ITaskResultWithTO<ILagerortAuswahlResult>]
+{
+	init		[params ILagerortAuswahlParameter parameter];
+	
+    exit Ok;
+	exit Abbrechen; 
+}
+
+taskref ArtikelAuslagern [namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Bestandsverwaltung]			
+						 [result bool]
+{
+    // Eingänge    
+    init Init           [params BORef artikelOid];
+
+    // Ausgänge
+    exit Durchgefuehrt;
+    exit Abgebrochen;
+}
+
+taskref RechenregelAuswahl	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Kalkulationsmodelle]
+							[result ITaskResultWithTO<IRechenregelAuswaehlenTaskResult> taskResult]
+{
+	
+	init	[params IRechenregelAuswaehlenParameter];
+
+	exit	CANCEL;
+	exit	OK;
+}
+
+taskref InventurlisteAnzeigen	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBearbeiten]			
+								[result bool]
+{
+	init [params BORef artikelEintragOid];
+	exit	Done;
+}
+
+
+taskref Verkaufsverwaltung			[namespaceprefix Pharmatechnik.Apotheke.XTplus.Verkaufsverwaltung.MI]
+									[result AktivierungStornoTaskResult]
+
+{
+	
+	init   StartVerkaufsInformationen [params BORef kundeOderArtikel, Nullable<DateTime> von, Nullable<DateTime> bis, IEnumerable<BORef> verkaufspositionen, Nullable<BORef> selection];
+
+	exit   Fertig;
+}
+
+taskref Druckeinstellungen [namespaceprefix Pharmatechnik.Apotheke.XTplus.Report.MI]			
+						   [result bool]
+{
+    init [params string bereich, string reportName];
+    exit Exit;       
+}
+
+task ArtikelBearbeitenProxy		[base StandardWFS<ArtikelBearbeitenTaskState> :IWFServiceBase]
+                                [result Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelBearbeiten.WFL.ArtikelBearbeitenProxyErgebnisType]
+{
+	init	InitEinArtikelParameter			[params BORef selektierterEintragOid, ArtikelBearbeitenTabPageType tabPageSelectorEnum];
+	init	InitEinArtikelUndBoolParameter	[params BORef selektierterEintragOid, bool isStartFromVerkauf];
+	task	ArtikelBearbeiten ArtikelBearbeiten;
+	exit	Abbruch;
+	InitEinArtikelParameter			--> ArtikelBearbeiten;
+	InitEinArtikelUndBoolParameter	--> ArtikelBearbeiten;
+	ArtikelBearbeiten:Abbruch		--> Abbruch;
+}
+
+task Kalkulation	[base StandardWFS<ArtikelBearbeitenTaskState> :IWFServiceBase]
+					[params IArtikelBearbeitenPresenter presenter, APlusVAuswahlDispatcherPresenter dispatcherPresenter, 
+							IArtikelRepositoryBS artikelRepositoryBS, ITaskResultFactory taskResultFactory]
+					[result ITaskResultWithTO<ArtikelKalkulationErgebnis>]
+{
+
+	init	Kalkulation  [params BORef selektierterEintragOid, bool preisgestaltungsTabSelected];
+	init	KalkulationFromArtikelsuche  [params BORef selektierterEintragOid];
+
+	task	APlusVAuswahl							    AktionArtikelstammPlusV;	
+	task	EtikettenDruckAuswaehlen					DruckAuswahl;
+	task	MessageBoxOk								MeldungKeinTrefferGefunden;
+	choice	OnF9Choice;
+	choice	Preisgestaltung_HatKeinenEigenenVK;
+	choice	Preisgestaltung_SindPreisberechnungsangabenGueltig;
+	choice	WurdeTrefferFuerAplusVArtikelGefunden;                   
+
+	/*
+	task	Artikelsuche;
+	task	MessageBoxOk	MsgKeinAlternativartikel;
+	task	MessageBoxOk	MsgZuVieleAlternativartikel;
+	task	MessageBoxOk	MsgArtikelKannNichtUebernommenWerden;
+	
+	choice CheckAnzahlAlternativartikel;
+	choice CheckGruppennummerDesUebernehmendenArtikels;
+	*/
+
+	exit						Return;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // F9
+    // -------------------------------------------------------------------------------------------------    
+    Kalkulation										--> OnF9Choice;
+    KalkulationFromArtikelsuche						--> OnF9Choice;
+    OnF9Choice									    --> AktionArtikelstammPlusV if "A+V Artikel";
+    OnF9Choice										--> DruckAuswahl if "Druck der Etiketten";
+    OnF9Choice										--> Return;
+
+    DruckAuswahl:Done								--> Return;
+    AktionArtikelstammPlusV:Durchgefuehrt			--> Return if "Abgebrochen";
+    AktionArtikelstammPlusV:Abgebrochen			    --> WurdeTrefferFuerAplusVArtikelGefunden;
+    AktionArtikelstammPlusV:Exit_Artikelsuchen		--> Return if "Abgebrochen";
+	/*
+	AktionArtikelstammPlusV:Exit_Artikelsuchen		--> CheckAnzahlAlternativartikel if "indirekt; via F12-OK in Alternativ Artikel" do "Artikelsuche öffnen";
+	
+	CheckAnzahlAlternativartikel		o-> MsgKeinAlternativartikel if "Keinen Alternativartikel gefunden";
+	CheckAnzahlAlternativartikel		o-> MsgZuVieleAlternativartikel if "Zu viele Alternativartikel gefunden";
+	CheckAnzahlAlternativartikel		o-> Artikelsuche if "alles OK";
+
+	MsgKeinAlternativartikel:Ok			--> AktionArtikelstammPlusV do "Artikel nicht ersetzen";
+	MsgZuVieleAlternativartikel:Ok		o-> Artikelsuche if "Erste 500 Treffer anzeigen";
+
+	Artikelsuche:ArtikelAusgewaehlt	--> CheckGruppennummerDesUebernehmendenArtikels if "Artikel ausgewählt" do "Check Artikel hat der gleichen Gruppennummer";
+	Artikelsuche:Abbruch			--> AktionArtikelstammPlusV do "Artikel nicht ersetzen";
+
+	CheckGruppennummerDesUebernehmendenArtikels	--> AktionArtikelstammPlusV if "Artikel mit gleicher Gruppennummer" do "Artikel ersetzen";
+	CheckGruppennummerDesUebernehmendenArtikels	o-> MsgArtikelKannNichtUebernommenWerden if "Artikel mit unterschiedlicher Gruppennummer" do "Error-Meldung anzeigen";
+
+	MsgArtikelKannNichtUebernommenWerden:Ok	--> AktionArtikelstammPlusV do "Artikel nicht ersetzen";
+	*/
+
+	WurdeTrefferFuerAplusVArtikelGefunden			--> MeldungKeinTrefferGefunden if "Kein Treffer gefunden";
+	WurdeTrefferFuerAplusVArtikelGefunden			--> Return if "Treffer gefunden";
+
+	MeldungKeinTrefferGefunden:Ok					--> Return;
+}
+
+
+taskref Artikelsuche			[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Artikelsuche]
+								[result ITaskResultWithTO<IArtikelsucheResult>]
+
+{
+	init	init0	[params ArtikelsucheParameter parameter];	
+	exit 			ArtikelAusgewaehlt;
+	exit 			Abbruch;
+}
+
+task ArtikelBearbeiten			[base StandardWFS<ArtikelBearbeitenTaskState> :IWFServiceBase]
+                                [params IArtikelRepositoryBS artikelRepositoryBS,
+                                        IArtikelStammBS artikelStammBS,
+                                        IArtikelErfassenBS artikelErfassenBS,
+                                        IArtikelStammKonfigurationsParameterBS artikelStammKonfigurationsParameterBS,
+                                        IAnbieterverwaltungBS anbieterverwaltungBS,
+                                        ILieferantenverwaltungBS lieferantenverwaltungBS,
+                                        IEinkaufsstatistik einkaufsstatistik,
+                                        IVerkaufsstatistik verkaufsstatistikBS,                                        
+                                        IVerkaufshistorieForArtikelBS verkaufshistorieBS,
+                                        IEintragManager eintragManager,
+                                        IArtikelBearbeitenPresenter presenter,
+                                        IAenderungsDatenBS aenderungsDatenBS,
+                                        IAenderungsDatenPresenter aenderungsDatenPresenter,
+                                        IKontaktrolleInfoProvider kontaktrolleInfoProvider,
+                                        IRabattvereinbarungenPresenter rabattvereinbarungenPresenter,
+										IKundenverwaltungBS kundenverwaltungBS,
+										IStartVerkaufApplicationService startApplicationService
+                                        ]
+                                [result Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBearbeiten.WFL.IArtikelBearbeitenErgebnis]
+{
+
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										Eingänge                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    init                        InitEinArtikelParameter         [params BORef selektierterEintragOid, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitEinArtikelUndBoolParameter  [params BORef selektierterEintragOid, bool isStartFromVerkauf, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitArtikelListeParameter       [params List<BORef> eintragListe, BORef selektierterEintragOid, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitArtikelListeParameterExit   [params List<BORef> eintragListe, BORef selektierterEintragOid, bool exitOnEnter, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitBestandslisteParameter      [params BORef selektierterEintragOid, ArtikelBearbeitenTabPageType tabPageSelectorEnum, bool isArtikelVerbundweitAusweitenErlaubt];
+	init                        InitArtikelListeSelectedTab		[params List<BORef> selektierterEintragOids, BORef selektierterEintragOid, ArtikelBearbeitenTabPageType tabPageSelectorEnum, bool isArtikelVerbundweitAusweitenErlaubt];
+    
+    init                        InitEinArtikelFromProxy			[params BORef selektierterEintragOid, ArtikelBearbeitenTabPageType tabPageSelectorEnum, bool startedFromProxy, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitEinParameter				[params ArtikelBearbeitenInputData inputData];
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										Views                                                  #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	view                        ArtikelBearbeiten;
+	
+	
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										Meldungen                                              #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	task			            MessageBoxContinue                          AbdaInfo1_DarreichungsformGeaendertMeldung;				
+	task			            MessageBoxContinue                          AbdaInfo1_PackungsgroesseMengeGeaendertMeldung;			
+	task			            MessageBoxContinue                          AbdaInfo1_PackungsgroesseEinheitGeaendertMeldung;		
+	task			            MessageBoxContinue                          AbdaInfo1_NormpackunGeaendertMeldung;					
+	task			            MessageBoxContinue                          AbdaInfo1_ArtikelbezeichnungGeaendertMeldung;			
+	task						MessageBoxContinue							AbdaInfo2_AbdaWarengruppeInvalidMeldung;
+	task						MessageBoxContinue							AbdaInfo2_ImsWarengruppeInvalidMeldung;
+	task			            MessageBoxContinue                          AbdaInfoLager_VerpackungsartGeaendertMeldung;           
+	task			            MessageBoxContinue                          AbdaInfoLager_LagertemperaturMinGeaendertMeldung;       
+	task			            MessageBoxContinue                          AbdaInfoLager_LagertemperaturMaxGeaendertMeldung;       
+	task						MessageBoxOk								AenderungsDaten_OrignalPznFehlerMeldung;				
+	task						MessageBoxOk								Preisgestaltung_InfoMeldung;							
+	task						MessageBoxOk								Optimierung2_OutOfRangeMessage;							
+	task						MessageBoxYesNo								Preisgestaltung_AufschlagsKalkulationAnnehmen;  		
+	task						MessageBoxYesNo								Uebervorrat_AbfrageVorAuffuellen;  		
+	task						MessageBoxContinue							KeineABDAInfoVorhanden;
+	task						MessageBoxOk								Lagerdaten_KeinFreierKurzcode;							
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										Tasks für Funktionsbuttons                             #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	task                        InteraktionSpeichern                        AktionSpeichern;	
+	
+	task                        InteraktionSpeichern						AktionUebernehmen;						
+	task                        InteraktionLoeschen                         AktionLoeschen;							
+	task                        InteraktionSpeichern                        AktionTabGeaendert;						
+	task                        InteraktionSpeichern                        AnderungsDatenGeaendert;				
+	task                        InteraktionSpeichern                        AktionNaechstenArtikelAnzeigen;			 	
+	task			            InteraktionSpeichern                        AktionBeenden;							
+	task			            InteraktionSpeichern                        AktionSuchen;							
+	task			            InteraktionSpeichern                        AktionErweiterteSuche;					
+	task			            InteraktionSpeichern                        AktionRohertragSpanneInfo;				
+	task			            InteraktionSpeichern                        AktionTabChange;
+	task			            InteraktionSpeichern                        NachfrageSpeichernVorLagerstatusDialog;
+	
+	task			            InteraktionSpeichern                        AktionVerweisAnlegen;					
+	task                        VerweisAnlegen                              VerweisAnlegen;							
+
+	task			            InteraktionSpeichern                        AktionArtikelErfassen;					
+	task                        ArtikelErfassen                             ArtikelErfassen;						
+	
+	task                        ArtikelBestellen4Artikelstamm				AktionArtikelBestellen;
+	task                        NichtImplementiertMeldung                   AktionArtikelKopieren;
+	
+	task                        InteraktionSpeichern                        AktionArtikelInfotexteAnzeigen;			
+	task                        ArtikelInfotexte                            ArtikelInfotexteAnzeigen;				
+		
+	task                        InteraktionSpeichern                        AenderungsDaten_OrignalPznInfoAnzeigen;	
+	task                        InteraktionSpeichern                        AenderungsDaten_NeuePznInfoAnzeigen;	
+	task                        InteraktionSpeichern                        AenderungsDaten_AltePznInfoAnzeigen;	
+	task                        InteraktionSpeichern                        AenderungsDaten_KleinereNormPackungInfoAnzeigen;	
+    
+	//task                      FAMAnzeigen				                    AktionABDAInfotextAnzeigen;				
+	task                        AbdaFAMDispatcher				            AktionABDAInfotextAnzeigen;				
+	task                        NichtImplementiertMeldung                   AktionEinstellungen;
+	task                        StatistikUebertragen                        AktionStatistikuebertrag;
+	task                        StatistikgruppeBearbeiten                   AktionStatistikBearbeiten;
+	
+	task                        Bestandskontrolle		                    AktionBestandskontrolle;	
+	task                        NichtImplementiertMeldung                   AktionHilfe;	  
+	task                        Anbieterverwaltung							AktionAnbieter;	
+	task                        ArtikelStatus                               DialogLagerstatus;	
+	task                        NichtImplementiertMeldung                   AktionKalkulation;			
+	task                        NichtImplementiertMeldung                   AktionRabattinfo;
+	task						APlusVAuswahl  								AktionArtikelstammPlusV;
+	task						ArtikelAbschreiben;
+
+	task						Kalkulation									Kalkulation;
+	
+	task						ArtikelAuslagern;
+	task						PznAendern;
+	task						Login										LoginPznAendern;
+	task						Login										LoginVerbundweitPropagieren;
+
+	task						VerbundweitPropagieren						VerbundweitPropagieren;
+	task						PreisHistorie								PreisHistorie;
+	
+	task						Druckeinstellungen;
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #	                      Definitionen für Events der Usercontrols                             #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	task                        NichtImplementiertMeldung                   KalkulationNachModellAuswahl;
+	task                        MehrkostenuebernahmeInfo                    AbdaInfo3_MehrkostenuebernahmeInfo;						
+	task                        AbdaWarengruppeInfo                         AbdaInfo2_AbdaWarengruppeInfo;							
+	task                        AbdaWarengruppeInfo                         Abrechnungseintrag_AbdaWarengruppeInfo;					
+	task                        AbdaWarengruppeAuswahl                      AbdaInfo2_AbdaWarengruppeAuswahl;					    
+	task                        ImsWarengruppeInfo                          AbdaInfo2_ImsWarengruppeInfo;					        
+	task                        ImsWarengruppeAuswahl                       AbdaInfo2_ImsWarengruppeAuswahl;			            
+    task                        NichtImplementiertMeldung                   AbdaInfo2_KlinikpackungInfo;
+    task                        IndikationAbdaInfo                          AbdaInfo2_IndikationAbdaInfo;							
+    task						Verordnungsvorgaben							AbdaInfo1_VerordnungsvorgabenInfo;						
+    task						RohertragSpanne								RohertragSpanne;										
+    task                        IndikationAutItemInfo                       AbdaInfo2_IndikationAutItemInfo;						
+    task                        StandardKontakteSuche                       AbdaInfo1_AnbieterAuswahl;								
+    task                        StandardKontakteSuche                       AbdaInfo1_HerstellerAuswahl;							
+    task                        DarreichungsformAuswahl                     AbdaInfo1_DarreichungsformAuswahl;						
+    task                        NormpackungAuswahl                          AbdaInfo1_NormpackungAuswahl;							
+    task                        ListenAuswahl                               AbdaInfoLager_VerpackungsartAuswahl;                    
+    task						ArtikelBearbeitenProxy						ArtikelBearbeitenProxy;									
+    task                        LagerortAuswahl                             Lagerdaten_LagerorteZuordnung;   
+	task						LagerortAuswahl								Uebervorrat_LagerorteZuordnung; 
+    task                        EANAuswahl									Lagerdaten_EANAuswahl;    
+    task                        NichtImplementiertMeldung                   Lagerdaten_ArtikelgruppeAuswahl;    
+    //task                        NichtImplementiertMeldung                   Lagerdaten_TaxierungsgruppeAuswahl;    
+    //task                        NichtImplementiertMeldung                   Lagerdaten_ErsetzenDurchAuswahl; 
+
+	task						InventurlisteAnzeigen						Lagerdaten_InventurlisteAnzeigen;
+
+    task						StandardKontakteSuche						Optimierung2_AuswahlLieferant;  
+    task                        StandardKontakteSuche						AutIdem_KostentraegerAuswahl;
+	task						EtikettenDruckAuswaehlen					DruckAuswahl;
+	task                        PackungsgroesseAnzeigen                     PackungsgroesseAnzeigen;
+	task                        AuswahlArtikelklassifikation                Artikelklassifikation;    
+
+	task						RechenregelAuswahl							RechenregelAuswahl;
+	task						Verkaufsverwaltung;
+
+	task						Artikelsuche								ArtikelsucheFuerSonderPZN;
+	task						WawiExtraBestelloptimierung					WawiExtraBestelloptimierung;
+	task						NeinverkaufDurchfuehren;
+	task						Sondeneigenschaften;
+	
+    
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #	                                       Choices                                             #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################	
+	choice                      AbdaInfo3_BerechnungenDurchfuehren;					
+	choice                      AbdaInfo1_DarreichungsformGeaendert;				
+	choice                      AbdaInfo1_PackungsgroesseMengeGeaendert;			
+	choice                      AbdaInfo1_PackungsgroesseEinheitGeaendert;			
+	choice                      AbdaInfo1_ArtikelbezeichnungGeaendert;				
+	choice                      AbdaInfo1_NormpackungGeaendert;						
+    choice                      AbdaInfoLager_VerpackungsartGeaendert;              
+    choice                      AbdaInfoLager_LagertemperaturMinGeaendert;          
+    choice                      AbdaInfoLager_LagertemperaturMaxGeaendert;          
+    choice                      AbdaInfoLager_VerfallGeaendert;                     
+    choice                      AbdaInfoLager_EichungGeaendert;                     
+    choice						Lagerdaten_IconSetzen;								
+	choice						NeinVerkauf_IstArtikel;								
+	choice						BezeichnungValueChanged;							
+	choice						SuchkriteriumValueChanged;							
+	choice						CommentValueChanged;								
+	choice						IsOriginalPznOk;									
+	choice						Preisgestaltung_SindPreisberechnungsangabenGueltig;
+	choice						Preisgestaltung_HatKeinenEigenenVK;
+	choice						IstABDAInfoVorhanden;
+	choice						IsArtikelBearProxyWithF2Terminated;
+	choice						OnF9Choice;												//AufschlagskalkulationOderAPlusVKalkulation;
+	choice						Optimierung2_ShowOutOfRangeMessage;
+	choice						AbdaInfo2_AbdaWarengruppeGeaendert;
+	choice						AbdaInfo2_ImsWarengruppeGeaendert;
+	choice						StatistikuebertragRepraesentantAnzeige;
+	choice                      SucheInInfotextenSarten;
+	choice						OnF11Choice;
+	choice						BeforeArtikelAuslagern;
+	choice						ValidateReturnedAusgang;
+	choice                      ChoiceStatistikuebertrag;
+	choice						BeforeAktionUebernehmenMitEnter;
+	choice						ChoiceDetailsOderTrefferliste;
+	
+	choice						choiceRechenregelAuswahlDirect;
+	choice						ZirkelbezugValidieren;
+	
+	
+	choice						DetailsZuDenArtikelAnzeigen;
+	choice						LagerDaten_CheckKeinFreierKurzcode;
+	choice						hasWawiExtraLizenz;
+	choice						ChoiceSondeneigenschaften;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #	                                       Ausgänge                                            #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	exit                        Abbruch;
+	
+	
+	// -------------------------------------------------------------------------------------------------        	
+	// Begin
+	// -------------------------------------------------------------------------------------------------  
+	InitEinArtikelParameter                         --> DetailsZuDenArtikelAnzeigen;
+	InitEinArtikelUndBoolParameter                  --> DetailsZuDenArtikelAnzeigen;
+	InitArtikelListeParameter                       --> DetailsZuDenArtikelAnzeigen;
+	InitArtikelListeParameterExit					--> DetailsZuDenArtikelAnzeigen;
+	InitBestandslisteParameter						--> DetailsZuDenArtikelAnzeigen;
+	InitEinArtikelFromProxy							--> DetailsZuDenArtikelAnzeigen;
+	InitArtikelListeSelectedTab						--> DetailsZuDenArtikelAnzeigen;
+	InitEinParameter								--> DetailsZuDenArtikelAnzeigen;
+	
+	DetailsZuDenArtikelAnzeigen						--> ArtikelBearbeiten;
+	DetailsZuDenArtikelAnzeigen						--> Abbruch;
+    
+	// -------------------------------------------------------------------------------------------------        
+    // Tab geändert (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionTabGeaendert on AktionTabGeaendert;
+    AktionTabGeaendert:Yes                            --> ArtikelBearbeiten;
+    AktionTabGeaendert:No                             --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Nächsten Artikel anzeigen (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionNaechstenArtikelAnzeigen on AktionNaechstenArtikelAnzeigen;
+    AktionNaechstenArtikelAnzeigen:Yes                --> ArtikelBearbeiten;
+    AktionNaechstenArtikelAnzeigen:No                 --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // ArtikelUebernehmen mit Enter
+    // -------------------------------------------------------------------------------------------------      
+    ArtikelBearbeiten								  --> BeforeAktionUebernehmenMitEnter on AktionUebernehmenMitEnter;
+    BeforeAktionUebernehmenMitEnter				      --> ArtikelBearbeiten if "Übernehmen nicht möglich/erlaubt";
+    BeforeAktionUebernehmenMitEnter				      o-> AktionUebernehmen if "erlaubt/von Kasse";
+      
+    ArtikelBearbeiten                                 o-> AktionUebernehmen on AktionUebernehmen;
+    AktionUebernehmen:Yes							  --> Abbruch;
+    AktionUebernehmen:No							  --> Abbruch;    
+
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Speichern F1 (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionSpeichern on AktionSpeichern;
+    AktionSpeichern:Yes								  --> ArtikelBearbeiten;
+    AktionSpeichern:No								  --> ArtikelBearbeiten;    
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Suchen F2 (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionSuchen on AktionSuchen;
+    AktionSuchen:Yes                                  --> Abbruch;
+    AktionSuchen:No                                   --> ArtikelBearbeiten;    
+    
+  
+	// -------------------------------------------------------------------------------------------------        
+    // ArtikelErfassen F3 (Fertig)
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                                 o-> AktionArtikelErfassen on AktionArtikelErfassen;
+    AktionArtikelErfassen:Yes                         o-> ArtikelErfassen;
+    AktionArtikelErfassen:No                          --> ArtikelBearbeiten;
+    
+	ArtikelErfassen:OK		                          --> ArtikelBearbeiten;
+	ArtikelErfassen:Abbrechen		                  --> ArtikelBearbeiten;	    
+    
+    
+  
+	// -------------------------------------------------------------------------------------------------        
+    // Loeschen F4 (Fertig)
+    // -------------------------------------------------------------------------------------------------     
+    ArtikelBearbeiten                               o-> AktionLoeschen on AktionLoeschen;
+	AktionLoeschen:Yes		                        --> Abbruch;    
+	AktionLoeschen:No		                        --> ArtikelBearbeiten;    
+
+	// -------------------------------------------------------------------------------------------------        
+    // ArtikelBestellen F5
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionArtikelBestellen on AktionArtikelBestellen;
+	AktionArtikelBestellen:OK		                --> ArtikelBearbeiten;
+	AktionArtikelBestellen:Abbrechen				--> ArtikelBearbeiten;
+
+ 	// -------------------------------------------------------------------------------------------------        
+    // ArtikelInfotextAnzeigen F6 (Fertig)
+    // -------------------------------------------------------------------------------------------------     
+    ArtikelBearbeiten                                 o-> AktionArtikelInfotexteAnzeigen on AktionArtikelInfotexteAnzeigen;
+    AktionArtikelInfotexteAnzeigen:Yes                o-> ArtikelInfotexteAnzeigen;
+    AktionArtikelInfotexteAnzeigen:No                 --> ArtikelBearbeiten;
+    
+	ArtikelInfotexteAnzeigen:Abbrechen		          --> SucheInInfotextenSarten;
+	SucheInInfotextenSarten							  --> Abbruch if "Erweiterte Suche in Infotexten starten";
+	SucheInInfotextenSarten                           --> ArtikelBearbeiten if "Zurück zur GUI";
+
+	// -------------------------------------------------------------------------------------------------        
+    // ABDAInfotextAnzeigen F7
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> IstABDAInfoVorhanden on AktionABDAInfotextAnzeigen;
+    
+    IstABDAInfoVorhanden			o-> KeineABDAInfoVorhanden if "Keine ABDA Informationen vorhanden";
+	IstABDAInfoVorhanden			o-> AktionABDAInfotextAnzeigen else;
+    
+	AktionABDAInfotextAnzeigen:OK                   --> ValidateReturnedAusgang; 
+	ValidateReturnedAusgang							--> ArtikelBearbeiten if "Abbrechen";
+	ValidateReturnedAusgang							--> Abbruch if "Daten Uebernahme";
+	
+	AktionABDAInfotextAnzeigen:Abbrechen            --> ArtikelBearbeiten;
+	KeineABDAInfoVorhanden:Ok						--> ArtikelBearbeiten;
+    
+	// -------------------------------------------------------------------------------------------------        
+    // Anbieter F8
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionAnbieter on AktionAnbieter;
+    AktionAnbieter:Exit                             --> ArtikelBearbeiten;
+    AktionAnbieter:ExitSuche                        --> ArtikelBearbeiten;
+
+
+
+	
+    
+    
+
+	// -------------------------------------------------------------------------------------------------        
+    // Status F10
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> NachfrageSpeichernVorLagerstatusDialog on AktionStatus;
+    
+    NachfrageSpeichernVorLagerstatusDialog:Yes      o-> DialogLagerstatus;
+    NachfrageSpeichernVorLagerstatusDialog:No       --> ArtikelBearbeiten;
+
+    DialogLagerstatus:Return                        --> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Status F11
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> OnF11Choice on OnF11;
+	OnF11Choice										o-> LoginPznAendern if "selbstangelegter Artikel und AbdaInfo1 ist ausgewählt";
+	OnF11Choice										o-> PreisHistorie if "Änderungsdaten sind ausgewählt";	
+	OnF11Choice										o-> Uebervorrat_AbfrageVorAuffuellen if "Uebervorrat ist ausgewählt";	
+
+	OnF11Choice										--> ArtikelBearbeiten if "AbdaInfo1 und Änderungsdaten nicht ausgewählt";
+
+
+	Uebervorrat_AbfrageVorAuffuellen:Yes			--> ArtikelBearbeiten do "Artikel Abgabemengen audf 0 setzen";
+	Uebervorrat_AbfrageVorAuffuellen:No				--> ArtikelBearbeiten;
+		
+	LoginPznAendern:AccessGranted					o-> PznAendern;
+	LoginPznAendern:AccessDenied					--> ArtikelBearbeiten;
+	PznAendern:Yes									--> ArtikelBearbeiten;
+	PznAendern:No									--> ArtikelBearbeiten;
+
+	PreisHistorie:Abbrechen							--> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Status F12
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionKalkulation on AktionKalkulation;
+    AktionKalkulation:OK							--> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Hilfe Alt+F1
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionHilfe on AktionHilfe;
+    AktionHilfe:OK                                  --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Sondeneigenschaften Alt+F4 
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten                               --> ChoiceSondeneigenschaften on Sondeneigenschaften;
+	ChoiceSondeneigenschaften						o-> Sondeneigenschaften if "Sondenartikelinfo vorhanden" do "Sondeneigenschaften anzeigen";
+	ChoiceSondeneigenschaften						--> ArtikelBearbeiten if "Sondenartikelinfo nicht vorhanden" do "nichts";
+	
+    Sondeneigenschaften:Schliessen                  --> ArtikelBearbeiten;
+    
+
+	// -------------------------------------------------------------------------------------------------        
+    // Programm beenden Alt+F4 [??????]
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten                                 o-> AktionBeenden on AktionBeenden;
+    AktionBeenden:Yes                                 --> Abbruch;
+    AktionBeenden:No                                  --> ArtikelBearbeiten;
+    
+
+	// -------------------------------------------------------------------------------------------------        
+    // Programm beenden Alt+F7 
+    // -------------------------------------------------------------------------------------------------       
+	ArtikelBearbeiten                                 --> hasWawiExtraLizenz on WawiExtraClicked;
+	hasWawiExtraLizenz								  o-> WawiExtraBestelloptimierung if "Lizenz vorhanden";
+	hasWawiExtraLizenz								  --> ArtikelBearbeiten else;
+	WawiExtraBestelloptimierung:Abbrechen			  --> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Artikel abschreiben Alt+F8 
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten                                 o-> ArtikelAbschreiben on AktionArtikelAbschreiben;
+    ArtikelAbschreiben:Abbruch						  --> ArtikelBearbeiten;
+    ArtikelAbschreiben:Durchgefuehrt				  --> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Auf Verbund ausweiten Alt+F11
+    // -------------------------------------------------------------------------------------------------     
+	  
+    ArtikelBearbeiten								o-> LoginVerbundweitPropagieren on AktionVerbundAusweiten;
+	LoginVerbundweitPropagieren:AccessGranted		o-> VerbundweitPropagieren;	
+	LoginVerbundweitPropagieren:AccessDenied		--> ArtikelBearbeiten;
+    VerbundweitPropagieren:OK						--> ChoiceDetailsOderTrefferliste;
+	ChoiceDetailsOderTrefferliste					--> ArtikelBearbeiten if "Dubletten mischen wurde nicht ausgeführt";
+	ChoiceDetailsOderTrefferliste					--> Abbruch else;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Einstellungen Alt+F12
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionEinstellungen on AktionEinstellungen;
+    AktionEinstellungen:OK                          --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Neinverkauf Ctl+F1
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> NeinVerkauf_IstArtikel on AktionNeinverkauf;
+    NeinVerkauf_IstArtikel							o-> NeinverkaufDurchfuehren if "Ist Artikel";
+    NeinVerkauf_IstArtikel							--> ArtikelBearbeiten if "Kein Artikel";
+   	NeinverkaufDurchfuehren:Ok						--> ArtikelBearbeiten;
+	NeinverkaufDurchfuehren:Abbruch					--> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Suchen F2 (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionErweiterteSuche on AktionErweiterteSuche;
+    AktionErweiterteSuche:Yes                         --> Abbruch;
+    AktionErweiterteSuche:No                          --> ArtikelBearbeiten;    
+
+	// -------------------------------------------------------------------------------------------------        
+    // VerweisAnlegen Ctl+F3 (Fertig)
+    // -------------------------------------------------------------------------------------------------   
+    ArtikelBearbeiten                                 o-> AktionVerweisAnlegen on AktionVerweisAnlegen;
+    AktionVerweisAnlegen:Yes                          o-> VerweisAnlegen;
+    AktionVerweisAnlegen:No                           --> ArtikelBearbeiten;
+    
+	VerweisAnlegen:OK		                          --> ArtikelBearbeiten;
+	VerweisAnlegen:Abbrechen		                  --> ArtikelBearbeiten;	
+
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // ArtikelKopieren Ctl+F4
+    // -------------------------------------------------------------------------------------------------    
+    // ArtikelBearbeiten                             o-> AktionArtikelKopieren on AktionArtikelKopieren;	
+	// AktionArtikelKopieren:OK		                --> ArtikelBearbeiten;
+
+	//Strg+F5
+	ArtikelBearbeiten								--> ArtikelBearbeiten on TelefonischeReservierung;
+
+	//Strg+F7
+	ArtikelBearbeiten								--> ArtikelBearbeiten on AktionAnKasseUebernehmen;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Statistikuebertrag Ctl+F6
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> ChoiceStatistikuebertrag on AktionStatistikuebertrag;
+    ChoiceStatistikuebertrag                        o-> AktionStatistikuebertrag if "AktionStatistikuebertrag";
+    ChoiceStatistikuebertrag                        o-> AktionStatistikBearbeiten if "AktionStatistikBearbeiten";
+    
+    
+    //ArtikelBearbeiten                               o-> AktionStatistikuebertrag on AktionStatistikuebertrag;
+    AktionStatistikuebertrag:Done                   --> ArtikelBearbeiten;
+    AktionStatistikBearbeiten:Done                  --> ArtikelBearbeiten;
+    
+    ArtikelBearbeiten								--> StatistikuebertragRepraesentantAnzeige on RepraesentantPznInfo;
+    StatistikuebertragRepraesentantAnzeige			o-> ArtikelBearbeitenProxy if "Repräsentant existiert";
+    StatistikuebertragRepraesentantAnzeige			--> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Rabattinfo Ctl+F7
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AktionRabattinfo on AktionRabattinfo;
+	AktionRabattinfo:OK		                        --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Filialinfo anzeigen  Ctl+F8
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> AktionTabChange on AktionFilialinfo;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Bestandskontrolle Ctl+F9
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionBestandskontrolle on AktionBestandskontrolle;
+    AktionBestandskontrolle:Exit                    --> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Artikel aus Kommissioniersystem auslagern Ctrl+F11 
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               --> BeforeArtikelAuslagern on ArtikelAuslagern;
+    BeforeArtikelAuslagern							--> ArtikelBearbeiten if "Kein Artikel";
+    BeforeArtikelAuslagern							o-> ArtikelAuslagern if "Artikel";
+    ArtikelAuslagern:Durchgefuehrt					--> ArtikelBearbeiten;
+	ArtikelAuslagern:Abgebrochen					--> ArtikelBearbeiten;	
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Nach Tabselektion
+    // -------------------------------------------------------------------------------------------------    
+	ArtikelBearbeiten								o-> AktionTabChange on SelectedTabChanged;
+	AktionTabChange:Yes								--> ArtikelBearbeiten;
+    AktionTabChange:No								--> ArtikelBearbeiten;
+
+
+    // -------------------------------------------------------------------------------------------------        
+    // Nach Tabselektion in Verkaufsstatistik
+    // -------------------------------------------------------------------------------------------------    
+	ArtikelBearbeiten								--> ArtikelBearbeiten on VerkaufsstatistikSelectedTabChanged;
+	ArtikelBearbeiten								--> ArtikelBearbeiten on VerkaufsinfoFilialfilter;	
+	ArtikelBearbeiten                               --> ArtikelBearbeiten on VerkaufsinfoTextfilter;
+	ArtikelBearbeiten								o-> Verkaufsverwaltung on Verkaufsverwaltung;
+	Verkaufsverwaltung:Fertig						--> ArtikelBearbeiten;
+
+
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										AbdaInfo1                                              #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_ArtikelbezeichnungGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo1_ArtikelbezeichnungGeaendert on AbdaInfo1_ArtikelbezeichnungGeaendert;
+
+    AbdaInfo1_ArtikelbezeichnungGeaendert               o-> AbdaInfo1_ArtikelbezeichnungGeaendertMeldung if "Artikelbezeichnung fehlerhaft";
+    AbdaInfo1_ArtikelbezeichnungGeaendert               --> ArtikelBearbeiten;
+    
+    AbdaInfo1_ArtikelbezeichnungGeaendertMeldung:Ok     --> ArtikelBearbeiten;      
+   
+    
+
+	//--------------
+	ArtikelBearbeiten									o-> ArtikelsucheFuerSonderPZN on AbdaInfo1_SonderPZNAuswahl;
+	ArtikelBearbeiten									--> ArtikelBearbeiten on AbdaInfo1_SonderPZNAuswahlGeaendert;
+	ArtikelsucheFuerSonderPZN:ArtikelAusgewaehlt		--> ArtikelBearbeiten;
+	ArtikelsucheFuerSonderPZN:Abbruch					--> ArtikelBearbeiten;
+	
+	//-----------
+
+
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_DarreichungsformGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo1_DarreichungsformGeaendert on AbdaInfo1_DarreichungsformGeaendert;
+
+    AbdaInfo1_DarreichungsformGeaendert                 o-> AbdaInfo1_DarreichungsformGeaendertMeldung if "Eingabe DAR unbekannt";
+    AbdaInfo1_DarreichungsformGeaendert                 --> ArtikelBearbeiten;
+    
+    AbdaInfo1_DarreichungsformGeaendertMeldung:Ok       --> ArtikelBearbeiten;                  
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_DarreichungsformAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   o-> AbdaInfo1_DarreichungsformAuswahl on AbdaInfo1_DarreichungsformAuswahl;  
+    AbdaInfo1_DarreichungsformAuswahl:OK                --> ArtikelBearbeiten;
+    AbdaInfo1_DarreichungsformAuswahl:Abbrechen         --> ArtikelBearbeiten;
+
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_NormpackungGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo1_NormpackungGeaendert on AbdaInfo1_NormpackungGeaendert;    
+    
+    AbdaInfo1_NormpackungGeaendert                      o-> AbdaInfo1_NormpackunGeaendertMeldung if "Eingabe NP fehlerhaft";
+    AbdaInfo1_NormpackungGeaendert                      o-> AbdaInfo1_NormpackungAuswahl if "KP gewaehlt, Dialog anzeigen";
+    AbdaInfo1_NormpackungGeaendert                      --> ArtikelBearbeiten;
+        
+    AbdaInfo1_NormpackunGeaendertMeldung:Ok             --> ArtikelBearbeiten;                 
+   
+    
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_NormpackungAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   o-> AbdaInfo1_NormpackungAuswahl on AbdaInfo1_NormpackungAuswahl;    
+    AbdaInfo1_NormpackungAuswahl:OK                     --> ArtikelBearbeiten;
+    AbdaInfo1_NormpackungAuswahl:Abbrechen              --> ArtikelBearbeiten;
+    
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_AnbieterAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AbdaInfo1_AnbieterAuswahl on AbdaInfo1_AnbieterAuswahl;    
+	AbdaInfo1_AnbieterAuswahl:Durchgefuehrt			--> ArtikelBearbeiten;
+	AbdaInfo1_AnbieterAuswahl:Abgebrochen			--> ArtikelBearbeiten;
+
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1_HerstellerAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AbdaInfo1_HerstellerAuswahl on AbdaInfo1_HerstellerAuswahl;    
+	AbdaInfo1_HerstellerAuswahl:Durchgefuehrt		--> ArtikelBearbeiten;
+	AbdaInfo1_HerstellerAuswahl:Abgebrochen			--> ArtikelBearbeiten;    
+
+
+
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1_PackungsgroesseMengeGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> AbdaInfo1_PackungsgroesseMengeGeaendert on AbdaInfo1_PackungsgroesseMengeGeaendert;    
+
+    AbdaInfo1_PackungsgroesseMengeGeaendert				o-> AbdaInfo1_PackungsgroesseMengeGeaendertMeldung if "Eingabe PG Menge unbekannt";
+    AbdaInfo1_PackungsgroesseMengeGeaendert				--> ArtikelBearbeiten;
+    
+    AbdaInfo1_PackungsgroesseMengeGeaendertMeldung:Ok	--> ArtikelBearbeiten;                  
+
+
+
+
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1_PackungsgroesseEinheitGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> AbdaInfo1_PackungsgroesseEinheitGeaendert on AbdaInfo1_PackungsgroesseEinheitGeaendert;    
+
+    AbdaInfo1_PackungsgroesseEinheitGeaendert			o-> AbdaInfo1_PackungsgroesseEinheitGeaendertMeldung if "Eingabe PG Einheit unbekannt";
+    AbdaInfo1_PackungsgroesseEinheitGeaendert           --> ArtikelBearbeiten;
+    
+    AbdaInfo1_PackungsgroesseEinheitGeaendertMeldung:Ok --> ArtikelBearbeiten;                  
+
+    // AbdaInfo1_VerordnungsvorgabenInfo
+    // -------------------------------------------------------------------------------------------------        
+	ArtikelBearbeiten									o-> AbdaInfo1_VerordnungsvorgabenInfo on AbdaInfo1_VerordnungsvorgabenInfo;    
+	AbdaInfo1_VerordnungsvorgabenInfo:Schliessen		--> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1_PackungsgroesseEinheitInfo geklickt.
+    // -------------------------------------------------------------------------------------------------        
+	ArtikelBearbeiten									o-> PackungsgroesseAnzeigen on AbdaInfo1_PackungsgroesseEinheitInfoClicked;        
+	PackungsgroesseAnzeigen:Ok							--> ArtikelBearbeiten;
+	PackungsgroesseAnzeigen:Abbruch						--> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1 ApUMitAbzug130b oder Rabattwert geändert => Icon muss aktualisiert werden
+    // -------------------------------------------------------------------------------------------------   
+
+	ArtikelBearbeiten									--> ArtikelBearbeiten on AbdaInfo1_EinpreiserIconUpdate;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										AbdaInfo2                                              #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo2_ImsWarengruppeGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo2_ImsWarengruppeGeaendert on AbdaInfo2_ImsWarengruppeGeaendert;
+
+    AbdaInfo2_ImsWarengruppeGeaendert                   o-> AbdaInfo2_ImsWarengruppeInvalidMeldung if "Eingabe IMS-Warengruppe ungültig";
+    AbdaInfo2_ImsWarengruppeGeaendert                   --> ArtikelBearbeiten else; 
+    
+    AbdaInfo2_ImsWarengruppeInvalidMeldung:Ok           --> ArtikelBearbeiten;                  
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo2_ImsWarengruppeAuswahl 
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AbdaInfo2_ImsWarengruppeAuswahl on AbdaInfo2_ImsWarengruppeAuswahl;   
+    AbdaInfo2_ImsWarengruppeAuswahl:OK                --> ArtikelBearbeiten;
+    AbdaInfo2_ImsWarengruppeAuswahl:Abbrechen         --> ArtikelBearbeiten;
+    
+    // -------------------------------------------------------------------------------------------------      
+    // AbdaInfo2_ImsWarengruppeInfo
+    // -------------------------------------------------------------------------------------------------      
+    ArtikelBearbeiten                               o-> AbdaInfo2_ImsWarengruppeInfo on AbdaInfo2_ImsWarengruppeInfo;      
+    AbdaInfo2_ImsWarengruppeInfo:Abbrechen          --> ArtikelBearbeiten;
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo2_AbdaWarengruppeGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo2_AbdaWarengruppeGeaendert on AbdaInfo2_AbdaWarengruppeGeaendert;
+
+    AbdaInfo2_AbdaWarengruppeGeaendert                   o-> AbdaInfo2_AbdaWarengruppeInvalidMeldung if "Eingabe ABDA-Warengruppe ungültig";
+    AbdaInfo2_AbdaWarengruppeGeaendert                   --> ArtikelBearbeiten else;
+    
+    AbdaInfo2_AbdaWarengruppeInvalidMeldung:Ok           --> ArtikelBearbeiten;                  
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo2_AbdaWarengruppeAuswahl 
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AbdaInfo2_AbdaWarengruppeAuswahl on AbdaInfo2_AbdaWarengruppeAuswahl;   
+    AbdaInfo2_AbdaWarengruppeAuswahl:Ok               --> ArtikelBearbeiten;
+    AbdaInfo2_AbdaWarengruppeAuswahl:Abbruch          --> ArtikelBearbeiten;       
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo2_AbdaWarengruppeInfo
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten                               o-> AbdaInfo2_AbdaWarengruppeInfo on AbdaInfo2_AbdaWarengruppeInfo;     
+    AbdaInfo2_AbdaWarengruppeInfo:Abbrechen         --> ArtikelBearbeiten;
+
+    // AbdaInfo2_KlinikpackungInfo
+    // -------------------------------------------------------------------------------------------------     
+    ArtikelBearbeiten                               o-> AbdaInfo2_KlinikpackungInfo on AbdaInfo2_KlinikpackungInfo;       
+    AbdaInfo2_KlinikpackungInfo:OK                  --> ArtikelBearbeiten;
+
+    // AbdaInfo2_IndikationAbdaInfo
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AbdaInfo2_IndikationAbdaInfo on AbdaInfo2_IndikationAbdaInfo;    
+    AbdaInfo2_IndikationAbdaInfo:Abbrechen          --> ArtikelBearbeiten;
+
+    // AbdaInfo2_IndikationAutItemInfo
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AbdaInfo2_IndikationAutItemInfo on AbdaInfo2_IndikationAutItemInfo;        
+    AbdaInfo2_IndikationAutItemInfo:Abbrechen       --> ArtikelBearbeiten;
+
+    
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										AbdaInfo3                                              #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo3_MehrkostenuebernahmeInfo 
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									o-> AbdaInfo3_MehrkostenuebernahmeInfo on AbdaInfo3_MehrkostenuebernahmeInfo;    
+    AbdaInfo3_MehrkostenuebernahmeInfo:Abbrechen        --> ArtikelBearbeiten;
+    
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo3_BerechnungenDurchfuehren
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo3_BerechnungenDurchfuehren on AbdaInfo3_BerechnungenDurchfuehren;  
+    AbdaInfo3_BerechnungenDurchfuehren                  --> ArtikelBearbeiten if "Neuberechnen";
+    AbdaInfo3_BerechnungenDurchfuehren                  --> ArtikelBearbeiten else;
+
+	// -------------------------------------------------------------------------------------------------        
+    // AbdaInfo3 ApUMitAbzug130b oder Rabattwert geändert => Icon muss aktualisiert werden
+    // -------------------------------------------------------------------------------------------------   
+	
+	ArtikelBearbeiten                                   --> ArtikelBearbeiten on AbdaInfo3_EinpreiserIconUpdate;   
+    
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										AbdaInfoLager                                          #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfoLager_VerpackungsartAuswahl
+    // -------------------------------------------------------------------------------------------------   
+    ArtikelBearbeiten												o-> AbdaInfoLager_VerpackungsartAuswahl on AbdaInfoLager_VerpackungsartAuswahl;             
+    AbdaInfoLager_VerpackungsartAuswahl:OK							--> ArtikelBearbeiten;
+    AbdaInfoLager_VerpackungsartAuswahl:Abbrechen					--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_VerpackungsartGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_VerpackungsartGeaendert on AbdaInfoLager_VerpackungsartGeaendert;
+
+    AbdaInfoLager_VerpackungsartGeaendert							o-> AbdaInfoLager_VerpackungsartGeaendertMeldung if "Verpackungsart fehlerhaft";
+    AbdaInfoLager_VerpackungsartGeaendert							--> ArtikelBearbeiten;
+    
+    AbdaInfoLager_VerpackungsartGeaendertMeldung:Ok					--> ArtikelBearbeiten;   
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_LagertemperaturMinGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_LagertemperaturMinGeaendert on AbdaInfoLager_LagertemperaturMinGeaendert;
+
+    AbdaInfoLager_LagertemperaturMinGeaendert						o-> AbdaInfoLager_LagertemperaturMinGeaendertMeldung if "Lagertemp. min falsch";
+    AbdaInfoLager_LagertemperaturMinGeaendert						--> ArtikelBearbeiten;
+    
+    AbdaInfoLager_LagertemperaturMinGeaendertMeldung:Ok				--> ArtikelBearbeiten;   
+
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_LagertemperaturMaxGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_LagertemperaturMaxGeaendert on AbdaInfoLager_LagertemperaturMaxGeaendert;
+
+    AbdaInfoLager_LagertemperaturMaxGeaendert						o-> AbdaInfoLager_LagertemperaturMaxGeaendertMeldung if "Lagertemp. max falsch";
+    AbdaInfoLager_LagertemperaturMaxGeaendert						--> ArtikelBearbeiten;
+    
+    AbdaInfoLager_LagertemperaturMaxGeaendertMeldung:Ok				--> ArtikelBearbeiten;   
+
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_VerfallGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_VerfallGeaendert on AbdaInfoLager_VerfallGeaendert;
+    AbdaInfoLager_VerfallGeaendert									--> ArtikelBearbeiten;
+
+
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_EichungGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_EichungGeaendert on AbdaInfoLager_EichungGeaendert;
+    AbdaInfoLager_EichungGeaendert									--> ArtikelBearbeiten;   
+    
+    ArtikelBearbeiten												--> ArtikelBearbeiten on AbdaInfoLager_VorraetigApBetrOChanged;
+	ArtikelBearbeiten												--> ArtikelBearbeiten on AbdaInfoLager_BeschaffbarApBetrOChanged; 
+       
+    // #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Optimierung2                                           #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    ArtikelBearbeiten								--> ArtikelBearbeiten on EnterImMengenfeld;
+    // -------------------------------------------------------------------------------------------------            
+    // Optimierung2_AnbieterAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> Optimierung2_AuswahlLieferant on AktionOptimierung2_AuswahlLieferant;    
+	Optimierung2_AuswahlLieferant:Durchgefuehrt		--> ArtikelBearbeiten;
+	Optimierung2_AuswahlLieferant:Abgebrochen		--> ArtikelBearbeiten;       
+       
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on Optimierung2_ValidateFesteBestellmenge;
+    ArtikelBearbeiten                               --> Optimierung2_ShowOutOfRangeMessage on Optimierung2_ShowOutOfRangeMessage;
+    Optimierung2_ShowOutOfRangeMessage				o-> Optimierung2_OutOfRangeMessage;
+    Optimierung2_OutOfRangeMessage:Ok				--> ArtikelBearbeiten; 
+    Optimierung2_ShowOutOfRangeMessage				--> ArtikelBearbeiten; 
+    
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Preisgestaltung                                        #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################    
+    
+    // -------------------------------------------------------------------------------------------------        
+    // Preisgestaltung: KalkulationNachModellAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> Preisgestaltung_SindPreisberechnungsangabenGueltig on Preisgestaltung_PreisChanged;
+    ArtikelBearbeiten									--> Preisgestaltung_SindPreisberechnungsangabenGueltig on Preisgestaltung_EigenVKChanged;
+
+    Preisgestaltung_SindPreisberechnungsangabenGueltig	--> ArtikelBearbeiten if "Ja";
+    Preisgestaltung_SindPreisberechnungsangabenGueltig	o-> Preisgestaltung_InfoMeldung if "Nein";
+    Preisgestaltung_InfoMeldung:Ok						--> ArtikelBearbeiten;
+
+    ArtikelBearbeiten									--> ArtikelBearbeiten on Preisgestaltung_PreiselisteFilterChanged;
+    ArtikelBearbeiten									--> ArtikelBearbeiten on Preisgestaltung_RechenregelVerwenden;
+    ArtikelBearbeiten									--> ArtikelBearbeiten on Preisgestaltung_RechenregelValidating;
+    ArtikelBearbeiten									o-> RechenregelAuswahl on Preisgestaltung_RechenregelAuswahl;
+    ArtikelBearbeiten									--> choiceRechenregelAuswahlDirect on Preisgestaltung_RechenregelAuswahlIndirect;
+	choiceRechenregelAuswahlDirect						o-> RechenregelAuswahl if "Rechenregelbegriff vorhanden";
+	choiceRechenregelAuswahlDirect						--> ArtikelBearbeiten if "Rechenregelbegriff nicht vorhanden, Regel entfernen";
+	RechenregelAuswahl:CANCEL							--> ArtikelBearbeiten if "Cancel";
+	RechenregelAuswahl:OK								--> ZirkelbezugValidieren if "Ok";
+	ZirkelbezugValidieren								o-> Preisgestaltung_InfoMeldung if "Zirkelbezug existiert";
+	ZirkelbezugValidieren								--> ArtikelBearbeiten if "keinen Zirkelbezug";
+	
+	// -------------------------------------------------------------------------------------------------        
+    // F9
+    // -------------------------------------------------------------------------------------------------    
+
+
+	ArtikelBearbeiten								o-> Kalkulation on OnF9;
+	Kalkulation:Return								--> ArtikelBearbeiten;
+	
+	// Preisgestaltung_RohertragSpanneInfo
+    // -------------------------------------------------------------------------------------------------        
+	ArtikelBearbeiten									o-> AktionRohertragSpanneInfo on Preisgestaltung_RohertragSpanneInfo;    
+	AktionRohertragSpanneInfo:Yes						o-> RohertragSpanne;
+	AktionRohertragSpanneInfo:No						o-> RohertragSpanne;
+	RohertragSpanne:Schliessen							--> ArtikelBearbeiten;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Lagerdaten                                             #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################  
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_LagerortAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> Lagerdaten_LagerorteZuordnung on Lagerdaten_LagerortAuswahl;       
+    Lagerdaten_LagerorteZuordnung:Ok                --> ArtikelBearbeiten;
+	Lagerdaten_LagerorteZuordnung:Abbrechen         --> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Kurzcode
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               --> LagerDaten_CheckKeinFreierKurzcode on Lagerdaten_KurzcodeClick;       
+	LagerDaten_CheckKeinFreierKurzcode				--> ArtikelBearbeiten if "Noch freie Kurzcodes" do "Ersten freien Kurzcode vergeben";
+	LagerDaten_CheckKeinFreierKurzcode				o-> Lagerdaten_KeinFreierKurzcode if "Kein freier Kurzcode" do "Meldung anzeigen";
+
+	Lagerdaten_KeinFreierKurzcode:Ok				--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_EANAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> Lagerdaten_EANAuswahl on Lagerdaten_EANAuswahl;       
+    Lagerdaten_EANAuswahl:Done						--> ArtikelBearbeiten;
+
+	//Inventurauswahl
+	ArtikelBearbeiten                               o-> Lagerdaten_InventurlisteAnzeigen on Lagerdaten_InventurlisteAnzeigen;       
+    Lagerdaten_InventurlisteAnzeigen:Done			--> ArtikelBearbeiten;
+
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_ArtikelgruppeAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> Lagerdaten_ArtikelgruppeAuswahl on Lagerdaten_ArtikelgruppeAuswahl;       
+    Lagerdaten_ArtikelgruppeAuswahl:OK				--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_TaxierungsgruppeAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    //ArtikelBearbeiten                               o-> Lagerdaten_TaxierungsgruppeAuswahl on Lagerdaten_TaxierungsgruppeAuswahl;       
+    //Lagerdaten_TaxierungsgruppeAuswahl:OK			--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_ErsetzenDurchAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    //ArtikelBearbeiten                               o-> Lagerdaten_ErsetzenDurchAuswahl on Lagerdaten_ErsetzenDurchAuswahl;       
+    //Lagerdaten_ErsetzenDurchAuswahl:OK				--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_KennzeichenChanged
+    // -------------------------------------------------------------------------------------------------        
+	ArtikelBearbeiten                               --> ArtikelBearbeiten on Lagerdaten_KennzeichenChanged;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_IconSetzen
+    // -------------------------------------------------------------------------------------------------  
+    ArtikelBearbeiten								--> Lagerdaten_IconSetzen on Lagerdaten_IconSetzen;
+    Lagerdaten_IconSetzen							--> ArtikelBearbeiten;
+
+	
+	// Artikel-Klassifizierungen
+    // -------------------------------------------------------------------------------------------------   
+	ArtikelBearbeiten                               o-> Artikelklassifikation on Lagerdaten_ArtikelKlassifizieren;
+	Artikelklassifikation:Ok                        --> ArtikelBearbeiten;                           
+	Artikelklassifikation:Abbruch                   --> ArtikelBearbeiten;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Einkauf / Angebote                                     #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################    
+    
+    // -------------------------------------------------------------------------------------------------        
+    // Einkauf / Angebote:
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> ArtikelBearbeiten on EinkaufAngebote_OnFilterChanged;        
+    
+    // #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Verweis			                                       #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################    
+    
+    
+    // -------------------------------------------------------------------------------------------------            
+    // BezeichnungValueChanged
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> BezeichnungValueChanged on BezeichnungValueChanged;
+    BezeichnungValueChanged								--> ArtikelBearbeiten;
+    
+    // -------------------------------------------------------------------------------------------------            
+    // SuchkriteriumValueChanged
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> SuchkriteriumValueChanged on SuchkriteriumValueChanged;
+    SuchkriteriumValueChanged							--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------            
+    // CommentValueChanged
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> CommentValueChanged on CommentValueChanged;
+    CommentValueChanged									--> ArtikelBearbeiten;
+    
+    
+    // #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										AenderungsDaten	                                       #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################    
+    
+    
+    // -------------------------------------------------------------------------------------------------            
+    // On Info Buttons
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten										o-> AenderungsDaten_NeuePznInfoAnzeigen on AenderungsDaten_NeuePznInfo;
+    AenderungsDaten_NeuePznInfoAnzeigen:Yes					o-> ArtikelBearbeitenProxy;
+    AenderungsDaten_NeuePznInfoAnzeigen:No					--> ArtikelBearbeiten;
+
+    ArtikelBearbeiten										o-> AenderungsDaten_OrignalPznInfoAnzeigen on AenderungsDaten_OrignalPznInfo;
+    AenderungsDaten_OrignalPznInfoAnzeigen:Yes				o-> ArtikelBearbeitenProxy;
+    AenderungsDaten_OrignalPznInfoAnzeigen:No               --> ArtikelBearbeiten;
+	
+    
+    ArtikelBearbeiten										o-> AenderungsDaten_AltePznInfoAnzeigen on AenderungsDaten_AltePznInfo;
+    AenderungsDaten_AltePznInfoAnzeigen:Yes					o-> ArtikelBearbeitenProxy;
+    AenderungsDaten_AltePznInfoAnzeigen:No					--> ArtikelBearbeiten;
+
+
+    ArtikelBearbeiten										o-> AenderungsDaten_KleinereNormPackungInfoAnzeigen on AenderungsDaten_KleinereNormPackungInfo;
+    AenderungsDaten_KleinereNormPackungInfoAnzeigen:Yes		o-> ArtikelBearbeitenProxy;
+    AenderungsDaten_KleinereNormPackungInfoAnzeigen:No      --> ArtikelBearbeiten;
+
+    ArtikelBearbeitenProxy:Abbruch			--> IsArtikelBearProxyWithF2Terminated;
+    IsArtikelBearProxyWithF2Terminated		--> AktionSuchen if "when ArtikelBearbeitenProxy is with F2 Terminated.";
+    IsArtikelBearProxyWithF2Terminated		--> AktionErweiterteSuche else if "when ArtikelBearbeitenProxy is with F2 Terminated.";
+    IsArtikelBearProxyWithF2Terminated		--> ArtikelBearbeiten else;
+    
+    ArtikelBearbeiten						--> IsOriginalPznOk on AenderungsDaten_OrignalPznValidated;
+    IsOriginalPznOk							o-> AenderungsDaten_OrignalPznFehlerMeldung if "Given pzn is not Ok.";
+    IsOriginalPznOk							--> ArtikelBearbeiten else;
+    AenderungsDaten_OrignalPznFehlerMeldung:Ok --> ArtikelBearbeiten;
+
+	ArtikelBearbeiten						--> ArtikelBearbeiten on DatenEingescannt;
+
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #								   aut idem Informationen                                      #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################  
+
+    // -------------------------------------------------------------------------------------------------        
+    // Rabattvereinbarungen Kostentraegersuche
+    // -------------------------------------------------------------------------------------------------        
+    
+    ArtikelBearbeiten								--> ArtikelBearbeiten on Rabattvereinbarungen_SucheEnterKey;
+           
+    // #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #								   Lager Informationen                                         #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################  
+
+    // -------------------------------------------------------------------------------------------------        
+    // AutIdemInfo_Kostentraegerauswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on FilialLagerinfo_GridAfterSelectChange;
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on FilialLagerinfo_GridKeyEnter;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #								   Uebervorratslagerorte                                       #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################  
+
+    // -------------------------------------------------------------------------------------------------        
+    // TreeViews und Dateneingabe
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on Uebervorrat_AfterSelectHauptlagerort;
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on Uebervorrat_HauptlagerorteCellValueChanged;
+	ArtikelBearbeiten                               --> ArtikelBearbeiten on Uebervorrat_DataChanged;
+	ArtikelBearbeiten								o-> Uebervorrat_LagerorteZuordnung on Uebervorrat_LagerorteZuordnen;
+
+	Uebervorrat_LagerorteZuordnung:Ok                --> ArtikelBearbeiten;
+	Uebervorrat_LagerorteZuordnung:Abbrechen         --> ArtikelBearbeiten;
+
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #								   Abrechnungseintrag                                          #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################  
+
+	// -------------------------------------------------------------------------------------------------        
+    // Abrechnungseintrag_AbdaWarengruppeInfo
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten										o-> Abrechnungseintrag_AbdaWarengruppeInfo on Abrechnungseintrag_AbdaWarengruppeInfo;     
+    Abrechnungseintrag_AbdaWarengruppeInfo:Abbrechen         --> ArtikelBearbeiten;
+
+	//--------------
+    //Druckeinstellungen
+    //--------------
+    ArtikelBearbeiten					o-> Druckeinstellungen on Druckeinstellungen;   
+    Druckeinstellungen:Exit				--> ArtikelBearbeiten;
+}
+
+taskref EtikettenDruckAuswaehlen [namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.EtikettenDruck]
+							  [result bool]
+{
+	init init1 [params BORef artikelId, int anzahl, EtikettType etikettType];
+	init init2 [params BORef artikelId];
+	exit		Done;
+}
+
+taskref ArtikelBestellen4Artikelstamm	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBestellen]			
+										[result bool]
+{
+	init [params BORef artikelOid, bool dummy];
+	exit	OK;
+	exit	Abbrechen;
+}
+
+taskref Bestandskontrolle	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Bestandskontrolle]			
+										[result bool]
+{
+	init [params BORef artikelOid];
+	exit	Exit;
+}
+
+taskref ArtikelAbschreiben	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Abschreibebuch.MI]			
+							[result bool]
+{
+	init	[params IArtikelAbschreibenParameter];
+	
+	exit	Abbruch;	
+	exit	Durchgefuehrt;
+}
+
+taskref LagerortAuswahl		[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Lager]
+                            [result ITaskResultWithTO<ILagerortAuswahlResult>]
+{
+	init		[params ILagerortAuswahlParameter parameter];
+	
+    exit Ok;
+	exit Abbrechen; 
+}
+
+taskref ArtikelAuslagern [namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Bestandsverwaltung]			
+						 [result bool]
+{
+    // Eingänge    
+    init Init           [params BORef artikelOid];
+
+    // Ausgänge
+    exit Durchgefuehrt;
+    exit Abgebrochen;
+}
+
+taskref RechenregelAuswahl	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Kalkulationsmodelle]
+							[result ITaskResultWithTO<IRechenregelAuswaehlenTaskResult> taskResult]
+{
+	
+	init	[params IRechenregelAuswaehlenParameter];
+
+	exit	CANCEL;
+	exit	OK;
+}
+
+taskref InventurlisteAnzeigen	[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBearbeiten]			
+								[result bool]
+{
+	init [params BORef artikelEintragOid];
+	exit	Done;
+}
+
+
+taskref Verkaufsverwaltung			[namespaceprefix Pharmatechnik.Apotheke.XTplus.Verkaufsverwaltung.MI]
+									[result AktivierungStornoTaskResult]
+
+{
+	
+	init   StartVerkaufsInformationen [params BORef kundeOderArtikel, Nullable<DateTime> von, Nullable<DateTime> bis, IEnumerable<BORef> verkaufspositionen, Nullable<BORef> selection];
+
+	exit   Fertig;
+}
+
+taskref Druckeinstellungen [namespaceprefix Pharmatechnik.Apotheke.XTplus.Report.MI]			
+						   [result bool]
+{
+    init [params string bereich, string reportName];
+    exit Exit;       
+}
+
+task ArtikelBearbeitenProxy		[base StandardWFS<ArtikelBearbeitenTaskState> :IWFServiceBase]
+                                [result Pharmatechnik.Apotheke.XTplus.Artikelstamm.ArtikelBearbeiten.WFL.ArtikelBearbeitenProxyErgebnisType]
+{
+	init	InitEinArtikelParameter			[params BORef selektierterEintragOid, ArtikelBearbeitenTabPageType tabPageSelectorEnum];
+	init	InitEinArtikelUndBoolParameter	[params BORef selektierterEintragOid, bool isStartFromVerkauf];
+	task	ArtikelBearbeiten ArtikelBearbeiten;
+	exit	Abbruch;
+	InitEinArtikelParameter			--> ArtikelBearbeiten;
+	InitEinArtikelUndBoolParameter	--> ArtikelBearbeiten;
+	ArtikelBearbeiten:Abbruch		--> Abbruch;
+}
+
+task Kalkulation	[base StandardWFS<ArtikelBearbeitenTaskState> :IWFServiceBase]
+					[params IArtikelBearbeitenPresenter presenter, APlusVAuswahlDispatcherPresenter dispatcherPresenter, 
+							IArtikelRepositoryBS artikelRepositoryBS, ITaskResultFactory taskResultFactory]
+					[result ITaskResultWithTO<ArtikelKalkulationErgebnis>]
+{
+
+	init	Kalkulation  [params BORef selektierterEintragOid, bool preisgestaltungsTabSelected];
+	init	KalkulationFromArtikelsuche  [params BORef selektierterEintragOid];
+
+	task	APlusVAuswahl							    AktionArtikelstammPlusV;	
+	task	EtikettenDruckAuswaehlen					DruckAuswahl;
+	task	MessageBoxOk								MeldungKeinTrefferGefunden;
+	choice	OnF9Choice;
+	choice	Preisgestaltung_HatKeinenEigenenVK;
+	choice	Preisgestaltung_SindPreisberechnungsangabenGueltig;
+	choice	WurdeTrefferFuerAplusVArtikelGefunden;                   
+
+	/*
+	task	Artikelsuche;
+	task	MessageBoxOk	MsgKeinAlternativartikel;
+	task	MessageBoxOk	MsgZuVieleAlternativartikel;
+	task	MessageBoxOk	MsgArtikelKannNichtUebernommenWerden;
+	
+	choice CheckAnzahlAlternativartikel;
+	choice CheckGruppennummerDesUebernehmendenArtikels;
+	*/
+
+	exit						Return;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // F9
+    // -------------------------------------------------------------------------------------------------    
+    Kalkulation										--> OnF9Choice;
+    KalkulationFromArtikelsuche						--> OnF9Choice;
+    OnF9Choice									    --> AktionArtikelstammPlusV if "A+V Artikel";
+    OnF9Choice										--> DruckAuswahl if "Druck der Etiketten";
+    OnF9Choice										--> Return;
+
+    DruckAuswahl:Done								--> Return;
+    AktionArtikelstammPlusV:Durchgefuehrt			--> Return if "Abgebrochen";
+    AktionArtikelstammPlusV:Abgebrochen			    --> WurdeTrefferFuerAplusVArtikelGefunden;
+    AktionArtikelstammPlusV:Exit_Artikelsuchen		--> Return if "Abgebrochen";
+	/*
+	AktionArtikelstammPlusV:Exit_Artikelsuchen		--> CheckAnzahlAlternativartikel if "indirekt; via F12-OK in Alternativ Artikel" do "Artikelsuche öffnen";
+	
+	CheckAnzahlAlternativartikel		o-> MsgKeinAlternativartikel if "Keinen Alternativartikel gefunden";
+	CheckAnzahlAlternativartikel		o-> MsgZuVieleAlternativartikel if "Zu viele Alternativartikel gefunden";
+	CheckAnzahlAlternativartikel		o-> Artikelsuche if "alles OK";
+
+	MsgKeinAlternativartikel:Ok			--> AktionArtikelstammPlusV do "Artikel nicht ersetzen";
+	MsgZuVieleAlternativartikel:Ok		o-> Artikelsuche if "Erste 500 Treffer anzeigen";
+
+	Artikelsuche:ArtikelAusgewaehlt	--> CheckGruppennummerDesUebernehmendenArtikels if "Artikel ausgewählt" do "Check Artikel hat der gleichen Gruppennummer";
+	Artikelsuche:Abbruch			--> AktionArtikelstammPlusV do "Artikel nicht ersetzen";
+
+	CheckGruppennummerDesUebernehmendenArtikels	--> AktionArtikelstammPlusV if "Artikel mit gleicher Gruppennummer" do "Artikel ersetzen";
+	CheckGruppennummerDesUebernehmendenArtikels	o-> MsgArtikelKannNichtUebernommenWerden if "Artikel mit unterschiedlicher Gruppennummer" do "Error-Meldung anzeigen";
+
+	MsgArtikelKannNichtUebernommenWerden:Ok	--> AktionArtikelstammPlusV do "Artikel nicht ersetzen";
+	*/
+
+	WurdeTrefferFuerAplusVArtikelGefunden			--> MeldungKeinTrefferGefunden if "Kein Treffer gefunden";
+	WurdeTrefferFuerAplusVArtikelGefunden			--> Return if "Treffer gefunden";
+
+	MeldungKeinTrefferGefunden:Ok					--> Return;
+}
+
+
+taskref Artikelsuche			[namespaceprefix Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Artikelsuche]
+								[result ITaskResultWithTO<IArtikelsucheResult>]
+
+{
+	init	init0	[params ArtikelsucheParameter parameter];	
+	exit 			ArtikelAusgewaehlt;
+	exit 			Abbruch;
+}
+
+task ArtikelBearbeiten			[base StandardWFS<ArtikelBearbeitenTaskState> :IWFServiceBase]
+                                [params IArtikelRepositoryBS artikelRepositoryBS,
+                                        IArtikelStammBS artikelStammBS,
+                                        IArtikelErfassenBS artikelErfassenBS,
+                                        IArtikelStammKonfigurationsParameterBS artikelStammKonfigurationsParameterBS,
+                                        IAnbieterverwaltungBS anbieterverwaltungBS,
+                                        ILieferantenverwaltungBS lieferantenverwaltungBS,
+                                        IEinkaufsstatistik einkaufsstatistik,
+                                        IVerkaufsstatistik verkaufsstatistikBS,                                        
+                                        IVerkaufshistorieForArtikelBS verkaufshistorieBS,
+                                        IEintragManager eintragManager,
+                                        IArtikelBearbeitenPresenter presenter,
+                                        IAenderungsDatenBS aenderungsDatenBS,
+                                        IAenderungsDatenPresenter aenderungsDatenPresenter,
+                                        IKontaktrolleInfoProvider kontaktrolleInfoProvider,
+                                        IRabattvereinbarungenPresenter rabattvereinbarungenPresenter,
+										IKundenverwaltungBS kundenverwaltungBS,
+										IStartVerkaufApplicationService startApplicationService
+                                        ]
+                                [result Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.ArtikelBearbeiten.WFL.IArtikelBearbeitenErgebnis]
+{
+
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										Eingänge                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    init                        InitEinArtikelParameter         [params BORef selektierterEintragOid, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitEinArtikelUndBoolParameter  [params BORef selektierterEintragOid, bool isStartFromVerkauf, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitArtikelListeParameter       [params List<BORef> eintragListe, BORef selektierterEintragOid, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitArtikelListeParameterExit   [params List<BORef> eintragListe, BORef selektierterEintragOid, bool exitOnEnter, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitBestandslisteParameter      [params BORef selektierterEintragOid, ArtikelBearbeitenTabPageType tabPageSelectorEnum, bool isArtikelVerbundweitAusweitenErlaubt];
+	init                        InitArtikelListeSelectedTab		[params List<BORef> selektierterEintragOids, BORef selektierterEintragOid, ArtikelBearbeitenTabPageType tabPageSelectorEnum, bool isArtikelVerbundweitAusweitenErlaubt];
+    
+    init                        InitEinArtikelFromProxy			[params BORef selektierterEintragOid, ArtikelBearbeitenTabPageType tabPageSelectorEnum, bool startedFromProxy, bool isArtikelVerbundweitAusweitenErlaubt];
+    init                        InitEinParameter				[params ArtikelBearbeitenInputData inputData];
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										Views                                                  #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	view                        ArtikelBearbeiten;
+	
+	
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										Meldungen                                              #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	task			            MessageBoxContinue                          AbdaInfo1_DarreichungsformGeaendertMeldung;				
+	task			            MessageBoxContinue                          AbdaInfo1_PackungsgroesseMengeGeaendertMeldung;			
+	task			            MessageBoxContinue                          AbdaInfo1_PackungsgroesseEinheitGeaendertMeldung;		
+	task			            MessageBoxContinue                          AbdaInfo1_NormpackunGeaendertMeldung;					
+	task			            MessageBoxContinue                          AbdaInfo1_ArtikelbezeichnungGeaendertMeldung;			
+	task						MessageBoxContinue							AbdaInfo2_AbdaWarengruppeInvalidMeldung;
+	task						MessageBoxContinue							AbdaInfo2_ImsWarengruppeInvalidMeldung;
+	task			            MessageBoxContinue                          AbdaInfoLager_VerpackungsartGeaendertMeldung;           
+	task			            MessageBoxContinue                          AbdaInfoLager_LagertemperaturMinGeaendertMeldung;       
+	task			            MessageBoxContinue                          AbdaInfoLager_LagertemperaturMaxGeaendertMeldung;       
+	task						MessageBoxOk								AenderungsDaten_OrignalPznFehlerMeldung;				
+	task						MessageBoxOk								Preisgestaltung_InfoMeldung;							
+	task						MessageBoxOk								Optimierung2_OutOfRangeMessage;							
+	task						MessageBoxYesNo								Preisgestaltung_AufschlagsKalkulationAnnehmen;  		
+	task						MessageBoxYesNo								Uebervorrat_AbfrageVorAuffuellen;  		
+	task						MessageBoxContinue							KeineABDAInfoVorhanden;
+	task						MessageBoxOk								Lagerdaten_KeinFreierKurzcode;							
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										Tasks für Funktionsbuttons                             #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	task                        InteraktionSpeichern                        AktionSpeichern;	
+	
+	task                        InteraktionSpeichern						AktionUebernehmen;						
+	task                        InteraktionLoeschen                         AktionLoeschen;							
+	task                        InteraktionSpeichern                        AktionTabGeaendert;						
+	task                        InteraktionSpeichern                        AnderungsDatenGeaendert;				
+	task                        InteraktionSpeichern                        AktionNaechstenArtikelAnzeigen;			 	
+	task			            InteraktionSpeichern                        AktionBeenden;							
+	task			            InteraktionSpeichern                        AktionSuchen;							
+	task			            InteraktionSpeichern                        AktionErweiterteSuche;					
+	task			            InteraktionSpeichern                        AktionRohertragSpanneInfo;				
+	task			            InteraktionSpeichern                        AktionTabChange;
+	task			            InteraktionSpeichern                        NachfrageSpeichernVorLagerstatusDialog;
+	
+	task			            InteraktionSpeichern                        AktionVerweisAnlegen;					
+	task                        VerweisAnlegen                              VerweisAnlegen;							
+
+	task			            InteraktionSpeichern                        AktionArtikelErfassen;					
+	task                        ArtikelErfassen                             ArtikelErfassen;						
+	
+	task                        ArtikelBestellen4Artikelstamm				AktionArtikelBestellen;
+	task                        NichtImplementiertMeldung                   AktionArtikelKopieren;
+	
+	task                        InteraktionSpeichern                        AktionArtikelInfotexteAnzeigen;			
+	task                        ArtikelInfotexte                            ArtikelInfotexteAnzeigen;				
+		
+	task                        InteraktionSpeichern                        AenderungsDaten_OrignalPznInfoAnzeigen;	
+	task                        InteraktionSpeichern                        AenderungsDaten_NeuePznInfoAnzeigen;	
+	task                        InteraktionSpeichern                        AenderungsDaten_AltePznInfoAnzeigen;	
+	task                        InteraktionSpeichern                        AenderungsDaten_KleinereNormPackungInfoAnzeigen;	
+    
+	//task                      FAMAnzeigen				                    AktionABDAInfotextAnzeigen;				
+	task                        AbdaFAMDispatcher				            AktionABDAInfotextAnzeigen;				
+	task                        NichtImplementiertMeldung                   AktionEinstellungen;
+	task                        StatistikUebertragen                        AktionStatistikuebertrag;
+	task                        StatistikgruppeBearbeiten                   AktionStatistikBearbeiten;
+	
+	task                        Bestandskontrolle		                    AktionBestandskontrolle;	
+	task                        NichtImplementiertMeldung                   AktionHilfe;	  
+	task                        Anbieterverwaltung							AktionAnbieter;	
+	task                        ArtikelStatus                               DialogLagerstatus;	
+	task                        NichtImplementiertMeldung                   AktionKalkulation;			
+	task                        NichtImplementiertMeldung                   AktionRabattinfo;
+	task						APlusVAuswahl  								AktionArtikelstammPlusV;
+	task						ArtikelAbschreiben;
+
+	task						Kalkulation									Kalkulation;
+	
+	task						ArtikelAuslagern;
+	task						PznAendern;
+	task						Login										LoginPznAendern;
+	task						Login										LoginVerbundweitPropagieren;
+
+	task						VerbundweitPropagieren						VerbundweitPropagieren;
+	task						PreisHistorie								PreisHistorie;
+	
+	task						Druckeinstellungen;
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #	                      Definitionen für Events der Usercontrols                             #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	task                        NichtImplementiertMeldung                   KalkulationNachModellAuswahl;
+	task                        MehrkostenuebernahmeInfo                    AbdaInfo3_MehrkostenuebernahmeInfo;						
+	task                        AbdaWarengruppeInfo                         AbdaInfo2_AbdaWarengruppeInfo;							
+	task                        AbdaWarengruppeInfo                         Abrechnungseintrag_AbdaWarengruppeInfo;					
+	task                        AbdaWarengruppeAuswahl                      AbdaInfo2_AbdaWarengruppeAuswahl;					    
+	task                        ImsWarengruppeInfo                          AbdaInfo2_ImsWarengruppeInfo;					        
+	task                        ImsWarengruppeAuswahl                       AbdaInfo2_ImsWarengruppeAuswahl;			            
+    task                        NichtImplementiertMeldung                   AbdaInfo2_KlinikpackungInfo;
+    task                        IndikationAbdaInfo                          AbdaInfo2_IndikationAbdaInfo;							
+    task						Verordnungsvorgaben							AbdaInfo1_VerordnungsvorgabenInfo;						
+    task						RohertragSpanne								RohertragSpanne;										
+    task                        IndikationAutItemInfo                       AbdaInfo2_IndikationAutItemInfo;						
+    task                        StandardKontakteSuche                       AbdaInfo1_AnbieterAuswahl;								
+    task                        StandardKontakteSuche                       AbdaInfo1_HerstellerAuswahl;							
+    task                        DarreichungsformAuswahl                     AbdaInfo1_DarreichungsformAuswahl;						
+    task                        NormpackungAuswahl                          AbdaInfo1_NormpackungAuswahl;							
+    task                        ListenAuswahl                               AbdaInfoLager_VerpackungsartAuswahl;                    
+    task						ArtikelBearbeitenProxy						ArtikelBearbeitenProxy;									
+    task                        LagerortAuswahl                             Lagerdaten_LagerorteZuordnung;   
+	task						LagerortAuswahl								Uebervorrat_LagerorteZuordnung; 
+    task                        EANAuswahl									Lagerdaten_EANAuswahl;    
+    task                        NichtImplementiertMeldung                   Lagerdaten_ArtikelgruppeAuswahl;    
+    //task                        NichtImplementiertMeldung                   Lagerdaten_TaxierungsgruppeAuswahl;    
+    //task                        NichtImplementiertMeldung                   Lagerdaten_ErsetzenDurchAuswahl; 
+
+	task						InventurlisteAnzeigen						Lagerdaten_InventurlisteAnzeigen;
+
+    task						StandardKontakteSuche						Optimierung2_AuswahlLieferant;  
+    task                        StandardKontakteSuche						AutIdem_KostentraegerAuswahl;
+	task						EtikettenDruckAuswaehlen					DruckAuswahl;
+	task                        PackungsgroesseAnzeigen                     PackungsgroesseAnzeigen;
+	task                        AuswahlArtikelklassifikation                Artikelklassifikation;    
+
+	task						RechenregelAuswahl							RechenregelAuswahl;
+	task						Verkaufsverwaltung;
+
+	task						Artikelsuche								ArtikelsucheFuerSonderPZN;
+	task						WawiExtraBestelloptimierung					WawiExtraBestelloptimierung;
+	task						NeinverkaufDurchfuehren;
+	task						Sondeneigenschaften;
+	
+    
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #	                                       Choices                                             #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################	
+	choice                      AbdaInfo3_BerechnungenDurchfuehren;					
+	choice                      AbdaInfo1_DarreichungsformGeaendert;				
+	choice                      AbdaInfo1_PackungsgroesseMengeGeaendert;			
+	choice                      AbdaInfo1_PackungsgroesseEinheitGeaendert;			
+	choice                      AbdaInfo1_ArtikelbezeichnungGeaendert;				
+	choice                      AbdaInfo1_NormpackungGeaendert;						
+    choice                      AbdaInfoLager_VerpackungsartGeaendert;              
+    choice                      AbdaInfoLager_LagertemperaturMinGeaendert;          
+    choice                      AbdaInfoLager_LagertemperaturMaxGeaendert;          
+    choice                      AbdaInfoLager_VerfallGeaendert;                     
+    choice                      AbdaInfoLager_EichungGeaendert;                     
+    choice						Lagerdaten_IconSetzen;								
+	choice						NeinVerkauf_IstArtikel;								
+	choice						BezeichnungValueChanged;							
+	choice						SuchkriteriumValueChanged;							
+	choice						CommentValueChanged;								
+	choice						IsOriginalPznOk;									
+	choice						Preisgestaltung_SindPreisberechnungsangabenGueltig;
+	choice						Preisgestaltung_HatKeinenEigenenVK;
+	choice						IstABDAInfoVorhanden;
+	choice						IsArtikelBearProxyWithF2Terminated;
+	choice						OnF9Choice;												//AufschlagskalkulationOderAPlusVKalkulation;
+	choice						Optimierung2_ShowOutOfRangeMessage;
+	choice						AbdaInfo2_AbdaWarengruppeGeaendert;
+	choice						AbdaInfo2_ImsWarengruppeGeaendert;
+	choice						StatistikuebertragRepraesentantAnzeige;
+	choice                      SucheInInfotextenSarten;
+	choice						OnF11Choice;
+	choice						BeforeArtikelAuslagern;
+	choice						ValidateReturnedAusgang;
+	choice                      ChoiceStatistikuebertrag;
+	choice						BeforeAktionUebernehmenMitEnter;
+	choice						ChoiceDetailsOderTrefferliste;
+	
+	choice						choiceRechenregelAuswahlDirect;
+	choice						ZirkelbezugValidieren;
+	
+	
+	choice						DetailsZuDenArtikelAnzeigen;
+	choice						LagerDaten_CheckKeinFreierKurzcode;
+	choice						hasWawiExtraLizenz;
+	choice						ChoiceSondeneigenschaften;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #	                                       Ausgänge                                            #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+	exit                        Abbruch;
+	
+	
+	// -------------------------------------------------------------------------------------------------        	
+	// Begin
+	// -------------------------------------------------------------------------------------------------  
+	InitEinArtikelParameter                         --> DetailsZuDenArtikelAnzeigen;
+	InitEinArtikelUndBoolParameter                  --> DetailsZuDenArtikelAnzeigen;
+	InitArtikelListeParameter                       --> DetailsZuDenArtikelAnzeigen;
+	InitArtikelListeParameterExit					--> DetailsZuDenArtikelAnzeigen;
+	InitBestandslisteParameter						--> DetailsZuDenArtikelAnzeigen;
+	InitEinArtikelFromProxy							--> DetailsZuDenArtikelAnzeigen;
+	InitArtikelListeSelectedTab						--> DetailsZuDenArtikelAnzeigen;
+	InitEinParameter								--> DetailsZuDenArtikelAnzeigen;
+	
+	DetailsZuDenArtikelAnzeigen						--> ArtikelBearbeiten;
+	DetailsZuDenArtikelAnzeigen						--> Abbruch;
+    
+	// -------------------------------------------------------------------------------------------------        
+    // Tab geändert (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionTabGeaendert on AktionTabGeaendert;
+    AktionTabGeaendert:Yes                            --> ArtikelBearbeiten;
+    AktionTabGeaendert:No                             --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Nächsten Artikel anzeigen (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionNaechstenArtikelAnzeigen on AktionNaechstenArtikelAnzeigen;
+    AktionNaechstenArtikelAnzeigen:Yes                --> ArtikelBearbeiten;
+    AktionNaechstenArtikelAnzeigen:No                 --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // ArtikelUebernehmen mit Enter
+    // -------------------------------------------------------------------------------------------------      
+    ArtikelBearbeiten								  --> BeforeAktionUebernehmenMitEnter on AktionUebernehmenMitEnter;
+    BeforeAktionUebernehmenMitEnter				      --> ArtikelBearbeiten if "Übernehmen nicht möglich/erlaubt";
+    BeforeAktionUebernehmenMitEnter				      o-> AktionUebernehmen if "erlaubt/von Kasse";
+      
+    ArtikelBearbeiten                                 o-> AktionUebernehmen on AktionUebernehmen;
+    AktionUebernehmen:Yes							  --> Abbruch;
+    AktionUebernehmen:No							  --> Abbruch;    
+
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Speichern F1 (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionSpeichern on AktionSpeichern;
+    AktionSpeichern:Yes								  --> ArtikelBearbeiten;
+    AktionSpeichern:No								  --> ArtikelBearbeiten;    
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Suchen F2 (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionSuchen on AktionSuchen;
+    AktionSuchen:Yes                                  --> Abbruch;
+    AktionSuchen:No                                   --> ArtikelBearbeiten;    
+    
+  
+	// -------------------------------------------------------------------------------------------------        
+    // ArtikelErfassen F3 (Fertig)
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                                 o-> AktionArtikelErfassen on AktionArtikelErfassen;
+    AktionArtikelErfassen:Yes                         o-> ArtikelErfassen;
+    AktionArtikelErfassen:No                          --> ArtikelBearbeiten;
+    
+	ArtikelErfassen:OK		                          --> ArtikelBearbeiten;
+	ArtikelErfassen:Abbrechen		                  --> ArtikelBearbeiten;	    
+    
+    
+  
+	// -------------------------------------------------------------------------------------------------        
+    // Loeschen F4 (Fertig)
+    // -------------------------------------------------------------------------------------------------     
+    ArtikelBearbeiten                               o-> AktionLoeschen on AktionLoeschen;
+	AktionLoeschen:Yes		                        --> Abbruch;    
+	AktionLoeschen:No		                        --> ArtikelBearbeiten;    
+
+	// -------------------------------------------------------------------------------------------------        
+    // ArtikelBestellen F5
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionArtikelBestellen on AktionArtikelBestellen;
+	AktionArtikelBestellen:OK		                --> ArtikelBearbeiten;
+	AktionArtikelBestellen:Abbrechen				--> ArtikelBearbeiten;
+
+ 	// -------------------------------------------------------------------------------------------------        
+    // ArtikelInfotextAnzeigen F6 (Fertig)
+    // -------------------------------------------------------------------------------------------------     
+    ArtikelBearbeiten                                 o-> AktionArtikelInfotexteAnzeigen on AktionArtikelInfotexteAnzeigen;
+    AktionArtikelInfotexteAnzeigen:Yes                o-> ArtikelInfotexteAnzeigen;
+    AktionArtikelInfotexteAnzeigen:No                 --> ArtikelBearbeiten;
+    
+	ArtikelInfotexteAnzeigen:Abbrechen		          --> SucheInInfotextenSarten;
+	SucheInInfotextenSarten							  --> Abbruch if "Erweiterte Suche in Infotexten starten";
+	SucheInInfotextenSarten                           --> ArtikelBearbeiten if "Zurück zur GUI";
+
+	// -------------------------------------------------------------------------------------------------        
+    // ABDAInfotextAnzeigen F7
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> IstABDAInfoVorhanden on AktionABDAInfotextAnzeigen;
+    
+    IstABDAInfoVorhanden			o-> KeineABDAInfoVorhanden if "Keine ABDA Informationen vorhanden";
+	IstABDAInfoVorhanden			o-> AktionABDAInfotextAnzeigen else;
+    
+	AktionABDAInfotextAnzeigen:OK                   --> ValidateReturnedAusgang; 
+	ValidateReturnedAusgang							--> ArtikelBearbeiten if "Abbrechen";
+	ValidateReturnedAusgang							--> Abbruch if "Daten Uebernahme";
+	
+	AktionABDAInfotextAnzeigen:Abbrechen            --> ArtikelBearbeiten;
+	KeineABDAInfoVorhanden:Ok						--> ArtikelBearbeiten;
+    
+	// -------------------------------------------------------------------------------------------------        
+    // Anbieter F8
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionAnbieter on AktionAnbieter;
+    AktionAnbieter:Exit                             --> ArtikelBearbeiten;
+    AktionAnbieter:ExitSuche                        --> ArtikelBearbeiten;
+
+
+
+	
+    
+    
+
+	// -------------------------------------------------------------------------------------------------        
+    // Status F10
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> NachfrageSpeichernVorLagerstatusDialog on AktionStatus;
+    
+    NachfrageSpeichernVorLagerstatusDialog:Yes      o-> DialogLagerstatus;
+    NachfrageSpeichernVorLagerstatusDialog:No       --> ArtikelBearbeiten;
+
+    DialogLagerstatus:Return                        --> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Status F11
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> OnF11Choice on OnF11;
+	OnF11Choice										o-> LoginPznAendern if "selbstangelegter Artikel und AbdaInfo1 ist ausgewählt";
+	OnF11Choice										o-> PreisHistorie if "Änderungsdaten sind ausgewählt";	
+	OnF11Choice										o-> Uebervorrat_AbfrageVorAuffuellen if "Uebervorrat ist ausgewählt";	
+
+	OnF11Choice										--> ArtikelBearbeiten if "AbdaInfo1 und Änderungsdaten nicht ausgewählt";
+
+
+	Uebervorrat_AbfrageVorAuffuellen:Yes			--> ArtikelBearbeiten do "Artikel Abgabemengen audf 0 setzen";
+	Uebervorrat_AbfrageVorAuffuellen:No				--> ArtikelBearbeiten;
+		
+	LoginPznAendern:AccessGranted					o-> PznAendern;
+	LoginPznAendern:AccessDenied					--> ArtikelBearbeiten;
+	PznAendern:Yes									--> ArtikelBearbeiten;
+	PznAendern:No									--> ArtikelBearbeiten;
+
+	PreisHistorie:Abbrechen							--> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Status F12
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionKalkulation on AktionKalkulation;
+    AktionKalkulation:OK							--> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Hilfe Alt+F1
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionHilfe on AktionHilfe;
+    AktionHilfe:OK                                  --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Sondeneigenschaften Alt+F4 
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten                               --> ChoiceSondeneigenschaften on Sondeneigenschaften;
+	ChoiceSondeneigenschaften						o-> Sondeneigenschaften if "Sondenartikelinfo vorhanden" do "Sondeneigenschaften anzeigen";
+	ChoiceSondeneigenschaften						--> ArtikelBearbeiten if "Sondenartikelinfo nicht vorhanden" do "nichts";
+	
+    Sondeneigenschaften:Schliessen                  --> ArtikelBearbeiten;
+    
+
+	// -------------------------------------------------------------------------------------------------        
+    // Programm beenden Alt+F4 [??????]
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten                                 o-> AktionBeenden on AktionBeenden;
+    AktionBeenden:Yes                                 --> Abbruch;
+    AktionBeenden:No                                  --> ArtikelBearbeiten;
+    
+
+	// -------------------------------------------------------------------------------------------------        
+    // Programm beenden Alt+F7 
+    // -------------------------------------------------------------------------------------------------       
+	ArtikelBearbeiten                                 --> hasWawiExtraLizenz on WawiExtraClicked;
+	hasWawiExtraLizenz								  o-> WawiExtraBestelloptimierung if "Lizenz vorhanden";
+	hasWawiExtraLizenz								  --> ArtikelBearbeiten else;
+	WawiExtraBestelloptimierung:Abbrechen			  --> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Artikel abschreiben Alt+F8 
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten                                 o-> ArtikelAbschreiben on AktionArtikelAbschreiben;
+    ArtikelAbschreiben:Abbruch						  --> ArtikelBearbeiten;
+    ArtikelAbschreiben:Durchgefuehrt				  --> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Auf Verbund ausweiten Alt+F11
+    // -------------------------------------------------------------------------------------------------     
+	  
+    ArtikelBearbeiten								o-> LoginVerbundweitPropagieren on AktionVerbundAusweiten;
+	LoginVerbundweitPropagieren:AccessGranted		o-> VerbundweitPropagieren;	
+	LoginVerbundweitPropagieren:AccessDenied		--> ArtikelBearbeiten;
+    VerbundweitPropagieren:OK						--> ChoiceDetailsOderTrefferliste;
+	ChoiceDetailsOderTrefferliste					--> ArtikelBearbeiten if "Dubletten mischen wurde nicht ausgeführt";
+	ChoiceDetailsOderTrefferliste					--> Abbruch else;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Einstellungen Alt+F12
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionEinstellungen on AktionEinstellungen;
+    AktionEinstellungen:OK                          --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Neinverkauf Ctl+F1
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> NeinVerkauf_IstArtikel on AktionNeinverkauf;
+    NeinVerkauf_IstArtikel							o-> NeinverkaufDurchfuehren if "Ist Artikel";
+    NeinVerkauf_IstArtikel							--> ArtikelBearbeiten if "Kein Artikel";
+   	NeinverkaufDurchfuehren:Ok						--> ArtikelBearbeiten;
+	NeinverkaufDurchfuehren:Abbruch					--> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Suchen F2 (Fertig)
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AktionErweiterteSuche on AktionErweiterteSuche;
+    AktionErweiterteSuche:Yes                         --> Abbruch;
+    AktionErweiterteSuche:No                          --> ArtikelBearbeiten;    
+
+	// -------------------------------------------------------------------------------------------------        
+    // VerweisAnlegen Ctl+F3 (Fertig)
+    // -------------------------------------------------------------------------------------------------   
+    ArtikelBearbeiten                                 o-> AktionVerweisAnlegen on AktionVerweisAnlegen;
+    AktionVerweisAnlegen:Yes                          o-> VerweisAnlegen;
+    AktionVerweisAnlegen:No                           --> ArtikelBearbeiten;
+    
+	VerweisAnlegen:OK		                          --> ArtikelBearbeiten;
+	VerweisAnlegen:Abbrechen		                  --> ArtikelBearbeiten;	
+
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // ArtikelKopieren Ctl+F4
+    // -------------------------------------------------------------------------------------------------    
+    // ArtikelBearbeiten                             o-> AktionArtikelKopieren on AktionArtikelKopieren;	
+	// AktionArtikelKopieren:OK		                --> ArtikelBearbeiten;
+
+	//Strg+F5
+	ArtikelBearbeiten								--> ArtikelBearbeiten on TelefonischeReservierung;
+
+	//Strg+F7
+	ArtikelBearbeiten								--> ArtikelBearbeiten on AktionAnKasseUebernehmen;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Statistikuebertrag Ctl+F6
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> ChoiceStatistikuebertrag on AktionStatistikuebertrag;
+    ChoiceStatistikuebertrag                        o-> AktionStatistikuebertrag if "AktionStatistikuebertrag";
+    ChoiceStatistikuebertrag                        o-> AktionStatistikBearbeiten if "AktionStatistikBearbeiten";
+    
+    
+    //ArtikelBearbeiten                               o-> AktionStatistikuebertrag on AktionStatistikuebertrag;
+    AktionStatistikuebertrag:Done                   --> ArtikelBearbeiten;
+    AktionStatistikBearbeiten:Done                  --> ArtikelBearbeiten;
+    
+    ArtikelBearbeiten								--> StatistikuebertragRepraesentantAnzeige on RepraesentantPznInfo;
+    StatistikuebertragRepraesentantAnzeige			o-> ArtikelBearbeitenProxy if "Repräsentant existiert";
+    StatistikuebertragRepraesentantAnzeige			--> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Rabattinfo Ctl+F7
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AktionRabattinfo on AktionRabattinfo;
+	AktionRabattinfo:OK		                        --> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Filialinfo anzeigen  Ctl+F8
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               --> AktionTabChange on AktionFilialinfo;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Bestandskontrolle Ctl+F9
+    // -------------------------------------------------------------------------------------------------    
+    ArtikelBearbeiten                               o-> AktionBestandskontrolle on AktionBestandskontrolle;
+    AktionBestandskontrolle:Exit                    --> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // Artikel aus Kommissioniersystem auslagern Ctrl+F11 
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               --> BeforeArtikelAuslagern on ArtikelAuslagern;
+    BeforeArtikelAuslagern							--> ArtikelBearbeiten if "Kein Artikel";
+    BeforeArtikelAuslagern							o-> ArtikelAuslagern if "Artikel";
+    ArtikelAuslagern:Durchgefuehrt					--> ArtikelBearbeiten;
+	ArtikelAuslagern:Abgebrochen					--> ArtikelBearbeiten;	
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // Nach Tabselektion
+    // -------------------------------------------------------------------------------------------------    
+	ArtikelBearbeiten								o-> AktionTabChange on SelectedTabChanged;
+	AktionTabChange:Yes								--> ArtikelBearbeiten;
+    AktionTabChange:No								--> ArtikelBearbeiten;
+
+
+    // -------------------------------------------------------------------------------------------------        
+    // Nach Tabselektion in Verkaufsstatistik
+    // -------------------------------------------------------------------------------------------------    
+	ArtikelBearbeiten								--> ArtikelBearbeiten on VerkaufsstatistikSelectedTabChanged;
+	ArtikelBearbeiten								--> ArtikelBearbeiten on VerkaufsinfoFilialfilter;	
+	ArtikelBearbeiten                               --> ArtikelBearbeiten on VerkaufsinfoTextfilter;
+	ArtikelBearbeiten								o-> Verkaufsverwaltung on Verkaufsverwaltung;
+	Verkaufsverwaltung:Fertig						--> ArtikelBearbeiten;
+
+
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #                                                                                               #
+	// #										AbdaInfo1                                              #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_ArtikelbezeichnungGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo1_ArtikelbezeichnungGeaendert on AbdaInfo1_ArtikelbezeichnungGeaendert;
+
+    AbdaInfo1_ArtikelbezeichnungGeaendert               o-> AbdaInfo1_ArtikelbezeichnungGeaendertMeldung if "Artikelbezeichnung fehlerhaft";
+    AbdaInfo1_ArtikelbezeichnungGeaendert               --> ArtikelBearbeiten;
+    
+    AbdaInfo1_ArtikelbezeichnungGeaendertMeldung:Ok     --> ArtikelBearbeiten;      
+   
+    
+
+	//--------------
+	ArtikelBearbeiten									o-> ArtikelsucheFuerSonderPZN on AbdaInfo1_SonderPZNAuswahl;
+	ArtikelBearbeiten									--> ArtikelBearbeiten on AbdaInfo1_SonderPZNAuswahlGeaendert;
+	ArtikelsucheFuerSonderPZN:ArtikelAusgewaehlt		--> ArtikelBearbeiten;
+	ArtikelsucheFuerSonderPZN:Abbruch					--> ArtikelBearbeiten;
+	
+	//-----------
+
+
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_DarreichungsformGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo1_DarreichungsformGeaendert on AbdaInfo1_DarreichungsformGeaendert;
+
+    AbdaInfo1_DarreichungsformGeaendert                 o-> AbdaInfo1_DarreichungsformGeaendertMeldung if "Eingabe DAR unbekannt";
+    AbdaInfo1_DarreichungsformGeaendert                 --> ArtikelBearbeiten;
+    
+    AbdaInfo1_DarreichungsformGeaendertMeldung:Ok       --> ArtikelBearbeiten;                  
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_DarreichungsformAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   o-> AbdaInfo1_DarreichungsformAuswahl on AbdaInfo1_DarreichungsformAuswahl;  
+    AbdaInfo1_DarreichungsformAuswahl:OK                --> ArtikelBearbeiten;
+    AbdaInfo1_DarreichungsformAuswahl:Abbrechen         --> ArtikelBearbeiten;
+
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_NormpackungGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo1_NormpackungGeaendert on AbdaInfo1_NormpackungGeaendert;    
+    
+    AbdaInfo1_NormpackungGeaendert                      o-> AbdaInfo1_NormpackunGeaendertMeldung if "Eingabe NP fehlerhaft";
+    AbdaInfo1_NormpackungGeaendert                      o-> AbdaInfo1_NormpackungAuswahl if "KP gewaehlt, Dialog anzeigen";
+    AbdaInfo1_NormpackungGeaendert                      --> ArtikelBearbeiten;
+        
+    AbdaInfo1_NormpackunGeaendertMeldung:Ok             --> ArtikelBearbeiten;                 
+   
+    
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_NormpackungAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   o-> AbdaInfo1_NormpackungAuswahl on AbdaInfo1_NormpackungAuswahl;    
+    AbdaInfo1_NormpackungAuswahl:OK                     --> ArtikelBearbeiten;
+    AbdaInfo1_NormpackungAuswahl:Abbrechen              --> ArtikelBearbeiten;
+    
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo1_AnbieterAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AbdaInfo1_AnbieterAuswahl on AbdaInfo1_AnbieterAuswahl;    
+	AbdaInfo1_AnbieterAuswahl:Durchgefuehrt			--> ArtikelBearbeiten;
+	AbdaInfo1_AnbieterAuswahl:Abgebrochen			--> ArtikelBearbeiten;
+
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1_HerstellerAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AbdaInfo1_HerstellerAuswahl on AbdaInfo1_HerstellerAuswahl;    
+	AbdaInfo1_HerstellerAuswahl:Durchgefuehrt		--> ArtikelBearbeiten;
+	AbdaInfo1_HerstellerAuswahl:Abgebrochen			--> ArtikelBearbeiten;    
+
+
+
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1_PackungsgroesseMengeGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> AbdaInfo1_PackungsgroesseMengeGeaendert on AbdaInfo1_PackungsgroesseMengeGeaendert;    
+
+    AbdaInfo1_PackungsgroesseMengeGeaendert				o-> AbdaInfo1_PackungsgroesseMengeGeaendertMeldung if "Eingabe PG Menge unbekannt";
+    AbdaInfo1_PackungsgroesseMengeGeaendert				--> ArtikelBearbeiten;
+    
+    AbdaInfo1_PackungsgroesseMengeGeaendertMeldung:Ok	--> ArtikelBearbeiten;                  
+
+
+
+
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1_PackungsgroesseEinheitGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> AbdaInfo1_PackungsgroesseEinheitGeaendert on AbdaInfo1_PackungsgroesseEinheitGeaendert;    
+
+    AbdaInfo1_PackungsgroesseEinheitGeaendert			o-> AbdaInfo1_PackungsgroesseEinheitGeaendertMeldung if "Eingabe PG Einheit unbekannt";
+    AbdaInfo1_PackungsgroesseEinheitGeaendert           --> ArtikelBearbeiten;
+    
+    AbdaInfo1_PackungsgroesseEinheitGeaendertMeldung:Ok --> ArtikelBearbeiten;                  
+
+    // AbdaInfo1_VerordnungsvorgabenInfo
+    // -------------------------------------------------------------------------------------------------        
+	ArtikelBearbeiten									o-> AbdaInfo1_VerordnungsvorgabenInfo on AbdaInfo1_VerordnungsvorgabenInfo;    
+	AbdaInfo1_VerordnungsvorgabenInfo:Schliessen		--> ArtikelBearbeiten;
+
+
+	// -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1_PackungsgroesseEinheitInfo geklickt.
+    // -------------------------------------------------------------------------------------------------        
+	ArtikelBearbeiten									o-> PackungsgroesseAnzeigen on AbdaInfo1_PackungsgroesseEinheitInfoClicked;        
+	PackungsgroesseAnzeigen:Ok							--> ArtikelBearbeiten;
+	PackungsgroesseAnzeigen:Abbruch						--> ArtikelBearbeiten;
+
+	// -------------------------------------------------------------------------------------------------        
+    // AbdaInfo1 ApUMitAbzug130b oder Rabattwert geändert => Icon muss aktualisiert werden
+    // -------------------------------------------------------------------------------------------------   
+
+	ArtikelBearbeiten									--> ArtikelBearbeiten on AbdaInfo1_EinpreiserIconUpdate;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										AbdaInfo2                                              #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo2_ImsWarengruppeGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo2_ImsWarengruppeGeaendert on AbdaInfo2_ImsWarengruppeGeaendert;
+
+    AbdaInfo2_ImsWarengruppeGeaendert                   o-> AbdaInfo2_ImsWarengruppeInvalidMeldung if "Eingabe IMS-Warengruppe ungültig";
+    AbdaInfo2_ImsWarengruppeGeaendert                   --> ArtikelBearbeiten else; 
+    
+    AbdaInfo2_ImsWarengruppeInvalidMeldung:Ok           --> ArtikelBearbeiten;                  
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo2_ImsWarengruppeAuswahl 
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AbdaInfo2_ImsWarengruppeAuswahl on AbdaInfo2_ImsWarengruppeAuswahl;   
+    AbdaInfo2_ImsWarengruppeAuswahl:OK                --> ArtikelBearbeiten;
+    AbdaInfo2_ImsWarengruppeAuswahl:Abbrechen         --> ArtikelBearbeiten;
+    
+    // -------------------------------------------------------------------------------------------------      
+    // AbdaInfo2_ImsWarengruppeInfo
+    // -------------------------------------------------------------------------------------------------      
+    ArtikelBearbeiten                               o-> AbdaInfo2_ImsWarengruppeInfo on AbdaInfo2_ImsWarengruppeInfo;      
+    AbdaInfo2_ImsWarengruppeInfo:Abbrechen          --> ArtikelBearbeiten;
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo2_AbdaWarengruppeGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo2_AbdaWarengruppeGeaendert on AbdaInfo2_AbdaWarengruppeGeaendert;
+
+    AbdaInfo2_AbdaWarengruppeGeaendert                   o-> AbdaInfo2_AbdaWarengruppeInvalidMeldung if "Eingabe ABDA-Warengruppe ungültig";
+    AbdaInfo2_AbdaWarengruppeGeaendert                   --> ArtikelBearbeiten else;
+    
+    AbdaInfo2_AbdaWarengruppeInvalidMeldung:Ok           --> ArtikelBearbeiten;                  
+    
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfo2_AbdaWarengruppeAuswahl 
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                 o-> AbdaInfo2_AbdaWarengruppeAuswahl on AbdaInfo2_AbdaWarengruppeAuswahl;   
+    AbdaInfo2_AbdaWarengruppeAuswahl:Ok               --> ArtikelBearbeiten;
+    AbdaInfo2_AbdaWarengruppeAuswahl:Abbruch          --> ArtikelBearbeiten;       
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo2_AbdaWarengruppeInfo
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten                               o-> AbdaInfo2_AbdaWarengruppeInfo on AbdaInfo2_AbdaWarengruppeInfo;     
+    AbdaInfo2_AbdaWarengruppeInfo:Abbrechen         --> ArtikelBearbeiten;
+
+    // AbdaInfo2_KlinikpackungInfo
+    // -------------------------------------------------------------------------------------------------     
+    ArtikelBearbeiten                               o-> AbdaInfo2_KlinikpackungInfo on AbdaInfo2_KlinikpackungInfo;       
+    AbdaInfo2_KlinikpackungInfo:OK                  --> ArtikelBearbeiten;
+
+    // AbdaInfo2_IndikationAbdaInfo
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AbdaInfo2_IndikationAbdaInfo on AbdaInfo2_IndikationAbdaInfo;    
+    AbdaInfo2_IndikationAbdaInfo:Abbrechen          --> ArtikelBearbeiten;
+
+    // AbdaInfo2_IndikationAutItemInfo
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> AbdaInfo2_IndikationAutItemInfo on AbdaInfo2_IndikationAutItemInfo;        
+    AbdaInfo2_IndikationAutItemInfo:Abbrechen       --> ArtikelBearbeiten;
+
+    
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										AbdaInfo3                                              #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo3_MehrkostenuebernahmeInfo 
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									o-> AbdaInfo3_MehrkostenuebernahmeInfo on AbdaInfo3_MehrkostenuebernahmeInfo;    
+    AbdaInfo3_MehrkostenuebernahmeInfo:Abbrechen        --> ArtikelBearbeiten;
+    
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfo3_BerechnungenDurchfuehren
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                                   --> AbdaInfo3_BerechnungenDurchfuehren on AbdaInfo3_BerechnungenDurchfuehren;  
+    AbdaInfo3_BerechnungenDurchfuehren                  --> ArtikelBearbeiten if "Neuberechnen";
+    AbdaInfo3_BerechnungenDurchfuehren                  --> ArtikelBearbeiten else;
+
+	// -------------------------------------------------------------------------------------------------        
+    // AbdaInfo3 ApUMitAbzug130b oder Rabattwert geändert => Icon muss aktualisiert werden
+    // -------------------------------------------------------------------------------------------------   
+	
+	ArtikelBearbeiten                                   --> ArtikelBearbeiten on AbdaInfo3_EinpreiserIconUpdate;   
+    
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										AbdaInfoLager                                          #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    
+    // -------------------------------------------------------------------------------------------------        
+    // AbdaInfoLager_VerpackungsartAuswahl
+    // -------------------------------------------------------------------------------------------------   
+    ArtikelBearbeiten												o-> AbdaInfoLager_VerpackungsartAuswahl on AbdaInfoLager_VerpackungsartAuswahl;             
+    AbdaInfoLager_VerpackungsartAuswahl:OK							--> ArtikelBearbeiten;
+    AbdaInfoLager_VerpackungsartAuswahl:Abbrechen					--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_VerpackungsartGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_VerpackungsartGeaendert on AbdaInfoLager_VerpackungsartGeaendert;
+
+    AbdaInfoLager_VerpackungsartGeaendert							o-> AbdaInfoLager_VerpackungsartGeaendertMeldung if "Verpackungsart fehlerhaft";
+    AbdaInfoLager_VerpackungsartGeaendert							--> ArtikelBearbeiten;
+    
+    AbdaInfoLager_VerpackungsartGeaendertMeldung:Ok					--> ArtikelBearbeiten;   
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_LagertemperaturMinGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_LagertemperaturMinGeaendert on AbdaInfoLager_LagertemperaturMinGeaendert;
+
+    AbdaInfoLager_LagertemperaturMinGeaendert						o-> AbdaInfoLager_LagertemperaturMinGeaendertMeldung if "Lagertemp. min falsch";
+    AbdaInfoLager_LagertemperaturMinGeaendert						--> ArtikelBearbeiten;
+    
+    AbdaInfoLager_LagertemperaturMinGeaendertMeldung:Ok				--> ArtikelBearbeiten;   
+
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_LagertemperaturMaxGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_LagertemperaturMaxGeaendert on AbdaInfoLager_LagertemperaturMaxGeaendert;
+
+    AbdaInfoLager_LagertemperaturMaxGeaendert						o-> AbdaInfoLager_LagertemperaturMaxGeaendertMeldung if "Lagertemp. max falsch";
+    AbdaInfoLager_LagertemperaturMaxGeaendert						--> ArtikelBearbeiten;
+    
+    AbdaInfoLager_LagertemperaturMaxGeaendertMeldung:Ok				--> ArtikelBearbeiten;   
+
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_VerfallGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_VerfallGeaendert on AbdaInfoLager_VerfallGeaendert;
+    AbdaInfoLager_VerfallGeaendert									--> ArtikelBearbeiten;
+
+
+
+    // -------------------------------------------------------------------------------------------------            
+    // AbdaInfoLager_EichungGeaendert
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten												--> AbdaInfoLager_EichungGeaendert on AbdaInfoLager_EichungGeaendert;
+    AbdaInfoLager_EichungGeaendert									--> ArtikelBearbeiten;   
+    
+    ArtikelBearbeiten												--> ArtikelBearbeiten on AbdaInfoLager_VorraetigApBetrOChanged;
+	ArtikelBearbeiten												--> ArtikelBearbeiten on AbdaInfoLager_BeschaffbarApBetrOChanged; 
+       
+    // #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Optimierung2                                           #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+    ArtikelBearbeiten								--> ArtikelBearbeiten on EnterImMengenfeld;
+    // -------------------------------------------------------------------------------------------------            
+    // Optimierung2_AnbieterAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> Optimierung2_AuswahlLieferant on AktionOptimierung2_AuswahlLieferant;    
+	Optimierung2_AuswahlLieferant:Durchgefuehrt		--> ArtikelBearbeiten;
+	Optimierung2_AuswahlLieferant:Abgebrochen		--> ArtikelBearbeiten;       
+       
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on Optimierung2_ValidateFesteBestellmenge;
+    ArtikelBearbeiten                               --> Optimierung2_ShowOutOfRangeMessage on Optimierung2_ShowOutOfRangeMessage;
+    Optimierung2_ShowOutOfRangeMessage				o-> Optimierung2_OutOfRangeMessage;
+    Optimierung2_OutOfRangeMessage:Ok				--> ArtikelBearbeiten; 
+    Optimierung2_ShowOutOfRangeMessage				--> ArtikelBearbeiten; 
+    
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Preisgestaltung                                        #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################    
+    
+    // -------------------------------------------------------------------------------------------------        
+    // Preisgestaltung: KalkulationNachModellAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> Preisgestaltung_SindPreisberechnungsangabenGueltig on Preisgestaltung_PreisChanged;
+    ArtikelBearbeiten									--> Preisgestaltung_SindPreisberechnungsangabenGueltig on Preisgestaltung_EigenVKChanged;
+
+    Preisgestaltung_SindPreisberechnungsangabenGueltig	--> ArtikelBearbeiten if "Ja";
+    Preisgestaltung_SindPreisberechnungsangabenGueltig	o-> Preisgestaltung_InfoMeldung if "Nein";
+    Preisgestaltung_InfoMeldung:Ok						--> ArtikelBearbeiten;
+
+    ArtikelBearbeiten									--> ArtikelBearbeiten on Preisgestaltung_PreiselisteFilterChanged;
+    ArtikelBearbeiten									--> ArtikelBearbeiten on Preisgestaltung_RechenregelVerwenden;
+    ArtikelBearbeiten									--> ArtikelBearbeiten on Preisgestaltung_RechenregelValidating;
+    ArtikelBearbeiten									o-> RechenregelAuswahl on Preisgestaltung_RechenregelAuswahl;
+    ArtikelBearbeiten									--> choiceRechenregelAuswahlDirect on Preisgestaltung_RechenregelAuswahlIndirect;
+	choiceRechenregelAuswahlDirect						o-> RechenregelAuswahl if "Rechenregelbegriff vorhanden";
+	choiceRechenregelAuswahlDirect						--> ArtikelBearbeiten if "Rechenregelbegriff nicht vorhanden, Regel entfernen";
+	RechenregelAuswahl:CANCEL							--> ArtikelBearbeiten if "Cancel";
+	RechenregelAuswahl:OK								--> ZirkelbezugValidieren if "Ok";
+	ZirkelbezugValidieren								o-> Preisgestaltung_InfoMeldung if "Zirkelbezug existiert";
+	ZirkelbezugValidieren								--> ArtikelBearbeiten if "keinen Zirkelbezug";
+	
+	// -------------------------------------------------------------------------------------------------        
+    // F9
+    // -------------------------------------------------------------------------------------------------    
+
+
+	ArtikelBearbeiten								o-> Kalkulation on OnF9;
+	Kalkulation:Return								--> ArtikelBearbeiten;
+	
+	// Preisgestaltung_RohertragSpanneInfo
+    // -------------------------------------------------------------------------------------------------        
+	ArtikelBearbeiten									o-> AktionRohertragSpanneInfo on Preisgestaltung_RohertragSpanneInfo;    
+	AktionRohertragSpanneInfo:Yes						o-> RohertragSpanne;
+	AktionRohertragSpanneInfo:No						o-> RohertragSpanne;
+	RohertragSpanne:Schliessen							--> ArtikelBearbeiten;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Lagerdaten                                             #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################  
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_LagerortAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> Lagerdaten_LagerorteZuordnung on Lagerdaten_LagerortAuswahl;       
+    Lagerdaten_LagerorteZuordnung:Ok                --> ArtikelBearbeiten;
+	Lagerdaten_LagerorteZuordnung:Abbrechen         --> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Kurzcode
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               --> LagerDaten_CheckKeinFreierKurzcode on Lagerdaten_KurzcodeClick;       
+	LagerDaten_CheckKeinFreierKurzcode				--> ArtikelBearbeiten if "Noch freie Kurzcodes" do "Ersten freien Kurzcode vergeben";
+	LagerDaten_CheckKeinFreierKurzcode				o-> Lagerdaten_KeinFreierKurzcode if "Kein freier Kurzcode" do "Meldung anzeigen";
+
+	Lagerdaten_KeinFreierKurzcode:Ok				--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_EANAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> Lagerdaten_EANAuswahl on Lagerdaten_EANAuswahl;       
+    Lagerdaten_EANAuswahl:Done						--> ArtikelBearbeiten;
+
+	//Inventurauswahl
+	ArtikelBearbeiten                               o-> Lagerdaten_InventurlisteAnzeigen on Lagerdaten_InventurlisteAnzeigen;       
+    Lagerdaten_InventurlisteAnzeigen:Done			--> ArtikelBearbeiten;
+
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_ArtikelgruppeAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               o-> Lagerdaten_ArtikelgruppeAuswahl on Lagerdaten_ArtikelgruppeAuswahl;       
+    Lagerdaten_ArtikelgruppeAuswahl:OK				--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_TaxierungsgruppeAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    //ArtikelBearbeiten                               o-> Lagerdaten_TaxierungsgruppeAuswahl on Lagerdaten_TaxierungsgruppeAuswahl;       
+    //Lagerdaten_TaxierungsgruppeAuswahl:OK			--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_ErsetzenDurchAuswahl
+    // -------------------------------------------------------------------------------------------------        
+    //ArtikelBearbeiten                               o-> Lagerdaten_ErsetzenDurchAuswahl on Lagerdaten_ErsetzenDurchAuswahl;       
+    //Lagerdaten_ErsetzenDurchAuswahl:OK				--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_KennzeichenChanged
+    // -------------------------------------------------------------------------------------------------        
+	ArtikelBearbeiten                               --> ArtikelBearbeiten on Lagerdaten_KennzeichenChanged;
+
+    // -------------------------------------------------------------------------------------------------        
+    // Lagerdaten_IconSetzen
+    // -------------------------------------------------------------------------------------------------  
+    ArtikelBearbeiten								--> Lagerdaten_IconSetzen on Lagerdaten_IconSetzen;
+    Lagerdaten_IconSetzen							--> ArtikelBearbeiten;
+
+	
+	// Artikel-Klassifizierungen
+    // -------------------------------------------------------------------------------------------------   
+	ArtikelBearbeiten                               o-> Artikelklassifikation on Lagerdaten_ArtikelKlassifizieren;
+	Artikelklassifikation:Ok                        --> ArtikelBearbeiten;                           
+	Artikelklassifikation:Abbruch                   --> ArtikelBearbeiten;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Einkauf / Angebote                                     #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################    
+    
+    // -------------------------------------------------------------------------------------------------        
+    // Einkauf / Angebote:
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> ArtikelBearbeiten on EinkaufAngebote_OnFilterChanged;        
+    
+    // #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										Verweis			                                       #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################    
+    
+    
+    // -------------------------------------------------------------------------------------------------            
+    // BezeichnungValueChanged
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> BezeichnungValueChanged on BezeichnungValueChanged;
+    BezeichnungValueChanged								--> ArtikelBearbeiten;
+    
+    // -------------------------------------------------------------------------------------------------            
+    // SuchkriteriumValueChanged
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> SuchkriteriumValueChanged on SuchkriteriumValueChanged;
+    SuchkriteriumValueChanged							--> ArtikelBearbeiten;
+
+    // -------------------------------------------------------------------------------------------------            
+    // CommentValueChanged
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten									--> CommentValueChanged on CommentValueChanged;
+    CommentValueChanged									--> ArtikelBearbeiten;
+    
+    
+    // #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #										AenderungsDaten	                                       #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################    
+    
+    
+    // -------------------------------------------------------------------------------------------------            
+    // On Info Buttons
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten										o-> AenderungsDaten_NeuePznInfoAnzeigen on AenderungsDaten_NeuePznInfo;
+    AenderungsDaten_NeuePznInfoAnzeigen:Yes					o-> ArtikelBearbeitenProxy;
+    AenderungsDaten_NeuePznInfoAnzeigen:No					--> ArtikelBearbeiten;
+
+    ArtikelBearbeiten										o-> AenderungsDaten_OrignalPznInfoAnzeigen on AenderungsDaten_OrignalPznInfo;
+    AenderungsDaten_OrignalPznInfoAnzeigen:Yes				o-> ArtikelBearbeitenProxy;
+    AenderungsDaten_OrignalPznInfoAnzeigen:No               --> ArtikelBearbeiten;
+	
+    
+    ArtikelBearbeiten										o-> AenderungsDaten_AltePznInfoAnzeigen on AenderungsDaten_AltePznInfo;
+    AenderungsDaten_AltePznInfoAnzeigen:Yes					o-> ArtikelBearbeitenProxy;
+    AenderungsDaten_AltePznInfoAnzeigen:No					--> ArtikelBearbeiten;
+
+
+    ArtikelBearbeiten										o-> AenderungsDaten_KleinereNormPackungInfoAnzeigen on AenderungsDaten_KleinereNormPackungInfo;
+    AenderungsDaten_KleinereNormPackungInfoAnzeigen:Yes		o-> ArtikelBearbeitenProxy;
+    AenderungsDaten_KleinereNormPackungInfoAnzeigen:No      --> ArtikelBearbeiten;
+
+    ArtikelBearbeitenProxy:Abbruch			--> IsArtikelBearProxyWithF2Terminated;
+    IsArtikelBearProxyWithF2Terminated		--> AktionSuchen if "when ArtikelBearbeitenProxy is with F2 Terminated.";
+    IsArtikelBearProxyWithF2Terminated		--> AktionErweiterteSuche else if "when ArtikelBearbeitenProxy is with F2 Terminated.";
+    IsArtikelBearProxyWithF2Terminated		--> ArtikelBearbeiten else;
+    
+    ArtikelBearbeiten						--> IsOriginalPznOk on AenderungsDaten_OrignalPznValidated;
+    IsOriginalPznOk							o-> AenderungsDaten_OrignalPznFehlerMeldung if "Given pzn is not Ok.";
+    IsOriginalPznOk							--> ArtikelBearbeiten else;
+    AenderungsDaten_OrignalPznFehlerMeldung:Ok --> ArtikelBearbeiten;
+
+	ArtikelBearbeiten						--> ArtikelBearbeiten on DatenEingescannt;
+
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #								   aut idem Informationen                                      #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################  
+
+    // -------------------------------------------------------------------------------------------------        
+    // Rabattvereinbarungen Kostentraegersuche
+    // -------------------------------------------------------------------------------------------------        
+    
+    ArtikelBearbeiten								--> ArtikelBearbeiten on Rabattvereinbarungen_SucheEnterKey;
+           
+    // #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #								   Lager Informationen                                         #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################  
+
+    // -------------------------------------------------------------------------------------------------        
+    // AutIdemInfo_Kostentraegerauswahl
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on FilialLagerinfo_GridAfterSelectChange;
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on FilialLagerinfo_GridKeyEnter;
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #								   Uebervorratslagerorte                                       #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################  
+
+    // -------------------------------------------------------------------------------------------------        
+    // TreeViews und Dateneingabe
+    // -------------------------------------------------------------------------------------------------        
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on Uebervorrat_AfterSelectHauptlagerort;
+    ArtikelBearbeiten                               --> ArtikelBearbeiten on Uebervorrat_HauptlagerorteCellValueChanged;
+	ArtikelBearbeiten                               --> ArtikelBearbeiten on Uebervorrat_DataChanged;
+	ArtikelBearbeiten								o-> Uebervorrat_LagerorteZuordnung on Uebervorrat_LagerorteZuordnen;
+
+	Uebervorrat_LagerorteZuordnung:Ok                --> ArtikelBearbeiten;
+	Uebervorrat_LagerorteZuordnung:Abbrechen         --> ArtikelBearbeiten;
+
+
+	// #################################################################################################
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #	
+	// #								   Abrechnungseintrag                                          #
+	// #                                                                                               #
+	// #                                                                                               #
+	// #                                                                                               #
+    // #################################################################################################
+
+	// -------------------------------------------------------------------------------------------------        
+    // Abrechnungseintrag_AbdaWarengruppeInfo
+    // -------------------------------------------------------------------------------------------------       
+    ArtikelBearbeiten										o-> Abrechnungseintrag_AbdaWarengruppeInfo on Abrechnungseintrag_AbdaWarengruppeInfo;     
+    Abrechnungseintrag_AbdaWarengruppeInfo:Abbrechen         --> ArtikelBearbeiten;
+
+	//--------------
+    //Druckeinstellungen
+    //--------------
+    ArtikelBearbeiten					o-> Druckeinstellungen on Druckeinstellungen;   
+    Druckeinstellungen:Exit				--> ArtikelBearbeiten;
+}
