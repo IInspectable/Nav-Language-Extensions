@@ -1,0 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Nav.Language/bin/Debug
+/Nav.Language/obj/Debug
+/Nav.Language/ThisAssembly.generated.cs
+/Nav.Language.Extension/bin/Debug
+/Nav.Language.Extension/obj/Debug
+/Nav.Language.Extension/ThisAssembly.generated.cs
+/Nav.TestClient/bin/Debug
+/Nav.TestClient/obj/Debug
+/Nav.Language.Tests/bin/Debug
+/Nav.Language.Tests/obj/Debug
