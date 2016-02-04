@@ -1,0 +1,20 @@
+﻿                                  
+// Result check                                        
+if (c.Task.ResultInfo == null) {
+                    throw new GUISimException(c.Name +
+                                              ": No result type defined with [result] - cannot use this task with exit edges.");
+                }                                   
+
+// Nodes reachable with different modes
+if (result.ContainsKey(target)) {
+                if (result[target] != m) {
+                    throw new GUISimException(target.Name + ": This node can be reached with modes " +
+                                              result[target].ToString() + " and " + m.ToString() +
+                                              " from the same node (maybe via choices) - sorry, this is not allowed!");
+                }
+            }                
+
+//  Wenn eine inkludierte Datei Fehler hat, soll dies als Warnung/Fehler angezeigt werden.
+
+// 
+* Init nodes Groß Kleinschreibung ist immer egal...

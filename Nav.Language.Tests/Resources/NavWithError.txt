@@ -1,0 +1,42 @@
+[namespaceprefix Pharmatechnik.Apotheke.XTplus.Verkauf]
+[using System.Collections.Generic]
+[using Pharmatechnik.Apotheke.XTplus.Common.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Common.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Util.ExceptionsAndLogging]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Amounts.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.MI.Artikelsuche.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Verkauf.IBOL]
+[using Pharmatechnik.Apotheke.XTplus.Verkauf.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Verkauf.ALL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Util]
+
+taskref	 "..\Application.Common\MessageBoxes.nav"
+taskref "WSGHinweisBestehendeArtikel.nav"
+
+task AutIdemSwitch					[base StandardWFS<AutIdemSwitchTS> : IWFServiceBase]
+                                    [params IArtikelInfoBS artikelInfoBS]
+									[result KasseSubtaskResult]
+{
+	init [params IVerkaufsPosition pos, PreisermittlungTaskState preisermittlungTaskState];
+	choice Choice_IstWarningNotwendig;
+	choice Choice_Rabattvertragspruefung;
+	task MessageBoxOk Msg_Warning;
+	task WSGHinweisBestehendeArtikel;
+	exit Ende;
+	
+	init --> Choice_IstWarningNotwendig;
+	
+	Choice_IstWarningNotwendig --> Ende if "nein";
+	Choice_IstWarningNotwendig --> Choice_Rabattvertragspruefung if "check";
+	Choice_IstWarningNotwendig --> Msg_Warning if "ja";
+
+	Choice_Rabattvertragspruefung --> WSGHinweisBestehendeArtikel;
+	WSGHinweisBestehendeArtikel:OK --> Ende;
+	
+	Msg_Warning:Ok --> Ende;	
+}
+task F{

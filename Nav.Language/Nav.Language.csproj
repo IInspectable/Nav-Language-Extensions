@@ -1,0 +1,256 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C38F8EE6-5DC6-40F3-8994-A33069B05FD8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Pharmatechnik.Nav.Language</RootNamespace>
+    <AssemblyName>Pharmatechnik.Nav.Language</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>CS3021</NoWarn>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr4.Runtime.net45, Version=4.3.0.0, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="JetBrains.Annotations, Version=10.0.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.0.0\lib\net20\JetBrains.Annotations.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Common\TextLineExtent.cs" />
+    <Compile Include="Common\LinePosition.cs" />
+    <Compile Include="Common\LinePositionExtent.cs" />
+    <Compile Include="Common\Location.cs" />
+    <Compile Include="Diagnostic\DiagnosticCategory.cs" />
+    <Compile Include="Diagnostic\DiagnosticDescriptors.cs" />
+    <Compile Include="Diagnostic\DiagnosticDescriptors.Semantic.cs" />
+    <Compile Include="Diagnostic\DiagnosticExtensions.cs" />
+    <Compile Include="Diagnostic\DiagnosticId.cs" />
+    <Compile Include="Diagnostic\DiagnosticSeverity.cs" />
+    <Compile Include="Model\ConnectionPointReferenceSymbol.cs" />
+    <Compile Include="Model\ConnectionPointSymbol.cs" />
+    <Compile Include="Model\CSharp.cs" />
+    <Compile Include="Model\EdgeModeSymbol.cs" />
+    <Compile Include="Model\ExitTransition.cs" />
+    <Compile Include="Model\Generated\SymbolVisitor.Generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SymbolVisitor.Generated.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\IConnectionPointReferenceSymbol.cs" />
+    <Compile Include="Model\IEdge.cs" />
+    <Compile Include="Model\IEdgeModeSymbol.cs" />
+    <Compile Include="Model\IExitTransition.cs" />
+    <Compile Include="Model\IIncludeSymbol.cs" />
+    <Compile Include="Model\IncludeSymbol.cs" />
+    <Compile Include="Model\ISymbol.cs" />
+    <Compile Include="Model\ITaskDefinitionSymbol.cs" />
+    <Compile Include="Model\ITaskNodeAlias.cs" />
+    <Compile Include="Model\ITriggerSymbol.cs" />
+    <Compile Include="Model\NodeReferenceSymbol.cs" />
+    <Compile Include="Model\SymbolList.cs" />
+    <Compile Include="Model\TaskDeclarationSymbol.cs" />
+    <Compile Include="Model\TaskNodeAliasSymbol.cs" />
+    <Compile Include="Model\Transition.cs" />
+    <Compile Include="Model\IConnectionPointSymbol.cs" />
+    <Compile Include="Model\ITransition.cs" />
+    <Compile Include="Model\INodeSymbol.cs" />
+    <Compile Include="Model\INodeReferenceSymbol.cs" />
+    <Compile Include="Model\ITaskDeclarationSymbol.cs" />
+    <Compile Include="Model\NodeSymbol.cs" />
+    <Compile Include="Model\TaskDefinitionSymbolBuilder.cs" />
+    <Compile Include="Model\SemanticModelBuilder.cs" />
+    <Compile Include="Model\CompilationUnit.cs" />
+    <Compile Include="Model\Symbol.cs" />
+    <Compile Include="Model\SymbolCollection.cs" />
+    <Compile Include="Model\TaskDeclarationSymbolBuilder.cs" />
+    <Compile Include="Model\TaskDefinitionSymbol.cs" />
+    <Compile Include="Model\TriggerSymbol.cs" />
+    <Compile Include="Syntax\CodeSyntax.cs" />
+    <Compile Include="Diagnostic\DiagnosticDescriptor.cs" />
+    <Compile Include="Syntax\Generated\SyntaxNodeWalker.Generated.cs">
+      <DependentUpon>SyntaxNodeWalker.Generated.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Syntax\IdentifierOrStringListSyntax.cs" />
+    <Compile Include="Syntax\SampleSyntaxAttribute.cs" />
+    <Compile Include="Syntax\Generated\Syntax.Generated.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Syntax.Generated.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Internal\ExtentExtensions.cs" />
+    <Compile Include="Internal\NavGrammarLexer.cs" />
+    <Compile Include="Internal\SyntaxBuildingExtension.cs" />
+    <Compile Include="Internal\TextExtentFactory.cs" />
+    <Compile Include="Syntax\ArrayRankSpecifierSyntax.cs" />
+    <Compile Include="Syntax\ArrayTypeSyntax.cs" />
+    <Compile Include="Syntax\CodeDeclarationSyntax.cs" />
+    <Compile Include="Syntax\ConnectionPointNodeSyntax.cs" />
+    <Compile Include="Syntax\Generated\SyntaxNodeVisitor.Generated.cs">
+      <DependentUpon>SyntaxNodeVisitor.Generated.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Syntax\CodeGenerateToDeclarationSyntax.cs" />
+    <Compile Include="Syntax\ConditionClauseSyntax.cs" />
+    <Compile Include="Syntax\DoClauseSyntax.cs" />
+    <Compile Include="Syntax\EdgeSyntax.cs" />
+    <Compile Include="Syntax\ExitTransitionDefinitionSyntax.cs" />
+    <Compile Include="Syntax\GenericTypeSyntax.cs" />
+    <Compile Include="Syntax\IdentifierOrStringSyntax.cs" />
+    <Compile Include="Common\IExtent.cs" />
+    <Compile Include="Syntax\TriggerSyntax.cs" />
+    <Compile Include="Syntax\ParameterListSyntax.cs" />
+    <Compile Include="Syntax\SimpleTypeSyntax.cs" />
+    <Compile Include="Syntax\SourceNodeSyntax.cs" />
+    <Compile Include="Internal\SuppressCodeSanityCheckAttribute.cs" />
+    <Compile Include="Syntax\SyntaxNode.cs" />
+    <Compile Include="Syntax\ChoiceNodeDeclarationSyntax.cs" />
+    <Compile Include="Syntax\CodeBaseDeclarationSyntax.cs" />
+    <Compile Include="Syntax\CodeDoNotInjectDeclarationSyntax.cs" />
+    <Compile Include="Syntax\CodeAbstractMethodDeclarationSyntax.cs" />
+    <Compile Include="Syntax\CodeNamespaceDeclarationSyntax.cs" />
+    <Compile Include="Syntax\CodeNotImplementedDeclarationSyntax.cs" />
+    <Compile Include="Syntax\ParameterSyntax.cs" />
+    <Compile Include="Syntax\CodeParamsDeclarationSyntax.cs" />
+    <Compile Include="Syntax\CodeResultDeclarationSyntax.cs" />
+    <Compile Include="Syntax\CodeTypeSyntax.cs" />
+    <Compile Include="Syntax\SyntaxTokenList.cs" />
+    <Compile Include="Syntax\SyntaxTokenType.cs" />
+    <Compile Include="Syntax\CodeUsingDeclarationSyntax.cs" />
+    <Compile Include="Syntax\DialogNodeDeclarationSyntax.cs" />
+    <Compile Include="Syntax\EndNodeDeclarationSyntax.cs" />
+    <Compile Include="Syntax\ExitNodeDeclarationSyntax.cs" />
+    <Compile Include="Common\TextExtent.cs" />
+    <Compile Include="Syntax\InitNodeDeclarationSyntax.cs" />
+    <Compile Include="Syntax\NodeDeclarationSyntax.cs" />
+    <Compile Include="Syntax\NodeDeclarationBlockSyntax.cs" />
+    <Compile Include="Syntax\TargetNodeSyntax.cs" />
+    <Compile Include="Syntax\TaskNodeDeclarationSyntax.cs" />
+    <Compile Include="Syntax\TaskDefinitionSyntax.cs" />
+    <Compile Include="Syntax\CompilationUnitSyntax.cs" />
+    <Compile Include="Syntax\MemberDeclarationSyntax.cs" />
+    <Compile Include="Syntax\IncludeDirectiveSyntax.cs" />
+    <Compile Include="Syntax\TaskDeclarationSyntax.cs" />
+    <Compile Include="Syntax\TransitionDefinitionBlockSyntax.cs" />
+    <Compile Include="Syntax\TransitionDefinitionSyntax.cs" />
+    <Compile Include="Syntax\ViewNodeDeclarationSyntax.cs" />
+    <Compile Include="Internal\NavCommonTokenStream.cs" />
+    <Compile Include="Diagnostic\Diagnostic.cs" />
+    <Compile Include="Internal\DiagnosticFactory.cs" />
+    <Compile Include="Internal\NavGrammarVisitor.cs" />
+    <Compile Include="Syntax\SyntaxTree.cs" />
+    <Compile Include="Syntax\SyntaxToken.cs" />
+    <Compile Include="Syntax\SyntaxTokenExtensions.cs" />
+    <Compile Include="Internal\SyntaxTokenFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Syntax\SyntaxTokenClassification.cs" />
+    <Compile Include="Internal\NavErrorListener.cs" />
+    <Compile Include="ThisAssembly.cs" />
+    <Compile Include="ThisAssembly.generated.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Diagnostic\DiagnosticDescriptors.DeadCode.cs" />
+    <None Include="Grammar\NavTokens.g4" />
+    <Antlr4 Include="Grammar\NavGrammar.g4">
+      <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
+    </Antlr4>
+    <None Include="Model\ClassDiagram.cd" />
+    <None Include="packages.config" />
+    <None Include="UpdateProductVersion.targets" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Syntax\Generated\_Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Syntax\Generated\SyntaxNodeVisitor.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SyntaxNodeVisitor.Generated.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Syntax\Generated\Syntax.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Syntax.Generated.cs</LastGenOutput>
+    </None>
+    <None Include="Syntax\Generated\SyntaxNodeWalker.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SyntaxNodeWalker.Generated.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Model\Generated\SymbolVisitor.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SymbolVisitor.Generated.cs</LastGenOutput>
+    </Content>
+    <None Include="Model\_Missing Diagnostics.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="UpdateProductVersion.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.props'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.targets'))" />
+  </Target>
+  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

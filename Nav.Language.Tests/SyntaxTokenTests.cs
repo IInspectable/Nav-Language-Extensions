@@ -1,0 +1,158 @@
+﻿using System.Linq;
+using NUnit.Framework;
+using Pharmatechnik.Nav.Language;
+
+namespace Nav.Language.Tests {
+    [TestFixture]
+    public class SyntaxTokenTests {
+
+        [Test]
+        public void TestFindAtPositionWithOddNumberOfTokens() {
+            string usingText = " [using U]";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+
+            Assert.That(syntaxTree.Diagnostics.Count,     Is.EqualTo(0));
+            Assert.That(syntaxTree.Tokens.Count % 2, Is.EqualTo(1));
+
+            Assert.That(syntaxTree.Tokens.FindAtPosition(0).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(1).Type, Is.EqualTo(SyntaxTokenType.OpenBracket));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(2).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(3).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(4).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(5).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(6).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(7).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(8).Type, Is.EqualTo(SyntaxTokenType.Identifier));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(9).Type, Is.EqualTo(SyntaxTokenType.CloseBracket));
+        }
+
+        [Test]
+        public void TestFindAtPositionWithEvenNumberOfTokens() {
+            string usingText = " [using U] ";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+
+            Assert.That(syntaxTree.Diagnostics.Count,   Is.EqualTo(0));
+            Assert.That(syntaxTree.Tokens.Count%2, Is.EqualTo(0));
+
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 0).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 1).Type, Is.EqualTo(SyntaxTokenType.OpenBracket));
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 2).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 3).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 4).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 5).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 6).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 7).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 8).Type, Is.EqualTo(SyntaxTokenType.Identifier));
+            Assert.That(syntaxTree.Tokens.FindAtPosition( 9).Type, Is.EqualTo(SyntaxTokenType.CloseBracket));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(10).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
+        }
+
+        [Test]
+        public void TestFindAtExtent() {
+            string taskDef = " task Foo { init I; } ";
+
+            var syntaxTree = Syntax.ParseTaskDefinition(taskDef).SyntaxTree;
+
+            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+
+            AssertTokens(syntaxTree.Tokens, 0, 1, SyntaxTokenType.Whitespace);
+            AssertTokens(syntaxTree.Tokens, 0, 2, SyntaxTokenType.Whitespace);
+            AssertTokens(syntaxTree.Tokens, 0, 3, SyntaxTokenType.Whitespace);
+            AssertTokens(syntaxTree.Tokens, 0, 4, SyntaxTokenType.Whitespace);
+            AssertTokens(syntaxTree.Tokens, 0, 5, SyntaxTokenType.Whitespace, SyntaxTokenType.TaskKeyword);
+            AssertTokens(syntaxTree.Tokens, 0, 6, SyntaxTokenType.Whitespace, SyntaxTokenType.TaskKeyword, SyntaxTokenType.Whitespace);
+
+            AssertTokens(syntaxTree.Tokens, 1, 5, SyntaxTokenType.TaskKeyword);
+            AssertTokens(syntaxTree.Tokens, 1, 4); // Nüscht!
+        }
+
+        [Test]
+        public void TestFindAtExtentIncludeOverlapping() {
+            string taskDef = " task Foo { init I; } ";
+
+            var syntaxTree = Syntax.ParseTaskDefinition(taskDef).SyntaxTree;
+
+            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+
+            AssertTokens(syntaxTree.Tokens, 0, 0, true, SyntaxTokenType.Whitespace);
+            AssertTokens(syntaxTree.Tokens, 0, 1, true, SyntaxTokenType.Whitespace);
+            AssertTokens(syntaxTree.Tokens, 0, 2, true, SyntaxTokenType.Whitespace, SyntaxTokenType.TaskKeyword);
+            AssertTokens(syntaxTree.Tokens, 0, 3, true, SyntaxTokenType.Whitespace, SyntaxTokenType.TaskKeyword);
+            AssertTokens(syntaxTree.Tokens, 0, 4, true, SyntaxTokenType.Whitespace, SyntaxTokenType.TaskKeyword);
+            AssertTokens(syntaxTree.Tokens, 0, 5, true, SyntaxTokenType.Whitespace, SyntaxTokenType.TaskKeyword);
+            AssertTokens(syntaxTree.Tokens, 0, 6, true, SyntaxTokenType.Whitespace, SyntaxTokenType.TaskKeyword, SyntaxTokenType.Whitespace);
+                                                  
+            AssertTokens(syntaxTree.Tokens, 1, 5, true, SyntaxTokenType.TaskKeyword);
+            AssertTokens(syntaxTree.Tokens, 1, 4, true, SyntaxTokenType.TaskKeyword);
+            
+            AssertTokens(syntaxTree.Tokens, 5, 5, true, SyntaxTokenType.Whitespace);
+            AssertTokens(syntaxTree.Tokens, 5, 6, true, SyntaxTokenType.Whitespace);
+            AssertTokens(syntaxTree.Tokens, 5, 7, true, SyntaxTokenType.Whitespace, SyntaxTokenType.Identifier);
+        }
+
+        void AssertTokens(SyntaxTokenList tokenList, int start, int end, params SyntaxTokenType[] expectedTypes) {
+            AssertTokens(tokenList, start, end, false, expectedTypes);
+        }
+
+        void AssertTokens(SyntaxTokenList tokenList, int start, int end, bool includeOverlapping, params SyntaxTokenType[] expectedTypes) {
+            var extent = TextExtent.FromBounds(start, end);
+            var tokens = tokenList[extent, includeOverlapping].ToList();
+
+            Assert.That(tokens.Count, Is.EqualTo(expectedTypes.Length));
+            for (int i = tokens.Count - 1; i >= 0; i--) {
+                var token = tokens[i];
+                Assert.That(token.Type, Is.EqualTo(expectedTypes[i]));
+            }
+        }
+
+        
+
+        [Test]
+        public void TestEmptyToken() {
+            var empty = SyntaxToken.Empty;
+
+            Assert.That(empty.IsMissing       , Is.True);
+            Assert.That(empty.Extent.IsEmpty  , Is.True);
+            Assert.That(empty.Extent.IsMissing, Is.False);
+            Assert.That(empty.Parent          , Is.Null);
+            Assert.That(empty.SyntaxTree      , Is.Null);
+
+            Assert.That(empty.Type            , Is.EqualTo(SyntaxTokenType.Unknown));
+            Assert.That(empty.Classification  , Is.EqualTo(SyntaxTokenClassification.Unknown));
+        }
+
+        [Test]
+        public void TestMissingToken() {
+            var missing = SyntaxToken.Missing;
+
+            Assert.That(missing.IsMissing       , Is.True);
+            Assert.That(missing.Extent.IsEmpty  , Is.True);
+            Assert.That(missing.Extent.IsMissing, Is.True);
+            Assert.That(missing.Parent          , Is.Null);
+            Assert.That(missing.SyntaxTree      , Is.Null);
+
+            Assert.That(missing.Type            , Is.EqualTo(SyntaxTokenType.Unknown));
+            Assert.That(missing.Classification  , Is.EqualTo(SyntaxTokenClassification.Unknown));
+        }
+
+        [Test]
+        public void TestNextTokenOnMissingToken() {
+            var missing = SyntaxToken.Missing;
+
+            var next = missing.NextToken();
+
+            Assert.That(next.IsMissing, Is.True);
+        }
+
+        [Test]
+        public void TestPreviousTokenOnMissingToken() {
+            var missing = SyntaxToken.Missing;
+
+            var next = missing.PreviousToken();
+
+            Assert.That(next.IsMissing, Is.True);
+        }
+    }
+}
