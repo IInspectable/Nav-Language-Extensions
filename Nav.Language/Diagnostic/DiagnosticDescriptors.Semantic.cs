@@ -248,6 +248,26 @@
                 defaultSeverity: DiagnosticSeverity.Error
                 );
 
+            /// <summary>
+            /// The choice node has no incoming edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav0111ChoiceNodeHasNoIncomingEdges = new DiagnosticDescriptor(
+                id: DiagnosticId.Nav0111,
+                messageFormat: "The choice node has no incoming edges",
+                category: Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The choice node has no outgoing edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav0112ChoiceNodeHasNoOutgoingEdges = new DiagnosticDescriptor(
+                id: DiagnosticId.Nav0112,
+                messageFormat: "The choice node has no outgoing edges",
+                category: Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
 
             /// <summary>
             /// Trigger not allowed after init

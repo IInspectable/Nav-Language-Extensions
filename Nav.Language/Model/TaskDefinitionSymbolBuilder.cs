@@ -738,6 +738,23 @@ namespace Pharmatechnik.Nav.Language {
             }
 
             //==============================
+            // Choice Node Errors
+            //==============================
+            foreach (var choiceNode in _taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>().Where(cn => cn.References.Any() && !cn.Incomings.Any())) {
+                _diagnostics.Add(new Diagnostic(
+                        choiceNode.Location,
+                        DiagnosticDescriptors.Semantic.Nav0111ChoiceNodeHasNoIncomingEdges,
+                        choiceNode.Name));
+            }
+            foreach (var choiceNode in _taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>().Where(cn => cn.References.Any() && !cn.Outgoings.Any())) {
+                _diagnostics.Add(new Diagnostic(
+                        choiceNode.Location,
+                        DiagnosticDescriptors.Semantic.Nav0112ChoiceNodeHasNoOutgoingEdges,
+                        choiceNode.Name));
+            }
+            // TODO Task/View/Dialog wie choice + Code vereinheitlichen?
+
+            //==============================
             // Exit Errors
             //==============================
             foreach (var taskNode in _taskDefinition.NodeDeclarations
