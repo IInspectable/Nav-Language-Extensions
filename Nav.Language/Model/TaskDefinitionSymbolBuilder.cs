@@ -715,7 +715,7 @@ namespace Pharmatechnik.Nav.Language {
                 } else if (nodeSymbol is IEndNodeSymbol) {
                     
                 } else {
-                    // TODO Code raus, wenn 
+                    // TODO Code raus, wenn Task/View/Dialog wie choice implementiert
                     _diagnostics.Add(new Diagnostic(
                         nodeSymbol.Syntax.GetLocation(),
                         DiagnosticDescriptors.DeadCode.Nav1004Node0NotRequired,
