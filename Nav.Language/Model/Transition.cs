@@ -24,6 +24,11 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [NotNull]
+        public Location Location {
+            get { return Syntax.GetLocation(); }
+        }
+
+        [NotNull]
         public TransitionDefinitionSyntax Syntax { get; }
 
         [CanBeNull]

@@ -16,7 +16,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
         public string ErrorType {
             get {
                 // Sonderlocke "Dead Code"
-                if(_diagnostic.Category == DiagnosticCategory.DeadCode) {
+                if(_diagnostic.Category == DiagnosticCategory.DeadCode && 
+                   _diagnostic.Severity != DiagnosticSeverity.Error) {
                     // "Suggestion" führt zu einem unsichbaren squiggle,
                     // für den aber dennoch ein Tooltip angezeigt wird.
                     // "Dead Code" wird durch leichtes Ausblenden extra visualisiert.

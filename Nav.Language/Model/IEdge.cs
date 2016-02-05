@@ -5,6 +5,9 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface IEdge {
 
+        [NotNull]
+        Location Location { get; }
+
         [CanBeNull]
         INodeReferenceSymbol Source { get; }
 

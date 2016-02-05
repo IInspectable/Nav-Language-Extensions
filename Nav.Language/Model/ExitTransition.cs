@@ -20,8 +20,13 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [NotNull]
-        public ExitTransitionDefinitionSyntax Syntax { get; }
+        public Location Location {
+            get { return Syntax.GetLocation(); }
+        }
 
+        [NotNull]
+        public ExitTransitionDefinitionSyntax Syntax { get; }
+        
         [CanBeNull]
         public INodeReferenceSymbol Source { get; }
 
