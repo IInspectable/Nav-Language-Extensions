@@ -709,27 +709,13 @@ namespace Pharmatechnik.Nav.Language {
             foreach (var nodeSymbol in unusedNodes) {
                 
                 if (nodeSymbol is IInitNodeSymbol) {
-
-                    _diagnostics.Add(new Diagnostic(
-                        nodeSymbol.Location,
-                        DiagnosticDescriptors.Semantic.Nav0109InitNode0HasNoOutgoingEdges,
-                        nodeSymbol.Name));
-
+                    
                 } else if (nodeSymbol is IExitNodeSymbol) {
-
-                    _diagnostics.Add(new Diagnostic(
-                        nodeSymbol.Location,
-                        DiagnosticDescriptors.Semantic.Nav0107ExitNode0HasNoIncomingEdges,
-                        nodeSymbol.Name));
-
+                    
                 } else if (nodeSymbol is IEndNodeSymbol) {
-
-                    _diagnostics.Add(new Diagnostic(
-                        nodeSymbol.Location,
-                        DiagnosticDescriptors.Semantic.Nav0108EndNodeHasNoIncomingEdges,
-                        nodeSymbol.Name));
+                    
                 } else {
-
+                    // TODO Code raus, wenn 
                     _diagnostics.Add(new Diagnostic(
                         nodeSymbol.Syntax.GetLocation(),
                         DiagnosticDescriptors.DeadCode.Nav1004Node0NotRequired,
@@ -738,20 +724,83 @@ namespace Pharmatechnik.Nav.Language {
             }
 
             //==============================
-            // Choice Node Errors
+            //  Init Node Errors
             //==============================
-            foreach (var choiceNode in _taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>().Where(cn => cn.References.Any() && !cn.Incomings.Any())) {
-                _diagnostics.Add(new Diagnostic(
-                        choiceNode.Location,
-                        DiagnosticDescriptors.Semantic.Nav0111ChoiceNodeHasNoIncomingEdges,
-                        choiceNode.Name));
+            foreach(var nodeSymbol in _taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
+                if (!nodeSymbol.Outgoings.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        nodeSymbol.Location,
+                        DiagnosticDescriptors.Semantic.Nav0109InitNode0HasNoOutgoingEdges,
+                        nodeSymbol.Name));
+                }
             }
-            foreach (var choiceNode in _taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>().Where(cn => cn.References.Any() && !cn.Outgoings.Any())) {
-                _diagnostics.Add(new Diagnostic(
-                        choiceNode.Location,
-                        DiagnosticDescriptors.Semantic.Nav0112ChoiceNodeHasNoOutgoingEdges,
-                        choiceNode.Name));
+            //==============================
+            //  Exit Node Errors
+            //==============================
+            foreach (var nodeSymbol in _taskDefinition.NodeDeclarations.OfType<IExitNodeSymbol>()) {
+                if (!nodeSymbol.Incomings.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        nodeSymbol.Location,
+                        DiagnosticDescriptors.Semantic.Nav0107ExitNode0HasNoIncomingEdges,
+                        nodeSymbol.Name));
+                }
             }
+            //==============================
+            //  End Node Errors
+            //==============================
+            foreach (var nodeSymbol in _taskDefinition.NodeDeclarations.OfType<IEndNodeSymbol>()) {
+                if (!nodeSymbol.Incomings.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                         nodeSymbol.Location,
+                         DiagnosticDescriptors.Semantic.Nav0108EndNodeHasNoIncomingEdges,
+                         nodeSymbol.Name));
+                }
+            }
+            //==============================
+            //  Choice Node Errors
+            //==============================
+            foreach (var nodeSymbol in _taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>()) {
+
+                if(!nodeSymbol.References.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        nodeSymbol.Syntax.GetLocation(),
+                        DiagnosticDescriptors.DeadCode.Nav1009ChoiceNode0NotRequired,
+                        nodeSymbol.Name));
+
+                } else if(!nodeSymbol.Incomings.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        nodeSymbol.Location,
+                        DiagnosticDescriptors.Semantic.Nav0111ChoiceNode0HasNoIncomingEdges,
+                        nodeSymbol.Name));
+
+                    foreach (var edge in nodeSymbol.Outgoings) {
+                        _diagnostics.Add(new Diagnostic(
+                            edge.Location,
+                            DiagnosticDescriptors.DeadCode.Nav1007ChoiceNode0HasNoIncomingEdges,
+                            nodeSymbol.Name));
+                    }
+
+                } else if(!nodeSymbol.Outgoings.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        nodeSymbol.Location,
+                        DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges,
+                        nodeSymbol.Name));
+
+                    foreach (var edge in nodeSymbol.Incomings) {
+                        _diagnostics.Add(new Diagnostic(
+                            edge.Location,
+                            DiagnosticDescriptors.DeadCode.Nav1008ChoiceNode0HasNoOutgoingEdges,
+                            nodeSymbol.Name));
+                    }
+                }
+            }
+            
             // TODO Task/View/Dialog wie choice + Code vereinheitlichen?
 
             //==============================

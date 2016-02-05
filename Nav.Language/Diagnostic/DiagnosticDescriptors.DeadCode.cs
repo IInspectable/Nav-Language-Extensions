@@ -69,6 +69,37 @@
                 category       : Category,
                 defaultSeverity: Severity
                 );
+
+
+            /// <summary>
+            /// The choice node '{0}' has no incoming edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1007ChoiceNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1007,
+                messageFormat  : "The choice node '{0}' has no incoming edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The choice node '{0}' has no outgoing edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1008ChoiceNode0HasNoOutgoingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1008,
+                messageFormat  : "The choice node '{0}' has no outgoing edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The choice node '{0}' is not required by the code and can be safely removed
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1009ChoiceNode0NotRequired = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1009,
+                messageFormat  : "The choice node '{0}' is not required by the code and can be safely removed",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
         }
     }
 }
