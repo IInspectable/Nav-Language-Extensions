@@ -55,27 +55,26 @@ namespace Pharmatechnik.Nav.Language {
         IReadOnlyList<ITransition> Outgoings { get; }
     }
 
-    public interface IViewNodeSymbol : INodeSymbol {
-        [NotNull]
-        new ViewNodeDeclarationSyntax Syntax { get; }
+    public interface IGuiNodeSymbol : INodeSymbol {
 
         [NotNull]
         IReadOnlyList<IEdge> Incomings { get; }
 
         [NotNull]
         IReadOnlyList<ITransition> Outgoings { get; }
+
     }
 
-    public interface IDialogNodeSymbol : INodeSymbol {
+    public interface IViewNodeSymbol : IGuiNodeSymbol {
+
+        [NotNull]
+        new ViewNodeDeclarationSyntax Syntax { get; }       
+    }
+
+    public interface IDialogNodeSymbol : IGuiNodeSymbol {
 
         [NotNull]
         new DialogNodeDeclarationSyntax Syntax { get; }
-
-        [NotNull]
-        IReadOnlyList<IEdge> Incomings { get; }
-
-        [NotNull]
-        IReadOnlyList<ITransition> Outgoings { get; }
     }
 
     public interface ITaskNodeSymbol : INodeSymbol {
