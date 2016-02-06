@@ -181,8 +181,8 @@ namespace Pharmatechnik.Nav.Language {
         public DialogNodeSymbol(string name, Location location, DialogNodeDeclarationSyntax syntax) : base(name, location, syntax) {
         }
 
-        IReadOnlyList<IEdge> IDialogNodeSymbol.Incomings { get { return Incomings; } }
-        IReadOnlyList<ITransition> IDialogNodeSymbol.Outgoings { get { return Outgoings; } }
+        IReadOnlyList<IEdge> IGuiNodeSymbol.Incomings { get { return Incomings; } }
+        IReadOnlyList<ITransition> IGuiNodeSymbol.Outgoings { get { return Outgoings; } }
     }
 
     sealed partial class ViewNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<ViewNodeDeclarationSyntax, IEdge, ITransition>, IViewNodeSymbol {
@@ -190,8 +190,8 @@ namespace Pharmatechnik.Nav.Language {
         public ViewNodeSymbol(string name, Location location, ViewNodeDeclarationSyntax syntax) : base(name, location, syntax) {          
         }
 
-        IReadOnlyList<IEdge> IViewNodeSymbol.Incomings { get { return Incomings; } }
-        IReadOnlyList<ITransition> IViewNodeSymbol.Outgoings { get { return Outgoings; } }
+        IReadOnlyList<IEdge> IGuiNodeSymbol.Incomings { get { return Incomings; } }
+        IReadOnlyList<ITransition> IGuiNodeSymbol.Outgoings { get { return Outgoings; } }
     }
 
     sealed partial class ChoiceNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<ChoiceNodeDeclarationSyntax, IEdge, ITransition>, IChoiceNodeSymbol {

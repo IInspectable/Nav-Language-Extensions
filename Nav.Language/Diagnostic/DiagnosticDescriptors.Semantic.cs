@@ -270,6 +270,56 @@
 
 
             /// <summary>
+            /// The task node '{0}' has no incoming edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav0113TaskNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav0113,
+                messageFormat  : "The task node '{0}' has no incoming edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The dialog node '{0}' has no incoming edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav0114DialogNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav0114,
+                messageFormat  : "The dialog node '{0}' has no incoming edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The dialog node '{0}' has no outgoing edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav0115DialogNode0HasNoOutgoingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav0115,
+                messageFormat  : "The dialog node '{0}' has no outgoing edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The view node '{0}' has no incoming edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav0116ViewNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav0116,
+                messageFormat  : "The view node '{0}' has no incoming edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The view node '{0}' has no outgoing edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav0117ViewNode0HasNoOutgoingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav0117,
+                messageFormat  : "The view node '{0}' has no outgoing edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
             /// Trigger not allowed after init
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0200SignalTriggerNotAllowedAfterInit = new DiagnosticDescriptor(

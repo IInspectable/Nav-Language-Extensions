@@ -34,6 +34,11 @@ namespace Pharmatechnik.Nav.Language {
         public const string Nav0110 = nameof(Nav0110);
         public const string Nav0111 = nameof(Nav0111);
         public const string Nav0112 = nameof(Nav0112);
+        public const string Nav0113 = nameof(Nav0113);
+        public const string Nav0114 = nameof(Nav0114);
+        public const string Nav0115 = nameof(Nav0115);
+        public const string Nav0116 = nameof(Nav0116);
+        public const string Nav0117 = nameof(Nav0117);
 
         public const string Nav0200 = nameof(Nav0200);
         public const string Nav0201 = nameof(Nav0201);
@@ -45,13 +50,24 @@ namespace Pharmatechnik.Nav.Language {
         public const string Nav1001 = nameof(Nav1001);
         public const string Nav1002 = nameof(Nav1002);
         public const string Nav1003 = nameof(Nav1003);
-        public const string Nav1004 = nameof(Nav1004);
+      
         public const string Nav1005 = nameof(Nav1005);
         public const string Nav1006 = nameof(Nav1006);
 
         public const string Nav1007 = nameof(Nav1007);
         public const string Nav1008 = nameof(Nav1008);
         public const string Nav1009 = nameof(Nav1009);
+
+        public const string Nav1010 = nameof(Nav1010);
+        public const string Nav1012 = nameof(Nav1012);
+
+        public const string Nav1014 = nameof(Nav1014);
+        public const string Nav1015 = nameof(Nav1015);
+        public const string Nav1016 = nameof(Nav1016);
+
+        public const string Nav1017 = nameof(Nav1017);
+        public const string Nav1018 = nameof(Nav1018);
+        public const string Nav1019 = nameof(Nav1019);
 
         public const string Nav2000 = nameof(Nav2000);
     }

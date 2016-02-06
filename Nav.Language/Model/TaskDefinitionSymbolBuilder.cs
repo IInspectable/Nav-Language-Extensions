@@ -702,142 +702,233 @@ namespace Pharmatechnik.Nav.Language {
 
         void VerifyTaskDefinition() {
 
-            // =====================
-            // Unused Node Declarations
-            //==============================
-            var unusedNodes = _taskDefinition.NodeDeclarations.Where(i => !i.References.Any());
-            foreach (var nodeSymbol in unusedNodes) {
-                
-                if (nodeSymbol is IInitNodeSymbol) {
-                    
-                } else if (nodeSymbol is IExitNodeSymbol) {
-                    
-                } else if (nodeSymbol is IEndNodeSymbol) {
-                    
-                } else {
-                    // TODO Code raus, wenn Task/View/Dialog wie choice implementiert
-                    _diagnostics.Add(new Diagnostic(
-                        nodeSymbol.Syntax.GetLocation(),
-                        DiagnosticDescriptors.DeadCode.Nav1004Node0NotRequired,
-                        nodeSymbol.Name));
-                }
-            }
-
             //==============================
             //  Init Node Errors
             //==============================
-            foreach(var nodeSymbol in _taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
-                if (!nodeSymbol.Outgoings.Any()) {
+            foreach(var initNode in _taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
+                if (!initNode.Outgoings.Any()) {
 
                     _diagnostics.Add(new Diagnostic(
-                        nodeSymbol.Location,
+                        initNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0109InitNode0HasNoOutgoingEdges,
-                        nodeSymbol.Name));
+                        initNode.Name));
                 }
             }
+
             //==============================
             //  Exit Node Errors
             //==============================
-            foreach (var nodeSymbol in _taskDefinition.NodeDeclarations.OfType<IExitNodeSymbol>()) {
-                if (!nodeSymbol.Incomings.Any()) {
+            foreach (var exitNode in _taskDefinition.NodeDeclarations.OfType<IExitNodeSymbol>()) {
+                if (!exitNode.Incomings.Any()) {
 
                     _diagnostics.Add(new Diagnostic(
-                        nodeSymbol.Location,
+                        exitNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0107ExitNode0HasNoIncomingEdges,
-                        nodeSymbol.Name));
+                        exitNode.Name));
                 }
             }
+
             //==============================
             //  End Node Errors
             //==============================
-            foreach (var nodeSymbol in _taskDefinition.NodeDeclarations.OfType<IEndNodeSymbol>()) {
-                if (!nodeSymbol.Incomings.Any()) {
+            foreach (var endNode in _taskDefinition.NodeDeclarations.OfType<IEndNodeSymbol>()) {
+                if (!endNode.Incomings.Any()) {
 
                     _diagnostics.Add(new Diagnostic(
-                         nodeSymbol.Location,
+                         endNode.Location,
                          DiagnosticDescriptors.Semantic.Nav0108EndNodeHasNoIncomingEdges,
-                         nodeSymbol.Name));
+                         endNode.Name));
                 }
-            }
+            }            
+
             //==============================
             //  Choice Node Errors
             //==============================
-            foreach (var nodeSymbol in _taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>()) {
+            foreach (var choiceNode in _taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>()) {
 
-                if(!nodeSymbol.References.Any()) {
+                if(!choiceNode.References.Any()) {
 
                     _diagnostics.Add(new Diagnostic(
-                        nodeSymbol.Syntax.GetLocation(),
+                        choiceNode.Syntax.GetLocation(),
                         DiagnosticDescriptors.DeadCode.Nav1009ChoiceNode0NotRequired,
-                        nodeSymbol.Name));
+                        choiceNode.Name));
 
-                } else if(!nodeSymbol.Incomings.Any()) {
+                } else if(!choiceNode.Incomings.Any()) {
 
                     _diagnostics.Add(new Diagnostic(
-                        nodeSymbol.Location,
+                        choiceNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0111ChoiceNode0HasNoIncomingEdges,
-                        nodeSymbol.Name));
+                        choiceNode.Name));
 
-                    foreach (var edge in nodeSymbol.Outgoings) {
+                    foreach (var edge in choiceNode.Outgoings) {
                         _diagnostics.Add(new Diagnostic(
                             edge.Location,
                             DiagnosticDescriptors.DeadCode.Nav1007ChoiceNode0HasNoIncomingEdges,
-                            nodeSymbol.Name));
+                            choiceNode.Name));
                     }
 
-                } else if(!nodeSymbol.Outgoings.Any()) {
+                } else if(!choiceNode.Outgoings.Any()) {
 
                     _diagnostics.Add(new Diagnostic(
-                        nodeSymbol.Location,
+                        choiceNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges,
-                        nodeSymbol.Name));
+                        choiceNode.Name));
 
-                    foreach (var edge in nodeSymbol.Incomings) {
+                    foreach (var edge in choiceNode.Incomings) {
                         _diagnostics.Add(new Diagnostic(
                             edge.Location,
                             DiagnosticDescriptors.DeadCode.Nav1008ChoiceNode0HasNoOutgoingEdges,
-                            nodeSymbol.Name));
+                            choiceNode.Name));
                     }
                 }
             }
-            
-            // TODO Task/View/Dialog wie choice + Code vereinheitlichen?
 
             //==============================
-            // Exit Errors
+            //  Task Node Errors
             //==============================
-            foreach (var taskNode in _taskDefinition.NodeDeclarations
-                                                    .OfType<ITaskNodeSymbol>()
-                                                    .Where(node => node.References.Any())) {
+            foreach (var taskNode in _taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
 
-                if (taskNode.Declaration == null) {
-                    continue;
-                }
+                if(!taskNode.References.Any()) {
 
-                var expectedExits = taskNode.Declaration.Exits();
-                var actualExits   = taskNode.Outgoings
-                                            .Select(et => et.ConnectionPoint)
-                                            .Where(cp  => cp!=null)
-                                            .ToList();
+                    _diagnostics.Add(new Diagnostic(
+                        taskNode.Syntax.GetLocation(),
+                        DiagnosticDescriptors.DeadCode.Nav1012TaskNode0NotRequired,
+                        taskNode.Name));
 
-                foreach (var expectedExit in expectedExits) {
+                } else {
 
-                    if (!actualExits.Exists(cpRef => cpRef.Declaration == expectedExit)) {
+                    if(!taskNode.Incomings.Any()) {
 
                         _diagnostics.Add(new Diagnostic(
                             taskNode.Location,
-                            DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
-                            expectedExit.Name) );
+                            DiagnosticDescriptors.Semantic.Nav0113TaskNode0HasNoIncomingEdges,
+                            taskNode.Name));
+
+                        foreach(var edge in taskNode.Outgoings) {
+                            _diagnostics.Add(new Diagnostic(
+                                edge.Location,
+                                DiagnosticDescriptors.DeadCode.Nav1010TaskNode0HasNoIncomingEdges,
+                                taskNode.Name));
+                        }
+
+                    }
+
+                    //==============================
+                    // Exit Errors
+                    //==============================
+                    if (taskNode.Declaration == null) {
+                        continue;
+                    }
+
+                    var expectedExits = taskNode.Declaration.Exits();
+                    var actualExits = taskNode.Outgoings
+                                                .Select(et => et.ConnectionPoint)
+                                                .Where(cp => cp != null)
+                                                .ToList();
+
+                    foreach (var expectedExit in expectedExits) {
+
+                        if (!actualExits.Exists(cpRef => cpRef.Declaration == expectedExit)) {
+
+                            _diagnostics.Add(new Diagnostic(
+                                taskNode.Location,
+                                DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
+                                expectedExit.Name));
+                        }
+                    }
+
+                    foreach (var duplicate in actualExits.GroupBy(e => e.Name).Where(g => g.Count() > 1)) {
+
+                        foreach (var exit in duplicate) {
+                            _diagnostics.Add(new Diagnostic(
+                                exit.Location,
+                                DiagnosticDescriptors.Semantic.Nav0024OutgoingEdgeForExit0AlreadyDeclared,
+                                exit.Name));
+                        }
                     }
                 }
+            }
 
-                foreach(var duplicate in actualExits.GroupBy(e => e.Name).Where(g => g.Count() > 1)) {
+            //==============================
+            //  Dialog Node Errors
+            //==============================
+            foreach (var dialogNode in _taskDefinition.NodeDeclarations.OfType<IDialogNodeSymbol>()) {
 
-                    foreach (var exit in duplicate) {
+                if (!dialogNode.References.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        dialogNode.Syntax.GetLocation(),
+                        DiagnosticDescriptors.DeadCode.Nav1014DialogNode0NotRequired,
+                        dialogNode.Name));
+
+                } else if (!dialogNode.Incomings.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        dialogNode.Location,
+                        DiagnosticDescriptors.Semantic.Nav0114DialogNode0HasNoIncomingEdges,
+                        dialogNode.Name));
+
+                    foreach (var edge in dialogNode.Outgoings) {
                         _diagnostics.Add(new Diagnostic(
-                            exit.Location,
-                            DiagnosticDescriptors.Semantic.Nav0024OutgoingEdgeForExit0AlreadyDeclared,
-                            exit.Name));
+                            edge.Location,
+                            DiagnosticDescriptors.DeadCode.Nav1015DialogNode0HasNoIncomingEdges,
+                            dialogNode.Name));
+                    }
+
+                } else if (!dialogNode.Outgoings.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        dialogNode.Location,
+                        DiagnosticDescriptors.Semantic.Nav0115DialogNode0HasNoOutgoingEdges,
+                        dialogNode.Name));
+
+                    foreach (var edge in dialogNode.Incomings) {
+                        _diagnostics.Add(new Diagnostic(
+                            edge.Location,
+                            DiagnosticDescriptors.DeadCode.Nav1016DialogNode0HasNoOutgoingEdges,
+                            dialogNode.Name));
+                    }
+                }
+            }
+
+            //==============================
+            //  View Node Errors
+            //==============================
+            foreach (var viewNode in _taskDefinition.NodeDeclarations.OfType<IViewNodeSymbol>()) {
+
+                if (!viewNode.References.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        viewNode.Syntax.GetLocation(),
+                        DiagnosticDescriptors.DeadCode.Nav1017ViewNode0NotRequired,
+                        viewNode.Name));
+
+                } else if (!viewNode.Incomings.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        viewNode.Location,
+                        DiagnosticDescriptors.Semantic.Nav0116ViewNode0HasNoIncomingEdges,
+                        viewNode.Name));
+
+                    foreach (var edge in viewNode.Outgoings) {
+                        _diagnostics.Add(new Diagnostic(
+                            edge.Location,
+                            DiagnosticDescriptors.DeadCode.Nav1018ViewNode0HasNoIncomingEdges,
+                            viewNode.Name));
+                    }
+
+                } else if (!viewNode.Outgoings.Any()) {
+
+                    _diagnostics.Add(new Diagnostic(
+                        viewNode.Location,
+                        DiagnosticDescriptors.Semantic.Nav0117ViewNode0HasNoOutgoingEdges,
+                        viewNode.Name));
+
+                    foreach (var edge in viewNode.Incomings) {
+                        _diagnostics.Add(new Diagnostic(
+                            edge.Location,
+                            DiagnosticDescriptors.DeadCode.Nav1019ViewNode0HasNoOutgoingEdges,
+                            viewNode.Name));
                     }
                 }
             }

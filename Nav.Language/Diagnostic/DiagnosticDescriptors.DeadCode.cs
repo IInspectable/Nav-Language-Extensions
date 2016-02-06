@@ -41,16 +41,6 @@
                 );
 
             /// <summary>
-            /// Node '{0}' is not required by the code and can be safely removed
-            /// </summary>
-            public static readonly DiagnosticDescriptor Nav1004Node0NotRequired = new DiagnosticDescriptor(
-                id             : DiagnosticId.Nav1004,
-                messageFormat  : "Node '{0}' is not required by the code and can be safely removed",
-                category       : Category,
-                defaultSeverity: Severity
-                );
-
-            /// <summary>
             /// Taskref '{0}' is not required by the code and can be safely removed
             /// </summary>
             public static readonly DiagnosticDescriptor Nav1005TaskDeclaration0NotRequired = new DiagnosticDescriptor(
@@ -97,6 +87,87 @@
             public static readonly DiagnosticDescriptor Nav1009ChoiceNode0NotRequired = new DiagnosticDescriptor(
                 id             : DiagnosticId.Nav1009,
                 messageFormat  : "The choice node '{0}' is not required by the code and can be safely removed",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            
+            /// <summary>
+            /// The task node '{0}' has no incoming edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1010TaskNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1010,
+                messageFormat  : "The task node '{0}' has no incoming edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+        
+            /// <summary>
+            /// The task node '{0}' is not required by the code and can be safely removed
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1012TaskNode0NotRequired = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1012,
+                messageFormat  : "The task node '{0}' is not required by the code and can be safely removed",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The dialog node '{0}' is not required by the code and can be safely removed
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1014DialogNode0NotRequired = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1014,
+                messageFormat  : "The dialog node '{0}' is not required by the code and can be safely removed",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The dialog node '{0}' has no incoming edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1015DialogNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1015,
+                messageFormat  : "The dialog node '{0}' has no incoming edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The dialog node '{0}' has no outgoing edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1016DialogNode0HasNoOutgoingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1016,
+                messageFormat  : "The dialog node '{0}' has no outgoing edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The view node '{0}' is not required by the code and can be safely removed
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1017ViewNode0NotRequired = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1017,
+                messageFormat  : "The view node '{0}' is not required by the code and can be safely removed",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The view node '{0}' has no incoming edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1018ViewNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1018,
+                messageFormat  : "The view node '{0}' has no incoming edges",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Warning
+                );
+
+            /// <summary>
+            /// The view node '{0}' has no outgoing edges
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav1019ViewNode0HasNoOutgoingEdges = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav1019,
+                messageFormat  : "The view node '{0}' has no outgoing edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
                 );
