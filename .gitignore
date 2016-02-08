@@ -14,3 +14,4 @@
 /Nav.Language.Tests/obj/Debug
 /.vs
 /Nav.Language.Extension/Nav.Language.Extension.csproj.user
+*.csproj.user
