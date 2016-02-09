@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ProductName>Nav Language Extensions</ProductName>
-    <ProductVersion>$([System.DateTime]::Now.ToString(`yyy.M.d`))</ProductVersion>
+    <ProductVersion>0.9.0</ProductVersion>
   </PropertyGroup>
   
   <PropertyGroup>
