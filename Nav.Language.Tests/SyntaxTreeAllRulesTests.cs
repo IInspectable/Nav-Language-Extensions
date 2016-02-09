@@ -79,7 +79,7 @@ namespace Nav.Language.Tests {
 
         void Write(IEnumerable<SyntaxToken> list) {
             foreach (var value in list) {
-                Console.WriteLine(value.ToDebuggerDisplayString());
+                //Console.WriteLine(value.ToDebuggerDisplayString());
             }
         }
 
