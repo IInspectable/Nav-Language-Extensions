@@ -1,1 +1,1 @@
-![Nav Language Extensions](images\Logo.png)
+![Nav Language Extensions](https://raw.githubusercontent.com/IInspectable/Nav.Language.Extensions/master/images/Logo.png)
