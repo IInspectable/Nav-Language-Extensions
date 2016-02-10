@@ -121,7 +121,7 @@
     <value>Nav Language Extensions</value>
   </data>
   <data name="112" xml:space="preserve">
-    <value>Support for the Pharmatechnik Navigation Modeler Language like syntax highlighting and error checking.</value>
+    <value>Support for the Pharmatechnik Nav language like syntax highlighting and semantic analysis.</value>
   </data>
   <data name="120" xml:space="preserve">
     <value>Advanced</value>
@@ -129,6 +129,6 @@
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="400" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\NavPackage.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\ActivityDiagram_32x.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
