@@ -40,7 +40,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             foreach (var span in spans) {
                 
                 var extent  = TextExtent.FromBounds(span.Start, span.End);
-                var symbols = semanticModelResult.CompilationUnit.Symbols[extent, includeOverlapping: true];
+                var symbols = semanticModelResult.CodeGenerationUnit.Symbols[extent, includeOverlapping: true];
 
                 foreach (var symbol in symbols) {
 

@@ -21,7 +21,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void MultiLineNumberTest() {
 
-            var syntax = Syntax.ParseCompilationUnit(
+            var syntax = Syntax.ParseCodeGenerationUnit(
                     "task T1 {}\r\n"          + // 0
                     "/* Multiline\r\n"        + // 1
                     " Comment */\r\n"         + // 2
@@ -47,7 +47,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void MultiLineNumberWithTrailingNewLineTest() {
 
-            var syntax = Syntax.ParseCompilationUnit(
+            var syntax = Syntax.ParseCodeGenerationUnit(
                     "task T1 {}\r\n" // 0
                     );
 

@@ -30,8 +30,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
                 yield break;
             }
 
-            var syntaxTree      = semanticModelResult.CompilationUnit.Syntax.SyntaxTree;
-            var compilationUnit = semanticModelResult.CompilationUnit;
+            var syntaxTree         = semanticModelResult.CodeGenerationUnit.Syntax.SyntaxTree;
+            var codeGenerationUnit = semanticModelResult.CodeGenerationUnit;
 
             foreach (var span in spans) {
 
@@ -52,7 +52,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
                 }
                 //==================
                 // Semantic Fehler
-                foreach (var diagnostic in compilationUnit.Diagnostics) {
+                foreach (var diagnostic in codeGenerationUnit.Diagnostics) {
                     if (diagnostic.Location.Start <= span.End && diagnostic.Location.End >= span.Start) {
                 
                         var errorSpan = new SnapshotSpan(semanticModelResult.Snapshot, new Span(diagnostic.Location.Start, diagnostic.Location.Length));

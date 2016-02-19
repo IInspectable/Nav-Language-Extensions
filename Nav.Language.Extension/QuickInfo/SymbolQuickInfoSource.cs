@@ -32,7 +32,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
                 return;
             }
            
-            var triggerSymbol = semanticModelResult.CompilationUnit.Symbols.FindAtPosition(subjectTriggerPoint.Value.Position);
+            var triggerSymbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(subjectTriggerPoint.Value.Position);
 
             if (triggerSymbol == null) {
                 return;

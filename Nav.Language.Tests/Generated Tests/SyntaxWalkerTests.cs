@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 04.10.2015 21:09:09
+// HINWEIS: Diese Datei wurde am 19.02.2016 21:28:55
 //			automatisch generiert!
 //==================================================
 using NUnit.Framework;
@@ -142,14 +142,6 @@ namespace Nav.Language.Tests {
 		public override void PostWalkCodeDeclaration(CodeDeclarationSyntax codeDeclarationSyntax) { 
 			MethodsCalled["PostWalkCodeDeclaration"]=true;
 		}
-		// CompilationUnitSyntax
-		public override bool WalkCompilationUnit(CompilationUnitSyntax compilationUnitSyntax) { 
-			MethodsCalled["WalkCompilationUnit"]=true;
-			return true; 
-		}
-		public override void PostWalkCompilationUnit(CompilationUnitSyntax compilationUnitSyntax) { 
-			MethodsCalled["PostWalkCompilationUnit"]=true;
-		}
 		// TaskDeclarationSyntax
 		public override bool WalkTaskDeclaration(TaskDeclarationSyntax taskDeclarationSyntax) { 
 			MethodsCalled["WalkTaskDeclaration"]=true;
@@ -181,6 +173,14 @@ namespace Nav.Language.Tests {
 		}
 		public override void PostWalkArrayRankSpecifier(ArrayRankSpecifierSyntax arrayRankSpecifierSyntax) { 
 			MethodsCalled["PostWalkArrayRankSpecifier"]=true;
+		}
+		// CodeGenerationUnitSyntax
+		public override bool WalkCodeGenerationUnit(CodeGenerationUnitSyntax codeGenerationUnitSyntax) { 
+			MethodsCalled["WalkCodeGenerationUnit"]=true;
+			return true; 
+		}
+		public override void PostWalkCodeGenerationUnit(CodeGenerationUnitSyntax codeGenerationUnitSyntax) { 
+			MethodsCalled["PostWalkCodeGenerationUnit"]=true;
 		}
 		// EndNodeDeclarationSyntax
 		public override bool WalkEndNodeDeclaration(EndNodeDeclarationSyntax endNodeDeclarationSyntax) { 
@@ -502,12 +502,6 @@ namespace Nav.Language.Tests {
 			Assert.That(MethodsCalled.ContainsKey("WalkCodeDeclaration"), Is.True, "WalkCodeDeclaration not called.");	
 			Assert.That(MethodsCalled.ContainsKey("PostWalkCodeDeclaration"), Is.True, "PostWalkCodeDeclaration not called.");
 		}
-		// CompilationUnit
-		[Test]
-		public void TestWalkCompilationUnit() {
-			Assert.That(MethodsCalled.ContainsKey("WalkCompilationUnit"), Is.True, "WalkCompilationUnit not called.");	
-			Assert.That(MethodsCalled.ContainsKey("PostWalkCompilationUnit"), Is.True, "PostWalkCompilationUnit not called.");
-		}
 		// TaskDeclaration
 		[Test]
 		public void TestWalkTaskDeclaration() {
@@ -531,6 +525,12 @@ namespace Nav.Language.Tests {
 		public void TestWalkArrayRankSpecifier() {
 			Assert.That(MethodsCalled.ContainsKey("WalkArrayRankSpecifier"), Is.True, "WalkArrayRankSpecifier not called.");	
 			Assert.That(MethodsCalled.ContainsKey("PostWalkArrayRankSpecifier"), Is.True, "PostWalkArrayRankSpecifier not called.");
+		}
+		// CodeGenerationUnit
+		[Test]
+		public void TestWalkCodeGenerationUnit() {
+			Assert.That(MethodsCalled.ContainsKey("WalkCodeGenerationUnit"), Is.True, "WalkCodeGenerationUnit not called.");	
+			Assert.That(MethodsCalled.ContainsKey("PostWalkCodeGenerationUnit"), Is.True, "PostWalkCodeGenerationUnit not called.");
 		}
 		// EndNodeDeclaration
 		[Test]

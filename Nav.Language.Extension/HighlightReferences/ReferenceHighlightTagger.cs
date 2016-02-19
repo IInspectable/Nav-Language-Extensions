@@ -163,10 +163,10 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
                 yield break;
             }
 
-            var symbol = semanticModelResult.CompilationUnit.Symbols.FindAtPosition(point.Value.Position);
+            var symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position);
 
             if (symbol == null && point.Value!= point.Value.GetContainingLine().Start) {
-                symbol = semanticModelResult.CompilationUnit.Symbols.FindAtPosition(point.Value.Position-1);
+                symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position-1);
             }
 
             if (symbol == null) {

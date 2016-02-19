@@ -25,11 +25,11 @@ namespace Pharmatechnik.Nav.Language.Internal {
             get { return _tokens; }
         }
 
-        #region CompilationUnit
+        #region CodeGenerationUnit
 
-        public override SyntaxNode VisitCompilationUnit([NotNull] NavGrammarParser.CompilationUnitContext context) {
+        public override SyntaxNode VisitCodeGenerationUnit([NotNull] NavGrammarParser.CodeGenerationUnitContext context) {
 
-            var node = new CompilationUnitSyntax(
+            var node = new CodeGenerationUnitSyntax(
                 CreateExtent(context),
                 codeNamespaceDeclaration: 
                 context.codeNamespaceDeclaration()

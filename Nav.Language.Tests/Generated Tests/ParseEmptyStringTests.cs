@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 03.01.2016 12:11:29
+// HINWEIS: Diese Datei wurde am 19.02.2016 21:28:45
 //			automatisch generiert!
 //==================================================
 using NUnit.Framework;
@@ -193,12 +193,6 @@ namespace Nav.Language.Tests {
             Assert.That(codeDeclarationSyntax.CloseBracket.Extent.IsMissing, Is.True, "Extent des Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", codeDeclarationSyntax.CloseBracket);
 		}
 
-        // CompilationUnitSyntax
-		[Test]
-		public void TestCompilationUnitSyntax() {
-			
-		}
-
         // TaskDeclarationSyntax
 		[Test]
 		public void TestTaskDeclarationSyntax() {
@@ -255,6 +249,12 @@ namespace Nav.Language.Tests {
             // CloseBracket
             Assert.That(arrayRankSpecifierSyntax.CloseBracket.IsMissing, Is.True, "Das Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", arrayRankSpecifierSyntax.CloseBracket);
             Assert.That(arrayRankSpecifierSyntax.CloseBracket.Extent.IsMissing, Is.True, "Extent des Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", arrayRankSpecifierSyntax.CloseBracket);
+		}
+
+        // CodeGenerationUnitSyntax
+		[Test]
+		public void TestCodeGenerationUnitSyntax() {
+			
 		}
 
         // EndNodeDeclarationSyntax

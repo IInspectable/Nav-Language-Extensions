@@ -111,7 +111,7 @@ namespace Pharmatechnik.Nav.Language {
             using (var sr = new StreamReader(filePath, encoding, true)) {
 
                 return ParseTextCore(sourceText       : sr.ReadToEnd(), 
-                                     treeCreator      : parser => parser.compilationUnit(), 
+                                     treeCreator      : parser => parser.codeGenerationUnit(), 
                                      filePath         : filePath, 
                                      encoding         : sr.CurrentEncoding, 
                                      cancellationToken: cancellationToken);
@@ -121,7 +121,7 @@ namespace Pharmatechnik.Nav.Language {
         public static SyntaxTree ParseText(string text, string filePath=null, CancellationToken cancellationToken = default(CancellationToken)) {
 
             return ParseTextCore(sourceText       : text, 
-                                 treeCreator      : parser => parser.compilationUnit(), 
+                                 treeCreator      : parser => parser.codeGenerationUnit(), 
                                  filePath         : filePath, 
                                  encoding         : null, 
                                  cancellationToken: cancellationToken);

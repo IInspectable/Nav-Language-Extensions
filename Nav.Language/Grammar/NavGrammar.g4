@@ -6,7 +6,7 @@ grammar NavGrammar;
 
 import NavTokens;
 
-compilationUnit
+codeGenerationUnit
     :   (codeNamespaceDeclaration
          codeUsingDeclaration*
         )?
