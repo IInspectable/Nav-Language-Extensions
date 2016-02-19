@@ -104,14 +104,14 @@ namespace Pharmatechnik.Nav.Language.Extension {
                 var syntaxTree = parseResult.SyntaxTree;
                 var snapshot   = parseResult.Snapshot;
 
-                var compilationUnitSyntax = syntaxTree.GetRoot() as CompilationUnitSyntax;
-                if(compilationUnitSyntax == null) {
+                var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
+                if(codeGenerationUnitSyntax == null) {
                     return null;
                 }
 
-                var compilationUnit = CompilationUnit.FromCompilationUnitSyntax(compilationUnitSyntax, cancellationToken);
+                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
 
-                return new SemanticModelResult(compilationUnit, snapshot);
+                return new SemanticModelResult(codeGenerationUnit, snapshot);
 
             }, cancellationToken).ConfigureAwait(false);
         }

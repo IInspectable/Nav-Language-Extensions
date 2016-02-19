@@ -9,13 +9,13 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
     sealed class SemanticModelResult {
 
-        internal SemanticModelResult([NotNull] CompilationUnit compilationUnit, [NotNull] ITextSnapshot snapshot) {
-            CompilationUnit = compilationUnit;
+        internal SemanticModelResult([NotNull] CodeGenerationUnit codeGenerationUnit, [NotNull] ITextSnapshot snapshot) {
+            CodeGenerationUnit = codeGenerationUnit;
             Snapshot = snapshot;
         }
 
         [NotNull]
-        public CompilationUnit CompilationUnit { get; }
+        public CodeGenerationUnit CodeGenerationUnit { get; }
 
         [NotNull]
         public ITextSnapshot Snapshot { get; }

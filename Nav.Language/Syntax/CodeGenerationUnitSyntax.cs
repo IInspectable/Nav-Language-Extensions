@@ -11,13 +11,13 @@ namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
     [SampleSyntax("")]
-    public partial class CompilationUnitSyntax : SyntaxNode {
+    public partial class CodeGenerationUnitSyntax : SyntaxNode {
 
         readonly CodeNamespaceDeclarationSyntax            _codeNamespace;
         readonly IReadOnlyList<CodeUsingDeclarationSyntax> _codeUsings;
         readonly IReadOnlyList<MemberDeclarationSyntax>    _members;
 
-        internal CompilationUnitSyntax(
+        internal CodeGenerationUnitSyntax(
                 TextExtent extent,
                 CodeNamespaceDeclarationSyntax            codeNamespaceDeclaration,
                 IReadOnlyList<CodeUsingDeclarationSyntax> codeUsingDeclarations,

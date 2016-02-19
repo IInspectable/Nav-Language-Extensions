@@ -70,7 +70,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
         public static ParseMethod GetParseMethod(ITextBuffer textBuffer) {
             ParseMethod parseMethod;
             textBuffer.Properties.TryGetProperty(ParseMethodKey, out parseMethod);
-            return parseMethod ?? Syntax.ParseCompilationUnit;
+            return parseMethod ?? Syntax.ParseCodeGenerationUnit;
         }
 
         public static TextBufferScopedValue<ParserService> GetOrCreateSingelton(ITextBuffer textBuffer) {

@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 28.01.2016 20:57:12
+// HINWEIS: Diese Datei wurde am 19.02.2016 21:29:39
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -73,10 +73,6 @@ namespace Pharmatechnik.Nav.Language {
 			return (CodeDeclarationSyntax)SyntaxTree.ParseTextCore(text, parser => parser.codeDeclaration(), filePath, null, cancellationToken).GetRoot();		
 		}
 
-		public static CompilationUnitSyntax ParseCompilationUnit(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
-			return (CompilationUnitSyntax)SyntaxTree.ParseTextCore(text, parser => parser.compilationUnit(), filePath, null, cancellationToken).GetRoot();		
-		}
-
 		public static TaskDeclarationSyntax ParseTaskDeclaration(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
 			return (TaskDeclarationSyntax)SyntaxTree.ParseTextCore(text, parser => parser.taskDeclaration(), filePath, null, cancellationToken).GetRoot();		
 		}
@@ -91,6 +87,10 @@ namespace Pharmatechnik.Nav.Language {
 
 		public static ArrayRankSpecifierSyntax ParseArrayRankSpecifier(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
 			return (ArrayRankSpecifierSyntax)SyntaxTree.ParseTextCore(text, parser => parser.arrayRankSpecifier(), filePath, null, cancellationToken).GetRoot();		
+		}
+
+		public static CodeGenerationUnitSyntax ParseCodeGenerationUnit(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
+			return (CodeGenerationUnitSyntax)SyntaxTree.ParseTextCore(text, parser => parser.codeGenerationUnit(), filePath, null, cancellationToken).GetRoot();		
 		}
 
 		public static EndNodeDeclarationSyntax ParseEndNodeDeclaration(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {

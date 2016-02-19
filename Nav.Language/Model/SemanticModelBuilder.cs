@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language {
     
-    sealed class CompilationUnitBuilder {
+    sealed class CodeGenerationUnitBuilder {
         
         readonly List<Diagnostic> _diagnostics;
         readonly SymbolCollection<TaskDeclarationSymbol> _taskDeclarations;
@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language {
         readonly List<string>  _codeUsings;
         readonly List<ISymbol> _symbols;
 
-        public CompilationUnitBuilder() {
+        public CodeGenerationUnitBuilder() {
             _diagnostics      = new List<Diagnostic>();
             _taskDeclarations = new SymbolCollection<TaskDeclarationSymbol>();
             _taskDefinitions  = new SymbolCollection<TaskDefinitionSymbol>();
@@ -27,17 +27,17 @@ namespace Pharmatechnik.Nav.Language {
             _symbols          = new List<ISymbol>();
         }
 
-        public static CompilationUnit FromCompilationUnit(CompilationUnitSyntax syntax, CancellationToken cancellationToken) {
+        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
 
             if (syntax == null) {
                 throw new ArgumentNullException(nameof(syntax));
             }
 
-            var builder = new CompilationUnitBuilder();
+            var builder = new CodeGenerationUnitBuilder();
 
             builder.Process(syntax, cancellationToken);
 
-            var model=new CompilationUnit(
+            var model=new CodeGenerationUnit(
                 syntax, 
                 builder._codeUsings, 
                 builder._taskDeclarations, 
@@ -50,20 +50,20 @@ namespace Pharmatechnik.Nav.Language {
         }
         
 
-        void Process(CompilationUnitSyntax syntax, CancellationToken cancellationToken) {
+        void Process(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
             ProcessNavLanguage(syntax, cancellationToken);
             ProcessCodeLanguage(syntax, cancellationToken);
             ProcessFinalSemanticErrors(syntax, cancellationToken);
         }
 
-        void ProcessNavLanguage(CompilationUnitSyntax syntax, CancellationToken cancellationToken) {
+        void ProcessNavLanguage(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
 
             cancellationToken.ThrowIfCancellationRequested();
 
             //====================
             // 1. TaskDeclarations 
             //====================
-            var taskDeclarationResult = TaskDeclarationSymbolBuilder.FromCompilationUnit(syntax, cancellationToken);
+            var taskDeclarationResult = TaskDeclarationSymbolBuilder.FromCodeGenerationUnitSyntax(syntax, cancellationToken);
 
             _diagnostics.AddRange(taskDeclarationResult.Diagnostics);
             _taskDeclarations.AddRange(taskDeclarationResult.TaskDeklarations);
@@ -118,7 +118,7 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
-        void ProcessCodeLanguage(CompilationUnitSyntax syntax, CancellationToken cancellationToken) {
+        void ProcessCodeLanguage(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
             foreach (var codeUsingDeclarationSyntax in syntax.DescendantNodes().OfType<CodeUsingDeclarationSyntax>()) {
 
                 cancellationToken.ThrowIfCancellationRequested();
@@ -147,7 +147,7 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
-        void ProcessFinalSemanticErrors(CompilationUnitSyntax syntax, CancellationToken cancellationToken) {
+        void ProcessFinalSemanticErrors(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
 
             // =====================
             // Unused Includes

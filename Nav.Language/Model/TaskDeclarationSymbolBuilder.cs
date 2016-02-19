@@ -39,18 +39,18 @@ namespace Pharmatechnik.Nav.Language {
             _includes              = new SymbolCollection<IncludeSymbol>();
         }
       
-        public static TaskDeclarationResult FromCompilationUnit(CompilationUnitSyntax syntax, CancellationToken cancellationToken) {
-            return FromCompilationUnit(syntax, false, cancellationToken);
+        public static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
+            return FromCodeGenerationUnitSyntax(syntax, false, cancellationToken);
         }
 
-        static TaskDeclarationResult FromCompilationUnit(CompilationUnitSyntax syntax, bool processAsIncludedFile, CancellationToken cancellationToken) {
+        static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, bool processAsIncludedFile, CancellationToken cancellationToken) {
             var builder = new TaskDeclarationSymbolBuilder(processAsIncludedFile);
-            builder.ProcessCompilationUnit(syntax, cancellationToken);
+            builder.ProcessCodeGenerationUnitSyntax(syntax, cancellationToken);
 
             return new TaskDeclarationResult(builder._diagnostics, builder._taskDeklarations, builder._includes);
         }
 
-        void ProcessCompilationUnit(CompilationUnitSyntax syntax, CancellationToken cancellationToken) {
+        void ProcessCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
 
             if (!_processAsIncludedFile) {
                 foreach(var includeDirectiveSyntax in syntax.DescendantNodes().OfType<IncludeDirectiveSyntax>()) {
@@ -114,7 +114,7 @@ namespace Pharmatechnik.Nav.Language {
                 
                 var includeFileSyntax = SyntaxTree.FromFile(filePath, cancellationToken);
                 var fileLocation      = new Location(filePath);
-                var result            = FromCompilationUnit(includeFileSyntax.GetRoot() as CompilationUnitSyntax, processAsIncludedFile: true, cancellationToken: cancellationToken);
+                var result            = FromCodeGenerationUnitSyntax(includeFileSyntax.GetRoot() as CodeGenerationUnitSyntax, processAsIncludedFile: true, cancellationToken: cancellationToken);
                 var diagnostics       = includeFileSyntax.Diagnostics.Union(result.Diagnostics).ToList();
                 var include           = new IncludeSymbol(filePath, location, fileLocation, includeDirectiveSyntax, diagnostics, result.TaskDeklarations);
 

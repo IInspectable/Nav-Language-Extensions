@@ -105,7 +105,7 @@
     <Compile Include="Model\NodeSymbol.cs" />
     <Compile Include="Model\TaskDefinitionSymbolBuilder.cs" />
     <Compile Include="Model\SemanticModelBuilder.cs" />
-    <Compile Include="Model\CompilationUnit.cs" />
+    <Compile Include="Model\CodeGenerationUnit.cs" />
     <Compile Include="Model\Symbol.cs" />
     <Compile Include="Model\SymbolCollection.cs" />
     <Compile Include="Model\TaskDeclarationSymbolBuilder.cs" />
@@ -175,7 +175,7 @@
     <Compile Include="Syntax\TargetNodeSyntax.cs" />
     <Compile Include="Syntax\TaskNodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\TaskDefinitionSyntax.cs" />
-    <Compile Include="Syntax\CompilationUnitSyntax.cs" />
+    <Compile Include="Syntax\CodeGenerationUnitSyntax.cs" />
     <Compile Include="Syntax\MemberDeclarationSyntax.cs" />
     <Compile Include="Syntax\IncludeDirectiveSyntax.cs" />
     <Compile Include="Syntax\TaskDeclarationSyntax.cs" />

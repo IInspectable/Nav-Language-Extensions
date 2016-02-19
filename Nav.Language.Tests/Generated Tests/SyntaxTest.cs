@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 27.11.2015 14:50:15
+// HINWEIS: Diese Datei wurde am 19.02.2016 21:28:51
 //			automatisch generiert!
 //==================================================
 using NUnit.Framework;
@@ -236,20 +236,6 @@ namespace Nav.Language.Tests {
 		}
 
 		[Test]
-		[Description("Syntax: ''\r\n")]
-		public void TestCompilationUnitSyntax() {
-			var compilationUnitSyntax=Syntax.ParseCompilationUnit(SampleSyntax.Of<CompilationUnitSyntax>());
-			
-			foreach(var diagnostic in compilationUnitSyntax.SyntaxTree.Diagnostics) {
-				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
-			}
-			Assert.That(compilationUnitSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
-			foreach (var token in compilationUnitSyntax.ChildTokens()) {
-		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
-		    }
-		}
-
-		[Test]
 		[Description("Syntax: 'taskref Task { };'\r\n")]
 		public void TestTaskDeclarationSyntax() {
 			var taskDeclarationSyntax=Syntax.ParseTaskDeclaration(SampleSyntax.Of<TaskDeclarationSyntax>());
@@ -301,6 +287,20 @@ namespace Nav.Language.Tests {
 			}
 			Assert.That(arrayRankSpecifierSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
 			foreach (var token in arrayRankSpecifierSyntax.ChildTokens()) {
+		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
+		    }
+		}
+
+		[Test]
+		[Description("Syntax: ''\r\n")]
+		public void TestCodeGenerationUnitSyntax() {
+			var codeGenerationUnitSyntax=Syntax.ParseCodeGenerationUnit(SampleSyntax.Of<CodeGenerationUnitSyntax>());
+			
+			foreach(var diagnostic in codeGenerationUnitSyntax.SyntaxTree.Diagnostics) {
+				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
+			}
+			Assert.That(codeGenerationUnitSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			foreach (var token in codeGenerationUnitSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
 		}
@@ -586,7 +586,7 @@ namespace Nav.Language.Tests {
 		}
 
 		[Test]
-		[Description("Syntax: 'Node:Exit --> TargetNode if Condition do Instruction;'\r\n")]
+		[Description("Syntax: 'SourceNode:ExitIdentifier --> TargetNode if Condition do Instruction;'\r\n")]
 		public void TestExitTransitionDefinitionSyntax() {
 			var exitTransitionDefinitionSyntax=Syntax.ParseExitTransitionDefinition(SampleSyntax.Of<ExitTransitionDefinitionSyntax>());
 			

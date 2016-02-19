@@ -37,7 +37,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
             var classificationType = ClassificationTypeRegistryService.GetClassificationType(ClassificationTypeNames.DeadCode);
 
             var extent      = TextExtent.FromBounds(span.Start.Position, span.End.Position);
-            var diagnostics = semanticModelResult.CompilationUnit.Diagnostics;
+            var diagnostics = semanticModelResult.CodeGenerationUnit.Diagnostics;
             var candidates  = diagnostics.Where(diagnostic => diagnostic.Category == DiagnosticCategory.DeadCode)
                                          .Where(d => d.Location.Extent.IntersectsWith(extent)); 
 

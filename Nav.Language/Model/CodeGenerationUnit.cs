@@ -11,9 +11,9 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language {
 
-    public sealed class CompilationUnit {
+    public sealed class CodeGenerationUnit {
 
-        internal CompilationUnit(CompilationUnitSyntax syntax,
+        internal CodeGenerationUnit(CodeGenerationUnitSyntax syntax,
                                IReadOnlyList<string> codeUsings,
                                IReadOnlySymbolCollection<ITaskDeclarationSymbol> taskDeclarations,
                                IReadOnlySymbolCollection<ITaskDefinitionSymbol> taskDefinitions,
@@ -35,7 +35,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [NotNull]
-        public CompilationUnitSyntax Syntax { get; }
+        public CodeGenerationUnitSyntax Syntax { get; }
 
         [NotNull]
         public string CodeNamespace {
@@ -60,8 +60,8 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public IReadOnlyList<Diagnostic> Diagnostics { get; }
         
-        public static CompilationUnit FromCompilationUnitSyntax(CompilationUnitSyntax syntax, CancellationToken cancellationToken = default(CancellationToken)) {
-            return CompilationUnitBuilder.FromCompilationUnit(syntax, cancellationToken);
+        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default(CancellationToken)) {
+            return CodeGenerationUnitBuilder.FromCodeGenerationUnitSyntax(syntax, cancellationToken);
         }       
     }
 }

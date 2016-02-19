@@ -53,21 +53,21 @@ namespace TestClient
             int sumTokens = 0;
             int files     = 0;
             
-            var compilationUnits=Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories)
+            var codeGenerationUnits=Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories)
                                           .AsParallel().WithMergeOptions(ParallelMergeOptions.NotBuffered) // Sofortige Ausgabe der Ergebnisse
-                                          .Select(BuildCompilationUnit);
+                                          .Select(BuildCodeGenerationUnit);
 
-            foreach(var compilationUnit in compilationUnits.Where(cu => cu!=null)) {
+            foreach(var codeGenerationUnit in codeGenerationUnits.Where(cu => cu!=null)) {
 
                 files++;
 
-                var syntaxTree = compilationUnit.Syntax.SyntaxTree;
+                var syntaxTree = codeGenerationUnit.Syntax.SyntaxTree;
                 var file       = syntaxTree.FileInfo;
 
                 bool writeEndSeparator = false;
 
                 if(syntaxTree.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error) || 
-                   compilationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
+                   codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
                     WriteInfo("");
                     WriteInfo("File:");
                     WriteInfo("=====");
@@ -82,11 +82,11 @@ namespace TestClient
                     WriteErrorDiagnostics(syntaxTree.Diagnostics);
                 }
 
-                if (compilationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
+                if (codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
                     WriteInfo("");
                     WriteInfo("Semantikfehler:");
                     WriteInfo("===============");
-                    WriteErrorDiagnostics(compilationUnit.Diagnostics);
+                    WriteErrorDiagnostics(codeGenerationUnit.Diagnostics);
                 }
 
                 if (writeEndSeparator) {
@@ -100,13 +100,13 @@ namespace TestClient
             Console.WriteLine("maxTokens: {0}, sumTokens: {1}, Files {2}", maxTokens, sumTokens, files);
         }
       
-        CompilationUnit BuildCompilationUnit(string filename) {
+        CodeGenerationUnit BuildCodeGenerationUnit(string filename) {
             try {
 
                 var syntaxTree      = SyntaxTree.FromFile(filename);
-                var compilationUnit = CompilationUnit.FromCompilationUnitSyntax(syntaxTree.GetRoot() as CompilationUnitSyntax);
+                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(syntaxTree.GetRoot() as CodeGenerationUnitSyntax);
 
-                return compilationUnit;
+                return codeGenerationUnit;
             }
             catch (Exception e) {
                 WriteError("Unerwarteter Fehler beim Parsen von '{0}'", filename);

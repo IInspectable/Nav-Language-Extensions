@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 11.10.2015 17:46:43
+// HINWEIS: Diese Datei wurde am 19.02.2016 21:29:54
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -107,6 +107,18 @@ namespace Pharmatechnik.Nav.Language {
 		}
 	}
 
+	partial class CodeGenerationUnitSyntax {
+		public override void Walk(SyntaxNodeWalker walker) {
+			if(!walker.WalkCodeGenerationUnit(this)) {
+				return;
+			}
+			foreach(var child in ChildNodes()) {
+				child.Walk(walker);
+			}
+			walker.PostWalkCodeGenerationUnit(this);
+		}
+	}
+
 	partial class CodeNamespaceDeclarationSyntax {
 		public override void Walk(SyntaxNodeWalker walker) {
 			if(!walker.WalkCodeNamespaceDeclaration(this)) {
@@ -164,18 +176,6 @@ namespace Pharmatechnik.Nav.Language {
 				child.Walk(walker);
 			}
 			walker.PostWalkCodeUsingDeclaration(this);
-		}
-	}
-
-	partial class CompilationUnitSyntax {
-		public override void Walk(SyntaxNodeWalker walker) {
-			if(!walker.WalkCompilationUnit(this)) {
-				return;
-			}
-			foreach(var child in ChildNodes()) {
-				child.Walk(walker);
-			}
-			walker.PostWalkCompilationUnit(this);
 		}
 	}
 
@@ -623,21 +623,21 @@ namespace Pharmatechnik.Nav.Language {
 		public virtual bool WalkNonModalEdge(NonModalEdgeSyntax nonModalEdgeSyntax) { return DefaultWalk(nonModalEdgeSyntax); }
 		public virtual void PostWalkNonModalEdge(NonModalEdgeSyntax nonModalEdgeSyntax) { }
 
-		// StringLiteralSyntax
-		public virtual bool WalkStringLiteral(StringLiteralSyntax stringLiteralSyntax) { return DefaultWalk(stringLiteralSyntax); }
-		public virtual void PostWalkStringLiteral(StringLiteralSyntax stringLiteralSyntax) { }
-
-		// SignalTriggerSyntax
-		public virtual bool WalkSignalTrigger(SignalTriggerSyntax signalTriggerSyntax) { return DefaultWalk(signalTriggerSyntax); }
-		public virtual void PostWalkSignalTrigger(SignalTriggerSyntax signalTriggerSyntax) { }
+		// EndTargetNodeSyntax
+		public virtual bool WalkEndTargetNode(EndTargetNodeSyntax endTargetNodeSyntax) { return DefaultWalk(endTargetNodeSyntax); }
+		public virtual void PostWalkEndTargetNode(EndTargetNodeSyntax endTargetNodeSyntax) { }
 
 		// ParameterListSyntax
 		public virtual bool WalkParameterList(ParameterListSyntax parameterListSyntax) { return DefaultWalk(parameterListSyntax); }
 		public virtual void PostWalkParameterList(ParameterListSyntax parameterListSyntax) { }
 
-		// EndTargetNodeSyntax
-		public virtual bool WalkEndTargetNode(EndTargetNodeSyntax endTargetNodeSyntax) { return DefaultWalk(endTargetNodeSyntax); }
-		public virtual void PostWalkEndTargetNode(EndTargetNodeSyntax endTargetNodeSyntax) { }
+		// SignalTriggerSyntax
+		public virtual bool WalkSignalTrigger(SignalTriggerSyntax signalTriggerSyntax) { return DefaultWalk(signalTriggerSyntax); }
+		public virtual void PostWalkSignalTrigger(SignalTriggerSyntax signalTriggerSyntax) { }
+
+		// StringLiteralSyntax
+		public virtual bool WalkStringLiteral(StringLiteralSyntax stringLiteralSyntax) { return DefaultWalk(stringLiteralSyntax); }
+		public virtual void PostWalkStringLiteral(StringLiteralSyntax stringLiteralSyntax) { }
 
 		// InitSourceNodeSyntax
 		public virtual bool WalkInitSourceNode(InitSourceNodeSyntax initSourceNodeSyntax) { return DefaultWalk(initSourceNodeSyntax); }
@@ -650,10 +650,6 @@ namespace Pharmatechnik.Nav.Language {
 		// CodeDeclarationSyntax
 		public virtual bool WalkCodeDeclaration(CodeDeclarationSyntax codeDeclarationSyntax) { return DefaultWalk(codeDeclarationSyntax); }
 		public virtual void PostWalkCodeDeclaration(CodeDeclarationSyntax codeDeclarationSyntax) { }
-
-		// CompilationUnitSyntax
-		public virtual bool WalkCompilationUnit(CompilationUnitSyntax compilationUnitSyntax) { return DefaultWalk(compilationUnitSyntax); }
-		public virtual void PostWalkCompilationUnit(CompilationUnitSyntax compilationUnitSyntax) { }
 
 		// TaskDeclarationSyntax
 		public virtual bool WalkTaskDeclaration(TaskDeclarationSyntax taskDeclarationSyntax) { return DefaultWalk(taskDeclarationSyntax); }
@@ -671,21 +667,25 @@ namespace Pharmatechnik.Nav.Language {
 		public virtual bool WalkArrayRankSpecifier(ArrayRankSpecifierSyntax arrayRankSpecifierSyntax) { return DefaultWalk(arrayRankSpecifierSyntax); }
 		public virtual void PostWalkArrayRankSpecifier(ArrayRankSpecifierSyntax arrayRankSpecifierSyntax) { }
 
-		// SpontaneousTriggerSyntax
-		public virtual bool WalkSpontaneousTrigger(SpontaneousTriggerSyntax spontaneousTriggerSyntax) { return DefaultWalk(spontaneousTriggerSyntax); }
-		public virtual void PostWalkSpontaneousTrigger(SpontaneousTriggerSyntax spontaneousTriggerSyntax) { }
+		// CodeGenerationUnitSyntax
+		public virtual bool WalkCodeGenerationUnit(CodeGenerationUnitSyntax codeGenerationUnitSyntax) { return DefaultWalk(codeGenerationUnitSyntax); }
+		public virtual void PostWalkCodeGenerationUnit(CodeGenerationUnitSyntax codeGenerationUnitSyntax) { }
 
 		// EndNodeDeclarationSyntax
 		public virtual bool WalkEndNodeDeclaration(EndNodeDeclarationSyntax endNodeDeclarationSyntax) { return DefaultWalk(endNodeDeclarationSyntax); }
 		public virtual void PostWalkEndNodeDeclaration(EndNodeDeclarationSyntax endNodeDeclarationSyntax) { }
 
-		// ElseConditionClauseSyntax
-		public virtual bool WalkElseConditionClause(ElseConditionClauseSyntax elseConditionClauseSyntax) { return DefaultWalk(elseConditionClauseSyntax); }
-		public virtual void PostWalkElseConditionClause(ElseConditionClauseSyntax elseConditionClauseSyntax) { }
+		// SpontaneousTriggerSyntax
+		public virtual bool WalkSpontaneousTrigger(SpontaneousTriggerSyntax spontaneousTriggerSyntax) { return DefaultWalk(spontaneousTriggerSyntax); }
+		public virtual void PostWalkSpontaneousTrigger(SpontaneousTriggerSyntax spontaneousTriggerSyntax) { }
 
 		// CodeBaseDeclarationSyntax
 		public virtual bool WalkCodeBaseDeclaration(CodeBaseDeclarationSyntax codeBaseDeclarationSyntax) { return DefaultWalk(codeBaseDeclarationSyntax); }
 		public virtual void PostWalkCodeBaseDeclaration(CodeBaseDeclarationSyntax codeBaseDeclarationSyntax) { }
+
+		// ElseConditionClauseSyntax
+		public virtual bool WalkElseConditionClause(ElseConditionClauseSyntax elseConditionClauseSyntax) { return DefaultWalk(elseConditionClauseSyntax); }
+		public virtual void PostWalkElseConditionClause(ElseConditionClauseSyntax elseConditionClauseSyntax) { }
 
 		// ExitNodeDeclarationSyntax
 		public virtual bool WalkExitNodeDeclaration(ExitNodeDeclarationSyntax exitNodeDeclarationSyntax) { return DefaultWalk(exitNodeDeclarationSyntax); }
@@ -703,29 +703,25 @@ namespace Pharmatechnik.Nav.Language {
 		public virtual bool WalkViewNodeDeclaration(ViewNodeDeclarationSyntax viewNodeDeclarationSyntax) { return DefaultWalk(viewNodeDeclarationSyntax); }
 		public virtual void PostWalkViewNodeDeclaration(ViewNodeDeclarationSyntax viewNodeDeclarationSyntax) { }
 
-		// IdentifierSourceNodeSyntax
-		public virtual bool WalkIdentifierSourceNode(IdentifierSourceNodeSyntax identifierSourceNodeSyntax) { return DefaultWalk(identifierSourceNodeSyntax); }
-		public virtual void PostWalkIdentifierSourceNode(IdentifierSourceNodeSyntax identifierSourceNodeSyntax) { }
-
 		// CodeUsingDeclarationSyntax
 		public virtual bool WalkCodeUsingDeclaration(CodeUsingDeclarationSyntax codeUsingDeclarationSyntax) { return DefaultWalk(codeUsingDeclarationSyntax); }
 		public virtual void PostWalkCodeUsingDeclaration(CodeUsingDeclarationSyntax codeUsingDeclarationSyntax) { }
 
-		// NodeDeclarationBlockSyntax
-		public virtual bool WalkNodeDeclarationBlock(NodeDeclarationBlockSyntax nodeDeclarationBlockSyntax) { return DefaultWalk(nodeDeclarationBlockSyntax); }
-		public virtual void PostWalkNodeDeclarationBlock(NodeDeclarationBlockSyntax nodeDeclarationBlockSyntax) { }
+		// IdentifierSourceNodeSyntax
+		public virtual bool WalkIdentifierSourceNode(IdentifierSourceNodeSyntax identifierSourceNodeSyntax) { return DefaultWalk(identifierSourceNodeSyntax); }
+		public virtual void PostWalkIdentifierSourceNode(IdentifierSourceNodeSyntax identifierSourceNodeSyntax) { }
 
 		// IdentifierTargetNodeSyntax
 		public virtual bool WalkIdentifierTargetNode(IdentifierTargetNodeSyntax identifierTargetNodeSyntax) { return DefaultWalk(identifierTargetNodeSyntax); }
 		public virtual void PostWalkIdentifierTargetNode(IdentifierTargetNodeSyntax identifierTargetNodeSyntax) { }
 
+		// NodeDeclarationBlockSyntax
+		public virtual bool WalkNodeDeclarationBlock(NodeDeclarationBlockSyntax nodeDeclarationBlockSyntax) { return DefaultWalk(nodeDeclarationBlockSyntax); }
+		public virtual void PostWalkNodeDeclarationBlock(NodeDeclarationBlockSyntax nodeDeclarationBlockSyntax) { }
+
 		// TransitionDefinitionSyntax
 		public virtual bool WalkTransitionDefinition(TransitionDefinitionSyntax transitionDefinitionSyntax) { return DefaultWalk(transitionDefinitionSyntax); }
 		public virtual void PostWalkTransitionDefinition(TransitionDefinitionSyntax transitionDefinitionSyntax) { }
-
-		// ElseIfConditionClauseSyntax
-		public virtual bool WalkElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) { return DefaultWalk(elseIfConditionClauseSyntax); }
-		public virtual void PostWalkElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) { }
 
 		// ChoiceNodeDeclarationSyntax
 		public virtual bool WalkChoiceNodeDeclaration(ChoiceNodeDeclarationSyntax choiceNodeDeclarationSyntax) { return DefaultWalk(choiceNodeDeclarationSyntax); }
@@ -743,17 +739,21 @@ namespace Pharmatechnik.Nav.Language {
 		public virtual bool WalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { return DefaultWalk(dialogNodeDeclarationSyntax); }
 		public virtual void PostWalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { }
 
+		// ElseIfConditionClauseSyntax
+		public virtual bool WalkElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) { return DefaultWalk(elseIfConditionClauseSyntax); }
+		public virtual void PostWalkElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) { }
+
 		// IdentifierOrStringListSyntax
 		public virtual bool WalkIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) { return DefaultWalk(identifierOrStringListSyntax); }
 		public virtual void PostWalkIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) { }
 
-		// ExitTransitionDefinitionSyntax
-		public virtual bool WalkExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax) { return DefaultWalk(exitTransitionDefinitionSyntax); }
-		public virtual void PostWalkExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax) { }
-
 		// CodeNamespaceDeclarationSyntax
 		public virtual bool WalkCodeNamespaceDeclaration(CodeNamespaceDeclarationSyntax codeNamespaceDeclarationSyntax) { return DefaultWalk(codeNamespaceDeclarationSyntax); }
 		public virtual void PostWalkCodeNamespaceDeclaration(CodeNamespaceDeclarationSyntax codeNamespaceDeclarationSyntax) { }
+
+		// ExitTransitionDefinitionSyntax
+		public virtual bool WalkExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax) { return DefaultWalk(exitTransitionDefinitionSyntax); }
+		public virtual void PostWalkExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax) { }
 
 		// CodeGenerateToDeclarationSyntax
 		public virtual bool WalkCodeGenerateToDeclaration(CodeGenerateToDeclarationSyntax codeGenerateToDeclarationSyntax) { return DefaultWalk(codeGenerateToDeclarationSyntax); }

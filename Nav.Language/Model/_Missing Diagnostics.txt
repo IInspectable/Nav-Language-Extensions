@@ -13,8 +13,3 @@ if (result.ContainsKey(target)) {
                                               " from the same node (maybe via choices) - sorry, this is not allowed!");
                 }
             }                
-
-//  Wenn eine inkludierte Datei Fehler hat, soll dies als Warnung/Fehler angezeigt werden.
-
-// 
-* Init nodes Groß Kleinschreibung ist immer egal...

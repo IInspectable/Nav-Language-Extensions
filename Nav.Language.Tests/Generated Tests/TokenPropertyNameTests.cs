@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 04.10.2015 21:09:17
+// HINWEIS: Diese Datei wurde am 19.02.2016 21:28:59
 //			automatisch generiert!
 //==================================================
 using NUnit.Framework;
@@ -319,25 +319,6 @@ namespace Nav.Language.Tests {
 			}
 		}
 
-        // CompilationUnitSyntax
-		[Test]
-		public void TestCompilationUnitSyntax() {
-		
-			var tokenProps = typeof(CompilationUnitSyntax).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                             .Where(m => m.PropertyType ==typeof(SyntaxToken)).ToList();	
-			if(!tokenProps.Any()) {
-				return;
-			}		
-			var syntax=Syntax.ParseCompilationUnit(SampleSyntax.Of<CompilationUnitSyntax>());
-			foreach (var prop in tokenProps) {    
-				if(Attribute.IsDefined(prop, typeof(SuppressCodeSanityCheckAttribute))) {
-					continue;
-				}
-				var tokenType= ((SyntaxToken)prop.GetValue(syntax, null)).Type;
-				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
-			}
-		}
-
         // TaskDeclarationSyntax
 		[Test]
 		public void TestTaskDeclarationSyntax() {
@@ -405,6 +386,25 @@ namespace Nav.Language.Tests {
 				return;
 			}		
 			var syntax=Syntax.ParseArrayRankSpecifier(SampleSyntax.Of<ArrayRankSpecifierSyntax>());
+			foreach (var prop in tokenProps) {    
+				if(Attribute.IsDefined(prop, typeof(SuppressCodeSanityCheckAttribute))) {
+					continue;
+				}
+				var tokenType= ((SyntaxToken)prop.GetValue(syntax, null)).Type;
+				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
+			}
+		}
+
+        // CodeGenerationUnitSyntax
+		[Test]
+		public void TestCodeGenerationUnitSyntax() {
+		
+			var tokenProps = typeof(CodeGenerationUnitSyntax).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                             .Where(m => m.PropertyType ==typeof(SyntaxToken)).ToList();	
+			if(!tokenProps.Any()) {
+				return;
+			}		
+			var syntax=Syntax.ParseCodeGenerationUnit(SampleSyntax.Of<CodeGenerationUnitSyntax>());
 			foreach (var prop in tokenProps) {    
 				if(Attribute.IsDefined(prop, typeof(SuppressCodeSanityCheckAttribute))) {
 					continue;
