@@ -35,20 +35,32 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public abstract IEnumerable<IEdge> GetIncomingEdges();
-        public abstract IEnumerable<IEdge> GetOutgoingEdges();
+        public abstract IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null);
 
         internal static IEnumerable<IEdge> ResolveChoice<TEdge>(TEdge edge) where TEdge : IEdge {
+            return ResolveChoice(edge, null);
+        }
+
+        internal static IEnumerable<IEdge> ResolveChoice<TEdge>(TEdge edge, HashSet<IEdge> fetched) where TEdge : IEdge {
+
+            fetched = fetched ?? new HashSet<IEdge>();
+
+            if (fetched.Contains(edge)) {
+                yield break;
+            }
+
+            fetched.Add(edge);
+            yield return edge;
 
             var choiceNode = edge.Target?.Declaration as IChoiceNodeSymbol;
+
             if (choiceNode != null) {
 
                 yield return edge;
 
-                foreach (var node in choiceNode.GetOutgoingEdges()) {
-                    yield return node;
+                foreach (var outgoingEdge in choiceNode.GetOutgoingEdges(fetched)) {
+                    yield return outgoingEdge;
                 }
-            } else {
-                yield return edge;
             }
         }
     }
@@ -67,7 +79,7 @@ namespace Pharmatechnik.Nav.Language {
             return Incomings.SelectMany(ResolveChoice);
         }
 
-        public override IEnumerable<IEdge> GetOutgoingEdges() {
+        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null) {
             return Enumerable.Empty<IEdge>();
         }
     }
@@ -86,8 +98,8 @@ namespace Pharmatechnik.Nav.Language {
             return Enumerable.Empty<IEdge>();
         }
 
-        public override IEnumerable<IEdge> GetOutgoingEdges() {
-            return Outgoings.SelectMany(ResolveChoice);
+        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null) {
+            return Outgoings.SelectMany( e=> ResolveChoice(e, fetched));
         }        
     }
 
@@ -108,8 +120,8 @@ namespace Pharmatechnik.Nav.Language {
             return Incomings.SelectMany(ResolveChoice);
         }
 
-        public override IEnumerable<IEdge> GetOutgoingEdges() {
-            return Outgoings.SelectMany(ResolveChoice);
+        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null) {
+            return Outgoings.SelectMany(e => ResolveChoice(e, fetched));
         }
     }
 
