@@ -66,5 +66,5 @@ function UpdateVersion(){
 }
 
 
-#IncreaseBuild "L:\ws\Nav.Language.Extensions\Nav.Language.Extension\UpdateProductVersion.targets" -Verbose
-#IncreaseBuildNumber "L:\ws\Nav.Language.Extensions\Nav.Language\UpdateProductVersion.targets"
+IncreaseBuild "L:\ws\Nav.Language.Extensions\Nav.Language.Extension\UpdateProductVersion.targets" -Verbose
+IncreaseBuild "L:\ws\Nav.Language.Extensions\Nav.Language\UpdateProductVersion.targets"
