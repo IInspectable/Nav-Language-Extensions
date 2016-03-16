@@ -15,10 +15,10 @@ codeGenerationUnit
     ;
 
 memberDeclaration
-	:	includeDirective 
-	|	taskDeclaration 
-	|	taskDefinition
-	;
+    :   includeDirective
+    |   taskDeclaration
+    |   taskDefinition
+    ;
 
 
 includeDirective
@@ -92,7 +92,7 @@ dialogNodeDeclaration
 viewNodeDeclaration
     :   ViewKeyword Identifier Semicolon
     ;
-	
+
 transitionDefinitionBlock
     :   (transitionDefinition | exitTransitionDefinition)*
     ;
@@ -106,102 +106,102 @@ transitionDefinition
 exitTransitionDefinition
     :   identifierSourceNode Colon Identifier edge targetNode conditionClause? doClause? Semicolon
     ;
-	
+
 sourceNode
-	:	initSourceNode 
-	|	identifierSourceNode
-	;
+    :   initSourceNode
+    |   identifierSourceNode
+    ;
 
 initSourceNode
-	:	InitKeyword
-	;
+    :   InitKeyword
+    ;
 
 identifierSourceNode
-	:	Identifier
-	;
+    :   Identifier
+    ;
 
-edge:	goToEdge
-    |	modalEdge
-    |	nonModalEdge
+edge:   goToEdge
+    |   modalEdge
+    |   nonModalEdge
     ;
 
 goToEdge
-    :	GoToEdgeKeyword
+    :   GoToEdgeKeyword
     ;
 
 modalEdge
-    :	ModalEdgeKeyword
+    :   ModalEdgeKeyword
     ;
 
 nonModalEdge
-    :	NonModalEdgeKeyword
+    :   NonModalEdgeKeyword
     ;
 
 targetNode
-    :	endTargetNode
-    |	identifierTargetNode
+    :   endTargetNode
+    |   identifierTargetNode
     ;
 
 endTargetNode
-	:	EndKeyword
-	;
+    :   EndKeyword
+    ;
 
 identifierTargetNode
-	:	Identifier (OpenParen identifierOrStringList CloseParen)?
-	;
+    :   Identifier (OpenParen identifierOrStringList CloseParen)?
+    ;
 
 conditionClause
-    :	ifConditionClause
-    |	elseIfConditionClause
-    |	elseConditionClause
+    :   ifConditionClause
+    |   elseIfConditionClause
+    |   elseConditionClause
     ;
 
 ifConditionClause
-	:	IfKeyword identifierOrString
-	;
+    :   IfKeyword identifierOrString
+    ;
 
 elseIfConditionClause
-	:	elseConditionClause ifConditionClause
-	;
+    :   elseConditionClause ifConditionClause
+    ;
 
 elseConditionClause
-	:	ElseKeyword
-	;
+    :   ElseKeyword
+    ;
 
 doClause
-    :	DoKeyword identifierOrString
+    :   DoKeyword identifierOrString
     ;
 
 trigger
-	:	signalTrigger
-	|	spontaneousTrigger
-	;
+    :   signalTrigger
+    |   spontaneousTrigger
+    ;
 
 spontaneousTrigger
-	:	SpontaneousKeyword 
-	|	SpontKeyword
-	;
+    :   SpontaneousKeyword
+    |   SpontKeyword
+    ;
 
 signalTrigger
-    :	OnKeyword identifierOrStringList
+    :   OnKeyword identifierOrStringList
     ;
 
 identifierOrStringList
-    :	identifierOrString (Comma identifierOrString)*
+    :   identifierOrString (Comma identifierOrString)*
     ;
 
 identifierOrString
-    :	identifier 
-	|	stringLiteral
+    :   identifier
+    |   stringLiteral
     ;
 
 identifier
-	:	Identifier
-	;
+    :   Identifier
+    ;
 
 stringLiteral
-	:	StringLiteral
-	;
+    :   StringLiteral
+    ;
 
 // ==================
 // Code Syntaxen
@@ -211,7 +211,7 @@ codeNamespaceDeclaration
     ;
 
 codeUsingDeclaration
-    :	OpenBracket UsingKeyword identifierOrString CloseBracket
+    :   OpenBracket UsingKeyword identifierOrString CloseBracket
     ;
 
 codeParamsDeclaration
@@ -225,33 +225,33 @@ codeResultDeclaration
 codeBaseDeclaration
     :   OpenBracket BaseKeyword codeType (Colon codeType (Comma codeType)? )? CloseBracket
     ;
-	
+
 codeDeclaration
     :   OpenBracket CodeKeyword StringLiteral* CloseBracket
     ;
 
 codeGenerateToDeclaration
-    :	OpenBracket GeneratetoKeyword StringLiteral CloseBracket
+    :   OpenBracket GeneratetoKeyword StringLiteral CloseBracket
     ;
 
 codeNotImplementedDeclaration
-    :	OpenBracket NotimplementedKeyword CloseBracket
+    :   OpenBracket NotimplementedKeyword CloseBracket
     ;
 
 codeAbstractMethodDeclaration
-    :	OpenBracket AbstractmethodKeyword CloseBracket
+    :   OpenBracket AbstractmethodKeyword CloseBracket
     ;
 
 codeDoNotInjectDeclaration
-    :	OpenBracket DonotinjectKeyword CloseBracket;
+    :   OpenBracket DonotinjectKeyword CloseBracket;
 
 //
 parameterList
-    :	parameter (Comma parameter)*
+    :   parameter (Comma parameter)*
     ;
 
 parameter
-    :	codeType Identifier?
+    :   codeType Identifier?
     ;
 
 codeType
@@ -269,9 +269,9 @@ genericType
     ;
 
 arrayType
-    :	(simpleType | genericType) arrayRankSpecifier+
-    ; 
+    :   (simpleType | genericType) arrayRankSpecifier+
+    ;
 
 arrayRankSpecifier
-    :	OpenBracket CloseBracket
+    :   OpenBracket CloseBracket
     ;
