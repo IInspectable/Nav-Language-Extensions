@@ -216,8 +216,36 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         internal sealed class DeadCodeClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public DeadCodeClassificationFormatDefinition() {
-                DisplayName = "Nav Dead Code";
-                ForegroundOpacity = 0.5;
+                DisplayName       = "Nav Dead Code";
+                ForegroundOpacity = 0.5;               
+            }
+        }
+
+        #endregion
+
+        #region Underline
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(ClassificationTypeNames.Underline)]
+        [BaseDefinition("formal language")]
+        static ClassificationTypeDefinition _underline;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.Underline)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Default)]
+        internal sealed class UnderlineClassificationFormatDefinition : ClassificationFormatDefinition {
+
+            public UnderlineClassificationFormatDefinition() {
+                DisplayName = "Nav Underline";
+
+                var underline = new System.Windows.TextDecoration {
+                    PenThicknessUnit = System.Windows.TextDecorationUnit.FontRecommended
+                };
+                if (TextDecorations == null) {
+                    TextDecorations = new System.Windows.TextDecorationCollection();
+                }
+                TextDecorations.Add(underline);
             }
         }
 

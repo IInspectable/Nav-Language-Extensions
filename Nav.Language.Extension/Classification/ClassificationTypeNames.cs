@@ -13,5 +13,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         public const string TaskName      = "NavTaskName";
         public const string TypeName      = "NavClassName";
         public const string DeadCode      = "NavDeadCode";
+        public const string Underline     = "NavUnderline";
     }
 }
