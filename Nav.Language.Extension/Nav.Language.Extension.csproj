@@ -64,6 +64,8 @@
     <Compile Include="BraceMatching\BracePair.cs" />
     <Compile Include="Classification\SemanticClassifier.cs" />
     <Compile Include="Classification\SemanticClassifierProvider.cs" />
+    <Compile Include="Classification\UnderlineClassifier.cs" />
+    <Compile Include="Classification\UnderlineClassifierProvider.cs" />
     <Compile Include="Common\CodeContentControlProvider.cs" />
     <Compile Include="Common\DependencyObjectExtensions.cs" />
     <Compile Include="Common\ServiceProperties.cs" />
@@ -107,8 +109,6 @@
     <Compile Include="GoToDefinition\GoToDefinitionKeyProcessorProvider.cs" />
     <Compile Include="GoToDefinition\GoToDefinitionMouseProcessor.cs" />
     <Compile Include="GoToDefinition\GoToDefinitionMouseProcessorProvider.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionAdorner.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionAdornerTextViewCreationListener.cs" />
     <Compile Include="GoToDefinition\GoToDefinitionTagger.cs" />
     <Compile Include="GoToDefinition\GoToDefinitionTaggerProvider.cs" />
     <Compile Include="Options\AdvancedOptionsControl.xaml.cs">
@@ -156,6 +156,9 @@
     <Compile Include="SemanticModelService\SemanticModelService.cs" />
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
+    <Compile Include="Underlining\UnderlineTag.cs" />
+    <Compile Include="Underlining\UnderlineTagger.cs" />
+    <Compile Include="Underlining\UnderlineTaggerProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
+using Pharmatechnik.Nav.Language.Extension.Underlining;
 
 #endregion
 
@@ -17,6 +18,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
         readonly IWpfTextView _textView;
         readonly ITagAggregator<GoToDefinitionTag> _tagAggregator;
         readonly ModifierKeyState _keyState;
+
+        ITagSpan<GoToDefinitionTag> _navigateToTagSpan;
+
 
         GoToDefinitionMouseProcessor(IWpfTextView textView, TextViewConnectionListener textViewConnectionListener, IViewTagAggregatorFactoryService viewTagAggregatorFactoryService) {
             _textView      = textView;
@@ -46,6 +50,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             UpdateNavigateToTagSpan();
         }
         
+        public override void PostprocessMouseLeftButtonUp(MouseButtonEventArgs e) {
+            NavigateToTagSpan();
+        }
+        
         void OnTextViewLostAggregateFocus(object sender, EventArgs e) {
             RemoveNavigateToTagSpan();
         }
@@ -71,19 +79,40 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
         }
 
         void AddNavigateToTagSpan(ITagSpan<GoToDefinitionTag> navigateToTagSpan) {
-            GoToDefinitionAdorner.GetOrCreate(_textView)?.SetNavigateToSpan(navigateToTagSpan.Span, () => NavigateTo(navigateToTagSpan));
+
+            RemoveNavigateToTagSpan();
+
+            _navigateToTagSpan = navigateToTagSpan;
+
+            Mouse.OverrideCursor = Cursors.Hand;
+
+            UnderlineTagger.GetOrCreateSingelton(_textView.TextBuffer)?.AddUnderlineSpan(navigateToTagSpan.Span);
+        }
+        
+        void RemoveNavigateToTagSpan() {
+
+            if (_navigateToTagSpan == null) {
+                return;
+            }
+
+            UnderlineTagger.GetOrCreateSingelton(_textView.TextBuffer)?.RemoveUnderlineSpan(_navigateToTagSpan.Span);
+            _navigateToTagSpan = null;
+            Mouse.OverrideCursor = null;
         }
 
-        void NavigateTo(ITagSpan<GoToDefinitionTag> navigateToTagSpan) {
+        void NavigateToTagSpan() {
+
+            if (_navigateToTagSpan == null) {
+                return;
+            }
+
             _textView.Selection.Clear();
 
-            var location = navigateToTagSpan.Tag.Location;
+            var location = _navigateToTagSpan.Tag.Location;
 
-            NavLanguagePackage.GoToLocationInPreviewTab(location);            
+            NavLanguagePackage.GoToLocationInPreviewTab(location);
+
+            _navigateToTagSpan = null;
         }
-
-        void RemoveNavigateToTagSpan() {
-            GoToDefinitionAdorner.GetOrCreate(_textView)?.RemoveNavigateToSpan();
-        }      
     }
 }
