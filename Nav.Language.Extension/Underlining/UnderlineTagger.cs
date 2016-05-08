@@ -11,14 +11,14 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 namespace Pharmatechnik.Nav.Language.Extension.Underlining {
 
-    public class UnderlineTagger: ITagger<UnderlineTag> {
+    public class UnderlineTagger: ITagger<UnderlineTag> , IDisposable{
 
         readonly ITextBuffer _textBuffer;
         readonly List<SnapshotSpan> _underlineSpans;
 
         public UnderlineTagger(ITextBuffer textBuffer) {
-            _underlineSpans=new List<SnapshotSpan>();
-            _textBuffer = textBuffer;
+            _underlineSpans = new List<SnapshotSpan>();
+            _textBuffer     = textBuffer;
         }
 
         public void AddUnderlineSpan(SnapshotSpan span) {
@@ -33,7 +33,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Underlining {
         }
 
         public void RemoveUnderlineSpan(SnapshotSpan span) {
-
             if(_underlineSpans.RemoveAll(s=> s == span) > 0) {
                 var args = new SnapshotSpanEventArgs(span);
                 TagsChanged?.Invoke(this, args);
@@ -46,6 +45,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Underlining {
             }
 
             _underlineSpans.Clear();
+
             var args = new SnapshotSpanEventArgs(_textBuffer.CurrentSnapshot.ToSnapshotSpan());
             TagsChanged?.Invoke(this, args);
         }
@@ -53,9 +53,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Underlining {
         public static UnderlineTagger GetOrCreateSingelton(ITextBuffer textBuffer) {
 
             return textBuffer.Properties.GetOrCreateSingletonProperty(
-                    () => new UnderlineTagger(textBuffer)
-                    );
-
+                    () => new UnderlineTagger(textBuffer));
         }
 
         public static ITagger<T> GetOrCreateSingelton<T>(ITextBuffer textBuffer) where T : ITag {
@@ -75,6 +73,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Underlining {
                     }
                 }
             }
+        }
+
+        public void Dispose() {
         }
     }
 }
