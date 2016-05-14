@@ -1,4 +1,7 @@
 ﻿
+$targetFiles=
+    "$PSScriptRoot'\..\Nav.Language.Extension\UpdateProductVersion.targets",
+    "$PSScriptRoot'\..\Nav.Language\UpdateProductVersion.targets"
 
 function IncreaseMajor(){
     [CmdletBinding()]
@@ -65,6 +68,3 @@ function UpdateVersion(){
     $xml.Save($file)
 }
 
-
-IncreaseBuild "L:\ws\Nav.Language.Extensions\Nav.Language.Extension\UpdateProductVersion.targets" -Verbose
-IncreaseBuild "L:\ws\Nav.Language.Extensions\Nav.Language\UpdateProductVersion.targets"
