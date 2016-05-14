@@ -66,8 +66,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Underlining {
 
             foreach (var span in spans) {
                 foreach (var underlineSpan in _underlineSpans) {
-                    if (span.IntersectsWith(underlineSpan)) {
-                        var tagSpan = underlineSpan.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive);
+
+                    var tagSpan = underlineSpan.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive);
+                    if (span.IntersectsWith(tagSpan)) {                        
                         var tag     = new UnderlineTag();
                         yield return new TagSpan<UnderlineTag>(tagSpan, tag);
                     }
