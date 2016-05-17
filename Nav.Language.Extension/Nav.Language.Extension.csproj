@@ -58,6 +58,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="StatementCompletion\CompletionControllerBuilder.cs" />
+    <Compile Include="StatementCompletion\CompletionSource.cs" />
+    <Compile Include="StatementCompletion\CompletionSourceProvider.cs" />
     <Compile Include="BraceMatching\BraceMatchingTagger.cs" />
     <Compile Include="BraceMatching\BraceMatchingTaggerProvider.cs" />
     <Compile Include="BraceMatching\BraceMatchingTypeNames.cs" />
