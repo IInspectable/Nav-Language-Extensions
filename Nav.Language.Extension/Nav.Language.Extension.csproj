@@ -58,7 +58,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="StatementCompletion\CompletionControllerBuilder.cs" />
+    <Compile Include="StatementCompletion\CompletionCommandHandler.cs" />
+    <Compile Include="StatementCompletion\CompletionCommandHandlerProvider.cs" />
     <Compile Include="StatementCompletion\CompletionSource.cs" />
     <Compile Include="StatementCompletion\CompletionSourceProvider.cs" />
     <Compile Include="BraceMatching\BraceMatchingTagger.cs" />
@@ -266,6 +267,11 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\lib\VSSDK\v4.0\Microsoft.VisualStudio.Shell.Interop.12.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\lib\VSSDK\v4.0\Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <SpecificVersion>False</SpecificVersion>

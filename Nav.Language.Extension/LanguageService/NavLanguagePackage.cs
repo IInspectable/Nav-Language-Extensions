@@ -3,7 +3,7 @@
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
-
+using System.Windows.Media.Imaging;
 using EnvDTE;
 
 using Microsoft.VisualStudio;
@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 #endregion
@@ -165,11 +166,33 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
             return null;
         }
+
         public static _DTE DTE {
             get {
                 _DTE dte = GetGlobalService<_DTE, _DTE>();
                 return dte;
             }
+        }
+
+        public static BitmapSource GetImage(ImageMoniker moniker) {
+
+            var imageService = GetGlobalService<SVsImageService, IVsImageService2>();
+
+            ImageAttributes imageAttributes = new ImageAttributes {
+                StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
+                Flags         = (uint) _ImageAttributesFlags.IAF_RequiredFlags,
+                ImageType     = (uint) _UIImageType.IT_Bitmap,
+                Format        = (uint) _UIDataFormat.DF_WPF,
+                LogicalHeight = 16,
+                LogicalWidth  = 16
+            };
+
+            IVsUIObject result = imageService?.GetImage(moniker, imageAttributes);
+
+            object data =null;
+            result?.get_Data(out data);
+
+            return data as BitmapSource;
         }
     }
 }
