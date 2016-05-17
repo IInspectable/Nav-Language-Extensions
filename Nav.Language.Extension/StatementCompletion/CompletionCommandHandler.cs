@@ -1,55 +1,23 @@
-﻿#region Using Directives
+#region Using Directives
 
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Utilities;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
 
-    [Export(typeof(IVsTextViewCreationListener))]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [TextViewRole(PredefinedTextViewRoles.Interactive)]
-    internal class CompletionControllerBuilder : IVsTextViewCreationListener {
-
-        readonly IVsEditorAdaptersFactoryService _adaptersFactory;
-        readonly ICompletionBroker _completionBroker ;
-
-        [ImportingConstructor]
-        public CompletionControllerBuilder(IVsEditorAdaptersFactoryService adaptersFactory, ICompletionBroker completionBroker) {
-            _adaptersFactory  = adaptersFactory;
-            _completionBroker = completionBroker;
-        }
-
-        public void VsTextViewCreated(IVsTextView textViewAdapter) {
-
-            IWpfTextView view = _adaptersFactory.GetWpfTextView(textViewAdapter);
-            Debug.Assert(view != null);
-
-            CompletionController filter = new CompletionController(view, _completionBroker);
-
-            IOleCommandTarget next;
-            textViewAdapter.AddCommandFilter(filter, out next);
-            filter.Next = next;
-        }
-    }
-
-    internal sealed class CompletionController : IOleCommandTarget {
+    sealed class CompletionCommandHandler : IOleCommandTarget {
 
         ICompletionSession _currentSession;
 
-        public CompletionController(IWpfTextView textView, ICompletionBroker broker) {
+        public CompletionCommandHandler(IWpfTextView textView, ICompletionBroker broker) {
             _currentSession = null;
 
             TextView = textView;
@@ -64,13 +32,13 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
             return (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
         }
 
-        public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut) {
+        public int Exec(ref Guid pguidCmdGroup, uint nCmdId, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut) {
             bool handled = false;
             int hresult = VSConstants.S_OK;
 
             // 1. Pre-process
             if (pguidCmdGroup == VSConstants.VSStd2K) {
-                switch ((VSConstants.VSStd2KCmdID)nCmdID) {
+                switch ((VSConstants.VSStd2KCmdID)nCmdId) {
                     case VSConstants.VSStd2KCmdID.AUTOCOMPLETE:
                     case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                         handled = StartSession();
@@ -88,11 +56,11 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
             }
 
             if (!handled)
-                hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+                hresult = Next.Exec(pguidCmdGroup, nCmdId, nCmdexecopt, pvaIn, pvaOut);
 
             if (ErrorHandler.Succeeded(hresult)) {
                 if (pguidCmdGroup == VSConstants.VSStd2K) {
-                    switch ((VSConstants.VSStd2KCmdID)nCmdID) {
+                    switch ((VSConstants.VSStd2KCmdID)nCmdId) {
                         case VSConstants.VSStd2KCmdID.TYPECHAR:
                             char ch = GetTypeChar(pvaIn);
                             if (ch == ' ')

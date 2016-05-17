@@ -6,17 +6,19 @@ using System.Collections.Generic;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
+using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
 
-    internal class CompletionSource : ICompletionSource {
+    class CompletionSource: SemanticModelServiceDependent, ICompletionSource {
 
         readonly ITextBuffer _buffer;
         bool _disposed;
 
-        public CompletionSource(ITextBuffer buffer) {
+        public CompletionSource(ITextBuffer buffer):base (buffer) {
             _buffer = buffer;
         }
 
@@ -24,33 +26,52 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
             if (_disposed)
                 throw new ObjectDisposedException("OokCompletionSource");
 
-            List<Completion> completions = new List<Completion>()
-            {
-                new Completion("Ook!"),
-                new Completion("Ook."),
-                new Completion("Ook?")
-            };
+
+            var codeGenerationUnit = SemanticModelService.SemanticModelResult?.CodeGenerationUnit;
+            if(codeGenerationUnit == null) {
+                return;
+            }
 
             ITextSnapshot snapshot = _buffer.CurrentSnapshot;
             var snapshotPoint = session.GetTriggerPoint(snapshot);
-            if (snapshotPoint != null) {
-
-                var triggerPoint = (SnapshotPoint)snapshotPoint;
-
-                var line = triggerPoint.GetContainingLine();
-                SnapshotPoint start = triggerPoint;
-
-                while (start > line.Start && !char.IsWhiteSpace((start - 1).GetChar())) {
-                    start -= 1;
-                }
-
-                var applicableTo = snapshot.CreateTrackingSpan(new SnapshotSpan(start, triggerPoint), SpanTrackingMode.EdgeInclusive);
-
-                completionSets.Add(new CompletionSet("All", "All", applicableTo, completions, Enumerable.Empty<Completion>()));
+            if(snapshotPoint == null) {
+                return;
             }
+            
+            var triggerPoint = (SnapshotPoint)snapshotPoint;
+
+            SnapshotPoint start = triggerPoint;
+            var line = triggerPoint.GetContainingLine();
+
+            while (start > line.Start && !char.IsWhiteSpace((start - 1).GetChar())) {
+                start -= 1;
+            }
+            var applicableToSpan = new SnapshotSpan(start, triggerPoint);
+            var startText=applicableToSpan.GetText();
+
+            var extent = TextExtent.FromBounds(triggerPoint, triggerPoint);
+            
+            var taskDefinition = codeGenerationUnit.TaskDefinitions
+                                                    .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent));
+
+            var img=NavLanguagePackage.GetImage(SymbolImageMonikers.DialogNode);
+          
+            List<Completion> completions = new List<Completion>();
+            if (taskDefinition != null) {
+                foreach(var node in taskDefinition.NodeDeclarations) {
+                    if(String.IsNullOrWhiteSpace(startText) || node.Name.StartsWith(startText)) {
+                        
+                        completions.Add(new Completion(node.Name, node.Name, "Desc", img, "Bla"));
+                    }
+                }
+            }
+            var applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
+
+            completionSets.Add(new CompletionSet("All", "All", applicableTo, completions, Enumerable.Empty<Completion>()));
         }
 
-        public void Dispose() {
+        public override void Dispose() {
+            base.Dispose();
             _disposed = true;
         }
     }
