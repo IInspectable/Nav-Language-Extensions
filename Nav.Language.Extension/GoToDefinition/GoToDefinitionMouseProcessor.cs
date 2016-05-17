@@ -19,6 +19,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
         readonly ITagAggregator<GoToDefinitionTag> _tagAggregator;
         readonly ModifierKeyState _keyState;
 
+        Cursor _overriddenCursor;
+
         [CanBeNull]
         ITagSpan<GoToDefinitionTag> _navigateToTagSpan;
 
@@ -46,7 +48,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             _keyState.KeyStateChanged    -= OnKeyStateChanged;
         }
 
-        public override void PreprocessMouseMove(MouseEventArgs e) {
+        public override void PostprocessMouseMove(MouseEventArgs e) {
             UpdateNavigateToTagSpan();
         }
         
@@ -78,6 +80,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             }
         }
 
+
         void UpdateNavigateToTagSpan(ITagSpan<GoToDefinitionTag> navigateToTagSpan) {
 
             if(navigateToTagSpan.Span == _navigateToTagSpan?.Span &&
@@ -90,7 +93,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             _navigateToTagSpan = navigateToTagSpan;
             UnderlineTagger.GetOrCreateSingelton(_textView.TextBuffer)?.AddUnderlineSpan(navigateToTagSpan.Span);
 
-            Mouse.OverrideCursor = Cursors.Hand;
+            _overriddenCursor = _textView.VisualElement.Cursor;
+            _textView.VisualElement.Cursor = Cursors.Hand;
         }
 
         void RemoveNavigateToTagSpan() {
@@ -102,7 +106,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             UnderlineTagger.GetOrCreateSingelton(_textView.TextBuffer)?.RemoveUnderlineSpan(_navigateToTagSpan.Span);
             _navigateToTagSpan = null;
 
-            Mouse.OverrideCursor = null;
+            _textView.VisualElement.Cursor = _overriddenCursor;
         }
 
         void NavigateToTagSpan() {
