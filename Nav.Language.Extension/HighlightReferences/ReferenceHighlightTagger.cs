@@ -100,7 +100,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
         void OnTagsChanged() {
 
-            var snapshotSpan = TextBuffer.CurrentSnapshot.ToSnapshotSpan();
+            var snapshotSpan = TextBuffer.CurrentSnapshot.GetFullSpan();
             TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshotSpan));
         }
 

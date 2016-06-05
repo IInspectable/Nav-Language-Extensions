@@ -46,7 +46,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Underlining {
 
             _underlineSpans.Clear();
 
-            var args = new SnapshotSpanEventArgs(_textBuffer.CurrentSnapshot.ToSnapshotSpan());
+            var args = new SnapshotSpanEventArgs(_textBuffer.CurrentSnapshot.GetFullSpan());
             TagsChanged?.Invoke(this, args);
         }
 

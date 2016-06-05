@@ -157,7 +157,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
             _parseResult = parseResult;
 
-            var snapshotSpan = parseResult.Snapshot.ToSnapshotSpan();
+            var snapshotSpan = parseResult.Snapshot.GetFullSpan();
             OnParseResultChanged(new SnapshotSpanEventArgs(snapshotSpan));
         }
         
