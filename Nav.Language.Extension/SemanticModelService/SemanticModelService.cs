@@ -130,7 +130,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
             _semanticModelResult = result;
 
-            OnSemanticModelChanged(new SnapshotSpanEventArgs(result.Snapshot.ToSnapshotSpan()));
+            OnSemanticModelChanged(new SnapshotSpanEventArgs(result.Snapshot.GetFullSpan()));
         }        
     }
 }
