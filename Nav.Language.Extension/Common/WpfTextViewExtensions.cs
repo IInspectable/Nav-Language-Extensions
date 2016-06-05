@@ -68,7 +68,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             return textView.MapToSingleSnapshotSpan(mappingTagSpan);
         }
 
-        public static void SizeToFit(this IWpfTextView view) {
+        public static void PrepareSizeToFit(this IWpfTextView view) {
             view.LayoutChanged += (s, e) => {
                 view.VisualElement.Dispatcher.BeginInvoke(new Action(() => {
                     view.VisualElement.Height = view.LineHeight * view.TextBuffer.CurrentSnapshot.LineCount;

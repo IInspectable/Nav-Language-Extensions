@@ -63,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             view.Background = Brushes.Transparent;
             view.ZoomLevel *= 0.75;
 
-            view.SizeToFit();
+            view.PrepareSizeToFit();
 
             return view;
         }
@@ -77,7 +77,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             view.Background = Brushes.Transparent;
             view.ZoomLevel  *= 0.75;
 
-            view.SizeToFit();
+            view.PrepareSizeToFit();
 
             return view;
         }
