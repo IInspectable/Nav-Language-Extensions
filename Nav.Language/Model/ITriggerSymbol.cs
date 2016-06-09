@@ -8,13 +8,16 @@ namespace Pharmatechnik.Nav.Language {
         ITransition Transition { get; }
         bool IsSignalTrigger { get; }
         bool IsSpontaneousTrigger { get; }
-
     }
 
-    // Für den isitor ist es günstiger, explizite Interfaces zu haben..
+    // Für den visitor ist es günstiger, explizite Interfaces zu haben..
     public interface ISignalTriggerSymbol : ITriggerSymbol {
+        [NotNull]
+        IdentifierOrStringSyntax Syntax { get; }
     }
 
     public interface ISpontaneousTriggerSymbol : ITriggerSymbol {
+        [NotNull]
+        SpontaneousTriggerSyntax Syntax { get; }
     }
 }

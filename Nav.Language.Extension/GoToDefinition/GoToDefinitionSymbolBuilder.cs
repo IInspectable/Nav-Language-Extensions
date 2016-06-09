@@ -2,6 +2,7 @@
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
@@ -54,15 +55,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
 
         public override TagSpan<GoToDefinitionTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
-            var task = signalTriggerSymbol.Transition.TaskDefinition;
-
-            var name = task.Name;
-            var ns = (task.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString();
-            // TODO Diese Logik in den Codegenerator legen
-            var fullName = $"{ns}.WFL.{name}WFS";
-            var triggerMethodName = $"{signalTriggerSymbol.Name}Logic";
-
-            return CreateTagSpan(signalTriggerSymbol.Location, fullName, triggerMethodName);
+            var info = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
+            
+            return CreateTagSpan(signalTriggerSymbol.Location, info.WfsFullyQualifiedName, info.TriggerMethodName);
         }
 
         TagSpan<GoToDefinitionTag> CreateTagSpan(Location sourceLocation, Location targetLocation) {
@@ -80,5 +75,5 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
 
             return new TagSpan<GoToDefinitionTag>(tagSpan, tag);
         }        
-    }
+    }    
 }

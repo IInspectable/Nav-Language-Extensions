@@ -14,18 +14,22 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class SignalTriggerSymbol : TriggerSymbol, ISignalTriggerSymbol {
 
-        public SignalTriggerSymbol(string name, Location location) : base(name, location) {
+        public SignalTriggerSymbol(string name, Location location, IdentifierOrStringSyntax syntax) : base(name, location) {
+            Syntax = syntax;
         }
-
+        
+        public IdentifierOrStringSyntax Syntax { get; }
         public override bool IsSignalTrigger { get { return true; } }
         public override bool IsSpontaneousTrigger { get { return false; } }
     }
 
     sealed partial class SpontaneousTriggerSymbol : TriggerSymbol, ISpontaneousTriggerSymbol {
 
-        public SpontaneousTriggerSymbol(Location location) : base(SpontaneousTriggerSyntax.Keyword, location) {
+        public SpontaneousTriggerSymbol(Location location, SpontaneousTriggerSyntax syntax) : base(SpontaneousTriggerSyntax.Keyword, location) {
+            Syntax = syntax;
         }
 
+        public SpontaneousTriggerSyntax Syntax { get; }
         public override bool IsSignalTrigger { get { return false; } }
         public override bool IsSpontaneousTrigger { get { return true; } }
     }

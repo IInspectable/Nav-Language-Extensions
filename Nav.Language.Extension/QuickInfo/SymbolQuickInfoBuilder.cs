@@ -6,6 +6,7 @@ using System.Windows.Controls;
 
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
+using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
@@ -189,5 +190,22 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         }
 
         #endregion
+
+        public override IEnumerable<object> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
+
+            var codeGenInfo = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
+            
+            StackPanel panel = new StackPanel {
+                Orientation = Orientation.Vertical
+            };
+
+            var control = new SymbolQuickInfoControl();
+            control.CrispImage.Moniker  = SymbolImageMonikers.SignalTrigger;
+            control.TextContent.Content = SyntaxQuickinfoBuilderService.ToTextBlock(codeGenInfo);
+
+            panel.Children.Add(control);
+
+            yield return panel;
+        }
     }
 }
