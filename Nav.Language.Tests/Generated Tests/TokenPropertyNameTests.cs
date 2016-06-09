@@ -1,6 +1,16 @@
-﻿ 
+﻿
+ 
+
+
+
+
+
+
+
+
+
 //==================================================
-// HINWEIS: Diese Datei wurde am 19.02.2016 21:28:59
+// HINWEIS: Diese Datei wurde am 09.06.2016 11:34:31
 //			automatisch generiert!
 //==================================================
 using NUnit.Framework;
@@ -15,6 +25,7 @@ namespace Nav.Language.Tests {
     [Category("Tests noch nicht fertig.")]
 	public class TokenPropertyNameTests {
 		
+
         // DoClauseSyntax
 		[Test]
 		public void TestDoClauseSyntax() {
@@ -33,6 +44,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // GoToEdgeSyntax
 		[Test]
@@ -53,6 +65,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // ArrayTypeSyntax
 		[Test]
 		public void TestArrayTypeSyntax() {
@@ -71,6 +84,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // ModalEdgeSyntax
 		[Test]
@@ -91,6 +105,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // ParameterSyntax
 		[Test]
 		public void TestParameterSyntax() {
@@ -109,6 +124,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // IdentifierSyntax
 		[Test]
@@ -129,6 +145,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // SimpleTypeSyntax
 		[Test]
 		public void TestSimpleTypeSyntax() {
@@ -147,6 +164,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // GenericTypeSyntax
 		[Test]
@@ -167,6 +185,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // NonModalEdgeSyntax
 		[Test]
 		public void TestNonModalEdgeSyntax() {
@@ -185,6 +204,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // EndTargetNodeSyntax
 		[Test]
@@ -205,6 +225,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // ParameterListSyntax
 		[Test]
 		public void TestParameterListSyntax() {
@@ -223,6 +244,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // SignalTriggerSyntax
 		[Test]
@@ -243,6 +265,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // StringLiteralSyntax
 		[Test]
 		public void TestStringLiteralSyntax() {
@@ -261,6 +284,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // InitSourceNodeSyntax
 		[Test]
@@ -281,6 +305,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // TaskDefinitionSyntax
 		[Test]
 		public void TestTaskDefinitionSyntax() {
@@ -299,6 +324,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // CodeDeclarationSyntax
 		[Test]
@@ -319,6 +345,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // TaskDeclarationSyntax
 		[Test]
 		public void TestTaskDeclarationSyntax() {
@@ -337,6 +364,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // IncludeDirectiveSyntax
 		[Test]
@@ -357,6 +385,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // IfConditionClauseSyntax
 		[Test]
 		public void TestIfConditionClauseSyntax() {
@@ -375,6 +404,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // ArrayRankSpecifierSyntax
 		[Test]
@@ -395,6 +425,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // CodeGenerationUnitSyntax
 		[Test]
 		public void TestCodeGenerationUnitSyntax() {
@@ -413,6 +444,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // EndNodeDeclarationSyntax
 		[Test]
@@ -433,6 +465,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // SpontaneousTriggerSyntax
 		[Test]
 		public void TestSpontaneousTriggerSyntax() {
@@ -451,6 +484,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // CodeBaseDeclarationSyntax
 		[Test]
@@ -471,6 +505,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // ElseConditionClauseSyntax
 		[Test]
 		public void TestElseConditionClauseSyntax() {
@@ -489,6 +524,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // ExitNodeDeclarationSyntax
 		[Test]
@@ -509,6 +545,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // InitNodeDeclarationSyntax
 		[Test]
 		public void TestInitNodeDeclarationSyntax() {
@@ -527,6 +564,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // TaskNodeDeclarationSyntax
 		[Test]
@@ -547,6 +585,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // ViewNodeDeclarationSyntax
 		[Test]
 		public void TestViewNodeDeclarationSyntax() {
@@ -565,6 +604,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // CodeUsingDeclarationSyntax
 		[Test]
@@ -585,6 +625,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // IdentifierSourceNodeSyntax
 		[Test]
 		public void TestIdentifierSourceNodeSyntax() {
@@ -603,6 +644,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // IdentifierTargetNodeSyntax
 		[Test]
@@ -623,6 +665,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // NodeDeclarationBlockSyntax
 		[Test]
 		public void TestNodeDeclarationBlockSyntax() {
@@ -641,6 +684,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // TransitionDefinitionSyntax
 		[Test]
@@ -661,6 +705,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // ChoiceNodeDeclarationSyntax
 		[Test]
 		public void TestChoiceNodeDeclarationSyntax() {
@@ -679,6 +724,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // CodeParamsDeclarationSyntax
 		[Test]
@@ -699,6 +745,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // CodeResultDeclarationSyntax
 		[Test]
 		public void TestCodeResultDeclarationSyntax() {
@@ -717,6 +764,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // DialogNodeDeclarationSyntax
 		[Test]
@@ -737,6 +785,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // ElseIfConditionClauseSyntax
 		[Test]
 		public void TestElseIfConditionClauseSyntax() {
@@ -755,6 +804,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // IdentifierOrStringListSyntax
 		[Test]
@@ -775,6 +825,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // CodeNamespaceDeclarationSyntax
 		[Test]
 		public void TestCodeNamespaceDeclarationSyntax() {
@@ -793,6 +844,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // ExitTransitionDefinitionSyntax
 		[Test]
@@ -813,6 +865,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // CodeGenerateToDeclarationSyntax
 		[Test]
 		public void TestCodeGenerateToDeclarationSyntax() {
@@ -831,6 +884,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // TransitionDefinitionBlockSyntax
 		[Test]
@@ -851,6 +905,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // CodeDoNotInjectDeclarationSyntax
 		[Test]
 		public void TestCodeDoNotInjectDeclarationSyntax() {
@@ -869,6 +924,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
         // CodeAbstractMethodDeclarationSyntax
 		[Test]
@@ -889,6 +945,7 @@ namespace Nav.Language.Tests {
 			}
 		}
 
+
         // CodeNotImplementedDeclarationSyntax
 		[Test]
 		public void TestCodeNotImplementedDeclarationSyntax() {
@@ -907,6 +964,7 @@ namespace Nav.Language.Tests {
 				Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
 			}
 		}
+
 
 	}
 }

@@ -73,7 +73,7 @@ namespace Nav.Language.Tests.Properties {
         ///		    [notimplemented]	
         ///		    [result RT1 r1]
         ///{
-        ///    init I1 [abstractmethod] [params T1 param1, T2&lt;T3, T4&lt;T5&gt;&gt; param2] do &quot;D1&quot;;
+        ///    init I1 [abstractmethod] [params T1 param1, T2&lt;T3, T4&lt;T5&gt;&gt; param2, T6[][] param3] do &quot;D1&quot;;
         ///    exit E1;       
         ///	end;
         ///}
@@ -84,7 +84,7 @@ namespace Nav.Language.Tests.Properties {
         ///		[params P1 p1, P2 p2]
         ///		[result R1 r1]
         ///{
-        ///	// Node Declaration (init, exit, end sind bereits in der obigen TaskDeclaration vollst [rest of string was truncated]&quot;;.
+        ///	// Node Declaration (init, exit, end sind bereits in der obigen TaskDeclaration vollständig ab [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AllRules {
             get {
@@ -102,7 +102,9 @@ namespace Nav.Language.Tests.Properties {
         ///[using Pharmatechnik.Apotheke.XTplus.Framework.Core.IWFL]
         ///[using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
         ///[using Pharmatechnik.Apotheke.XTplus.Common.IBOL]
-        ///[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.IB [rest of string was truncated]&quot;;.
+        ///[using Pharmatechnik.Apotheke.XTplus.Artikelstamm.IBOL]
+        ///
+        ///[usi [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LargeNav {
             get {
@@ -119,7 +121,7 @@ namespace Nav.Language.Tests.Properties {
         ///[using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL]
         ///[using Pharmatechnik.Apotheke.XTplus.Framework.Core.IWFL]
         ///[using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
-        ///[using Pharmatechnik.Apotheke.XTplus.Framework.Util.Exceptio [rest of string was truncated]&quot;;.
+        ///[using Pharmatechnik.Apotheke.XTplus.Framework.Util.ExceptionsAndLog [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string NavWithError {
             get {
