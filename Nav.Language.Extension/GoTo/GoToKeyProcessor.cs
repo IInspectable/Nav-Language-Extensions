@@ -6,19 +6,19 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
+namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
-    sealed class GoToDefinitionKeyProcessor: KeyProcessor {
+    sealed class GoToKeyProcessor: KeyProcessor {
 
         readonly ModifierKeyState _keyState;
 
-        GoToDefinitionKeyProcessor(IWpfTextView textView, TextViewConnectionListener textViewConnectionListener) {
+        GoToKeyProcessor(IWpfTextView textView, TextViewConnectionListener textViewConnectionListener) {
             _keyState = ModifierKeyState.GetStateForView(textView, textViewConnectionListener);
             textViewConnectionListener.AddDisconnectAction(textView, RemoveKeyProcessorForView);
         }
 
-        public static GoToDefinitionKeyProcessor GetKeyProcessorForView(IWpfTextView textView, TextViewConnectionListener textViewConnectionListener) {
-            return textView.Properties.GetOrCreateSingletonProperty(() => new GoToDefinitionKeyProcessor(textView, textViewConnectionListener));
+        public static GoToKeyProcessor GetKeyProcessorForView(IWpfTextView textView, TextViewConnectionListener textViewConnectionListener) {
+            return textView.Properties.GetOrCreateSingletonProperty(() => new GoToKeyProcessor(textView, textViewConnectionListener));
         }
 
         void RemoveKeyProcessorForView(IWpfTextView textView) {

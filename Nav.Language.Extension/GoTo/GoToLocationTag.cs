@@ -6,9 +6,9 @@ using Microsoft.VisualStudio.Text.Tagging;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
+namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
-    public class GoToLocationTag : GoToDefinitionTag, ITag, IEquatable<GoToLocationTag> {
+    public class GoToLocationTag : GoToTag, ITag, IEquatable<GoToLocationTag> {
 
         public GoToLocationTag(string fileName) {
             if (fileName == null) {
@@ -25,8 +25,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
         }
 
         public Location Location { get; }
-
-
+        
         public override Task<Location> GetLocationAsync() {
             return Task.FromResult(Location);
         }

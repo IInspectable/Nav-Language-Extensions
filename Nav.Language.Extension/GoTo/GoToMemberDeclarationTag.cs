@@ -9,20 +9,20 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
+namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
-    public class GoToMemberDeclarationTag : GoToDefinitionTag, ITag,
+    public class GoToMemberDeclarationTag : GoToTag, ITag,
             IEquatable<GoToMemberDeclarationTag> {
 
         readonly string _fullyQualifiedMetadataName;
         readonly string _memberName;
         readonly ITextBuffer _sourceBuffer;
 
-        public GoToMemberDeclarationTag(string fullyQualifiedMetadataName, string memberName, ITextBuffer sourceBuffer) {
+        public GoToMemberDeclarationTag(ITextBuffer sourceBuffer, string fullyQualifiedMetadataName, string memberName) {
 
+            _sourceBuffer               = sourceBuffer;
             _fullyQualifiedMetadataName = fullyQualifiedMetadataName;
             _memberName                 = memberName;
-            _sourceBuffer               = sourceBuffer;
         }
 
         public override Task<Location> GetLocationAsync() {
