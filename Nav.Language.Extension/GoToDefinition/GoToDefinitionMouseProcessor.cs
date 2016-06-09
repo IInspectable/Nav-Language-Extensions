@@ -19,6 +19,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
         readonly ITagAggregator<GoToDefinitionTag> _tagAggregator;
         readonly ModifierKeyState _keyState;
 
+        Cursor _overriddenCursor;
 
         [CanBeNull]
         ITagSpan<GoToDefinitionTag> _navigateToTagSpan;
@@ -91,6 +92,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             _navigateToTagSpan = navigateToTagSpan;
             UnderlineTagger.GetOrCreateSingelton(_textView.TextBuffer)?.AddUnderlineSpan(navigateToTagSpan.Span);
 
+            _overriddenCursor = _textView.VisualElement.Cursor;
             _textView.VisualElement.Cursor = Cursors.Hand;
         }
 
@@ -103,7 +105,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             UnderlineTagger.GetOrCreateSingelton(_textView.TextBuffer)?.RemoveUnderlineSpan(_navigateToTagSpan.Span);
             _navigateToTagSpan = null;
 
-            _textView.VisualElement.Cursor = null;
+            _textView.VisualElement.Cursor = _overriddenCursor;
         }
 
         async void NavigateToTagSpan() {
@@ -114,12 +116,13 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
 
             _textView.Selection.Clear();
 
-            var location = await _navigateToTagSpan.Tag.GetLocationAsync();
+            var span = _navigateToTagSpan;
+            RemoveNavigateToTagSpan();
 
-            // TODO hier nicht gefinden Ziele abfangen...
-            NavLanguagePackage.GoToLocationInPreviewTab(location);
+            var location = await span.Tag.GetLocationAsync();
 
-            _navigateToTagSpan = null;
+            // TODO hier nicht gefundene Ziele abfangen...
+            NavLanguagePackage.GoToLocationInPreviewTab(location);            
         }
     }
 }
