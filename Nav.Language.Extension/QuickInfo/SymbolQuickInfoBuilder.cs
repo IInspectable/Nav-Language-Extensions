@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Language.CodeGen;
 
