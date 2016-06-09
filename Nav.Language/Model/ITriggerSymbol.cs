@@ -1,7 +1,11 @@
+using JetBrains.Annotations;
+
 namespace Pharmatechnik.Nav.Language {
 
     public interface ITriggerSymbol : ISymbol {
 
+        [NotNull]
+        ITransition Transition { get; }
         bool IsSignalTrigger { get; }
         bool IsSpontaneousTrigger { get; }
 

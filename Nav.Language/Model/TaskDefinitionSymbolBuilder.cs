@@ -274,8 +274,8 @@ namespace Pharmatechnik.Nav.Language {
             // Triggers
             var triggers = GetTriggers(transitionDefinitionSyntax);
 
-            var transition = new Transition(transitionDefinitionSyntax, sourceNodeReference, edgeMode, targetNodeReference, triggers);
-
+            var transition = new Transition(_taskDefinition, transitionDefinitionSyntax, sourceNodeReference, edgeMode, targetNodeReference, triggers);
+            
             AddTransition(transition);
         }
         

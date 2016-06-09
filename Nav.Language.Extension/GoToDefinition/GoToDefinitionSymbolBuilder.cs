@@ -10,13 +10,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
     sealed class GoToDefinitionSymbolBuilder : SymbolVisitor<TagSpan<GoToDefinitionTag>> {
 
         readonly SemanticModelResult _semanticModelResult;
-        
-        GoToDefinitionSymbolBuilder(SemanticModelResult semanticModelResult) {
+        readonly ITextBuffer _textBuffer;
+
+        GoToDefinitionSymbolBuilder(SemanticModelResult semanticModelResult, ITextBuffer textBuffer) {
             _semanticModelResult = semanticModelResult;
+            _textBuffer = textBuffer;
         }
 
-        public static TagSpan<GoToDefinitionTag> Build(SemanticModelResult semanticModelResult, ISymbol source) {
-            var builder = new GoToDefinitionSymbolBuilder(semanticModelResult);
+        public static TagSpan<GoToDefinitionTag> Build(SemanticModelResult semanticModelResult, ISymbol source, ITextBuffer textBuffer) {
+            var builder = new GoToDefinitionSymbolBuilder(semanticModelResult, textBuffer);
             return builder.Visit(source);
         }
 
@@ -50,12 +52,33 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             return CreateTagSpan(connectionPointReferenceSymbol.Location, connectionPointReferenceSymbol.Declaration.Location);
         }
 
+        public override TagSpan<GoToDefinitionTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
+
+            var task = signalTriggerSymbol.Transition.TaskDefinition;
+
+            var name = task.Name;
+            var ns = (task.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString();
+            // TODO Diese Logik in den Codegenerator legen
+            var fullName = $"{ns}.WFL.{name}WFS";
+            var triggerMethodName = $"{signalTriggerSymbol.Name}Logic";
+
+            return CreateTagSpan(signalTriggerSymbol.Location, fullName, triggerMethodName);
+        }
+
         TagSpan<GoToDefinitionTag> CreateTagSpan(Location sourceLocation, Location targetLocation) {
 
             var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
-            var tag     = new GoToDefinitionTag(targetLocation);
+            var tag     = new GoToLocationTag(targetLocation);
 
             return new TagSpan<GoToDefinitionTag>(tagSpan, tag);
         }
+
+        TagSpan<GoToDefinitionTag> CreateTagSpan(Location sourceLocation, string fullyQualifiedMetadataName, string memberName) {
+
+            var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
+            var tag = new GoToMemberDeclarationTag(fullyQualifiedMetadataName, memberName, _textBuffer);
+
+            return new TagSpan<GoToDefinitionTag>(tagSpan, tag);
+        }        
     }
 }

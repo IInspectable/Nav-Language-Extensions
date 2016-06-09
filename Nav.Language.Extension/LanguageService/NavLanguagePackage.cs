@@ -102,7 +102,9 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         }
 
         public static void GoToLocationInPreviewTab(Location location) {
-            if(location.FilePath != null) {
+
+            // TODO hier Location.Empty/None Semantic berücksichtigen
+            if (location.FilePath != null) {
                 OpenFileInPreviewTab(location.FilePath);
             }
 

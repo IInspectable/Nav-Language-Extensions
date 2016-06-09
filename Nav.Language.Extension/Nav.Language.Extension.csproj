@@ -58,6 +58,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Common\LinePositionExtensions.cs" />
+    <Compile Include="GoToDefinition\GoToLocationTag.cs" />
+    <Compile Include="GoToDefinition\GoToMemberDeclarationTag.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandler.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandlerProvider.cs" />
     <Compile Include="StatementCompletion\CompletionSource.cs" />
