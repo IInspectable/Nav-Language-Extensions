@@ -109,7 +109,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             _textView.VisualElement.Cursor = _overriddenCursor;
         }
 
-        void NavigateToTagSpan() {
+        async void NavigateToTagSpan() {
 
             if (_navigateToTagSpan == null) {
                 return;
@@ -117,8 +117,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
 
             _textView.Selection.Clear();
 
-            var location = _navigateToTagSpan.Tag.Location;
+            var location = await _navigateToTagSpan.Tag.GetLocationAsync();
 
+            // TODO hier nicht gefinden Ziele abfangen...
             NavLanguagePackage.GoToLocationInPreviewTab(location);
 
             _navigateToTagSpan = null;

@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.Extension.Common;
@@ -36,7 +35,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             if (semanticModelResult == null) {
                 yield break;
             }
-
+            
             foreach (var span in spans) {
                 
                 var extent  = TextExtent.FromBounds(span.Start, span.End);
@@ -44,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
 
                 foreach (var symbol in symbols) {
 
-                    var navigateToTag = GoToDefinitionSymbolBuilder.Build(semanticModelResult, symbol);
+                    var navigateToTag = GoToDefinitionSymbolBuilder.Build(semanticModelResult, symbol, TextBuffer);
                     if(navigateToTag != null) {
                         yield return navigateToTag;
                     }
