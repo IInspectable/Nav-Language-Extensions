@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 #endregion
@@ -88,6 +89,13 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             return GetGlobalService(typeof(TService)) as TInterface;
         }
 
+        public static VisualStudioWorkspace Workspace {
+            get {
+                var componentModel = GetGlobalService<SComponentModel, IComponentModel>();
+                var workspace = componentModel.GetService<VisualStudioWorkspace>();
+                return workspace;
+            }
+        }
 
         public static void OpenFile(string file) {
             DTE?.ExecuteCommand("File.OpenFile", Quote(file));
