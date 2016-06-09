@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
 
         public override TagSpan<GoToTag> VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
-            return CreateTagSpan(includeSymbol.Location, includeSymbol.FileLocation);
+            return CreateGoToLocationTagSpan(includeSymbol.Location, includeSymbol.FileLocation);
         }
 
         public override TagSpan<GoToTag> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }           
             
-            return CreateTagSpan(taskNodeSymbol.Location, taskNodeSymbol.Declaration.Location);
+            return CreateGoToLocationTagSpan(taskNodeSymbol.Location, taskNodeSymbol.Declaration.Location);
         }
 
         public override TagSpan<GoToTag> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
@@ -42,7 +42,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
             
-            return CreateTagSpan(nodeReferenceSymbol.Location, nodeReferenceSymbol.Declaration.Location);
+            return CreateGoToLocationTagSpan(nodeReferenceSymbol.Location, nodeReferenceSymbol.Declaration.Location);
         }
 
         public override TagSpan<GoToTag> VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
@@ -50,17 +50,17 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             if (connectionPointReferenceSymbol.Declaration == null) {
                 return null;
             }
-            return CreateTagSpan(connectionPointReferenceSymbol.Location, connectionPointReferenceSymbol.Declaration.Location);
+            return CreateGoToLocationTagSpan(connectionPointReferenceSymbol.Location, connectionPointReferenceSymbol.Declaration.Location);
         }
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
             var info = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
             
-            return CreateTagSpan(signalTriggerSymbol.Location, info.WfsFullyQualifiedName, info.TriggerMethodName);
+            return CreateGoToMemberDeclarationTagSpan(signalTriggerSymbol.Location, info.WfsFullyQualifiedName, info.TriggerMethodName);
         }
 
-        TagSpan<GoToTag> CreateTagSpan(Location sourceLocation, Location targetLocation) {
+        TagSpan<GoToTag> CreateGoToLocationTagSpan(Location sourceLocation, Location targetLocation) {
 
             var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
             var tag     = new GoToLocationTag(targetLocation);
@@ -68,10 +68,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             return new TagSpan<GoToTag>(tagSpan, tag);
         }
 
-        TagSpan<GoToTag> CreateTagSpan(Location sourceLocation, string fullyQualifiedMetadataName, string memberName) {
+        TagSpan<GoToTag> CreateGoToMemberDeclarationTagSpan(Location sourceLocation, string fullyQualifiedTypeName, string memberName) {
 
             var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
-            var tag = new GoToMemberDeclarationTag(_textBuffer, fullyQualifiedMetadataName, memberName);
+            var tag     = new GoToMemberDeclarationTag(_textBuffer, fullyQualifiedTypeName, memberName);
 
             return new TagSpan<GoToTag>(tagSpan, tag);
         }        

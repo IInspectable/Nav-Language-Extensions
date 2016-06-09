@@ -14,15 +14,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
     public class GoToMemberDeclarationTag : GoToTag, ITag,
             IEquatable<GoToMemberDeclarationTag> {
 
-        readonly string _fullyQualifiedMetadataName;
+        readonly string _fullyQualifiedTypeName;
         readonly string _memberName;
         readonly ITextBuffer _sourceBuffer;
 
-        public GoToMemberDeclarationTag(ITextBuffer sourceBuffer, string fullyQualifiedMetadataName, string memberName) {
+        public GoToMemberDeclarationTag(ITextBuffer sourceBuffer, string fullyQualifiedTypeName, string memberName) {
 
-            _sourceBuffer               = sourceBuffer;
-            _fullyQualifiedMetadataName = fullyQualifiedMetadataName;
-            _memberName                 = memberName;
+            _sourceBuffer           = sourceBuffer;
+            _fullyQualifiedTypeName = fullyQualifiedTypeName;
+            _memberName             = memberName;
         }
 
         public override Task<Location> GetLocationAsync() {
@@ -35,7 +35,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             return Task.Run(() =>  {
                 
                 var compilation    = project.GetCompilationAsync().Result;
-                var typeSymbol     = compilation?.GetTypeByMetadataName(_fullyQualifiedMetadataName);
+                var typeSymbol     = compilation?.GetTypeByMetadataName(_fullyQualifiedTypeName);
                 var memberSymbol   = typeSymbol?.GetMembers(_memberName).FirstOrDefault();
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
 
@@ -63,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         public bool Equals(GoToMemberDeclarationTag other) {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return string.Equals(_fullyQualifiedMetadataName, other._fullyQualifiedMetadataName) && string.Equals(_memberName, other._memberName);
+            return string.Equals(_fullyQualifiedTypeName, other._fullyQualifiedTypeName) && string.Equals(_memberName, other._memberName);
         }
 
         public override bool Equals(object obj) {
@@ -75,7 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public override int GetHashCode() {
             unchecked {
-                return ((_fullyQualifiedMetadataName?.GetHashCode() ?? 0)*397) ^ (_memberName?.GetHashCode() ?? 0);
+                return ((_fullyQualifiedTypeName?.GetHashCode() ?? 0)*397) ^ (_memberName?.GetHashCode() ?? 0);
             }
         }
 
@@ -89,4 +89,5 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         #endregion
     }
+
 }
