@@ -62,5 +62,9 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         public static ImageMoniker DialogNode {
             get { return KnownMonikers.Dialog; }
         }
+
+        public static ImageMoniker SignalTrigger {
+            get { return KnownMonikers.EventTrigger; }
+        }
     }
 }

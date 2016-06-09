@@ -504,7 +504,7 @@ namespace Pharmatechnik.Nav.Language {
         public override void VisitSpontaneousTrigger(SpontaneousTriggerSyntax spontaneousTriggerSyntax) {
             var location = spontaneousTriggerSyntax.GetLocation();
             if(location != null) {
-                var trigger = new SpontaneousTriggerSymbol(location);
+                var trigger = new SpontaneousTriggerSymbol(location, spontaneousTriggerSyntax);
                 _triggers.Add(trigger);
             }            
         }
@@ -518,7 +518,7 @@ namespace Pharmatechnik.Nav.Language {
             foreach(var signal in signalTriggerSyntax.IdentifierOrStringList) {
                 var location = signal.GetLocation();
                 if(location != null) {
-                    var trigger = new SignalTriggerSymbol(signal.Text, location);
+                    var trigger = new SignalTriggerSymbol(signal.Text, location, signal);
                     _triggers.Add(trigger);
                 }
             }

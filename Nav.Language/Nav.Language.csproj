@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeGen\SignalTriggerCodeGenInfo.cs" />
     <Compile Include="Common\TextLineExtent.cs" />
     <Compile Include="Common\LinePosition.cs" />
     <Compile Include="Common\LinePositionExtent.cs" />

@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 
 using Microsoft.VisualStudio.Text.Classification;
+using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Classification;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
@@ -44,8 +45,8 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         public TextBlock ToTextBlock(SyntaxTree syntaxTree) {
 
             var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
-
             var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
+
             textBlock.SetDefaultTextProperties(formatMap);
 
             foreach(var token in syntaxTree.Tokens) {
@@ -54,6 +55,25 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
                 
                 textBlock.Inlines.Add(run);
             }
+
+            return textBlock;
+        }
+
+        public TextBlock ToTextBlock(SignalTriggerCodeGenInfo codeGenInfo) {
+
+            var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
+            var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
+
+            textBlock.SetDefaultTextProperties(formatMap);
+
+            //var nsRun = ToRun(codeGenInfo.WflNamespace+".", SyntaxTokenClassification.Identifier, formatMap);
+            //textBlock.Inlines.Add(nsRun);
+
+            var typeRun = ToRun(codeGenInfo.WfsTypeName, SyntaxTokenClassification.TaskName, formatMap);
+            textBlock.Inlines.Add(typeRun);
+
+            var methodRun = ToRun("."+ codeGenInfo.TriggerMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
+            textBlock.Inlines.Add(methodRun);
 
             return textBlock;
         }
