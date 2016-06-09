@@ -8,7 +8,7 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
+namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
     sealed class ModifierKeyState {
 

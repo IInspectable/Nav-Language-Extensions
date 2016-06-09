@@ -8,19 +8,19 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
+namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
-    sealed class GoToDefinitionTagger : SemanticModelServiceDependent, ITagger<GoToDefinitionTag> {
+    sealed class GoToTagger : SemanticModelServiceDependent, ITagger<GoToTag> {
         
-        GoToDefinitionTagger(ITextBuffer textBuffer) : base(textBuffer) {
+        GoToTagger(ITextBuffer textBuffer) : base(textBuffer) {
 
         }
 
         public static ITagger<T> GetOrCreateSingelton<T>(ITextBuffer textBuffer) where T : ITag {
             return new TextBufferScopedTagger<T>(
                 textBuffer,
-                typeof(GoToDefinitionTagger),
-                () => new GoToDefinitionTagger(textBuffer) as ITagger<T>);
+                typeof(GoToTagger),
+                () => new GoToTagger(textBuffer) as ITagger<T>);
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -29,7 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
             TagsChanged?.Invoke(this, snapshotSpanEventArgs);
         }
 
-        public IEnumerable<ITagSpan<GoToDefinitionTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
+        public IEnumerable<ITagSpan<GoToTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
 
             var semanticModelResult = SemanticModelService.SemanticModelResult;
             if (semanticModelResult == null) {
@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
 
                 foreach (var symbol in symbols) {
 
-                    var navigateToTag = GoToDefinitionSymbolBuilder.Build(semanticModelResult, symbol, TextBuffer);
+                    var navigateToTag = GoToSymbolBuilder.Build(semanticModelResult, symbol, TextBuffer);
                     if(navigateToTag != null) {
                         yield return navigateToTag;
                     }

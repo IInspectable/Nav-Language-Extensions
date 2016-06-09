@@ -8,14 +8,15 @@ using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
+namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
     [Export(typeof(ITaggerProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [TagType(typeof(GoToDefinitionTag))]
-    sealed class GoToDefinitionTaggerProvider : ITaggerProvider {
+    [Name("Nav/" + nameof(GoToTaggerProvider))]
+    [TagType(typeof(GoToTag))]
+    sealed class GoToTaggerProvider : ITaggerProvider {
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-            return GoToDefinitionTagger.GetOrCreateSingelton<T>(buffer);
+            return GoToTagger.GetOrCreateSingelton<T>(buffer);
         }
     }
 }

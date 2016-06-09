@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
-using Pharmatechnik.Nav.Language.Extension.GoToDefinition;
+using Pharmatechnik.Nav.Language.Extension.GoTo;
 
 #endregion
 
@@ -46,7 +46,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         }
 
         [CanBeNull]
-        public static ITagSpan<GoToDefinitionTag> GetGoToDefinitionTagSpanAtMousePosition(this IWpfTextView textView, ITagAggregator<GoToDefinitionTag> tagAggregator) {
+        public static ITagSpan<GoToTag> GetGoToDefinitionTagSpanAtMousePosition(this IWpfTextView textView, ITagAggregator<GoToTag> tagAggregator) {
 
             var spanAtMousePos = textView.GetBufferPositionAtMousePosition().ToSnapshotSpan();
             if (spanAtMousePos == null) {
@@ -59,7 +59,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         }
 
         [CanBeNull]
-        public static ITagSpan<GoToDefinitionTag> GetGoToDefinitionTagSpanAtCaretPosition(this IWpfTextView textView, ITagAggregator<GoToDefinitionTag> tagAggregator) {
+        public static ITagSpan<GoToTag> GetGoToDefinitionTagSpanAtCaretPosition(this IWpfTextView textView, ITagAggregator<GoToTag> tagAggregator) {
 
             var spanAtMousePos = textView.Caret.Position.BufferPosition.ToSnapshotSpan();
            

@@ -59,8 +59,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\LinePositionExtensions.cs" />
-    <Compile Include="GoToDefinition\GoToLocationTag.cs" />
-    <Compile Include="GoToDefinition\GoToMemberDeclarationTag.cs" />
+    <Compile Include="GoTo\GoToLocationTag.cs" />
+    <Compile Include="GoTo\GoToMemberDeclarationTag.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandler.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandlerProvider.cs" />
     <Compile Include="StatementCompletion\CompletionSource.cs" />
@@ -109,15 +109,15 @@
     <Compile Include="LanguageService\GuidList.cs" />
     <Compile Include="LanguageService\NavLanguageInfo.cs" />
     <Compile Include="LanguageService\NavLanguagePackage.cs" />
-    <Compile Include="GoToDefinition\ModifierKeyState.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionSymbolBuilder.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionTag.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionKeyProcessor.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionKeyProcessorProvider.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionMouseProcessor.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionMouseProcessorProvider.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionTagger.cs" />
-    <Compile Include="GoToDefinition\GoToDefinitionTaggerProvider.cs" />
+    <Compile Include="GoTo\ModifierKeyState.cs" />
+    <Compile Include="GoTo\GoToSymbolBuilder.cs" />
+    <Compile Include="GoTo\GoToTag.cs" />
+    <Compile Include="GoTo\GoToKeyProcessor.cs" />
+    <Compile Include="GoTo\GoToKeyProcessorProvider.cs" />
+    <Compile Include="GoTo\GoToMouseProcessor.cs" />
+    <Compile Include="GoTo\GoToMouseProcessorProvider.cs" />
+    <Compile Include="GoTo\GoToTagger.cs" />
+    <Compile Include="GoTo\GoToTaggerProvider.cs" />
     <Compile Include="Options\AdvancedOptionsControl.xaml.cs">
       <DependentUpon>AdvancedOptionsControl.xaml</DependentUpon>
     </Compile>

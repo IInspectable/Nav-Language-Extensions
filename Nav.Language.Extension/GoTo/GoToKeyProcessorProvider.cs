@@ -8,23 +8,23 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToDefinition {
+namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
     [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [Name("Nav/NavigateToKeyProcessorProvider")]
+    [Name("Nav/" + nameof(GoToKeyProcessorProvider))]
     [Export(typeof(IKeyProcessorProvider))]
     [TextViewRole(PredefinedTextViewRoles.Interactive)]
-    internal sealed class GoToDefinitionKeyProcessorProvider : IKeyProcessorProvider {
+    sealed class GoToKeyProcessorProvider : IKeyProcessorProvider {
 
         readonly TextViewConnectionListener _textViewConnectionListener;
 
         [ImportingConstructor]
-        public GoToDefinitionKeyProcessorProvider(TextViewConnectionListener textViewConnectionListener) {
+        public GoToKeyProcessorProvider(TextViewConnectionListener textViewConnectionListener) {
             _textViewConnectionListener = textViewConnectionListener;
         }
 
         public KeyProcessor GetAssociatedProcessor(IWpfTextView textView) {
-            return GoToDefinitionKeyProcessor.GetKeyProcessorForView(textView, _textViewConnectionListener);
+            return GoToKeyProcessor.GetKeyProcessorForView(textView, _textViewConnectionListener);
         }
     }
 }
