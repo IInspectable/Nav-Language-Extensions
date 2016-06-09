@@ -1,6 +1,16 @@
-﻿ 
+﻿
+ 
+
+
+
+
+
+
+
+
+
 //==================================================
-// HINWEIS: Diese Datei wurde am 19.02.2016 21:28:51
+// HINWEIS: Diese Datei wurde am 09.06.2016 11:34:31
 //			automatisch generiert!
 //==================================================
 using NUnit.Framework;
@@ -11,7 +21,9 @@ namespace Nav.Language.Tests {
 	[TestFixture]
 	public class SyntaxTests {
 		
+
 		[Test]
+
 		[Description("Syntax: 'do \"instruction\"'\r\n")]
 		public void TestDoClauseSyntax() {
 			var doClauseSyntax=Syntax.ParseDoClause(SampleSyntax.Of<DoClauseSyntax>());
@@ -25,7 +37,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '-->'\r\n")]
 		public void TestGoToEdgeSyntax() {
 			var goToEdgeSyntax=Syntax.ParseGoToEdge(SampleSyntax.Of<GoToEdgeSyntax>());
@@ -39,7 +53,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'Type[]'\r\n")]
 		public void TestArrayTypeSyntax() {
 			var arrayTypeSyntax=Syntax.ParseArrayType(SampleSyntax.Of<ArrayTypeSyntax>());
@@ -53,7 +69,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'o->'\r\n")]
 		public void TestModalEdgeSyntax() {
 			var modalEdgeSyntax=Syntax.ParseModalEdge(SampleSyntax.Of<ModalEdgeSyntax>());
@@ -67,7 +85,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'Type param'\r\n")]
 		public void TestParameterSyntax() {
 			var parameterSyntax=Syntax.ParseParameter(SampleSyntax.Of<ParameterSyntax>());
@@ -81,7 +101,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'Identifier'\r\n")]
 		public void TestIdentifierSyntax() {
 			var identifierSyntax=Syntax.ParseIdentifier(SampleSyntax.Of<IdentifierSyntax>());
@@ -95,7 +117,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'Identifier'\r\n")]
 		public void TestSimpleTypeSyntax() {
 			var simpleTypeSyntax=Syntax.ParseSimpleType(SampleSyntax.Of<SimpleTypeSyntax>());
@@ -109,7 +133,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'Type<T1, T2<T3, T4>>'\r\n")]
 		public void TestGenericTypeSyntax() {
 			var genericTypeSyntax=Syntax.ParseGenericType(SampleSyntax.Of<GenericTypeSyntax>());
@@ -123,7 +149,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '==>'\r\n")]
 		public void TestNonModalEdgeSyntax() {
 			var nonModalEdgeSyntax=Syntax.ParseNonModalEdge(SampleSyntax.Of<NonModalEdgeSyntax>());
@@ -137,7 +165,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'end'\r\n")]
 		public void TestEndTargetNodeSyntax() {
 			var endTargetNodeSyntax=Syntax.ParseEndTargetNode(SampleSyntax.Of<EndTargetNodeSyntax>());
@@ -151,7 +181,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'T1 param1, T2 param2'\r\n")]
 		public void TestParameterListSyntax() {
 			var parameterListSyntax=Syntax.ParseParameterList(SampleSyntax.Of<ParameterListSyntax>());
@@ -165,7 +197,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'on Trigger'\r\n")]
 		public void TestSignalTriggerSyntax() {
 			var signalTriggerSyntax=Syntax.ParseSignalTrigger(SampleSyntax.Of<SignalTriggerSyntax>());
@@ -179,7 +213,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '\"StringLiteral\"'\r\n")]
 		public void TestStringLiteralSyntax() {
 			var stringLiteralSyntax=Syntax.ParseStringLiteral(SampleSyntax.Of<StringLiteralSyntax>());
@@ -193,7 +229,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'init'\r\n")]
 		public void TestInitSourceNodeSyntax() {
 			var initSourceNodeSyntax=Syntax.ParseInitSourceNode(SampleSyntax.Of<InitSourceNodeSyntax>());
@@ -207,7 +245,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'task Task { };'\r\n")]
 		public void TestTaskDefinitionSyntax() {
 			var taskDefinitionSyntax=Syntax.ParseTaskDefinition(SampleSyntax.Of<TaskDefinitionSyntax>());
@@ -221,7 +261,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[code \"code goes here\"]'\r\n")]
 		public void TestCodeDeclarationSyntax() {
 			var codeDeclarationSyntax=Syntax.ParseCodeDeclaration(SampleSyntax.Of<CodeDeclarationSyntax>());
@@ -235,7 +277,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'taskref Task { };'\r\n")]
 		public void TestTaskDeclarationSyntax() {
 			var taskDeclarationSyntax=Syntax.ParseTaskDeclaration(SampleSyntax.Of<TaskDeclarationSyntax>());
@@ -249,7 +293,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'taskref \"file.nav\";'\r\n")]
 		public void TestIncludeDirectiveSyntax() {
 			var includeDirectiveSyntax=Syntax.ParseIncludeDirective(SampleSyntax.Of<IncludeDirectiveSyntax>());
@@ -263,7 +309,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'if Condition'\r\n")]
 		public void TestIfConditionClauseSyntax() {
 			var ifConditionClauseSyntax=Syntax.ParseIfConditionClause(SampleSyntax.Of<IfConditionClauseSyntax>());
@@ -277,7 +325,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[]'\r\n")]
 		public void TestArrayRankSpecifierSyntax() {
 			var arrayRankSpecifierSyntax=Syntax.ParseArrayRankSpecifier(SampleSyntax.Of<ArrayRankSpecifierSyntax>());
@@ -291,7 +341,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: ''\r\n")]
 		public void TestCodeGenerationUnitSyntax() {
 			var codeGenerationUnitSyntax=Syntax.ParseCodeGenerationUnit(SampleSyntax.Of<CodeGenerationUnitSyntax>());
@@ -305,7 +357,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'end;'\r\n")]
 		public void TestEndNodeDeclarationSyntax() {
 			var endNodeDeclarationSyntax=Syntax.ParseEndNodeDeclaration(SampleSyntax.Of<EndNodeDeclarationSyntax>());
@@ -319,7 +373,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'spontaneous'\r\n")]
 		public void TestSpontaneousTriggerSyntax() {
 			var spontaneousTriggerSyntax=Syntax.ParseSpontaneousTrigger(SampleSyntax.Of<SpontaneousTriggerSyntax>());
@@ -333,7 +389,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[base StandardWFS<TSType> : IWFServiceBase, IBeginWFSType]'\r\n")]
 		public void TestCodeBaseDeclarationSyntax() {
 			var codeBaseDeclarationSyntax=Syntax.ParseCodeBaseDeclaration(SampleSyntax.Of<CodeBaseDeclarationSyntax>());
@@ -347,7 +405,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'else'\r\n")]
 		public void TestElseConditionClauseSyntax() {
 			var elseConditionClauseSyntax=Syntax.ParseElseConditionClause(SampleSyntax.Of<ElseConditionClauseSyntax>());
@@ -361,7 +421,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'exit Identifier;'\r\n")]
 		public void TestExitNodeDeclarationSyntax() {
 			var exitNodeDeclarationSyntax=Syntax.ParseExitNodeDeclaration(SampleSyntax.Of<ExitNodeDeclarationSyntax>());
@@ -375,7 +437,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'init Identifier [abstractmethod] [params T1 param1, T2<T3, T4<T5>> param2, T6[][] param3] do Instruction;'\r\n")]
 		public void TestInitNodeDeclarationSyntax() {
 			var initNodeDeclarationSyntax=Syntax.ParseInitNodeDeclaration(SampleSyntax.Of<InitNodeDeclarationSyntax>());
@@ -389,7 +453,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'task Identifier Alias [donotinject] [abstractmethod];'\r\n")]
 		public void TestTaskNodeDeclarationSyntax() {
 			var taskNodeDeclarationSyntax=Syntax.ParseTaskNodeDeclaration(SampleSyntax.Of<TaskNodeDeclarationSyntax>());
@@ -403,7 +469,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'view Identifier;'\r\n")]
 		public void TestViewNodeDeclarationSyntax() {
 			var viewNodeDeclarationSyntax=Syntax.ParseViewNodeDeclaration(SampleSyntax.Of<ViewNodeDeclarationSyntax>());
@@ -417,7 +485,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[using Namespace]'\r\n")]
 		public void TestCodeUsingDeclarationSyntax() {
 			var codeUsingDeclarationSyntax=Syntax.ParseCodeUsingDeclaration(SampleSyntax.Of<CodeUsingDeclarationSyntax>());
@@ -431,7 +501,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'Identifier'\r\n")]
 		public void TestIdentifierSourceNodeSyntax() {
 			var identifierSourceNodeSyntax=Syntax.ParseIdentifierSourceNode(SampleSyntax.Of<IdentifierSourceNodeSyntax>());
@@ -445,7 +517,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'Identifier (identifierOrStringList)'\r\n")]
 		public void TestIdentifierTargetNodeSyntax() {
 			var identifierTargetNodeSyntax=Syntax.ParseIdentifierTargetNode(SampleSyntax.Of<IdentifierTargetNodeSyntax>());
@@ -459,7 +533,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: ''\r\n")]
 		public void TestNodeDeclarationBlockSyntax() {
 			var nodeDeclarationBlockSyntax=Syntax.ParseNodeDeclarationBlock(SampleSyntax.Of<NodeDeclarationBlockSyntax>());
@@ -473,7 +549,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'Node --> Target on Trigger if Condition do Instruction;'\r\n")]
 		public void TestTransitionDefinitionSyntax() {
 			var transitionDefinitionSyntax=Syntax.ParseTransitionDefinition(SampleSyntax.Of<TransitionDefinitionSyntax>());
@@ -487,7 +565,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'choice ChoiceName;'\r\n")]
 		public void TestChoiceNodeDeclarationSyntax() {
 			var choiceNodeDeclarationSyntax=Syntax.ParseChoiceNodeDeclaration(SampleSyntax.Of<ChoiceNodeDeclarationSyntax>());
@@ -501,7 +581,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[params Type1 p1, Type2 p2]'\r\n")]
 		public void TestCodeParamsDeclarationSyntax() {
 			var codeParamsDeclarationSyntax=Syntax.ParseCodeParamsDeclaration(SampleSyntax.Of<CodeParamsDeclarationSyntax>());
@@ -515,7 +597,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[result Type p]'\r\n")]
 		public void TestCodeResultDeclarationSyntax() {
 			var codeResultDeclarationSyntax=Syntax.ParseCodeResultDeclaration(SampleSyntax.Of<CodeResultDeclarationSyntax>());
@@ -529,7 +613,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'dialog Identifier;'\r\n")]
 		public void TestDialogNodeDeclarationSyntax() {
 			var dialogNodeDeclarationSyntax=Syntax.ParseDialogNodeDeclaration(SampleSyntax.Of<DialogNodeDeclarationSyntax>());
@@ -543,7 +629,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'else if Condition'\r\n")]
 		public void TestElseIfConditionClauseSyntax() {
 			var elseIfConditionClauseSyntax=Syntax.ParseElseIfConditionClause(SampleSyntax.Of<ElseIfConditionClauseSyntax>());
@@ -557,7 +645,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'Identifier, \"StringLiteral\"'\r\n")]
 		public void TestIdentifierOrStringListSyntax() {
 			var identifierOrStringListSyntax=Syntax.ParseIdentifierOrStringList(SampleSyntax.Of<IdentifierOrStringListSyntax>());
@@ -571,7 +661,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[namespaceprefix Namespace]'\r\n")]
 		public void TestCodeNamespaceDeclarationSyntax() {
 			var codeNamespaceDeclarationSyntax=Syntax.ParseCodeNamespaceDeclaration(SampleSyntax.Of<CodeNamespaceDeclarationSyntax>());
@@ -585,7 +677,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: 'SourceNode:ExitIdentifier --> TargetNode if Condition do Instruction;'\r\n")]
 		public void TestExitTransitionDefinitionSyntax() {
 			var exitTransitionDefinitionSyntax=Syntax.ParseExitTransitionDefinition(SampleSyntax.Of<ExitTransitionDefinitionSyntax>());
@@ -599,7 +693,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[generateto \"StringLiteral\"]'\r\n")]
 		public void TestCodeGenerateToDeclarationSyntax() {
 			var codeGenerateToDeclarationSyntax=Syntax.ParseCodeGenerateToDeclaration(SampleSyntax.Of<CodeGenerateToDeclarationSyntax>());
@@ -613,7 +709,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: ''\r\n")]
 		public void TestTransitionDefinitionBlockSyntax() {
 			var transitionDefinitionBlockSyntax=Syntax.ParseTransitionDefinitionBlock(SampleSyntax.Of<TransitionDefinitionBlockSyntax>());
@@ -627,7 +725,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[donotinject]'\r\n")]
 		public void TestCodeDoNotInjectDeclarationSyntax() {
 			var codeDoNotInjectDeclarationSyntax=Syntax.ParseCodeDoNotInjectDeclaration(SampleSyntax.Of<CodeDoNotInjectDeclarationSyntax>());
@@ -641,7 +741,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[abstractmethod]'\r\n")]
 		public void TestCodeAbstractMethodDeclarationSyntax() {
 			var codeAbstractMethodDeclarationSyntax=Syntax.ParseCodeAbstractMethodDeclaration(SampleSyntax.Of<CodeAbstractMethodDeclarationSyntax>());
@@ -655,7 +757,9 @@ namespace Nav.Language.Tests {
 		    }
 		}
 
+
 		[Test]
+
 		[Description("Syntax: '[notimplemented]'\r\n")]
 		public void TestCodeNotImplementedDeclarationSyntax() {
 			var codeNotImplementedDeclarationSyntax=Syntax.ParseCodeNotImplementedDeclaration(SampleSyntax.Of<CodeNotImplementedDeclarationSyntax>());
@@ -668,6 +772,7 @@ namespace Nav.Language.Tests {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
 		}
+
 
 	}
 }
