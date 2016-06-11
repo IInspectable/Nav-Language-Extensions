@@ -9,50 +9,38 @@ using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
 
+using Pharmatechnik.Nav.Language.Extension.QuickInfo;
+
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav
-{
+namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
     sealed class GoToNavAdornment : Button {
 
-        readonly GoToNavTag _gotoNavTag;
         readonly IWpfTextView _textView;
         readonly CrispImage _crispImage;
+        GoToNavTag _gotoNavTag;
 
-        internal GoToNavAdornment(GoToNavTag gotoNavTag, IWpfTextView textView) {
-            _gotoNavTag = gotoNavTag;
-            _textView = textView;
+        internal GoToNavAdornment(GoToNavTag goToNavTag, IWpfTextView textView) {
+
+            _textView   = textView;
+            _crispImage = new CrispImage();
 
             Width       = 20;
             Height      = 20;
             Background  = Brushes.Transparent;
             BorderBrush = Brushes.Transparent;
             Cursor      = Cursors.Hand;
-            Margin      = new Thickness(0, 0, 0, 0);
-            ToolTip     = _gotoNavTag.TaskInfo.NavFileName;
-
-            _crispImage = new CrispImage {
-                //Moniker = KnownMonikers.GoToSourceCode
-                Moniker = KnownMonikers.GoToDeclaration
-            };
- 
-            UpdateColor();
-            Content = _crispImage;
+            Margin      = new Thickness(0, 0, 0, 0);            
+            Content     = _crispImage;
 
             Click += ColorAdornment_Click;
+            
+            Update(goToNavTag);
         }
 
         public GoToNavTag GotoNavTag {
             get { return _gotoNavTag; }
-        }
-
-        void UpdateColor() {
-
-            var backgroundBrush = _textView.Background as SolidColorBrush;
-            if(backgroundBrush != null) {
-                ImageThemingUtilities.SetImageBackgroundColor(_crispImage, backgroundBrush.Color);
-            }
         }
 
         protected override void OnVisualParentChanged(DependencyObject oldParent) {
@@ -61,12 +49,30 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav
         }
 
         void ColorAdornment_Click(object sender, RoutedEventArgs e) {
+            // TODO GoTo implementieren
             MessageBox.Show("Hi 5!");
         }
-        
-        internal void Update(GoToNavTag goToNavTag)
-        {
+
+        internal void Update(GoToNavTag goToNavTag) {
+            _gotoNavTag = goToNavTag;
             
+            UpdateColor();
+
+            if (_gotoNavTag.TaskInfo is NavTriggerInfo) {
+                _crispImage.Moniker = SymbolImageMonikers.SignalTrigger;
+                ToolTip = "Go To Trigger Definition";
+            } else {
+                _crispImage.Moniker = SymbolImageMonikers.TaskDefinition;
+                ToolTip = "Go To Task Definition";
+            }
+        }
+
+        void UpdateColor() {
+
+            var backgroundBrush = _textView.Background as SolidColorBrush;
+            if (backgroundBrush != null) {
+                ImageThemingUtilities.SetImageBackgroundColor(_crispImage, backgroundBrush.Color);
+            }
         }
     }
 }

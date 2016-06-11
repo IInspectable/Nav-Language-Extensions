@@ -3,7 +3,6 @@
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 using Pharmatechnik.Nav.Language.Extension.Common;
@@ -21,11 +20,10 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         [ImportingConstructor]
         public SymbolQuickInfoSourceProvider(ITextStructureNavigatorSelectorService navigatorService, 
                                              ITextBufferFactoryService textBufferFactoryService, 
-                                             CodeContentControlProvider codeContentControlProvider, 
-                                             IClassificationFormatMapService classificationFormatMapService,
-                                             IClassificationTypeRegistryService classificationTypeRegistryService) {
+                                             CodeContentControlProvider codeContentControlProvider,
+                                             SyntaxQuickinfoBuilderService syntaxQuickinfoBuilderService) {
 
-            SyntaxQuickinfoBuilderService = new SyntaxQuickinfoBuilderService(classificationFormatMapService, classificationTypeRegistryService);
+            SyntaxQuickinfoBuilderService = syntaxQuickinfoBuilderService;
         }
 
         SyntaxQuickinfoBuilderService SyntaxQuickinfoBuilderService { get; }
