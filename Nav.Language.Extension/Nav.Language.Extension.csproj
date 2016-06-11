@@ -59,6 +59,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\LinePositionExtensions.cs" />
+    <Compile Include="CSharp\GoToNav\GoToNavAdornment.cs" />
+    <Compile Include="CSharp\GoToNav\GoToNavAdornmentTagger.cs" />
+    <Compile Include="CSharp\GoToNav\GoToNavAdornmentTaggerProvider.cs" />
+    <Compile Include="CSharp\GoToNav\GoToNavTag.cs" />
+    <Compile Include="CSharp\GoToNav\GoToNavTagger.cs" />
+    <Compile Include="CSharp\GoToNav\GoToNavTaggerProvider.cs" />
+    <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
+    <Compile Include="CSharp\GoToNav\NavTaskInfo.cs" />
+    <Compile Include="CSharp\GoToNav\NavTriggerInfo.cs" />
     <Compile Include="GoTo\GoToClassDeclarationTag.cs" />
     <Compile Include="GoTo\GoToLocationTag.cs" />
     <Compile Include="GoTo\GoToMemberDeclarationTag.cs" />
