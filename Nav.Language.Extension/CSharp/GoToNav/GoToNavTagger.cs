@@ -4,6 +4,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reactive.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -12,6 +15,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
@@ -20,42 +24,109 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
     class GoToNavTagger: ITagger<GoToNavTag>, IDisposable {
 
         readonly ITextBuffer _textBuffer;
+        readonly IDisposable _parserObs;
+        BuildResult _result;
 
         public GoToNavTagger(ITextBuffer textBuffer) {
+
             _textBuffer = textBuffer;
             _textBuffer.Changed += OnTextBufferChanged;
+
+            _parserObs = Observable.FromEventPattern<EventArgs>(
+                                               handler => RebuildTriggered += handler,
+                                               handler => RebuildTriggered -= handler)
+                                   .Select(_ => _textBuffer.CurrentSnapshot)
+                                   .Throttle(ServiceProperties.GoToNavTaggerThrottleTime)
+                                   .Select(args => Observable.DeferAsync(async token =>
+                                   {
+                                       var parseResult = await BuildResultAsync(args, token).ConfigureAwait(false);
+
+                                       return Observable.Return(parseResult);
+                                   }))
+                                   .Switch()
+                                   .ObserveOn(SynchronizationContext.Current)
+                                   .Subscribe(TrySetResult);
+
+            Invalidate();
+        }
+
+        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
+        
+        public IEnumerable<ITagSpan<GoToNavTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
+            
+            if(_result == null || spans.Count == 0) {                
+                yield break;
+            }
+
+            foreach(var span in spans) {
+                foreach(var tag in _result.Tags) {
+
+                    var transSpan = tag.Span.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive);
+                    if (transSpan.IntersectsWith(span)) {
+                        yield return new TagSpan<GoToNavTag>(transSpan, tag.Tag);
+                    }
+                }
+            }
+        }
+
+        void TrySetResult(BuildResult result) {
+
+            // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
+            // da bereits ein neues berechnet wird.
+            if (_textBuffer.CurrentSnapshot != result.Snapshot) {   
+                return;
+            }
+
+            // hier könnte man noch mit dem aktuellem Ergebnis Vergleichen und ggf. gar nichts machen, wenn gleich...
+            _result = result;
+
+            var snapshotSpan = result.Snapshot.GetFullSpan();
+            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshotSpan));
+        }
+        
+        public void Invalidate() {
+            RebuildTriggered?.Invoke(this, EventArgs.Empty);
+        }
+
+        // Dieses Event feuern wir um den Observer zu "füttern".
+        event EventHandler<EventArgs> RebuildTriggered;
+
+        void OnTextBufferChanged(object sender, TextContentChangedEventArgs e) {
+            Invalidate();           
+        }
+
+        class BuildResult {
+
+            public IList<ITagSpan<GoToNavTag>> Tags { get; set; }
+            public ITextSnapshot Snapshot { get; }
+
+            public BuildResult(IList<ITagSpan<GoToNavTag>> tags, ITextSnapshot snapshot) {
+                Tags = tags;
+                Snapshot = snapshot;
+            }
         }
 
         public void Dispose() {
             _textBuffer.Changed -= OnTextBufferChanged;
+            _parserObs.Dispose();
         }
 
-        void OnTextBufferChanged(object sender, TextContentChangedEventArgs e) {
-            if (e.Changes.Count == 0)
-                return;
+        /// <summary>
+        /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorischt bzgl. thread safety!
+        /// Deshalb werden die BuildResultArgs bereits vorab im GUI Thread erstellt.
+        /// </summary>
+        static async Task<BuildResult> BuildResultAsync(ITextSnapshot snapshot, CancellationToken cancellationToken) {
 
-            ITextSnapshot snapshot = e.After;
+            return await Task.Run(() => {
 
-            int start = e.Changes[0].NewPosition;
-            int end = e.Changes[e.Changes.Count - 1].NewEnd;
+                var tags = BuildTags(snapshot).ToList();
 
-            SnapshotSpan totalAffectedSpan = new SnapshotSpan(
-                snapshot.GetLineFromPosition(start).Start,
-                snapshot.GetLineFromPosition(end).End);
+                return new BuildResult(tags, snapshot);
 
-            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(totalAffectedSpan));
-
-            // Auslagern per Observable.Throttle
+            }, cancellationToken).ConfigureAwait(false);
         }
 
-        public IEnumerable<ITagSpan<GoToNavTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
-            // TODO Performance
-            return GetTags();
-        }
-
-        IEnumerable<ITagSpan<GoToNavTag>> GetTags() {
-
-            var currentSnapshot = _textBuffer.CurrentSnapshot;
+        static IEnumerable<ITagSpan<GoToNavTag>> BuildTags(ITextSnapshot currentSnapshot) {
 
             var document = currentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
             if (document == null) {
@@ -116,10 +187,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
             }
         }
         
-        public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
-
         [CanBeNull]
-        NavTaskInfo GetNavTaskInfo(INamedTypeSymbol classSymbol) {
+        static NavTaskInfo GetNavTaskInfo(INamedTypeSymbol classSymbol) {
 
             // Die Klasse kann in mehrere partial classes aufgeteilt sein
             var navTaskInfo = classSymbol?.DeclaringSyntaxReferences
@@ -129,7 +198,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
         }
 
         [CanBeNull]
-        NavTaskInfo GetNavTaskInfo(ClassDeclarationSyntax classDeclaration) {
+        static NavTaskInfo GetNavTaskInfo(ClassDeclarationSyntax classDeclaration) {
 
             var tags = ReadNavTags(classDeclaration).ToList();
 
@@ -168,7 +237,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
         }
 
         [CanBeNull]
-        NavTriggerInfo GetNavTriggerInfo(IMethodSymbol method, NavTaskInfo taskInfo) {
+        static NavTriggerInfo GetNavTriggerInfo(IMethodSymbol method, NavTaskInfo taskInfo) {
 
             var navTriggerInfo = method?.DeclaringSyntaxReferences
                                        .Select(dsr => dsr.GetSyntax() as MethodDeclarationSyntax)
@@ -179,7 +248,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
         }
 
         [CanBeNull]
-        NavTriggerInfo GetNavTriggerInfo(MethodDeclarationSyntax methodDeclaration, NavTaskInfo taskInfo) {
+        static NavTriggerInfo GetNavTriggerInfo(MethodDeclarationSyntax methodDeclaration, NavTaskInfo taskInfo) {
 
             var tags = ReadNavTags(methodDeclaration).ToList();
 
@@ -198,7 +267,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
         }
         
         [NotNull]
-        IEnumerable<NavTag> ReadNavTags(Microsoft.CodeAnalysis.SyntaxNode node) {
+        static IEnumerable<NavTag> ReadNavTags(Microsoft.CodeAnalysis.SyntaxNode node) {
 
             var trivias = node.GetLeadingTrivia()
                               .Where(t => t.Kind() == SyntaxKind.SingleLineDocumentationCommentTrivia);
