@@ -46,9 +46,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
             Snapshot = textView.TextBuffer.CurrentSnapshot;
 
             TextView.LayoutChanged += HandleLayoutChanged;
-            TextView.TextBuffer.Changed += HandleBufferChanged;
         }
 
+        /// <param name="data"></param>
         /// <param name="span">The span of text that this adornment will elide.</param>
         /// <returns>Adornment corresponding to given data. May be null.</returns>
         protected abstract TAdornment CreateAdornment(TData data, SnapshotSpan span);
@@ -58,7 +58,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
 
         /// <param name="spans">Spans to provide adornment data for. These spans do not necessarily correspond to text lines.</param>
         /// <remarks>
-        /// If adornments need to be updated, call <see cref="RaiseTagsChanged"/> or <see cref="InavlidateSpans"/>.
+        /// If adornments need to be updated, call <see cref="RaiseTagsChanged"/> or <see cref="InvalidateSpans"/>.
         /// This will, indirectly, cause <see cref="GetAdornmentData"/> to be called.
         /// </remarks>
         /// <returns>
@@ -68,13 +68,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
         ///  * and affinity of the adornment (this should be null if and only if the elided span has a length greater than zero)
         /// </returns>
         protected abstract IEnumerable<Tuple<SnapshotSpan, PositionAffinity?, TData>> GetAdornmentData(NormalizedSnapshotSpanCollection spans);
-
-        void HandleBufferChanged(object sender, TextContentChangedEventArgs args)
-        {
-            // TODO: Daas macht für und eigentlich überhaupt keinen Sinn...
-            var editedSpans = args.Changes.Select(change => new SnapshotSpan(args.After, change.NewSpan)).ToList();
-            InvalidateSpans(editedSpans);
-        }
 
         /// <summary>
         /// Causes intra-text adornments to be updated asynchronously.
@@ -108,8 +101,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
             }
 
             List<SnapshotSpan> translatedSpans;
-            lock (_invalidatedSpans)
-            {
+            lock(_invalidatedSpans) {
                 translatedSpans = _invalidatedSpans.Select(s => s.TranslateTo(Snapshot, SpanTrackingMode.EdgeInclusive)).ToList();
                 _invalidatedSpans.Clear();
             }
@@ -123,14 +115,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
             RaiseTagsChanged(new SnapshotSpan(start, end));
         }
 
-        /// <summary>
-        /// Causes intra-text adornments to be updated synchronously.
-        /// </summary>
-        protected void RaiseTagsChanged(SnapshotSpan span)
-        {
-            var handler = TagsChanged;
-            if (handler != null)
-                handler(this, new SnapshotSpanEventArgs(span));
+        protected void RaiseTagsChanged(SnapshotSpan span) {
+            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(span));
         }
 
         void HandleLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
@@ -147,7 +133,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
             foreach (var span in toRemove)
                 _adornmentCache.Remove(span);
         }
-
 
         // Produces tags on the snapshot that the tag consumer asked for.
         public virtual IEnumerable<ITagSpan<IntraTextAdornmentTag>> GetTags(NormalizedSnapshotSpanCollection spans)

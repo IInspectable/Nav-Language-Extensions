@@ -25,12 +25,21 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
         readonly ITextBuffer _textBuffer;
         readonly IDisposable _parserObs;
-        BuildResult _result;
+        readonly WorkspaceRegistration _workspaceRegistration;
+
+        BuildTagsResult _result;
+        Workspace _workspace;
 
         public GoToNavTagger(ITextBuffer textBuffer) {
 
             _textBuffer = textBuffer;
-            _textBuffer.Changed += OnTextBufferChanged;
+
+            _workspaceRegistration = Workspace.GetWorkspaceRegistration(textBuffer.AsTextContainer());
+            _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
+
+            if(_workspaceRegistration.Workspace != null) {
+                ConnectToWorkspace(_workspaceRegistration.Workspace);
+            }
 
             _parserObs = Observable.FromEventPattern<EventArgs>(
                                                handler => RebuildTriggered += handler,
@@ -39,7 +48,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
                                    .Throttle(ServiceProperties.GoToNavTaggerThrottleTime)
                                    .Select(args => Observable.DeferAsync(async token =>
                                    {
-                                       var parseResult = await BuildResultAsync(args, token).ConfigureAwait(false);
+                                       var parseResult = await BuildTagsAsync(args, token).ConfigureAwait(false);
 
                                        return Observable.Return(parseResult);
                                    }))
@@ -51,15 +60,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
-        
+
         public IEnumerable<ITagSpan<GoToNavTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
-            
-            if(_result == null || spans.Count == 0) {                
+
+            if (_result == null || spans.Count == 0) {
                 yield break;
             }
 
-            foreach(var span in spans) {
-                foreach(var tag in _result.Tags) {
+            foreach (var span in spans) {
+                foreach (var tag in _result.Tags) {
 
                     var transSpan = tag.Span.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive);
                     if (transSpan.IntersectsWith(span)) {
@@ -69,7 +78,67 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
             }
         }
 
-        void TrySetResult(BuildResult result) {
+        void OnWorkspaceRegistrationChanged(object sender, EventArgs e) {
+
+            DisconnectFromWorkspace();
+
+            var newWorkspace = _workspaceRegistration.Workspace;
+
+            if (newWorkspace != null) {
+                ConnectToWorkspace(newWorkspace);
+            }
+        }
+
+        void ConnectToWorkspace(Workspace workspace) {
+
+            _result    = null;
+
+            _workspace = workspace;
+            _workspace.WorkspaceChanged += OnWorkspaceChanged;
+            _workspace.DocumentOpened   += OnDocumentOpened;
+
+            Invalidate();
+        }
+
+        void DisconnectFromWorkspace() {
+
+            _result = null;
+
+            if (_workspace != null) {
+                _workspace.WorkspaceChanged -= OnWorkspaceChanged;
+                _workspace.DocumentOpened   -= OnDocumentOpened;
+
+                _workspace = null;                
+            }
+        }
+
+        void OnDocumentOpened(object sender, DocumentEventArgs args) {
+            InvalidateIfThisDocument(args.Document.Id);
+        }
+
+        void OnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args) {
+            // We're getting an event for a workspace we already disconnected from
+            if (args.NewSolution.Workspace != _workspace) {
+                // we are async so we are getting events from previous workspace we were associated with
+                // just ignore them
+                return;
+            }
+
+            if(args.Kind == WorkspaceChangeKind.DocumentChanged) {
+                InvalidateIfThisDocument(args.DocumentId);
+            }               
+        }
+
+        void InvalidateIfThisDocument(DocumentId documentId) {
+            if (_workspace != null) {
+                var openDocumentId = _workspace.GetDocumentIdInCurrentContext(_textBuffer.AsTextContainer());
+                if (openDocumentId == documentId) {
+                    Invalidate();
+                }
+            }
+        }
+        
+        void TrySetResult(BuildTagsResult result) {
 
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
             // da bereits ein neues berechnet wird.
@@ -83,31 +152,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
             var snapshotSpan = result.Snapshot.GetFullSpan();
             TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshotSpan));
         }
-        
-        public void Invalidate() {
-            RebuildTriggered?.Invoke(this, EventArgs.Empty);
-        }
 
         // Dieses Event feuern wir um den Observer zu "füttern".
         event EventHandler<EventArgs> RebuildTriggered;
 
-        void OnTextBufferChanged(object sender, TextContentChangedEventArgs e) {
-            Invalidate();           
+        public void Invalidate() {
+            RebuildTriggered?.Invoke(this, EventArgs.Empty);
         }
-
-        class BuildResult {
-
-            public IList<ITagSpan<GoToNavTag>> Tags { get; set; }
-            public ITextSnapshot Snapshot { get; }
-
-            public BuildResult(IList<ITagSpan<GoToNavTag>> tags, ITextSnapshot snapshot) {
-                Tags = tags;
-                Snapshot = snapshot;
-            }
-        }
-
+        
         public void Dispose() {
-            _textBuffer.Changed -= OnTextBufferChanged;
+            _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
+            DisconnectFromWorkspace();
             _parserObs.Dispose();
         }
 
@@ -115,13 +170,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
         /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorischt bzgl. thread safety!
         /// Deshalb werden die BuildResultArgs bereits vorab im GUI Thread erstellt.
         /// </summary>
-        static async Task<BuildResult> BuildResultAsync(ITextSnapshot snapshot, CancellationToken cancellationToken) {
+        static async Task<BuildTagsResult> BuildTagsAsync(ITextSnapshot snapshot, CancellationToken cancellationToken) {
 
             return await Task.Run(() => {
 
                 var tags = BuildTags(snapshot).ToList();
 
-                return new BuildResult(tags, snapshot);
+                return new BuildTagsResult(tags, snapshot);
 
             }, cancellationToken).ConfigureAwait(false);
         }
@@ -299,6 +354,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
         sealed class NavTag {
             public string TagName { get; set; }
             public string Content { get; set; }
+        }
+
+        sealed class BuildTagsResult {
+
+            public IList<ITagSpan<GoToNavTag>> Tags { get; }
+            public ITextSnapshot Snapshot { get; }
+
+            public BuildTagsResult(IList<ITagSpan<GoToNavTag>> tags, ITextSnapshot snapshot) {
+                Tags = tags;
+                Snapshot = snapshot;
+            }
         }
     }
 }
