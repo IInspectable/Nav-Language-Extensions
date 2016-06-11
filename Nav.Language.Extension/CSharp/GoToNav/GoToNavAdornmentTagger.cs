@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
+using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
@@ -18,15 +19,23 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
                 () => new GoToNavAdornmentTagger(view, colorTagger.Value));
         }
 
-        readonly ITagAggregator<GoToNavTag> _colorTagger;
+        readonly ITagAggregator<GoToNavTag> _goToNavTagger;
 
-        GoToNavAdornmentTagger(IWpfTextView textView, ITagAggregator<GoToNavTag> colorTagger)
+        GoToNavAdornmentTagger(IWpfTextView textView, ITagAggregator<GoToNavTag> goToNavTagger)
             : base(textView) {
-            _colorTagger = colorTagger;
+            _goToNavTagger = goToNavTagger;
+            goToNavTagger.TagsChanged += OnTagsChanged;
+        }
+
+        private void OnTagsChanged(object sender, TagsChangedEventArgs e) {
+            InvalidateSpans(new List<SnapshotSpan>() {
+                TextView.TextBuffer.CurrentSnapshot.GetFullSpan()
+            });
         }
 
         public void Dispose() {
-            _colorTagger.Dispose();
+            _goToNavTagger.TagsChanged -= OnTagsChanged;
+            _goToNavTagger.Dispose();
 
             TextView.Properties.RemoveProperty(typeof(GoToNavAdornmentTagger));
         }
@@ -40,7 +49,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
             ITextSnapshot snapshot = spans[0].Snapshot;
 
-            var colorTags = _colorTagger.GetTags(spans);
+            var colorTags = _goToNavTagger.GetTags(spans);
 
             foreach(IMappingTagSpan<GoToNavTag> dataTagSpan in colorTags) {
                 NormalizedSnapshotSpanCollection colorTagSpans = dataTagSpan.Span.GetSpans(snapshot);

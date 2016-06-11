@@ -71,6 +71,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
 
         void HandleBufferChanged(object sender, TextContentChangedEventArgs args)
         {
+            // TODO: Daas macht für und eigentlich überhaupt keinen Sinn...
             var editedSpans = args.Changes.Select(change => new SnapshotSpan(args.After, change.NewSpan)).ToList();
             InvalidateSpans(editedSpans);
         }
