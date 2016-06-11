@@ -44,10 +44,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
                 snapshot.GetLineFromPosition(end).End);
 
             TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(totalAffectedSpan));
+
+            // Auslagern per Observable.Throttle
         }
 
         public IEnumerable<ITagSpan<GoToNavTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
-
+            // TODO Performance
             return GetTags();
         }
 

@@ -15,12 +15,12 @@
              d:DesignWidth  = "250">
 
  
-    <imaging:CrispImage x:Name                  = "CrispImage"
-                            Margin              = "0, 0, 4, 0"
-                            VerticalAlignment   = "Center"
-                            HorizontalAlignment = "Left"/>
+    <imaging:CrispImage x:Name              = "CrispImage"
+                        Margin              = "0, 0, 4, 0"
+                        VerticalAlignment   = "Center"
+                        HorizontalAlignment = "Left"/>
 
-    <ContentControl x:Name="TextContent"  >Text</ContentControl>
+    <ContentControl x:Name="TextContent">Text</ContentControl>
 
     <!---->   
 </StackPanel>

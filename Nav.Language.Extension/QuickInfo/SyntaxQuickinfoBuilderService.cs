@@ -1,11 +1,13 @@
 #region Using Directives
 
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Text.Classification;
+
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Classification;
 using Pharmatechnik.Nav.Language.Extension.Common;
@@ -14,12 +16,13 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
-    
+    [Export]
     sealed class SyntaxQuickinfoBuilderService {
 
         readonly IClassificationFormatMapService _classificationFormatMapService;
         readonly Dictionary<SyntaxTokenClassification, IClassificationType> _classificationMap;
 
+        [ImportingConstructor]
         public SyntaxQuickinfoBuilderService(IClassificationFormatMapService classificationFormatMapService,
                                              IClassificationTypeRegistryService classificationTypeRegistryService) {
 
