@@ -15,6 +15,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
@@ -223,7 +224,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
                     var methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration);
                     var triggerInfo  = GetNavTriggerInfo(methodSymbol, navTaskInfo);
 
-                    // In den überschriebenen Methoden nachsehen
+                    // In der überschriebenen Methode nachsehen
                     if (triggerInfo == null) {
                         triggerInfo = GetNavTriggerInfo(methodSymbol?.OverriddenMethod, navTaskInfo);         
                     }
@@ -232,7 +233,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
                         continue;
                     }
 
-                    start = methodDeclaration.Identifier.Span.Start;
+                    start  = methodDeclaration.Identifier.Span.Start;
                     length = methodDeclaration.Identifier.Span.Length;
 
                     snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
@@ -257,17 +258,18 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
             var tags = ReadNavTags(classDeclaration).ToList();
 
-            var navFileTag  = tags.FirstOrDefault(t => t.TagName == "NavFile");
+            var navFileTag  = tags.FirstOrDefault(t => t.TagName == AnnotationTagNames.NavFile);
             var navFileName = navFileTag?.Content;
 
-            var navTaskTag  = tags.FirstOrDefault(t => t.TagName == "NavTask");
+            var navTaskTag  = tags.FirstOrDefault(t => t.TagName == AnnotationTagNames.NavTask);
             var navTaskName = navTaskTag?.Content;
 
+            // Dateiname und Taskname müssen immer paarweise vorhanden sein
             if (String.IsNullOrWhiteSpace(navFileName) || String.IsNullOrWhiteSpace(navTaskName)) {
                 return null;
             }
 
-            // Relative Pfadangabe sind Standard.
+            // Relative Pfadangaben in absolute auflösen
             if (!Path.IsPathRooted(navFileName)) {
                 var declaringNodePath = classDeclaration.GetLocation().GetLineSpan().Path;
 
@@ -295,9 +297,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
         static NavTriggerInfo GetNavTriggerInfo(IMethodSymbol method, NavTaskInfo taskInfo) {
 
             var navTriggerInfo = method?.DeclaringSyntaxReferences
-                                       .Select(dsr => dsr.GetSyntax() as MethodDeclarationSyntax)
-                                       .Select(syntax => GetNavTriggerInfo(syntax, taskInfo))
-                                       .FirstOrDefault(nti => nti != null);
+                                        .Select(dsr => dsr.GetSyntax() as MethodDeclarationSyntax)
+                                        .Select(syntax => GetNavTriggerInfo(syntax, taskInfo))
+                                        .FirstOrDefault(nti => nti != null);
 
             return navTriggerInfo;
         }
@@ -307,7 +309,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
             var tags = ReadNavTags(methodDeclaration).ToList();
 
-            var navTriggerTag  = tags.FirstOrDefault(t => t.TagName == "NavTrigger");
+            var navTriggerTag  = tags.FirstOrDefault(t => t.TagName == AnnotationTagNames.NavTrigger);
             var navTriggerName = navTriggerTag?.Content;
 
             if(String.IsNullOrEmpty(navTriggerName)) {                
@@ -334,14 +336,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
                 }
 
                 var xmlElementSyntaxes = trivia.GetStructure()
-                        .ChildNodes()
-                        .OfType<XmlElementSyntax>()
-                        .ToList();
+                                               .ChildNodes()
+                                               .OfType<XmlElementSyntax>()
+                                               .ToList();
 
-                // Wir suchen alle Tags, deren Namen mit Nav beginnt
+                // Wir suchen alle Tags, deren Namen mit Nav beginnen
                 foreach (var xmlElementSyntax in xmlElementSyntaxes) {
                     var startTagName = xmlElementSyntax.StartTag?.Name?.ToString();
-                    if (startTagName?.StartsWith("Nav") == true) {
+                    if (startTagName?.StartsWith(AnnotationTagNames.TagPrefix) == true) {
                         yield return new NavTag {
                             TagName = startTagName,
                             Content = xmlElementSyntax.Content.ToString()
