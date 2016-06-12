@@ -169,7 +169,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
         /// <summary>
         /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorischt bzgl. thread safety!
-        /// Deshalb werden die BuildResultArgs bereits vorab im GUI Thread erstellt.
         /// </summary>
         static async Task<BuildTagsResult> BuildTagsAsync(ITextSnapshot snapshot, CancellationToken cancellationToken) {
 
