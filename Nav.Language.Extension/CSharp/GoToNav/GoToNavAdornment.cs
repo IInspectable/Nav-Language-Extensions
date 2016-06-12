@@ -3,8 +3,7 @@
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Input;
-using System.Windows.Controls;
-
+using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
@@ -15,7 +14,7 @@ using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
-    sealed class GoToNavAdornment : Button {
+    sealed class GoToNavAdornment : ButtonBase {
 
         readonly IWpfTextView _textView;
         readonly CrispImage _crispImage;
@@ -34,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
             Margin      = new Thickness(0, 0, 0, 0);            
             Content     = _crispImage;
 
-            Click += ColorAdornment_Click;
+            Click += OnClick;
             
             Update(goToNavTag);
         }
@@ -48,7 +47,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
             UpdateColor();
         }
 
-        async void ColorAdornment_Click(object sender, RoutedEventArgs e) {
+        async void OnClick(object sender, RoutedEventArgs e) {
 
             var location = await _gotoNavTag.GetLocationAsync();
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Pharmatechnik.Nav.Language.Extension.GoTo;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
@@ -17,10 +18,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
         public NavTaskInfo TaskInfo { get; }
 
+        // TODO evtl. sollte die Methode gleich in GoToLocationAsync umgemünzt werden...
         public override Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
-            
-            // TODO async + Aktuelle ITextbuffer ermitteln
-            var syntaxTree = SyntaxTree.FromFile(TaskInfo.NavFileName);
+
+            var wpfView = NavLanguagePackage.OpenFileInPreviewTab(TaskInfo.NavFileName);
+
+            var textBuffer = wpfView?.TextBuffer;
+            if(textBuffer == null) {
+                return null;
+            }
+            // TODO async
+            var syntaxTree = SyntaxTree.ParseText(textBuffer.CurrentSnapshot.GetText(), TaskInfo.NavFileName);
             var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
             if (codeGenerationUnitSyntax == null) {
                 return null;
