@@ -5,7 +5,7 @@ using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using EnvDTE;
-
+using JetBrains.Annotations;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Editor;
@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 #endregion
@@ -97,27 +98,33 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             }
         }
 
-        public static void OpenFile(string file) {
-            DTE?.ExecuteCommand("File.OpenFile", Quote(file));
-        }
+        [CanBeNull]
+        public static IWpfTextView GoToLocationInPreviewTab(Location location) {
 
-        public static void GoToLocationInPreviewTab(Location location) {
-
+            IWpfTextView wpfTextView = null;
             // TODO hier Location.Empty/None Semantic berücksichtigen
             if (location.FilePath != null) {
-                OpenFileInPreviewTab(location.FilePath);
+                wpfTextView=OpenFileInPreviewTab(location.FilePath);
             }
 
             var selection = DTE?.ActiveDocument.Selection as TextSelection;
             selection?.MoveToLineAndOffset(Line: location.StartLine + 1, Offset: location.StartCharacter + 1);
             selection?.MoveToLineAndOffset(Line: location.EndLine   + 1, Offset: location.EndCharacter   + 1, Extend: true);
+
+            return wpfTextView;
+        }
+        
+        [CanBeNull]
+        public static IWpfTextView OpenFile(string file) {
+            DTE?.ExecuteCommand("File.OpenFile", Quote(file));
+
+            IWpfTextView wpfViewCurrent = GetActiveTextView();
+
+            return wpfViewCurrent;
         }
 
-        static string Quote(string file) {
-            return '"' + file?.Trim('"') + '"';
-        }
-
-        public static void OpenFileInPreviewTab(string file) {
+        [CanBeNull]
+        public static IWpfTextView OpenFileInPreviewTab(string file) {
             IVsNewDocumentStateContext newDocumentStateContext = null;
 
             try {
@@ -126,11 +133,15 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                 Guid reason = VSConstants.NewDocumentStateReason.Navigation;
                 newDocumentStateContext = openDoc3?.SetNewDocumentState((uint)__VSNEWDOCUMENTSTATE.NDS_Provisional, ref reason);
 
-                OpenFile(file);
+                return OpenFile(file);
 
             } finally {
                 newDocumentStateContext?.Restore();
             }
+        }
+
+        static string Quote(string file) {
+            return '"' + file?.Trim('"') + '"';
         }
 
         /// <summary>
