@@ -94,8 +94,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
 
                 Dictionary<SnapshotSpan, TAdornment> translatedAdornmentCache = new Dictionary<SnapshotSpan, TAdornment>();
 
-                foreach (var keyValuePair in _adornmentCache)
-                    translatedAdornmentCache.Add(keyValuePair.Key.TranslateTo(Snapshot, SpanTrackingMode.EdgeExclusive), keyValuePair.Value);
+                foreach(var keyValuePair in _adornmentCache) {
+
+                    var snapshotSpan = keyValuePair.Key.TranslateTo(Snapshot, SpanTrackingMode.EdgeExclusive);
+                    if(!translatedAdornmentCache.ContainsKey(snapshotSpan)) {                        
+                        translatedAdornmentCache.Add(snapshotSpan, keyValuePair.Value);
+                    }
+                }
 
                 _adornmentCache = translatedAdornmentCache;
             }
