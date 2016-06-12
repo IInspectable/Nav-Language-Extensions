@@ -75,7 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var typeRun = ToRun(codeGenInfo.WfsTypeName, SyntaxTokenClassification.TaskName, formatMap);
             textBlock.Inlines.Add(typeRun);
 
-            var methodRun = ToRun("."+ codeGenInfo.TriggerMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
+            var methodRun = ToRun("."+ codeGenInfo.TriggerLogicMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
             textBlock.Inlines.Add(methodRun);
 
             return textBlock;

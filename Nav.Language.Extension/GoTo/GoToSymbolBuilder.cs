@@ -57,7 +57,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
             var info = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
             
-            return CreateGoToMemberDeclarationTagSpan(signalTriggerSymbol.Location, info.WfsFullyQualifiedName, info.TriggerMethodName);
+            return CreateGoToTriggerDeclarationTagSpan(signalTriggerSymbol.Location, info.FullyQualifiedWfsBaseName, info.TriggerLogicMethodName);
         }
 
         TagSpan<GoToTag> CreateGoToLocationTagSpan(Location sourceLocation, Location targetLocation) {
@@ -68,10 +68,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             return new TagSpan<GoToTag>(tagSpan, tag);
         }
 
-        TagSpan<GoToTag> CreateGoToMemberDeclarationTagSpan(Location sourceLocation, string fullyQualifiedTypeName, string memberName) {
+        TagSpan<GoToTag> CreateGoToTriggerDeclarationTagSpan(Location sourceLocation, string fullyQualifiedWfsBaseName, string triggerMethodName) {
 
             var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
-            var tag     = new GoToMemberDeclarationTag(_textBuffer, fullyQualifiedTypeName, memberName);
+            var tag     = new GoToTriggerDeclarationTag(_textBuffer, fullyQualifiedWfsBaseName, triggerMethodName);
 
             return new TagSpan<GoToTag>(tagSpan, tag);
         }        

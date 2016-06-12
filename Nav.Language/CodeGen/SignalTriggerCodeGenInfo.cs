@@ -15,18 +15,23 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var name = task.Name;
             var baseNamespace = (task.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString();
 
-            WflNamespace      = $"{baseNamespace}.WFL";
-            WfsTypeName       = $"{name}WFS";
-            TriggerMethodName = $"{signalTriggerSymbol.Name}Logic";
+            WflNamespace           = $"{baseNamespace}.WFL";
+            WfsBaseTypeName        = $"{name}WFSBase";
+            WfsTypeName            = $"{name}WFS";
+            TriggerLogicMethodName = $"{signalTriggerSymbol.Name}Logic";
         }
 
-
         public string WflNamespace { get; }
+        public string WfsBaseTypeName { get; }
         public string WfsTypeName { get; }
-        public string TriggerMethodName { get; }
+        public string TriggerLogicMethodName { get; }
 
-        public string WfsFullyQualifiedName {
+        public string FullyQualifiedWfsName {
             get { return $"{WflNamespace}.{WfsTypeName}"; }
+        }
+
+        public string FullyQualifiedWfsBaseName {
+            get { return $"{WflNamespace}.{WfsBaseTypeName}"; }
         }
     }
 }
