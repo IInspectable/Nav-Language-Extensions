@@ -12,7 +12,7 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
-    sealed class GoToNavAdornmentTagger : IntraTextAdornmentTagger<GoToNavTag, GoToNavAdornment> {
+    sealed class GoToNavAdornmentTagger : IntraTextAdornmentTagger<GoToNavTag, GoToNavAdornment>, IDisposable {
         
         internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<GoToNavTag>> colorTagger) {
             return view.Properties.GetOrCreateSingletonProperty(
