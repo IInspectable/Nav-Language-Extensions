@@ -70,7 +70,7 @@
     <Compile Include="CSharp\GoToNav\NavTriggerInfo.cs" />
     <Compile Include="GoTo\GoToClassDeclarationTag.cs" />
     <Compile Include="GoTo\GoToLocationTag.cs" />
-    <Compile Include="GoTo\GoToMemberDeclarationTag.cs" />
+    <Compile Include="GoTo\GoToTriggerDeclarationTag.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandler.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandlerProvider.cs" />
     <Compile Include="StatementCompletion\CompletionSource.cs" />
