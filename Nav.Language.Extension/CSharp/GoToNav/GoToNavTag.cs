@@ -32,8 +32,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
                                        .OfType<ITaskDefinitionSymbol>()
                                        .FirstOrDefault(t => t.Name == TaskInfo.TaskName);
 
+            var triggerInfo = TaskInfo as NavTriggerInfo;
+            if(triggerInfo != null && task != null) {
+
+                var trigger = task.Transitions
+                                  .SelectMany(t => t.Triggers)
+                                  .FirstOrDefault(t => t.Name == triggerInfo.TriggerName);
+
+                return Task.FromResult(trigger?.Location);
+            }
+
             return Task.FromResult(task?.Syntax.Identifier.GetLocation());
         }
-
     }
 }
