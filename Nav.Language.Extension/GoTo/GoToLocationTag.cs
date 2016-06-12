@@ -1,6 +1,7 @@
 #region Using Directives
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text.Tagging;
 
@@ -26,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public Location Location { get; }
         
-        public override Task<Location> GetLocationAsync() {
+        public override Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
             return Task.FromResult(Location);
         }
 
