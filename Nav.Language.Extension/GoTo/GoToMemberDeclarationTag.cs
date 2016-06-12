@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -25,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _memberName             = memberName;
         }
 
-        public override Task<Location> GetLocationAsync() {
+        public override Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
@@ -34,7 +35,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
             return Task.Run(() =>  {
                 
-                var compilation    = project.GetCompilationAsync().Result;
+                var compilation    = project.GetCompilationAsync(cancellationToken).Result;
                 var typeSymbol     = compilation?.GetTypeByMetadataName(_fullyQualifiedTypeName);
                 var memberSymbol   = typeSymbol?.GetMembers(_memberName).FirstOrDefault();
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
@@ -55,7 +56,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 var location = new Location(textExtent, lineExtent, filePath);
 
                 return location;
-            });
+            }, cancellationToken);
         }
 
         #region Equality members

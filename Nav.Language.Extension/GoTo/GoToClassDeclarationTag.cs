@@ -1,6 +1,7 @@
 #region Using Directives
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Text;
@@ -22,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _fullyQualifiedTypeName = fullyQualifiedTypeName;
         }
 
-        public override Task<Location> GetLocationAsync() {
+        public override Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
@@ -31,7 +32,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
             return Task.Run(() => {
 
-                var compilation = project.GetCompilationAsync().Result;
+                var compilation = project.GetCompilationAsync(cancellationToken).Result;
                 var typeSymbol = compilation?.GetTypeByMetadataName(_fullyQualifiedTypeName);
 
                 if (typeSymbol == null) {
@@ -61,7 +62,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 }
 
                 return Location.None;
-            });
+            }, cancellationToken);
         }
 
         #region Equality members
