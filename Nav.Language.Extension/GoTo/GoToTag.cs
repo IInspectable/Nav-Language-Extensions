@@ -2,6 +2,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text.Tagging;
 
 #endregion
@@ -9,7 +10,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
     public abstract class GoToTag: ITag {
-
-        public abstract Task<Location> GetLocationAsync(CancellationToken cancellationToken=default(CancellationToken));
+        [NotNull]
+        public abstract Task<Location> GoToLocationAsync(CancellationToken cancellationToken=default(CancellationToken));
     }
 }

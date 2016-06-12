@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
@@ -26,14 +27,14 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _memberName             = memberName;
         }
 
-        public override Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<Location> GoToLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
-                return Task.FromResult(Location.None);
+                return null;
             }
 
-            return Task.Run(() =>  {
+            var location = await Task.Run(() =>  {
                 
                 var compilation    = project.GetCompilationAsync(cancellationToken).Result;
                 var typeSymbol     = compilation?.GetTypeByMetadataName(_fullyQualifiedTypeName);
@@ -41,22 +42,25 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
 
                 if (memberLocation == null) {
-                    return Location.None;
+                    return null;
                 }
 
                 var lineSpan = memberLocation.GetLineSpan();
                 if (!lineSpan.IsValid) {
-                    return Location.None;
+                    return null;
                 }
 
                 var textExtent = memberLocation.SourceSpan.ToTextExtent();
                 var lineExtent = lineSpan.ToLinePositionExtent();
                 var filePath   = memberLocation.SourceTree?.FilePath;
 
-                var location = new Location(textExtent, lineExtent, filePath);
+                return new Location(textExtent, lineExtent, filePath);
 
-                return location;
             }, cancellationToken);
+
+            NavLanguagePackage.GoToLocationInPreviewTab(location);
+
+            return location;
         }
 
         #region Equality members
