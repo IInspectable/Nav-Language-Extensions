@@ -14,7 +14,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 #endregion
@@ -100,6 +99,10 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         [CanBeNull]
         public static IWpfTextView GoToLocationInPreviewTab(Location location) {
+
+            if(location == null) {
+                return null;
+            }
 
             IWpfTextView wpfTextView = null;
             // TODO hier Location.Empty/None Semantic berücksichtigen

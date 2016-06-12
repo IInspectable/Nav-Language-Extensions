@@ -7,7 +7,6 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
@@ -48,12 +47,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
         }
 
         async void OnClick(object sender, RoutedEventArgs e) {
-
-            var location = await _gotoNavTag.GetLocationAsync();
-
-            if(location != null) {                
-                NavLanguagePackage.GoToLocationInPreviewTab(location);
-            }
+            await _gotoNavTag.GoToLocationAsync();
         }
 
         internal void Update(GoToNavTag goToNavTag) {

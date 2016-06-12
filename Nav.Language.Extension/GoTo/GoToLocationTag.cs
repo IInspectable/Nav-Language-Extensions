@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text.Tagging;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
@@ -27,9 +28,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public Location Location { get; }
         
-        public override Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override Task<Location> GoToLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+            NavLanguagePackage.GoToLocationInPreviewTab(Location);
             return Task.FromResult(Location);
         }
+
+        #region Equality members
 
         public bool Equals(GoToLocationTag other) {
             if (ReferenceEquals(null, other)) {
@@ -65,5 +69,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         public override int GetHashCode() {
             return Location.GetHashCode();
         }
+
+        #endregion
     }
 }

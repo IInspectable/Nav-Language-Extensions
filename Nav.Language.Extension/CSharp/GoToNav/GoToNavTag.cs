@@ -18,8 +18,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
 
         public NavTaskInfo TaskInfo { get; }
 
-        // TODO evtl. sollte die Methode gleich in GoToLocationAsync umgemünzt werden...
-        public override Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<Location> GoToLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var wpfView = NavLanguagePackage.OpenFileInPreviewTab(TaskInfo.NavFileName);
 
@@ -27,30 +26,38 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
             if(textBuffer == null) {
                 return null;
             }
-            // TODO async
-            var syntaxTree = SyntaxTree.ParseText(textBuffer.CurrentSnapshot.GetText(), TaskInfo.NavFileName);
-            var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
-            if (codeGenerationUnitSyntax == null) {
-                return null;
-            }
 
-            var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
+            var location = await Task.Run(() => { 
+                
+                var syntaxTree = SyntaxTree.ParseText(textBuffer.CurrentSnapshot.GetText(), TaskInfo.NavFileName, cancellationToken);
+                var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
+                if(codeGenerationUnitSyntax == null) {
+                    return null;
+                }
 
-            var task=codeGenerationUnit.Symbols
-                                       .OfType<ITaskDefinitionSymbol>()
-                                       .FirstOrDefault(t => t.Name == TaskInfo.TaskName);
+                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
 
-            var triggerInfo = TaskInfo as NavTriggerInfo;
-            if(triggerInfo != null && task != null) {
+                var task = codeGenerationUnit.Symbols
+                                             .OfType<ITaskDefinitionSymbol>()
+                                             .FirstOrDefault(t => t.Name == TaskInfo.TaskName);
 
-                var trigger = task.Transitions
-                                  .SelectMany(t => t.Triggers)
-                                  .FirstOrDefault(t => t.Name == triggerInfo.TriggerName);
+                var triggerInfo = TaskInfo as NavTriggerInfo;
+                if(triggerInfo != null && task != null) {
 
-                return Task.FromResult(trigger?.Location);
-            }
+                    var trigger = task.Transitions
+                        .SelectMany(t => t.Triggers)
+                        .FirstOrDefault(t => t.Name == triggerInfo.TriggerName);
 
-            return Task.FromResult(task?.Syntax.Identifier.GetLocation());
+                    return trigger?.Location;
+                }
+
+                return task?.Syntax.Identifier.GetLocation();
+
+            }, cancellationToken);
+
+            NavLanguagePackage.GoToLocationInPreviewTab(location);
+
+            return location;
         }
     }
 }
