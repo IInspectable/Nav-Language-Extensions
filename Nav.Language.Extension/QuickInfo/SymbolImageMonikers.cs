@@ -5,14 +5,13 @@ using Microsoft.VisualStudio.Imaging.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
+namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
     public static class SymbolImageMonikers {
 
         public static ImageMoniker Include {
             get { return KnownMonikers.ClassFile; }
         }
-
 
         public static ImageMoniker TaskDeclaration {
             get { return KnownMonikers.ActivityDiagram; }
@@ -29,7 +28,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         public static ImageMoniker EndConnectionPoint {
             get { return KnownMonikers.ActivityFinalNode; }
         }
-
 
         public static ImageMoniker TaskDefinition {
             get { return KnownMonikers.ActivityDiagram; }

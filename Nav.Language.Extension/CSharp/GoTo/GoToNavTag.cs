@@ -4,9 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Imaging.Interop;
-using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
-using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
@@ -21,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         public NavTaskInfo TaskInfo { get; }
 
         public override ImageMoniker ImageMoniker {
-            get { return TaskInfo is NavTriggerInfo ? SymbolImageMonikers.SignalTrigger : SymbolImageMonikers.TaskDefinition; }
+            get { return TaskInfo is NavTriggerInfo ? GoToImageMonikers.GoToTriggerDefinition : GoToImageMonikers.GoToTaskDefinition; }
         }
 
         public override object ToolTip {

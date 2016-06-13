@@ -2,9 +2,7 @@
 
 using System.Threading;
 using System.Threading.Tasks;
-
 using Microsoft.VisualStudio.Imaging.Interop;
-using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
@@ -22,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         public override ImageMoniker ImageMoniker {
-            get { return SymbolImageMonikers.InitNode; }
+            get { return GoToImageMonikers.GoToBeginLogic; }
         }
 
         public override object ToolTip {
