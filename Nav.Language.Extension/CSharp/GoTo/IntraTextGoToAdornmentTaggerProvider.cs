@@ -15,12 +15,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
     [Export(typeof(IViewTaggerProvider))]
     [ContentType("csharp")]
     [TagType(typeof(IntraTextAdornmentTag))]
-    sealed class GoToNavAdornmentTaggerProvider : IViewTaggerProvider {
+    sealed class IntraTextGoToAdornmentTaggerProvider : IViewTaggerProvider {
 
         readonly IBufferTagAggregatorFactoryService _bufferTagAggregatorFactoryService;
 
         [ImportingConstructor]
-        public GoToNavAdornmentTaggerProvider(IBufferTagAggregatorFactoryService bufferTagAggregatorFactoryService) {
+        public IntraTextGoToAdornmentTaggerProvider(IBufferTagAggregatorFactoryService bufferTagAggregatorFactoryService) {
             _bufferTagAggregatorFactoryService = bufferTagAggregatorFactoryService;
         }
 
@@ -34,10 +34,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             if(buffer != textView.TextBuffer)
                 return null;
 
-            return GoToNavAdornmentTagger.GetTagger(
+            return IntraTextGoToAdornmentTagger.GetTagger(
                 (IWpfTextView) textView,
-                new Lazy<ITagAggregator<GoToNavTag>>(
-                    () => _bufferTagAggregatorFactoryService.CreateTagAggregator<GoToNavTag>(textView.TextBuffer)))
+                new Lazy<ITagAggregator<IntraTextGoToTag>>(
+                    () => _bufferTagAggregatorFactoryService.CreateTagAggregator<IntraTextGoToTag>(textView.TextBuffer)))
                 as ITagger<T>;
         }
     }

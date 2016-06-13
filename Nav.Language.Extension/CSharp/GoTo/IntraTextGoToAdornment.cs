@@ -1,25 +1,25 @@
 ﻿#region Using Directives
 
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Controls.Primitives;
+
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
-using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
-    sealed class GoToNavAdornment : ButtonBase {
+    sealed class IntraTextGoToAdornment : ButtonBase {
 
         readonly IWpfTextView _textView;
         readonly CrispImage _crispImage;
-        GoToNavTag _gotoNavTag;
+        IntraTextGoToTag _goToTag;
 
-        internal GoToNavAdornment(GoToNavTag goToNavTag, IWpfTextView textView) {
+        internal IntraTextGoToAdornment(IntraTextGoToTag goToTag, IWpfTextView textView) {
 
             _textView   = textView;
             _crispImage = new CrispImage();
@@ -34,11 +34,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             Click += OnClick;
             
-            Update(goToNavTag);
+            Update(goToTag);
         }
 
-        public GoToNavTag GotoNavTag {
-            get { return _gotoNavTag; }
+        public IntraTextGoToTag GoToTag {
+            get { return _goToTag; }
         }
 
         protected override void OnVisualParentChanged(DependencyObject oldParent) {
@@ -47,21 +47,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         async void OnClick(object sender, RoutedEventArgs e) {
-            await _gotoNavTag.GoToLocationAsync();
+            await _goToTag.GoToLocationAsync();
         }
 
-        internal void Update(GoToNavTag goToNavTag) {
-            _gotoNavTag = goToNavTag;
-            
-            UpdateColor();
+        internal void Update(IntraTextGoToTag goToTag) {
+            _goToTag            = goToTag;            
+            ToolTip             = _goToTag.ToolTip;
+            _crispImage.Moniker = _goToTag.ImageMoniker;          
 
-            if (_gotoNavTag.TaskInfo is NavTriggerInfo) {
-                _crispImage.Moniker = SymbolImageMonikers.SignalTrigger;
-                ToolTip = "Go To Trigger Definition";
-            } else {
-                _crispImage.Moniker = SymbolImageMonikers.TaskDefinition;
-                ToolTip = "Go To Task Definition";
-            }
+            UpdateColor();
         }
 
         void UpdateColor() {
