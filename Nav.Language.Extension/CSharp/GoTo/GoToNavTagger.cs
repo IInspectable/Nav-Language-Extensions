@@ -3,24 +3,26 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
-using System.Reactive.Linq;
 using System.Threading;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using JetBrains.Annotations;
+
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
+namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     class GoToNavTagger: ITagger<GoToNavTag>, IDisposable {
 
@@ -147,7 +149,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
                 return;
             }
 
-            // hier könnte man noch mit dem aktuellem Ergebnis Vergleichen und ggf. gar nichts machen, wenn gleich...
+            // TODO hier könnte man noch mit dem aktuellem Ergebnis Vergleichen und ggf. gar nichts machen, wenn gleich...
             _result = result;
 
             var snapshotSpan = result.Snapshot.GetFullSpan();

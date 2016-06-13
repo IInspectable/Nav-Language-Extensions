@@ -58,16 +58,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Common\GoToTag.cs" />
     <Compile Include="Common\LinePositionExtensions.cs" />
-    <Compile Include="CSharp\GoToNav\GoToNavAdornment.cs" />
-    <Compile Include="CSharp\GoToNav\GoToNavAdornmentTagger.cs" />
-    <Compile Include="CSharp\GoToNav\GoToNavAdornmentTaggerProvider.cs" />
-    <Compile Include="CSharp\GoToNav\GoToNavTag.cs" />
-    <Compile Include="CSharp\GoToNav\GoToNavTagger.cs" />
-    <Compile Include="CSharp\GoToNav\GoToNavTaggerProvider.cs" />
+    <Compile Include="CSharp\GoTo\GoToNavAdornment.cs" />
+    <Compile Include="CSharp\GoTo\GoToNavAdornmentTagger.cs" />
+    <Compile Include="CSharp\GoTo\GoToNavAdornmentTaggerProvider.cs" />
+    <Compile Include="CSharp\GoTo\GoToNavTag.cs" />
+    <Compile Include="CSharp\GoTo\GoToNavTagger.cs" />
+    <Compile Include="CSharp\GoTo\GoToNavTaggerProvider.cs" />
     <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
-    <Compile Include="CSharp\GoToNav\NavTaskInfo.cs" />
-    <Compile Include="CSharp\GoToNav\NavTriggerInfo.cs" />
+    <Compile Include="CSharp\GoTo\NavTaskInfo.cs" />
+    <Compile Include="CSharp\GoTo\NavTriggerInfo.cs" />
     <Compile Include="GoTo\GoToClassDeclarationTag.cs" />
     <Compile Include="GoTo\GoToLocationTag.cs" />
     <Compile Include="GoTo\GoToTriggerDeclarationTag.cs" />
@@ -121,7 +122,6 @@
     <Compile Include="LanguageService\NavLanguagePackage.cs" />
     <Compile Include="GoTo\ModifierKeyState.cs" />
     <Compile Include="GoTo\GoToSymbolBuilder.cs" />
-    <Compile Include="GoTo\GoToTag.cs" />
     <Compile Include="GoTo\GoToKeyProcessor.cs" />
     <Compile Include="GoTo\GoToKeyProcessorProvider.cs" />
     <Compile Include="GoTo\GoToMouseProcessor.cs" />
