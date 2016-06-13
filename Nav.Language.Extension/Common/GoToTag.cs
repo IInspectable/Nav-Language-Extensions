@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoTo {
+namespace Pharmatechnik.Nav.Language.Extension.Common {
 
     public abstract class GoToTag: ITag {
         [NotNull]

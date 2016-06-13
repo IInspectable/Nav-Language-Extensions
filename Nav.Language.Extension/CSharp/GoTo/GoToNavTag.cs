@@ -3,12 +3,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Pharmatechnik.Nav.Language.Extension.GoTo;
+
+using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
+namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     class GoToNavTag : GoToTag {
 

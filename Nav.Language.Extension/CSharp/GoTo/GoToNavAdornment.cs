@@ -1,9 +1,9 @@
 ﻿#region Using Directives
 
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Input;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
@@ -11,7 +11,7 @@ using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
+namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     sealed class GoToNavAdornment : ButtonBase {
 

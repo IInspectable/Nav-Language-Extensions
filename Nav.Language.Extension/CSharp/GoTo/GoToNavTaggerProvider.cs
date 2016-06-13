@@ -4,12 +4,12 @@ using System;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
+namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     [Export(typeof(ITaggerProvider))]
     [ContentType("csharp")]

@@ -1,4 +1,4 @@
-namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoToNav {
+namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     public class NavTaskInfo {
         public string TaskName { get; set; }
