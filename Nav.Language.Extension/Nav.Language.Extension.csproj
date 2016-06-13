@@ -60,12 +60,13 @@
   <ItemGroup>
     <Compile Include="Common\GoToTag.cs" />
     <Compile Include="Common\LinePositionExtensions.cs" />
-    <Compile Include="CSharp\GoTo\GoToNavAdornment.cs" />
-    <Compile Include="CSharp\GoTo\GoToNavAdornmentTagger.cs" />
-    <Compile Include="CSharp\GoTo\GoToNavAdornmentTaggerProvider.cs" />
+    <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
+    <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTagger.cs" />
+    <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTaggerProvider.cs" />
     <Compile Include="CSharp\GoTo\GoToNavTag.cs" />
-    <Compile Include="CSharp\GoTo\GoToNavTagger.cs" />
-    <Compile Include="CSharp\GoTo\GoToNavTaggerProvider.cs" />
+    <Compile Include="CSharp\GoTo\IntraTextGoToTagger.cs" />
+    <Compile Include="CSharp\GoTo\IntraTextGoToTaggerProvider.cs" />
+    <Compile Include="CSharp\GoTo\IntraTextGoToTag.cs" />
     <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
     <Compile Include="CSharp\GoTo\NavTaskInfo.cs" />
     <Compile Include="CSharp\GoTo\NavTriggerInfo.cs" />

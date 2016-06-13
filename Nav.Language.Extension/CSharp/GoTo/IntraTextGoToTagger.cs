@@ -24,7 +24,7 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
-    class GoToNavTagger: ITagger<GoToNavTag>, IDisposable {
+    class IntraTextGoToTagger: ITagger<IntraTextGoToTag>, IDisposable {
 
         readonly ITextBuffer _textBuffer;
         readonly IDisposable _parserObs;
@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         BuildTagsResult _result;
         Workspace _workspace;
 
-        public GoToNavTagger(ITextBuffer textBuffer) {
+        public IntraTextGoToTagger(ITextBuffer textBuffer) {
 
             _textBuffer = textBuffer;
 
@@ -64,7 +64,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
-        public IEnumerable<ITagSpan<GoToNavTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
+        public IEnumerable<ITagSpan<IntraTextGoToTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
 
             if (_result == null || spans.Count == 0) {
                 yield break;
@@ -75,7 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                     var transSpan = tag.Span.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive);
                     if (transSpan.IntersectsWith(span)) {
-                        yield return new TagSpan<GoToNavTag>(transSpan, tag.Tag);
+                        yield return new TagSpan<IntraTextGoToTag>(transSpan, tag.Tag);
                     }
                 }
             }
@@ -183,7 +183,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             }, cancellationToken).ConfigureAwait(false);
         }
 
-        static IEnumerable<ITagSpan<GoToNavTag>> BuildTags(ITextSnapshot currentSnapshot) {
+        static IEnumerable<ITagSpan<IntraTextGoToTag>> BuildTags(ITextSnapshot currentSnapshot) {
 
             var document = currentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
             if (document == null) {
@@ -215,7 +215,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                 var snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
 
-                yield return new TagSpan<GoToNavTag>(snapshotSpan, new GoToNavTag(navTaskInfo));
+                yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTag(navTaskInfo));
 
                 var methodDeclarations = classDeclaration.DescendantNodes()
                                                          .OfType<MethodDeclarationSyntax>();
@@ -239,7 +239,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                     snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
 
-                    yield return new TagSpan<GoToNavTag>(snapshotSpan, new GoToNavTag(triggerInfo));
+                    yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTag(triggerInfo));
                 }                
             }
         }
@@ -361,10 +361,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
         sealed class BuildTagsResult {
 
-            public IList<ITagSpan<GoToNavTag>> Tags { get; }
+            public IList<ITagSpan<IntraTextGoToTag>> Tags { get; }
             public ITextSnapshot Snapshot { get; }
 
-            public BuildTagsResult(IList<ITagSpan<GoToNavTag>> tags, ITextSnapshot snapshot) {
+            public BuildTagsResult(IList<ITagSpan<IntraTextGoToTag>> tags, ITextSnapshot snapshot) {
                 Tags = tags;
                 Snapshot = snapshot;
             }

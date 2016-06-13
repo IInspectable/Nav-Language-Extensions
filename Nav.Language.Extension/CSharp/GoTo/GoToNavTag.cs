@@ -3,21 +3,30 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Imaging.Interop;
 
-using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
+using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
-    class GoToNavTag : GoToTag {
+    class GoToNavTag : IntraTextGoToTag {
 
         public GoToNavTag(NavTaskInfo navTaskInfo) {
             TaskInfo = navTaskInfo;
         }
 
         public NavTaskInfo TaskInfo { get; }
+
+        public override ImageMoniker ImageMoniker {
+            get { return TaskInfo is NavTriggerInfo ? SymbolImageMonikers.SignalTrigger : SymbolImageMonikers.TaskDefinition; }
+        }
+
+        public override object ToolTip {
+            get { return TaskInfo is NavTriggerInfo ? "Go To Trigger Definition" : "Go To Task Definition"; }
+        }
 
         public override async Task<Location> GoToLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
