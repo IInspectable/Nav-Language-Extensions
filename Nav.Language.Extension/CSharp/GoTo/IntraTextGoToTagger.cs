@@ -240,7 +240,36 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
 
                     yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTag(triggerInfo));
-                }                
+                }
+
+                var invocationExpressions = classDeclaration.DescendantNodes()
+                                                        .OfType<InvocationExpressionSyntax>();
+
+                foreach(var invocationExpression in invocationExpressions) {
+
+                    var methodSymbol = semanticModel.GetSymbolInfo(invocationExpression.Expression).Symbol as IMethodSymbol;
+                    if(methodSymbol == null) {
+                        continue;
+                    }
+
+                    // TODO hier das richtige Tag auslesen
+                    var tags=ReadNavTags(methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax()).ToList();
+                    if(!tags.Any()) {
+                        continue;
+                    }
+
+                    var identifier = invocationExpression.ChildNodes().OfType<IdentifierNameSyntax>().FirstOrDefault();
+                    if (identifier == null) {
+                        continue;
+                    }
+
+                    start  = identifier.Span.Start;
+                    length = identifier.Identifier.Span.Length;
+
+                    snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
+
+                    yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToBeginLogic());
+                }
             }
         }
         
@@ -326,6 +355,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         
         [NotNull]
         static IEnumerable<NavTag> ReadNavTags(Microsoft.CodeAnalysis.SyntaxNode node) {
+
+            if(node == null) {
+                yield break;
+            }
 
             var trivias = node.GetLeadingTrivia()
                               .Where(t => t.Kind() == SyntaxKind.SingleLineDocumentationCommentTrivia);

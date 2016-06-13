@@ -26,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         public override object ToolTip {
-            get { return ""; }
+            get { return "Go To Begin Logic"; }
         }
 
     }
