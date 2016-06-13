@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
+namespace Pharmatechnik.Nav.Language.Extension.Common {
 
     public static class SymbolImageMonikers {
 

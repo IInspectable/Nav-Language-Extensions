@@ -60,6 +60,8 @@
   <ItemGroup>
     <Compile Include="Common\GoToTag.cs" />
     <Compile Include="Common\LinePositionExtensions.cs" />
+    <Compile Include="Common\SymbolImageMonikers.cs" />
+    <Compile Include="CSharp\GoTo\GoToBeginLogic.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTaggerProvider.cs" />
@@ -161,7 +163,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParserService\ParserService.cs" />
     <Compile Include="QuickInfo\QuickInfoSourceProviderNames.cs" />
-    <Compile Include="QuickInfo\SymbolImageMonikers.cs" />
     <Compile Include="QuickInfo\SymbolQuickInfoBuilder.cs" />
     <Compile Include="QuickInfo\SymbolQuickInfoControl.xaml.cs">
       <DependentUpon>SymbolQuickInfoControl.xaml</DependentUpon>

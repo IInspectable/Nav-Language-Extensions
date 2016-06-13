@@ -6,6 +6,7 @@ using System.Windows.Controls;
 
 using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
