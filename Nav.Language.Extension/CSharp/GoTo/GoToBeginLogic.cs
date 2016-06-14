@@ -51,10 +51,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 var wfsClass = SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken)
                                            .Result.OfType<INamedTypeSymbol>().FirstOrDefault();
 
-                var beginMethod = wfsClass?.GetMembers()
-                                           .OfType<IMethodSymbol>()
-                                           .FirstOrDefault(m=> m.Name == "BeginLogic" && // TODO Konstante in CodeGen NS Klasse packen
-                                                               BindsToBeginLogic(ToParameterList(m.Parameters)));
+                var beginMethods =  wfsClass?.GetMembers()
+                                             .OfType<IMethodSymbol>()
+                                             .Where(m=> m.Name == "BeginLogic");
+
+                var beginMethod = FindBestBeginLogicOverload(beginMethods);
 
                 // TODO hier die richtige Überladung finden.
                 var memberSyntax = beginMethod?.DeclaringSyntaxReferences.FirstOrDefault()
@@ -86,25 +87,40 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             return location;
         }
 
-        static List<string> ToParameterList(IEnumerable<IParameterSymbol> parameter) {
-            return parameter.OrderBy(p=>p.Ordinal).Select(p => p.ToDisplayString()).ToList();
+        static List<string> ToParameterList(IEnumerable<IParameterSymbol> beginLogicParameter) {
+            return beginLogicParameter.OrderBy(p=>p.Ordinal).Select(p => p.ToDisplayString()).ToList();
+        }
+       
+        IMethodSymbol FindBestBeginLogicOverload(IEnumerable<IMethodSymbol> beginLogicMethods) {
+
+           var bestMatch= beginLogicMethods.Select(m => new {
+                                        MatchCount     = GetParameterMatchCount(ToParameterList(m.Parameters)),
+                                        ParameterCount = m.Parameters.Length,
+                                        Method         = m})
+                                 .Where(x => x.MatchCount >=0 ) // 0 ist OK, falls der Init keine Argumente hat!
+                                 .OrderByDescending(x=> x.MatchCount)
+                                 .ThenBy(x=> x.ParameterCount)
+                                 .Select(x=> x.Method)
+                                 .FirstOrDefault();
+
+            return bestMatch;
         }
 
-        bool BindsToBeginLogic(IList<string> beginLogicParameter) {
-
-            if (_parameter.Count != beginLogicParameter.Count) {
-                return false;
+        int GetParameterMatchCount(IList<string> beginLogicParameter) {
+            
+            if (beginLogicParameter.Count  < _parameter.Count) {
+                return -1;
             }
 
-            for (int i = 0; i < beginLogicParameter.Count; i++) {
+            var matchCount = 0;
+            for (int i = 0; i < _parameter.Count; i++) {
 
-                var pa = _parameter[i];
-                var pb =  beginLogicParameter[i];
-                if (pa != pb) {
-                    return false;
+                if (_parameter[i] != beginLogicParameter[i]) {
+                    break;
                 }
+                matchCount++;
             }
-            return true;
+            return matchCount;
         }
 
         public override ImageMoniker ImageMoniker {
@@ -114,7 +130,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         public override object ToolTip {
             get { return "Go To Begin Logic"; }
         }
-
     }
 
 }
