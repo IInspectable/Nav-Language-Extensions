@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Text;
@@ -40,17 +41,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     return null;
                 }
 
+                var wfsClass = SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken)
+                                           .Result.OfType<INamedTypeSymbol>().FirstOrDefault();
+
+
+                var beginMethod = wfsClass?.GetMembers().OfType<IMethodSymbol>().FirstOrDefault( m=> m.Name=="BeginLogic");
+
                 // TODO hier die richtige Überladung finden.
-                // semanticModel.ResolveOverloads?
-                var beginMethod = beginItf.GetMembers().OfType<IMethodSymbol>().FirstOrDefault();
-
-                var beginImpl = SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken)
-                                         .Result
-                                         .OfType<ITypeSymbol>()
-                                         .Select(d => d.FindImplementationForInterfaceMember(beginMethod))
-                                         .FirstOrDefault(m => m != null);
-
-                var memberLocation = beginImpl?.Locations.FirstOrDefault();
+                var memberSyntax = beginMethod?.DeclaringSyntaxReferences.FirstOrDefault()
+                                               ?.GetSyntax() as MethodDeclarationSyntax;
+                var memberLocation = memberSyntax?.Identifier.GetLocation();
 
                 if (memberLocation == null) {
                     return null;
