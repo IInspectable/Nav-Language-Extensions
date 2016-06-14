@@ -253,7 +253,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     }
 
                     // TODO hier das richtige Tag auslesen
-                    var navInitCallTag = ReadNavTags(methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax()).FirstOrDefault(tag=>tag.TagName== "NavInitCall");
+                    var navInitCallTag = ReadNavTags(methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax()).FirstOrDefault(tag=>tag.TagName== AnnotationTagNames.NavTrigger);
                     if(navInitCallTag == null) {
                         continue;
                     }
