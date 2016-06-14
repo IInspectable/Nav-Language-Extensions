@@ -44,6 +44,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 var compilation = project.GetCompilationAsync(cancellationToken).Result;
                 var beginItf = compilation.GetTypeByMetadataName(_beginItfFullyQualifiedName);
                 if (beginItf == null) {
+                    // TODO Messagebox, da Assembly evtl. nicht geladen.
                     return null;
                 }
 
@@ -61,6 +62,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 var memberLocation = memberSyntax?.Identifier.GetLocation();
 
                 if (memberLocation == null) {
+                    // TODO Messagebox, da Assembly evtl. nicht geladen.
+                    //var loc = beginMethod?.Locations[0];
+
                     return null;
                 }
 
