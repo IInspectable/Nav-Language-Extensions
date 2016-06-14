@@ -252,15 +252,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                         continue;
                     }
 
+                    var declaringMethodNode = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax();
                     // TODO hier das richtige Tag auslesen
-                    var navInitCallTag = ReadNavTags(methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax()).FirstOrDefault(tag=>tag.TagName== AnnotationTagNames.NavInitCall);
+                    var navInitCallTag = ReadNavTags(declaringMethodNode).FirstOrDefault(tag=>tag.TagName == AnnotationTagNames.NavInitCall);
                     if(navInitCallTag == null) {
                         continue;
                     }
-
-                    var beginItfFullyQualifiedName = navInitCallTag.Content;
-
-                   
+                    
                     var identifier = invocationExpression.ChildNodes().OfType<IdentifierNameSyntax>().FirstOrDefault();
                     if (identifier == null) {
                         continue;
@@ -271,8 +269,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                     snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
 
+                    var beginItfFullyQualifiedName = navInitCallTag.Content;
+
                     yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, 
-                                        new GoToBeginLogic(currentSnapshot.TextBuffer, beginItfFullyQualifiedName));
+                                        new GoToBeginLogic(
+                                            currentSnapshot.TextBuffer, 
+                                            beginItfFullyQualifiedName, 
+                                            methodSymbol.Parameters));
                 }
             }
         }
