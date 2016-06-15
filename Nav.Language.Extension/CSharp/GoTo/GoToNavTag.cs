@@ -29,6 +29,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     return "Go To Trigger Definition";
                 } else if(TaskAnnotation is NavInitAnnotation) {
                     return "Go To Init Definition";
+                } else if (TaskAnnotation is NavExitAnnotation) {
+                    return "Go To Exit Transition Definition";
                 }
                 return "Go To Task Definition"; }
         }
@@ -60,21 +62,28 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     return null;
                 }
                 // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen
-                var triggerInfo = TaskAnnotation as NavTriggerAnnotation;
-                if(triggerInfo != null) {
+                var triggerAnnotation = TaskAnnotation as NavTriggerAnnotation;
+                if(triggerAnnotation != null) {
 
                     var trigger = task.Transitions
                                       .SelectMany(t => t.Triggers)
-                                      .FirstOrDefault(t => t.Name == triggerInfo.TriggerName);
+                                      .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
 
                     return trigger?.Location;
                 }
 
-                var initInfo = TaskAnnotation as NavInitAnnotation;
-                if(initInfo!=null) {
+                var exitAnnotation = TaskAnnotation as NavExitAnnotation;
+                if(exitAnnotation!=null) {
+                    // TODO: Was wollen wir hier eigentlich "markieren"? Die ganze Transition, oder nur die Quelle?
+                    var exitTransition = task.ExitTransitions.FirstOrDefault(et=> et.Source?.Name==exitAnnotation.ExitTaskName);
+                    return exitTransition?.Location;
+                }
+
+                var initAnnotation = TaskAnnotation as NavInitAnnotation;
+                if (initAnnotation != null) {
 
                     var init = task.NodeDeclarations.OfType<IInitNodeSymbol>()
-                                   .FirstOrDefault(n => n.Name == initInfo.InitName);
+                                   .FirstOrDefault(n => n.Name == initAnnotation.InitName);
 
                     return init?.Location;
                 }
