@@ -12,23 +12,30 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     class GoToNavTag : IntraTextGoToTag {
 
-        public GoToNavTag(NavTaskInfo navTaskInfo) {
-            TaskInfo = navTaskInfo;
+        public GoToNavTag(NavTaskAnnotation navTaskAnnotation) {
+            TaskAnnotation = navTaskAnnotation;
         }
 
-        public NavTaskInfo TaskInfo { get; }
+        public NavTaskAnnotation TaskAnnotation { get; }
 
         public override ImageMoniker ImageMoniker {
-            get { return TaskInfo is NavTriggerInfo ? GoToImageMonikers.GoToTriggerDefinition : GoToImageMonikers.GoToTaskDefinition; }
+            get { return TaskAnnotation is NavTriggerAnnotation ? GoToImageMonikers.GoToTriggerDefinition : GoToImageMonikers.GoToTaskDefinition; }
         }
 
         public override object ToolTip {
-            get { return TaskInfo is NavTriggerInfo ? "Go To Trigger Definition" : "Go To Task Definition"; }
+            get {
+                // TODO Evtl. Visitor um Annotations bauen...
+                if (TaskAnnotation is NavTriggerAnnotation) {
+                    return "Go To Trigger Definition";
+                } else if(TaskAnnotation is NavInitAnnotation) {
+                    return "Go To Init Definition";
+                }
+                return "Go To Task Definition"; }
         }
 
         public override async Task<Location> GoToLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
-            var wpfView = NavLanguagePackage.OpenFileInPreviewTab(TaskInfo.NavFileName);
+            var wpfView = NavLanguagePackage.OpenFileInPreviewTab(TaskAnnotation.NavFileName);
 
             var textBuffer = wpfView?.TextBuffer;
             if(textBuffer == null) {
@@ -37,7 +44,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var location = await Task.Run(() => { 
                 
-                var syntaxTree = SyntaxTree.ParseText(textBuffer.CurrentSnapshot.GetText(), TaskInfo.NavFileName, cancellationToken);
+                var syntaxTree = SyntaxTree.ParseText(textBuffer.CurrentSnapshot.GetText(), TaskAnnotation.NavFileName, cancellationToken);
                 var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
                 if(codeGenerationUnitSyntax == null) {
                     return null;
@@ -47,19 +54,32 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                 var task = codeGenerationUnit.Symbols
                                              .OfType<ITaskDefinitionSymbol>()
-                                             .FirstOrDefault(t => t.Name == TaskInfo.TaskName);
+                                             .FirstOrDefault(t => t.Name == TaskAnnotation.TaskName);
 
-                var triggerInfo = TaskInfo as NavTriggerInfo;
-                if(triggerInfo != null && task != null) {
+                if (task == null) {
+                    return null;
+                }
+                // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen
+                var triggerInfo = TaskAnnotation as NavTriggerAnnotation;
+                if(triggerInfo != null) {
 
                     var trigger = task.Transitions
-                        .SelectMany(t => t.Triggers)
-                        .FirstOrDefault(t => t.Name == triggerInfo.TriggerName);
+                                      .SelectMany(t => t.Triggers)
+                                      .FirstOrDefault(t => t.Name == triggerInfo.TriggerName);
 
                     return trigger?.Location;
                 }
 
-                return task?.Syntax.Identifier.GetLocation();
+                var initInfo = TaskAnnotation as NavInitAnnotation;
+                if(initInfo!=null) {
+
+                    var init = task.NodeDeclarations.OfType<IInitNodeSymbol>()
+                                   .FirstOrDefault(n => n.Name == initInfo.InitName);
+
+                    return init?.Location;
+                }
+
+                return task.Syntax.Identifier.GetLocation();
 
             }, cancellationToken);
 

@@ -69,9 +69,10 @@
     <Compile Include="CSharp\GoTo\IntraTextGoToTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTaggerProvider.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTag.cs" />
+    <Compile Include="CSharp\GoTo\NavInitAnnotation.cs" />
     <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
-    <Compile Include="CSharp\GoTo\NavTaskInfo.cs" />
-    <Compile Include="CSharp\GoTo\NavTriggerInfo.cs" />
+    <Compile Include="CSharp\GoTo\NavTaskAnnotation.cs" />
+    <Compile Include="CSharp\GoTo\NavTriggerAnnotation.cs" />
     <Compile Include="GoTo\GoToClassDeclarationTag.cs" />
     <Compile Include="GoTo\GoToLocationTag.cs" />
     <Compile Include="GoTo\GoToTriggerDeclarationTag.cs" />

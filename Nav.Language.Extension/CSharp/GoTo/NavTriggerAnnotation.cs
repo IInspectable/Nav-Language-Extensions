@@ -1,6 +1,6 @@
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
-    public class NavTriggerInfo: NavTaskInfo {
+    public class NavTriggerAnnotation: NavTaskAnnotation {
         public string TriggerName { get; set; }
     }
 }

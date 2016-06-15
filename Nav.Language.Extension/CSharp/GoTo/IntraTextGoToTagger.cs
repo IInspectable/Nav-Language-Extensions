@@ -199,11 +199,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             foreach (var classDeclaration in classDeclarations) {
 
                 var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-                var navTaskInfo = GetNavTaskInfo(classSymbol);
+                var navTaskInfo = ReadNavTaskAnnotation(classSymbol);
 
                 // In der Basisklasse nachsehen
                 if (navTaskInfo == null) {
-                    navTaskInfo = GetNavTaskInfo(classSymbol?.BaseType);
+                    navTaskInfo = ReadNavTaskAnnotation(classSymbol?.BaseType);
                 }
 
                 if (navTaskInfo == null) {
@@ -221,29 +221,21 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                                                          .OfType<MethodDeclarationSyntax>();
 
                 foreach (var methodDeclaration in methodDeclarations) {
-
                     var methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration);
-                    var triggerInfo  = GetNavTriggerInfo(methodSymbol, navTaskInfo);
 
-                    // In der überschriebenen Methode nachsehen
-                    if (triggerInfo == null) {
-                        triggerInfo = GetNavTriggerInfo(methodSymbol?.OverriddenMethod, navTaskInfo);         
+                    var initTag = TryGetNavInitTagSpan(currentSnapshot, methodSymbol, navTaskInfo, methodDeclaration);
+                    if (initTag != null) {
+                        yield return initTag;
                     }
 
-                    if(triggerInfo == null) {
-                        continue;
-                    }
-
-                    start  = methodDeclaration.Identifier.Span.Start;
-                    length = methodDeclaration.Identifier.Span.Length;
-
-                    snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
-
-                    yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTag(triggerInfo));
+                    var triggerTag = TryGetNavTriggerTagSpan(currentSnapshot, methodSymbol, navTaskInfo, methodDeclaration);
+                    if (triggerTag != null) {
+                        yield return triggerTag;
+                    }                    
                 }
 
                 var invocationExpressions = classDeclaration.DescendantNodes()
-                                                        .OfType<InvocationExpressionSyntax>();
+                                                            .OfType<InvocationExpressionSyntax>();
 
                 foreach(var invocationExpression in invocationExpressions) {
 
@@ -280,18 +272,19 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             }
         }
         
+
         [CanBeNull]
-        static NavTaskInfo GetNavTaskInfo(INamedTypeSymbol classSymbol) {
+        static NavTaskAnnotation ReadNavTaskAnnotation(INamedTypeSymbol classSymbol) {
 
             // Die Klasse kann in mehrere partial classes aufgeteilt sein
             var navTaskInfo = classSymbol?.DeclaringSyntaxReferences
                                           .Select(dsr => dsr.GetSyntax() as ClassDeclarationSyntax)
-                                          .Select(GetNavTaskInfo).FirstOrDefault(nti => nti != null);
+                                          .Select(ReadNavTaskAnnotation).FirstOrDefault(nti => nti != null);
             return navTaskInfo;
         }
 
         [CanBeNull]
-        static NavTaskInfo GetNavTaskInfo(ClassDeclarationSyntax classDeclaration) {
+        static NavTaskAnnotation ReadNavTaskAnnotation(ClassDeclarationSyntax classDeclaration) {
 
             var tags = ReadNavTags(classDeclaration).ToList();
 
@@ -322,7 +315,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 navFileName = Path.GetFullPath(Path.Combine(declaringDir, navFileName));
             }
 
-            var candidate = new NavTaskInfo {
+            var candidate = new NavTaskAnnotation {
                 NavFileName = navFileName,
                 TaskName    = navTaskName
             };
@@ -331,18 +324,39 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         [CanBeNull]
-        static NavTriggerInfo GetNavTriggerInfo(IMethodSymbol method, NavTaskInfo taskInfo) {
+        static ITagSpan<IntraTextGoToTag> TryGetNavTriggerTagSpan(ITextSnapshot currentSnapshot, IMethodSymbol methodSymbol, NavTaskAnnotation navTaskAnnotation, MethodDeclarationSyntax methodDeclaration) {
+
+            var triggerInfo = ReadNavTriggerAnnotation(methodSymbol, navTaskAnnotation);
+            // In der überschriebenen Methode nachsehen
+            if (triggerInfo == null) {
+                triggerInfo = ReadNavTriggerAnnotation(methodSymbol?.OverriddenMethod, navTaskAnnotation);
+            }
+
+            if (triggerInfo == null) {
+                return null;
+            }
+
+            int start = methodDeclaration.Identifier.Span.Start;
+            int length = methodDeclaration.Identifier.Span.Length;
+
+            var snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
+
+            return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTag(triggerInfo));
+        }
+
+        [CanBeNull]
+        static NavTriggerAnnotation ReadNavTriggerAnnotation(IMethodSymbol method, NavTaskAnnotation taskAnnotation) {
 
             var navTriggerInfo = method?.DeclaringSyntaxReferences
                                         .Select(dsr => dsr.GetSyntax() as MethodDeclarationSyntax)
-                                        .Select(syntax => GetNavTriggerInfo(syntax, taskInfo))
+                                        .Select(syntax => ReadNavTriggerAnnotation(syntax, taskAnnotation))
                                         .FirstOrDefault(nti => nti != null);
 
             return navTriggerInfo;
         }
 
         [CanBeNull]
-        static NavTriggerInfo GetNavTriggerInfo(MethodDeclarationSyntax methodDeclaration, NavTaskInfo taskInfo) {
+        static NavTriggerAnnotation ReadNavTriggerAnnotation(MethodDeclarationSyntax methodDeclaration, NavTaskAnnotation taskAnnotation) {
 
             var tags = ReadNavTags(methodDeclaration).ToList();
 
@@ -353,13 +367,64 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 return null;
             }
 
-            return new NavTriggerInfo {
-                NavFileName = taskInfo.NavFileName,
-                TaskName    = taskInfo.TaskName,
+            return new NavTriggerAnnotation {
+                NavFileName = taskAnnotation.NavFileName,
+                TaskName    = taskAnnotation.TaskName,
                 TriggerName = navTriggerName
             };
         }
-        
+
+        [CanBeNull]
+        static ITagSpan<IntraTextGoToTag> TryGetNavInitTagSpan(ITextSnapshot currentSnapshot, IMethodSymbol methodSymbol, NavTaskAnnotation navTaskAnnotation, MethodDeclarationSyntax methodDeclaration) {
+
+            var navInitInfo = ReadNavInitAnnotation(methodSymbol, navTaskAnnotation);
+            // In der überschriebenen Methode nachsehen
+            if (navInitInfo == null) {
+                navInitInfo = ReadNavInitAnnotation(methodSymbol?.OverriddenMethod, navTaskAnnotation);
+            }
+
+            if (navInitInfo == null) {
+                return null;
+            }
+            // TODO Diesen Teil Konsolodieren
+            int start = methodDeclaration.Identifier.Span.Start;
+            int length = methodDeclaration.Identifier.Span.Length;
+
+            var snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
+
+            return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTag(navInitInfo));
+        }
+
+        [CanBeNull]
+        static NavInitAnnotation ReadNavInitAnnotation(IMethodSymbol method, NavTaskAnnotation taskAnnotation) {
+
+            var navInitInfo = method?.DeclaringSyntaxReferences
+                                     .Select(dsr => dsr.GetSyntax() as MethodDeclarationSyntax)
+                                     .Select(syntax => ReadNavInitAnnotation(syntax, taskAnnotation))
+                                     .FirstOrDefault(nti => nti != null);
+
+            return navInitInfo;
+        }
+
+        [CanBeNull]
+        static NavInitAnnotation ReadNavInitAnnotation(MethodDeclarationSyntax methodDeclaration, NavTaskAnnotation taskAnnotation) {
+
+            var tags = ReadNavTags(methodDeclaration).ToList();
+
+            var navInitTag = tags.FirstOrDefault(t => t.TagName == AnnotationTagNames.NavInit);
+            var navInitName = navInitTag?.Content;
+
+            if (String.IsNullOrEmpty(navInitName)) {
+                return null;
+            }
+
+            return new NavInitAnnotation {
+                NavFileName = taskAnnotation.NavFileName,
+                TaskName = taskAnnotation.TaskName,
+                InitName = navInitName
+            };
+        }
+
         [NotNull]
         static IEnumerable<NavTag> ReadNavTags(Microsoft.CodeAnalysis.SyntaxNode node) {
 
