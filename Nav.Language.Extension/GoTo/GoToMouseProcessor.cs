@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Underlining;
+using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
 
@@ -15,6 +16,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
     sealed class GoToMouseProcessor: MouseProcessorBase {
 
         readonly IWpfTextView _textView;
+        readonly IWaitIndicator _waitIndicator;
         readonly ITagAggregator<GoToTag> _tagAggregator;
         readonly ModifierKeyState _keyState;
 
@@ -23,8 +25,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         [CanBeNull]
         ITagSpan<GoToTag> _navigateToTagSpan;
 
-        GoToMouseProcessor(IWpfTextView textView, TextViewConnectionListener textViewConnectionListener, IViewTagAggregatorFactoryService viewTagAggregatorFactoryService) {
+        GoToMouseProcessor(IWpfTextView textView, 
+                           TextViewConnectionListener textViewConnectionListener, 
+                           IViewTagAggregatorFactoryService viewTagAggregatorFactoryService, 
+                           IWaitIndicator waitIndicator) {
             _textView      = textView;
+            _waitIndicator = waitIndicator;
             _tagAggregator = viewTagAggregatorFactoryService.CreateTagAggregator<GoToTag>(textView);
             _keyState      = ModifierKeyState.GetStateForView(textView, textViewConnectionListener);
 
@@ -34,10 +40,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             textViewConnectionListener.AddDisconnectAction(textView, RemoveMouseProcessorForView);
         }
 
-        public static GoToMouseProcessor GetMouseProcessorForView(IWpfTextView textView, TextViewConnectionListener textViewConnectionListener,
-                                                                        IViewTagAggregatorFactoryService viewTagAggregatorFactoryService) {
+        public static GoToMouseProcessor GetMouseProcessorForView(IWpfTextView textView, 
+                                                                  TextViewConnectionListener textViewConnectionListener,
+                                                                  IViewTagAggregatorFactoryService viewTagAggregatorFactoryService,
+                                                                  IWaitIndicator waitIndicator) {
 
-            return textView.Properties.GetOrCreateSingletonProperty(() => new GoToMouseProcessor(textView, textViewConnectionListener, viewTagAggregatorFactoryService));
+            return textView.Properties.GetOrCreateSingletonProperty(() => new GoToMouseProcessor(textView, textViewConnectionListener, viewTagAggregatorFactoryService, waitIndicator));
         }
 
         void RemoveMouseProcessorForView(IWpfTextView textView) {
@@ -118,7 +126,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             var span = _navigateToTagSpan;
             RemoveNavigateToTagSpan();
 
-            span.Tag.GoToLocationAsync();
+            // TODO Titel etc. zentralisieren
+            using (var wait = _waitIndicator.StartWait(title: "Nav Language Extensions", message: "Searching Location", allowCancel: true)) {
+                span.Tag.GoToLocationAsync(wait.CancellationToken).Wait();
+            }            
         }
     }
 }

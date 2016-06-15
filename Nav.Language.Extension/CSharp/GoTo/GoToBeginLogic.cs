@@ -88,7 +88,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                 return new LocationResult { Location = new Location(textExtent, lineExtent, filePath)};
 
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
 
             if (location.Location != null) {
                 NavLanguagePackage.GoToLocationInPreviewTab(location.Location);

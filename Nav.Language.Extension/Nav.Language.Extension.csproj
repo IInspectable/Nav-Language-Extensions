@@ -181,6 +181,11 @@
     <Compile Include="Underlining\UnderlineTag.cs" />
     <Compile Include="Underlining\UnderlineTagger.cs" />
     <Compile Include="Underlining\UnderlineTaggerProvider.cs" />
+    <Compile Include="Utilities\IWaitContext.cs" />
+    <Compile Include="Utilities\IWaitIndicator.cs" />
+    <Compile Include="Utilities\VisualStudioWaitContext.Callback.cs" />
+    <Compile Include="Utilities\VisualStudioWaitContext.cs" />
+    <Compile Include="Utilities\VisualStudioWaitIndicator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

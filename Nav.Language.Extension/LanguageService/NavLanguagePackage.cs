@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 #endregion
@@ -145,6 +146,35 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         static string Quote(string file) {
             return '"' + file?.Trim('"') + '"';
+        }
+
+        public static ITextBuffer GetOpenTextBufferForFile(string filePath) { 
+
+            var package = GetGlobalService<NavLanguagePackage, NavLanguagePackage>();
+
+            var componentModel = (IComponentModel)GetGlobalService(typeof(SComponentModel));
+            var editorAdapterFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
+
+            IVsUIHierarchy uiHierarchy;
+            uint itemId;
+            IVsWindowFrame windowFrame;
+            if (VsShellUtilities.IsDocumentOpen(
+              package,
+              filePath,
+              Guid.Empty,
+              out uiHierarchy,
+              out itemId,
+              out windowFrame)) {
+                IVsTextView view = VsShellUtilities.GetTextView(windowFrame);
+                IVsTextLines lines;
+                if (view.GetBuffer(out lines) == 0) {
+                    var buffer = lines as IVsTextBuffer;
+                    if (buffer != null)
+                        return editorAdapterFactoryService.GetDataBuffer(buffer);
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
