@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Windows;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -32,6 +32,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _beginItfFullyQualifiedName = beginItfFullyQualifiedName;
         }
 
+        class LocationResult {
+            public Location Location { get; set; }
+            public string ErrorMessage { get; set; }
+        }
         public override async Task<Location> GoToLocationAsync(CancellationToken cancellationToken = new CancellationToken()) {
 
             var project = _sourceBuffer.GetContainingProject();
@@ -45,7 +49,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 var beginItf = compilation.GetTypeByMetadataName(_beginItfFullyQualifiedName);
                 if (beginItf == null) {
                     // TODO Messagebox, da Assembly evtl. nicht geladen.
-                    return null;
+                    return new LocationResult {ErrorMessage =$"Das Begin Interface {_beginItfFullyQualifiedName} wurde nicht gefunden." };
                 }
 
                 var wfsClass = SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken)
@@ -55,10 +59,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                                              .OfType<IMethodSymbol>()
                                              .Where(m=> m.Name == "BeginLogic");
 
+                // TODO hier die richtige Überladung finden.
                 var beginMethod = FindBestBeginLogicOverload(beginMethods);
 
-                // TODO hier die richtige Überladung finden.
-                var memberSyntax = beginMethod?.DeclaringSyntaxReferences.FirstOrDefault()
+                if (beginMethod == null) {
+                    return new LocationResult { ErrorMessage = $"Die passende BeginLogic Methode wurde nicht gefunden." };
+                }
+                
+                var memberSyntax = beginMethod.DeclaringSyntaxReferences.FirstOrDefault()
                                                ?.GetSyntax() as MethodDeclarationSyntax;
                 var memberLocation = memberSyntax?.Identifier.GetLocation();
 
@@ -66,25 +74,30 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     // TODO Messagebox, da Assembly evtl. nicht geladen.
                     //var loc = beginMethod?.Locations[0];
 
-                    return null;
+                    return new LocationResult { ErrorMessage = $"memberLocation wurde  icht gefunden." };
                 }
 
                 var lineSpan = memberLocation.GetLineSpan();
                 if (!lineSpan.IsValid) {
-                    return null;
+                    return new LocationResult { ErrorMessage = $"lineSpan is not valid" };
                 }
 
                 var textExtent = memberLocation.SourceSpan.ToTextExtent();
                 var lineExtent = lineSpan.ToLinePositionExtent();
                 var filePath   = memberLocation.SourceTree?.FilePath;
 
-                return new Location(textExtent, lineExtent, filePath);
+                return new LocationResult { Location = new Location(textExtent, lineExtent, filePath)};
 
             }, cancellationToken);
 
-            NavLanguagePackage.GoToLocationInPreviewTab(location);
+            if (location.Location != null) {
+                NavLanguagePackage.GoToLocationInPreviewTab(location.Location);
+            } else {
+                MessageBox.Show(location.ErrorMessage, "", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
-            return location;
+
+            return location.Location;
         }
 
         static List<string> ToParameterList(IEnumerable<IParameterSymbol> beginLogicParameter) {
