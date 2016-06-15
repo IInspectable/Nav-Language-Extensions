@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,16 +38,20 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
         public override async Task<Location> GoToLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
-            var wpfView = NavLanguagePackage.OpenFileInPreviewTab(TaskAnnotation.NavFileName);
+            //var wpfView = NavLanguagePackage.OpenFileInPreviewTab(TaskAnnotation.NavFileName);            
+            var textBuffer = NavLanguagePackage.GetOpenTextBufferForFile(TaskAnnotation.NavFileName);
+            
+            var location = await Task.Run(() => {
+                //Thread.Sleep(4000);
 
-            var textBuffer = wpfView?.TextBuffer;
-            if(textBuffer == null) {
-                return null;
-            }
+                var sourceText = "";
+                if (textBuffer != null) {
+                    sourceText = textBuffer.CurrentSnapshot.GetText();
+                } else {
+                    sourceText = File.ReadAllText(TaskAnnotation.NavFileName);
+                }
 
-            var location = await Task.Run(() => { 
-                
-                var syntaxTree = SyntaxTree.ParseText(textBuffer.CurrentSnapshot.GetText(), TaskAnnotation.NavFileName, cancellationToken);
+                var syntaxTree = SyntaxTree.ParseText(sourceText, TaskAnnotation.NavFileName, cancellationToken);
                 var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
                 if(codeGenerationUnitSyntax == null) {
                     return null;
@@ -90,7 +95,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                 return task.Syntax.Identifier.GetLocation();
 
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
 
             NavLanguagePackage.GoToLocationInPreviewTab(location);
 

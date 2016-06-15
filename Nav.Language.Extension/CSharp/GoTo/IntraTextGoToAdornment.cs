@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
+using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
 
@@ -16,12 +17,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
     sealed class IntraTextGoToAdornment : ButtonBase {
 
         readonly IWpfTextView _textView;
+        readonly IWaitIndicator _waitIndicator;
         readonly CrispImage _crispImage;
         IntraTextGoToTag _goToTag;
 
-        internal IntraTextGoToAdornment(IntraTextGoToTag goToTag, IWpfTextView textView) {
+        internal IntraTextGoToAdornment(IntraTextGoToTag goToTag, IWpfTextView textView, IWaitIndicator waitIndicator) {
 
             _textView   = textView;
+            _waitIndicator = waitIndicator;
             _crispImage = new CrispImage();
 
             Width       = 20;
@@ -46,8 +49,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             UpdateColor();
         }
 
-        async void OnClick(object sender, RoutedEventArgs e) {
-            await _goToTag.GoToLocationAsync();
+        void OnClick(object sender, RoutedEventArgs e) {
+            // TODO Titel etc. zentralisieren
+            using(var wait= _waitIndicator.StartWait(title: "Nav Language Extensions", message: "Searching Location", allowCancel: true)) {
+                _goToTag.GoToLocationAsync(wait.CancellationToken).Wait();
+            }           
         }
 
         internal void Update(IntraTextGoToTag goToTag) {

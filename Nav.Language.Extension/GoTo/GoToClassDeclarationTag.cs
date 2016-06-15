@@ -61,7 +61,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 }
 
                 return null;
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
 
             NavLanguagePackage.GoToLocationInPreviewTab(location);
 

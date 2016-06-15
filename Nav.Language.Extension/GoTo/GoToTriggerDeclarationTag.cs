@@ -39,7 +39,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             }
 
             var location = await Task.Run(() => {
-
+                //Thread.Sleep(4000);
                 var compilation   = project.GetCompilationAsync(cancellationToken).Result;
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(_fullyQualifiedWfsBaseName);
                 if(wfsBaseSymbol == null) {
@@ -68,7 +68,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
                 return new Location(textExtent, lineExtent, filePath);
 
-            }, cancellationToken);
+            }, cancellationToken).ConfigureAwait(false);
 
             NavLanguagePackage.GoToLocationInPreviewTab(location);
 

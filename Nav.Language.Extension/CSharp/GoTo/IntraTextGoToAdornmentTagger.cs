@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
 
@@ -15,16 +16,18 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGoToTag, IntraTextGoToAdornment>, IDisposable {
         
-        internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> colorTagger) {
+        internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> colorTagger, IWaitIndicator waitIndicator) {
             return view.Properties.GetOrCreateSingletonProperty(
-                () => new IntraTextGoToAdornmentTagger(view, colorTagger.Value));
+                () => new IntraTextGoToAdornmentTagger(view, colorTagger.Value, waitIndicator));
         }
 
         readonly ITagAggregator<IntraTextGoToTag> _goToNavTagger;
+        readonly IWaitIndicator _waitIndicator;
 
-        IntraTextGoToAdornmentTagger(IWpfTextView textView, ITagAggregator<IntraTextGoToTag> goToNavTagger)
+        IntraTextGoToAdornmentTagger(IWpfTextView textView, ITagAggregator<IntraTextGoToTag> goToNavTagger, IWaitIndicator waitIndicator)
             : base(textView) {
             _goToNavTagger = goToNavTagger;
+            _waitIndicator = waitIndicator;
             goToNavTagger.TagsChanged += OnTagsChanged;
         }
 
@@ -67,7 +70,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         protected override IntraTextGoToAdornment CreateAdornment(IntraTextGoToTag dataTag, SnapshotSpan span) {
-            return new IntraTextGoToAdornment(dataTag, TextView);
+            return new IntraTextGoToAdornment(dataTag, TextView,_waitIndicator);
         }
 
         protected override bool UpdateAdornment(IntraTextGoToAdornment adornment, IntraTextGoToTag dataTag) {
