@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
@@ -26,14 +25,14 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _fullyQualifiedTypeName = fullyQualifiedTypeName;
         }
 
-        public override async Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<LocationResult> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
-                return null;
+                return LocationResult.FromError($"Das Projekt konnte nicht ermittelt werden.");
             }
 
-            var location = await LocationFinder.FindClassDeclaration(project, _fullyQualifiedTypeName, cancellationToken)
+            var location = await LocationFinder.FindClassDeclarationAsync(project, _fullyQualifiedTypeName, cancellationToken)
                                                .ConfigureAwait(false);
            
             return location;
