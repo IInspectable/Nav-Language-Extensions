@@ -8,8 +8,9 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
+
 using Pharmatechnik.Nav.Language.Extension.Utilities;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
@@ -50,8 +51,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             UpdateColor();
         }
 
-        void OnClick(object sender, RoutedEventArgs e) {
-            NavLanguagePackage.GoToLocationInPreviewTabWithWaitIndicator(_waitIndicator, cancellationToken => _goToTag.GetLocationAsync(cancellationToken));
+        async void OnClick(object sender, RoutedEventArgs e) {
+            await NavLanguagePackage.GoToLocationInPreviewTabAsync(_waitIndicator, cancellationToken => _goToTag.GetLocationAsync(cancellationToken));
         }
 
         internal void Update(IntraTextGoToTag goToTag) {
