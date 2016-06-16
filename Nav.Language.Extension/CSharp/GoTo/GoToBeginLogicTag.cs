@@ -1,6 +1,5 @@
 #region Using Directives
 
-using System.Windows;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -9,9 +8,9 @@ using Microsoft.CodeAnalysis;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
+
 using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
@@ -29,11 +28,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _beginItfFullyQualifiedName = beginItfFullyQualifiedName;
         }
         
-        public override async Task<Location> GetLocationAsync(CancellationToken cancellationToken = new CancellationToken()) {
+        public override async Task<LocationResult> GetLocationAsync(CancellationToken cancellationToken = new CancellationToken()) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
-                return null;
+                // TODO Fehlermeldung
+                return LocationResult.FromError("");
             }
 
             var location = await LocationFinder.FindBeginLogicAsync(
@@ -43,17 +43,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 cancellationToken         : cancellationToken).ConfigureAwait(false);
 
             if (cancellationToken.IsCancellationRequested) {
-                return null;
+                return LocationResult.FromError("");
             }
 
-            // TODO Das muss wieder raus. Der Aufrufer soll entscheiden...
-           //if (location.Location != null) {
-           //    NavLanguagePackage.GoToLocationInPreviewTab(location.Location);
-           //} else {
-           //    MessageBox.Show(location.ErrorMessage, "", MessageBoxButton.OK, MessageBoxImage.Error);
-           //}
-
-            return location.Location;
+            return location;
         }
 
         public override ImageMoniker ImageMoniker {

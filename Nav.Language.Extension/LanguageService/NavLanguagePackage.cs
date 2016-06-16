@@ -5,6 +5,7 @@ using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using EnvDTE;
 using JetBrains.Annotations;
@@ -18,6 +19,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
+using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
@@ -126,9 +128,10 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         }
 
         [CanBeNull]
-        internal static IWpfTextView GoToLocationInPreviewTabWithWaitIndicator(IWaitIndicator waitIndicator, Func<CancellationToken, Task<Location>> getLocationTask) {
+        internal static IWpfTextView GoToLocationInPreviewTabWithWaitIndicator(IWaitIndicator waitIndicator, Func<CancellationToken, Task<LocationResult>> getLocationTask) {
             // TODO Titel etc. zentralisieren
             // TODO Evtl. überarbeiten
+            string errorMessage;
             using (var wait = waitIndicator.StartWait(title: "Nav Language Extensions", message: "Searching Location...", allowCancel: true)) {
 
                 var task = getLocationTask(wait.CancellationToken);
@@ -140,9 +143,19 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                 wait.AllowCancel = false;
                 wait.Message     = "Opening file...";
 
-                var location     = task.Result;
-                return GoToLocationInPreviewTab(location);
+                var locationResult = task.Result;
+                if(locationResult.Location != null) {
+                    return GoToLocationInPreviewTab(locationResult.Location);
+                }
+
+                errorMessage = locationResult.ErrorMessage;
             }
+
+            if(!String.IsNullOrWhiteSpace(errorMessage)) {
+                MessageBox.Show(errorMessage, "", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+            }
+
+            return null;
         }
 
         [CanBeNull]
@@ -152,9 +165,9 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
             Guid logicalView = Guid.Empty;
             IVsUIHierarchy hierarchy;
-            uint itemID;
+            uint itemId;
             IVsWindowFrame windowFrame;
-            VsShellUtilities.OpenDocument(serviceProvider, file, logicalView, out hierarchy, out itemID, out windowFrame);
+            VsShellUtilities.OpenDocument(serviceProvider, file, logicalView, out hierarchy, out itemId, out windowFrame);
 
             return GetWpfTextViewFromFrame(windowFrame);
         }

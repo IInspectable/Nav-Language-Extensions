@@ -33,7 +33,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         IVsThreadedWaitDialog3 CreateDialog(IVsThreadedWaitDialogFactory dialogFactory) {
             IVsThreadedWaitDialog2 dialog2;
             Marshal.ThrowExceptionForHR(dialogFactory.CreateInstance(out dialog2));
-            //Contract.ThrowIfNull(dialog2);
 
             var dialog3 = (IVsThreadedWaitDialog3) dialog2;
 

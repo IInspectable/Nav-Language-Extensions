@@ -4,8 +4,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text.Tagging;
+using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
@@ -29,8 +29,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public Location Location { get; }
         
-        public override Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
-            return Task.FromResult(Location);
+        public override Task<LocationResult> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+            return Task.FromResult(LocationResult.FromLocation(Location));
         }
 
         #region Equality members

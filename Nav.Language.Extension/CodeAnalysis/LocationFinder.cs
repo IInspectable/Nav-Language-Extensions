@@ -27,17 +27,22 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
         /// <returns></returns>
         public static async Task<LocationResult> FindBeginLogicAsync(Project project, string beginItfFullyQualifiedName, IList<string> beginParameter, CancellationToken cancellationToken) {
 
-
+            // TODO Task herum erstellen
             beginParameter = beginParameter.Skip(1).ToList();
 
             var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
                     
             var beginItf = compilation.GetTypeByMetadataName(beginItfFullyQualifiedName);
             if (beginItf == null) {
-                // TODO Messagebox, da Assembly evtl. nicht geladen.
-                return new LocationResult {
-                    ErrorMessage = $"Das Begin Interface {beginItfFullyQualifiedName} wurde nicht gefunden."
-                };
+                // Typ nicht gefunden - dürfte gar nicht bauen
+                return LocationResult.FromError($"Das Begin Interface {beginItfFullyQualifiedName} wurde nicht gefunden.");
+            }
+
+            // 
+            // => Assembly nicht geladen beginItf.Locations.Any(l => l.IsInMetadata);
+            var metaLocation = beginItf.Locations.FirstOrDefault(l => l.IsInMetadata);
+            if (metaLocation!=null) {
+                return LocationResult.FromError($"Assembly {metaLocation.MetadataModule.MetadataName} nicht geladen.");
             }
 
             var wfsClass = (await SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken).ConfigureAwait(false))
@@ -51,9 +56,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
             var beginMethod = FindBestBeginLogicOverload(beginParameter, beginLogicMethods);
             if (beginMethod == null) {
-                return new LocationResult {
-                    ErrorMessage = $"Die passende BeginLogic Überladung wurde nicht gefunden."
-                };
+                return LocationResult.FromError($"Die passende BeginLogic Überladung wurde nicht gefunden.");
             }
 
             var memberSyntax   = beginMethod.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
@@ -63,25 +66,19 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                 // TODO Messagebox, da Assembly evtl. nicht geladen.
                 //var loc = beginMethod?.Locations[0];
 
-                return new LocationResult {
-                    ErrorMessage = $"memberLocation wurde nicht gefunden."
-                };
+                return LocationResult.FromError($"memberLocation wurde nicht gefunden.");
             }
 
             var lineSpan = memberLocation.GetLineSpan();
             if (!lineSpan.IsValid) {
-                return new LocationResult {
-                    ErrorMessage = $"lineSpan is not valid"
-                };
+                return LocationResult.FromError($"lineSpan is not valid");
             }
 
             var textExtent = memberLocation.SourceSpan.ToTextExtent();
             var lineExtent = lineSpan.ToLinePositionExtent();
             var filePath   = memberLocation.SourceTree?.FilePath;
 
-            return new LocationResult {
-                Location = new Location(textExtent, lineExtent, filePath)
-            };
+            return LocationResult.FromLocation(new Location(textExtent, lineExtent, filePath));
         }
 
         public static List<string> ToParameterTypeList(IEnumerable<IParameterSymbol> beginLogicParameter) {
@@ -120,15 +117,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
             return matchCount;
         }
         
-        public static Task<Location> FindNavLocationAsync(string sourceText, NavTaskAnnotation taskAnnotation, CancellationToken cancellationToken) {
+        public static Task<LocationResult> FindNavLocationAsync(string sourceText, NavTaskAnnotation taskAnnotation, CancellationToken cancellationToken) {
 
-            var location = Task.Run(() => {
-                //Thread.Sleep(4000);
+            var locationResult = Task.Run(() => {
 
                 var syntaxTree = SyntaxTree.ParseText(sourceText, taskAnnotation.NavFileName, cancellationToken);
                 var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
                 if (codeGenerationUnitSyntax == null) {
-                    return null;
+                    return LocationResult.FromError("");
                 }
 
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
@@ -138,7 +134,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                         .FirstOrDefault(t => t.Name == taskAnnotation.TaskName);
 
                 if (task == null) {
-                    return null;
+                    return LocationResult.FromError("");
                 }
                 // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen
                 var triggerAnnotation = taskAnnotation as NavTriggerAnnotation;
@@ -147,14 +143,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                             .SelectMany(t => t.Triggers)
                             .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
 
-                    return trigger?.Location;
+                    return LocationResult.FromLocation(trigger?.Location);
                 }
 
                 var exitAnnotation = taskAnnotation as NavExitAnnotation;
                 if (exitAnnotation != null) {
                     // TODO: Was wollen wir hier eigentlich "markieren"? Die ganze Transition, oder nur die Quelle?
                     var exitTransition = task.ExitTransitions.FirstOrDefault(et => et.Source?.Name == exitAnnotation.ExitTaskName);
-                    return exitTransition?.Location;
+                    return LocationResult.FromLocation(exitTransition?.Location);
                 }
 
                 var initAnnotation = taskAnnotation as NavInitAnnotation;
@@ -162,24 +158,24 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                     var init = task.NodeDeclarations.OfType<IInitNodeSymbol>()
                             .FirstOrDefault(n => n.Name == initAnnotation.InitName);
 
-                    return init?.Location;
+                    return LocationResult.FromLocation(init?.Location);
                 }
 
-                return task.Syntax.Identifier.GetLocation();
+                return LocationResult.FromLocation(task.Syntax.Identifier.GetLocation());
             }, cancellationToken);
 
-            return location;
+            return locationResult;
         }
 
-        public static Task<Location> FindClassDeclaration(Project project, string fullyQualifiedTypeName, CancellationToken cancellationToken) {
+        public static Task<LocationResult> FindClassDeclarationAsync(Project project, string fullyQualifiedTypeName, CancellationToken cancellationToken) {
 
-            var task = Task.Run(async () => {
+            var task = Task.Run(() => {
 
-                var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+                var compilation = project.GetCompilationAsync(cancellationToken).Result;
                 var typeSymbol = compilation?.GetTypeByMetadataName(fullyQualifiedTypeName);
 
                 if (typeSymbol == null) {
-                    return null;
+                    return LocationResult.FromError($"Der Typ '{fullyQualifiedTypeName} wurde nicht gefunden.");
                 }
 
                 foreach (var refe in typeSymbol.DeclaringSyntaxReferences) {
@@ -198,45 +194,46 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                     var textExtent = loc.SourceSpan.ToTextExtent();
                     var lineExtent = lineSpan.ToLinePositionExtent();
 
-                    return new Location(textExtent, lineExtent, filePath);
+                    return LocationResult.FromLocation(new Location(textExtent, lineExtent, filePath));
                 }
 
-                return null;
+                // TODO Fehlermeldung
+                return LocationResult.FromError("");
             }, cancellationToken);
 
             return task;
         }
 
-        public static Task<Location> FindTriggerLocation(Project project, string fullyQualifiedWfsBaseName, string triggerMethodName, CancellationToken cancellationToken) {
+        public static Task<LocationResult> FindTriggerLocationAsync(Project project, string fullyQualifiedWfsBaseName, string triggerMethodName, CancellationToken cancellationToken) {
 
-            var task = Task.Run(async () => {
+            var task = Task.Run(() => {
 
-                var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+                var compilation = project.GetCompilationAsync(cancellationToken).Result;
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(fullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
-                    return null;
+                    return LocationResult.FromError("");
                 }
 
                 // Wir kennen de facto nur den Baisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
                 // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
-                var derived = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
+                var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
                 var memberSymbol = derived?.SelectMany(d => d.GetMembers(triggerMethodName)).FirstOrDefault();
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
 
                 if (memberLocation == null) {
-                    return null;
+                    return LocationResult.FromError("");
                 }
 
                 var lineSpan = memberLocation.GetLineSpan();
                 if (!lineSpan.IsValid) {
-                    return null;
+                    return LocationResult.FromError("");
                 }
 
                 var textExtent = memberLocation.SourceSpan.ToTextExtent();
                 var lineExtent = lineSpan.ToLinePositionExtent();
                 var filePath = memberLocation.SourceTree?.FilePath;
 
-                return new Location(textExtent, lineExtent, filePath);
+                return LocationResult.FromLocation(new Location(textExtent, lineExtent, filePath));
             }, cancellationToken);
 
             return task;
