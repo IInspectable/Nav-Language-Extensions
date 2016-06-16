@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
