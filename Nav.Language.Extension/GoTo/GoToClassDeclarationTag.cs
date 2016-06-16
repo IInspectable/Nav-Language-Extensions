@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
@@ -24,47 +26,16 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _fullyQualifiedTypeName = fullyQualifiedTypeName;
         }
 
-        public override async Task<Location> GoToLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
                 return null;
             }
 
-            var location= await Task.Run(() => {
-
-                var compilation = project.GetCompilationAsync(cancellationToken).Result;
-                var typeSymbol = compilation?.GetTypeByMetadataName(_fullyQualifiedTypeName);
-
-                if (typeSymbol == null) {
-                    return null;
-                }
-
-                foreach(var refe in typeSymbol.DeclaringSyntaxReferences) {
-
-                    var loc=refe.GetSyntax().GetLocation();
-
-                    var filePath   = loc.SourceTree?.FilePath;                
-                    if(filePath?.EndsWith("generated.cs") == true) {
-                        continue;
-                    }
-
-                    var lineSpan = loc.GetLineSpan();
-                    if (!lineSpan.IsValid) {
-                        continue;
-                    }
-
-                    var textExtent = loc.SourceSpan.ToTextExtent();
-                    var lineExtent = lineSpan.ToLinePositionExtent();
-
-                    return new Location(textExtent, lineExtent, filePath);
-                }
-
-                return null;
-            }, cancellationToken).ConfigureAwait(false);
-
-            NavLanguagePackage.GoToLocationInPreviewTab(location);
-
+            var location = await LocationFinder.FindClassDeclaration(project, _fullyQualifiedTypeName, cancellationToken)
+                                               .ConfigureAwait(false);
+           
             return location;
         }
 

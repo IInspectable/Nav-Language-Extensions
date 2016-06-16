@@ -269,7 +269,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     var beginItfFullyQualifiedName = navInitCallTag.Content;
 
                     yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, 
-                                        new GoToBeginLogic(
+                                        new GoToBeginLogicTag(
                                             currentSnapshot.TextBuffer, 
                                             beginItfFullyQualifiedName, 
                                             methodSymbol.Parameters));

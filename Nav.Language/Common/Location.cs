@@ -34,7 +34,6 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         //TODO Missing/None
-        public static readonly Location None =new Location("");
 
         public TextExtent Extent {
             get { return _extent; }

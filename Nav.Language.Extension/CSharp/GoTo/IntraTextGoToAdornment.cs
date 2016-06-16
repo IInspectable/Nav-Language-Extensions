@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
@@ -50,10 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         void OnClick(object sender, RoutedEventArgs e) {
-            // TODO Titel etc. zentralisieren
-            using(var wait= _waitIndicator.StartWait(title: "Nav Language Extensions", message: "Searching Location", allowCancel: true)) {
-                _goToTag.GoToLocationAsync(wait.CancellationToken).Wait();
-            }           
+            NavLanguagePackage.GoToLocationInPreviewTabWithWaitIndicator(_waitIndicator, cancellationToken => _goToTag.GetLocationAsync(cancellationToken));
         }
 
         internal void Update(IntraTextGoToTag goToTag) {

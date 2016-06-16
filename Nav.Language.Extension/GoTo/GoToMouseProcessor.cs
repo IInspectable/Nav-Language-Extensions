@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Extension.Underlining;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
@@ -126,10 +127,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             var span = _navigateToTagSpan;
             RemoveNavigateToTagSpan();
 
-            // TODO Titel etc. zentralisieren
-            using (var wait = _waitIndicator.StartWait(title: "Nav Language Extensions", message: "Searching Location", allowCancel: true)) {
-                span.Tag.GoToLocationAsync(wait.CancellationToken).Wait();
-            }            
+            NavLanguagePackage.GoToLocationInPreviewTabWithWaitIndicator(_waitIndicator, cancellationToken => span.Tag.GetLocationAsync(cancellationToken));           
         }
     }
 }
