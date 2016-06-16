@@ -3,6 +3,8 @@
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using EnvDTE;
 using JetBrains.Annotations;
@@ -16,6 +18,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.TextManager.Interop;
+using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
 
@@ -56,7 +59,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
     [Guid(GuidList.NavPackageGuid)]
     [ProvideAutoLoad("{adfc4e64-0397-11d1-9f4e-00a0c911004f}")] // VSConstants.UICONTEXT_NoSolution
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")] // VSConstants.UICONTEXT_SolutionExists
-    public sealed partial class NavLanguagePackage : Package {
+    sealed partial class NavLanguagePackage : Package {
 
         // ReSharper disable once EmptyConstructor
         public NavLanguagePackage() {
@@ -90,6 +93,11 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             return GetGlobalService(typeof(TService)) as TInterface;
         }
 
+        static IServiceProvider GetServiceProvider() {
+            var serviceProvider = GetGlobalService<NavLanguagePackage, IServiceProvider>();
+            return serviceProvider;
+        }
+
         public static VisualStudioWorkspace Workspace {
             get {
                 var componentModel = GetGlobalService<SComponentModel, IComponentModel>();
@@ -106,7 +114,6 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             }
 
             IWpfTextView wpfTextView = null;
-            // TODO hier Location.Empty/None Semantic berücksichtigen
             if (location.FilePath != null) {
                 wpfTextView=OpenFileInPreviewTab(location.FilePath);
             }
@@ -117,16 +124,41 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
             return wpfTextView;
         }
-        
+
         [CanBeNull]
-        public static IWpfTextView OpenFile(string file) {
-            DTE?.ExecuteCommand("File.OpenFile", Quote(file));
+        internal static IWpfTextView GoToLocationInPreviewTabWithWaitIndicator(IWaitIndicator waitIndicator, Func<CancellationToken, Task<Location>> getLocationTask) {
+            // TODO Titel etc. zentralisieren
+            // TODO Evtl. überarbeiten
+            using (var wait = waitIndicator.StartWait(title: "Nav Language Extensions", message: "Searching Location...", allowCancel: true)) {
 
-            IWpfTextView wpfViewCurrent = GetActiveTextView();
+                var task = getLocationTask(wait.CancellationToken);
+                task.Wait(wait.CancellationToken);
+                if (task.IsCanceled) {
+                    return null;
+                }
 
-            return wpfViewCurrent;
+                wait.AllowCancel = false;
+                wait.Message     = "Opening file...";
+
+                var location     = task.Result;
+                return GoToLocationInPreviewTab(location);
+            }
         }
 
+        [CanBeNull]
+        public static IWpfTextView OpenFile(string file) {
+
+            var serviceProvider = GetServiceProvider();
+
+            Guid logicalView = Guid.Empty;
+            IVsUIHierarchy hierarchy;
+            uint itemID;
+            IVsWindowFrame windowFrame;
+            VsShellUtilities.OpenDocument(serviceProvider, file, logicalView, out hierarchy, out itemID, out windowFrame);
+
+            return GetWpfTextViewFromFrame(windowFrame);
+        }
+        
         [CanBeNull]
         public static IWpfTextView OpenFileInPreviewTab(string file) {
             IVsNewDocumentStateContext newDocumentStateContext = null;
@@ -142,12 +174,9 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             } finally {
                 newDocumentStateContext?.Restore();
             }
-        }
+        }      
 
-        static string Quote(string file) {
-            return '"' + file?.Trim('"') + '"';
-        }
-
+        [CanBeNull]
         public static ITextBuffer GetOpenTextBufferForFile(string filePath) { 
 
             var package = GetGlobalService<NavLanguagePackage, NavLanguagePackage>();
@@ -181,6 +210,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         /// Gets the current IWpfTextView that is the active document.
         /// </summary>
         /// <returns></returns>
+        [CanBeNull]
         public static IWpfTextView GetActiveTextView() {
             var monitorSelection = (IVsMonitorSelection)GetGlobalService(typeof(SVsShellMonitorSelection));
             if (monitorSelection == null) {
@@ -192,27 +222,32 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                 // TODO: Report error
                 return null;
             }
-
             var frame = curDocument as IVsWindowFrame;
             if (frame == null) {
                 // TODO: Report error
                 return null;
             }
 
+            return GetWpfTextViewFromFrame(frame);
+        }
+
+        [CanBeNull]
+        static IWpfTextView GetWpfTextViewFromFrame(IVsWindowFrame frame) {
+           
             object docView;
-            if (ErrorHandler.Failed(frame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out docView))) {
+            if (ErrorHandler.Failed(frame.GetProperty((int) __VSFPROPID.VSFPROPID_DocView, out docView))) {
                 // TODO: Report error
                 return null;
             }
 
             if (docView is IVsCodeWindow) {
                 IVsTextView textView;
-                if (ErrorHandler.Failed(((IVsCodeWindow)docView).GetPrimaryView(out textView))) {
+                if (ErrorHandler.Failed(((IVsCodeWindow) docView).GetPrimaryView(out textView))) {
                     // TODO: Report error
                     return null;
                 }
 
-                var model = (IComponentModel)Package.GetGlobalService(typeof(SComponentModel));
+                var model = (IComponentModel) Package.GetGlobalService(typeof(SComponentModel));
                 var adapterFactory = model.GetService<IVsEditorAdaptersFactoryService>();
                 var wpfTextView = adapterFactory.GetWpfTextView(textView);
                 return wpfTextView;

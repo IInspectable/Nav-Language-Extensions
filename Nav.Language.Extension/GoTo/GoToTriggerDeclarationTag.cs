@@ -1,24 +1,21 @@
 #region Using Directives
 
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Immutable;
 
 using Microsoft.VisualStudio.Text;
-using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
-    public class GoToTriggerDeclarationTag : GoToTag, ITag,
-            IEquatable<GoToTriggerDeclarationTag> {
+    public class GoToTriggerDeclarationTag : GoToTag, ITag, IEquatable<GoToTriggerDeclarationTag> {
 
         readonly string _fullyQualifiedWfsBaseName;
         readonly string _triggerMethodName;
@@ -31,54 +28,19 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _triggerMethodName         = triggerMethodName;
         }
 
-        public override async Task<Location> GoToLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
                 return null;
             }
 
-            var location = await Task.Run(() => {
-                //Thread.Sleep(4000);
-                var compilation   = project.GetCompilationAsync(cancellationToken).Result;
-                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(_fullyQualifiedWfsBaseName);
-                if(wfsBaseSymbol == null) {
-                    return null;
-                }
-
-                // Wir kennen de facto nur den Baisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
-                // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
-                var derived        = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken)
-                                                 .Result;
-                var memberSymbol   = derived?.SelectMany(d=>d.GetMembers(_triggerMethodName)).FirstOrDefault();
-                var memberLocation = memberSymbol?.Locations.FirstOrDefault();
-
-                if (memberLocation == null) {
-                    return null;
-                }
-
-                var lineSpan = memberLocation.GetLineSpan();
-                if (!lineSpan.IsValid) {
-                    return null;
-                }
-
-                var textExtent = memberLocation.SourceSpan.ToTextExtent();
-                var lineExtent = lineSpan.ToLinePositionExtent();
-                var filePath   = memberLocation.SourceTree?.FilePath;
-
-                return new Location(textExtent, lineExtent, filePath);
-
-            }, cancellationToken).ConfigureAwait(false);
-
-            NavLanguagePackage.GoToLocationInPreviewTab(location);
+            var location = await LocationFinder.FindTriggerLocation(project, _fullyQualifiedWfsBaseName, _triggerMethodName, cancellationToken)
+                                               .ConfigureAwait(false);
 
             return location;
         }
-
-        static IImmutableSet<T> ToImmutableSet<T>(T item) {
-            return new[] { item }.ToImmutableHashSet();
-        }
-
+        
         #region Equality members
         
         public bool Equals(GoToTriggerDeclarationTag other) {

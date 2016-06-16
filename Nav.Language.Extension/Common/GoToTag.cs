@@ -10,7 +10,9 @@ using Microsoft.VisualStudio.Text.Tagging;
 namespace Pharmatechnik.Nav.Language.Extension.Common {
 
     public abstract class GoToTag: ITag {
+
+        // TODO hier LocationResult zurückliefern, damit der Aufrufer ggf. eine Fehlermeldung anzeigen kann
         [NotNull]
-        public abstract Task<Location> GoToLocationAsync(CancellationToken cancellationToken=default(CancellationToken));
+        public abstract Task<Location> GetLocationAsync(CancellationToken cancellationToken=default(CancellationToken));
     }
 }

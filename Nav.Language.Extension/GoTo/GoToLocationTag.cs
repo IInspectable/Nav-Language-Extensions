@@ -29,8 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public Location Location { get; }
         
-        public override Task<Location> GoToLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
-            NavLanguagePackage.GoToLocationInPreviewTab(Location);
+        public override Task<Location> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
             return Task.FromResult(Location);
         }
 
