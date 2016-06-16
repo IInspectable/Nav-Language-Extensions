@@ -1,24 +1,28 @@
 ﻿#region Using Directives
 
 using System;
-using System.ComponentModel.Design;
-using System.Runtime.InteropServices;
+using System.Windows;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
+using System.ComponentModel.Design;
 using System.Windows.Media.Imaging;
-using EnvDTE;
+using System.Runtime.InteropServices;
+
 using JetBrains.Annotations;
+
+using EnvDTE;
+
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
-using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
+
 using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
@@ -127,28 +131,33 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             return wpfTextView;
         }
 
-        [CanBeNull]
-        internal static IWpfTextView GoToLocationInPreviewTabWithWaitIndicator(IWaitIndicator waitIndicator, Func<CancellationToken, Task<LocationResult>> getLocationTask) {
-            // TODO Titel etc. zentralisieren
-            // TODO Evtl. überarbeiten
-            string errorMessage;
-            using (var wait = waitIndicator.StartWait(title: "Nav Language Extensions", message: "Searching Location...", allowCancel: true)) {
+        internal static async Task<IWpfTextView> GoToLocationInPreviewTabAsync(IWaitIndicator waitIndicator, Func<CancellationToken, Task<LocationResult>> getLocationTask) {
 
-                var task = getLocationTask(wait.CancellationToken);
-                task.Wait(wait.CancellationToken);
-                if (task.IsCanceled) {
+            // TODO Titel etc. überarbeiten
+            string errorMessage;
+            using(var waitContext = waitIndicator.StartWait(title: "Nav Language Extensions", message: "Searching Location...", allowCancel: true)) {
+
+                try {
+                    var task = getLocationTask(waitContext.CancellationToken);
+                    var locationResult = await task;
+                    if(task.IsCanceled) {
+                        return null;
+                    }
+
+                    //await Task.Delay(5000, waitContext.CancellationToken);
+
+                    waitContext.AllowCancel = false;
+                    waitContext.Message     = "Opening file...";
+                    
+                    //  var locationResult = task.Result;
+                    if(locationResult.Location != null) {
+                        return GoToLocationInPreviewTab(locationResult.Location);
+                    }
+
+                    errorMessage = locationResult.ErrorMessage;
+                } catch(TaskCanceledException) {
                     return null;
                 }
-
-                wait.AllowCancel = false;
-                wait.Message     = "Opening file...";
-
-                var locationResult = task.Result;
-                if(locationResult.Location != null) {
-                    return GoToLocationInPreviewTab(locationResult.Location);
-                }
-
-                errorMessage = locationResult.ErrorMessage;
             }
 
             if(!String.IsNullOrWhiteSpace(errorMessage)) {

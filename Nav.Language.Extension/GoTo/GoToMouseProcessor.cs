@@ -2,13 +2,16 @@
 
 using System;
 using System.Windows.Input;
+
 using JetBrains.Annotations;
+
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
-using Pharmatechnik.Nav.Language.Extension.Underlining;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
+using Pharmatechnik.Nav.Language.Extension.Underlining;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
@@ -116,7 +119,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _textView.VisualElement.Cursor = _overriddenCursor;
         }
 
-        void NavigateToTagSpan() {
+        async void NavigateToTagSpan() {
 
             if (_navigateToTagSpan == null) {
                 return;
@@ -127,7 +130,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             var span = _navigateToTagSpan;
             RemoveNavigateToTagSpan();
 
-            NavLanguagePackage.GoToLocationInPreviewTabWithWaitIndicator(_waitIndicator, cancellationToken => span.Tag.GetLocationAsync(cancellationToken));           
+            await NavLanguagePackage.GoToLocationInPreviewTabAsync(_waitIndicator, cancellationToken => span.Tag.GetLocationAsync(cancellationToken));
         }
     }
 }
