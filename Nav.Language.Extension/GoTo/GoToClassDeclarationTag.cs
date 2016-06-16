@@ -29,6 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
+                // TODO Fehlermeldung
                 return LocationResult.FromError($"Das Projekt konnte nicht ermittelt werden.");
             }
 
