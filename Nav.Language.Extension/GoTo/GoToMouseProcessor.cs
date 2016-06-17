@@ -130,7 +130,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             RemoveNavigateToTagSpan();
 
             var placementRectangle = _textView.TextViewLines.GetTextMarkerGeometry(tagSpan.Span).Bounds;
-            
+
+            placementRectangle.Offset(-_textView.ViewportLeft, -_textView.ViewportTop);
+
             await _goToLocationService.GoToLocationInPreviewTabAsync(
                 _textView,
                 placementRectangle, 
