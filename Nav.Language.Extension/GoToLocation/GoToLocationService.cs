@@ -9,7 +9,9 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media;
 using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
 
 using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
@@ -25,9 +27,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
     sealed class GoToLocationService {
 
         // TODO Titel etc. überarbeiten
-        const string WaitIndicatorTitle = "Nav Language Extensions";
+        const string MessageTitle             = "Nav Language Extensions";
         const string SearchingLocationMessage = "Searching Location...";
-        const string OpeningFileMessage = "Opening file...";
+        const string OpeningFileMessage       = "Opening file...";
 
         readonly IWaitIndicator _waitIndicator;
 
@@ -39,7 +41,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         public async Task GoToLocationInPreviewTabAsync(IWpfTextView originatingTextView, Rect placementRectangle, Func<CancellationToken, Task<IEnumerable<LocationResult>>> getLocationsTask) {
             
             List<LocationResult> locations;
-            using (var waitContext = _waitIndicator.StartWait(title: WaitIndicatorTitle, message: SearchingLocationMessage, allowCancel: true)) {
+            using (var waitContext = _waitIndicator.StartWait(title: MessageTitle, message: SearchingLocationMessage, allowCancel: true)) {
 
                 try {
 
@@ -54,14 +56,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                     locations.Add(locations[0]); // Zum Simulieren mehrerer Locations
 
                     // Es gibt nur eine einzige Location => direkt anspringen, da wir denselben Wait Indicator verwenden wollen.
-                    if (locations.Count == 1 && locations[0].Location != null) {
+                    if (locations.Count == 1 && locations[0].IsValid) {
 
                         var locationResult = locations.First();
 
                         waitContext.AllowCancel = false;
-                        waitContext.Message = OpeningFileMessage;
+                        waitContext.Message     = OpeningFileMessage;
 
-                       NavLanguagePackage.GoToLocationInPreviewTab(locationResult.Location);
+                        NavLanguagePackage.GoToLocationInPreviewTab(locationResult.Location);
+
                         return;
                     }
                 } catch (TaskCanceledException) {
@@ -74,8 +77,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             }
 
             // Es gibt nur eine Location, die aber nicht aufgelöst werden konnte => Fehler anzeigen und tschüss
-            if (locations.Count == 1 && !String.IsNullOrWhiteSpace(locations[0].ErrorMessage)) {
-                MessageBox.Show(locations[0].ErrorMessage, "", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+            if (locations.Count == 1 && !locations[0].IsValid) {
+                ShowLocationErrorMessage(locations[0]);
                 return;
             }
 
@@ -90,20 +93,42 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
             foreach (var location in locations) {
 
+                var crispImage = new CrispImage {
+                    Moniker = GoToImageMonikers.GoToBeginLogic // TODO ImageMoniker
+                };
+
+                var backgroundBrush = ctxMenu.Background as SolidColorBrush;
+                if (backgroundBrush != null) {
+                    ImageThemingUtilities.SetImageBackgroundColor(crispImage, backgroundBrush.Color);
+                }
+
                 MenuItem item = new MenuItem {
                     Header = location.Location.FilePath, // TODO DisplayName
-                    Icon = new CrispImage {Moniker= GoToImageMonikers.GoToBeginLogic } // TODO ImageMoniker
+                    Icon   = crispImage 
                 };
-                item.Click += (o, e) => GoToLocationInPreviewTab(location);
+                item.Click += (_, __) => GoToLocationInPreviewTab(location);
 
                 ctxMenu.Items.Add(item);
             }
         }
         
         void GoToLocationInPreviewTab(LocationResult location) {
-            using (_waitIndicator.StartWait(title: WaitIndicatorTitle, message: OpeningFileMessage, allowCancel: true)) {
+
+            if(!location.IsValid) {
+                ShowLocationErrorMessage(location);
+                return;
+            }
+
+            using (_waitIndicator.StartWait(title: MessageTitle, message: OpeningFileMessage, allowCancel: true)) {
                 NavLanguagePackage.GoToLocationInPreviewTab(location.Location);
             }
+        }
+
+        void ShowLocationErrorMessage(LocationResult locationResult) {
+            MessageBox.Show(messageBoxText: locationResult.ErrorMessage, 
+                            caption       : MessageTitle, 
+                            button        : MessageBoxButton.OK, 
+                            icon          : MessageBoxImage.Asterisk);
         }
     }
 }
