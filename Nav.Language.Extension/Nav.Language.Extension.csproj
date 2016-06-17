@@ -59,11 +59,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\LinePositionExtensions.cs" />
-    <Compile Include="CSharp\GoTo\GoToBeginLogicTag.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTaggerProvider.cs" />
-    <Compile Include="CSharp\GoTo\GoToNavTag.cs" />
+    <Compile Include="CSharp\GoTo\GoToNavTaskAnnotationTag.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTaggerProvider.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTag.cs" />
@@ -84,9 +83,6 @@
     <Compile Include="GoToLocation\Provider\SimpleLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\WfsDeclarationLocationInfoProvider.cs" />
-    <Compile Include="GoTo\GoToWfsDeclarationTag.cs" />
-    <Compile Include="GoTo\GoToLocationTag.cs" />
-    <Compile Include="GoTo\GoToTriggerDeclarationTag.cs" />
     <Compile Include="QuickInfo\SymbolImageMonikers.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandler.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandlerProvider.cs" />
