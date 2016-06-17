@@ -3,6 +3,7 @@
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
@@ -25,7 +26,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
 
         public override TagSpan<GoToTag> VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
-            return CreateGoToLocationTagSpan(includeSymbol.Location, includeSymbol.FileLocation);
+            return CreateGoToLocationTagSpan(includeSymbol.Location,
+                LocationInfo.FromLocation(includeSymbol.FileLocation));
         }
 
         public override TagSpan<GoToTag> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
@@ -34,7 +36,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }           
             
-            return CreateGoToLocationTagSpan(taskNodeSymbol.Location, taskNodeSymbol.Declaration.Location);
+            return CreateGoToLocationTagSpan(taskNodeSymbol.Location,
+                LocationInfo.FromLocation(taskNodeSymbol.Declaration.Location));
         }
 
         public override TagSpan<GoToTag> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
@@ -43,7 +46,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
             
-            return CreateGoToLocationTagSpan(nodeReferenceSymbol.Location, nodeReferenceSymbol.Declaration.Location);
+            return CreateGoToLocationTagSpan(nodeReferenceSymbol.Location,
+                LocationInfo.FromLocation(nodeReferenceSymbol.Declaration.Location));
         }
 
         public override TagSpan<GoToTag> VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
@@ -51,7 +55,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             if (connectionPointReferenceSymbol.Declaration == null) {
                 return null;
             }
-            return CreateGoToLocationTagSpan(connectionPointReferenceSymbol.Location, connectionPointReferenceSymbol.Declaration.Location);
+            return CreateGoToLocationTagSpan(connectionPointReferenceSymbol.Location, 
+                LocationInfo.FromLocation(connectionPointReferenceSymbol.Declaration.Location));
         }
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
@@ -61,7 +66,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             return CreateGoToTriggerDeclarationTagSpan(signalTriggerSymbol.Location, info.FullyQualifiedWfsBaseName, info.TriggerLogicMethodName);
         }
 
-        TagSpan<GoToTag> CreateGoToLocationTagSpan(Location sourceLocation, Location targetLocation) {
+        TagSpan<GoToTag> CreateGoToLocationTagSpan(Location sourceLocation, LocationInfo targetLocation) {
 
             var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
             var tag     = new GoToLocationTag(targetLocation);

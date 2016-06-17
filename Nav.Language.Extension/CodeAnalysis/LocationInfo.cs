@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
-    public struct LocationResult {
+    public struct LocationInfo {
 
         string _errorMessage;
         string _displayName;
@@ -29,14 +29,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
             private set { _errorMessage = value; }
         }
 
-        public static LocationResult FromError(string errorMessage) {
-            return new LocationResult {
+        public static LocationInfo FromError(string errorMessage) {
+            return new LocationInfo {
                 ErrorMessage = errorMessage
             };
         }
 
-        public static LocationResult FromLocation(Location location, string displayName="", ImageMoniker imageMoniker=default(ImageMoniker)) {
-            return new LocationResult {
+        public static LocationInfo FromLocation(Location location, string displayName="", ImageMoniker imageMoniker=default(ImageMoniker)) {
+            return new LocationInfo {
                 Location    = location,
                 DisplayName = displayName,
                 Moniker     = imageMoniker,
