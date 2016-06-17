@@ -30,9 +30,17 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 LocationInfo.FromLocation(includeSymbol.FileLocation));
         }
 
-        // TODO VisitTaskDefinitionSymbol
-        public override TagSpan<GoToTag> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {           
-            return base.VisitTaskDefinitionSymbol(taskDefinitionSymbol);
+        public override TagSpan<GoToTag> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
+
+            if(taskDefinitionSymbol.Syntax.Identifier.IsMissing) {
+                return null;
+            }
+
+            var info = new TaskCodeGenInfo(taskDefinitionSymbol);
+
+            var provider = new WfsDeclarationLocationInfoProvider(_textBuffer, info.FullyQualifiedWfsBaseName);
+            
+            return CreateTagSpan(taskDefinitionSymbol.Location, provider);
         }
 
         public override TagSpan<GoToTag> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
@@ -71,8 +79,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
             var info = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
-            
-            return CreateGoToTriggerDeclarationTagSpan(signalTriggerSymbol.Location, info.FullyQualifiedWfsBaseName, info.TriggerLogicMethodName);
+
+            var provider = new TriggerDeclarationLocationInfoProvider(_textBuffer, info.TaskCodeGenInfo.FullyQualifiedWfsBaseName, info.TriggerLogicMethodName);
+
+            return CreateTagSpan(signalTriggerSymbol.Location, provider);
         }
 
         TagSpan<GoToTag> CreateGoToLocationTagSpan(Location sourceLocation, LocationInfo targetLocation) {
@@ -81,14 +91,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
             return CreateTagSpan(sourceLocation, provider);
         }
-
-        TagSpan<GoToTag> CreateGoToTriggerDeclarationTagSpan(Location sourceLocation, string fullyQualifiedWfsBaseName, string triggerMethodName) {
-
-            var provider = new TriggerDeclarationLocationInfoProvider(_textBuffer, fullyQualifiedWfsBaseName, triggerMethodName);
-
-            return CreateTagSpan(sourceLocation, provider);
-        }
-
+        
         TagSpan<GoToTag> CreateTagSpan(Location sourceLocation, ILocationInfoProvider provider) {
             var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
             var tag     = new GoToTag(provider);

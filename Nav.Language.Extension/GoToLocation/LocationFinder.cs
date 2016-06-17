@@ -212,22 +212,33 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
         #region FindClassDeclarationAsync
 
-        public static Task<LocationInfo> FindWfsDeclarationAsync(Project project, string fullyQualifiedTypeName, CancellationToken cancellationToken) {
+        public static Task<IEnumerable<LocationInfo>> FindWfsDeclarationsAsync(Project project, string fullyQualifiedWfsBaseName, CancellationToken cancellationToken) {
 
             var task = Task.Run(() => {
 
                 var compilation = project.GetCompilationAsync(cancellationToken).Result;
-                var typeSymbol  = compilation?.GetTypeByMetadataName(fullyQualifiedTypeName);
+                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(fullyQualifiedWfsBaseName);
 
-                if (typeSymbol == null) {
+                if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError($"Der Typ '{fullyQualifiedTypeName} wurde nicht gefunden.");
+                    return ToEnumerable( LocationInfo.FromError($"Der Typ '{fullyQualifiedWfsBaseName} wurde nicht gefunden."));
                 }
 
-                foreach (var refe in typeSymbol.DeclaringSyntaxReferences) {
-                    var loc = refe.GetSyntax().GetLocation();
+                // Wir kennen de facto nur den Baisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
+                // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
+                var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
+
+                var derivedSyntaxes = derived.SelectMany(d => d.DeclaringSyntaxReferences)
+                                             .Select(dsr => dsr.GetSyntax())
+                                             .OfType<TypeDeclarationSyntax>();
+
+                var locs = new List<LocationInfo>();
+                foreach (var ds in derivedSyntaxes) {
+                    
+                    var loc = ds.Identifier.GetLocation();
 
                     var filePath = loc.SourceTree?.FilePath;
+                    // TODO Option .generated auch anzuzeigen
                     if (filePath?.EndsWith("generated.cs") == true) {
                         continue;
                     }
@@ -240,14 +251,18 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                     var textExtent = loc.SourceSpan.ToTextExtent();
                     var lineExtent = lineSpan.ToLinePositionExtent();
 
-                    return LocationInfo.FromLocation(
+                    locs.Add( LocationInfo.FromLocation(
                         location    : new Location(textExtent, lineExtent, filePath), 
-                        displayName : "Go To WFS", 
-                        imageMoniker: GoToImageMonikers.GoToWfs);
+                        // TODO Hier evtl. relativen Pfad angeben
+                        displayName : filePath, 
+                        imageMoniker: GoToImageMonikers.GoToWfs));
                 }
 
-                // TODO Fehlermeldung
-                return LocationInfo.FromError("Unable to locate WFS");
+                if(!locs.Any()) {
+                    // TODO Fehlermeldung
+                    return ToEnumerable(LocationInfo.FromError("Unable to locate WFS"));
+                }
+                return locs;
 
             }, cancellationToken);
 
