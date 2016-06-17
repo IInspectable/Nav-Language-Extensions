@@ -19,6 +19,8 @@ using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
 #endregion
 
@@ -215,7 +217,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                 var snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
 
-                yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTag(navTaskInfo));
+                yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTaskAnnotationTag(navTaskInfo));
 
                 var methodDeclarations = classDeclaration.DescendantNodes()
                                                          .OfType<MethodDeclarationSyntax>();
@@ -268,11 +270,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                     var beginItfFullyQualifiedName = navInitCallTag.Content;
 
+                    var provider = new BeginLogicLocationInfoProvider(
+                                            currentSnapshot.TextBuffer,
+                                            beginItfFullyQualifiedName,
+                                            methodSymbol.Parameters);
+
                     yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, 
-                                        new GoToBeginLogicTag(
-                                            currentSnapshot.TextBuffer, 
-                                            beginItfFullyQualifiedName, 
-                                            methodSymbol.Parameters));
+                                        new IntraTextGoToTag(
+                                            provider    : provider, 
+                                            imageMoniker: GoToImageMonikers.GoToBeginLogic, 
+                                            // TODO Tooltip Text zentralisieren
+                                            toolTip     : "Go To Begin Logic"));
                 }
             }
         }
@@ -503,7 +511,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
 
-            return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTag(navTaskAnnotation));
+            return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTaskAnnotationTag(navTaskAnnotation));
         }
 
 

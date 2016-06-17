@@ -1,20 +1,16 @@
 #region Using Directives
 
-using System.Collections.Generic;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
-    class GoToNavTag : IntraTextGoToTag {
+    class GoToNavTaskAnnotationTag : IntraTextGoToTag {
 
-        public GoToNavTag(NavTaskAnnotation navTaskAnnotation) {
+        public GoToNavTaskAnnotationTag(NavTaskAnnotation navTaskAnnotation): base(new NavTaskAnnotationLocationInfoProvider(navTaskAnnotation)) {
             TaskAnnotation = navTaskAnnotation;
         }
 
@@ -26,6 +22,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
         public override object ToolTip {
             get {
+                // TODO Tooltip Texte zentralisieren
                 // TODO Evtl. Visitor um Annotations bauen...
                 if (TaskAnnotation is NavTriggerAnnotation) {
                     return "Go To Trigger Definition";
@@ -36,21 +33,5 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 }
                 return "Go To Task Definition"; }
         }
-
-        public override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
-
-            string sourceText;
-            var textBuffer = NavLanguagePackage.GetOpenTextBufferForFile(TaskAnnotation.NavFileName);
-            if (textBuffer != null) {
-                sourceText = textBuffer.CurrentSnapshot.GetText();
-            } else {
-                sourceText = File.ReadAllText(TaskAnnotation.NavFileName);
-            }
-
-            var location = await LocationFinder.FindNavLocationsAsync(sourceText, TaskAnnotation, cancellationToken)
-                                               .ConfigureAwait(false);
-
-            return location;
-        }    
     }
 }

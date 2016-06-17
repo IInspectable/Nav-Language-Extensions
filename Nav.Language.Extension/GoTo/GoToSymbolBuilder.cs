@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
 #endregion
 
@@ -27,6 +28,11 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         public override TagSpan<GoToTag> VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
             return CreateGoToLocationTagSpan(includeSymbol.Location,
                 LocationInfo.FromLocation(includeSymbol.FileLocation));
+        }
+
+        // TODO VisitTaskDefinitionSymbol
+        public override TagSpan<GoToTag> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {           
+            return base.VisitTaskDefinitionSymbol(taskDefinitionSymbol);
         }
 
         public override TagSpan<GoToTag> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
@@ -54,8 +60,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             if (connectionPointReferenceSymbol.Declaration == null) {
                 return null;
             }
-            return CreateGoToLocationTagSpan(connectionPointReferenceSymbol.Location, 
+
+            var tagSpan= CreateGoToLocationTagSpan(connectionPointReferenceSymbol.Location, 
                 LocationInfo.FromLocation(connectionPointReferenceSymbol.Declaration.Location));
+
+            // TODO hier Option, um in "AfterxyLogic" zu springen.
+            return tagSpan;
         }
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
@@ -67,18 +77,23 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         TagSpan<GoToTag> CreateGoToLocationTagSpan(Location sourceLocation, LocationInfo targetLocation) {
 
-            var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
-            var tag     = new GoToLocationTag(targetLocation);
+            var provider = new SimpleLocationInfoProvider(targetLocation);
 
-            return new TagSpan<GoToTag>(tagSpan, tag);
+            return CreateTagSpan(sourceLocation, provider);
         }
 
         TagSpan<GoToTag> CreateGoToTriggerDeclarationTagSpan(Location sourceLocation, string fullyQualifiedWfsBaseName, string triggerMethodName) {
 
+            var provider = new TriggerDeclarationLocationInfoProvider(_textBuffer, fullyQualifiedWfsBaseName, triggerMethodName);
+
+            return CreateTagSpan(sourceLocation, provider);
+        }
+
+        TagSpan<GoToTag> CreateTagSpan(Location sourceLocation, ILocationInfoProvider provider) {
             var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
-            var tag     = new GoToTriggerDeclarationTag(_textBuffer, fullyQualifiedWfsBaseName, triggerMethodName);
+            var tag     = new GoToTag(provider);
 
             return new TagSpan<GoToTag>(tagSpan, tag);
-        }        
+        }
     }    
 }
