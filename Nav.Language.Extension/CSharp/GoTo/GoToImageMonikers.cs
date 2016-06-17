@@ -10,7 +10,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
     static class GoToImageMonikers {
 
         public static ImageMoniker GoToBeginLogic {
-            get { return KnownMonikers.GoToDefinition; }
+            get { return KnownMonikers.GoToDeclaration; }
         }
 
         public static ImageMoniker GoToTriggerDefinition {

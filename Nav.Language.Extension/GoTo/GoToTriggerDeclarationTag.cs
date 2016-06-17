@@ -1,6 +1,7 @@
 #region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,18 +28,18 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _triggerMethodName         = triggerMethodName;
         }
 
-        public override async Task<LocationResult> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<IEnumerable<LocationResult>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
                 // TODO Fehlermeldung
-                return LocationResult.FromError("");
+                return ToEnumerable(LocationResult.FromError(""));
             }
 
             var location = await LocationFinder.FindTriggerLocationAsync(project, _fullyQualifiedWfsBaseName, _triggerMethodName, cancellationToken)
                                                .ConfigureAwait(false);
 
-            return location;
+            return ToEnumerable(location);
         }
         
         #region Equality members

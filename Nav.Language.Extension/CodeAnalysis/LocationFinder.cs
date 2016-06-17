@@ -42,7 +42,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
                 var metaLocation = beginItf.Locations.FirstOrDefault(l => l.IsInMetadata);
                 if(metaLocation != null) {
-                    return LocationResult.FromError($"The project for assembly '{metaLocation.MetadataModule.MetadataName}' not loaded.");
+                    return LocationResult.FromError($"Missing project for assembly '{metaLocation.MetadataModule.MetadataName}'.");
                 }
 
                 var wfsClass = SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken)

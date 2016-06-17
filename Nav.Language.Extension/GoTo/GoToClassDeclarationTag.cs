@@ -1,6 +1,8 @@
 #region Using Directives
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,18 +27,18 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _fullyQualifiedTypeName = fullyQualifiedTypeName;
         }
 
-        public override async Task<LocationResult> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<IEnumerable<LocationResult>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
                 // TODO Fehlermeldung
-                return LocationResult.FromError($"Das Projekt konnte nicht ermittelt werden.");
+                return ToEnumerable(LocationResult.FromError($"Das Projekt konnte nicht ermittelt werden."));
             }
 
             var location = await LocationFinder.FindClassDeclarationAsync(project, _fullyQualifiedTypeName, cancellationToken)
                                                .ConfigureAwait(false);
            
-            return location;
+            return ToEnumerable(location);
         }
 
         #region Equality members
@@ -67,5 +69,5 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
 
         #endregion
-    }
+    }    
 }
