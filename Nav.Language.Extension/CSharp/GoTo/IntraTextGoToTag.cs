@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.Imaging.Interop;
-using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 

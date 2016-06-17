@@ -8,9 +8,8 @@ using Microsoft.CodeAnalysis;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
-
-using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 

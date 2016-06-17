@@ -58,12 +58,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CodeAnalysis\LocationFinder.cs" />
-    <Compile Include="CodeAnalysis\LocationInfo.cs" />
-    <Compile Include="Common\GoToTag.cs" />
     <Compile Include="Common\LinePositionExtensions.cs" />
     <Compile Include="CSharp\GoTo\GoToBeginLogicTag.cs" />
-    <Compile Include="CSharp\GoTo\GoToImageMonikers.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTaggerProvider.cs" />
@@ -76,7 +72,12 @@
     <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
     <Compile Include="CSharp\GoTo\NavTaskAnnotation.cs" />
     <Compile Include="CSharp\GoTo\NavTriggerAnnotation.cs" />
+    <Compile Include="GoToLocation\GoToImageMonikers.cs" />
     <Compile Include="GoToLocation\GoToLocationService.cs" />
+    <Compile Include="GoToLocation\GoToTag.cs" />
+    <Compile Include="GoToLocation\ILocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\LocationFinder.cs" />
+    <Compile Include="GoToLocation\LocationInfo.cs" />
     <Compile Include="GoTo\GoToWfsDeclarationTag.cs" />
     <Compile Include="GoTo\GoToLocationTag.cs" />
     <Compile Include="GoTo\GoToTriggerDeclarationTag.cs" />

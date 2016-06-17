@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Imaging.Interop;
-using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion

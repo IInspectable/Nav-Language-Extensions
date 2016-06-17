@@ -1,6 +1,6 @@
 using Microsoft.VisualStudio.Imaging.Interop;
 
-namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
     public struct LocationInfo {
 
