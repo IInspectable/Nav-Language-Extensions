@@ -8,30 +8,29 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.Utilities;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
-
-    sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGoToTag, IntraTextGoToAdornment>, IDisposable {
+    internal sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGoToTag, IntraTextGoToAdornment>, IDisposable {
         
-        internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> colorTagger, IWaitIndicator waitIndicator) {
-            return view.Properties.GetOrCreateSingletonProperty(
-                () => new IntraTextGoToAdornmentTagger(view, colorTagger.Value, waitIndicator));
-        }
-
         readonly ITagAggregator<IntraTextGoToTag> _goToNavTagger;
-        readonly IWaitIndicator _waitIndicator;
+        readonly GoToLocationService _goToLocationService;
 
-        IntraTextGoToAdornmentTagger(IWpfTextView textView, ITagAggregator<IntraTextGoToTag> goToNavTagger, IWaitIndicator waitIndicator)
+        IntraTextGoToAdornmentTagger(IWpfTextView textView, ITagAggregator<IntraTextGoToTag> goToNavTagger, GoToLocationService goToLocationService)
             : base(textView) {
             _goToNavTagger = goToNavTagger;
-            _waitIndicator = waitIndicator;
+            _goToLocationService = goToLocationService;
             goToNavTagger.TagsChanged += OnTagsChanged;
         }
 
-        private void OnTagsChanged(object sender, TagsChangedEventArgs e) {
+        internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> colorTagger, GoToLocationService goToLocationService) {
+            return view.Properties.GetOrCreateSingletonProperty(
+                () => new IntraTextGoToAdornmentTagger(view, colorTagger.Value, goToLocationService));
+        }
+
+        void OnTagsChanged(object sender, TagsChangedEventArgs e) {
             InvalidateSpans(new List<SnapshotSpan>() {
                 TextView.TextBuffer.CurrentSnapshot.GetFullSpan()
             });
@@ -70,7 +69,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         protected override IntraTextGoToAdornment CreateAdornment(IntraTextGoToTag dataTag, SnapshotSpan span) {
-            return new IntraTextGoToAdornment(dataTag, TextView,_waitIndicator);
+            return new IntraTextGoToAdornment(dataTag, TextView, _goToLocationService);
         }
 
         protected override bool UpdateAdornment(IntraTextGoToAdornment adornment, IntraTextGoToTag dataTag) {

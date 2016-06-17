@@ -76,6 +76,8 @@
     <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
     <Compile Include="CSharp\GoTo\NavTaskAnnotation.cs" />
     <Compile Include="CSharp\GoTo\NavTriggerAnnotation.cs" />
+    <Compile Include="GoToLocation\GoToLocationService.cs" />
+    <Compile Include="GoToLocation\LocationItem.cs" />
     <Compile Include="GoTo\GoToClassDeclarationTag.cs" />
     <Compile Include="GoTo\GoToLocationTag.cs" />
     <Compile Include="GoTo\GoToTriggerDeclarationTag.cs" />
