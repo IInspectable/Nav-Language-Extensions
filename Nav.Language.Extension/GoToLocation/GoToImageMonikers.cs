@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
     static class GoToImageMonikers {
 

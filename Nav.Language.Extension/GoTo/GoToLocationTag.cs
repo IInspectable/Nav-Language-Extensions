@@ -1,13 +1,13 @@
 #region Using Directives
 
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using Microsoft.VisualStudio.Text.Tagging;
-using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
-using Pharmatechnik.Nav.Language.Extension.Common;
+
+using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 

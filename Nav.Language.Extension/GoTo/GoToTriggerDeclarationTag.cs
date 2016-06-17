@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 
