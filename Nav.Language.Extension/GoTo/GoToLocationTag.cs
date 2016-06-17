@@ -1,6 +1,7 @@
 #region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -13,14 +14,20 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
     public class GoToLocationTag : GoToTag, ITag, IEquatable<GoToLocationTag> {
 
-        public GoToLocationTag(string fileName) {
+        readonly List<Location> _locations;
+
+        GoToLocationTag() {
+            _locations=new List<Location>();
+        }
+
+        public GoToLocationTag(string fileName) : this() {
             if (fileName == null) {
                 throw new ArgumentNullException(nameof(fileName));
             }
             Location = new Location(fileName);
         }
 
-        public GoToLocationTag(Location location) {
+        public GoToLocationTag(Location location) : this() {
             if (location == null) {
                 throw new ArgumentNullException(nameof(location));
             }
@@ -29,8 +36,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public Location Location { get; }
         
-        public override Task<LocationResult> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
-            return Task.FromResult(LocationResult.FromLocation(Location));
+        public override Task<IEnumerable<LocationResult>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+            return Task.FromResult(ToEnumerable(LocationResult.FromLocation(Location)));
         }
 
         #region Equality members

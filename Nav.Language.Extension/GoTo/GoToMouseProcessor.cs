@@ -130,7 +130,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             var span = _navigateToTagSpan;
             RemoveNavigateToTagSpan();
 
-            await NavLanguagePackage.GoToLocationInPreviewTabAsync(_waitIndicator, cancellationToken => span.Tag.GetLocationAsync(cancellationToken));
+            await NavLanguagePackage.GoToLocationInPreviewTabAsync(_waitIndicator, cancellationToken => span.Tag.GetLocationsAsync(cancellationToken));
         }
     }
 }

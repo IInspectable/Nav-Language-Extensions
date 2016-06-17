@@ -1,10 +1,12 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Threading;
 using System.Threading.Tasks;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
 
@@ -131,26 +133,28 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             return wpfTextView;
         }
 
-        internal static async Task<IWpfTextView> GoToLocationInPreviewTabAsync(IWaitIndicator waitIndicator, Func<CancellationToken, Task<LocationResult>> getLocationTask) {
+        internal static async Task<IWpfTextView> GoToLocationInPreviewTabAsync(IWaitIndicator waitIndicator, Func<CancellationToken, Task<IEnumerable<LocationResult>>> getLocationsTask) {
 
             // TODO Titel etc. überarbeiten
             string errorMessage;
             using(var waitContext = waitIndicator.StartWait(title: "Nav Language Extensions", message: "Searching Location...", allowCancel: true)) {
 
                 try {
-                    var task = getLocationTask(waitContext.CancellationToken);
-                    var locationResult = await task;
+                    var task = getLocationsTask(waitContext.CancellationToken);
+                    var locations = (await task).ToList();
                     if(task.IsCanceled) {
                         return null;
                     }
 
                     //await Task.Delay(5000, waitContext.CancellationToken);
+                    // TODO hier SelektionsMenü bei Bedarf
+                    var locationResult = locations.FirstOrDefault();
 
                     waitContext.AllowCancel = false;
                     waitContext.Message     = "Opening file...";
-                    
+                                       
                     //  var locationResult = task.Result;
-                    if(locationResult.Location != null) {
+                    if(locationResult.Location!=null) {
                         return GoToLocationInPreviewTab(locationResult.Location);
                     }
 

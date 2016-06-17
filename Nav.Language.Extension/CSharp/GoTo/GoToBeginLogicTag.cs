@@ -28,12 +28,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _beginItfFullyQualifiedName = beginItfFullyQualifiedName;
         }
         
-        public override async Task<LocationResult> GetLocationAsync(CancellationToken cancellationToken = new CancellationToken()) {
+        public override async Task<IEnumerable<LocationResult>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
                 // TODO Fehlermeldung
-                return LocationResult.FromError("");
+                return ToEnumerable(LocationResult.FromError(""));
             }
 
             var location = await LocationFinder.FindBeginLogicAsync(
@@ -42,11 +42,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 beginParameter            : _beginParameter, 
                 cancellationToken         : cancellationToken).ConfigureAwait(false);
 
-            if (cancellationToken.IsCancellationRequested) {
-                return LocationResult.FromError("");
-            }
-
-            return location;
+            return ToEnumerable(location);
         }
 
         public override ImageMoniker ImageMoniker {

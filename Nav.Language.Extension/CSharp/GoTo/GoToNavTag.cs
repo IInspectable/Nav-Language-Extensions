@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,10 +37,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 return "Go To Task Definition"; }
         }
 
-        public override async Task<LocationResult> GetLocationAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<IEnumerable<LocationResult>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
-            var textBuffer = NavLanguagePackage.GetOpenTextBufferForFile(TaskAnnotation.NavFileName);
             string sourceText;
+            var textBuffer = NavLanguagePackage.GetOpenTextBufferForFile(TaskAnnotation.NavFileName);
             if (textBuffer != null) {
                 sourceText = textBuffer.CurrentSnapshot.GetText();
             } else {
@@ -49,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var location = await LocationFinder.FindNavLocationAsync(sourceText, TaskAnnotation, cancellationToken)
                                                .ConfigureAwait(false);
 
-            return location;
+            return ToEnumerable(location);
         }    
     }
 }

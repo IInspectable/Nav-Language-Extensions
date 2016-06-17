@@ -52,7 +52,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         async void OnClick(object sender, RoutedEventArgs e) {
-            await NavLanguagePackage.GoToLocationInPreviewTabAsync(_waitIndicator, cancellationToken => _goToTag.GetLocationAsync(cancellationToken));
+            await NavLanguagePackage.GoToLocationInPreviewTabAsync(_waitIndicator, cancellationToken => _goToTag.GetLocationsAsync(cancellationToken));
         }
 
         internal void Update(IntraTextGoToTag goToTag) {
