@@ -9,14 +9,14 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
     static class GoToImageMonikers {
 
-        public static ImageMoniker GoToBeginLogic {
-            get { return KnownMonikers.GoToDefinition; }
-        }
-
         public static ImageMoniker GoToWfs {
             get { return KnownMonikers.GoToDefinition; }
         }
 
+        public static ImageMoniker GoToBeginLogic {
+            get { return KnownMonikers.GoToDefinition; }
+        }
+        
         public static ImageMoniker GoToTriggerDefinition {
             get { return KnownMonikers.GoToDeclaration; }
         }
