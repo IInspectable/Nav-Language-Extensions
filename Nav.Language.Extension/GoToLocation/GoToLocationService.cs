@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                         return;
                     }
 
-                    //locations.Add(locations[0]); // Zum Simulieren mehrerer Locations
+                    locations.Add(locations[0]); // Zum Simulieren mehrerer Locations
 
                     // Es gibt nur eine einzige Location => direkt anspringen, da wir denselben Wait Indicator verwenden wollen.
                     if (locations.Count == 1 && locations[0].Location != null) {
@@ -81,6 +81,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             // Wenn wir hier sind, dann gibt es mehrere Locations, für die wir eine Auswahl anzeigen müssen
             ContextMenu ctxMenu = new ContextMenu {
                 PlacementTarget = originatingTextView.VisualElement,
+                // _view.TextViewLines.GetMarkerGeometry(span = new SnapshotSpan(_view.TextSnapshot,
                 PlacementRectangle = new Rect(new Point(100, 100), new Size(22, 22)), // TODO muss von außen kommen
                 Placement = PlacementMode.Bottom,
                 StaysOpen = false,
