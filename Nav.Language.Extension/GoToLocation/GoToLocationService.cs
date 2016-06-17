@@ -15,7 +15,6 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
 
 using Pharmatechnik.Nav.Language.Extension.CodeAnalysis;
-using Pharmatechnik.Nav.Language.Extension.CSharp.GoTo;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
@@ -51,9 +50,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                     // TODO Ist dieser Check nötig?
                     if (task.IsCanceled) {
                         return;
-                    }
-
-                    locations.Add(locations[0]); // Zum Simulieren mehrerer Locations
+                    }                   
 
                     // Es gibt nur eine einzige Location => direkt anspringen, da wir denselben Wait Indicator verwenden wollen.
                     if (locations.Count == 1 && locations[0].IsValid) {
@@ -94,7 +91,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             foreach (var location in locations) {
 
                 var crispImage = new CrispImage {
-                    Moniker = GoToImageMonikers.GoToBeginLogic // TODO ImageMoniker
+                    Moniker = location.Moniker
                 };
 
                 var backgroundBrush = ctxMenu.Background as SolidColorBrush;
@@ -103,7 +100,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 }
 
                 MenuItem item = new MenuItem {
-                    Header = location.Location.FilePath, // TODO DisplayName
+                    Header = location.DisplayName,
                     Icon   = crispImage 
                 };
                 item.Click += (_, __) => GoToLocationInPreviewTab(location);

@@ -47,10 +47,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 sourceText = File.ReadAllText(TaskAnnotation.NavFileName);
             }
 
-            var location = await LocationFinder.FindNavLocationAsync(sourceText, TaskAnnotation, cancellationToken)
+            var location = await LocationFinder.FindNavLocationsAsync(sourceText, TaskAnnotation, cancellationToken)
                                                .ConfigureAwait(false);
 
-            return ToEnumerable(location);
+            return location;
         }    
     }
 }

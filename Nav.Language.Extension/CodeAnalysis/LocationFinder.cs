@@ -12,6 +12,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.CSharp.GoTo;
+using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
@@ -127,7 +128,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
         #region FindNavLocationAsync
 
-        public static Task<LocationResult> FindNavLocationAsync(string sourceText, NavTaskAnnotation taskAnnotation, CancellationToken cancellationToken) {
+        public static Task<IEnumerable<LocationResult>> FindNavLocationsAsync(string sourceText, NavTaskAnnotation taskAnnotation, CancellationToken cancellationToken) {
 
             var locationResult = Task.Run(() => {
 
@@ -135,7 +136,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                 var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
                 if (codeGenerationUnitSyntax == null) {
                     // TODO Fehlermeldung
-                    return LocationResult.FromError("");
+                    return ToEnumerable(LocationResult.FromError(""));
                 }
 
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
@@ -146,7 +147,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
                 if (task == null) {
                     // TODO Fehlermeldung
-                    return LocationResult.FromError("");
+                    return ToEnumerable(LocationResult.FromError($"Unable to locate task '{taskAnnotation.TaskName}'"));
                 }
                 // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen
                 var triggerAnnotation = taskAnnotation as NavTriggerAnnotation;
@@ -155,25 +156,51 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                                       .SelectMany(t => t.Triggers)
                                       .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
 
-                    return LocationResult.FromLocation(trigger?.Location);
+                    if(trigger == null) {
+                        // TODO Fehlermeldung
+                        return ToEnumerable(LocationResult.FromError($"Unable to locate signal trigger '{triggerAnnotation.TriggerName}'"));
+                    }
+
+                    return ToEnumerable(LocationResult.FromLocation(
+                        location    : trigger.Location, 
+                        displayName : trigger.Name, 
+                        imageMoniker: SymbolImageMonikers.SignalTrigger));
                 }
 
                 var exitAnnotation = taskAnnotation as NavExitAnnotation;
                 if (exitAnnotation != null) {
-                    // TODO: Was wollen wir hier eigentlich "markieren"? Die ganze Transition, oder nur die Quelle?
-                    var exitTransition = task.ExitTransitions.FirstOrDefault(et => et.Source?.Name == exitAnnotation.ExitTaskName);
-                    return LocationResult.FromLocation(exitTransition?.Location);
+                    var exitTransition = task.ExitTransitions.Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
+                                             .Where(et => et.ConnectionPoint!=null)
+                                             .Select(et => LocationResult.FromLocation(
+                                                 location    : et.ConnectionPoint?.Location,
+                                                 displayName : et.ConnectionPoint?.Name,
+                                                 imageMoniker: SymbolImageMonikers.ExitConnectionPoint));
+                    return exitTransition;
                 }
 
                 var initAnnotation = taskAnnotation as NavInitAnnotation;
                 if (initAnnotation != null) {
-                    var init = task.NodeDeclarations.OfType<IInitNodeSymbol>()
-                            .FirstOrDefault(n => n.Name == initAnnotation.InitName);
+                    var init = task.NodeDeclarations
+                                   .OfType<IInitNodeSymbol>()
+                                   .FirstOrDefault(n => n.Name == initAnnotation.InitName);
 
-                    return LocationResult.FromLocation(init?.Location);
+                    if (init == null) {
+                        // TODO Fehlermeldung
+                        return ToEnumerable(LocationResult.FromError($"Unable to locate init '{initAnnotation.InitName}'"));
+                    }
+
+                    return ToEnumerable(LocationResult.FromLocation(
+                        location    : init.Location, 
+                        displayName : init.Name, 
+                        imageMoniker: SymbolImageMonikers.InitConnectionPoint));
                 }
 
-                return LocationResult.FromLocation(task.Syntax.Identifier.GetLocation());
+                return ToEnumerable(
+                    LocationResult.FromLocation(
+                        location    : task.Syntax.Identifier.GetLocation(), 
+                        displayName : task.Name, 
+                        imageMoniker: SymbolImageMonikers.TaskDefinition));
+
             }, cancellationToken);
 
             return locationResult;
@@ -270,5 +297,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
         }
 
         #endregion
+
+        static IEnumerable<T> ToEnumerable<T>(T value) {
+            return new[] { value };
+        }
     }
 }
