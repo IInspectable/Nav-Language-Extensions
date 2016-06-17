@@ -126,10 +126,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
             _textView.Selection.Clear();
 
-            var span = _navigateToTagSpan;
+            var tagSpan = _navigateToTagSpan;
             RemoveNavigateToTagSpan();
 
-            await _goToLocationService.GoToLocationInPreviewTabAsync(_textView, cancellationToken => span.Tag.GetLocationsAsync(cancellationToken));
+            var placementRectangle = _textView.TextViewLines.GetTextMarkerGeometry(tagSpan.Span).Bounds;
+            
+            await _goToLocationService.GoToLocationInPreviewTabAsync(
+                _textView,
+                placementRectangle, 
+                cancellationToken => tagSpan.Tag.GetLocationsAsync(cancellationToken));
         }
     }
 }
