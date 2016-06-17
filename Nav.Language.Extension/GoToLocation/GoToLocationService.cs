@@ -37,9 +37,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             _waitIndicator = waitIndicator;
         }
 
-        public async Task GoToLocationInPreviewTabAsync(IWpfTextView originatingTextView, Rect placementRectangle, Func<CancellationToken, Task<IEnumerable<LocationResult>>> getLocationsTask) {
+        public async Task GoToLocationInPreviewTabAsync(IWpfTextView originatingTextView, Rect placementRectangle, Func<CancellationToken, Task<IEnumerable<LocationInfo>>> getLocationsTask) {
             
-            List<LocationResult> locations;
+            List<LocationInfo> locations;
             using (var waitContext = _waitIndicator.StartWait(title: MessageTitle, message: SearchingLocationMessage, allowCancel: true)) {
 
                 try {
@@ -109,7 +109,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             }
         }
         
-        void GoToLocationInPreviewTab(LocationResult location) {
+        void GoToLocationInPreviewTab(LocationInfo location) {
 
             if(!location.IsValid) {
                 ShowLocationErrorMessage(location);
@@ -121,8 +121,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             }
         }
 
-        void ShowLocationErrorMessage(LocationResult locationResult) {
-            MessageBox.Show(messageBoxText: locationResult.ErrorMessage, 
+        void ShowLocationErrorMessage(LocationInfo locationInfo) {
+            MessageBox.Show(messageBoxText: locationInfo.ErrorMessage, 
                             caption       : MessageTitle, 
                             button        : MessageBoxButton.OK, 
                             icon          : MessageBoxImage.Asterisk);

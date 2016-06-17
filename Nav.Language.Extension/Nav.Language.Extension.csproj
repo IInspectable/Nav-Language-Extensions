@@ -59,7 +59,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeAnalysis\LocationFinder.cs" />
-    <Compile Include="CodeAnalysis\LocationResult.cs" />
+    <Compile Include="CodeAnalysis\LocationInfo.cs" />
     <Compile Include="Common\GoToTag.cs" />
     <Compile Include="Common\LinePositionExtensions.cs" />
     <Compile Include="CSharp\GoTo\GoToBeginLogicTag.cs" />
@@ -77,8 +77,7 @@
     <Compile Include="CSharp\GoTo\NavTaskAnnotation.cs" />
     <Compile Include="CSharp\GoTo\NavTriggerAnnotation.cs" />
     <Compile Include="GoToLocation\GoToLocationService.cs" />
-    <Compile Include="GoToLocation\LocationItem.cs" />
-    <Compile Include="GoTo\GoToClassDeclarationTag.cs" />
+    <Compile Include="GoTo\GoToWfsDeclarationTag.cs" />
     <Compile Include="GoTo\GoToLocationTag.cs" />
     <Compile Include="GoTo\GoToTriggerDeclarationTag.cs" />
     <Compile Include="QuickInfo\SymbolImageMonikers.cs" />

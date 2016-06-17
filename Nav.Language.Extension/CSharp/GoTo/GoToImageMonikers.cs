@@ -13,6 +13,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             get { return KnownMonikers.GoToDefinition; }
         }
 
+        public static ImageMoniker GoToWfs {
+            get { return KnownMonikers.GoToDefinition; }
+        }
+
         public static ImageMoniker GoToTriggerDefinition {
             get { return KnownMonikers.GoToDeclaration; }
         }

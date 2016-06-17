@@ -28,12 +28,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _beginItfFullyQualifiedName = beginItfFullyQualifiedName;
         }
         
-        public override async Task<IEnumerable<LocationResult>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
+        public override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
 
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
                 // TODO Fehlermeldung
-                return ToEnumerable(LocationResult.FromError(""));
+                return ToEnumerable(LocationInfo.FromError(""));
             }
 
             var location = await LocationFinder.FindBeginLogicAsync(

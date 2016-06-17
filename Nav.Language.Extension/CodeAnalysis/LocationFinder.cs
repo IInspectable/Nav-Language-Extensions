@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
         /// <param name="beginParameter">Die Parameter der aus dem WFS aufgrufenen Begin Methode</param>
         /// <param name="cancellationToken">Das Abbruchtoken</param>
         /// <returns></returns>
-        public static Task<LocationResult> FindBeginLogicAsync(Project project, string beginItfFullyQualifiedName, IList<string> beginParameter, CancellationToken cancellationToken) {
+        public static Task<LocationInfo> FindBeginLogicAsync(Project project, string beginItfFullyQualifiedName, IList<string> beginParameter, CancellationToken cancellationToken) {
 
             var task = Task.Run(() => {
                 
@@ -38,12 +38,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
                 var beginItf = compilation.GetTypeByMetadataName(beginItfFullyQualifiedName);
                 if(beginItf == null) {
-                    return LocationResult.FromError($"Unable to find interface '{beginItfFullyQualifiedName}'.");
+                    return LocationInfo.FromError($"Unable to find interface '{beginItfFullyQualifiedName}'.");
                 }
 
                 var metaLocation = beginItf.Locations.FirstOrDefault(l => l.IsInMetadata);
                 if(metaLocation != null) {
-                    return LocationResult.FromError($"Missing project for assembly '{metaLocation.MetadataModule.MetadataName}'.");
+                    return LocationInfo.FromError($"Missing project for assembly '{metaLocation.MetadataModule.MetadataName}'.");
                 }
 
                 var wfsClass = SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken)
@@ -52,7 +52,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                                            .FirstOrDefault();
 
                 if(wfsClass == null) {
-                    return LocationResult.FromError($"Unable to find a class implementing interface '{beginItf.ToDisplayString()}'.\n\nAre you missing a project?");
+                    return LocationInfo.FromError($"Unable to find a class implementing interface '{beginItf.ToDisplayString()}'.\n\nAre you missing a project?");
                 }
 
                 var beginLogicMethods = wfsClass.GetMembers()
@@ -63,26 +63,30 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                 beginParameter = beginParameter.Skip(1).ToList();
                 var beginMethod = FindBestBeginLogicOverload(beginParameter, beginLogicMethods);
                 if(beginMethod == null) {
-                    return LocationResult.FromError($"Unable to find a matching overload for method 'BeginLogic'.");
+                    return LocationInfo.FromError($"Unable to find a matching overload for method 'BeginLogic'.");
                 }
 
                 var memberSyntax = beginMethod.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
                 var memberLocation = memberSyntax?.Identifier.GetLocation();
 
                 if(memberLocation == null) {
-                    return LocationResult.FromError($"Unable to get the location for method 'BeginLogic'.");
+                    return LocationInfo.FromError($"Unable to get the location for method 'BeginLogic'.");
                 }
 
                 var lineSpan = memberLocation.GetLineSpan();
                 if(!lineSpan.IsValid) {
-                    return LocationResult.FromError($"Unable to get the line span for method 'BeginLogic'.");
+                    return LocationInfo.FromError($"Unable to get the line span for method 'BeginLogic'.");
                 }
 
                 var textExtent = memberLocation.SourceSpan.ToTextExtent();
                 var lineExtent = lineSpan.ToLinePositionExtent();
                 var filePath   = memberLocation.SourceTree?.FilePath;
 
-                return LocationResult.FromLocation(new Location(textExtent, lineExtent, filePath));
+                return LocationInfo.FromLocation(
+                    location    : new Location(textExtent, lineExtent, filePath),
+                    displayName : "Go To BeginLogic",
+                    imageMoniker: GoToImageMonikers.GoToBeginLogic);
+
             }, cancellationToken);
             
             return task;
@@ -128,7 +132,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
         #region FindNavLocationAsync
 
-        public static Task<IEnumerable<LocationResult>> FindNavLocationsAsync(string sourceText, NavTaskAnnotation taskAnnotation, CancellationToken cancellationToken) {
+        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavTaskAnnotation taskAnnotation, CancellationToken cancellationToken) {
 
             var locationResult = Task.Run(() => {
 
@@ -136,7 +140,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                 var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
                 if (codeGenerationUnitSyntax == null) {
                     // TODO Fehlermeldung
-                    return ToEnumerable(LocationResult.FromError(""));
+                    return ToEnumerable(LocationInfo.FromError("Unable to parse nav file."));
                 }
 
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
@@ -147,7 +151,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
                 if (task == null) {
                     // TODO Fehlermeldung
-                    return ToEnumerable(LocationResult.FromError($"Unable to locate task '{taskAnnotation.TaskName}'"));
+                    return ToEnumerable(LocationInfo.FromError($"Unable to locate task '{taskAnnotation.TaskName}'"));
                 }
                 // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen
                 var triggerAnnotation = taskAnnotation as NavTriggerAnnotation;
@@ -158,10 +162,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
                     if(trigger == null) {
                         // TODO Fehlermeldung
-                        return ToEnumerable(LocationResult.FromError($"Unable to locate signal trigger '{triggerAnnotation.TriggerName}'"));
+                        return ToEnumerable(LocationInfo.FromError($"Unable to locate signal trigger '{triggerAnnotation.TriggerName}'"));
                     }
 
-                    return ToEnumerable(LocationResult.FromLocation(
+                    return ToEnumerable(LocationInfo.FromLocation(
                         location    : trigger.Location, 
                         displayName : trigger.Name, 
                         imageMoniker: SymbolImageMonikers.SignalTrigger));
@@ -171,7 +175,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                 if (exitAnnotation != null) {
                     var exitTransition = task.ExitTransitions.Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
                                              .Where(et => et.ConnectionPoint!=null)
-                                             .Select(et => LocationResult.FromLocation(
+                                             .Select(et => LocationInfo.FromLocation(
                                                  location    : et.ConnectionPoint?.Location,
                                                  displayName : et.ConnectionPoint?.Name,
                                                  imageMoniker: SymbolImageMonikers.ExitConnectionPoint));
@@ -186,17 +190,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
                     if (init == null) {
                         // TODO Fehlermeldung
-                        return ToEnumerable(LocationResult.FromError($"Unable to locate init '{initAnnotation.InitName}'"));
+                        return ToEnumerable(LocationInfo.FromError($"Unable to locate init '{initAnnotation.InitName}'"));
                     }
 
-                    return ToEnumerable(LocationResult.FromLocation(
+                    return ToEnumerable(LocationInfo.FromLocation(
                         location    : init.Location, 
                         displayName : init.Name, 
                         imageMoniker: SymbolImageMonikers.InitConnectionPoint));
                 }
 
                 return ToEnumerable(
-                    LocationResult.FromLocation(
+                    LocationInfo.FromLocation(
                         location    : task.Syntax.Identifier.GetLocation(), 
                         displayName : task.Name, 
                         imageMoniker: SymbolImageMonikers.TaskDefinition));
@@ -210,7 +214,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
         #region FindClassDeclarationAsync
 
-        public static Task<LocationResult> FindClassDeclarationAsync(Project project, string fullyQualifiedTypeName, CancellationToken cancellationToken) {
+        public static Task<LocationInfo> FindWfsDeclarationAsync(Project project, string fullyQualifiedTypeName, CancellationToken cancellationToken) {
 
             var task = Task.Run(() => {
 
@@ -219,7 +223,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
                 if (typeSymbol == null) {
                     // TODO Fehlermeldung
-                    return LocationResult.FromError($"Der Typ '{fullyQualifiedTypeName} wurde nicht gefunden.");
+                    return LocationInfo.FromError($"Der Typ '{fullyQualifiedTypeName} wurde nicht gefunden.");
                 }
 
                 foreach (var refe in typeSymbol.DeclaringSyntaxReferences) {
@@ -238,11 +242,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                     var textExtent = loc.SourceSpan.ToTextExtent();
                     var lineExtent = lineSpan.ToLinePositionExtent();
 
-                    return LocationResult.FromLocation(new Location(textExtent, lineExtent, filePath));
+                    return LocationInfo.FromLocation(
+                        location    : new Location(textExtent, lineExtent, filePath), 
+                        displayName : "Go To WFS", 
+                        imageMoniker: GoToImageMonikers.GoToWfs);
                 }
 
                 // TODO Fehlermeldung
-                return LocationResult.FromError("");
+                return LocationInfo.FromError("Unable to locate WFS");
 
             }, cancellationToken);
 
@@ -253,7 +260,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
         #region FindTriggerLocationAsync
 
-        public static Task<LocationResult> FindTriggerLocationAsync(Project project, string fullyQualifiedWfsBaseName, string triggerMethodName, CancellationToken cancellationToken) {
+        public static Task<LocationInfo> FindTriggerLocationAsync(Project project, string fullyQualifiedWfsBaseName, string triggerMethodName, CancellationToken cancellationToken) {
 
             var task = Task.Run(() => {
 
@@ -261,7 +268,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(fullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return LocationResult.FromError("");
+                    return LocationInfo.FromError($"Unable to locate '{fullyQualifiedWfsBaseName}'");
                 }
 
                 // Wir kennen de facto nur den Baisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
@@ -272,20 +279,23 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeAnalysis {
 
                 if (memberLocation == null) {
                     // TODO Fehlermeldung
-                    return LocationResult.FromError("");
+                    return LocationInfo.FromError("Unable to locate member location.");
                 }
 
                 var lineSpan = memberLocation.GetLineSpan();
                 if (!lineSpan.IsValid) {
                     // TODO Fehlermeldung
-                    return LocationResult.FromError("");
+                    return LocationInfo.FromError("Invalid linespan.");
                 }
 
                 var textExtent = memberLocation.SourceSpan.ToTextExtent();
                 var lineExtent = lineSpan.ToLinePositionExtent();
                 var filePath   = memberLocation.SourceTree?.FilePath;
 
-                return LocationResult.FromLocation(new Location(textExtent, lineExtent, filePath));
+                return LocationInfo.FromLocation(
+                    new Location(textExtent, lineExtent, filePath),
+                    "Go To Trigger Definition",
+                    GoToImageMonikers.GoToTriggerDefinition);
 
             }, cancellationToken);
 

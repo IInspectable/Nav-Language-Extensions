@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
     public abstract class GoToTag: ITag {
 
         [NotNull]
-        public abstract Task<IEnumerable<LocationResult>> GetLocationsAsync(CancellationToken cancellationToken=default(CancellationToken));
+        public abstract Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken=default(CancellationToken));
 
         protected static IEnumerable<T> ToEnumerable<T>(T value) {
             return new [] { value };

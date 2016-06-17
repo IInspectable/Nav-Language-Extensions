@@ -37,7 +37,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 return "Go To Task Definition"; }
         }
 
-        public override async Task<IEnumerable<LocationResult>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             string sourceText;
             var textBuffer = NavLanguagePackage.GetOpenTextBufferForFile(TaskAnnotation.NavFileName);
