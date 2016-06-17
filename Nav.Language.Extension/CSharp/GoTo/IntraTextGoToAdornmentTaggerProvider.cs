@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
-using Pharmatechnik.Nav.Language.Extension.Utilities;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 
@@ -19,12 +19,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
     sealed class IntraTextGoToAdornmentTaggerProvider : IViewTaggerProvider {
 
         readonly IBufferTagAggregatorFactoryService _bufferTagAggregatorFactoryService;
-        readonly IWaitIndicator _waitIndicator;
+        readonly GoToLocationService _goToLocationService;
 
         [ImportingConstructor]
-        public IntraTextGoToAdornmentTaggerProvider(IBufferTagAggregatorFactoryService bufferTagAggregatorFactoryService, IWaitIndicator waitIndicator) {
+        public IntraTextGoToAdornmentTaggerProvider(IBufferTagAggregatorFactoryService bufferTagAggregatorFactoryService, GoToLocationService goToLocationService) {
             _bufferTagAggregatorFactoryService = bufferTagAggregatorFactoryService;
-            _waitIndicator = waitIndicator;
+            _goToLocationService = goToLocationService;
         }
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag {
@@ -40,8 +40,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             return IntraTextGoToAdornmentTagger.GetTagger(
                 (IWpfTextView) textView,
                 new Lazy<ITagAggregator<IntraTextGoToTag>>(
-                    () => _bufferTagAggregatorFactoryService.CreateTagAggregator<IntraTextGoToTag>(textView.TextBuffer)), 
-                _waitIndicator)
+                    () => _bufferTagAggregatorFactoryService.CreateTagAggregator<IntraTextGoToTag>(textView.TextBuffer)),
+                _goToLocationService)
                 as ITagger<T>;
         }
     }

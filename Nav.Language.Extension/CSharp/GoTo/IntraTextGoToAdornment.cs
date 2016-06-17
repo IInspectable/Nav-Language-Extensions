@@ -8,9 +8,7 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
-
-using Pharmatechnik.Nav.Language.Extension.Utilities;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 
@@ -19,15 +17,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
     sealed class IntraTextGoToAdornment : ButtonBase {
 
         readonly IWpfTextView _textView;
-        readonly IWaitIndicator _waitIndicator;
+        readonly GoToLocationService _goToLocationService;
         readonly CrispImage _crispImage;
+
         IntraTextGoToTag _goToTag;
 
-        internal IntraTextGoToAdornment(IntraTextGoToTag goToTag, IWpfTextView textView, IWaitIndicator waitIndicator) {
+        internal IntraTextGoToAdornment(IntraTextGoToTag goToTag, IWpfTextView textView, GoToLocationService goToLocationService) {
 
-            _textView   = textView;
-            _waitIndicator = waitIndicator;
-            _crispImage = new CrispImage();
+            _textView            = textView;
+            _goToLocationService = goToLocationService;
+            _crispImage          = new CrispImage();
 
             Width       = 20;
             Height      = 20;
@@ -52,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         async void OnClick(object sender, RoutedEventArgs e) {
-            await NavLanguagePackage.GoToLocationInPreviewTabAsync(_waitIndicator, cancellationToken => _goToTag.GetLocationsAsync(cancellationToken));
+            await _goToLocationService.GoToLocationInPreviewTabAsync(_textView, cancellationToken => _goToTag.GetLocationsAsync(cancellationToken));
         }
 
         internal void Update(IntraTextGoToTag goToTag) {
