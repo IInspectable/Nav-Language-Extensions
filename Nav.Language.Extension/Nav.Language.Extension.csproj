@@ -75,9 +75,15 @@
     <Compile Include="GoToLocation\GoToImageMonikers.cs" />
     <Compile Include="GoToLocation\GoToLocationService.cs" />
     <Compile Include="GoToLocation\GoToTag.cs" />
-    <Compile Include="GoToLocation\ILocationInfoProvider.cs" />
     <Compile Include="GoToLocation\LocationFinder.cs" />
     <Compile Include="GoToLocation\LocationInfo.cs" />
+    <Compile Include="GoToLocation\Provider\BeginLogicLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\ILocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\LocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\NavTaskAnnotationLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\SimpleLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\WfsDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoTo\GoToWfsDeclarationTag.cs" />
     <Compile Include="GoTo\GoToLocationTag.cs" />
     <Compile Include="GoTo\GoToTriggerDeclarationTag.cs" />
