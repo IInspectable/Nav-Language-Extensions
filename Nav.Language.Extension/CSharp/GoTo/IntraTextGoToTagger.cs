@@ -7,18 +7,14 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
-using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
-using Pharmatechnik.Nav.Language.CodeGen;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.GoToLocation;
+using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
 #endregion
@@ -200,117 +196,49 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             // TODO Diese ganze Gaudi hätte ich gerne von den "Tags" entkoppelt, und in den AnnotationReader gelegt
             foreach (var classDeclaration in classDeclarations) {
 
-                var classSymbol = semanticModel.GetDeclaredSymbol(classDeclaration);
-                var navTaskInfo = AnnotationReader.ReadNavTaskAnnotation(classSymbol);
+                var navTaskAnnotation = AnnotationReader.ReadNavTaskAnnotation(semanticModel, classDeclaration);
 
-                if (navTaskInfo == null) {
+                if (navTaskAnnotation == null) {
                     continue;
                 }
 
-                var start = classDeclaration.Identifier.Span.Start;
-                var length = classDeclaration.Identifier.Span.Length;
+                var start  = navTaskAnnotation.ClassDeclarationSyntax.Identifier.Span.Start;
+                var length = navTaskAnnotation.ClassDeclarationSyntax.Identifier.Span.Length;
 
                 var snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
 
-                yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTaskAnnotationTag(navTaskInfo));
+                yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, new IntraTextGoToTag(navTaskAnnotation));
 
-                var methodDeclarations = classDeclaration.DescendantNodes()
-                                                         .OfType<MethodDeclarationSyntax>();
+                // Method Annotations
+                var methodDeclarations= classDeclaration.DescendantNodes()
+                                                        .OfType<MethodDeclarationSyntax>();
+                var methodAnnotations = AnnotationReader.ReadMethodAnnotations(semanticModel, navTaskAnnotation, methodDeclarations);
 
-                foreach (var methodDeclaration in methodDeclarations) {
-                    var methodSymbol = semanticModel.GetDeclaredSymbol(methodDeclaration);
-
-                    var initTag = TryGetNavInitTagSpan(currentSnapshot, methodSymbol, navTaskInfo, methodDeclaration);
-                    if (initTag != null) {
-                        yield return initTag;
-                    }
-
-                    var exitTag = TryGetNavExitTagSpan(currentSnapshot, methodSymbol, navTaskInfo, methodDeclaration);
-                    if (exitTag != null) {
-                        yield return exitTag;
-                    }
-
-                    var triggerTag = TryGetNavTriggerTagSpan(currentSnapshot, methodSymbol, navTaskInfo, methodDeclaration);
-                    if (triggerTag != null) {
-                        yield return triggerTag;
-                    }                    
+                foreach (var methodAnnotation in methodAnnotations) {
+                    yield return CreateTagSpan(currentSnapshot, methodAnnotation.MethodDeclarationSyntax, methodAnnotation);
                 }
-
+                
+                
                 var invocationExpressions = classDeclaration.DescendantNodes()
                                                             .OfType<InvocationExpressionSyntax>();
+                var callAnnotations = AnnotationReader.ReadInitCallAnnotation(semanticModel, navTaskAnnotation, invocationExpressions);
 
-                foreach(var invocationExpression in invocationExpressions) {
-
-                    var methodSymbol = semanticModel.GetSymbolInfo(invocationExpression.Expression).Symbol as IMethodSymbol;
-                    if(methodSymbol == null) {
-                        continue;
-                    }
-
-                    var declaringMethodNode = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax();
-                    var navInitCallTag = AnnotationReader.ReadNavTags(declaringMethodNode).FirstOrDefault(tag=>tag.TagName == AnnotationTagNames.NavInitCall);
-                    if(navInitCallTag == null) {
-                        continue;
-                    }
+                foreach (var initCallAnnotation in callAnnotations) {
                     
-                    var identifier = invocationExpression.ChildNodes().OfType<IdentifierNameSyntax>().FirstOrDefault();
-                    if (identifier == null) {
-                        continue;
-                    }
-
-                    start  = identifier.Span.Start;
-                    length = identifier.Identifier.Span.Length;
+                    start  = initCallAnnotation.Identifier.Span.Start;
+                    length = initCallAnnotation.Identifier.Span.Length;
 
                     snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
-
-                    var beginItfFullyQualifiedName = navInitCallTag.Content;
-
-                    var provider = new BeginLogicLocationInfoProvider(
+                    
+                    var provider = new NavInitCallLocationInfoProvider(
                                             currentSnapshot.TextBuffer,
-                                            beginItfFullyQualifiedName,
-                                            methodSymbol.Parameters);
+                                            initCallAnnotation);
 
                     yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, 
-                                        new IntraTextGoToTag(
-                                            provider    : provider, 
-                                            imageMoniker: GoToImageMonikers.GoToBeginLogicCallDeclaration, 
-                                            // TODO Tooltip Text zentralisieren
-                                            toolTip     : "Go To Begin Logic"));
+                                        new IntraTextGoToTag(provider, initCallAnnotation)
+                                            );
                 }
             }
-        }
-
-
-        [CanBeNull]
-        static ITagSpan<IntraTextGoToTag> TryGetNavTriggerTagSpan(ITextSnapshot currentSnapshot, IMethodSymbol methodSymbol, NavTaskAnnotation navTaskAnnotation, MethodDeclarationSyntax methodDeclaration) {
-
-            var triggerAnnotation = AnnotationReader.ReadNavTriggerAnnotation(methodSymbol, navTaskAnnotation);
-
-            if (triggerAnnotation == null) {
-                return null;
-            }
-
-            return CreateTagSpan(currentSnapshot, methodDeclaration, triggerAnnotation);
-        }
-        
-        [CanBeNull]
-        static ITagSpan<IntraTextGoToTag> TryGetNavInitTagSpan(ITextSnapshot currentSnapshot, IMethodSymbol methodSymbol, NavTaskAnnotation navTaskAnnotation, MethodDeclarationSyntax methodDeclaration) {
-
-            var initAnnotation = AnnotationReader.ReadNavInitAnnotation(methodSymbol, navTaskAnnotation);
-
-            if (initAnnotation == null) {
-                return null;
-            }
-            return CreateTagSpan(currentSnapshot, methodDeclaration, initAnnotation);
-        }
-
-        [CanBeNull]
-        static ITagSpan<IntraTextGoToTag> TryGetNavExitTagSpan(ITextSnapshot currentSnapshot, IMethodSymbol methodSymbol, NavTaskAnnotation navTaskAnnotation, MethodDeclarationSyntax methodDeclaration) {
-
-            var navExitAnnotation= AnnotationReader.ReadNavExitAnnotation(methodSymbol, navTaskAnnotation);
-            if(navExitAnnotation == null) {
-                return null;
-            }
-            return CreateTagSpan(currentSnapshot, methodDeclaration, navExitAnnotation);
         }
         
         static ITagSpan<IntraTextGoToTag> CreateTagSpan(ITextSnapshot currentSnapshot, MethodDeclarationSyntax methodDeclaration, NavTaskAnnotation navTaskAnnotation) {
@@ -320,7 +248,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var snapshotSpan = new SnapshotSpan(currentSnapshot, start, length);
 
-            return new TagSpan<IntraTextGoToTag>(snapshotSpan, new GoToNavTaskAnnotationTag(navTaskAnnotation));
+            return new TagSpan<IntraTextGoToTag>(snapshotSpan, new IntraTextGoToTag(navTaskAnnotation));
         }
         
         sealed class BuildTagsResult {

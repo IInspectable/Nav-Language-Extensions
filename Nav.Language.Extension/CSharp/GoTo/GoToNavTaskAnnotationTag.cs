@@ -9,19 +9,29 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
-    class GoToNavTaskAnnotationTag : IntraTextGoToTag {
+    class IntraTextGoToTag : GoToTag {
 
-        public GoToNavTaskAnnotationTag(NavTaskAnnotation navTaskAnnotation): base(new NavTaskAnnotationLocationInfoProvider(navTaskAnnotation)) {
+        public IntraTextGoToTag(NavTaskAnnotation navTaskAnnotation): base(new NavTaskAnnotationLocationInfoProvider(navTaskAnnotation)) {
+            TaskAnnotation = navTaskAnnotation;
+        }
+
+        public IntraTextGoToTag(ILocationInfoProvider provider, NavTaskAnnotation navTaskAnnotation) : base(provider) {
             TaskAnnotation = navTaskAnnotation;
         }
 
         public NavTaskAnnotation TaskAnnotation { get; }
 
-        public override ImageMoniker ImageMoniker {
-            get { return TaskAnnotation is NavTriggerAnnotation ? GoToImageMonikers.GoToTriggerDefinition : GoToImageMonikers.GoToTaskDefinition; }
+        public ImageMoniker ImageMoniker {
+            get {
+                // TODO Evtl. Visitor um Annotations bauen...
+                if (TaskAnnotation is NavInitCallAnnotation) {
+                    return GoToImageMonikers.GoToInitCallDeclaration;
+                }
+                return TaskAnnotation is NavTriggerAnnotation ? GoToImageMonikers.GoToTriggerDefinition : GoToImageMonikers.GoToTaskDefinition;
+            }
         }
 
-        public override object ToolTip {
+        public object ToolTip {
             get {
                 // TODO Tooltip Texte zentralisieren
                 // TODO Evtl. Visitor um Annotations bauen...
@@ -31,6 +41,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     return "Go To Init Definition";
                 } else if (TaskAnnotation is NavExitAnnotation) {
                     return "Go To Exit Transition Definition";
+                } else if(TaskAnnotation is NavInitCallAnnotation) {
+                    return "Go To Begin Logic";
                 }
                 return "Go To Task Definition"; }
         }

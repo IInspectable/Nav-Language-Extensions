@@ -11,7 +11,6 @@ using Microsoft.CodeAnalysis.FindSymbols;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.CSharp.GoTo;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
@@ -108,20 +107,16 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         /// <summary>
         /// Findet die entsprechende BeginXYLogic Implementierung.
         /// </summary>
-        /// <param name="project">Das Projekt aus dem der Begin Aufruf erfolgt</param>
-        /// <param name="beginItfFullyQualifiedName">Der vollqualifizierte Name des IBegin...WFS interfaces</param>
-        /// <param name="beginParameter">Die Parameter der aus dem WFS aufgrufenen Begin Methode</param>
-        /// <param name="cancellationToken">Das Abbruchtoken</param>
         /// <returns></returns>
-        public static Task<LocationInfo> FindCallBeginLogicDeclarationLocationsAsync(Project project, string beginItfFullyQualifiedName, IList<string> beginParameter, CancellationToken cancellationToken) {
+        public static Task<LocationInfo> FindCallBeginLogicDeclarationLocationsAsync(Project project, NavInitCallAnnotation initCallAnnotation, CancellationToken cancellationToken) {
 
             var task = Task.Run(() => {
                 
                 var compilation = project.GetCompilationAsync(cancellationToken).Result;
 
-                var beginItf = compilation.GetTypeByMetadataName(beginItfFullyQualifiedName);
+                var beginItf = compilation.GetTypeByMetadataName(initCallAnnotation.BeginItfFullyQualifiedName);
                 if(beginItf == null) {
-                    return LocationInfo.FromError($"Unable to find interface '{beginItfFullyQualifiedName}'.");
+                    return LocationInfo.FromError($"Unable to find interface '{initCallAnnotation.BeginItfFullyQualifiedName}'.");
                 }
 
                 var metaLocation = beginItf.Locations.FirstOrDefault(l => l.IsInMetadata);
@@ -143,7 +138,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                                                 .Where(m => m.Name == "BeginLogic");
 
                 // Der erste Parameter ist immer das IBegin---WFS interface.
-                beginParameter = beginParameter.Skip(1).ToList();
+                var beginParameter = initCallAnnotation.Parameter.Skip(1).ToList();
                 var beginMethod = FindBestBeginLogicOverload(beginParameter, beginLogicMethods);
                 if(beginMethod == null) {
                     return LocationInfo.FromError($"Unable to find a matching overload for method 'BeginLogic'.");
@@ -168,21 +163,19 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 return LocationInfo.FromLocation(
                     location    : new Location(textExtent, lineExtent, filePath),
                     displayName : "Go To BeginLogic",
-                    imageMoniker: GoToImageMonikers.GoToBeginLogicCallDeclaration);
+                    imageMoniker: GoToImageMonikers.GoToInitCallDeclaration);
 
             }, cancellationToken);
             
             return task;
         }
 
-        public static List<string> ToParameterTypeList(IEnumerable<IParameterSymbol> beginLogicParameter) {
-            return beginLogicParameter.OrderBy(p=>p.Ordinal).Select(p => p.ToDisplayString()).ToList();
-        }
+       
 
         static IMethodSymbol FindBestBeginLogicOverload(IList<string> beginParameter, IEnumerable<IMethodSymbol> beginLogicMethods) {
 
-            var bestMatch= beginLogicMethods.Select(m => new {
-                MatchCount     = GetParameterMatchCount(beginParameter, ToParameterTypeList(m.Parameters)),
+            var bestMatch = beginLogicMethods.Select(m => new {
+                MatchCount     = GetParameterMatchCount(beginParameter, AnnotationReader.ToParameterTypeList(m.Parameters)),
                 ParameterCount = m.Parameters.Length,
                 Method         = m})
                     .Where(x => x.MatchCount >=0 ) // 0 ist OK, falls der Init keine Argumente hat!

@@ -5,7 +5,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
-using Pharmatechnik.Nav.Language.Extension.CSharp.GoTo;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
