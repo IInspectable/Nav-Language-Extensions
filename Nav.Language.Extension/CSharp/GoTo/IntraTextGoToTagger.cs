@@ -174,15 +174,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         /// <summary>
         /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorischt bzgl. thread safety!
         /// </summary>
-        static async Task<BuildTagsResult> BuildTagsAsync(ITextSnapshot snapshot, CancellationToken cancellationToken) {
+        static Task<BuildTagsResult> BuildTagsAsync(ITextSnapshot snapshot, CancellationToken cancellationToken) {
 
-            return await Task.Run(() => {
+            return Task.Run(() => {
 
                 var tags = BuildTags(snapshot).ToList();
 
                 return new BuildTagsResult(tags, snapshot);
 
-            }, cancellationToken).ConfigureAwait(false);
+            }, cancellationToken);
         }
 
         static IEnumerable<ITagSpan<IntraTextGoToTag>> BuildTags(ITextSnapshot currentSnapshot) {
@@ -252,7 +252,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     }
 
                     var declaringMethodNode = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax();
-                    // TODO hier das richtige Tag auslesen
                     var navInitCallTag = ReadNavTags(declaringMethodNode).FirstOrDefault(tag=>tag.TagName == AnnotationTagNames.NavInitCall);
                     if(navInitCallTag == null) {
                         continue;
