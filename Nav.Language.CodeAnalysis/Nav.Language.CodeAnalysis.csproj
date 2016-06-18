@@ -63,6 +63,9 @@
     <Compile Include="Annotation\AnnotationReader.cs" />
     <Compile Include="Annotation\NavExitAnnotation.cs" />
     <Compile Include="Annotation\NavInitAnnotation.cs" />
+    <Compile Include="Annotation\NavInitCallAnnotation.cs" />
+    <Compile Include="Annotation\NavInvocationAnnotation.cs" />
+    <Compile Include="Annotation\NavMethodAnnotation.cs" />
     <Compile Include="Annotation\NavTaskAnnotation.cs" />
     <Compile Include="Annotation\NavTriggerAnnotation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

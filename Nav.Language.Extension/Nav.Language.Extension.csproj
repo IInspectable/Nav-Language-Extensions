@@ -65,14 +65,13 @@
     <Compile Include="CSharp\GoTo\GoToNavTaskAnnotationTag.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTaggerProvider.cs" />
-    <Compile Include="CSharp\GoTo\IntraTextGoToTag.cs" />
     <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
     <Compile Include="GoToLocation\GoToImageMonikers.cs" />
     <Compile Include="GoToLocation\GoToLocationService.cs" />
     <Compile Include="GoToLocation\GoToTag.cs" />
     <Compile Include="GoToLocation\LocationFinder.cs" />
     <Compile Include="GoToLocation\LocationInfo.cs" />
-    <Compile Include="GoToLocation\Provider\BeginLogicLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\NavInitCallLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\ILocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\LocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavTaskAnnotationLocationInfoProvider.cs" />

@@ -3,24 +3,22 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
+using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
-    class BeginLogicLocationInfoProvider: LocationInfoProvider {
+    class NavInitCallLocationInfoProvider: LocationInfoProvider {
 
         readonly ITextBuffer _sourceBuffer;
-        readonly string _beginItfFullyQualifiedName;
-        readonly IList<string> _beginParameter;
+        readonly NavInitCallAnnotation _callAnnotation;
 
-        public BeginLogicLocationInfoProvider(ITextBuffer sourceBuffer, string beginItfFullyQualifiedName, IEnumerable<IParameterSymbol> beginParameter) {
-            _sourceBuffer               = sourceBuffer;
-            _beginParameter             = LocationFinder.ToParameterTypeList(beginParameter);
-            _beginItfFullyQualifiedName = beginItfFullyQualifiedName;
+        public NavInitCallLocationInfoProvider(ITextBuffer sourceBuffer, NavInitCallAnnotation callAnnotation) {
+            _sourceBuffer   = sourceBuffer;
+            _callAnnotation = callAnnotation;
         }
 
         public override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
@@ -32,10 +30,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
             }
 
             var location = await LocationFinder.FindCallBeginLogicDeclarationLocationsAsync(
-                project                   : project,
-                beginItfFullyQualifiedName: _beginItfFullyQualifiedName,
-                beginParameter            : _beginParameter,
-                cancellationToken         : cancellationToken).ConfigureAwait(false);
+                project            : project,
+                initCallAnnotation : _callAnnotation,
+                cancellationToken  : cancellationToken).ConfigureAwait(false);
 
             return ToEnumerable(location);
         }

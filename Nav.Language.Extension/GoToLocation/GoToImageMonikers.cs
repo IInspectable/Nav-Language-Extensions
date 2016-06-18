@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         /// <summary>
         /// C# BeginXYCall --> Implementierung der BeginLogic des aufgerufenen Tasks
         /// </summary>
-        public static ImageMoniker GoToBeginLogicCallDeclaration {
+        public static ImageMoniker GoToInitCallDeclaration {
             get { return KnownMonikers.GoToDefinition; }
         }
 
