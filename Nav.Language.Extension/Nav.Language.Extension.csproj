@@ -62,7 +62,7 @@
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTaggerProvider.cs" />
-    <Compile Include="CSharp\GoTo\GoToNavTaskAnnotationTag.cs" />
+    <Compile Include="CSharp\GoTo\IntraTextGoToTag.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTaggerProvider.cs" />
     <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
