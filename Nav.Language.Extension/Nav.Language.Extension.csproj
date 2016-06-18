@@ -83,7 +83,7 @@
     <Compile Include="GoToLocation\Provider\SimpleLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskExitDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
-    <Compile Include="GoToLocation\Provider\WfsDeclarationLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\TaskDeclarationLocationInfoProvider.cs" />
     <Compile Include="QuickInfo\SymbolImageMonikers.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandler.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandlerProvider.cs" />

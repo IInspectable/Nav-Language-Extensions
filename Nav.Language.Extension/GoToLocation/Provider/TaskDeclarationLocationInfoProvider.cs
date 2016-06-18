@@ -4,21 +4,22 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Text;
+using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
-    class WfsDeclarationLocationInfoProvider: LocationInfoProvider {
+    class TaskDeclarationLocationInfoProvider: LocationInfoProvider {
 
-        readonly string _fullyQualifiedTypeName;
         readonly ITextBuffer _sourceBuffer;
+        readonly TaskCodeGenInfo _codegenInfo;
 
-        public WfsDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, string fullyQualifiedTypeName) {
+        public TaskDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskCodeGenInfo codegenInfo) {
 
-            _sourceBuffer           = sourceBuffer;
-            _fullyQualifiedTypeName = fullyQualifiedTypeName;
+            _sourceBuffer = sourceBuffer;
+            _codegenInfo  = codegenInfo;
         }
 
         public override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
@@ -29,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 return ToEnumerable(LocationInfo.FromError($"Das Projekt konnte nicht ermittelt werden."));
             }
 
-            var locations = await LocationFinder.FindTaskDeclarationLocationsAsync(project, _fullyQualifiedTypeName, cancellationToken)
+            var locations = await LocationFinder.FindTaskDeclarationLocationsAsync(project, _codegenInfo, cancellationToken)
                                                .ConfigureAwait(false);
 
             return locations;

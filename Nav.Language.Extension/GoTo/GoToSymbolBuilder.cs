@@ -2,10 +2,11 @@
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
-using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
@@ -37,9 +38,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
 
-            var info = new TaskCodeGenInfo(taskDefinitionSymbol);
-
-            var provider = new WfsDeclarationLocationInfoProvider(_textBuffer, info.FullyQualifiedWfsBaseName);
+            var info     = new TaskCodeGenInfo(taskDefinitionSymbol);
+            var provider = new TaskDeclarationLocationInfoProvider(_textBuffer, info);
             
             return CreateTagSpan(taskDefinitionSymbol.Location, provider);
         }
@@ -88,8 +88,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
-            var info = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
-
+            var info     = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
             var provider = new TriggerDeclarationLocationInfoProvider(_textBuffer, info);
 
             return CreateTagSpan(signalTriggerSymbol.Location, provider);

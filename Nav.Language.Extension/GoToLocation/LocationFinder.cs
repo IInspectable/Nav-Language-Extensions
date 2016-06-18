@@ -213,19 +213,19 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         
         #region FindTaskDeclarationLocationsAsync
 
-        public static Task<IEnumerable<LocationInfo>> FindTaskDeclarationLocationsAsync(Project project, string fullyQualifiedWfsBaseName, CancellationToken cancellationToken) {
+        public static Task<IEnumerable<LocationInfo>> FindTaskDeclarationLocationsAsync(Project project, TaskCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
 
             var task = Task.Run(() => {
 
                 var compilation = project.GetCompilationAsync(cancellationToken).Result;
-                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(fullyQualifiedWfsBaseName);
+                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.FullyQualifiedWfsBaseName);
 
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return ToEnumerable( LocationInfo.FromError($"Der Typ '{fullyQualifiedWfsBaseName} wurde nicht gefunden."));
+                    return ToEnumerable( LocationInfo.FromError($"Der Typ '{codegenInfo.FullyQualifiedWfsBaseName} wurde nicht gefunden."));
                 }
 
-                // Wir kennen de facto nur den Baisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
+                // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
                 // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
                 var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
 
@@ -285,7 +285,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                     return LocationInfo.FromError($"Unable to locate '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
                 }
 
-                // Wir kennen de facto nur den Baisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
+                // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
                 // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
                 var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
                 var memberSymbol = derived?.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
@@ -331,7 +331,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                     return LocationInfo.FromError($"Unable to locate '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
                 }
 
-                // Wir kennen de facto nur den Baisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
+                // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
                 // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
                 var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
                 var memberSymbol = derived?.SelectMany(d => d.GetMembers(codegenInfo.AfterLogicMethodName)).FirstOrDefault();
