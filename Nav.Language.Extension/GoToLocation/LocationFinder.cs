@@ -1,17 +1,19 @@
 #region Using Directives
 
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
-using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
+using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 
 #endregion
 
@@ -43,7 +45,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                     // TODO Fehlermeldung
                     return ToEnumerable(LocationInfo.FromError($"Unable to locate task '{taskAnnotation.TaskName}'"));
                 }
-                // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen
+                // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen, oder gleich explizit auflösen
                 var triggerAnnotation = taskAnnotation as NavTriggerAnnotation;
                 if (triggerAnnotation != null) {
                     var trigger = task.Transitions
