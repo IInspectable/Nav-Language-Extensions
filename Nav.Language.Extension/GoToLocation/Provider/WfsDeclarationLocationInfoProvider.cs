@@ -29,7 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 return ToEnumerable(LocationInfo.FromError($"Das Projekt konnte nicht ermittelt werden."));
             }
 
-            var locations = await LocationFinder.FindWfsDeclarationsAsync(project, _fullyQualifiedTypeName, cancellationToken)
+            var locations = await LocationFinder.FindTaskDeclarationLocationsAsync(project, _fullyQualifiedTypeName, cancellationToken)
                                                .ConfigureAwait(false);
 
             return locations;

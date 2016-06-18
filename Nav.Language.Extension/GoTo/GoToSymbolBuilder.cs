@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
+using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
@@ -69,10 +70,19 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
 
-            var tagSpan= CreateGoToLocationTagSpan(connectionPointReferenceSymbol.Location, 
-                LocationInfo.FromLocation(connectionPointReferenceSymbol.Declaration.Location));
+            // GoTo Exit Declaration
+            var info     = new TaskExitCodeGenInfo(connectionPointReferenceSymbol);
+            var provider = new TaskExitDeclarationLocationInfoProvider(_textBuffer, info);
+            var tagSpan  = CreateTagSpan(connectionPointReferenceSymbol.Location, provider);
 
-            // TODO hier Option, um in "AfterxyLogic" zu springen.
+            // GoTo Exit Definition
+            var cnProvider = new SimpleLocationInfoProvider(LocationInfo.FromLocation(
+                connectionPointReferenceSymbol.Declaration.Location,
+                connectionPointReferenceSymbol.Name, 
+                SymbolImageMonikers.ExitConnectionPoint));
+
+            tagSpan.Tag.Provider.Add(cnProvider);
+
             return tagSpan;
         }
 
@@ -80,7 +90,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
             var info = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
 
-            var provider = new TriggerDeclarationLocationInfoProvider(_textBuffer, info.TaskCodeGenInfo.FullyQualifiedWfsBaseName, info.TriggerLogicMethodName);
+            var provider = new TriggerDeclarationLocationInfoProvider(_textBuffer, info);
 
             return CreateTagSpan(signalTriggerSymbol.Location, provider);
         }

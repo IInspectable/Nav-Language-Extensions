@@ -531,7 +531,7 @@ namespace Pharmatechnik.Nav.Language {
         public override void VisitExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax) {
             // Source
             ITaskNodeSymbol sourceTaskNodeSymbol = null;
-            INodeReferenceSymbol sourceNodeReference = null;
+            NodeReferenceSymbol sourceNodeReference = null;
             var sourceNodeSyntax = exitTransitionDefinitionSyntax.SourceNode;
             if (sourceNodeSyntax != null) {
 
@@ -545,7 +545,7 @@ namespace Pharmatechnik.Nav.Language {
             }
 
             // ConnectionPoint
-            IConnectionPointReferenceSymbol connectionPointReference = null;
+            ConnectionPointReferenceSymbol connectionPointReference = null;
             var exitIdentifier = exitTransitionDefinitionSyntax.ExitIdentifier;
             if (!exitIdentifier.IsMissing && sourceTaskNodeSymbol != null) {
 
@@ -559,7 +559,7 @@ namespace Pharmatechnik.Nav.Language {
             }
 
             // Target
-            INodeReferenceSymbol targetNodeReference = null;
+            NodeReferenceSymbol targetNodeReference = null;
             var targetNodeSyntax = exitTransitionDefinitionSyntax.TargetNode;
             if (targetNodeSyntax != null) {
 
@@ -572,7 +572,7 @@ namespace Pharmatechnik.Nav.Language {
             }
 
             // Edge
-            IEdgeModeSymbol edgeMode = null;
+            EdgeModeSymbol edgeMode = null;
             var edgeSyntax = exitTransitionDefinitionSyntax.Edge;
             if (edgeSyntax != null) {
 
@@ -583,7 +583,7 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
 
-            var exitTransition = new ExitTransition(exitTransitionDefinitionSyntax, sourceNodeReference, connectionPointReference, edgeMode, targetNodeReference);
+            var exitTransition = new ExitTransition(exitTransitionDefinitionSyntax, _taskDefinition, sourceNodeReference, connectionPointReference, edgeMode, targetNodeReference);
 
             AddExitTransition(exitTransition);
         }

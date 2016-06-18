@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 return ToEnumerable(LocationInfo.FromError(""));
             }
 
-            var location = await LocationFinder.FindBeginLogicAsync(
+            var location = await LocationFinder.FindCallBeginLogicDeclarationLocationsAsync(
                 project                   : project,
                 beginItfFullyQualifiedName: _beginItfFullyQualifiedName,
                 beginParameter            : _beginParameter,
