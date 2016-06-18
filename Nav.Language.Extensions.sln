@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language", "Nav.Language\Nav.Language.csproj", "{C38F8EE6-5DC6-40F3-8994-A33069B05FD8}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.Extension", "Nav.Language.Extension\Nav.Language.Extension.csproj", "{C88AACD6-6973-430B-A94B-4CC45B37F32D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.Tests", "Nav.Language.Tests\Nav.Language.Tests.csproj", "{6F82F651-4D21-467D-BD83-68C743BC8DF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.CodeAnalysis", "Nav.Language.CodeAnalysis\Nav.Language.CodeAnalysis.csproj", "{32AF2E02-A21A-4D1F-9927-09931715D057}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,26 +35,12 @@ Global
 		{6F82F651-4D21-467D-BD83-68C743BC8DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F82F651-4D21-467D-BD83-68C743BC8DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F82F651-4D21-467D-BD83-68C743BC8DF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32AF2E02-A21A-4D1F-9927-09931715D057}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32AF2E02-A21A-4D1F-9927-09931715D057}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32AF2E02-A21A-4D1F-9927-09931715D057}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32AF2E02-A21A-4D1F-9927-09931715D057}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 5
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://iinspectable.visualstudio.com/defaultcollection
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Nav.Language\\Nav.Language.csproj
-		SccProjectName1 = Nav.Language
-		SccLocalPath1 = Nav.Language
-		SccProjectUniqueName2 = Nav.TestClient\\Nav.TestClient.csproj
-		SccProjectName2 = Nav.TestClient
-		SccLocalPath2 = Nav.TestClient
-		SccProjectUniqueName3 = Nav.Language.Extension\\Nav.Language.Extension.csproj
-		SccProjectName3 = Nav.Language.Extension
-		SccLocalPath3 = Nav.Language.Extension
-		SccProjectUniqueName4 = Nav.Language.Tests\\Nav.Language.Tests.csproj
-		SccProjectName4 = Nav.Language.Tests
-		SccLocalPath4 = Nav.Language.Tests
 	EndGlobalSection
 EndGlobal
