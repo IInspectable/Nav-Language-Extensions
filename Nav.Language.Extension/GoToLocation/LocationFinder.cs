@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
+using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.CSharp.GoTo;
@@ -17,7 +18,8 @@ using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
-    static class LocationFinder {
+    // TODO Diese Klasse sollte besser in die CodeAnalysis Assembly. Momentan gibt es allerdings noch eine Abhängigkeit zu den ImageMonikers...
+    public static class LocationFinder {
 
         #region FindNavDefinitionLocationsAsync
 

@@ -1,6 +1,7 @@
 #region Using Directives
 
 using Microsoft.VisualStudio.Imaging.Interop;
+using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 

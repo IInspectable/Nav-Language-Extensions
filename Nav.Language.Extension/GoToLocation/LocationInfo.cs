@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
+    // TODO Diese Klasse sollte besser in die CodeAnalysis Assembly. Momentan gibt es allerdings noch eine Abhängigkeit zu den ImageMonikers...
     public struct LocationInfo {
 
         string _errorMessage;

@@ -5,6 +5,9 @@
 /Nav.Language/bin/Debug
 /Nav.Language/obj/Debug
 /Nav.Language/ThisAssembly.generated.cs
+/Nav.Language.CodeAnalysis/bin/Debug
+/Nav.Language.CodeAnalysis/obj/Debug
+/Nav.Language.CodeAnalysis/ThisAssembly.generated.cs
 /Nav.Language.Extension/bin/Debug
 /Nav.Language.Extension/obj/Debug
 /Nav.Language.Extension/ThisAssembly.generated.cs

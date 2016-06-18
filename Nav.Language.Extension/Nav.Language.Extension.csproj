@@ -66,11 +66,7 @@
     <Compile Include="CSharp\GoTo\IntraTextGoToTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTaggerProvider.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTag.cs" />
-    <Compile Include="CSharp\GoTo\NavExitAnnotation.cs" />
-    <Compile Include="CSharp\GoTo\NavInitAnnotation.cs" />
     <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
-    <Compile Include="CSharp\GoTo\NavTaskAnnotation.cs" />
-    <Compile Include="CSharp\GoTo\NavTriggerAnnotation.cs" />
     <Compile Include="GoToLocation\GoToImageMonikers.cs" />
     <Compile Include="GoToLocation\GoToLocationService.cs" />
     <Compile Include="GoToLocation\GoToTag.cs" />
@@ -425,6 +421,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nav.Language.CodeAnalysis\Nav.Language.CodeAnalysis.csproj">
+      <Project>{32af2e02-a21a-4d1f-9927-09931715d057}</Project>
+      <Name>Nav.Language.CodeAnalysis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nav.Language\Nav.Language.csproj">
       <Project>{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}</Project>
       <Name>Nav.Language</Name>
