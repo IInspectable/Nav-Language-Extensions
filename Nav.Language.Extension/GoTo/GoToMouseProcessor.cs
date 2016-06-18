@@ -92,8 +92,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         void UpdateNavigateToTagSpan(ITagSpan<GoToTag> navigateToTagSpan) {
 
-            if(navigateToTagSpan.Span == _navigateToTagSpan?.Span &&
-               navigateToTagSpan.Tag  == _navigateToTagSpan?.Tag) {
+            if(navigateToTagSpan.Span == _navigateToTagSpan?.Span) {
+                // Theoretisch könnten sich die Tags dennoch unterscheiden...
+                _navigateToTagSpan = navigateToTagSpan;
                 return;
             }
 
