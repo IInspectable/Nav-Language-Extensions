@@ -278,7 +278,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     yield return new TagSpan<IntraTextGoToTag>(snapshotSpan, 
                                         new IntraTextGoToTag(
                                             provider    : provider, 
-                                            imageMoniker: GoToImageMonikers.GoToBeginLogic, 
+                                            imageMoniker: GoToImageMonikers.GoToBeginLogicCallDeclaration, 
                                             // TODO Tooltip Text zentralisieren
                                             toolTip     : "Go To Begin Logic"));
                 }

@@ -29,7 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 sourceText = File.ReadAllText(TaskAnnotation.NavFileName);
             }
 
-            var location = await LocationFinder.FindNavLocationsAsync(sourceText, TaskAnnotation, cancellationToken)
+            var location = await LocationFinder.FindNavDefinitionLocationsAsync(sourceText, TaskAnnotation, cancellationToken)
                                                .ConfigureAwait(false);
 
             return location;

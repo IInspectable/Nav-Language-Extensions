@@ -6,18 +6,31 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed class ExitTransition : IExitTransition {
         
-        internal ExitTransition(ExitTransitionDefinitionSyntax syntax, INodeReferenceSymbol source, IConnectionPointReferenceSymbol connectionPoint, IEdgeModeSymbol edgeMode, INodeReferenceSymbol target) {
+        internal ExitTransition(ExitTransitionDefinitionSyntax syntax,
+                                TaskDefinitionSymbol taskDefinition,
+                                NodeReferenceSymbol source, 
+                                ConnectionPointReferenceSymbol connectionPoint, EdgeModeSymbol edgeMode, 
+                                NodeReferenceSymbol target) {
 
             if (syntax == null) {
                 throw new ArgumentNullException(nameof(syntax));
             }
+            if (taskDefinition == null) {
+                throw new ArgumentNullException(nameof(taskDefinition));
+            }
 
             Syntax          = syntax;
+            TaskDefinition = taskDefinition;
             Source          = source;
             ConnectionPoint = connectionPoint;
             EdgeMode        = edgeMode;
             Target          = target;
+
+            connectionPoint.ExitTransition = this;
         }
+
+        [NotNull]
+        public ITaskDefinitionSymbol TaskDefinition { get; }
 
         [NotNull]
         public Location Location {

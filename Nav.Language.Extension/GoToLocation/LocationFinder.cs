@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
+using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.CSharp.GoTo;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
@@ -18,7 +19,89 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
     static class LocationFinder {
 
-        #region FindBeginLogicAsync
+        #region FindNavDefinitionLocationsAsync
+
+        public static Task<IEnumerable<LocationInfo>> FindNavDefinitionLocationsAsync(string sourceText, NavTaskAnnotation taskAnnotation, CancellationToken cancellationToken) {
+
+            var locationResult = Task.Run(() => {
+
+                var syntaxTree = SyntaxTree.ParseText(sourceText, taskAnnotation.NavFileName, cancellationToken);
+                var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
+                if (codeGenerationUnitSyntax == null) {
+                    // TODO Fehlermeldung
+                    return ToEnumerable(LocationInfo.FromError("Unable to parse nav file."));
+                }
+
+                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
+
+                var task = codeGenerationUnit.Symbols
+                                             .OfType<ITaskDefinitionSymbol>()
+                                             .FirstOrDefault(t => t.Name == taskAnnotation.TaskName);
+
+                if (task == null) {
+                    // TODO Fehlermeldung
+                    return ToEnumerable(LocationInfo.FromError($"Unable to locate task '{taskAnnotation.TaskName}'"));
+                }
+                // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen
+                var triggerAnnotation = taskAnnotation as NavTriggerAnnotation;
+                if (triggerAnnotation != null) {
+                    var trigger = task.Transitions
+                                      .SelectMany(t => t.Triggers)
+                                      .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
+
+                    if (trigger == null) {
+                        // TODO Fehlermeldung
+                        return ToEnumerable(LocationInfo.FromError($"Unable to locate signal trigger '{triggerAnnotation.TriggerName}'"));
+                    }
+
+                    return ToEnumerable(LocationInfo.FromLocation(
+                        location    : trigger.Location,
+                        displayName : trigger.Name,
+                        imageMoniker: SymbolImageMonikers.SignalTrigger));
+                }
+
+                var exitAnnotation = taskAnnotation as NavExitAnnotation;
+                if (exitAnnotation != null) {
+                    var exitTransition = task.ExitTransitions.Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
+                                             .Where(et => et.ConnectionPoint != null)
+                                             .Select(et => LocationInfo.FromLocation(
+                                                 location: et.ConnectionPoint?.Location,
+                                                 displayName: et.ConnectionPoint?.Name,
+                                                 imageMoniker: SymbolImageMonikers.ExitConnectionPoint));
+                    return exitTransition;
+                }
+
+                var initAnnotation = taskAnnotation as NavInitAnnotation;
+                if (initAnnotation != null) {
+                    var init = task.NodeDeclarations
+                                   .OfType<IInitNodeSymbol>()
+                                   .FirstOrDefault(n => n.Name == initAnnotation.InitName);
+
+                    if (init == null) {
+                        // TODO Fehlermeldung
+                        return ToEnumerable(LocationInfo.FromError($"Unable to locate init '{initAnnotation.InitName}'"));
+                    }
+
+                    return ToEnumerable(LocationInfo.FromLocation(
+                        location: init.Location,
+                        displayName: init.Name,
+                        imageMoniker: SymbolImageMonikers.InitConnectionPoint));
+                }
+
+                return ToEnumerable(
+                    LocationInfo.FromLocation(
+                        location: task.Syntax.Identifier.GetLocation(),
+                        displayName: task.Name,
+                        imageMoniker: SymbolImageMonikers.TaskDefinition));
+
+            }, cancellationToken);
+
+            return locationResult;
+        }
+
+        #endregion
+
+        #region FindCallBeginLogicDeclarationLocationsAsync
 
         /// <summary>
         /// Findet die entsprechende BeginXYLogic Implementierung.
@@ -28,7 +111,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         /// <param name="beginParameter">Die Parameter der aus dem WFS aufgrufenen Begin Methode</param>
         /// <param name="cancellationToken">Das Abbruchtoken</param>
         /// <returns></returns>
-        public static Task<LocationInfo> FindBeginLogicAsync(Project project, string beginItfFullyQualifiedName, IList<string> beginParameter, CancellationToken cancellationToken) {
+        public static Task<LocationInfo> FindCallBeginLogicDeclarationLocationsAsync(Project project, string beginItfFullyQualifiedName, IList<string> beginParameter, CancellationToken cancellationToken) {
 
             var task = Task.Run(() => {
                 
@@ -83,7 +166,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 return LocationInfo.FromLocation(
                     location    : new Location(textExtent, lineExtent, filePath),
                     displayName : "Go To BeginLogic",
-                    imageMoniker: GoToImageMonikers.GoToBeginLogic);
+                    imageMoniker: GoToImageMonikers.GoToBeginLogicCallDeclaration);
 
             }, cancellationToken);
             
@@ -127,92 +210,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         }
 
         #endregion
+        
+        #region FindTaskDeclarationLocationsAsync
 
-        #region FindNavLocationAsync
-
-        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavTaskAnnotation taskAnnotation, CancellationToken cancellationToken) {
-
-            var locationResult = Task.Run(() => {
-
-                var syntaxTree = SyntaxTree.ParseText(sourceText, taskAnnotation.NavFileName, cancellationToken);
-                var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
-                if (codeGenerationUnitSyntax == null) {
-                    // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError("Unable to parse nav file."));
-                }
-
-                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
-
-                var task = codeGenerationUnit.Symbols
-                                             .OfType<ITaskDefinitionSymbol>()
-                                             .FirstOrDefault(t => t.Name == taskAnnotation.TaskName);
-
-                if (task == null) {
-                    // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError($"Unable to locate task '{taskAnnotation.TaskName}'"));
-                }
-                // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen
-                var triggerAnnotation = taskAnnotation as NavTriggerAnnotation;
-                if (triggerAnnotation != null) {
-                    var trigger = task.Transitions
-                                      .SelectMany(t => t.Triggers)
-                                      .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
-
-                    if(trigger == null) {
-                        // TODO Fehlermeldung
-                        return ToEnumerable(LocationInfo.FromError($"Unable to locate signal trigger '{triggerAnnotation.TriggerName}'"));
-                    }
-
-                    return ToEnumerable(LocationInfo.FromLocation(
-                        location    : trigger.Location, 
-                        displayName : trigger.Name, 
-                        imageMoniker: SymbolImageMonikers.SignalTrigger));
-                }
-
-                var exitAnnotation = taskAnnotation as NavExitAnnotation;
-                if (exitAnnotation != null) {
-                    var exitTransition = task.ExitTransitions.Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
-                                             .Where(et => et.ConnectionPoint!=null)
-                                             .Select(et => LocationInfo.FromLocation(
-                                                 location    : et.ConnectionPoint?.Location,
-                                                 displayName : et.ConnectionPoint?.Name,
-                                                 imageMoniker: SymbolImageMonikers.ExitConnectionPoint));
-                    return exitTransition;
-                }
-
-                var initAnnotation = taskAnnotation as NavInitAnnotation;
-                if (initAnnotation != null) {
-                    var init = task.NodeDeclarations
-                                   .OfType<IInitNodeSymbol>()
-                                   .FirstOrDefault(n => n.Name == initAnnotation.InitName);
-
-                    if (init == null) {
-                        // TODO Fehlermeldung
-                        return ToEnumerable(LocationInfo.FromError($"Unable to locate init '{initAnnotation.InitName}'"));
-                    }
-
-                    return ToEnumerable(LocationInfo.FromLocation(
-                        location    : init.Location, 
-                        displayName : init.Name, 
-                        imageMoniker: SymbolImageMonikers.InitConnectionPoint));
-                }
-
-                return ToEnumerable(
-                    LocationInfo.FromLocation(
-                        location    : task.Syntax.Identifier.GetLocation(), 
-                        displayName : task.Name, 
-                        imageMoniker: SymbolImageMonikers.TaskDefinition));
-
-            }, cancellationToken);
-
-            return locationResult;
-        }
-
-        #endregion
-
-        #region FindClassDeclarationAsync
-
-        public static Task<IEnumerable<LocationInfo>> FindWfsDeclarationsAsync(Project project, string fullyQualifiedWfsBaseName, CancellationToken cancellationToken) {
+        public static Task<IEnumerable<LocationInfo>> FindTaskDeclarationLocationsAsync(Project project, string fullyQualifiedWfsBaseName, CancellationToken cancellationToken) {
 
             var task = Task.Run(() => {
 
@@ -255,7 +256,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                         location    : new Location(textExtent, lineExtent, filePath), 
                         // TODO Hier evtl. relativen Pfad angeben
                         displayName : filePath, 
-                        imageMoniker: GoToImageMonikers.GoToWfs));
+                        imageMoniker: GoToImageMonikers.GoToTaskDeclaration));
                 }
 
                 if(!locs.Any()) {
@@ -271,23 +272,23 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
         #endregion
 
-        #region FindTriggerLocationAsync
+        #region FindTriggerDeclarationLocationsAsync
 
-        public static Task<LocationInfo> FindTriggerLocationAsync(Project project, string fullyQualifiedWfsBaseName, string triggerMethodName, CancellationToken cancellationToken) {
+        public static Task<LocationInfo> FindTriggerDeclarationLocationsAsync(Project project, SignalTriggerCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
 
             var task = Task.Run(() => {
 
                 var compilation   = project.GetCompilationAsync(cancellationToken).Result;
-                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(fullyQualifiedWfsBaseName);
+                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError($"Unable to locate '{fullyQualifiedWfsBaseName}'");
+                    return LocationInfo.FromError($"Unable to locate '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
                 }
 
                 // Wir kennen de facto nur den Baisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
                 // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
                 var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
-                var memberSymbol = derived?.SelectMany(d => d.GetMembers(triggerMethodName)).FirstOrDefault();
+                var memberSymbol = derived?.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
 
                 if (memberLocation == null) {
@@ -307,22 +308,68 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
                 return LocationInfo.FromLocation(
                     new Location(textExtent, lineExtent, filePath),
-                    "Go To Trigger Definition",
-                    GoToImageMonikers.GoToTriggerDefinition);
+                    "Go To Trigger Declaration",
+                    GoToImageMonikers.GoToTriggerDeclaration);
+
+            }, cancellationToken);
+
+            return task;
+        }
+        
+        #endregion
+
+        #region FindTaskExitDeclarationLocationAsync
+
+        public static Task<LocationInfo> FindTaskExitDeclarationLocationAsync(Project project, TaskExitCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
+
+            var task = Task.Run(() => {
+
+                var compilation = project.GetCompilationAsync(cancellationToken).Result;
+                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName);
+                if (wfsBaseSymbol == null) {
+                    // TODO Fehlermeldung
+                    return LocationInfo.FromError($"Unable to locate '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
+                }
+
+                // Wir kennen de facto nur den Baisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
+                // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
+                var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
+                var memberSymbol = derived?.SelectMany(d => d.GetMembers(codegenInfo.AfterLogicMethodName)).FirstOrDefault();
+                var memberLocation = memberSymbol?.Locations.FirstOrDefault();
+
+                if (memberLocation == null) {
+                    // TODO Fehlermeldung
+                    return LocationInfo.FromError("Unable to locate member location.");
+                }
+
+                var lineSpan = memberLocation.GetLineSpan();
+                if (!lineSpan.IsValid) {
+                    // TODO Fehlermeldung
+                    return LocationInfo.FromError("Invalid linespan.");
+                }
+
+                var textExtent = memberLocation.SourceSpan.ToTextExtent();
+                var lineExtent = lineSpan.ToLinePositionExtent();
+                var filePath = memberLocation.SourceTree?.FilePath;
+
+                return LocationInfo.FromLocation(
+                    new Location(textExtent, lineExtent, filePath),
+                    $"{codegenInfo.TaskCodeGenInfo.WfsTypeName}.{codegenInfo.AfterLogicMethodName}",
+                    GoToImageMonikers.GoToTaskExitDeclaration);
 
             }, cancellationToken);
 
             return task;
         }
 
-        static IImmutableSet<T> ToImmutableSet<T>(T item) {
-            return new[] { item }.ToImmutableHashSet();
-        }
-
         #endregion
 
         static IEnumerable<T> ToEnumerable<T>(T value) {
             return new[] { value };
+        }
+
+        static IImmutableSet<T> ToImmutableSet<T>(T item) {
+            return new[] { item }.ToImmutableHashSet();
         }
     }
 }

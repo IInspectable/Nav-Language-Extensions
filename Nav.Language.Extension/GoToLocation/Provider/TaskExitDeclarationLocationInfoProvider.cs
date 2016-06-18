@@ -1,9 +1,11 @@
-﻿#region Using Directives
+#region Using Directives
 
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using Microsoft.VisualStudio.Text;
+
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
@@ -11,12 +13,12 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
-    class TriggerDeclarationLocationInfoProvider: LocationInfoProvider {
+    class TaskExitDeclarationLocationInfoProvider : LocationInfoProvider {
 
         readonly ITextBuffer _sourceBuffer;
-        readonly SignalTriggerCodeGenInfo _codegenInfo;
+        readonly TaskExitCodeGenInfo _codegenInfo;
 
-        public TriggerDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, SignalTriggerCodeGenInfo codegenInfo) {
+        public TaskExitDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskExitCodeGenInfo codegenInfo) {
 
             _sourceBuffer = sourceBuffer;
             _codegenInfo  = codegenInfo;
@@ -30,7 +32,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 return ToEnumerable(LocationInfo.FromError(""));
             }
 
-            var location = await LocationFinder.FindTriggerDeclarationLocationsAsync(project, _codegenInfo, cancellationToken)
+            var location = await LocationFinder.FindTaskExitDeclarationLocationAsync(project, _codegenInfo, cancellationToken)
                                                .ConfigureAwait(false);
 
             return ToEnumerable(location);

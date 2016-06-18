@@ -81,6 +81,7 @@
     <Compile Include="GoToLocation\Provider\LocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavTaskAnnotationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\SimpleLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\TaskExitDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\WfsDeclarationLocationInfoProvider.cs" />
     <Compile Include="QuickInfo\SymbolImageMonikers.cs" />
