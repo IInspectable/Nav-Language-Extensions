@@ -59,7 +59,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var provider     = new NavExitAnnotationLocationInfoProvider(navExitAnnotation);
             // TODO Tooltip in Ressource
             var tag = new IntraTextGoToTag(provider, navExitAnnotation) {
-                ToolTip      = "Go To Exit Transition Definition",
+                ToolTip      = "Go To Exit Definition",
                 ImageMoniker = GoToImageMonikers.Definition
             };
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
@@ -90,7 +90,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var provider = new NavInitCallLocationInfoProvider(_textSnapshot.TextBuffer, navInitCallAnnotation);
             // TODO Tooltip in Ressource
             var tag = new IntraTextGoToTag(provider, navInitCallAnnotation) {
-                ToolTip      = "Go To Begin Logic Implementation",
+                ToolTip      = "Go To Implementation",
                 ImageMoniker = GoToImageMonikers.Declaration
             };
             
