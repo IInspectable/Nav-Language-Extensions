@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
 #endregion
 

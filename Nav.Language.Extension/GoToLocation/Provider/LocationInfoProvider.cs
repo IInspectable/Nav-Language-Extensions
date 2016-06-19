@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
 #endregion
 

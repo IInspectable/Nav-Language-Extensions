@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
+using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion

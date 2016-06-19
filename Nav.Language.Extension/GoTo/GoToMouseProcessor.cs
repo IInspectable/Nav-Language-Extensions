@@ -136,8 +136,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
             await _goToLocationService.GoToLocationInPreviewTabAsync(
                 _textView,
-                placementRectangle, 
-                cancellationToken => tagSpan.Tag.GetLocationsAsync(cancellationToken));
+                placementRectangle,
+                tagSpan.Tag.Provider);
         }
     }
 }

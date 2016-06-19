@@ -17,7 +17,7 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
+namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
     // TODO Diese Klasse sollte besser in die CodeAnalysis Assembly. Momentan gibt es allerdings noch eine Abhängigkeit zu den ImageMonikers...
     public static class LocationFinder {

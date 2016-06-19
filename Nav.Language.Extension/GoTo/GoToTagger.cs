@@ -44,9 +44,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
                 foreach (var symbol in symbols) {
 
-                    var navigateToTag = GoToSymbolBuilder.Build(semanticModelResult, symbol, TextBuffer);
-                    if(navigateToTag != null) {
-                        yield return navigateToTag;
+                    var goToTag = GoToSymbolBuilder.Build(semanticModelResult, symbol, TextBuffer);
+                    if(goToTag != null) {
+                        yield return goToTag;
                     }
                 }
             }
