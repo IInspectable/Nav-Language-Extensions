@@ -143,7 +143,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             return ToEnumerable(LocationInfo.FromLocation(
                 location    : trigger.Location,
                 displayName : trigger.Name,
-                kind        : LocationKind.TriggerDefinition));
+                kind        : LocationKind.SignalTriggerDefinition));
         }
 
         static IEnumerable<LocationInfo> GetInitLocations(ITaskDefinitionSymbol task, NavInitAnnotation initAnnotation) {

@@ -3,6 +3,7 @@
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
+using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
@@ -10,33 +11,36 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
     static class GoToImageMonikers {
 
-        // Diese blöde Mapping bricht leider das Open-Closed-Prinzip... gehören ohnenhin überarbeitet...
+        // Diese blöde Mapping bricht leider das Open-Closed-Prinzip...
         public static ImageMoniker GetMoniker(LocationKind kind) {
             switch(kind) {
 
+                // Alles was in Richtung Nav Code geht, gilt als Definition
                 case LocationKind.TaskDefinition:
-                    return TaskDefinition;
+                    return SymbolImageMonikers.TaskDefinition;
 
                 case LocationKind.InitDefinition:
-                    return InitDefinition;
+                    return SymbolImageMonikers.InitConnectionPoint;
 
                 case LocationKind.ExitDefinition:
-                    return ExitDefinition;
+                    return SymbolImageMonikers.ExitConnectionPoint;
 
-                case LocationKind.TriggerDefinition:
-                    return TriggerDefinition;
+                case LocationKind.SignalTriggerDefinition:
+                    return SymbolImageMonikers.SignalTrigger;
 
-                case LocationKind.InitCallDeclaration:
-                    return InitCallDeclaration;
-
-                case LocationKind.TaskExitDeclaration:
-                    return TaskExitDeclaration;
+                // Alles was in Richtung c# Code geht, gilt als Declaration
 
                 case LocationKind.TaskDeclaration:
-                    return TaskDeclaration;
+                    return KnownMonikers.ClassPublic;
 
+                case LocationKind.InitCallDeclaration:
+                    return KnownMonikers.MethodPublic;
+
+                case LocationKind.TaskExitDeclaration:
+                    return KnownMonikers.MethodPublic;
+                    
                 case LocationKind.TriggerDeclaration:
-                    return TriggerDeclaration;
+                    return KnownMonikers.MethodPublic;
 
                 case LocationKind.Unspecified:
                 default:
@@ -45,61 +49,17 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         }
 
         /// <summary>
-        /// Nav file --> C# xyWFS class
+        /// Nav file --> C# file
         /// </summary>
-        public static ImageMoniker TaskDeclaration {
+        public static ImageMoniker Declaration {
             get { return KnownMonikers.GoToDefinition; }
         }
 
         /// <summary>
-        /// Nav file --> C# AfterXYLogic
+        /// C# file --> Nav file
         /// </summary>
-        public static ImageMoniker TaskExitDeclaration {
-            get { return KnownMonikers.GoToDefinition; }
-        }
-        
-        /// <summary>
-        /// Nav Trigger --> C# 
-        /// </summary>
-        public static ImageMoniker TriggerDeclaration {
-            get { return KnownMonikers.GoToDefinition; }
-        }
-
-        /// <summary>
-        /// C# --> Trigger Definition im Nav File
-        /// </summary>
-        public static ImageMoniker TriggerDefinition {
+        public static ImageMoniker Definition {
             get { return KnownMonikers.GoToDeclaration; }
-        }
-
-        /// <summary>
-        /// C# --> Task Definition im Nav File
-        /// </summary>
-        public static ImageMoniker TaskDefinition {
-            get { return KnownMonikers.GoToDeclaration; }
-        }
-
-        /// <summary>
-        /// C# --> Init Definition im Nav File
-        /// </summary>
-        public static ImageMoniker InitDefinition {
-            get { return KnownMonikers.GoToDeclaration; }
-        }
-
-        /// <summary>
-        /// C# --> Exit Transition Definition im Nav File
-        /// </summary>
-        public static ImageMoniker ExitDefinition {
-            get { return KnownMonikers.GoToDeclaration; }
-        }
-
-
-        // C# --> C#
-        /// <summary>
-        /// C# BeginXYCall --> Implementierung der BeginLogic des aufgerufenen Tasks
-        /// </summary>
-        public static ImageMoniker InitCallDeclaration {
-            get { return KnownMonikers.GoToDefinition; }
         }
     }
 }
