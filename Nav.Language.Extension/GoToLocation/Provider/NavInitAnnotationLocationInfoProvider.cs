@@ -10,14 +10,13 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
-    class NavTaskAnnotationLocationInfoProvider: NavAnnotationLocationInfoProvider<NavTaskAnnotation> {
+    class NavInitAnnotationLocationInfoProvider : NavAnnotationLocationInfoProvider<NavInitAnnotation> {
 
-        public NavTaskAnnotationLocationInfoProvider(NavTaskAnnotation annotation) : base(annotation) {
+        public NavInitAnnotationLocationInfoProvider(NavInitAnnotation annotation) : base(annotation) {
         }
 
         protected override Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new CancellationToken()) {
-            return LocationFinder.FindNavLocationsAsync(sourceText, Annotation, cancellationToken);            
+            return LocationFinder.FindNavLocationsAsync(sourceText, Annotation, cancellationToken);
         }
     }
-
 }

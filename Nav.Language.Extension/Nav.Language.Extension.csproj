@@ -72,10 +72,14 @@
     <Compile Include="GoToLocation\GoToTag.cs" />
     <Compile Include="GoToLocation\LocationFinder.cs" />
     <Compile Include="GoToLocation\LocationInfo.cs" />
+    <Compile Include="GoToLocation\Provider\NavAnnotationLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\NavExitAnnotationLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\NavInitAnnotationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavInitCallLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\ILocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\LocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavTaskAnnotationLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\NavTriggerAnnotationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\SimpleLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskExitDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />

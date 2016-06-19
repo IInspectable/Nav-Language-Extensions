@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,61 +46,141 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                     // TODO Fehlermeldung
                     return ToEnumerable(LocationInfo.FromError($"Unable to locate task '{taskAnnotation.TaskName}'"));
                 }
+                
                 // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen, oder gleich explizit auflösen
                 var triggerAnnotation = taskAnnotation as NavTriggerAnnotation;
                 if (triggerAnnotation != null) {
-                    var trigger = task.Transitions
-                                      .SelectMany(t => t.Triggers)
-                                      .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
-
-                    if (trigger == null) {
-                        // TODO Fehlermeldung
-                        return ToEnumerable(LocationInfo.FromError($"Unable to locate signal trigger '{triggerAnnotation.TriggerName}'"));
-                    }
-
-                    return ToEnumerable(LocationInfo.FromLocation(
-                        location    : trigger.Location,
-                        displayName : trigger.Name,
-                        imageMoniker: SymbolImageMonikers.SignalTrigger));
+   
+                    return GetTriggerLocations(task, triggerAnnotation);
                 }
 
                 var exitAnnotation = taskAnnotation as NavExitAnnotation;
                 if (exitAnnotation != null) {
-                    var exitTransition = task.ExitTransitions.Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
-                                             .Where(et => et.ConnectionPoint != null)
-                                             .Select(et => LocationInfo.FromLocation(
-                                                 location: et.ConnectionPoint?.Location,
-                                                 displayName: et.ConnectionPoint?.Name,
-                                                 imageMoniker: SymbolImageMonikers.ExitConnectionPoint));
-                    return exitTransition;
+                    return GetExitLocations(task, exitAnnotation);
                 }
 
                 var initAnnotation = taskAnnotation as NavInitAnnotation;
                 if (initAnnotation != null) {
-                    var init = task.NodeDeclarations
-                                   .OfType<IInitNodeSymbol>()
-                                   .FirstOrDefault(n => n.Name == initAnnotation.InitName);
 
-                    if (init == null) {
-                        // TODO Fehlermeldung
-                        return ToEnumerable(LocationInfo.FromError($"Unable to locate init '{initAnnotation.InitName}'"));
-                    }
-
-                    return ToEnumerable(LocationInfo.FromLocation(
-                        location: init.Location,
-                        displayName: init.Name,
-                        imageMoniker: SymbolImageMonikers.InitConnectionPoint));
+                    return GetInitLocations(task, initAnnotation);
                 }
 
-                return ToEnumerable(
-                    LocationInfo.FromLocation(
-                        location: task.Syntax.Identifier.GetLocation(),
-                        displayName: task.Name,
-                        imageMoniker: SymbolImageMonikers.TaskDefinition));
+                return GetTaskLocations(task, taskAnnotation);
 
             }, cancellationToken);
 
             return locationResult;
+        }
+
+        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavTaskAnnotation annotation, CancellationToken cancellationToken) {
+            return FindNavLocationsAsync(sourceText, annotation, GetTaskLocations, cancellationToken);
+        }
+
+        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavInitAnnotation annotation, CancellationToken cancellationToken) {
+            return FindNavLocationsAsync(sourceText, annotation, GetInitLocations, cancellationToken);
+        }
+
+        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavExitAnnotation annotation, CancellationToken cancellationToken) {
+            return FindNavLocationsAsync(sourceText, annotation, GetExitLocations, cancellationToken);
+        }
+
+        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavTriggerAnnotation annotation, CancellationToken cancellationToken) {
+            return FindNavLocationsAsync(sourceText, annotation, GetTriggerLocations, cancellationToken);
+        }
+
+        static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync<TAnnotation>(
+                        string sourceText, 
+                        TAnnotation annotation, 
+                        Func<ITaskDefinitionSymbol, TAnnotation, IEnumerable<LocationInfo>> locBuilder, 
+                        CancellationToken cancellationToken) where TAnnotation: NavTaskAnnotation {
+
+            var locationResult = Task.Run(() => {
+
+                var syntaxTree = SyntaxTree.ParseText(sourceText, annotation.NavFileName, cancellationToken);
+                var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
+                if (codeGenerationUnitSyntax == null) {
+                    // TODO Fehlermeldung
+                    return ToEnumerable(LocationInfo.FromError("Unable to parse nav file."));
+                }
+
+                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
+
+                var task = codeGenerationUnit.Symbols
+                                             .OfType<ITaskDefinitionSymbol>()
+                                             .FirstOrDefault(t => t.Name == annotation.TaskName);
+
+                if (task == null) {
+                    // TODO Fehlermeldung
+                    return ToEnumerable(LocationInfo.FromError($"Unable to locate task '{annotation.TaskName}'"));
+                }
+                
+                return locBuilder(task, annotation);                
+
+            }, cancellationToken);
+
+            return locationResult;
+        }
+
+        static IEnumerable<LocationInfo> GetTaskLocations(ITaskDefinitionSymbol task, NavTaskAnnotation nav) {
+
+            return ToEnumerable(
+                   LocationInfo.FromLocation(
+                       location    : task.Syntax.Identifier.GetLocation(),
+                       displayName : task.Name,
+                       imageMoniker: SymbolImageMonikers.TaskDefinition));
+        }
+
+        static IEnumerable<LocationInfo> GetTriggerLocations(ITaskDefinitionSymbol task, NavTriggerAnnotation triggerAnnotation) {
+
+            var trigger = task.Transitions
+                              .SelectMany(t => t.Triggers)
+                              .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
+
+            if (trigger == null) {
+                // TODO Fehlermeldung
+                return ToEnumerable(LocationInfo.FromError($"Unable to locate signal trigger '{triggerAnnotation.TriggerName}'"));
+            }
+
+            return ToEnumerable(LocationInfo.FromLocation(
+                location    : trigger.Location,
+                displayName : trigger.Name,
+                imageMoniker: SymbolImageMonikers.SignalTrigger));
+        }
+
+        static IEnumerable<LocationInfo> GetInitLocations(ITaskDefinitionSymbol task, NavInitAnnotation initAnnotation) {
+
+            var initNode = task.NodeDeclarations
+                           .OfType<IInitNodeSymbol>()
+                           .FirstOrDefault(n => n.Name == initAnnotation.InitName);
+
+            if (initNode == null) {
+                // TODO Fehlermeldung
+                return ToEnumerable(LocationInfo.FromError($"Unable to locate init '{initAnnotation.InitName}'"));
+            }
+
+            return ToEnumerable(LocationInfo.FromLocation(
+                location    : initNode.Location,
+                displayName : initNode.Name,
+                imageMoniker: SymbolImageMonikers.InitConnectionPoint));            
+        }
+
+        static IEnumerable<LocationInfo> GetExitLocations(ITaskDefinitionSymbol task, NavExitAnnotation exitAnnotation) {
+
+            var exitTransitions = task.ExitTransitions
+                                      .Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
+                                      .Where(et => et.ConnectionPoint != null)
+                                      .Select(et => LocationInfo.FromLocation(
+                                          location    : et.ConnectionPoint?.Location,
+                                          displayName : et.ConnectionPoint?.Name,
+                                          imageMoniker: SymbolImageMonikers.ExitConnectionPoint))
+                                      .ToList();
+
+            if (!exitTransitions.Any()) {
+                // TODO Fehlermeldung
+                return ToEnumerable(LocationInfo.FromError($"Unable to locate exit transitions for task '{exitAnnotation.ExitTaskName}'"));
+            }
+
+            return exitTransitions;
         }
 
         #endregion
