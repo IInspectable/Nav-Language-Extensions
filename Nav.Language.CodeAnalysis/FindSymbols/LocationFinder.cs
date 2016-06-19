@@ -12,8 +12,8 @@ using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Pharmatechnik.Nav.Language.CodeGen;
-using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
+using Pharmatechnik.Nav.Language.CodeAnalysis.Common;
 
 #endregion
 

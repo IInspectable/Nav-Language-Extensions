@@ -1,7 +1,11 @@
-﻿using Microsoft.CodeAnalysis;
+﻿#region Using Directives
+
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
+#endregion
+
+namespace Pharmatechnik.Nav.Language.CodeAnalysis.Common {
     public static class LinePositionExtensions {
 
         public static LinePosition ToLinePosition(this Microsoft.CodeAnalysis.Text.LinePosition linePosition) {
