@@ -28,7 +28,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     return GoToImageMonikers.GoToInitCallDeclaration;
                 }
                 return TaskAnnotation is NavTriggerAnnotation ? GoToImageMonikers.GoToTriggerDefinition : GoToImageMonikers.GoToTaskDefinition;
-            }
+            }set { }
         }
 
         public object ToolTip {
@@ -45,6 +45,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                     return "Go To Begin Logic";
                 }
                 return "Go To Task Definition"; }
+            set { }
         }
     }
 }
