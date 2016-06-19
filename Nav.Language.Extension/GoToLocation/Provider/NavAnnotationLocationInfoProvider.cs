@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,25 +18,25 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
         where TAnnotation: NavTaskAnnotation {
         
         protected NavAnnotationLocationInfoProvider(TAnnotation annotation) {
+            if(annotation == null) {
+                throw new ArgumentNullException(nameof(annotation));
+            }
             Annotation = annotation;
         }
         
         public TAnnotation Annotation { get; set; }
 
-        public override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
 
             string sourceText;
             var textBuffer = NavLanguagePackage.GetOpenTextBufferForFile(Annotation.NavFileName);
             if (textBuffer != null) {
                 sourceText = textBuffer.CurrentSnapshot.GetText();
             } else {
-                sourceText = File.ReadAllText(Annotation.NavFileName);
+                sourceText = await Task.Run(()=> File.ReadAllText(Annotation.NavFileName), cancellationToken).ConfigureAwait(false);
             }
 
-            var location = await LocationFinder.FindNavDefinitionLocationsAsync(sourceText, Annotation, cancellationToken)
-                .ConfigureAwait(false);
-
-            return location;
+            return await GetLocationsAsync(sourceText, cancellationToken).ConfigureAwait(false);
         }
 
         protected abstract Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = default(CancellationToken));
