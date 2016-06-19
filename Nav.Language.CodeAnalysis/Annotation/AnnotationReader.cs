@@ -404,7 +404,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         #endregion
 
         internal static List<string> ToParameterTypeList(IEnumerable<IParameterSymbol> beginLogicParameter) {
-            return beginLogicParameter.OrderBy(p => p.Ordinal).Select(p => p.ToDisplayString()).ToList();
+            return beginLogicParameter.OrderBy(p => p.Ordinal)
+                                      .Select(p => p.ToDisplayString())
+                                      .ToList();
         }
 
         [NotNull]

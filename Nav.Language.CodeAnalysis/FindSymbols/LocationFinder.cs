@@ -19,58 +19,10 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.Common;
 
 namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
-    // TODO Diese Klasse sollte besser in die CodeAnalysis Assembly. Momentan gibt es allerdings noch eine Abhängigkeit zu den ImageMonikers...
     public static class LocationFinder {
 
-        #region FindNavDefinitionLocationsAsync
-
-        public static Task<IEnumerable<LocationInfo>> FindNavDefinitionLocationsAsync(string sourceText, NavTaskAnnotation taskAnnotation, CancellationToken cancellationToken) {
-
-            var locationResult = Task.Run(() => {
-
-                var syntaxTree = SyntaxTree.ParseText(sourceText, taskAnnotation.NavFileName, cancellationToken);
-                var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
-                if (codeGenerationUnitSyntax == null) {
-                    // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError("Unable to parse nav file."));
-                }
-
-                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
-
-                var task = codeGenerationUnit.Symbols
-                                             .OfType<ITaskDefinitionSymbol>()
-                                             .FirstOrDefault(t => t.Name == taskAnnotation.TaskName);
-
-                if (task == null) {
-                    // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError($"Unable to locate task '{taskAnnotation.TaskName}'"));
-                }
-                
-                // TODO If's refaktorieren. Evtl. Visitor um Annotations bauen, oder gleich explizit auflösen
-                var triggerAnnotation = taskAnnotation as NavTriggerAnnotation;
-                if (triggerAnnotation != null) {
-   
-                    return GetTriggerLocations(task, triggerAnnotation);
-                }
-
-                var exitAnnotation = taskAnnotation as NavExitAnnotation;
-                if (exitAnnotation != null) {
-                    return GetExitLocations(task, exitAnnotation);
-                }
-
-                var initAnnotation = taskAnnotation as NavInitAnnotation;
-                if (initAnnotation != null) {
-
-                    return GetInitLocations(task, initAnnotation);
-                }
-
-                return GetTaskLocations(task, taskAnnotation);
-
-            }, cancellationToken);
-
-            return locationResult;
-        }
-
+        #region FindNavLocationsAsync
+        
         public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavTaskAnnotation annotation, CancellationToken cancellationToken) {
             return FindNavLocationsAsync(sourceText, annotation, GetTaskLocations, cancellationToken);
         }
@@ -217,6 +169,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 var beginLogicMethods = wfsClass.GetMembers()
                                                 .OfType<IMethodSymbol>()
+                                                // TODO String ais CodeGenInfo o.ä.
                                                 .Where(m => m.Name == "BeginLogic");
 
                 // Der erste Parameter ist immer das IBegin---WFS interface.
@@ -251,15 +204,13 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             
             return task;
         }
-
-       
-
+        
         static IMethodSymbol FindBestBeginLogicOverload(IList<string> beginParameter, IEnumerable<IMethodSymbol> beginLogicMethods) {
 
             var bestMatch = beginLogicMethods.Select(m => new {
-                MatchCount     = GetParameterMatchCount(beginParameter, AnnotationReader.ToParameterTypeList(m.Parameters)),
-                ParameterCount = m.Parameters.Length,
-                Method         = m})
+                                MatchCount     = GetParameterMatchCount(beginParameter, AnnotationReader.ToParameterTypeList(m.Parameters)),
+                                ParameterCount = m.Parameters.Length,
+                                Method         = m})
                     .Where(x => x.MatchCount >=0 ) // 0 ist OK, falls der Init keine Argumente hat!
                     .OrderByDescending(x=> x.MatchCount)
                     .ThenBy(x=> x.ParameterCount)
@@ -364,8 +315,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
                 // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
-                var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
-                var memberSymbol = derived?.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
+                var derived        = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
+                var memberSymbol   = derived?.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
 
                 if (memberLocation == null) {
