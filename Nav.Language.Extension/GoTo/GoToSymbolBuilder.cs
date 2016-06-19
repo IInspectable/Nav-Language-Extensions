@@ -2,7 +2,7 @@
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
-
+using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;

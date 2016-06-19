@@ -58,7 +58,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Common\LinePositionExtensions.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTaggerProvider.cs" />
@@ -70,8 +69,6 @@
     <Compile Include="GoToLocation\GoToImageMonikers.cs" />
     <Compile Include="GoToLocation\GoToLocationService.cs" />
     <Compile Include="GoToLocation\GoToTag.cs" />
-    <Compile Include="GoToLocation\LocationFinder.cs" />
-    <Compile Include="GoToLocation\LocationInfo.cs" />
     <Compile Include="GoToLocation\Provider\NavAnnotationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavExitAnnotationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavInitAnnotationLocationInfoProvider.cs" />

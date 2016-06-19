@@ -58,7 +58,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             await _goToLocationService.GoToLocationInPreviewTabAsync(
                 _textView, 
                 placementRectangle,
-                cancellationToken => _goToTag.GetLocationsAsync(cancellationToken));
+                _goToTag.Provider);
         }
 
         internal void Update(IntraTextGoToTag goToTag) {

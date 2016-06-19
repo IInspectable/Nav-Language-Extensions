@@ -1,6 +1,5 @@
 ﻿#region Using Directives
 
-using System;
 using System.Linq;
 using System.Windows;
 using System.Threading;
@@ -14,7 +13,8 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
-
+using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
@@ -37,20 +37,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             _waitIndicator = waitIndicator;
         }
 
-        public async Task GoToLocationInPreviewTabAsync(IWpfTextView originatingTextView, Rect placementRectangle, Func<CancellationToken, Task<IEnumerable<LocationInfo>>> getLocationsTask) {
+        public async Task GoToLocationInPreviewTabAsync(IWpfTextView originatingTextView, Rect placementRectangle, IEnumerable<ILocationInfoProvider> provider) {
             
             List<LocationInfo> locations;
             using (var waitContext = _waitIndicator.StartWait(title: MessageTitle, message: SearchingLocationMessage, allowCancel: true)) {
 
                 try {
 
-                    var task = getLocationsTask(waitContext.CancellationToken);
-                    locations = (await task).ToList();
-
-                    // TODO Ist dieser Check nötig?
-                    if (task.IsCanceled) {
-                        return;
-                    }                   
+                    var locs = await GetLocationsAsync(provider, waitContext.CancellationToken);
+                    locations = locs.ToList();
 
                     // Es gibt nur eine einzige Location => direkt anspringen, da wir denselben Wait Indicator verwenden wollen.
                     if (locations.Count == 1 && locations[0].IsValid) {
@@ -107,6 +102,19 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
                 ctxMenu.Items.Add(item);
             }
+        }
+
+        static async Task<IEnumerable<LocationInfo>> GetLocationsAsync(IEnumerable<ILocationInfoProvider> providers, CancellationToken cancellationToken = default(CancellationToken)) {
+
+            var locationInfos = new List<LocationInfo>();
+
+            foreach (var provider in providers) {
+                var lis = await provider.GetLocationsAsync(cancellationToken);
+
+                locationInfos.AddRange(lis);
+            }
+
+            return locationInfos;
         }
 
         void GoToLocationInPreviewTab(LocationInfo location) {
