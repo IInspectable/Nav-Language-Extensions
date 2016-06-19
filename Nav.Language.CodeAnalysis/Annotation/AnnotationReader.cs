@@ -1,13 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region Using Directives
+
+using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 using JetBrains.Annotations;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 using Pharmatechnik.Nav.Language.CodeGen;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
 
@@ -17,6 +23,45 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
     }
 
     public static class AnnotationReader {
+
+        public static IEnumerable<NavTaskAnnotation> ReadNavTaskAnnotations(Document document) {
+            var semanticModel = document.GetSemanticModelAsync().Result;
+            var rootNode = semanticModel.SyntaxTree.GetRoot();
+
+            var classDeclarations = rootNode.DescendantNodesAndSelf()
+                                            .OfType<ClassDeclarationSyntax>();
+
+            // TODO Diese ganze Gaudi hätte ich gerne von den "Tags" entkoppelt, und in den AnnotationReader gelegt
+            foreach (var classDeclaration in classDeclarations) {
+
+                var navTaskAnnotation = ReadNavTaskAnnotation(semanticModel, classDeclaration);
+
+                if (navTaskAnnotation == null) {
+                    continue;
+                }
+
+                yield return navTaskAnnotation;
+
+                // Method Annotations
+                var methodDeclarations = classDeclaration.DescendantNodes()
+                                                        .OfType<MethodDeclarationSyntax>();
+                var methodAnnotations = ReadMethodAnnotations(semanticModel, navTaskAnnotation, methodDeclarations);
+
+                foreach (var methodAnnotation in methodAnnotations) {
+                    yield return methodAnnotation;
+                }
+
+
+                var invocationExpressions = classDeclaration.DescendantNodes()
+                                                            .OfType<InvocationExpressionSyntax>();
+                var callAnnotations = ReadInitCallAnnotation(semanticModel, navTaskAnnotation, invocationExpressions);
+
+                foreach (var initCallAnnotation in callAnnotations) {
+
+                    yield return initCallAnnotation;
+                }
+            }
+        }
 
         #region ReadNavTaskAnnotation
 
