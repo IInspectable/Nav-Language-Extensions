@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.CodeGen;
-using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
@@ -79,7 +78,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             var cnProvider = new SimpleLocationInfoProvider(LocationInfo.FromLocation(
                 connectionPointReferenceSymbol.Declaration.Location,
                 connectionPointReferenceSymbol.Name, 
-                SymbolImageMonikers.ExitConnectionPoint));
+                LocationKind.ExitDefinition));
 
             tagSpan.Tag.Provider.Add(cnProvider);
 

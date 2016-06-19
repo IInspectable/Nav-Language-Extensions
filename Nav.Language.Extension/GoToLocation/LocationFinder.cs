@@ -13,7 +13,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 
 #endregion
@@ -127,7 +126,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                    LocationInfo.FromLocation(
                        location    : task.Syntax.Identifier.GetLocation(),
                        displayName : task.Name,
-                       imageMoniker: SymbolImageMonikers.TaskDefinition));
+                       kind        : LocationKind.TaskDefinition));
         }
 
         static IEnumerable<LocationInfo> GetTriggerLocations(ITaskDefinitionSymbol task, NavTriggerAnnotation triggerAnnotation) {
@@ -144,7 +143,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             return ToEnumerable(LocationInfo.FromLocation(
                 location    : trigger.Location,
                 displayName : trigger.Name,
-                imageMoniker: SymbolImageMonikers.SignalTrigger));
+                kind        : LocationKind.TriggerDefinition));
         }
 
         static IEnumerable<LocationInfo> GetInitLocations(ITaskDefinitionSymbol task, NavInitAnnotation initAnnotation) {
@@ -161,7 +160,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             return ToEnumerable(LocationInfo.FromLocation(
                 location    : initNode.Location,
                 displayName : initNode.Name,
-                imageMoniker: SymbolImageMonikers.InitConnectionPoint));            
+                kind        : LocationKind.InitDefinition));            
         }
 
         static IEnumerable<LocationInfo> GetExitLocations(ITaskDefinitionSymbol task, NavExitAnnotation exitAnnotation) {
@@ -172,7 +171,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                                       .Select(et => LocationInfo.FromLocation(
                                           location    : et.ConnectionPoint?.Location,
                                           displayName : et.ConnectionPoint?.Name,
-                                          imageMoniker: SymbolImageMonikers.ExitConnectionPoint))
+                                          kind        : LocationKind.ExitDefinition))
                                       .ToList();
 
             if (!exitTransitions.Any()) {
@@ -246,7 +245,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 return LocationInfo.FromLocation(
                     location    : new Location(textExtent, lineExtent, filePath),
                     displayName : "Go To BeginLogic",
-                    imageMoniker: GoToImageMonikers.GoToInitCallDeclaration);
+                    kind        : LocationKind.InitCallDeclaration);
 
             }, cancellationToken);
             
@@ -333,8 +332,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                     locs.Add( LocationInfo.FromLocation(
                         location    : new Location(textExtent, lineExtent, filePath), 
                         // TODO Hier evtl. relativen Pfad angeben
-                        displayName : filePath, 
-                        imageMoniker: GoToImageMonikers.GoToTaskDeclaration));
+                        displayName : filePath,
+                        kind        : LocationKind.TaskDeclaration));
                 }
 
                 if(!locs.Any()) {
@@ -385,9 +384,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 var filePath   = memberLocation.SourceTree?.FilePath;
 
                 return LocationInfo.FromLocation(
-                    new Location(textExtent, lineExtent, filePath),
-                    "Go To Trigger Declaration",
-                    GoToImageMonikers.GoToTriggerDeclaration);
+                    location   : new Location(textExtent, lineExtent, filePath),
+                    displayName: "Go To Trigger Declaration",
+                    kind       : LocationKind.TriggerDeclaration);
 
             }, cancellationToken);
 
@@ -431,9 +430,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 var filePath = memberLocation.SourceTree?.FilePath;
 
                 return LocationInfo.FromLocation(
-                    new Location(textExtent, lineExtent, filePath),
-                    $"{codegenInfo.TaskCodeGenInfo.WfsTypeName}.{codegenInfo.AfterLogicMethodName}",
-                    GoToImageMonikers.GoToTaskExitDeclaration);
+                    location   : new Location(textExtent, lineExtent, filePath),
+                    displayName: $"{codegenInfo.TaskCodeGenInfo.WfsTypeName}.{codegenInfo.AfterLogicMethodName}",
+                    kind       : LocationKind.TaskExitDeclaration);
 
             }, cancellationToken);
 
