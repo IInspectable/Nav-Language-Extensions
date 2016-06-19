@@ -28,10 +28,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var snapshotSpan = new SnapshotSpan(_textSnapshot, start, length);
             var provider     = new NavTaskAnnotationLocationInfoProvider(navTaskAnnotation);
             // TODO Tooltip in Ressource
-            var tag = new IntraTextGoToTag(provider, navTaskAnnotation) {
-                ToolTip      = "Go To Task Definition",
-                ImageMoniker = GoToImageMonikers.Definition
-            };
+            var tag = new IntraTextGoToTag(
+                provider    : provider, 
+                imageMoniker: GoToImageMonikers.Definition,
+                toolTip     : "Go To Task Definition");
+
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
 
@@ -43,10 +44,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var snapshotSpan = new SnapshotSpan(_textSnapshot, start, length);
             var provider     = new NavInitAnnotationLocationInfoProvider(navInitAnnotation);
             // TODO Tooltip in Ressource
-            var tag = new IntraTextGoToTag(provider, navInitAnnotation) {
-                ToolTip      = "Go To Init Definition",
-                ImageMoniker = GoToImageMonikers.Definition
-            };
+            var tag = new IntraTextGoToTag(
+                provider    : provider, 
+                imageMoniker: GoToImageMonikers.Definition, 
+                toolTip     : "Go To Init Definition");
+
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
 
@@ -58,10 +60,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var snapshotSpan = new SnapshotSpan(_textSnapshot, start, length);
             var provider     = new NavExitAnnotationLocationInfoProvider(navExitAnnotation);
             // TODO Tooltip in Ressource
-            var tag = new IntraTextGoToTag(provider, navExitAnnotation) {
-                ToolTip      = "Go To Exit Definition",
-                ImageMoniker = GoToImageMonikers.Definition
-            };
+            var tag = new IntraTextGoToTag(
+                provider    : provider, 
+                imageMoniker: GoToImageMonikers.Definition, 
+                toolTip     : "Go To Exit Definition");
+
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
 
@@ -73,10 +76,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var snapshotSpan = new SnapshotSpan(_textSnapshot, start, length);
             var provider     = new NavTriggerAnnotationLocationInfoProvider(navTriggerAnnotation);
             // TODO Tooltip in Ressource
-            var tag = new IntraTextGoToTag(provider, navTriggerAnnotation) {
-                ToolTip      = "Go To Trigger Definition",
-                ImageMoniker = GoToImageMonikers.Definition
-            };
+            var tag = new IntraTextGoToTag(
+                provider    : provider, 
+                imageMoniker: GoToImageMonikers.Definition, 
+                toolTip     : "Go To Trigger Definition");
+
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
         
@@ -89,11 +93,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var provider = new NavInitCallLocationInfoProvider(_textSnapshot.TextBuffer, navInitCallAnnotation);
             // TODO Tooltip in Ressource
-            var tag = new IntraTextGoToTag(provider, navInitCallAnnotation) {
-                ToolTip      = "Go To Implementation",
-                ImageMoniker = GoToImageMonikers.Declaration
-            };
-            
+            var tag = new IntraTextGoToTag(
+                provider    : provider, 
+                imageMoniker: GoToImageMonikers.Declaration, 
+                toolTip     : "Go To Implementation");      
+                  
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
     }
