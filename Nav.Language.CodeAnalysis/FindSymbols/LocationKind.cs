@@ -6,7 +6,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         TaskDefinition,
         InitDefinition,
         ExitDefinition,
-        TriggerDefinition,
+        SignalTriggerDefinition,
 
         InitCallDeclaration,
         TaskExitDeclaration,
