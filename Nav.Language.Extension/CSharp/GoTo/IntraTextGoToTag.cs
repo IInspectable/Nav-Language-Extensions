@@ -1,7 +1,7 @@
 #region Using Directives
 
 using Microsoft.VisualStudio.Imaging.Interop;
-using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
+
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
@@ -11,19 +11,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     class IntraTextGoToTag : GoToTag {
 
-        public IntraTextGoToTag(ILocationInfoProvider provider, NavTaskAnnotation navTaskAnnotation) 
+        public IntraTextGoToTag(ILocationInfoProvider provider, ImageMoniker imageMoniker, string toolTip) 
             : base(provider) {
-            TaskAnnotation = navTaskAnnotation;
+            ImageMoniker = imageMoniker;
+            ToolTip      = toolTip;
         }
 
-        public NavTaskAnnotation TaskAnnotation { get; }
-
-        public ImageMoniker ImageMoniker {
-            get;set;
-        }
-
-        public object ToolTip {
-            get; set;
-        }
+        public ImageMoniker ImageMoniker { get;}
+        public object ToolTip { get; }
     }
 }
