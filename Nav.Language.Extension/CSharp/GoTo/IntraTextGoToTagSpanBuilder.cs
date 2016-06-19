@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var tag = new IntraTextGoToTag(provider, navTaskAnnotation) {
                 ToolTip      = "Go To Task Definition",
-                ImageMoniker = GoToImageMonikers.GoToTaskDefinition
+                ImageMoniker = GoToImageMonikers.TaskDefinition
             };
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var tag = new IntraTextGoToTag(provider, navInitAnnotation) {
                 ToolTip      = "Go To Init Definition",
-                ImageMoniker = GoToImageMonikers.GoToInitDefinition        
+                ImageMoniker = GoToImageMonikers.InitDefinition        
             };
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
@@ -60,7 +60,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var tag = new IntraTextGoToTag(provider, navExitAnnotation) {
                 ToolTip      = "Go To Exit Transition Definition",
-                ImageMoniker = GoToImageMonikers.GoToExitDefinition
+                ImageMoniker = GoToImageMonikers.ExitDefinition
             };
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
@@ -75,7 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var tag = new IntraTextGoToTag(provider, navTriggerAnnotation) {
                 ToolTip      = "Go To Trigger Definition",
-                ImageMoniker = GoToImageMonikers.GoToTriggerDefinition
+                ImageMoniker = GoToImageMonikers.TriggerDefinition
             };
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
@@ -91,7 +91,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var tag = new IntraTextGoToTag(provider, navInitCallAnnotation) {
                 ToolTip      = "Go To Begin Logic",
-                ImageMoniker = GoToImageMonikers.GoToInitCallDeclaration
+                ImageMoniker = GoToImageMonikers.InitCallDeclaration
             };
             
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);

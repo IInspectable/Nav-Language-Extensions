@@ -1,8 +1,21 @@
-using Microsoft.VisualStudio.Imaging.Interop;
-
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
     // TODO Diese Klasse sollte besser in die CodeAnalysis Assembly. Momentan gibt es allerdings noch eine Abhängigkeit zu den ImageMonikers...
+
+    public enum LocationKind {
+        Unspecified,
+
+        TaskDefinition,
+        InitDefinition,
+        ExitDefinition,
+        TriggerDefinition,
+
+        InitCallDeclaration,
+        TaskExitDeclaration,
+        TaskDeclaration,
+        TriggerDeclaration
+    }
+
     public struct LocationInfo {
 
         string _errorMessage;
@@ -13,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         }
 
         public Location Location { get; private set; }
-        public ImageMoniker Moniker { get; private set; }
+        public LocationKind Kind { get; private set; }
 
         public string DisplayName {
             get {
@@ -36,11 +49,11 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             };
         }
 
-        public static LocationInfo FromLocation(Location location, string displayName="", ImageMoniker imageMoniker=default(ImageMoniker)) {
+        public static LocationInfo FromLocation(Location location, string displayName="", LocationKind kind =LocationKind.Unspecified) {
             return new LocationInfo {
                 Location    = location,
                 DisplayName = displayName,
-                Moniker     = imageMoniker,
+                Kind        = kind,
             };
         }
     }

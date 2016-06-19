@@ -91,7 +91,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             foreach (var location in locations) {
 
                 var crispImage = new CrispImage {
-                    Moniker = location.Moniker
+                    Moniker = GoToImageMonikers.GetMoniker(location.Kind)
                 };
 
                 var backgroundBrush = ctxMenu.Background as SolidColorBrush;
@@ -108,7 +108,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 ctxMenu.Items.Add(item);
             }
         }
-        
+
         void GoToLocationInPreviewTab(LocationInfo location) {
 
             if(!location.IsValid) {
@@ -116,16 +116,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 return;
             }
 
-            using (_waitIndicator.StartWait(title: MessageTitle, message: OpeningFileMessage, allowCancel: true)) {
+            using(_waitIndicator.StartWait(title: MessageTitle, message: OpeningFileMessage, allowCancel: true)) {
                 NavLanguagePackage.GoToLocationInPreviewTab(location.Location);
             }
         }
 
         void ShowLocationErrorMessage(LocationInfo locationInfo) {
-            MessageBox.Show(messageBoxText: locationInfo.ErrorMessage, 
-                            caption       : MessageTitle, 
-                            button        : MessageBoxButton.OK, 
-                            icon          : MessageBoxImage.Asterisk);
+            MessageBox.Show(messageBoxText: locationInfo.ErrorMessage, caption: MessageTitle, button: MessageBoxButton.OK, icon: MessageBoxImage.Asterisk);
         }
+
     }
+
 }
