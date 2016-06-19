@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -18,13 +19,13 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
             : base(taskAnnotation, identifier) {
 
             BeginItfFullyQualifiedName = beginItfFullyQualifiedName ?? String.Empty;
-            Parameter                  = parameter                  ?? new List<string>();
+            Parameter                  = (parameter ?? new List<string>()).ToImmutableList();
         }
 
         [NotNull]
         public string BeginItfFullyQualifiedName { get;}
 
         [NotNull]
-        public List<string> Parameter { get; }
+        public ImmutableList<string> Parameter { get; }
     }
 }
