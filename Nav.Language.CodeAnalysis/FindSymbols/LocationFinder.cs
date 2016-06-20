@@ -276,14 +276,14 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     if (!lineSpan.IsValid) {
                         continue;
                     }
-
+                    
                     var textExtent = loc.SourceSpan.ToTextExtent();
                     var lineExtent = lineSpan.ToLinePositionExtent();
                     
                     locs.Add(LocationInfo.FromLocation(
                         location: new Location(textExtent, lineExtent, filePath),
-                        // TODO Ausrichtung muss besser werden
-                        displayName: $"{PathHelper.GetRelativePath(project.FilePath, filePath)} in <{project.Name}>",
+                        // TODO Evtl. das Projekt mit angeben => das ist nicht notwendigerweise project!
+                        displayName: $"{PathHelper.GetRelativePath(project.FilePath, filePath)}",
                         kind        : LocationKind.TaskDeclaration));
                 }
 
