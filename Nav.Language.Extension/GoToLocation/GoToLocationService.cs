@@ -96,7 +96,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
                 MenuItem item = new MenuItem {
                     Header = location.DisplayName,
-                    Icon   = crispImage 
+                    Icon   = crispImage ,
+                    //InputGestureText = "<XTPlus.OffenePosten>"
                 };
                 item.Click += (_, __) => GoToLocationInPreviewTab(location);
 
@@ -124,7 +125,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 return;
             }
 
-            using(_waitIndicator.StartWait(title: MessageTitle, message: OpeningFileMessage, allowCancel: true)) {
+            using(_waitIndicator.StartWait(title: MessageTitle, message: OpeningFileMessage, allowCancel: false)) {
                 NavLanguagePackage.GoToLocationInPreviewTab(location.Location);
             }
         }
@@ -132,7 +133,5 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         void ShowLocationErrorMessage(LocationInfo locationInfo) {
             MessageBox.Show(messageBoxText: locationInfo.ErrorMessage, caption: MessageTitle, button: MessageBoxButton.OK, icon: MessageBoxImage.Asterisk);
         }
-
     }
-
 }
