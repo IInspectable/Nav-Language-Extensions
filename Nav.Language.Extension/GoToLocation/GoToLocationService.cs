@@ -17,6 +17,7 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
+using Pharmatechnik.Nav.Language.Extension.UI;
 
 #endregion
 
@@ -75,7 +76,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             }
 
             // Wenn wir hier sind, dann gibt es mehrere Locations, für die wir eine Auswahl anzeigen müssen
-            ContextMenu ctxMenu = new ContextMenu {
+            var ctxMenu = new VsContextMenu {
                 PlacementTarget    = originatingTextView.VisualElement,
                 PlacementRectangle = placementRectangle, 
                 Placement          = PlacementMode.Bottom,
