@@ -18,3 +18,4 @@
 /.vs
 /Nav.Language.Extension/Nav.Language.Extension.csproj.user
 *.csproj.user
+/Nav.Language.Extensions.sln.DotSettings.user
