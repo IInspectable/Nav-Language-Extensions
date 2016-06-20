@@ -279,11 +279,11 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                     var textExtent = loc.SourceSpan.ToTextExtent();
                     var lineExtent = lineSpan.ToLinePositionExtent();
-
-                    locs.Add( LocationInfo.FromLocation(
-                        location    : new Location(textExtent, lineExtent, filePath), 
-                        // TODO Hier evtl. relativen Pfad angeben
-                        displayName : filePath,
+                    
+                    locs.Add(LocationInfo.FromLocation(
+                        location: new Location(textExtent, lineExtent, filePath),
+                        // TODO Ausrichtung muss besser werden
+                        displayName: $"{PathHelper.GetRelativePath(project.FilePath, filePath)} in <{project.Name}>",
                         kind        : LocationKind.TaskDeclaration));
                 }
 
@@ -291,7 +291,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     // TODO Fehlermeldung
                     return ToEnumerable(LocationInfo.FromError("Unable to locate WFS"));
                 }
-                return locs;
+                return locs.OrderBy(l=>l.DisplayName);
 
             }, cancellationToken);
 
