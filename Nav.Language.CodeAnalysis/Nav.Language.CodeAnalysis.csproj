@@ -106,6 +106,7 @@
     <Compile Include="Annotation\NavTaskAnnotation.cs" />
     <Compile Include="Annotation\NavTriggerAnnotation.cs" />
     <Compile Include="Common\LinePositionExtensions.cs" />
+    <Compile Include="Common\PathHelper.cs" />
     <Compile Include="FindSymbols\LocationFinder.cs" />
     <Compile Include="FindSymbols\LocationInfo.cs" />
     <Compile Include="FindSymbols\LocationKind.cs" />
