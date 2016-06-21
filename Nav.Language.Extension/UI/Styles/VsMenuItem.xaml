@@ -9,7 +9,8 @@
 
     <!-- SubmenuItem -->
     <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}" TargetType="{x:Type local:VsMenuItem}">
-        <Border Name="Border" >
+        <Border Name="Border" 
+                TextBlock.Foreground = "{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarTextActiveBrushKey}}">
             <Grid>
                 
                 <Grid.ColumnDefinitions>
@@ -29,15 +30,14 @@
                                   Grid.Column         = "1"
                                   ContentSource       = "Header"
                                   VerticalAlignment   = "Center"
-                                  
                                   Margin              = "5,2,0,2"
                                   RecognizesAccessKey = "True"/>
-                <TextBlock x:Name         = "InputGestureText"
-                           Grid.Column    = "2"
-                           Text           = "{TemplateBinding InputGestureText}"
-                           VerticalAlignment="Center"
-                           Margin         = "5,2,0,2"
-                           DockPanel.Dock = "Right" />
+                <TextBlock x:Name            = "InputGestureText"
+                           Grid.Column       = "2"                           
+                           Text              = "{TemplateBinding InputGestureText}"
+                           VerticalAlignment = "Center"
+                           Margin            = "5,2,0,2"
+                           DockPanel.Dock    = "Right" />
             </Grid>
         </Border>
         
