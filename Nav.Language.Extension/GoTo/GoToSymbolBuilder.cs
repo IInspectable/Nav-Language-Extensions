@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System.Linq;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
@@ -42,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             
             return CreateTagSpan(taskDefinitionSymbol.Location, provider);
         }
-
+        
         public override TagSpan<GoToTag> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
 
             if (taskNodeSymbol.Declaration == null) {
@@ -50,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             }           
             
             return CreateGoToLocationTagSpan(taskNodeSymbol.Location,
-                LocationInfo.FromLocation(taskNodeSymbol.Declaration.Location));
+                LocationInfo.FromLocation(taskNodeSymbol.Declaration.Location, $"task {taskNodeSymbol.Declaration.Name}", LocationKind.TaskDefinition));
         }
 
         public override TagSpan<GoToTag> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
@@ -59,8 +60,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
             
-            return CreateGoToLocationTagSpan(nodeReferenceSymbol.Location,
-                LocationInfo.FromLocation(nodeReferenceSymbol.Declaration.Location));
+            var tagSpan = CreateGoToLocationTagSpan(nodeReferenceSymbol.Location,
+                LocationInfo.FromLocation(nodeReferenceSymbol.Declaration.Location, "Node Declaration", LocationKind.Unspecified));
+
+            var nodeTagSpan = Visit(nodeReferenceSymbol.Declaration);
+            if(nodeTagSpan!=null && nodeTagSpan.Tag.Provider.Any()) {
+                tagSpan.Tag.Provider.AddRange(nodeTagSpan.Tag.Provider);
+            }
+     
+            return tagSpan;
         }
 
         public override TagSpan<GoToTag> VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
@@ -83,6 +91,14 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             tagSpan.Tag.Provider.Add(cnProvider);
 
             return tagSpan;
+        }
+
+        public override TagSpan<GoToTag> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+
+            var info = new TaskBeginCodeGenInfo(initNodeSymbol);
+            var provider = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, info);
+
+            return CreateTagSpan(initNodeSymbol.Location, provider);
         }
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {

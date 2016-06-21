@@ -6,22 +6,22 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed class Transition : ITransition {
 
-        internal Transition(ITaskDefinitionSymbol taskDefinition, 
+        internal Transition(ITaskDefinitionSymbol containingTask, 
                             TransitionDefinitionSyntax syntax, 
                             NodeReferenceSymbol source, 
                             EdgeModeSymbol edgeMode, 
                             NodeReferenceSymbol target, 
                             SymbolCollection<TriggerSymbol> triggers)  {
 
-            if (taskDefinition == null) {
-                throw new ArgumentNullException(nameof(taskDefinition));
+            if (containingTask == null) {
+                throw new ArgumentNullException(nameof(containingTask));
             }
 
             if (syntax == null) {
                 throw new ArgumentNullException(nameof(syntax));
             }
 
-            TaskDefinition = taskDefinition;
+            ContainingTask = containingTask;
             Syntax   = syntax;
             Source   = source;
             EdgeMode = edgeMode;
@@ -34,7 +34,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [NotNull]
-        public ITaskDefinitionSymbol TaskDefinition { get; }
+        public ITaskDefinitionSymbol ContainingTask { get; }
 
         [NotNull]
         public Location Location {

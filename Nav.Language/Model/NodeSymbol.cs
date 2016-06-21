@@ -7,18 +7,25 @@ namespace Pharmatechnik.Nav.Language {
 
     abstract class NodeSymbol<T> : Symbol, INodeSymbol where T: NodeDeclarationSyntax {
 
-        protected NodeSymbol(string name, Location location, T syntax) : base(name, location) {
+        protected NodeSymbol(string name, Location location, T syntax, TaskDefinitionSymbol containingTask) : base(name, location) {
 
             if (syntax == null) {
                 throw new ArgumentNullException(nameof(syntax));
             }
+            if (containingTask == null) {
+                throw new ArgumentNullException(nameof(containingTask));
+            }
 
-            Syntax = syntax;
-            References = new List<INodeReferenceSymbol>();
+            Syntax         = syntax;
+            ContainingTask = containingTask;
+            References     = new List<INodeReferenceSymbol>();
         }
 
         [NotNull]
         public T Syntax { get; }
+
+        [NotNull]
+        public ITaskDefinitionSymbol ContainingTask { get; }
 
         public List<INodeReferenceSymbol> References { get; }
 
@@ -69,7 +76,8 @@ namespace Pharmatechnik.Nav.Language {
             where TSyntax : NodeDeclarationSyntax
             where TIncomings : IEdge {
 
-        protected NodeSymbolWithIncomings(string name, Location location, TSyntax syntax) : base(name, location, syntax) {
+        protected NodeSymbolWithIncomings(string name, Location location, TSyntax syntax, TaskDefinitionSymbol containingTask)
+            : base(name, location, syntax, containingTask) {
             Incomings = new List<TIncomings>();
         }
 
@@ -88,7 +96,8 @@ namespace Pharmatechnik.Nav.Language {
             where TSyntax : NodeDeclarationSyntax
             where TOutgoings : IEdge {
 
-        protected NodeSymbolWithOutgoings(string name, Location location, TSyntax syntax) : base(name, location, syntax) {
+        protected NodeSymbolWithOutgoings(string name, Location location, TSyntax syntax, TaskDefinitionSymbol containingTask)
+            : base(name, location, syntax, containingTask) {
             Outgoings = new List<TOutgoings>();
         }
 
@@ -108,7 +117,8 @@ namespace Pharmatechnik.Nav.Language {
             where TIncomings : IEdge
             where TOutgoings : IEdge {
 
-        protected NodeSymbolWithIncomingsAndOutgoings(string name, Location location, TSyntax syntax) : base(name, location, syntax) {
+        protected NodeSymbolWithIncomingsAndOutgoings(string name, Location location, TSyntax syntax, TaskDefinitionSymbol containingTask)
+            : base(name, location, syntax, containingTask) {
             Incomings = new List<TIncomings>();
             Outgoings = new List<TOutgoings>();
         }
@@ -127,7 +137,8 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class InitNodeSymbol : NodeSymbolWithOutgoings<InitNodeDeclarationSyntax, ITransition>, IInitNodeSymbol {
 
-        public InitNodeSymbol(string name, Location location, InitNodeDeclarationSyntax syntax) : base(name, location, syntax) {
+        public InitNodeSymbol(string name, Location location, InitNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
+            : base(name, location, syntax, containingTask) {
         }
 
         IReadOnlyList<ITransition> IInitNodeSymbol.Outgoings { get { return Outgoings; } }
@@ -135,7 +146,8 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class ExitNodeSymbol : NodeSymbolWithIncomings<ExitNodeDeclarationSyntax, IEdge>, IExitNodeSymbol {
 
-        public ExitNodeSymbol(string name, Location location, ExitNodeDeclarationSyntax syntax) : base(name, location, syntax) {
+        public ExitNodeSymbol(string name, Location location, ExitNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
+            : base(name, location, syntax, containingTask) {
         }
 
         IReadOnlyList<IEdge> IExitNodeSymbol.Incomings { get { return Incomings; } }
@@ -143,7 +155,8 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class EndNodeSymbol : NodeSymbolWithIncomings<EndNodeDeclarationSyntax, IEdge>, IEndNodeSymbol {
 
-        public EndNodeSymbol(string name, Location location, EndNodeDeclarationSyntax syntax) : base(name, location, syntax) {
+        public EndNodeSymbol(string name, Location location, EndNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
+            : base(name, location, syntax, containingTask) {
         }
 
         IReadOnlyList<IEdge> IEndNodeSymbol.Incomings { get { return Incomings; } }
@@ -151,7 +164,9 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class TaskNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<TaskNodeDeclarationSyntax, IEdge, IExitTransition>, ITaskNodeSymbol {
 
-        public TaskNodeSymbol(string name, Location location, TaskNodeDeclarationSyntax syntax, TaskNodeAliasSymbol alias, TaskDeclarationSymbol declaration) : base(name, location, syntax) {
+        public TaskNodeSymbol(string name, Location location, TaskNodeDeclarationSyntax syntax, TaskNodeAliasSymbol alias, 
+                             TaskDeclarationSymbol declaration, TaskDefinitionSymbol containingTask) 
+            : base(name, location, syntax, containingTask) {
             Declaration = declaration;
             
             if(alias != null) {
@@ -190,7 +205,8 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class DialogNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<DialogNodeDeclarationSyntax, IEdge, ITransition>, IDialogNodeSymbol {
 
-        public DialogNodeSymbol(string name, Location location, DialogNodeDeclarationSyntax syntax) : base(name, location, syntax) {
+        public DialogNodeSymbol(string name, Location location, DialogNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
+            : base(name, location, syntax, containingTask) {
         }
 
         IReadOnlyList<IEdge> IGuiNodeSymbol.Incomings { get { return Incomings; } }
@@ -199,7 +215,8 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class ViewNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<ViewNodeDeclarationSyntax, IEdge, ITransition>, IViewNodeSymbol {
 
-        public ViewNodeSymbol(string name, Location location, ViewNodeDeclarationSyntax syntax) : base(name, location, syntax) {          
+        public ViewNodeSymbol(string name, Location location, ViewNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
+            : base(name, location, syntax, containingTask) {          
         }
 
         IReadOnlyList<IEdge> IGuiNodeSymbol.Incomings { get { return Incomings; } }
@@ -208,7 +225,8 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class ChoiceNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<ChoiceNodeDeclarationSyntax, IEdge, ITransition>, IChoiceNodeSymbol {
 
-        public ChoiceNodeSymbol(string name, Location location, ChoiceNodeDeclarationSyntax syntax) : base(name, location, syntax) {
+        public ChoiceNodeSymbol(string name, Location location, ChoiceNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
+            : base(name, location, syntax, containingTask) {
         }
 
         IReadOnlyList<IEdge> IChoiceNodeSymbol.Incomings { get { return Incomings; } }

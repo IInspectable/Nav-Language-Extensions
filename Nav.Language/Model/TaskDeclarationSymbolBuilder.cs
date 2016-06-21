@@ -193,7 +193,7 @@ namespace Pharmatechnik.Nav.Language {
 
                     var location = identifier.GetLocation();
                     var name     = identifier.ToString();
-                    var init     = new InitConnectionPointSymbol(name, location, initNodeSyntax);
+                    var init     = new InitConnectionPointSymbol(name, location, initNodeSyntax, taskDeclaration);
 
                     AddConnectionPoint(taskDeclaration, init);
                 }
@@ -204,7 +204,7 @@ namespace Pharmatechnik.Nav.Language {
 
                     var location = identifier.GetLocation();
                     var name     = identifier.ToString();
-                    var exit     = new ExitConnectionPointSymbol(name, location, exitNodeSyntax);
+                    var exit     = new ExitConnectionPointSymbol(name, location, exitNodeSyntax, taskDeclaration);
 
                     AddConnectionPoint(taskDeclaration, exit);
                 }
@@ -214,7 +214,7 @@ namespace Pharmatechnik.Nav.Language {
 
                     var location = identifier.GetLocation();
                     var name     = identifier.ToString();
-                    var end      = new EndConnectionPointSymbol(name, location, endNodeSyntax);
+                    var end      = new EndConnectionPointSymbol(name, location, endNodeSyntax, taskDeclaration);
 
                     AddConnectionPoint(taskDeclaration, end);
                 }

@@ -1,4 +1,9 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
+using JetBrains.Annotations;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
@@ -17,8 +22,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             AfterLogicMethodName = $"After{exitTransition.Source?.Name}Logic";
         }
 
+        [NotNull]
         public TaskCodeGenInfo TaskCodeGenInfo { get; }
-        public string AfterLogicMethodName { get; }
 
+        [NotNull]
+        public string AfterLogicMethodName { get; }
     }
 }
