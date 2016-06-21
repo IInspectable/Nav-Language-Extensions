@@ -8,9 +8,10 @@ namespace Pharmatechnik.Nav.Language {
         
         internal ExitTransition(ExitTransitionDefinitionSyntax syntax,
                                 TaskDefinitionSymbol taskDefinition,
-                                NodeReferenceSymbol source, 
-                                ConnectionPointReferenceSymbol connectionPoint, EdgeModeSymbol edgeMode, 
-                                NodeReferenceSymbol target) {
+                                [CanBeNull] NodeReferenceSymbol source,
+                                [CanBeNull] ConnectionPointReferenceSymbol connectionPoint,
+                                [CanBeNull] EdgeModeSymbol edgeMode,
+                                [CanBeNull] NodeReferenceSymbol target) {
 
             if (syntax == null) {
                 throw new ArgumentNullException(nameof(syntax));
@@ -26,7 +27,9 @@ namespace Pharmatechnik.Nav.Language {
             EdgeMode        = edgeMode;
             Target          = target;
 
-            connectionPoint.ExitTransition = this;
+            if(connectionPoint != null) {                
+                connectionPoint.ExitTransition = this;
+            }
         }
 
         [NotNull]
