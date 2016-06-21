@@ -304,9 +304,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         public static Task<LocationInfo> FindTriggerDeclarationLocationsAsync(Project project, SignalTriggerCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
 
-            var task = Task.Run(() => {
+            var task = Task.Run(async ()  =>  {
 
-                var compilation   = project.GetCompilationAsync(cancellationToken).Result;
+                var compilation   = await project.GetCompilationAsync(cancellationToken);
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
