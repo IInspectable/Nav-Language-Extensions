@@ -4,7 +4,7 @@ namespace Pharmatechnik.Nav.Language {
     public interface ITransition: IEdge {
 
         [NotNull]
-        ITaskDefinitionSymbol TaskDefinition { get; }
+        ITaskDefinitionSymbol ContainingTask { get; }
 
         [NotNull]
         TransitionDefinitionSyntax Syntax { get; }

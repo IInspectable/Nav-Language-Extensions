@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
     <Compile Include="CodeGen\SignalTriggerCodeGenInfo.cs" />
+    <Compile Include="CodeGen\TaskBeginCodeGenInfo.cs" />
     <Compile Include="CodeGen\TaskCodeGenInfo.cs" />
     <Compile Include="CodeGen\TaskExitCodeGenInfo.cs" />
     <Compile Include="Common\TextLineExtent.cs" />

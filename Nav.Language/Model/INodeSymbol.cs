@@ -9,6 +9,9 @@ namespace Pharmatechnik.Nav.Language {
         NodeDeclarationSyntax Syntax { get; }
 
         [NotNull]
+        ITaskDefinitionSymbol ContainingTask { get; }
+
+        [NotNull]
         IReadOnlyList<INodeReferenceSymbol> References { get; }
 
         IEnumerable<ISymbol> SymbolsAndSelf();

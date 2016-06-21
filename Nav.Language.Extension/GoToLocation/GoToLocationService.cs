@@ -4,21 +4,20 @@ using System;
 using System.Linq;
 using System.Windows;
 using System.Threading;
-using System.Windows.Media;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows.Controls.Primitives;
 
 using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
+
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
-using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
+
+using Pharmatechnik.Nav.Language.Extension.UI;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
-using Pharmatechnik.Nav.Language.Extension.UI;
+using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
 #endregion
 

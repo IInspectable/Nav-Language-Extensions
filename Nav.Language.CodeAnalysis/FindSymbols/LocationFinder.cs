@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
+using JetBrains.Annotations;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -172,29 +174,22 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 // Der erste Parameter ist immer das IBegin---WFS interface.
                 var beginParameter = initCallAnnotation.Parameter.Skip(1).ToList();
-                var beginMethod = FindBestBeginLogicOverload(beginParameter, beginLogicMethods);
-                if(beginMethod == null) {
+                var beginMethod    = FindBestBeginLogicOverload(beginParameter, beginLogicMethods);
+
+                if (beginMethod == null) {
                     return LocationInfo.FromError($"Unable to find a matching overload for method 'BeginLogic'.");
                 }
 
-                var memberSyntax = beginMethod.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
+                var memberSyntax   = beginMethod.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
                 var memberLocation = memberSyntax?.Identifier.GetLocation();
+                var location       = ToLocation(memberLocation);
 
-                if(memberLocation == null) {
+                if(location == null) {
                     return LocationInfo.FromError($"Unable to get the location for method 'BeginLogic'.");
                 }
 
-                var lineSpan = memberLocation.GetLineSpan();
-                if(!lineSpan.IsValid) {
-                    return LocationInfo.FromError($"Unable to get the line span for method 'BeginLogic'.");
-                }
-
-                var textExtent = memberLocation.SourceSpan.ToTextExtent();
-                var lineExtent = lineSpan.ToLinePositionExtent();
-                var filePath   = memberLocation.SourceTree?.FilePath;
-
                 return LocationInfo.FromLocation(
-                    location    : new Location(textExtent, lineExtent, filePath),
+                    location    : location,
                     displayName : "Go To BeginLogic",
                     kind        : LocationKind.InitCallDeclaration);
 
@@ -316,24 +311,15 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var derived        = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
                 var memberSymbol   = derived?.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
+                var location       = ToLocation(memberLocation);
 
-                if (memberLocation == null) {
+                if (location == null) {
                     // TODO Fehlermeldung
                     return LocationInfo.FromError("Unable to locate member location.");
                 }
 
-                var lineSpan = memberLocation.GetLineSpan();
-                if (!lineSpan.IsValid) {
-                    // TODO Fehlermeldung
-                    return LocationInfo.FromError("Invalid linespan.");
-                }
-
-                var textExtent = memberLocation.SourceSpan.ToTextExtent();
-                var lineExtent = lineSpan.ToLinePositionExtent();
-                var filePath   = memberLocation.SourceTree?.FilePath;
-
                 return LocationInfo.FromLocation(
-                    location   : new Location(textExtent, lineExtent, filePath),
+                    location   : location,
                     displayName: "Go To Trigger Declaration",
                     kind       : LocationKind.TriggerDeclaration);
 
@@ -341,7 +327,72 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             return task;
         }
-        
+
+        #endregion
+
+        #region FindTaskBeginDeclarationLocationAsync
+
+        public static Task<LocationInfo> FindTaskBeginDeclarationLocationAsync(Project project, TaskBeginCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
+            var task = Task.Run(async () => {
+                var compilation = await project.GetCompilationAsync(cancellationToken);
+                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName);
+                if (wfsBaseSymbol == null) {
+                    // TODO Fehlermeldung
+                    return LocationInfo.FromError($"Unable to locate '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
+                }
+
+                var taskAnnotation = wfsBaseSymbol.DeclaringSyntaxReferences
+                                                  .Select(sr => sr.GetSyntax())
+                                                  .OfType<ClassDeclarationSyntax>()
+                                                  .Select(cd => AnnotationReader.ReadNavTaskAnnotation(cd, wfsBaseSymbol))
+                                                  .FirstOrDefault();
+
+                if (taskAnnotation == null) {
+                    // TODO Fehlermeldung
+                    return LocationInfo.FromError("Unable to locate WFS");
+                }
+
+                var derived = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
+
+                var beginLogics = derived.SelectMany(d=> d.GetMembers(codegenInfo.BeginLogicMethodName).OfType<IMethodSymbol>());
+
+                foreach(var beginLogic in beginLogics) {
+
+                    var methodDeclaration = beginLogic.DeclaringSyntaxReferences
+                                                      .Select(sr => sr.GetSyntax())
+                                                      .OfType<MethodDeclarationSyntax>()
+                                                      .FirstOrDefault();
+
+                    if (methodDeclaration == null) {
+                        continue;
+                    }
+                
+                    var initAnnotation = AnnotationReader.ReadNavInitAnnotation(taskAnnotation, methodDeclaration, beginLogic);
+                    if (initAnnotation?.InitName != codegenInfo.InitName) {
+                        continue;
+                    }
+
+                    var location = ToLocation(methodDeclaration.Identifier.GetLocation());
+                    if (location == null) {
+                        // TODO Fehlermeldung
+                        return LocationInfo.FromError("Unable to get member location.");
+                    }
+
+                    return LocationInfo.FromLocation(
+                        location   : location,
+                        displayName: $"{codegenInfo.TaskCodeGenInfo.WfsTypeName}.{codegenInfo.BeginLogicMethodName}",
+                        kind       : LocationKind.TaskExitDeclaration);
+                    
+                }
+
+                // TODO Fehlermeldung
+                return LocationInfo.FromError($"Unable to locate BeginLogic");
+
+            }, cancellationToken);
+
+            return task;
+        }
+
         #endregion
 
         #region FindTaskExitDeclarationLocationAsync
@@ -362,24 +413,15 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var derived        = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
                 var memberSymbol   = derived?.SelectMany(d => d.GetMembers(codegenInfo.AfterLogicMethodName)).FirstOrDefault();
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
-
-                if (memberLocation == null) {
+                
+                var location = ToLocation(memberLocation);
+                if (location == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError("Unable to locate member location.");
+                    return LocationInfo.FromError("Unable to get member location.");
                 }
-
-                var lineSpan = memberLocation.GetLineSpan();
-                if (!lineSpan.IsValid) {
-                    // TODO Fehlermeldung
-                    return LocationInfo.FromError("Invalid linespan.");
-                }
-
-                var textExtent = memberLocation.SourceSpan.ToTextExtent();
-                var lineExtent = lineSpan.ToLinePositionExtent();
-                var filePath = memberLocation.SourceTree?.FilePath;
 
                 return LocationInfo.FromLocation(
-                    location   : new Location(textExtent, lineExtent, filePath),
+                    location   : location,
                     displayName: $"{codegenInfo.TaskCodeGenInfo.WfsTypeName}.{codegenInfo.AfterLogicMethodName}",
                     kind       : LocationKind.TaskExitDeclaration);
 
@@ -390,12 +432,34 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         #endregion
 
+        [CanBeNull]
+        static Location ToLocation([CanBeNull] Microsoft.CodeAnalysis.Location memberLocation) {
+
+            if (memberLocation == null) {
+                return null;
+            }
+
+            var lineSpan = memberLocation.GetLineSpan();
+            if (!lineSpan.IsValid) {
+                // TODO Fehlermeldung
+                return null;
+            }
+
+            var textExtent = memberLocation.SourceSpan.ToTextExtent();
+            var lineExtent = lineSpan.ToLinePositionExtent();
+            var filePath = memberLocation.SourceTree?.FilePath;
+
+            var loc = new Location(textExtent, lineExtent, filePath);
+
+            return loc;
+        }
+
         static IEnumerable<T> ToEnumerable<T>(T value) {
             return new[] { value };
         }
 
         static IImmutableSet<T> ToImmutableSet<T>(T item) {
             return new[] { item }.ToImmutableHashSet();
-        }
+        }        
     }
 }

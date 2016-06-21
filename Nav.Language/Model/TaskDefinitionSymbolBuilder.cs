@@ -86,7 +86,7 @@ namespace Pharmatechnik.Nav.Language {
                 return;
             }
 
-            var decl = new InitNodeSymbol(name, location, initNodeDeclarationSyntax);
+            var decl = new InitNodeSymbol(name, location, initNodeDeclarationSyntax, _taskDefinition);
 
             AddNodeDeclaration(decl);
         }
@@ -101,7 +101,7 @@ namespace Pharmatechnik.Nav.Language {
                 return;
             }
 
-            var decl = new ExitNodeSymbol(name, location, exitNodeDeclarationSyntax);
+            var decl = new ExitNodeSymbol(name, location, exitNodeDeclarationSyntax, _taskDefinition);
 
             AddNodeDeclaration(decl);
         }
@@ -116,7 +116,7 @@ namespace Pharmatechnik.Nav.Language {
                 return;
             }
 
-            var decl = new EndNodeSymbol(name, location, endNodeDeclarationSyntax);
+            var decl = new EndNodeSymbol(name, location, endNodeDeclarationSyntax, _taskDefinition);
 
             AddNodeDeclaration(decl);
         }
@@ -143,7 +143,7 @@ namespace Pharmatechnik.Nav.Language {
             var taskLocation    = taskIdentifier.GetLocation();
             var taskDeclaration = _taskDeklarations.TryFindSymbol(taskName);
 
-            var taskNode = new TaskNodeSymbol(taskName, taskLocation, taskNodeDeclarationSyntax, taskNodeAlias, taskDeclaration);
+            var taskNode = new TaskNodeSymbol(taskName, taskLocation, taskNodeDeclarationSyntax, taskNodeAlias, taskDeclaration, _taskDefinition);
 
             if(taskNode.Declaration == null) {
                 if(taskLocation != null) {
@@ -169,7 +169,7 @@ namespace Pharmatechnik.Nav.Language {
                 return;
             }
 
-            var decl = new DialogNodeSymbol(name, location, dialogNodeDeclarationSyntax);
+            var decl = new DialogNodeSymbol(name, location, dialogNodeDeclarationSyntax, _taskDefinition);
 
             AddNodeDeclaration(decl);
         }
@@ -184,7 +184,7 @@ namespace Pharmatechnik.Nav.Language {
                 return;
             }
 
-            var decl = new ViewNodeSymbol(name, location, viewNodeDeclarationSyntax);
+            var decl = new ViewNodeSymbol(name, location, viewNodeDeclarationSyntax, _taskDefinition);
 
             AddNodeDeclaration(decl);
         }
@@ -199,7 +199,7 @@ namespace Pharmatechnik.Nav.Language {
                 return;
             }
 
-            var decl = new ChoiceNodeSymbol(name, location, choiceNodeDeclarationSyntax);
+            var decl = new ChoiceNodeSymbol(name, location, choiceNodeDeclarationSyntax, _taskDefinition);
 
             AddNodeDeclaration(decl);
         }

@@ -78,6 +78,7 @@
     <Compile Include="GoToLocation\Provider\NavTaskAnnotationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavTriggerAnnotationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\SimpleLocationInfoProvider.cs" />
+    <Compile Include="GoToLocation\Provider\TaskBeginDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskExitDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationLocationInfoProvider.cs" />

@@ -63,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         #region ReadNavTaskAnnotation
 
         [CanBeNull]
-        static NavTaskAnnotation ReadNavTaskAnnotation(SemanticModel semanticModel, 
+        internal static NavTaskAnnotation ReadNavTaskAnnotation(SemanticModel semanticModel, 
                                                        ClassDeclarationSyntax classDeclarationSyntax) {
 
             if(semanticModel == null || classDeclarationSyntax == null) {
@@ -77,7 +77,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         }
 
         [CanBeNull]
-        static NavTaskAnnotation ReadNavTaskAnnotation(ClassDeclarationSyntax classDeclaration, 
+        internal static NavTaskAnnotation ReadNavTaskAnnotation(ClassDeclarationSyntax classDeclaration, 
                                                        INamedTypeSymbol classSymbol) {
 
             if (classDeclaration == null || classSymbol==null) {
@@ -192,7 +192,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         #region ReadNavInitAnnotation
 
         [CanBeNull]
-        static NavInitAnnotation ReadNavInitAnnotation(
+        internal static NavInitAnnotation ReadNavInitAnnotation(
                         [NotNull] NavTaskAnnotation navTaskAnnotation,
                         [NotNull] MethodDeclarationSyntax methodDeclaration, 
                         [CanBeNull] IMethodSymbol methodSymbol) {

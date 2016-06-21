@@ -8,6 +8,7 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface IConnectionPointSymbol: ISymbol {
         ConnectionPointKind Kind { get; }
+        ITaskDeclarationSymbol TaskDeclaration { get; }
     }
 
     public interface IInitConnectionPointSymbol : IConnectionPointSymbol {
