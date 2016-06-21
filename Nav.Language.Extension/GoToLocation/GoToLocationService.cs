@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System;
 using System.Linq;
 using System.Windows;
 using System.Threading;
@@ -60,7 +61,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
                         return;
                     }
-                } catch (TaskCanceledException) {
+                } catch (OperationCanceledException) {
                     return;
                 }
             }
