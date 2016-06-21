@@ -144,11 +144,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         /// <returns></returns>
         public static Task<LocationInfo> FindCallBeginLogicDeclarationLocationsAsync(Project project, NavInitCallAnnotation initCallAnnotation, CancellationToken cancellationToken) {
 
-            var task = Task.Run(() => {
+            var task = Task.Run(async () => {
                 
-                var compilation = project.GetCompilationAsync(cancellationToken).Result;
-
-                var beginItf = compilation.GetTypeByMetadataName(initCallAnnotation.BeginItfFullyQualifiedName);
+                var compilation = await project.GetCompilationAsync(cancellationToken);
+                var beginItf    = compilation.GetTypeByMetadataName(initCallAnnotation.BeginItfFullyQualifiedName);
                 if(beginItf == null) {
                     return LocationInfo.FromError($"Unable to find interface '{initCallAnnotation.BeginItfFullyQualifiedName}'.");
                 }
@@ -158,8 +157,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     return LocationInfo.FromError($"Missing project for assembly '{metaLocation.MetadataModule.MetadataName}'.");
                 }
 
-                var wfsClass = SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken)
-                                           .Result
+                var wfsClass = (await SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken))
                                            .OfType<INamedTypeSymbol>()
                                            .FirstOrDefault();
 
@@ -243,9 +241,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         public static Task<IEnumerable<LocationInfo>> FindTaskDeclarationLocationsAsync(Project project, TaskCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
 
-            var task = Task.Run(() => {
+            var task = Task.Run(async () => {
 
-                var compilation = project.GetCompilationAsync(cancellationToken).Result;
+                var compilation   = await project.GetCompilationAsync(cancellationToken);
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.FullyQualifiedWfsBaseName);
 
                 if (wfsBaseSymbol == null) {
@@ -255,7 +253,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
                 // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
-                var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
+                var derived = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
 
                 var derivedSyntaxes = derived.SelectMany(d => d.DeclaringSyntaxReferences)
                                              .Select(dsr => dsr.GetSyntax())
@@ -315,7 +313,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
                 // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
-                var derived        = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
+                var derived        = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
                 var memberSymbol   = derived?.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
 
@@ -350,9 +348,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         public static Task<LocationInfo> FindTaskExitDeclarationLocationAsync(Project project, TaskExitCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
 
-            var task = Task.Run(() => {
+            var task = Task.Run(async () => {
 
-                var compilation = project.GetCompilationAsync(cancellationToken).Result;
+                var compilation   = await project.GetCompilationAsync(cancellationToken);
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
@@ -361,8 +359,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
                 // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
-                var derived = SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken).Result;
-                var memberSymbol = derived?.SelectMany(d => d.GetMembers(codegenInfo.AfterLogicMethodName)).FirstOrDefault();
+                var derived        = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
+                var memberSymbol   = derived?.SelectMany(d => d.GetMembers(codegenInfo.AfterLogicMethodName)).FirstOrDefault();
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
 
                 if (memberLocation == null) {
