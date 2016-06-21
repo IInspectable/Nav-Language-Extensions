@@ -183,6 +183,7 @@
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
     <Compile Include="UI\VsContextMenu.cs" />
+    <Compile Include="UI\VsMenuItem.cs" />
     <Compile Include="Underlining\UnderlineTag.cs" />
     <Compile Include="Underlining\UnderlineTagger.cs" />
     <Compile Include="Underlining\UnderlineTaggerProvider.cs" />
@@ -462,6 +463,14 @@
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Styles\VsMenuItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UI\Styles\VsContextMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
