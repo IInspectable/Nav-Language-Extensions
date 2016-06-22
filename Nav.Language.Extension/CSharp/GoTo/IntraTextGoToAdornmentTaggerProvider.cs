@@ -24,25 +24,27 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         [ImportingConstructor]
         public IntraTextGoToAdornmentTaggerProvider(IBufferTagAggregatorFactoryService bufferTagAggregatorFactoryService, GoToLocationService goToLocationService) {
             _bufferTagAggregatorFactoryService = bufferTagAggregatorFactoryService;
-            _goToLocationService = goToLocationService;
+            _goToLocationService               = goToLocationService;
         }
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag {
-            if(textView == null)
+
+            if (textView == null) {
                 throw new ArgumentNullException(nameof(textView));
+            }
 
-            if(buffer == null)
+            if(buffer == null) {
                 throw new ArgumentNullException(nameof(buffer));
+            }
 
-            if(buffer != textView.TextBuffer)
+            if(buffer != textView.TextBuffer) {
                 return null;
+            }
 
             return IntraTextGoToAdornmentTagger.GetTagger(
-                (IWpfTextView) textView,
-                new Lazy<ITagAggregator<IntraTextGoToTag>>(
-                    () => _bufferTagAggregatorFactoryService.CreateTagAggregator<IntraTextGoToTag>(textView.TextBuffer)),
-                _goToLocationService)
-                as ITagger<T>;
+                view                : (IWpfTextView) textView,
+                intraTextGoToTagger : new Lazy<ITagAggregator<IntraTextGoToTag>>( () => _bufferTagAggregatorFactoryService.CreateTagAggregator<IntraTextGoToTag>(textView.TextBuffer)),
+                goToLocationService : _goToLocationService) as ITagger<T>;
         }
     }
 }

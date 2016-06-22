@@ -92,6 +92,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _result    = null;
 
             _workspace = workspace;
+            // TODO Fehlt uns irgendein Event? Es scheint manchmal vorzukommen, dass die Tags nach dem Starten von VS nicht verfügbar sind...
             _workspace.WorkspaceChanged += OnWorkspaceChanged;
             _workspace.DocumentOpened   += OnDocumentOpened;
 
@@ -135,7 +136,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 }
             }
         }
-        
+
+        /// <summary>
+        /// TrySetResult wird im GUI-Context aufgerufen
+        /// </summary>
         void TrySetResult(BuildTagsResult result) {
 
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
@@ -144,11 +148,30 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 return;
             }
 
-            // TODO hier könnte man noch mit dem aktuellem Ergebnis Vergleichen und ggf. gar nichts machen, wenn gleich...
+            var prevResult = _result;
+
+            // Das neue Ergebnis wird schon alleine wegen der aktuelleren SnapshotSpans gespeichert
             _result = result;
 
-            var snapshotSpan = result.Snapshot.GetFullSpan();
-            TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshotSpan));
+            if (ShouldRaiseTagsChanged(prevResult, _result)) {
+
+                var snapshotSpan = result.Snapshot.GetFullSpan();
+                TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshotSpan));
+            }
+        }
+
+        static bool ShouldRaiseTagsChanged(BuildTagsResult prevResult, BuildTagsResult newResult) {
+
+            // Der triviale, aber Standardfall für alle "nicht-WFS" files.
+            if (prevResult?.Tags.Count == 0 && newResult.Tags.Count ==0) {
+                return false;
+            }
+
+            // Hier könnte man theoretisch noch weiter in die Tags schauen, ob sich diese de facto geändert haben,
+            // um so unnötig UI-Updates zu vermeiden. Wie groß ist der Benefit, wie groß das "Risiko" echte Updates
+            // zu verlieren?
+
+            return true;
         }
 
         // Dieses Event feuern wir um den Observer zu "füttern".
@@ -182,7 +205,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var document = currentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
             if(document == null) {
-                // TODO Wann kommt das vor? 
+                // TODO Wann kommt das vor? Müssen wir darauf mit einer nachgeschobenen Berechnung reagieren?
                 return Enumerable.Empty<ITagSpan<IntraTextGoToTag>>();
             }
             

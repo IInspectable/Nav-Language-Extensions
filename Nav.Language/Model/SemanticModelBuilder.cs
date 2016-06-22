@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 
+using JetBrains.Annotations;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
@@ -27,6 +29,7 @@ namespace Pharmatechnik.Nav.Language {
             _symbols          = new List<ISymbol>();
         }
 
+        [NotNull]
         public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
 
             if (syntax == null) {

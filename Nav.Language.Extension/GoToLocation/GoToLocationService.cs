@@ -30,6 +30,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         const string MessageTitle             = "Nav Language Extensions";
         const string SearchingLocationMessage = "Searching Location...";
         const string OpeningFileMessage       = "Opening file...";
+        const string ContextMenuHeader        = "Go To...";
 
         readonly IWaitIndicator _waitIndicator;
 
@@ -77,7 +78,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
             // Wenn wir hier sind, dann gibt es mehrere Locations, für die wir eine Auswahl anzeigen müssen
             var ctxMenu = new VsContextMenu {
-                Header             = "Go To...",
+                Header             = ContextMenuHeader,
                 PlacementTarget    = originatingTextView.VisualElement,
                 PlacementRectangle = placementRectangle, 
                 Placement          = PlacementMode.Bottom,
@@ -85,6 +86,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 IsOpen             = true
             };
 
+            // TODO Was machen wir mit Locations, die nicht valide sind?
             foreach (var location in locations) {
 
                 var crispImage = new CrispImage {

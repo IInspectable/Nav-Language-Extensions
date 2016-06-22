@@ -59,7 +59,8 @@ namespace Pharmatechnik.Nav.Language {
 
         [NotNull]
         public IReadOnlyList<Diagnostic> Diagnostics { get; }
-        
+
+        [NotNull]
         public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default(CancellationToken)) {
             return CodeGenerationUnitBuilder.FromCodeGenerationUnitSyntax(syntax, cancellationToken);
         }       
