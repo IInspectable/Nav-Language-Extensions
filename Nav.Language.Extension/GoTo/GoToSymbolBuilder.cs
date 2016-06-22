@@ -61,7 +61,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             }
             
             var tagSpan = CreateGoToLocationTagSpan(nodeReferenceSymbol.Location,
-                LocationInfo.FromLocation(nodeReferenceSymbol.Declaration.Location, "Node Declaration", LocationKind.Unspecified));
+                LocationInfo.FromLocation(nodeReferenceSymbol.Declaration.Location, "Node Declaration", LocationKind.NodeDeclaration));
 
             var nodeTagSpan = Visit(nodeReferenceSymbol.Declaration);
             if(nodeTagSpan!=null && nodeTagSpan.Tag.Provider.Any()) {
@@ -83,19 +83,19 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             var tagSpan  = CreateTagSpan(connectionPointReferenceSymbol.Location, provider);
 
             // GoTo Exit Definition
-            var cnProvider = new SimpleLocationInfoProvider(LocationInfo.FromLocation(
+            var defProvider = new SimpleLocationInfoProvider(LocationInfo.FromLocation(
                 connectionPointReferenceSymbol.Declaration.Location,
                 connectionPointReferenceSymbol.Name, 
                 LocationKind.ExitDefinition));
 
-            tagSpan.Tag.Provider.Add(cnProvider);
+            tagSpan.Tag.Provider.Add(defProvider);
 
             return tagSpan;
         }
 
         public override TagSpan<GoToTag> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
 
-            var info = new TaskBeginCodeGenInfo(initNodeSymbol);
+            var info     = new TaskBeginCodeGenInfo(initNodeSymbol);
             var provider = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, info);
 
             return CreateTagSpan(initNodeSymbol.Location, provider);
@@ -117,7 +117,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
         
         TagSpan<GoToTag> CreateTagSpan(Location sourceLocation, ILocationInfoProvider provider) {
-            var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.End - sourceLocation.Start);
+            var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.Length);
             var tag     = new GoToTag(provider);
 
             return new TagSpan<GoToTag>(tagSpan, tag);

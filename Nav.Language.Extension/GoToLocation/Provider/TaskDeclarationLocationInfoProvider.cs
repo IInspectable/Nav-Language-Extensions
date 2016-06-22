@@ -1,35 +1,29 @@
 ﻿#region Using Directives
 
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
-using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
+
 using Pharmatechnik.Nav.Language.CodeGen;
-using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
-    class TaskDeclarationLocationInfoProvider: LocationInfoProvider {
+    class TaskDeclarationLocationInfoProvider: CodeAnalysisLocationInfoProvider {
 
-        readonly ITextBuffer _sourceBuffer;
         readonly TaskCodeGenInfo _codegenInfo;
 
-        public TaskDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskCodeGenInfo codegenInfo) {
+        public TaskDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskCodeGenInfo codegenInfo): base(sourceBuffer) {
 
-            _sourceBuffer = sourceBuffer;
             _codegenInfo  = codegenInfo;
         }
 
-        public override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
-
-            var project = _sourceBuffer.GetContainingProject();
-            if (project == null) {
-                // TODO Fehlermeldung
-                return ToEnumerable(LocationInfo.FromError($"Das Projekt konnte nicht ermittelt werden."));
-            }
+        protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
             var locations = await LocationFinder.FindTaskDeclarationLocationsAsync(project, _codegenInfo, cancellationToken)
                                                .ConfigureAwait(false);

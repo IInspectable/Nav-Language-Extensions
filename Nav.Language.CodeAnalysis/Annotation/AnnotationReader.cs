@@ -22,8 +22,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         #region ReadNavTaskAnnotations
 
         public static IEnumerable<NavTaskAnnotation> ReadNavTaskAnnotations(Document document) {
+
             var semanticModel = document.GetSemanticModelAsync().Result;
-            var rootNode = semanticModel.SyntaxTree.GetRoot();
+            var rootNode      = semanticModel.SyntaxTree.GetRoot();
 
             var classDeclarations = rootNode.DescendantNodesAndSelf()
                                             .OfType<ClassDeclarationSyntax>();
@@ -38,7 +39,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
 
                 yield return navTaskAnnotation;
 
-                // Method Annotations
+                // Analysiere Method Annotations
                 var methodDeclarations = classDeclaration.DescendantNodes()
                                                          .OfType<MethodDeclarationSyntax>();
                 var methodAnnotations = ReadMethodAnnotations(semanticModel, navTaskAnnotation, methodDeclarations);
@@ -47,7 +48,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                     yield return methodAnnotation;
                 }
 
-                // Method Invocations
+                // Analysiere Method Invocations
                 var invocationExpressions = classDeclaration.DescendantNodes()
                                                             .OfType<InvocationExpressionSyntax>();
                 var callAnnotations = ReadInitCallAnnotation(semanticModel, navTaskAnnotation, invocationExpressions);
@@ -63,8 +64,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         #region ReadNavTaskAnnotation
 
         [CanBeNull]
-        internal static NavTaskAnnotation ReadNavTaskAnnotation(SemanticModel semanticModel, 
-                                                       ClassDeclarationSyntax classDeclarationSyntax) {
+        internal static NavTaskAnnotation ReadNavTaskAnnotation(SemanticModel semanticModel, ClassDeclarationSyntax classDeclarationSyntax) {
 
             if(semanticModel == null || classDeclarationSyntax == null) {
                 return null;
@@ -77,17 +77,16 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         }
 
         [CanBeNull]
-        internal static NavTaskAnnotation ReadNavTaskAnnotation(ClassDeclarationSyntax classDeclaration, 
-                                                       INamedTypeSymbol classSymbol) {
+        internal static NavTaskAnnotation ReadNavTaskAnnotation(ClassDeclarationSyntax classDeclaration, INamedTypeSymbol classSymbol) {
 
             if (classDeclaration == null || classSymbol==null) {
                 return null;
             }
 
-            var navTaskInfo = ReadNavTaskAnnotationInternal(classDeclaration, classSymbol);
+            var navTaskInfo = ReadNavTaskAnnotationInternal(classDeclaration, declaringClass: classSymbol);
             // Nicht gefunden? Dann in der Basisklasse nachsehen...
             if (navTaskInfo == null) {
-                navTaskInfo = ReadNavTaskAnnotationInternal(classDeclaration, classSymbol.BaseType);
+                navTaskInfo = ReadNavTaskAnnotationInternal(classDeclaration, declaringClass: classSymbol.BaseType);
             }
 
             return navTaskInfo;
@@ -100,12 +99,12 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
 
             // Die Klasse kann in mehrere partial classes aufgeteilt sein
             var navTaskInfo = declaringClass?.DeclaringSyntaxReferences
-                                          .Select(dsr => dsr.GetSyntax())
-                                          .OfType<ClassDeclarationSyntax>()
-                                          .Select(syntax => ReadNavTaskAnnotationInternal(
-                                              classDeclaration         : classDeclaration,
-                                              declaringClassDeclaration: syntax))
-                                          .FirstOrDefault(nti => nti != null);
+                                             .Select(dsr => dsr.GetSyntax())
+                                             .OfType<ClassDeclarationSyntax>()
+                                             .Select(syntax => ReadNavTaskAnnotationInternal(
+                                                 classDeclaration         : classDeclaration,
+                                                 declaringClassDeclaration: syntax))
+                                             .FirstOrDefault(nti => nti != null);
             return navTaskInfo;
         }
 
@@ -144,9 +143,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
             }
 
             var taskAnnotation = new NavTaskAnnotation(
-                classDeclarationSyntax: classDeclaration, 
-                taskName              : navTaskName, 
-                navFileName           : navFileName); 
+                classDeclarationSyntax         : classDeclaration, 
+                declaringClassDeclarationSyntax: declaringClassDeclaration,
+                taskName                       : navTaskName, 
+                navFileName                    : navFileName); 
 
             return taskAnnotation;
         }
@@ -394,7 +394,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                     taskAnnotation            : navTaskAnnotation,
                     identifier                : identifier,
                     beginItfFullyQualifiedName: navInitCallTag.Content,
-                    parameter                 : ToParameterTypeList(methodSymbol.Parameters));
+                    parameter                 : ToComparableParameterTypeList(methodSymbol.Parameters));
 
 
                 yield return callAnnotation;
@@ -403,7 +403,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
 
         #endregion
 
-        internal static List<string> ToParameterTypeList(IEnumerable<IParameterSymbol> beginLogicParameter) {
+        internal static List<string> ToComparableParameterTypeList(IEnumerable<IParameterSymbol> beginLogicParameter) {
             return beginLogicParameter.OrderBy(p => p.Ordinal)
                                       .Select(p => p.ToDisplayString())
                                       .ToList();

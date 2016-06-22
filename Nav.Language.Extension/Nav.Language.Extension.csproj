@@ -69,6 +69,7 @@
     <Compile Include="GoToLocation\GoToImageMonikers.cs" />
     <Compile Include="GoToLocation\GoToLocationService.cs" />
     <Compile Include="GoToLocation\GoToTag.cs" />
+    <Compile Include="GoToLocation\Provider\CodeAnalysisLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavAnnotationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavExitAnnotationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\NavInitAnnotationLocationInfoProvider.cs" />

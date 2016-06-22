@@ -53,7 +53,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
                 if (codeGenerationUnitSyntax == null) {
                     // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError("Unable to parse nav file."));
+                    return ToEnumerable(LocationInfo.FromError($"Error while parsing nav file '{annotation.NavFileName}'."));
                 }
 
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
@@ -64,7 +64,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 if (task == null) {
                     // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError($"Unable to locate task '{annotation.TaskName}'"));
+                    return ToEnumerable(LocationInfo.FromError($"Unable to locate task '{annotation.TaskName}' in file '{annotation.NavFileName}'"));
                 }
                 
                 return locBuilder(task, annotation);                
@@ -91,7 +91,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             if (trigger == null) {
                 // TODO Fehlermeldung
-                return ToEnumerable(LocationInfo.FromError($"Unable to locate signal trigger '{triggerAnnotation.TriggerName}'"));
+                // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
+                //      nachdem wir eine Fehlermeldung angezeigt haben.
+                return ToEnumerable(LocationInfo.FromError($"Unable to locate signal trigger '{triggerAnnotation.TriggerName}' in task '{task.Name}'"));
             }
 
             return ToEnumerable(LocationInfo.FromLocation(
@@ -108,7 +110,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             if (initNode == null) {
                 // TODO Fehlermeldung
-                return ToEnumerable(LocationInfo.FromError($"Unable to locate init '{initAnnotation.InitName}'"));
+                // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
+                //      nachdem wir eine Fehlermeldung angezeigt haben.
+                return ToEnumerable(LocationInfo.FromError($"Unable to locate init '{initAnnotation.InitName}' in task '{task.Name}'"));
             }
 
             return ToEnumerable(LocationInfo.FromLocation(
@@ -130,7 +134,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             if (!exitTransitions.Any()) {
                 // TODO Fehlermeldung
-                return ToEnumerable(LocationInfo.FromError($"Unable to locate exit transitions for task '{exitAnnotation.ExitTaskName}'"));
+                // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
+                //      nachdem wir eine Fehlermeldung angezeigt haben.
+                return ToEnumerable(LocationInfo.FromError($"Unable to locate the exit transitions in task '{exitAnnotation.ExitTaskName}'"));
             }
 
             return exitTransitions;
@@ -201,7 +207,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         static IMethodSymbol FindBestBeginLogicOverload(IList<string> beginParameter, IEnumerable<IMethodSymbol> beginLogicMethods) {
 
             var bestMatch = beginLogicMethods.Select(m => new {
-                                MatchCount     = GetParameterMatchCount(beginParameter, AnnotationReader.ToParameterTypeList(m.Parameters)),
+                                MatchCount     = GetParameterMatchCount(beginParameter, AnnotationReader.ToComparableParameterTypeList(m.Parameters)),
                                 ParameterCount = m.Parameters.Length,
                                 Method         = m})
                     .Where(x => x.MatchCount >=0 ) // 0 ist OK, falls der Init keine Argumente hat!
@@ -243,7 +249,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return ToEnumerable( LocationInfo.FromError($"Der Typ '{codegenInfo.FullyQualifiedWfsBaseName} wurde nicht gefunden."));
+                    return ToEnumerable( LocationInfo.FromError($"Unable to find type '{codegenInfo.FullyQualifiedWfsBaseName}'."));
                 }
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
@@ -260,7 +266,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     var loc = ds.Identifier.GetLocation();
 
                     var filePath = loc.SourceTree?.FilePath;
-                    // TODO Option .generated auch anzuzeigen
+                    // TODO Evtl. Option um .generated files auch anzuzeigen
                     if (filePath?.EndsWith("generated.cs") == true) {
                         continue;
                     }
@@ -282,7 +288,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 if(!locs.Any()) {
                     // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError("Unable to locate WFS"));
+                    return ToEnumerable(LocationInfo.FromError($"Unable to find any classes derived from '{codegenInfo.FullyQualifiedWfsBaseName}'"));
                 }
                 return locs.OrderBy(l=>l.DisplayName);
 
@@ -303,7 +309,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError($"Unable to locate '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
+                    return LocationInfo.FromError($"Unable to find type '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
                 }
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
@@ -315,7 +321,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 if (location == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError("Unable to locate member location.");
+                    return LocationInfo.FromError("Unable to get member location.");
                 }
 
                 return LocationInfo.FromLocation(
@@ -441,7 +447,6 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             var lineSpan = memberLocation.GetLineSpan();
             if (!lineSpan.IsValid) {
-                // TODO Fehlermeldung
                 return null;
             }
 

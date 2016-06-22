@@ -42,6 +42,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 case LocationKind.TriggerDeclaration:
                     return KnownMonikers.MethodPublic;
 
+                case LocationKind.NodeDeclaration:
+                    return KnownMonikers.GoToReference;
+
                 case LocationKind.Unspecified:
                 default:
                     return KnownMonikers.GoToDefinition;

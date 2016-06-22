@@ -1,35 +1,29 @@
 ﻿#region Using Directives
 
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
+
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
-using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
-    class NavInitCallLocationInfoProvider: LocationInfoProvider {
+    class NavInitCallLocationInfoProvider: CodeAnalysisLocationInfoProvider {
 
-        readonly ITextBuffer _sourceBuffer;
         readonly NavInitCallAnnotation _callAnnotation;
 
-        public NavInitCallLocationInfoProvider(ITextBuffer sourceBuffer, NavInitCallAnnotation callAnnotation) {
-            _sourceBuffer   = sourceBuffer;
+        public NavInitCallLocationInfoProvider(ITextBuffer sourceBuffer, NavInitCallAnnotation callAnnotation): base(sourceBuffer) {
             _callAnnotation = callAnnotation;
         }
 
-        public override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
-
-            var project = _sourceBuffer.GetContainingProject();
-            if (project == null) {
-                // TODO Fehlermeldung
-                return ToEnumerable(LocationInfo.FromError(""));
-            }
-
+        protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
+            
             var location = await LocationFinder.FindCallBeginLogicDeclarationLocationsAsync(
                 project            : project,
                 initCallAnnotation : _callAnnotation,

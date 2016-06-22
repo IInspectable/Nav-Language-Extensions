@@ -11,7 +11,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         InitCallDeclaration,
         TaskExitDeclaration,
         TaskDeclaration,
-        TriggerDeclaration
+        TriggerDeclaration,
+
+        NodeDeclaration,
     }
 
 }

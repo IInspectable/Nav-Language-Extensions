@@ -15,54 +15,60 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
     internal sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGoToTag, IntraTextGoToAdornment>, IDisposable {
         
-        readonly ITagAggregator<IntraTextGoToTag> _goToNavTagger;
+        readonly ITagAggregator<IntraTextGoToTag> _intraTextGoToTagger;
         readonly GoToLocationService _goToLocationService;
 
-        IntraTextGoToAdornmentTagger(IWpfTextView textView, ITagAggregator<IntraTextGoToTag> goToNavTagger, GoToLocationService goToLocationService)
+        IntraTextGoToAdornmentTagger(IWpfTextView textView, ITagAggregator<IntraTextGoToTag> intraTextGoToTagger, GoToLocationService goToLocationService)
             : base(textView) {
-            _goToNavTagger = goToNavTagger;
+
+            _intraTextGoToTagger = intraTextGoToTagger;
             _goToLocationService = goToLocationService;
-            goToNavTagger.TagsChanged += OnTagsChanged;
-        }
 
-        internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> colorTagger, GoToLocationService goToLocationService) {
-            return view.Properties.GetOrCreateSingletonProperty(
-                () => new IntraTextGoToAdornmentTagger(view, colorTagger.Value, goToLocationService));
-        }
-
-        void OnTagsChanged(object sender, TagsChangedEventArgs e) {
-            InvalidateSpans(new List<SnapshotSpan>() {
-                TextView.TextBuffer.CurrentSnapshot.GetFullSpan()
-            });
+            intraTextGoToTagger.TagsChanged += OnTagsChanged;
         }
 
         public void Dispose() {
-            _goToNavTagger.TagsChanged -= OnTagsChanged;
-            _goToNavTagger.Dispose();
+            _intraTextGoToTagger.TagsChanged -= OnTagsChanged;
+            _intraTextGoToTagger.Dispose();
 
             TextView.Properties.RemoveProperty(typeof(IntraTextGoToAdornmentTagger));
         }
 
-        // To produce adornments that don't obscure the text, the adornment tags
-        // should have zero length spans. Overriding this method allows control
-        // over the tag spans.
+        internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> intraTextGoToTagger, GoToLocationService goToLocationService) {
+            return view.Properties.GetOrCreateSingletonProperty( () => new IntraTextGoToAdornmentTagger(
+                textView           : view, 
+                intraTextGoToTagger: intraTextGoToTagger.Value, 
+                goToLocationService: goToLocationService));
+        }
+
+        void OnTagsChanged(object sender, TagsChangedEventArgs e) {
+
+            InvalidateSpans(new List<SnapshotSpan> {
+                TextView.TextBuffer.CurrentSnapshot.GetFullSpan()
+            });
+        }
+        
         protected override IEnumerable<Tuple<SnapshotSpan, PositionAffinity?, IntraTextGoToTag>> GetAdornmentData(NormalizedSnapshotSpanCollection spans) {
-            if(spans.Count == 0)
+
+            if (spans.Count == 0) {
                 yield break;
+            }
 
-            ITextSnapshot snapshot = spans[0].Snapshot;
+            var snapshot        = spans[0].Snapshot;
+            var mappingTagSpans = _intraTextGoToTagger.GetTags(spans);
 
-            var colorTags = _goToNavTagger.GetTags(spans);
+            foreach(IMappingTagSpan<IntraTextGoToTag> dataTagSpan in mappingTagSpans) {
 
-            foreach(IMappingTagSpan<IntraTextGoToTag> dataTagSpan in colorTags) {
-                NormalizedSnapshotSpanCollection colorTagSpans = dataTagSpan.Span.GetSpans(snapshot);
+                NormalizedSnapshotSpanCollection goToTagSpans = dataTagSpan.Span.GetSpans(snapshot);
 
                 // Ignore data tags that are split by projection.
                 // This is theoretically possible but unlikely in current scenarios.
-                if(colorTagSpans.Count != 1)
+                if(goToTagSpans.Count != 1) {
                     continue;
+                }
 
-                SnapshotSpan adornmentSpan = new SnapshotSpan(colorTagSpans[0].End, 0);
+                // Uns interessiert nur das Ende des Spans
+                var adornmentSpan = new SnapshotSpan(goToTagSpans[0].End, 0);
 
                 yield return Tuple.Create(adornmentSpan, (PositionAffinity?) PositionAffinity.Successor, dataTagSpan.Tag);
             }
