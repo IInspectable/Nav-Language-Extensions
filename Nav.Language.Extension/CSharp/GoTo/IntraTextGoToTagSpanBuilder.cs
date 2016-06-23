@@ -12,7 +12,7 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
-    class IntraTextGoToTagSpanBuilder: NavTaskAnnotationVisitor<TagSpan<IntraTextGoToTag>> {
+    class IntraTextGoToTagSpanBuilder: NavTaskAnnotationVisitor<ITagSpan<IntraTextGoToTag>> {
 
         readonly ITextSnapshot _textSnapshot;
         
@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _textSnapshot = textSnapshot;
         }
 
-        public override TagSpan<IntraTextGoToTag> VisitNavTaskAnnotation(NavTaskAnnotation navTaskAnnotation) {
+        public override ITagSpan<IntraTextGoToTag> VisitNavTaskAnnotation(NavTaskAnnotation navTaskAnnotation) {
 
             var start  = navTaskAnnotation.ClassDeclarationSyntax.Identifier.Span.Start;
             var length = navTaskAnnotation.ClassDeclarationSyntax.Identifier.Span.Length;
@@ -36,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
 
-        public override TagSpan<IntraTextGoToTag> VisitNavInitAnnotation(NavInitAnnotation navInitAnnotation) {
+        public override ITagSpan<IntraTextGoToTag> VisitNavInitAnnotation(NavInitAnnotation navInitAnnotation) {
 
             int start  = navInitAnnotation.MethodDeclarationSyntax.Identifier.Span.Start;
             int length = navInitAnnotation.MethodDeclarationSyntax.Identifier.Span.Length;
@@ -52,7 +52,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
 
-        public override TagSpan<IntraTextGoToTag> VisitNavExitAnnotation(NavExitAnnotation navExitAnnotation) {
+        public override ITagSpan<IntraTextGoToTag> VisitNavExitAnnotation(NavExitAnnotation navExitAnnotation) {
 
             int start  = navExitAnnotation.MethodDeclarationSyntax.Identifier.Span.Start;
             int length = navExitAnnotation.MethodDeclarationSyntax.Identifier.Span.Length;
@@ -68,7 +68,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
 
-        public override TagSpan<IntraTextGoToTag> VisitNavTriggerAnnotation(NavTriggerAnnotation navTriggerAnnotation) {
+        public override ITagSpan<IntraTextGoToTag> VisitNavTriggerAnnotation(NavTriggerAnnotation navTriggerAnnotation) {
 
             int start  = navTriggerAnnotation.MethodDeclarationSyntax.Identifier.Span.Start;
             int length = navTriggerAnnotation.MethodDeclarationSyntax.Identifier.Span.Length;
@@ -84,7 +84,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
         
-        public override TagSpan<IntraTextGoToTag> VisitNavInitCallAnnotation(NavInitCallAnnotation navInitCallAnnotation) {
+        public override ITagSpan<IntraTextGoToTag> VisitNavInitCallAnnotation(NavInitCallAnnotation navInitCallAnnotation) {
 
             var start  = navInitCallAnnotation.Identifier.Span.Start;
             var length = navInitCallAnnotation.Identifier.Span.Length;

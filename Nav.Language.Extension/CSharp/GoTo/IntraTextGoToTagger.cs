@@ -14,6 +14,7 @@ using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
+using Pharmatechnik.Nav.Language.Extension.Notification;
 
 #endregion
 
@@ -42,7 +43,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _parserObs = Observable.FromEventPattern<EventArgs>(
                                                handler => RebuildTriggered += handler,
                                                handler => RebuildTriggered -= handler)
-                                   .Select(_ => _textBuffer.CurrentSnapshot)
+                                   .Select(_ => new BuildTagsArgs {
+                                                    DocumentId = GetDocumentId(),
+                                                    Snapshot   = _textBuffer.CurrentSnapshot })
                                    .Throttle(ServiceProperties.GoToNavTaggerThrottleTime)
                                    .Select(args => Observable.DeferAsync(async token =>
                                    {
@@ -130,11 +133,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
         void InvalidateIfThisDocument(DocumentId documentId) {
             if (_workspace != null) {
-                var openDocumentId = _workspace.GetDocumentIdInCurrentContext(_textBuffer.AsTextContainer());
+                var openDocumentId = GetDocumentId();
                 if (openDocumentId == documentId) {
                     Invalidate();
                 }
             }
+        }
+
+        DocumentId GetDocumentId() {
+            var openDocumentId = _workspace.GetDocumentIdInCurrentContext(_textBuffer.AsTextContainer());
+            return openDocumentId;
         }
 
         /// <summary>
@@ -144,7 +152,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
             // da bereits ein neues berechnet wird.
-            if (_textBuffer.CurrentSnapshot != result.Snapshot) {   
+            if (_textBuffer.CurrentSnapshot != result.BuildArgs.Snapshot) {   
                 return;
             }
 
@@ -155,8 +163,18 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             if (ShouldRaiseTagsChanged(prevResult, _result)) {
 
-                var snapshotSpan = result.Snapshot.GetFullSpan();
+                var snapshotSpan = result.BuildArgs.Snapshot.GetFullSpan();
                 TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshotSpan));
+
+                foreach(var navTaskAnnotation in result.Annotations
+                                                       .Where(a => a.GetType() == typeof(NavTaskAnnotation))) {
+
+                    var args = new NavTaskAnnotationChangedArgs {
+                        DocumentId     = result.BuildArgs.DocumentId,
+                        TaskAnnotation = navTaskAnnotation
+                    };
+                    NotificationService.RaiseChanged(args);
+                }
             }
         }
 
@@ -187,45 +205,65 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _parserObs.Dispose();
         }
 
+        
         /// <summary>
         /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorischt bzgl. thread safety!
         /// </summary>
-        static Task<BuildTagsResult> BuildTagsAsync(ITextSnapshot snapshot, CancellationToken cancellationToken) {
+        static Task<BuildTagsResult> BuildTagsAsync(BuildTagsArgs args, CancellationToken cancellationToken) {
 
             return Task.Run(() => {
 
-                var tags = BuildTags(snapshot).ToList();
+                var result = BuildTags(args);
 
-                return new BuildTagsResult(tags, snapshot);
+                return result;
 
             }, cancellationToken);
         }
 
-        static IEnumerable<ITagSpan<IntraTextGoToTag>> BuildTags(ITextSnapshot currentSnapshot) {
+        static BuildTagsResult BuildTags(BuildTagsArgs buildArgs) {
 
-            var document = currentSnapshot.GetOpenDocumentInCurrentContextWithChanges();
+            var document = buildArgs.Snapshot.GetOpenDocumentInCurrentContextWithChanges();
             if(document == null) {
                 // TODO Wann kommt das vor? Müssen wir darauf mit einer nachgeschobenen Berechnung reagieren?
-                return Enumerable.Empty<ITagSpan<IntraTextGoToTag>>();
+                return new BuildTagsResult(buildArgs);
             }
             
-            var annotations = AnnotationReader.ReadNavTaskAnnotations(document);
-            var tagSpanBuilder = new IntraTextGoToTagSpanBuilder(currentSnapshot);
+            var annotations = AnnotationReader.ReadNavTaskAnnotations(document)
+                                              .ToList();
+            var tagSpanBuilder = new IntraTextGoToTagSpanBuilder(buildArgs.Snapshot);
 
-            return annotations.Select(annotation => tagSpanBuilder.Visit(annotation))
-                              .Where(tagsSpan => tagsSpan != null);
+            var tags = annotations.Select(annotation => tagSpanBuilder.Visit(annotation))
+                                  .Where(tagsSpan => tagsSpan != null)
+                                  .ToList();
+
+            return new BuildTagsResult(buildArgs, tags, annotations);
+
+        }
+
+        struct BuildTagsArgs {
+
+            public ITextSnapshot Snapshot { get; set; }
+            public DocumentId DocumentId { get; set; }
 
         }
 
         sealed class BuildTagsResult {
 
-            public IList<ITagSpan<IntraTextGoToTag>> Tags { get; }
-            public ITextSnapshot Snapshot { get; }
-
-            public BuildTagsResult(IList<ITagSpan<IntraTextGoToTag>> tags, ITextSnapshot snapshot) {
-                Tags = tags;
-                Snapshot = snapshot;
+            public BuildTagsResult(BuildTagsArgs buildArgs) {
+                BuildArgs   = buildArgs;
+                Annotations = new List<NavTaskAnnotation>();
+                Tags        = new List<ITagSpan<IntraTextGoToTag>>();
             }
+
+            public BuildTagsResult(BuildTagsArgs buildArgs, IList<ITagSpan<IntraTextGoToTag>> tags, IList<NavTaskAnnotation> annotations) {
+                BuildArgs   = buildArgs;
+                Tags        = tags;
+                Annotations = annotations;
+            }
+
+            public BuildTagsArgs BuildArgs { get; }
+            public IList<ITagSpan<IntraTextGoToTag>> Tags { get; }
+            public IList<NavTaskAnnotation> Annotations { get; }
         }
     }
 }
