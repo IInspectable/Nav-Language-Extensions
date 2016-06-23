@@ -39,7 +39,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
 
         /// <summary>
         /// Liefert die Klasse, in der das Tag definiert wurde. Das kann und wird
-        /// in vielen Fällen die Basisklasse sein.
+        /// in vielen Fällen die Basisklasse "WFSBase" sein.
         /// </summary>
         [NotNull]
         public ClassDeclarationSyntax DeclaringClassDeclarationSyntax { get; set; }

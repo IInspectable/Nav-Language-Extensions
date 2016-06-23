@@ -6,7 +6,7 @@ using System.Threading;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
+using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
@@ -20,13 +20,15 @@ using Pharmatechnik.Nav.Language.Extension.Notification;
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
-    class IntraTextGoToTagger: ITagger<IntraTextGoToTag>, IDisposable {
+    class IntraTextGoToTagger: ITagger<IntraTextGoToTag>, IClassAnnotationChangeListener, IDisposable {
 
         readonly ITextBuffer _textBuffer;
         readonly IDisposable _parserObs;
         readonly WorkspaceRegistration _workspaceRegistration;
 
-        BuildTagsResult _result;
+        [CanBeNull]
+        BuildTagsResult _result;  
+        [CanBeNull]
         Workspace _workspace;
 
         public IntraTextGoToTagger(ITextBuffer textBuffer) {
@@ -35,8 +37,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             _workspaceRegistration = Workspace.GetWorkspaceRegistration(textBuffer.AsTextContainer());
             _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
-
-            if(_workspaceRegistration.Workspace != null) {
+            
+            if (_workspaceRegistration.Workspace != null) {
                 ConnectToWorkspace(_workspaceRegistration.Workspace);
             }
 
@@ -57,7 +59,31 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                                    .ObserveOn(SynchronizationContext.Current)
                                    .Subscribe(TrySetResult);
 
+
+            NotificationService.AddClassAnnotationChangeListener(this);
+            
             Invalidate();
+        }
+
+        void IClassAnnotationChangeListener.OnClassAnnotationsChanged(object sender, ClassAnnotationChangedArgs e) {
+
+            // Die Änderung kommt von uns selbst 
+            if(e.DocumentId == GetDocumentId()) {
+                return;
+            }
+
+            if(_result?.Annotations.Any(taskAnnotation =>
+                // Tatsächlich ist der Taskname nicht eindeutig, was zur Folge haben kann, dass wir 
+                // theoretisch das eine oder file zu viel aktualisieren. So what?
+                taskAnnotation.TaskName == e.TaskAnnotation.TaskName &&
+                // Da wir ausschließlich in der WFSBase die Annotations haben (=> DeclaringClassDeclarationSyntax),
+                // müssen wir nur für die abgeleiteten Klassen explizit das Taggen manuell antriggern,
+                // da diese nicht automatisch ein DocumentChanged Ereignis erhalten, nur weil sich das 
+                // File der Baisklasse geändert hat.
+                taskAnnotation.DeclaringClassDeclarationSyntax != taskAnnotation.ClassDeclarationSyntax)==true) {
+
+                Invalidate();
+            }
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -95,10 +121,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _result    = null;
 
             _workspace = workspace;
-            // TODO Fehlt uns irgendein Event? Es scheint manchmal vorzukommen, dass die Tags nach dem Starten von VS nicht verfügbar sind...
-            _workspace.WorkspaceChanged += OnWorkspaceChanged;
-            _workspace.DocumentOpened   += OnDocumentOpened;
-
+            if(_workspace != null) {
+                // TODO Fehlt uns irgendein Event? Es scheint manchmal vorzukommen, dass die Tags nach dem Starten von VS nicht verfügbar sind...
+                _workspace.WorkspaceChanged += OnWorkspaceChanged;
+                _workspace.DocumentOpened += OnDocumentOpened;
+            }
+            
             Invalidate();
         }
 
@@ -141,7 +169,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         DocumentId GetDocumentId() {
-            var openDocumentId = _workspace.GetDocumentIdInCurrentContext(_textBuffer.AsTextContainer());
+            var openDocumentId = _workspace?.GetDocumentIdInCurrentContext(_textBuffer.AsTextContainer());
             return openDocumentId;
         }
 
@@ -166,14 +194,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 var snapshotSpan = result.BuildArgs.Snapshot.GetFullSpan();
                 TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshotSpan));
 
+                // In der "Praxis" haben wir nur eine einzige NavTaskAnnotation pro file
                 foreach(var navTaskAnnotation in result.Annotations
                                                        .Where(a => a.GetType() == typeof(NavTaskAnnotation))) {
 
-                    var args = new NavTaskAnnotationChangedArgs {
+                    var args = new ClassAnnotationChangedArgs {
                         DocumentId     = result.BuildArgs.DocumentId,
                         TaskAnnotation = navTaskAnnotation
                     };
-                    NotificationService.RaiseChanged(args);
+                    NotificationService.RaiseClassAnnotationChanged(this, args);
                 }
             }
         }
@@ -203,6 +232,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
             DisconnectFromWorkspace();
             _parserObs.Dispose();
+
+            NotificationService.RemoveClassAnnotationChangeListener(this);
         }
 
         
