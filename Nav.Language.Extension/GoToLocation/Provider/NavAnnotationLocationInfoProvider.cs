@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
+using System.Security;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
@@ -35,7 +35,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
             } else {
                 try {
                     sourceText = await Task.Run(() => File.ReadAllText(Annotation.NavFileName), cancellationToken).ConfigureAwait(false);
-                } catch(FileNotFoundException) {
+                } catch(Exception ex) when (
+                    ex is FileNotFoundException || 
+                    ex is IOException ||
+                    ex is UnauthorizedAccessException || 
+                    ex is SecurityException) {
+                    // TODO evtl. detaliertere Fehlermeldungen
                     return ToEnumerable(LocationInfo.FromError($"File '{Annotation.NavFileName}' not found"));
                 }
             }
