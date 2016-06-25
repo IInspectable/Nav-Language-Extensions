@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Text;
 
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
+using LocationKind = Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols.LocationKind;
 
 #endregion
 
@@ -24,10 +25,22 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
         protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
-            var location = await LocationFinder.FindTriggerDeclarationLocationsAsync(project, _codegenInfo, cancellationToken)
-                                               .ConfigureAwait(false);
+            try {
+                var location = await LocationFinder.FindTriggerDeclarationLocationsAsync(
+                    project          : project, 
+                    codegenInfo      : _codegenInfo, 
+                    cancellationToken: cancellationToken).ConfigureAwait(false);
 
-            return ToEnumerable(location);
+                var locationInfo = LocationInfo.FromLocation(
+                    location   : location,
+                    displayName: "Go To Trigger Declaration",
+                    kind       : LocationKind.TriggerDeclaration);
+
+                return ToEnumerable(locationInfo);
+
+            } catch(LocationNotFoundException ex) {
+                return ToEnumerable(LocationInfo.FromError(ex));
+            }
         }
     }
 }

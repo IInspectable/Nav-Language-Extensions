@@ -24,28 +24,35 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
     public static class LocationFinder {
 
         #region FindNavLocationsAsync
-        
-        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavTaskAnnotation annotation, CancellationToken cancellationToken) {
+
+        /// <exception cref="LocationNotFoundException"/>
+        public static Task<IEnumerable<Location>> FindNavLocationsAsync(string sourceText, NavTaskAnnotation annotation, CancellationToken cancellationToken) {
             return FindNavLocationsAsync(sourceText, annotation, GetTaskLocations, cancellationToken);
         }
 
-        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavInitAnnotation annotation, CancellationToken cancellationToken) {
+        /// <exception cref="LocationNotFoundException"/>
+        public static Task<IEnumerable<Location>> FindNavLocationsAsync(string sourceText, NavInitAnnotation annotation, CancellationToken cancellationToken) {
             return FindNavLocationsAsync(sourceText, annotation, GetInitLocations, cancellationToken);
         }
 
-        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavExitAnnotation annotation, CancellationToken cancellationToken) {
+        /// <exception cref="LocationNotFoundException"/>
+        public static Task<IEnumerable<AmbiguousLocation>> FindNavLocationsAsync(string sourceText, NavExitAnnotation annotation, CancellationToken cancellationToken) {
             return FindNavLocationsAsync(sourceText, annotation, GetExitLocations, cancellationToken);
         }
 
-        public static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync(string sourceText, NavTriggerAnnotation annotation, CancellationToken cancellationToken) {
+        /// <exception cref="LocationNotFoundException"/>
+        public static Task<IEnumerable<Location>> FindNavLocationsAsync(string sourceText, NavTriggerAnnotation annotation, CancellationToken cancellationToken) {
             return FindNavLocationsAsync(sourceText, annotation, GetTriggerLocations, cancellationToken);
         }
 
-        static Task<IEnumerable<LocationInfo>> FindNavLocationsAsync<TAnnotation>(
+        /// <exception cref="LocationNotFoundException"/>
+        static Task<IEnumerable<TLocation>> FindNavLocationsAsync<TAnnotation, TLocation>(
                         string sourceText, 
                         TAnnotation annotation, 
-                        Func<ITaskDefinitionSymbol, TAnnotation, IEnumerable<LocationInfo>> locBuilder, 
-                        CancellationToken cancellationToken) where TAnnotation: NavTaskAnnotation {
+                        Func<ITaskDefinitionSymbol, TAnnotation, IEnumerable<TLocation>> locBuilder, 
+                        CancellationToken cancellationToken)
+            where TAnnotation: NavTaskAnnotation 
+            where TLocation: Location {
 
             var locationResult = Task.Run(() => {
 
@@ -53,7 +60,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
                 if (codeGenerationUnitSyntax == null) {
                     // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError($"Error while parsing nav file '{annotation.NavFileName}'."));
+                    throw new LocationNotFoundException($"Error while parsing nav file '{annotation.NavFileName}'.");
                 }
 
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
@@ -64,7 +71,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 if (task == null) {
                     // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError($"Unable to find task '{annotation.TaskName}' in file '{annotation.NavFileName}'"));
+                    throw new LocationNotFoundException($"Unable to find task '{annotation.TaskName}' in file '{annotation.NavFileName}'");
                 }
                 
                 return locBuilder(task, annotation);                
@@ -74,16 +81,12 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             return locationResult;
         }
 
-        static IEnumerable<LocationInfo> GetTaskLocations(ITaskDefinitionSymbol task, NavTaskAnnotation nav) {
+        static IEnumerable<Location> GetTaskLocations(ITaskDefinitionSymbol task, NavTaskAnnotation nav) {
 
-            return ToEnumerable(
-                   LocationInfo.FromLocation(
-                       location    : task.Syntax.Identifier.GetLocation(),
-                       displayName : task.Name,
-                       kind        : LocationKind.TaskDefinition));
+            return ToEnumerable(task.Syntax.Identifier.GetLocation());
         }
 
-        static IEnumerable<LocationInfo> GetTriggerLocations(ITaskDefinitionSymbol task, NavTriggerAnnotation triggerAnnotation) {
+        static IEnumerable<Location> GetTriggerLocations(ITaskDefinitionSymbol task, NavTriggerAnnotation triggerAnnotation) {
 
             var trigger = task.Transitions
                               .SelectMany(t => t.Triggers)
@@ -93,16 +96,13 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 // TODO Fehlermeldung
                 // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
                 //      nachdem wir eine Fehlermeldung angezeigt haben.
-                return ToEnumerable(LocationInfo.FromError($"Unable to find signal trigger '{triggerAnnotation.TriggerName}' in task '{task.Name}'"));
+                throw new LocationNotFoundException($"Unable to find signal trigger '{triggerAnnotation.TriggerName}' in task '{task.Name}'");
             }
 
-            return ToEnumerable(LocationInfo.FromLocation(
-                location    : trigger.Location,
-                displayName : trigger.Name,
-                kind        : LocationKind.SignalTriggerDefinition));
+            return ToEnumerable(trigger.Location);
         }
 
-        static IEnumerable<LocationInfo> GetInitLocations(ITaskDefinitionSymbol task, NavInitAnnotation initAnnotation) {
+        static IEnumerable<Location> GetInitLocations(ITaskDefinitionSymbol task, NavInitAnnotation initAnnotation) {
 
             var initNode = task.NodeDeclarations
                            .OfType<IInitNodeSymbol>()
@@ -112,31 +112,25 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 // TODO Fehlermeldung
                 // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
                 //      nachdem wir eine Fehlermeldung angezeigt haben.
-                return ToEnumerable(LocationInfo.FromError($"Unable to find init '{initAnnotation.InitName}' in task '{task.Name}'"));
+                throw new LocationNotFoundException($"Unable to find init '{initAnnotation.InitName}' in task '{task.Name}'");
             }
 
-            return ToEnumerable(LocationInfo.FromLocation(
-                location    : initNode.Location,
-                displayName : initNode.Name,
-                kind        : LocationKind.InitDefinition));            
+            return ToEnumerable(initNode.Location);            
         }
 
-        static IEnumerable<LocationInfo> GetExitLocations(ITaskDefinitionSymbol task, NavExitAnnotation exitAnnotation) {
+        static IEnumerable<AmbiguousLocation> GetExitLocations(ITaskDefinitionSymbol task, NavExitAnnotation exitAnnotation) {
 
             var exitTransitions = task.ExitTransitions
                                       .Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
                                       .Where(et => et.ConnectionPoint != null)
-                                      .Select(et => LocationInfo.FromLocation(
-                                          location    : et.ConnectionPoint?.Location,
-                                          displayName : et.ConnectionPoint?.Name,
-                                          kind        : LocationKind.ExitDefinition))
+                                      .Select(et => new AmbiguousLocation(et.ConnectionPoint?.Location, et.ConnectionPoint.Name))
                                       .ToList();
 
             if (!exitTransitions.Any()) {
                 // TODO Fehlermeldung
                 // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
                 //      nachdem wir eine Fehlermeldung angezeigt haben.
-                return ToEnumerable(LocationInfo.FromError($"Unable to find the exit transitions in task '{exitAnnotation.ExitTaskName}'"));
+                throw new LocationNotFoundException($"Unable to find the exit transitions in task '{exitAnnotation.ExitTaskName}'");
             }
 
             return exitTransitions;
@@ -149,20 +143,21 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         /// <summary>
         /// Findet die entsprechende BeginXYLogic Implementierung.
         /// </summary>
+        /// <exception cref="LocationNotFoundException"/>
         /// <returns></returns>
-        public static Task<LocationInfo> FindCallBeginLogicDeclarationLocationsAsync(Project project, NavInitCallAnnotation initCallAnnotation, CancellationToken cancellationToken) {
+        public static Task<Location> FindCallBeginLogicDeclarationLocationsAsync(Project project, NavInitCallAnnotation initCallAnnotation, CancellationToken cancellationToken) {
 
             var task = Task.Run(async () => {
                 
                 var compilation = await project.GetCompilationAsync(cancellationToken);
                 var beginItf    = compilation.GetTypeByMetadataName(initCallAnnotation.BeginItfFullyQualifiedName);
                 if(beginItf == null) {
-                    return LocationInfo.FromError($"Unable to find interface '{initCallAnnotation.BeginItfFullyQualifiedName}'.");
+                    throw new LocationNotFoundException($"Unable to find interface '{initCallAnnotation.BeginItfFullyQualifiedName}'.");
                 }
 
                 var metaLocation = beginItf.Locations.FirstOrDefault(l => l.IsInMetadata);
                 if(metaLocation != null) {
-                    return LocationInfo.FromError($"Missing project for assembly '{metaLocation.MetadataModule.MetadataName}'.");
+                    throw new LocationNotFoundException($"Missing project for assembly '{metaLocation.MetadataModule.MetadataName}'.");
                 }
 
                 var wfsClass = (await SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken))
@@ -170,7 +165,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                                            .FirstOrDefault();
 
                 if(wfsClass == null) {
-                    return LocationInfo.FromError($"Unable to find a class implementing interface '{beginItf.ToDisplayString()}'.\n\nAre you missing a project?");
+                    throw new LocationNotFoundException($"Unable to find a class implementing interface '{beginItf.ToDisplayString()}'.\n\nAre you missing a project?");
                 }
 
                 var beginLogicMethods = wfsClass.GetMembers()
@@ -183,7 +178,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var beginMethod    = FindBestBeginLogicOverload(beginParameter, beginLogicMethods);
 
                 if (beginMethod == null) {
-                    return LocationInfo.FromError($"Unable to find a matching overload for method 'BeginLogic'.");
+                    throw new LocationNotFoundException($"Unable to find a matching overload for method 'BeginLogic'.");
                 }
 
                 var memberSyntax   = beginMethod.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
@@ -191,13 +186,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var location       = ToLocation(memberLocation);
 
                 if(location == null) {
-                    return LocationInfo.FromError($"Unable to get the location for method 'BeginLogic'.");
+                    throw new LocationNotFoundException($"Unable to get the location for method 'BeginLogic'.");
                 }
 
-                return LocationInfo.FromLocation(
-                    location    : location,
-                    displayName : "Go To BeginLogic",
-                    kind        : LocationKind.InitCallDeclaration);
+                return location;
 
             }, cancellationToken);
             
@@ -237,10 +229,11 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         }
 
         #endregion
-        
+
         #region FindTaskDeclarationLocationsAsync
 
-        public static Task<IEnumerable<LocationInfo>> FindTaskDeclarationLocationsAsync(Project project, TaskCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
+        /// <exception cref="LocationNotFoundException"/>
+        public static Task<IList<Location>> FindTaskDeclarationLocationsAsync(Project project, TaskCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
 
             var task = Task.Run(async () => {
 
@@ -249,7 +242,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return ToEnumerable( LocationInfo.FromError($"Unable to find type '{codegenInfo.FullyQualifiedWfsBaseName}'."));
+                    throw new LocationNotFoundException($"Unable to find type '{codegenInfo.FullyQualifiedWfsBaseName}'.");
                 }
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
@@ -260,7 +253,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                                              .Select(dsr => dsr.GetSyntax())
                                              .OfType<TypeDeclarationSyntax>();
 
-                var locs = new List<LocationInfo>();
+                IList<Location> locs = new List<Location>();
                 foreach (var ds in derivedSyntaxes) {
                     
                     var loc = ds.Identifier.GetLocation();
@@ -279,18 +272,14 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     var textExtent = loc.SourceSpan.ToTextExtent();
                     var lineExtent = lineSpan.ToLinePositionExtent();
                     
-                    locs.Add(LocationInfo.FromLocation(
-                        location: new Location(textExtent, lineExtent, filePath),
-                        // TODO Evtl. das Projekt mit angeben => das ist nicht notwendigerweise project!
-                        displayName: $"{PathHelper.GetRelativePath(project.FilePath, filePath)}",
-                        kind        : LocationKind.TaskDeclaration));
+                    locs.Add(new Location(textExtent, lineExtent, filePath));
                 }
 
                 if(!locs.Any()) {
                     // TODO Fehlermeldung
-                    return ToEnumerable(LocationInfo.FromError($"Unable to find any classes derived from '{codegenInfo.FullyQualifiedWfsBaseName}'"));
+                    throw new LocationNotFoundException($"Unable to find any classes derived from '{codegenInfo.FullyQualifiedWfsBaseName}'");
                 }
-                return locs.OrderBy(l=>l.DisplayName);
+                return locs;
 
             }, cancellationToken);
 
@@ -301,7 +290,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         #region FindTriggerDeclarationLocationsAsync
 
-        public static Task<LocationInfo> FindTriggerDeclarationLocationsAsync(Project project, SignalTriggerCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
+        /// <exception cref="LocationNotFoundException"/>
+        public static Task<Location> FindTriggerDeclarationLocationsAsync(Project project, SignalTriggerCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
 
             var task = Task.Run(async ()  =>  {
 
@@ -309,7 +299,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError($"Unable to find type '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
+                    throw new LocationNotFoundException($"Unable to find type '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
                 }
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
@@ -321,13 +311,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 if (location == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError("Unable to get member location.");
+                    throw new LocationNotFoundException("Unable to get member location.");
                 }
 
-                return LocationInfo.FromLocation(
-                    location   : location,
-                    displayName: "Go To Trigger Declaration",
-                    kind       : LocationKind.TriggerDeclaration);
+                return location;
 
             }, cancellationToken);
 
@@ -338,13 +325,14 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         #region FindTaskBeginDeclarationLocationAsync
 
-        public static Task<LocationInfo> FindTaskBeginDeclarationLocationAsync(Project project, TaskBeginCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
+        /// <exception cref="LocationNotFoundException"/>
+        public static Task<Location> FindTaskBeginDeclarationLocationAsync(Project project, TaskBeginCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
             var task = Task.Run(async () => {
                 var compilation = await project.GetCompilationAsync(cancellationToken);
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError($"Unable to find '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
+                    throw new LocationNotFoundException($"Unable to find '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
                 }
 
                 var taskAnnotation = wfsBaseSymbol.DeclaringSyntaxReferences
@@ -355,7 +343,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
                 if (taskAnnotation == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError("Unable to find WFS");
+                    throw new LocationNotFoundException("Unable to find WFS");
                 }
 
                 var derived = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
@@ -381,18 +369,14 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     var location = ToLocation(methodDeclaration.Identifier.GetLocation());
                     if (location == null) {
                         // TODO Fehlermeldung
-                        return LocationInfo.FromError("Unable to get member location.");
+                        throw new LocationNotFoundException("Unable to get member location.");
                     }
 
-                    return LocationInfo.FromLocation(
-                        location   : location,
-                        displayName: $"{codegenInfo.TaskCodeGenInfo.WfsTypeName}.{codegenInfo.BeginLogicMethodName}",
-                        kind       : LocationKind.TaskExitDeclaration);
-                    
+                    return location;                    
                 }
 
                 // TODO Fehlermeldung
-                return LocationInfo.FromError($"Unable to find BeginLogic");
+                throw new LocationNotFoundException("Unable to find BeginLogic");
 
             }, cancellationToken);
 
@@ -403,7 +387,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         #region FindTaskExitDeclarationLocationAsync
 
-        public static Task<LocationInfo> FindTaskExitDeclarationLocationAsync(Project project, TaskExitCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
+        /// <exception cref="LocationNotFoundException"/>
+        public static Task<Location> FindTaskExitDeclarationLocationAsync(Project project, TaskExitCodeGenInfo codegenInfo, CancellationToken cancellationToken) {
 
             var task = Task.Run(async () => {
 
@@ -411,7 +396,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError($"Unable to find '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
+                    throw new LocationNotFoundException($"Unable to find '{codegenInfo.TaskCodeGenInfo.FullyQualifiedWfsBaseName}'");
                 }
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
@@ -423,13 +408,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var location = ToLocation(memberLocation);
                 if (location == null) {
                     // TODO Fehlermeldung
-                    return LocationInfo.FromError("Unable to get member location.");
+                    throw new LocationNotFoundException("Unable to get member location.");
                 }
 
-                return LocationInfo.FromLocation(
-                    location   : location,
-                    displayName: $"{codegenInfo.TaskCodeGenInfo.WfsTypeName}.{codegenInfo.AfterLogicMethodName}",
-                    kind       : LocationKind.TaskExitDeclaration);
+                return location;
 
             }, cancellationToken);
 
