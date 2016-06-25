@@ -34,7 +34,7 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         /// </summary>
         /// <param name="message">Log message.</param>
         public void Debug([Localizable(false)] string message) {
-            _loggerImpl.Debug(Message(message));
+            _loggerImpl.Debug(IndentMessage(message));
         }
         
         /// <summary>
@@ -42,7 +42,7 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         /// </summary>
         /// <param name="message">Log message.</param>
         public void Info([Localizable(false)] string message) {
-            _loggerImpl.Info(Message(message));
+            _loggerImpl.Info(IndentMessage(message));
         }
         
         /// <summary>
@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         /// </summary>
         /// <param name="message">Log message.</param>
         public void Warn([Localizable(false)] string message) {
-            _loggerImpl.Warn(Message(message));
+            _loggerImpl.Warn(IndentMessage(message));
         }
        
         /// <summary>
@@ -58,10 +58,10 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         /// </summary>
         /// <param name="message">Log message.</param>
         public void Error([Localizable(false)] string message) {
-            _loggerImpl.Error(Message(message));
+            _loggerImpl.Error(IndentMessage(message));
         }
 
-        string Message(string message) {
+        string IndentMessage(string message) {
             return new string(' ', IndentLevel * IndentSize) + message;
         }
 
