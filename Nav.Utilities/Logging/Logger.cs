@@ -30,6 +30,14 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         }
 
         /// <summary>
+        /// Writes the diagnostic message at the <c>Trace</c> level.
+        /// </summary>
+        /// <param name="message">Log message.</param>
+        public void Trace([Localizable(false)] string message) {
+            _loggerImpl.Trace(IndentMessage(message));
+        }
+
+        /// <summary>
         /// Writes the diagnostic message at the <c>Debug</c> level.
         /// </summary>
         /// <param name="message">Log message.</param>
@@ -77,7 +85,7 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
                 _logger    = logger;
                 _blockName = blockName;
                 
-                _logger.Info($"Begin {_blockName}");
+                _logger.Trace($"Begin {_blockName}");
 
                 IndentLevel++;
             }
@@ -86,7 +94,7 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
 
                 IndentLevel = Math.Max(0, IndentLevel - 1);
 
-                _logger.Info($"End {_blockName} elapsed time: {_stopwatch.Elapsed}");
+                _logger.Trace($"End {_blockName} elapsed time: {_stopwatch.Elapsed}");
             }
         }
     }    

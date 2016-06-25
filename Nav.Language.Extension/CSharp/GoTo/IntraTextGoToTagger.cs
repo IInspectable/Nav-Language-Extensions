@@ -151,7 +151,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
         void OnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args) {
 
-            Logger.Debug($"{nameof(OnWorkspaceChanged)}: {args.Kind}");
+            Logger.Debug($"{nameof(OnWorkspaceChanged)}@{GetDocumentId()}: {args.Kind}");
 
             // We're getting an event for a workspace we already disconnected from
             if (args.NewSolution.Workspace != _workspace) {

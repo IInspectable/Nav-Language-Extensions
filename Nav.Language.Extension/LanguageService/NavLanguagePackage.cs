@@ -119,81 +119,94 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         [CanBeNull]
         public static IWpfTextView GoToLocationInPreviewTab(Location location) {
 
-            if(location == null) {
-                return null;
+            using (Logger.LogBlock(nameof(GoToLocationInPreviewTab))) {
+
+                if(location == null) {
+                    return null;
+                }
+
+                IWpfTextView wpfTextView = null;
+                if(location.FilePath != null) {
+                    wpfTextView = OpenFileInPreviewTab(location.FilePath);
+                }
+
+                var selection = DTE?.ActiveDocument.Selection as TextSelection;
+                selection?.MoveToLineAndOffset(Line: location.StartLine + 1, Offset: location.StartCharacter + 1);
+                selection?.MoveToLineAndOffset(Line: location.EndLine + 1, Offset: location.EndCharacter + 1, Extend: true);
+
+                return wpfTextView;
             }
-
-            IWpfTextView wpfTextView = null;
-            if (location.FilePath != null) {
-                wpfTextView=OpenFileInPreviewTab(location.FilePath);
-            }
-
-            var selection = DTE?.ActiveDocument.Selection as TextSelection;
-            selection?.MoveToLineAndOffset(Line: location.StartLine + 1, Offset: location.StartCharacter + 1);
-            selection?.MoveToLineAndOffset(Line: location.EndLine   + 1, Offset: location.EndCharacter   + 1, Extend: true);
-
-            return wpfTextView;
         }
 
         [CanBeNull]
         public static IWpfTextView OpenFile(string file) {
 
-            var serviceProvider = GetServiceProvider();
+            using(Logger.LogBlock(nameof(OpenFile))) {
 
-            Guid logicalView = Guid.Empty;
-            IVsUIHierarchy hierarchy;
-            uint itemId;
-            IVsWindowFrame windowFrame;
-            VsShellUtilities.OpenDocument(serviceProvider, file, logicalView, out hierarchy, out itemId, out windowFrame);
+                var serviceProvider = GetServiceProvider();
 
-            return GetWpfTextViewFromFrame(windowFrame);
+                Guid logicalView = Guid.Empty;
+                IVsUIHierarchy hierarchy;
+                uint itemId;
+                IVsWindowFrame windowFrame;
+                VsShellUtilities.OpenDocument(serviceProvider, file, logicalView, out hierarchy, out itemId, out windowFrame);
+
+                return GetWpfTextViewFromFrame(windowFrame);
+            }
         }
         
         [CanBeNull]
         public static IWpfTextView OpenFileInPreviewTab(string file) {
-            IVsNewDocumentStateContext newDocumentStateContext = null;
 
-            try {
-                var openDoc3 = GetGlobalService<SVsUIShellOpenDocument, IVsUIShellOpenDocument3>();
+            using(Logger.LogBlock(nameof(OpenFileInPreviewTab))) {
 
-                Guid reason = VSConstants.NewDocumentStateReason.Navigation;
-                newDocumentStateContext = openDoc3?.SetNewDocumentState((uint)__VSNEWDOCUMENTSTATE.NDS_Provisional, ref reason);
+                IVsNewDocumentStateContext newDocumentStateContext = null;
 
-                return OpenFile(file);
+                try {
+                    var openDoc3 = GetGlobalService<SVsUIShellOpenDocument, IVsUIShellOpenDocument3>();
 
-            } finally {
-                newDocumentStateContext?.Restore();
+                    Guid reason = VSConstants.NewDocumentStateReason.Navigation;
+                    newDocumentStateContext = openDoc3?.SetNewDocumentState((uint) __VSNEWDOCUMENTSTATE.NDS_Provisional, ref reason);
+
+                    return OpenFile(file);
+
+                } finally {
+                    newDocumentStateContext?.Restore();
+                }
             }
         }      
 
         [CanBeNull]
-        public static ITextBuffer GetOpenTextBufferForFile(string filePath) { 
+        public static ITextBuffer GetOpenTextBufferForFile(string filePath) {
 
-            var package = GetGlobalService<NavLanguagePackage, NavLanguagePackage>();
+            using(Logger.LogBlock(nameof(GetOpenTextBufferForFile))) {
 
-            var componentModel = (IComponentModel)GetGlobalService(typeof(SComponentModel));
-            var editorAdapterFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
+                var package = GetGlobalService<NavLanguagePackage, NavLanguagePackage>();
 
-            IVsUIHierarchy uiHierarchy;
-            uint itemId;
-            IVsWindowFrame windowFrame;
-            if (VsShellUtilities.IsDocumentOpen(
-              package,
-              filePath,
-              Guid.Empty,
-              out uiHierarchy,
-              out itemId,
-              out windowFrame)) {
-                IVsTextView view = VsShellUtilities.GetTextView(windowFrame);
-                IVsTextLines lines;
-                if (view.GetBuffer(out lines) == 0) {
-                    var buffer = lines as IVsTextBuffer;
-                    if (buffer != null)
-                        return editorAdapterFactoryService.GetDataBuffer(buffer);
+                var componentModel = (IComponentModel) GetGlobalService(typeof(SComponentModel));
+                var editorAdapterFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
+
+                IVsUIHierarchy uiHierarchy;
+                uint itemId;
+                IVsWindowFrame windowFrame;
+                if(VsShellUtilities.IsDocumentOpen(
+                    package,
+                    filePath,
+                    Guid.Empty,
+                    out uiHierarchy,
+                    out itemId,
+                    out windowFrame)) {
+                    IVsTextView view = VsShellUtilities.GetTextView(windowFrame);
+                    IVsTextLines lines;
+                    if(view.GetBuffer(out lines) == 0) {
+                        var buffer = lines as IVsTextBuffer;
+                        if(buffer != null)
+                            return editorAdapterFactoryService.GetDataBuffer(buffer);
+                    }
                 }
-            }
 
-            return null;
+                return null;
+            }
         }
 
         /// <summary>
@@ -202,48 +215,55 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         /// <returns></returns>
         [CanBeNull]
         public static IWpfTextView GetActiveTextView() {
-            var monitorSelection = (IVsMonitorSelection)GetGlobalService(typeof(SVsShellMonitorSelection));
-            if (monitorSelection == null) {
-                return null;
-            }
 
-            object curDocument;
-            if (ErrorHandler.Failed(monitorSelection.GetCurrentElementValue((uint)VSConstants.VSSELELEMID.SEID_DocumentFrame, out curDocument))) {
-                // TODO: Report error
-                return null;
-            }
-            var frame = curDocument as IVsWindowFrame;
-            if (frame == null) {
-                // TODO: Report error
-                return null;
-            }
+            using(Logger.LogBlock(nameof(GetActiveTextView))) {
 
-            return GetWpfTextViewFromFrame(frame);
+                var monitorSelection = (IVsMonitorSelection) GetGlobalService(typeof(SVsShellMonitorSelection));
+                if(monitorSelection == null) {
+                    return null;
+                }
+
+                object curDocument;
+                if(ErrorHandler.Failed(monitorSelection.GetCurrentElementValue((uint) VSConstants.VSSELELEMID.SEID_DocumentFrame, out curDocument))) {
+                    Logger.Error("Get VSConstants.VSSELELEMID.SEID_DocumentFrame failed");
+                    return null;
+                }
+                var frame = curDocument as IVsWindowFrame;
+                if(frame == null) {
+                    Logger.Error($"{nameof(curDocument)} ist kein {nameof(IVsWindowFrame)}");
+                    return null;
+                }
+
+                return GetWpfTextViewFromFrame(frame);
+            }
         }
 
         [CanBeNull]
         static IWpfTextView GetWpfTextViewFromFrame(IVsWindowFrame frame) {
-           
-            object docView;
-            if (ErrorHandler.Failed(frame.GetProperty((int) __VSFPROPID.VSFPROPID_DocView, out docView))) {
-                // TODO: Report error
-                return null;
-            }
 
-            if (docView is IVsCodeWindow) {
-                IVsTextView textView;
-                if (ErrorHandler.Failed(((IVsCodeWindow) docView).GetPrimaryView(out textView))) {
-                    // TODO: Report error
+            using(Logger.LogBlock(nameof(GetWpfTextViewFromFrame))) {
+
+                object docView;
+                if(ErrorHandler.Failed(frame.GetProperty((int) __VSFPROPID.VSFPROPID_DocView, out docView))) {
+                    Logger.Error("Get __VSFPROPID.VSFPROPID_DocView failed");
                     return null;
                 }
 
-                var model = (IComponentModel) Package.GetGlobalService(typeof(SComponentModel));
-                var adapterFactory = model.GetService<IVsEditorAdaptersFactoryService>();
-                var wpfTextView = adapterFactory.GetWpfTextView(textView);
-                return wpfTextView;
-            }
+                if(docView is IVsCodeWindow) {
+                    IVsTextView textView;
+                    if(ErrorHandler.Failed(((IVsCodeWindow) docView).GetPrimaryView(out textView))) {
+                        Logger.Error("GetPrimaryView failed");
+                        return null;
+                    }
 
-            return null;
+                    var model          = (IComponentModel) Package.GetGlobalService(typeof(SComponentModel));
+                    var adapterFactory = model.GetService<IVsEditorAdaptersFactoryService>();
+                    var wpfTextView    = adapterFactory.GetWpfTextView(textView);
+                    return wpfTextView;
+                }
+                Logger.Warn($"{nameof(GetWpfTextViewFromFrame)}: {nameof(docView)} ist kein {nameof(IVsCodeWindow)}");
+                return null;
+            }
         }
 
         public static _DTE DTE {
