@@ -41,18 +41,18 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
         public async Task GoToLocationInPreviewTabAsync(IWpfTextView originatingTextView, Rect placementRectangle, IEnumerable<ILocationInfoProvider> provider) {
             
-            List<LocationInfo> locations;
+            List<LocationInfo> locationInfos;
             using (var waitContext = _waitIndicator.StartWait(title: MessageTitle, message: SearchingLocationMessage, allowCancel: true)) {
 
                 try {
 
-                    var locs = await GetLocationsAsync(provider, waitContext.CancellationToken);
-                    locations = locs.ToList();
+                    var locs = await GetLocationInfosAsync(provider, waitContext.CancellationToken);
+                    locationInfos = locs.ToList();
 
                     // Es gibt nur eine einzige Location => direkt anspringen, da wir denselben Wait Indicator verwenden wollen.
-                    if (locations.Count == 1 && locations[0].IsValid) {
+                    if (locationInfos.Count == 1 && locationInfos[0].IsValid) {
 
-                        var locationResult = locations.First();
+                        var locationResult = locationInfos.First();
 
                         waitContext.AllowCancel = false;
                         waitContext.Message     = OpeningFileMessage;
@@ -66,13 +66,13 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 }
             }
 
-            if (locations.Count == 0) {
+            if (locationInfos.Count == 0) {
                 return;
             }
 
             // Es gibt nur eine Location, die aber nicht aufgelöst werden konnte => Fehler anzeigen und tschüss
-            if (locations.Count == 1 && !locations[0].IsValid) {
-                ShowLocationErrorMessage(locations[0]);
+            if (locationInfos.Count == 1 && !locationInfos[0].IsValid) {
+                ShowLocationErrorMessage(locationInfos[0]);
                 return;
             }
 
@@ -86,25 +86,24 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                 IsOpen             = true
             };
 
-            // TODO Was machen wir mit Locations, die nicht valide sind?
-            foreach (var location in locations) {
-
-                var crispImage = new CrispImage {
-                    Moniker = GoToImageMonikers.GetMoniker(location.Kind)
-                };
-
+            foreach (var locationInfo in locationInfos) {
+               
                 var item = new VsMenuItem {
-                    Header = location.DisplayName,
-                    Icon   = crispImage ,
+                    Header    = locationInfo.IsValid? locationInfo.DisplayName:locationInfo.ErrorMessage,
+                    IsEnabled = locationInfo.IsValid,
+                    Icon      = new CrispImage {
+                        Moniker   = GoToImageMonikers.GetMoniker(locationInfo.Kind),
+                        Grayscale = !locationInfo.IsValid
+                    },
                     //InputGestureText = "<XTPlus.OffenePosten>"
                 };
-                item.Click += (_, __) => GoToLocationInPreviewTab(location);
+                item.Click += (_, __) => GoToLocationInPreviewTab(locationInfo);
 
                 ctxMenu.Items.Add(item);
             }
         }
 
-        static async Task<IEnumerable<LocationInfo>> GetLocationsAsync(IEnumerable<ILocationInfoProvider> providers, CancellationToken cancellationToken = default(CancellationToken)) {
+        static async Task<IEnumerable<LocationInfo>> GetLocationInfosAsync(IEnumerable<ILocationInfoProvider> providers, CancellationToken cancellationToken = default(CancellationToken)) {
 
             var locationInfos = new List<LocationInfo>();
 
@@ -117,15 +116,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             return locationInfos;
         }
 
-        void GoToLocationInPreviewTab(LocationInfo location) {
+        void GoToLocationInPreviewTab(LocationInfo locationInfo) {
 
-            if(!location.IsValid) {
-                ShowLocationErrorMessage(location);
+            if(!locationInfo.IsValid) {
+                ShowLocationErrorMessage(locationInfo);
                 return;
             }
 
             using(_waitIndicator.StartWait(title: MessageTitle, message: OpeningFileMessage, allowCancel: false)) {
-                NavLanguagePackage.GoToLocationInPreviewTab(location.Location);
+                NavLanguagePackage.GoToLocationInPreviewTab(locationInfo.Location);
             }
         }
 
