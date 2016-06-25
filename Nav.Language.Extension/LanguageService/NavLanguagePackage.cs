@@ -22,12 +22,7 @@ using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
 
-using NLog;
-using NLog.Config;
-using NLog.Layouts;
-using NLog.Targets;
-
-using Logger = Pharmatechnik.Nav.Utilities.Logging.Logger;
+using Pharmatechnik.Nav.Utilities.Logging;
 
 #endregion
 
@@ -79,7 +74,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             // not sited yet inside Visual Studio environment. The place to do all the other
             // initialization is the Initialize method.
 
-            InitializeLogging();
+            LoggerConfig.Initialize(Path.GetTempPath(), "Nav.Language.Extension");
         }
 
         #region Documentation
@@ -99,38 +94,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
             Logger.Info($"{nameof(NavLanguagePackage)}.{nameof(Initialize)}");
         }
-
-        // ReSharper disable InconsistentNaming
-        const long KB = 1024;
-        const long MB = 1024 * KB;
-        // ReSharper restore InconsistentNaming
-
-        void InitializeLogging() {
-
-            // Bissl unschön, da wir einerseits das Logging von NLog völlig wegkapseln, andererseits hier
-            // wieder ganz explizit darauf zugreifen...
-
-            LoggingConfiguration loggingConfiguration = new LoggingConfiguration();
-            var fileTarget = new FileTarget {
-                FileName         = Path.Combine(GetLogFolder(), "Nav.Language.Extension.log.xml"),
-                ArchiveFileName  = "log_{#####}.xml",
-                ArchiveNumbering = ArchiveNumberingMode.Rolling,
-                MaxArchiveFiles  = 3,
-                ArchiveAboveSize = 1*MB, 
-                Layout           = new Log4JXmlEventLayout()
-            };
-            
-            loggingConfiguration.AddTarget("file", fileTarget);
-            loggingConfiguration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
-            
-            LogManager.Configuration = loggingConfiguration;
-        }
-
-        string GetLogFolder() {
-            return Path.GetTempPath();
-        }
-
-
+        
         public static object GetGlobalService<TService>() where TService : class {
             return GetGlobalService(typeof(TService));
         }
