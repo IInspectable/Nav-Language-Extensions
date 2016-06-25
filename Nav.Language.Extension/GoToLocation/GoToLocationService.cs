@@ -12,6 +12,7 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text.Editor;
 
+using Pharmatechnik.Nav.Utilities.Logging;
 using Pharmatechnik.Nav.Language.Extension.UI;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
@@ -23,6 +24,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
     
     [Export]
     sealed class GoToLocationService {
+
+        static readonly Logger Logger = Logger.Create<GoToLocationService>();
 
         // TODO Titel etc. überarbeiten
         const string MessageTitle             = "Nav Language Extensions";
@@ -102,16 +105,17 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         }
 
         static async Task<IEnumerable<LocationInfo>> GetLocationInfosAsync(IEnumerable<ILocationInfoProvider> providers, CancellationToken cancellationToken = default(CancellationToken)) {
+            using(Logger.LogBlock(nameof(GetLocationInfosAsync))) {
+                var locationInfos = new List<LocationInfo>();
 
-            var locationInfos = new List<LocationInfo>();
+                foreach(var provider in providers) {
+                    var lis = await provider.GetLocationsAsync(cancellationToken);
 
-            foreach (var provider in providers) {
-                var lis = await provider.GetLocationsAsync(cancellationToken);
+                    locationInfos.AddRange(lis);
+                }
 
-                locationInfos.AddRange(lis);
+                return locationInfos;
             }
-
-            return locationInfos;
         }
 
         void GoToLocationInPreviewTab(LocationInfo locationInfo) {

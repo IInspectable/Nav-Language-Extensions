@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
             };
 
             loggingConfiguration.AddTarget("file", fileTarget);
-            loggingConfiguration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
+            loggingConfiguration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, fileTarget));
 
             LogManager.Configuration = loggingConfiguration;
         }
