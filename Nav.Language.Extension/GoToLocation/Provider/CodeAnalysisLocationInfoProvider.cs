@@ -8,7 +8,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
 #endregion
 

@@ -2,8 +2,6 @@
 
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
-using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
-using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 

@@ -1,11 +1,14 @@
 ﻿#region Using Directives 
 
 using System;
-using System.Reactive.Linq;
 using System.Threading;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
+
 using JetBrains.Annotations;
+
 using Microsoft.VisualStudio.Text;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 

@@ -1,10 +1,10 @@
 #region Using Directives
 
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using JetBrains.Annotations;
-using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
 #endregion
 

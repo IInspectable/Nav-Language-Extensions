@@ -2,12 +2,12 @@
 
 using System;
 using System.IO;
+using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Security;
+
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
-using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
