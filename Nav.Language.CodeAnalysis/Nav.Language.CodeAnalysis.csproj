@@ -112,8 +112,6 @@
     <Compile Include="Common\PathHelper.cs" />
     <Compile Include="FindSymbols\AmbiguousLocation.cs" />
     <Compile Include="FindSymbols\LocationFinder.cs" />
-    <Compile Include="FindSymbols\LocationInfo.cs" />
-    <Compile Include="FindSymbols\LocationKind.cs" />
     <Compile Include="FindSymbols\LocationNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThisAssembly.cs" />

@@ -12,8 +12,6 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text.Editor;
 
-using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
-
 using Pharmatechnik.Nav.Language.Extension.UI;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
@@ -92,7 +90,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
                     Header    = locationInfo.IsValid? locationInfo.DisplayName:locationInfo.ErrorMessage,
                     IsEnabled = locationInfo.IsValid,
                     Icon      = new CrispImage {
-                        Moniker   = GoToImageMonikers.GetMoniker(locationInfo.Kind),
+                        Moniker   = locationInfo.ImageMoniker,
                         Grayscale = !locationInfo.IsValid
                     },
                     //InputGestureText = "<XTPlus.OffenePosten>"
