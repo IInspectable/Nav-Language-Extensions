@@ -6,7 +6,10 @@ using System.Threading;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+
+using NLog;
 using JetBrains.Annotations;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
@@ -21,6 +24,8 @@ using Pharmatechnik.Nav.Language.Extension.Notification;
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     class IntraTextGoToTagger: ITagger<IntraTextGoToTag>, IClassAnnotationChangeListener, IDisposable {
+
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         readonly ITextBuffer _textBuffer;
         readonly IDisposable _parserObs;
@@ -63,6 +68,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             NotificationService.AddClassAnnotationChangeListener(this);
             
             Invalidate();
+
+            Logger.Info($"{nameof(IntraTextGoToTagger)}.Ctor");
         }
 
         void IClassAnnotationChangeListener.OnClassAnnotationsChanged(object sender, ClassAnnotationChangedArgs e) {
@@ -81,6 +88,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 // da diese nicht automatisch ein DocumentChanged Ereignis erhalten, nur weil sich das 
                 // File der Baisklasse geändert hat.
                 taskAnnotation.DeclaringClassDeclarationSyntax != taskAnnotation.ClassDeclarationSyntax)==true) {
+
+                Logger.Info($"Das Taggen für die Datei wird getriggert, weil sich die Annotations für den Task '{e.TaskAnnotation.TaskName}' geändert haben. Dieses Dokument:' {GetDocumentId()}', geändertes Dokument: '{e.DocumentId}'");
 
                 Invalidate();
             }
@@ -168,6 +177,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             }
         }
 
+        [CanBeNull]
         DocumentId GetDocumentId() {
             var openDocumentId = _workspace?.GetDocumentIdInCurrentContext(_textBuffer.AsTextContainer());
             return openDocumentId;
@@ -211,6 +221,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             // Der triviale, aber Standardfall für alle "nicht-WFS" files.
             if (prevResult?.Tags.Count == 0 && newResult.Tags.Count ==0) {
+
+                Logger.Info($"{nameof(ShouldRaiseTagsChanged)} liefert false, da keine Annotation-Tags in der Datei gefunden wurde ('{newResult.BuildArgs.DocumentId}')");
                 return false;
             }
 
@@ -234,11 +246,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _parserObs.Dispose();
 
             NotificationService.RemoveClassAnnotationChangeListener(this);
+
+            Logger.Info($"{nameof(IntraTextGoToTagger)}.{nameof(Dispose)}");
         }
 
         
         /// <summary>
-        /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorischt bzgl. thread safety!
+        /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorsicht bzgl. thread safety!
         /// </summary>
         static Task<BuildTagsResult> BuildTagsAsync(BuildTagsArgs args, CancellationToken cancellationToken) {
 
@@ -256,6 +270,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var document = buildArgs.Snapshot.GetOpenDocumentInCurrentContextWithChanges();
             if(document == null) {
                 // TODO Wann kommt das vor? Müssen wir darauf mit einer nachgeschobenen Berechnung reagieren?
+                Logger.Warn($"{nameof(BuildTags)}: Es steht kein Dokument zur Verfügung. Der Vorgang wurde abgebrochen.");
                 return new BuildTagsResult(buildArgs);
             }
             
