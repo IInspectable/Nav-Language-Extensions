@@ -24,6 +24,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             }
             private set { _displayName = value; }
         }
+        
+        public string ProjectRelativePath { get; private set; }
 
         public string ErrorMessage {
             get { return _errorMessage??string.Empty; }
@@ -42,12 +44,16 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             };
         }
 
-        public static LocationInfo FromLocation(Location location, string displayName, ImageMoniker imageMoniker) {
+        public static LocationInfo FromLocation(Location location, string displayName, ImageMoniker imageMoniker, string projectRelativePath="") {
             return new LocationInfo {
                 Location     = location,
                 DisplayName  = displayName,
                 ImageMoniker = imageMoniker,
+                ProjectRelativePath= projectRelativePath
             };
         }
+
+        
+
     }
 }

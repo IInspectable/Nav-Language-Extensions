@@ -5,7 +5,7 @@ using System.IO;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeAnalysis.Common {
+namespace Pharmatechnik.Nav.Utilities.IO {
 
     public static class PathHelper {
 
@@ -15,9 +15,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Common {
         /// <param name="fromPath">Contains the directory that defines the start of the relative path.</param>
         /// <param name="toPath">Contains the path that defines the endpoint of the relative path.</param>
         /// <returns>The relative path from the start directory to the end path.</returns>
-        /// <exception cref="InvalidOperationException"><paramref name="fromPath"/> or <paramref name="fromPath"/> is <c>null</c>.</exception>
-        /// <exception cref="UriFormatException"></exception>
-        /// <exception cref="UriFormatException"></exception>
+        /// <exception cref="System.InvalidOperationException"><paramref name="fromPath"/> or <paramref name="fromPath"/> is <c>null</c>.</exception>
+        /// <exception cref="System.UriFormatException"></exception>
+        /// <exception cref="System.UriFormatException"></exception>
         public static string GetRelativePath(string fromPath, string toPath) {
             if (string.IsNullOrEmpty(fromPath)) {
                 throw new ArgumentNullException(nameof(fromPath));

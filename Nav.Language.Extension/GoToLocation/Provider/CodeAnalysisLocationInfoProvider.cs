@@ -20,7 +20,11 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
         protected CodeAnalysisLocationInfoProvider(ITextBuffer sourceBuffer) {
             _sourceBuffer = sourceBuffer;
         }
-         
+
+        public ITextBuffer SourceBuffer {
+            get { return _sourceBuffer; }
+        }
+
         public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
