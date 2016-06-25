@@ -82,12 +82,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             if(_result?.Annotations.Any(taskAnnotation =>
                 // Tatsächlich ist der Taskname nicht eindeutig, was zur Folge haben kann, dass wir 
                 // theoretisch das eine oder file zu viel aktualisieren. So what?
-                taskAnnotation.TaskName == e.TaskAnnotation.TaskName &&
-                // Da wir ausschließlich in der WFSBase die Annotations haben (=> DeclaringClassDeclarationSyntax),
-                // müssen wir nur für die abgeleiteten Klassen explizit das Taggen manuell antriggern,
-                // da diese nicht automatisch ein DocumentChanged Ereignis erhalten, nur weil sich das 
-                // File der Baisklasse geändert hat.
-                taskAnnotation.DeclaringClassDeclarationSyntax != taskAnnotation.ClassDeclarationSyntax)==true) {
+                taskAnnotation.TaskName == e.TaskAnnotation.TaskName)==true) {
 
                 Logger.Info($"Das Taggen für die Datei wird getriggert, weil sich die Annotations für den Task '{e.TaskAnnotation.TaskName}' geändert haben. Dieses Dokument:' {GetDocumentId()}', geändertes Dokument: '{e.DocumentId}'");
 
@@ -205,8 +200,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshotSpan));
 
                 // In der "Praxis" haben wir nur eine einzige NavTaskAnnotation pro file
-                foreach(var navTaskAnnotation in result.Annotations
-                                                       .Where(a => a.GetType() == typeof(NavTaskAnnotation))) {
+                // Da wir ausschließlich in der WFSBase die Annotations haben (=> DeclaringClassDeclarationSyntax),
+                // müssen wir nur für die abgeleiteten Klassen explizit das Taggen antriggern,
+                // da diese nicht automatisch ein DocumentChanged Ereignis erhalten, nur weil sich das 
+                // File der Baisklasse geändert hat.
+                foreach (var navTaskAnnotation in result.Annotations
+                                                       .Where(a => a.GetType() == typeof(NavTaskAnnotation))
+                                                       .Where(a => a.ClassDeclarationSyntax==a.DeclaringClassDeclarationSyntax)) {
 
                     var args = new ClassAnnotationChangedArgs {
                         DocumentId     = result.BuildArgs.DocumentId,
