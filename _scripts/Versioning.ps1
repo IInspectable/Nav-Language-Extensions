@@ -2,39 +2,40 @@
 $targetFiles=
     "$PSScriptRoot'\..\Nav.Language.Extension\UpdateProductVersion.targets",
     "$PSScriptRoot'\..\Nav.Language.CodeAnalysis\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language\UpdateProductVersion.targets"
+    "$PSScriptRoot'\..\Nav.Language\UpdateProductVersion.targets",
+    "$PSScriptRoot'\..\Nav.Utilities\UpdateProductVersion.targets"
 
 function IncreaseMajor(){
     [CmdletBinding()]
     Param(
-        
+
         [Parameter(Position=0, Mandatory=$true)]
         [string] $file
     )
-    
-    UpdateVersion $file { param($oldVersion) New-Object System.Version -ArgumentList ($oldVersion.Major+1), 0, 0 }   
+
+    UpdateVersion $file { param($oldVersion) New-Object System.Version -ArgumentList ($oldVersion.Major+1), 0, 0 }
 }
 
 function IncreaseMinor(){
     [CmdletBinding()]
     Param(
-        
+
         [Parameter(Position=0, Mandatory=$true)]
         [string] $file
     )
 
-    UpdateVersion $file { param($oldVersion) New-Object System.Version -ArgumentList $oldVersion.Major, ($oldVersion.Minor+1), 0 }   
+    UpdateVersion $file { param($oldVersion) New-Object System.Version -ArgumentList $oldVersion.Major, ($oldVersion.Minor+1), 0 }
 }
 
 function IncreaseBuild(){
     [CmdletBinding()]
     Param(
-        
+
         [Parameter(Position=0, Mandatory=$true)]
         [string] $file
     )
 
-    UpdateVersion $file { param($oldVersion) New-Object System.Version -ArgumentList $oldVersion.Major, $oldVersion.Minor, ($oldVersion.Build+1) }   
+    UpdateVersion $file { param($oldVersion) New-Object System.Version -ArgumentList $oldVersion.Major, $oldVersion.Minor, ($oldVersion.Build+1) }
 
 }
 
@@ -42,13 +43,13 @@ function IncreaseBuild(){
 function UpdateVersion(){
     [CmdletBinding(DefaultParametersetName='InvokeBuild')]
     Param(
-        
+
         [Parameter(Position=0, Mandatory=$true)]
         [string] $file,
         [Parameter(Position=1, Mandatory=$true)]
         [ScriptBlock] $updateScript
     )
-    
+
     $file=Convert-Path $file
 
     Write-Verbose "Opening file '$file'"
@@ -56,7 +57,7 @@ function UpdateVersion(){
     $xml=[xml](cat $file)
 
     $productVersionNode=$xml.Project.PropertyGroup.ChildNodes | ? Name -eq ProductVersion
- 
+
     $oldVersion=[Version]::Parse($productVersionNode.InnerText)
     Write-Verbose "Current version number is '$oldVersion'"
 

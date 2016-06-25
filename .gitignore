@@ -2,6 +2,9 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+/Nav.Utilities/bin/Debug
+/Nav.Utilities/obj/Debug
+/Nav.Utilities/ThisAssembly.generated.cs
 /Nav.Language/bin/Debug
 /Nav.Language/obj/Debug
 /Nav.Language/ThisAssembly.generated.cs

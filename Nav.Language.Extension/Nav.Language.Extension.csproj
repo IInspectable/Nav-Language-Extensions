@@ -56,6 +56,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
@@ -443,6 +444,10 @@
     <ProjectReference Include="..\Nav.Language\Nav.Language.csproj">
       <Project>{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}</Project>
       <Name>Nav.Language</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj">
+      <Project>{aa0629b3-af39-4049-9723-7989ec93b0a4}</Project>
+      <Name>Nav.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
