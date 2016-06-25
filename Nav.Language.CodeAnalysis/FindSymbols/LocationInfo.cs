@@ -33,6 +33,12 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             };
         }
 
+        public static LocationInfo FromError(LocationNotFoundException ex) {
+            return new LocationInfo {
+                ErrorMessage = ex?.Message
+            };
+        }
+
         public static LocationInfo FromLocation(Location location, string displayName="", LocationKind kind =LocationKind.Unspecified) {
             return new LocationInfo {
                 Location    = location,

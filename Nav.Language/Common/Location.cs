@@ -8,12 +8,19 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
-    public sealed class Location : IEquatable<Location> {
+    public class Location : IEquatable<Location> {
 
         readonly TextExtent _extent;
         readonly LinePosition _start;
         readonly LinePosition _end;
         readonly string _filePath;
+
+        protected Location(Location location) {
+            _extent   = location._extent;
+            _start    = location._start;
+            _end      = location._end;
+            _filePath = location._filePath;
+        }
 
         public Location(TextExtent extent, LinePositionExtent linePositionExtent, [CanBeNull] string filePath) {
             _extent      = extent;
