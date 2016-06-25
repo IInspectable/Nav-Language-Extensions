@@ -22,9 +22,9 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
             LoggingConfiguration loggingConfiguration = new LoggingConfiguration();
             var fileTarget = new FileTarget {
                 FileName         = Path.Combine(logFolder, $"{logName}.log.xml"),
-                ArchiveFileName  = "{logName}.log.xml{#####}",
+                ArchiveFileName  = Path.Combine(logFolder, $"{logName}.log.xml.{{#####}}"),
                 ArchiveNumbering = ArchiveNumberingMode.Rolling,
-                MaxArchiveFiles  = 3,
+                MaxArchiveFiles  = 10,
                 ArchiveAboveSize = 1 * MB,
                 Layout           = new Log4JXmlEventLayout()
             };
