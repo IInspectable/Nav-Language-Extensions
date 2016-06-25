@@ -1,9 +1,11 @@
 ﻿#region Using Directives
 
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Linq;
+
+using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
@@ -25,9 +27,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 return locs.Select(location => LocationInfo.FromLocation(
-                                          location   : location,
-                                          displayName: location.Name,
-                                          kind       : LocationKind.ExitDefinition));
+                                          location    : location,
+                                          displayName : location.Name,
+                                          imageMoniker: SymbolImageMonikers.ExitConnectionPoint));
 
             } catch (LocationNotFoundException ex) {
                 return ToEnumerable(LocationInfo.FromError(ex));

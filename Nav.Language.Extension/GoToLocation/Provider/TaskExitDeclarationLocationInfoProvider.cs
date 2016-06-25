@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Imaging;
 
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
-using LocationKind = Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols.LocationKind;
 
 #endregion
 
@@ -33,9 +33,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                     cancellationToken: cancellationToken).ConfigureAwait(false);
                 
                 var locationInfo = LocationInfo.FromLocation(
-                    location   : location,
-                    displayName: $"{_codegenInfo.TaskCodeGenInfo.WfsTypeName}.{_codegenInfo.AfterLogicMethodName}",
-                    kind       : LocationKind.TaskExitDeclaration);
+                    location    : location,
+                    displayName : $"{_codegenInfo.TaskCodeGenInfo.WfsTypeName}.{_codegenInfo.AfterLogicMethodName}",
+                    imageMoniker: KnownMonikers.MethodPublic);
 
                 return ToEnumerable(locationInfo);
 
@@ -43,6 +43,5 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 return ToEnumerable(LocationInfo.FromError(ex));
             }
         }
-
     }
 }

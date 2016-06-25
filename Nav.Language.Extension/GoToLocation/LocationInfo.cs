@@ -1,4 +1,7 @@
-namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
+using Microsoft.VisualStudio.Imaging.Interop;
+using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
+
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
     public struct LocationInfo {
 
@@ -10,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         }
 
         public Location Location { get; private set; }
-        public LocationKind Kind { get; private set; }
+        public ImageMoniker ImageMoniker { get; private set; }
 
         public string DisplayName {
             get {
@@ -39,11 +42,11 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             };
         }
 
-        public static LocationInfo FromLocation(Location location, string displayName="", LocationKind kind =LocationKind.Unspecified) {
+        public static LocationInfo FromLocation(Location location, string displayName, ImageMoniker imageMoniker) {
             return new LocationInfo {
-                Location    = location,
-                DisplayName = displayName,
-                Kind        = kind,
+                Location     = location,
+                DisplayName  = displayName,
+                ImageMoniker = imageMoniker,
             };
         }
     }

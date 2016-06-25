@@ -1,12 +1,13 @@
 ﻿#region Using Directives
 
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
-using System.Linq;
 
 #endregion
 
@@ -27,14 +28,13 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 return locs.Select(location => LocationInfo.FromLocation(
-                       location   : location,
-                       displayName: Annotation.TaskName,
-                       kind       : LocationKind.TaskDefinition));
+                       location    : location,
+                       displayName : Annotation.TaskName,
+                       imageMoniker: SymbolImageMonikers.TaskDefinition));
 
             } catch (LocationNotFoundException ex) {
                 return ToEnumerable(LocationInfo.FromError(ex));
             }
         }
     }
-
 }

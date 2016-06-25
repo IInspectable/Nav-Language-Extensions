@@ -7,10 +7,11 @@ using System.Collections.Generic;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
-using Pharmatechnik.Nav.Language.CodeAnalysis.Common;
+using Microsoft.VisualStudio.Imaging;
+
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Language.CodeAnalysis.Common;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
-using LocationKind = Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols.LocationKind;
 
 #endregion
 
@@ -35,10 +36,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
                 return locations.Select(location =>
                                     LocationInfo.FromLocation(
-                                        location   : location,
+                                        location    : location,
                                         // TODO Evtl. das Projekt mit angeben => das ist nicht notwendigerweise project!
-                                        displayName: $"{PathHelper.GetRelativePath(project.FilePath, location.FilePath)}",
-                                        kind       : LocationKind.TaskDeclaration))
+                                        displayName : $"{PathHelper.GetRelativePath(project.FilePath, location.FilePath)}",
+                                        imageMoniker: KnownMonikers.ClassPublic))
                                 .OrderBy(li=>li.DisplayName);                
 
             } catch(LocationNotFoundException ex) {

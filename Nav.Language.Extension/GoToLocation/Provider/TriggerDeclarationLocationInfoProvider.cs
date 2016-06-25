@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text;
 
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
-using LocationKind = Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols.LocationKind;
 
 #endregion
 
@@ -32,9 +32,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 var locationInfo = LocationInfo.FromLocation(
-                    location   : location,
-                    displayName: "Go To Trigger Declaration",
-                    kind       : LocationKind.TriggerDeclaration);
+                    location    : location,
+                    displayName : "Go To Trigger Declaration",
+                    imageMoniker: KnownMonikers.MethodPublic);
 
                 return ToEnumerable(locationInfo);
 
