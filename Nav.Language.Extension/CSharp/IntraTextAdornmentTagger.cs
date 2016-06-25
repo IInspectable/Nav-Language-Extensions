@@ -36,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
     /// that are consistent with the latest sent TagsChanged event by storing that particular snapshot
     /// and using it to query for the data tags.
     /// </remarks>
-    abstract class IntraTextAdornmentTagger<TData, TAdornment>: ITagger<IntraTextAdornmentTag> where TAdornment : UIElement {
+    abstract class IntraTextAdornmentTagger<TData, TAdornment>: IDisposable, ITagger<IntraTextAdornmentTag> where TAdornment : UIElement {
 
         readonly List<SnapshotSpan> _invalidatedSpans = new List<SnapshotSpan>();
 
@@ -51,6 +51,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
             Snapshot = textView.TextBuffer.CurrentSnapshot;
 
             TextView.LayoutChanged += HandleLayoutChanged;
+        }
+
+        public virtual void Dispose() {
+            TextView.LayoutChanged -= HandleLayoutChanged;
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
