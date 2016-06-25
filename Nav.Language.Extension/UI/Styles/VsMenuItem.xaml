@@ -9,6 +9,7 @@
 
     <!-- SubmenuItem -->
     <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}" TargetType="{x:Type local:VsMenuItem}">
+        
         <Border Name="Border" 
                 TextBlock.Foreground = "{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarTextActiveBrushKey}}">
             <Grid>
@@ -56,7 +57,7 @@
             </Trigger>
             
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarTextInactiveColorKey}}"/>
+                <Setter Property="TextBlock.Foreground" TargetName="Border" Value="{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarTextInactiveBrushKey}}"/>
             </Trigger>
                         
         </ControlTemplate.Triggers>
