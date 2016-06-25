@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.Tests", "Nav.L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.CodeAnalysis", "Nav.Language.CodeAnalysis\Nav.Language.CodeAnalysis.csproj", "{32AF2E02-A21A-4D1F-9927-09931715D057}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Utilities", "Nav.Utilities\Nav.Utilities.csproj", "{AA0629B3-AF39-4049-9723-7989EC93B0A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{32AF2E02-A21A-4D1F-9927-09931715D057}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32AF2E02-A21A-4D1F-9927-09931715D057}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32AF2E02-A21A-4D1F-9927-09931715D057}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
