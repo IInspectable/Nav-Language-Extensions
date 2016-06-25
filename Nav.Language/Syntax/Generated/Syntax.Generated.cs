@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 25.06.2016 12:12:26
+// HINWEIS: Diese Datei wurde am 25.06.2016 12:33:27
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {

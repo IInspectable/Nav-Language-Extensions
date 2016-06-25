@@ -7,7 +7,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using NLog;
 using JetBrains.Annotations;
 
 using Microsoft.CodeAnalysis;
@@ -15,6 +14,7 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 
+using Pharmatechnik.Nav.Utilities.Logging;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.Extension.Notification;
@@ -25,7 +25,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     class IntraTextGoToTagger: ITagger<IntraTextGoToTag>, IClassAnnotationChangeListener, IDisposable {
 
-        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger Logger = Logger.Create<IntraTextGoToTagger>();
 
         readonly ITextBuffer _textBuffer;
         readonly IDisposable _parserObs;

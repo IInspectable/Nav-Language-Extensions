@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
-using NLog;
+
+using Pharmatechnik.Nav.Utilities.Logging;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
@@ -15,7 +16,7 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
     sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGoToTag, IntraTextGoToAdornment>, IDisposable {
 
-        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger Logger = Logger.Create<IntraTextGoToAdornmentTagger>();
 
         readonly ITagAggregator<IntraTextGoToTag> _intraTextGoToTagger;
         readonly GoToLocationService _goToLocationService;
