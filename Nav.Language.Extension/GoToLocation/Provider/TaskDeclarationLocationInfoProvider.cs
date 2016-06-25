@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging;
-
+using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Utilities.IO;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
@@ -22,9 +22,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
         readonly TaskCodeGenInfo _codegenInfo;
 
         public TaskDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskCodeGenInfo codegenInfo): base(sourceBuffer) {
-
             _codegenInfo  = codegenInfo;
         }
+
+        static ImageMoniker ImageMoniker { get { return KnownMonikers.ClassPublic; } }
 
         protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
@@ -37,13 +38,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 return locations.Select(location =>
                                     LocationInfo.FromLocation(
                                         location    : location,
-                                        // TODO Evtl. das Projekt mit angeben => das ist nicht notwendigerweise project!
                                         displayName : $"{PathHelper.GetRelativePath(project.FilePath, location.FilePath)}",
-                                        imageMoniker: KnownMonikers.ClassPublic))
+                                        imageMoniker: ImageMoniker))
                                 .OrderBy(li=>li.DisplayName);                
 
             } catch(LocationNotFoundException ex) {
-                return ToEnumerable(LocationInfo.FromError(ex));
+                return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
             }           
         }
     }

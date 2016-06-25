@@ -24,8 +24,6 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             }
             private set { _displayName = value; }
         }
-        
-        public string ProjectRelativePath { get; private set; }
 
         public string ErrorMessage {
             get { return _errorMessage??string.Empty; }
@@ -38,18 +36,18 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             };
         }
 
-        public static LocationInfo FromError(LocationNotFoundException ex) {
+        public static LocationInfo FromError(LocationNotFoundException ex, ImageMoniker imageMoniker) {
             return new LocationInfo {
-                ErrorMessage = ex?.Message
+                ErrorMessage = ex?.Message,
+                ImageMoniker = imageMoniker
             };
         }
 
-        public static LocationInfo FromLocation(Location location, string displayName, ImageMoniker imageMoniker, string projectRelativePath="") {
+        public static LocationInfo FromLocation(Location location, string displayName, ImageMoniker imageMoniker) {
             return new LocationInfo {
                 Location     = location,
                 DisplayName  = displayName,
                 ImageMoniker = imageMoniker,
-                ProjectRelativePath= projectRelativePath
             };
         }
 

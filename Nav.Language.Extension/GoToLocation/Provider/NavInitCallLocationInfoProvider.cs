@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
@@ -23,6 +24,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
             _callAnnotation = callAnnotation;
         }
 
+        static ImageMoniker ImageMoniker { get { return KnownMonikers.MethodPublic; } }
+
         protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
             try {
@@ -34,12 +37,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 var locationInfo = LocationInfo.FromLocation(
                     location    : location,
                     displayName : "Go To BeginLogic",
-                    imageMoniker: KnownMonikers.MethodPublic);
+                    imageMoniker: ImageMoniker);
 
                 return ToEnumerable(locationInfo);
 
             } catch(LocationNotFoundException ex) {
-                return ToEnumerable(LocationInfo.FromError(ex));
+                return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
             }            
         }
     }

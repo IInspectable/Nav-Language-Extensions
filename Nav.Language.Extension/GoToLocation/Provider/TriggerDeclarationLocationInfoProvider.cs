@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Text;
 
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 #endregion
 
@@ -23,6 +24,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
             _codegenInfo  = codegenInfo;
         }
 
+        static ImageMoniker ImageMoniker { get { return KnownMonikers.MethodPublic; } }
+
         protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
             try {
@@ -34,12 +37,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 var locationInfo = LocationInfo.FromLocation(
                     location    : location,
                     displayName : "Go To Trigger Declaration",
-                    imageMoniker: KnownMonikers.MethodPublic);
+                    imageMoniker: ImageMoniker);
 
                 return ToEnumerable(locationInfo);
 
             } catch(LocationNotFoundException ex) {
-                return ToEnumerable(LocationInfo.FromError(ex));
+                return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
             }
         }
     }
