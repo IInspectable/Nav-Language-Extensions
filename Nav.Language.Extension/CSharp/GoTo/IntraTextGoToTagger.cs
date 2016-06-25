@@ -115,16 +115,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var newWorkspace = _workspaceRegistration.Workspace;
 
-            if (newWorkspace != null) {
-                ConnectToWorkspace(newWorkspace);
-            }
+            ConnectToWorkspace(newWorkspace);
         }
 
-        void ConnectToWorkspace(Workspace workspace) {
+        void ConnectToWorkspace([CanBeNull] Workspace workspace) {
 
-            _result    = null;
+            DisconnectFromWorkspace();
 
             _workspace = workspace;
+
             if(_workspace != null) {
                 // TODO Fehlt uns irgendein Event? Es scheint manchmal vorzukommen, dass die Tags nach dem Starten von VS nicht verfügbar sind...
                 _workspace.WorkspaceChanged += OnWorkspaceChanged;
@@ -151,6 +150,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         void OnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args) {
+
+            Logger.Debug($"{nameof(OnWorkspaceChanged)}: {args.Kind}");
+
             // We're getting an event for a workspace we already disconnected from
             if (args.NewSolution.Workspace != _workspace) {
                 // we are async so we are getting events from previous workspace we were associated with
@@ -158,7 +160,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 return;
             }
 
-            if(args.Kind == WorkspaceChangeKind.DocumentChanged) {
+            if(args.Kind == WorkspaceChangeKind.DocumentChanged || args.Kind==WorkspaceChangeKind.DocumentReloaded) {
                 InvalidateIfThisDocument(args.DocumentId);
             }               
         }
