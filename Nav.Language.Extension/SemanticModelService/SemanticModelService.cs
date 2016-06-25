@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Utilities.Logging;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension {
 
     sealed class SemanticModelService: ParserServiceDependent {
+
+        static readonly Logger Logger = Logger.Create<SemanticModelService>();
 
         readonly IDisposable _observable;
         SemanticModelResult _semanticModelResult;
@@ -96,23 +99,27 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
          static async Task<SemanticModelResult> BuildResultAsync(ParseResult parseResult, CancellationToken cancellationToken) {
             return await Task.Run(() => {
-                
-                if(parseResult == null) {
-                    return null;
+
+                using(Logger.LogBlock(nameof(BuildResultAsync))) {
+
+                    if(parseResult == null) {
+                        Logger.Debug("Es gibt kein ParesResult. Der Vorgang wird abgebrochen.");
+                        return null;
+                    }
+
+                    var syntaxTree = parseResult.SyntaxTree;
+                    var snapshot = parseResult.Snapshot;
+
+                    var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
+                    if(codeGenerationUnitSyntax == null) {
+                        Logger.Debug($"Der SyntaxRoot ist nicht vom Typ {typeof(CodeGenerationUnitSyntax)}. Der Vorgang wird abgebrochen.");
+                        return null;
+                    }
+
+                    var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
+
+                    return new SemanticModelResult(codeGenerationUnit, snapshot);
                 }
-
-                var syntaxTree = parseResult.SyntaxTree;
-                var snapshot   = parseResult.Snapshot;
-
-                var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
-                if(codeGenerationUnitSyntax == null) {
-                    return null;
-                }
-
-                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
-
-                return new SemanticModelResult(codeGenerationUnit, snapshot);
-
             }, cancellationToken).ConfigureAwait(false);
         }
 
