@@ -34,7 +34,8 @@
                                   Margin              = "5,2,0,2"
                                   RecognizesAccessKey = "True"/>
                 <TextBlock x:Name            = "InputGestureText"
-                           Grid.Column       = "2"                           
+                           Grid.Column       = "2"                   
+                           Foreground        = "{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarTextInactiveBrushKey}}"
                            Text              = "{TemplateBinding InputGestureText}"
                            VerticalAlignment = "Center"
                            Margin            = "5,2,0,2"

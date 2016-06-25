@@ -9,8 +9,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging;
 
+using Pharmatechnik.Nav.Utilities.IO;
 using Pharmatechnik.Nav.Language.CodeGen;
-using Pharmatechnik.Nav.Language.CodeAnalysis.Common;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
 #endregion
