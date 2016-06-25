@@ -20,12 +20,13 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         public static void Initialize(string logFolder, string logName) {
             
             LoggingConfiguration loggingConfiguration = new LoggingConfiguration();
+            
             var fileTarget = new FileTarget {
                 FileName         = Path.Combine(logFolder, $"{logName}.log.xml"),
                 ArchiveFileName  = Path.Combine(logFolder, $"{logName}.log.xml.{{#####}}"),
                 ArchiveNumbering = ArchiveNumberingMode.Rolling,
                 MaxArchiveFiles  = 10,
-                ArchiveAboveSize = 1 * MB,
+                ArchiveAboveSize = 10 * MB,
                 Layout           = new Log4JXmlEventLayout()
             };
 
