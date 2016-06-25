@@ -267,23 +267,27 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
         static BuildTagsResult BuildTags(BuildTagsArgs buildArgs) {
 
-            var document = buildArgs.Snapshot.GetOpenDocumentInCurrentContextWithChanges();
-            if(document == null) {
-                // TODO Wann kommt das vor? Müssen wir darauf mit einer nachgeschobenen Berechnung reagieren?
-                Logger.Warn($"{nameof(BuildTags)}: Es steht kein Dokument zur Verfügung. Der Vorgang wurde abgebrochen.");
-                return new BuildTagsResult(buildArgs);
-            }
+            using(Logger.LogBlock(nameof(BuildTags))) {
+
+                var document = buildArgs.Snapshot.GetOpenDocumentInCurrentContextWithChanges();
+                if(document == null) {
+                    // TODO Wann kommt das vor? Müssen wir darauf mit einer nachgeschobenen Berechnung reagieren?
+                    Logger.Warn($"{nameof(BuildTags)}: Es steht kein Dokument zur Verfügung. Der Vorgang wurde abgebrochen.");
+                    return new BuildTagsResult(buildArgs);
+                }
             
-            var annotations = AnnotationReader.ReadNavTaskAnnotations(document)
-                                              .ToList();
-            var tagSpanBuilder = new IntraTextGoToTagSpanBuilder(buildArgs.Snapshot);
+                var annotations = AnnotationReader.ReadNavTaskAnnotations(document)
+                                                  .ToList();
+                var tagSpanBuilder = new IntraTextGoToTagSpanBuilder(buildArgs.Snapshot);
 
-            var tags = annotations.Select(annotation => tagSpanBuilder.Visit(annotation))
-                                  .Where(tagsSpan => tagsSpan != null)
-                                  .ToList();
+                var tags = annotations.Select(annotation => tagSpanBuilder.Visit(annotation))
+                                      .Where(tagsSpan => tagsSpan != null)
+                                      .ToList();
 
-            return new BuildTagsResult(buildArgs, tags, annotations);
+                Logger.Debug($"{tags.Count} Annotations in Dokument {buildArgs.DocumentId} gefunden.");
 
+                return new BuildTagsResult(buildArgs, tags, annotations);
+            }
         }
 
         struct BuildTagsArgs {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Utilities.Logging;
 
 #endregion
 
@@ -15,7 +16,9 @@ namespace Pharmatechnik.Nav.Language.Extension {
     public delegate SyntaxNode ParseMethod(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken));
 
     sealed class ParserService: IDisposable {
-        
+
+        static readonly Logger Logger = Logger.Create<ParserService>();
+
         static readonly object ParseMethodKey = new Object();
         readonly IDisposable _parserObs;
         ParseResult _parseResult;
@@ -136,9 +139,12 @@ namespace Pharmatechnik.Nav.Language.Extension {
             
             return await Task.Run(() => {
 
-                var syntaxTree  = args.ParseMethod(args.Text, args.FilePath, cancellationToken).SyntaxTree;
+                using(Logger.LogBlock(nameof(BuildResultAsync))) {
 
-                return new ParseResult(syntaxTree, args.Snapshot);
+                    var syntaxTree = args.ParseMethod(args.Text, args.FilePath, cancellationToken).SyntaxTree;
+
+                    return new ParseResult(syntaxTree, args.Snapshot);
+                }
 
             }, cancellationToken).ConfigureAwait(false);            
         }
