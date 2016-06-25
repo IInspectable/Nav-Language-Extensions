@@ -6,15 +6,17 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
-
+using NLog;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
-    internal sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGoToTag, IntraTextGoToAdornment>, IDisposable {
-        
+    sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGoToTag, IntraTextGoToAdornment>, IDisposable {
+
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         readonly ITagAggregator<IntraTextGoToTag> _intraTextGoToTagger;
         readonly GoToLocationService _goToLocationService;
 
@@ -25,13 +27,19 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _goToLocationService = goToLocationService;
 
             intraTextGoToTagger.TagsChanged += OnTagsChanged;
+
+            Logger.Info($"{nameof(IntraTextGoToAdornmentTagger)}.Ctor");
         }
 
-        public void Dispose() {
+        public override void Dispose() {
+            base.Dispose();
+
             _intraTextGoToTagger.TagsChanged -= OnTagsChanged;
             _intraTextGoToTagger.Dispose();
 
             TextView.Properties.RemoveProperty(typeof(IntraTextGoToAdornmentTagger));
+
+            Logger.Info($"{nameof(IntraTextGoToAdornmentTagger)}.{nameof(Dispose)}");
         }
 
         internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> intraTextGoToTagger, GoToLocationService goToLocationService) {
