@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
+using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
@@ -18,7 +18,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
         public NavTriggerAnnotationLocationInfoProvider(NavTriggerAnnotation annotation) : base(annotation) {
         }
 
+        static ImageMoniker ImageMoniker { get { return SymbolImageMonikers.SignalTrigger; } }
+
         protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new CancellationToken()) {
+
             try {
 
                 var locs = await LocationFinder.FindNavLocationsAsync(
@@ -29,10 +32,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 return locs.Select(location => LocationInfo.FromLocation(
                     location    : location,
                     displayName : Annotation.TriggerName,
-                    imageMoniker: SymbolImageMonikers.SignalTrigger));
+                    imageMoniker: ImageMoniker));
 
             } catch (LocationNotFoundException ex) {
-                return ToEnumerable(LocationInfo.FromError(ex));
+                return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
             }
         }
     }
