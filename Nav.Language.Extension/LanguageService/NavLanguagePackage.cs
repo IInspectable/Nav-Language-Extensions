@@ -2,8 +2,8 @@
 
 using System;
 
-using System.ComponentModel.Design;
 using System.IO;
+using System.ComponentModel.Design;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
 
@@ -21,10 +21,13 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
+
 using NLog;
 using NLog.Config;
 using NLog.Layouts;
 using NLog.Targets;
+
+using Logger = Pharmatechnik.Nav.Utilities.Logging.Logger;
 
 #endregion
 
@@ -67,7 +70,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")] // VSConstants.UICONTEXT_SolutionExists
     sealed partial class NavLanguagePackage : Package {
 
-        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        static readonly Logger Logger = Logger.Create<NavLanguagePackage>();
 
         // ReSharper disable once EmptyConstructor
         public NavLanguagePackage() {
@@ -102,7 +105,11 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         const long MB = 1024 * KB;
         // ReSharper restore InconsistentNaming
 
-        private void InitializeLogging() {
+        void InitializeLogging() {
+
+            // Bissl unschön, da wir einerseits das Logging von NLog völlig wegkapseln, andererseits hier
+            // wieder ganz explizit darauf zugreifen...
+
             LoggingConfiguration loggingConfiguration = new LoggingConfiguration();
             var fileTarget = new FileTarget {
                 FileName         = Path.Combine(GetLogFolder(), "Nav.Language.Extension.log.xml"),
