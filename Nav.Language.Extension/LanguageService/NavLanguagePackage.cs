@@ -3,6 +3,7 @@
 using System;
 
 using System.ComponentModel.Design;
+using System.IO;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
 
@@ -20,6 +21,10 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
+using NLog;
+using NLog.Config;
+using NLog.Layouts;
+using NLog.Targets;
 
 #endregion
 
@@ -62,12 +67,16 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")] // VSConstants.UICONTEXT_SolutionExists
     sealed partial class NavLanguagePackage : Package {
 
+        static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         // ReSharper disable once EmptyConstructor
         public NavLanguagePackage() {
             // Inside this method you can place any initialization code that does not require
             // any Visual Studio service because at this point the package object is created but
             // not sited yet inside Visual Studio environment. The place to do all the other
             // initialization is the Initialize method.
+
+            InitializeLogging();
         }
 
         #region Documentation
@@ -84,7 +93,36 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             ((IServiceContainer)this).AddService(GetType(), this, true);
 
             base.Initialize();
+
+            Logger.Info($"{nameof(NavLanguagePackage)}.{nameof(Initialize)}");
         }
+
+        // ReSharper disable InconsistentNaming
+        const long KB = 1024;
+        const long MB = 1024 * KB;
+        // ReSharper restore InconsistentNaming
+
+        private void InitializeLogging() {
+            LoggingConfiguration loggingConfiguration = new LoggingConfiguration();
+            var fileTarget = new FileTarget {
+                FileName         = Path.Combine(GetLogFolder(), "Nav.Language.Extension.log.xml"),
+                ArchiveFileName  = "log_{#####}.xml",
+                ArchiveNumbering = ArchiveNumberingMode.Rolling,
+                MaxArchiveFiles  = 3,
+                ArchiveAboveSize = 1*MB, 
+                Layout           = new Log4JXmlEventLayout()
+            };
+            
+            loggingConfiguration.AddTarget("file", fileTarget);
+            loggingConfiguration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
+            
+            LogManager.Configuration = loggingConfiguration;
+        }
+
+        string GetLogFolder() {
+            return Path.GetTempPath();
+        }
+
 
         public static object GetGlobalService<TService>() where TService : class {
             return GetGlobalService(typeof(TService));
