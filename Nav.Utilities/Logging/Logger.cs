@@ -19,10 +19,14 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         protected Logger(NLog.Logger loggerImpl) {
             _loggerImpl  = loggerImpl;
         }
-        
-        public static Logger Create<T>() {
-            NLog.Logger baseLogger= NLog.LogManager.GetLogger(typeof(T).FullName);
+
+        public static Logger Create(Type type) {
+            NLog.Logger baseLogger = NLog.LogManager.GetLogger(type.FullName);
             return new Logger(baseLogger);
+        }
+
+        public static Logger Create<T>() {
+            return Create(typeof(T));
         }
 
         public IDisposable LogBlock(string blockName) {
@@ -67,6 +71,15 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         /// <param name="message">Log message.</param>
         public void Error([Localizable(false)] string message) {
             _loggerImpl.Error(IndentMessage(message));
+        }
+
+        /// <summary>
+        /// Writes the diagnostic message and exception at the <c>Error</c> level.
+        /// </summary>
+        /// <param name="message">A <see langword="string" /> to be written.</param>
+        /// <param name="exception">An exception to be logged.</param>
+        public void Error(Exception exception, [Localizable(false)] string message) {
+            _loggerImpl.Error(exception, IndentMessage(message));
         }
 
         string IndentMessage(string message) {
