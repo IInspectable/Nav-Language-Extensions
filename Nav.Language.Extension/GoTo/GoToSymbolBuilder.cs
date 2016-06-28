@@ -59,7 +59,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             return CreateGoToLocationTagSpan(taskNodeSymbol.Location,
                 LocationInfo.FromLocation(
                     location    : taskNodeSymbol.Declaration.Location, 
-                    displayName : $"task {taskNodeSymbol.Declaration.Name}", 
+                    displayName : $"Task {taskNodeSymbol.Declaration.Name}", 
                     imageMoniker: SymbolImageMonikers.TaskDefinition));
         }
 
@@ -97,7 +97,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             // GoTo Exit Definition
             var defProvider = new SimpleLocationInfoProvider(LocationInfo.FromLocation(
                 connectionPointReferenceSymbol.Declaration.Location,
-                connectionPointReferenceSymbol.Name,
+                $"Exit {connectionPointReferenceSymbol.Name}",
                 SymbolImageMonikers.ExitConnectionPoint));
 
             tagSpan.Tag.Provider.Add(defProvider);

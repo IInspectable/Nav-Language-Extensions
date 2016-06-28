@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
                 return locs.Select(location => LocationInfo.FromLocation(
                     location    : location,
-                    displayName : location.Name,
+                    displayName : $"Exit {location.Name}",
                     imageMoniker: ImageMoniker));
 
             } catch (LocationNotFoundException ex) {
