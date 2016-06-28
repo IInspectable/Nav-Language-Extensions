@@ -273,8 +273,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
                 var document = buildArgs.Snapshot.GetOpenDocumentInCurrentContextWithChanges();
                 if(document == null) {
-                    // TODO Wann kommt das vor? Müssen wir darauf mit einer nachgeschobenen Berechnung reagieren?
-                    Logger.Warn($"{nameof(BuildTags)}: Es steht kein Dokument zur Verfügung. Der Vorgang wurde abgebrochen.");
+                    // Wahrscheinlich handelt es sich bei diesem Dokument um ein "externes"
+                    Logger.Info($"{nameof(BuildTags)}: Es steht kein Dokument zur Verfügung. Der Vorgang wurde abgebrochen.");
                     return new BuildTagsResult(buildArgs);
                 }
             
