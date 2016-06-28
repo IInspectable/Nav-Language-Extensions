@@ -27,7 +27,6 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
         static readonly Logger Logger = Logger.Create<GoToLocationService>();
 
-        // TODO Titel etc. überarbeiten
         const string MessageTitle             = "Nav Language Extensions";
         const string SearchingLocationMessage = "Searching Location...";
         const string OpeningFileMessage       = "Opening file...";
