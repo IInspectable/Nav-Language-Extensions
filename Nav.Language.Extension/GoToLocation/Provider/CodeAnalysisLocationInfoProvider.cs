@@ -27,7 +27,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
         public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
             var project = _sourceBuffer.GetContainingProject();
             if (project == null) {
-                // TODO Fehlermeldung
+                // Das kommt vor, wenn das Dokument "extern" ist, also nicht in einem der geöffneten Projekte hängt.
+                // TODO Fehlermeldung überarbeiten.
                 return ToEnumerable(LocationInfo.FromError("Unable to determine containing project."));
             }
 
