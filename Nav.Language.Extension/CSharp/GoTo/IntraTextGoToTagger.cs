@@ -274,7 +274,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 var document = buildArgs.Snapshot.GetOpenDocumentInCurrentContextWithChanges();
                 if(document == null) {
                     // Wahrscheinlich handelt es sich bei diesem Dokument um ein "externes"
-                    Logger.Info($"{nameof(BuildTags)}: Es steht kein Dokument zur Verfügung. Der Vorgang wurde abgebrochen.");
+                    Logger.Warn($"{nameof(BuildTags)}: Es steht kein Roslyn Dokument für '{buildArgs.DocumentId}' zur Verfügung. Der Vorgang wurde abgebrochen.");
                     return new BuildTagsResult(buildArgs);
                 }
             
