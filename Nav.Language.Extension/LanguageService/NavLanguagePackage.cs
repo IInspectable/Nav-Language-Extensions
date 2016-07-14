@@ -55,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                             ShowSmartIndent       = false,
                             DefaultToInsertSpaces = true,
                             MatchBracesAtCaret    = true,
-                            RequestStockColors    = true,
+                            RequestStockColors    = true,       
                             ShowDropDownOptions   = false)]
     [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageInfo), NavLanguageContentDefinitions.FileExtension)]
