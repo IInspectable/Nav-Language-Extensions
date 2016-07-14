@@ -85,6 +85,8 @@
     <Compile Include="GoToLocation\Provider\TaskExitDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationLocationInfoProvider.cs" />
+    <Compile Include="LanguageService\CodeWindowManager.cs" />
+    <Compile Include="NavigationBar\DropdownBarClient.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\WeakListenerManager.cs" />
     <Compile Include="QuickInfo\SymbolImageMonikers.cs" />
