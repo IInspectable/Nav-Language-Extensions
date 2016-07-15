@@ -3,7 +3,8 @@
 using System;
 using System.Linq;
 using System.Collections.Immutable;
-
+using System.Windows.Controls;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -30,7 +31,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         ImmutableList<NavigationItem> _projectItems;
         ImmutableList<NavigationItem> _taskItems;
-        ImmutableList<NavigationItem> _memberItems;
 
         public DropdownBarClient(
             IWpfTextView textView,
@@ -47,7 +47,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             _projectItems = ImmutableList<NavigationItem>.Empty;
             _taskItems    = ImmutableList<NavigationItem>.Empty;
-            _memberItems  = ImmutableList<NavigationItem>.Empty;
             
             _textView.Caret.PositionChanged += OnCaretPositionChanged;
         }
@@ -85,7 +84,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             DROPDOWNFONTATTR attributes = DROPDOWNFONTATTR.FONTATTR_PLAIN;
 
             var entries       = GetItems(iCombo);
-            var selectedIndex = GetActiveSelection(iCombo);
+            var selectedIndex = GetCurrentSelectionIndex(iCombo);
             var caretPosition = _textView.Caret.Position.BufferPosition.Position;
 
             if(entries.Any() && iIndex < entries.Count &&
@@ -110,6 +109,9 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         int IVsDropdownBarClient.OnItemSelected(int iCombo, int iIndex) {
+            if(iCombo == TaskComboIndex) {
+                SetActiveSelection(MemberComboIndex);
+            }
             return VSConstants.S_OK;
         }
 
@@ -119,17 +121,16 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 return VSConstants.E_UNEXPECTED;
             }
 
-            var items = GetItems(iCombo);
-            if(items != null && iIndex < items.Count) {
-                
-                var item = items[iIndex];
-                if (item.NavigationPoint < 0) {
-                    return VSConstants.S_OK;
-                }
+            var item = GetCurrentSelectionItem(iCombo, iIndex);
+
+            if(item?.NavigationPoint >= 0) {
 
                 _dropdownBar.RefreshCombo(iCombo, iIndex);
 
-                NavLanguagePackage. NavigateToLocation(_textView, item.NavigationPoint);                
+                NavLanguagePackage.NavigateToLocation(_textView, item.NavigationPoint);
+            } else {
+                // ReSharper disable once SuspiciousTypeConversion.Global
+                (_textView as Control)?.Focus();
             }
 
             return VSConstants.S_OK;
@@ -168,7 +169,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 case TaskComboIndex:
                     return _taskItems;
                 case MemberComboIndex:
-                    return _memberItems;
+                    var taskItem= GetCurrentSelectionItem(TaskComboIndex);
+                    return taskItem?.Children?? ImmutableList<NavigationItem>.Empty;
                 default:
                     return ImmutableList<NavigationItem>.Empty;
             }
@@ -214,15 +216,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         void UpdateMemberItems() {
-
-            // TODO Member nur für aktuellen Task..
-            _memberItems = ImmutableList<NavigationItem>.Empty;
-
-            var cgu = SemanticModelService?.SemanticModelResult?.CodeGenerationUnit;
-            if(cgu != null) {
-                _memberItems = MemberNavigationItemBuilder.Build(cgu);
-            }
-
+            
             SetActiveSelection(MemberComboIndex);
         }
 
@@ -258,7 +252,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             _dropdownBar.RefreshCombo(comboBoxId, newIndex);
         }
 
-        int GetActiveSelection(int iCombo) {
+        int GetCurrentSelectionIndex(int iCombo) {
 
             if (_dropdownBar == null) {
                 return -1;
@@ -266,6 +260,28 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             int sel = -1;
              _dropdownBar?.GetCurrentSelection(iCombo, out sel);
             return sel;
+        }
+
+        [CanBeNull]
+        NavigationItem GetCurrentSelectionItem(int iCombo) {
+
+            var index = GetCurrentSelectionIndex(iCombo);
+            if(index < 0) {
+                return null;
+            }
+
+            return GetCurrentSelectionItem(iCombo, index);
+        }
+
+        [CanBeNull]
+        NavigationItem GetCurrentSelectionItem(int iCombo, int iIndex) {
+
+            if (iIndex < 0) {
+                return null;
+            }
+
+            var items = GetItems(iCombo);
+            return iIndex < items.Count ? items[iIndex] : null;
         }
 
         static IntPtr GetImageList(IServiceProvider serviceProvider) {

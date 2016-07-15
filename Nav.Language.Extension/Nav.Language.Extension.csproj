@@ -90,7 +90,6 @@
     <Compile Include="NavigationBar\NavigationItem.cs" />
     <Compile Include="NavigationBar\NavigationItemBuilderBase.cs" />
     <Compile Include="NavigationBar\TaskNavigationItemBuilder.cs" />
-    <Compile Include="NavigationBar\MemberNavigationItemBuilder.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\WeakListenerManager.cs" />
     <Compile Include="QuickInfo\SymbolImageMonikers.cs" />
