@@ -6,7 +6,7 @@ using System.IO;
 using System.ComponentModel.Design;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
-
+using System.Windows.Controls;
 using JetBrains.Annotations;
 
 using EnvDTE;
@@ -114,6 +114,22 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                 var workspace = componentModel.GetService<VisualStudioWorkspace>();
                 return workspace;
             }
+        }
+
+        /// <summary>
+        /// 1. Moves the caret to the specified index in the current snapshot.  
+        /// 2. Updates the viewport so that the caret will be centered.
+        /// 3. Moves focus to the text view to ensure the user can continue typing.
+        /// </summary>
+        public static void NavigateToLocation(ITextView textView, int location) {
+
+            var bufferPosition = new SnapshotPoint(textView.TextBuffer.CurrentSnapshot, location);
+
+            textView.Caret.MoveTo(bufferPosition);
+            textView.ViewScroller.EnsureSpanVisible(new SnapshotSpan(bufferPosition, 1), EnsureSpanVisibleOptions.AlwaysCenter);
+
+            // ReSharper disable once SuspiciousTypeConversion.Global 
+            (textView as Control)?.Focus();
         }
 
         [CanBeNull]

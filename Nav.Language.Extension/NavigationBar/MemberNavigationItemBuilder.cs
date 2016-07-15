@@ -16,7 +16,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         public override void VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
-            NavigationItems.Add(new NavigationItem(signalTriggerSymbol.Name, TriggerSymbolImageIndex, signalTriggerSymbol.Location));
+            NavigationItems.Add(new NavigationItem(signalTriggerSymbol.Name, TriggerSymbolImageIndex, signalTriggerSymbol.Location, signalTriggerSymbol.Start));
         }
     }
 }

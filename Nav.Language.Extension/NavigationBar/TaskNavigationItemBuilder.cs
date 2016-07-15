@@ -9,11 +9,12 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         public override void VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
-            NavigationItems.Add(new NavigationItem(taskDefinitionSymbol.Name, TaskDefinitionImageIndex, taskDefinitionSymbol.Location));
+            NavigationItems.Add(new NavigationItem(taskDefinitionSymbol.Name, TaskDefinitionImageIndex, taskDefinitionSymbol.Syntax.GetLocation(), taskDefinitionSymbol.Location.Start));
         }
 
         public override void VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
-            NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, TaskDeclarationImageIndex, taskDeclarationSymbol.Location));
+            // TODO Die Location der Task Deklaration sollte sich über den ganzen Syntaxbereich erstrecken...
+            NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, TaskDeclarationImageIndex, taskDeclarationSymbol.Location, taskDeclarationSymbol.Location.Start));
         }
     }
 }
