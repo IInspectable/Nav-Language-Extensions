@@ -1,7 +1,7 @@
 ﻿#region Using Directives
 
 using System;
-
+using System.Collections.Immutable;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -21,6 +21,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         readonly IVsImageService2 _imageService;
         // ReSharper restore NotAccessedField.Local
         IVsDropdownBar _dropdownBar;
+        ImmutableList<NavigationItem> _taskItems;
+        ImmutableList<NavigationItem> _memberItems;
 
         public DropdownBarClient(IWpfTextView textView,
             IVsDropdownBarManager manager,
@@ -32,6 +34,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             _codeWindow   = codeWindow;
             _imageService = (IVsImageService2)serviceProvider.GetService(typeof(SVsImageService));
             _imageList    = GetImageList(serviceProvider);
+            _taskItems    = ImmutableList<NavigationItem>.Empty;
+            _memberItems  = ImmutableList<NavigationItem>.Empty;
         }
 
         int IVsDropdownBarClient.SetDropdownBar(IVsDropdownBar pDropdownBar) {
@@ -51,6 +55,15 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             phImageList = _imageList;
             pcEntries   = 1;
 
+            if (iCombo == 1) {
+                pcEntries= (uint)_taskItems.Count;
+                return VSConstants.S_OK;
+            }
+            if(iCombo == 2) {
+                pcEntries = (uint)_memberItems.Count;
+                return VSConstants.S_OK;
+            }
+
             return VSConstants.S_OK;
         }
 
@@ -63,10 +76,10 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                     ppszText = SemanticModelService?.SemanticModelResult?.CodeGenerationUnit.Syntax.SyntaxTree.FileInfo?.Name?? "";
                     break;
                 case 1:
-                    ppszText = "OffenePosten";
+                    ppszText = iIndex >= _taskItems.Count ? "" : _taskItems[iIndex].DisplayName;
                     break;
                 case 2:
-                    ppszText = "OnSucheClick";
+                    ppszText = iIndex >= _memberItems.Count ? "" : _memberItems[iIndex].DisplayName;
                     break;
             }
            
@@ -112,7 +125,19 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         void UpdateDropDownEntries() {
             // TODO UpdateDropDownEntries
+            
+            _taskItems   = ImmutableList<NavigationItem>.Empty;
+            _memberItems = ImmutableList<NavigationItem>.Empty;
+
+            var cgu = SemanticModelService?.SemanticModelResult?.CodeGenerationUnit;
+            if (cgu != null) {
+                _taskItems   = TaskNavigationItemBuilder.Build(cgu);
+                _memberItems = MemberNavigationItemBuilder.Build(cgu);
+            }
+
             _dropdownBar?.RefreshCombo(0, 0);
+            _dropdownBar?.RefreshCombo(1, 0);
+            _dropdownBar?.RefreshCombo(2, 0);
         }
 
         static IntPtr GetImageList(IServiceProvider serviceProvider) {
