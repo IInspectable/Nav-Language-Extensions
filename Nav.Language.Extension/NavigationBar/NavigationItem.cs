@@ -14,20 +14,23 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         public string DisplayName { get; }
+
         public int ImageIndex { get; }
+
         [CanBeNull]
         public Location Location { get; }
+
         public int NavigationPoint { get; }
 
         [NotNull]
         public ImmutableList<NavigationItem> Children { get; set; }
 
         public int Start {
-            get { return Location?.Start ?? 0; }
+            get { return Location?.Start ?? -1; }
         }
 
         public int End {
-            get { return Location?.End ?? 0; }
+            get { return Location?.End ?? -1; }
         }
     }
 }

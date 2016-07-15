@@ -2,16 +2,17 @@
 
 using System;
 using System.Linq;
-using System.Collections.Immutable;
 using System.Windows.Controls;
+using System.Collections.Immutable;
+
 using JetBrains.Annotations;
+
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 
-using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
@@ -141,8 +142,13 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         int IVsDropdownBarClient.GetComboTipText(int iCombo, out string pbstrText) {
-            
-            pbstrText = "Use the dropdown to view and navigate to other items in the file.";
+
+            pbstrText = GetCurrentSelectionItem(iCombo)?.DisplayName ?? "";
+            if(pbstrText != "") {
+                pbstrText += Environment.NewLine + Environment.NewLine;
+            }
+            pbstrText += "Use the dropdown to view and navigate to other items in the file.";
+
             return VSConstants.S_OK;
         }
 
@@ -189,18 +195,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         void UpdateProjectItems() {
 
-            _projectItems= ImmutableList<NavigationItem>.Empty;
-            var cgu = SemanticModelService?.SemanticModelResult?.CodeGenerationUnit;
-            if (cgu != null) {
-                _projectItems =
-                    new[] {
-                        new NavigationItem(
-                            displayName    : SemanticModelService?.SemanticModelResult?.Snapshot.TextBuffer.GetContainingProject()?.Name,
-                            imageIndex     : 0, 
-                            location       : null,
-                            navigationPoint: -1)
-                    }.ToImmutableList();
-            }
+            _projectItems = ProjectItemBuilder.Build(SemanticModelService?.SemanticModelResult);
+           
             _dropdownBar?.RefreshCombo(ProjectComboIndex, 0);
         }
 

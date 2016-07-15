@@ -10,9 +10,9 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
     class TaskNavigationItemBuilder : SymbolVisitor {
 
-        public int TaskDefinitionImageIndex      = 0;
-        public int TaskDeclarationImageIndex     = 1;
-        public const int TriggerSymbolImageIndex = 0;
+        public const int TaskDefinitionImageIndex  = 0;
+        public const int TaskDeclarationImageIndex = 1;
+        public const int TriggerSymbolImageIndex   = 30;
 
         protected TaskNavigationItemBuilder() {
             NavigationItems = new List<NavigationItem>();
@@ -35,8 +35,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             }
 
             var items = builder.NavigationItems
-                                .OrderBy(ni => ni.Location?.Start??-1)
-                                .ToImmutableList();
+                               .OrderBy(ni => ni.Location?.Start??-1)
+                               .ToImmutableList();
 
             return items;
         }
@@ -46,7 +46,12 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             foreach (var symbol in taskDefinitionSymbol.Transitions.SelectMany(trans => trans.Symbols())) {
                 Visit(symbol);
             }
-            
+
+          //  int max = 100;
+          //  for(int i = 0; i< max; i++) {
+          //      MemberItems.Add(new NavigationItem($"ImageIndex {i}", i, null, -1));
+          //  }
+          //  
             NavigationItems.Add(new NavigationItem(
                 displayName    : taskDefinitionSymbol.Name, 
                 imageIndex     : TaskDefinitionImageIndex, 
@@ -70,7 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         public override void VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
-            MemberItems.Add(new NavigationItem(signalTriggerSymbol.Name, TriggerSymbolImageIndex, signalTriggerSymbol.Location, signalTriggerSymbol.Start));
+            MemberItems.Add(new NavigationItem(signalTriggerSymbol.Name, TriggerSymbolImageIndex, signalTriggerSymbol.Transition.Location, signalTriggerSymbol.Start));
         }
     }
 }
