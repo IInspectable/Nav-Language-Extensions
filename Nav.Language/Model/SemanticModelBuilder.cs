@@ -49,6 +49,14 @@ namespace Pharmatechnik.Nav.Language {
                 builder._symbols,
                 builder._diagnostics.ToUnique());
 
+            foreach(var taskDefinition in builder._taskDefinitions) {
+                taskDefinition.FinalConstruct(model);
+            }
+
+            foreach (var taskDeclaration in builder._taskDeclarations.Where(td=>!td.IsIncluded)) {
+                taskDeclaration.FinalConstruct(model);
+            }
+
             return model;
         }
         

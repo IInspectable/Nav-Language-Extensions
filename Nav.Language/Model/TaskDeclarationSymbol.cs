@@ -21,6 +21,8 @@ namespace Pharmatechnik.Nav.Language {
             ConnectionPoints = new SymbolCollection<ConnectionPointSymbol>();
         }
 
+        public CodeGenerationUnit CodeGenerationUnit { get; private set; }
+
         public SymbolCollection<ConnectionPointSymbol> ConnectionPoints { get; }
         public List<ITaskNodeSymbol> References { get; }
 
@@ -57,6 +59,10 @@ namespace Pharmatechnik.Nav.Language {
             foreach (var symbol in ConnectionPoints) {
                 yield return symbol;
             }
+        }
+
+        internal void FinalConstruct(CodeGenerationUnit codeGenerationUnit) {
+            CodeGenerationUnit = codeGenerationUnit;
         }
     }
 }

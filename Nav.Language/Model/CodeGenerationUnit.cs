@@ -14,12 +14,12 @@ namespace Pharmatechnik.Nav.Language {
     public sealed class CodeGenerationUnit {
 
         internal CodeGenerationUnit(CodeGenerationUnitSyntax syntax,
-                               IReadOnlyList<string> codeUsings,
-                               IReadOnlySymbolCollection<ITaskDeclarationSymbol> taskDeclarations,
-                               IReadOnlySymbolCollection<ITaskDefinitionSymbol> taskDefinitions,
-                               IReadOnlySymbolCollection<IIncludeSymbol> includes,
-                               IEnumerable<ISymbol> symbols,
-                               IReadOnlyList<Diagnostic> diagnostics) {
+                                    IReadOnlyList<string> codeUsings,
+                                    IReadOnlySymbolCollection<ITaskDeclarationSymbol> taskDeclarations,
+                                    IReadOnlySymbolCollection<ITaskDefinitionSymbol> taskDefinitions,
+                                    IReadOnlySymbolCollection<IIncludeSymbol> includes,
+                                    IEnumerable<ISymbol> symbols,
+                                    IReadOnlyList<Diagnostic> diagnostics) {
 
             if(syntax == null) {
                 throw new ArgumentNullException(nameof(syntax));

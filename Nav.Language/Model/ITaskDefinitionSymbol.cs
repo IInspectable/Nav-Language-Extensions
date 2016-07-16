@@ -9,6 +9,12 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface ITaskDefinitionSymbol : ISymbol {
 
+        /// <summary>
+        /// Sollte in der Praxis nie null sein.
+        /// </summary>
+        [CanBeNull]
+        CodeGenerationUnit CodeGenerationUnit { get; }
+
         [NotNull]
         TaskDefinitionSyntax Syntax { get; }
 
