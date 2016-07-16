@@ -44,6 +44,10 @@
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Antlr4.StringTemplate, Version=4.0.6.9004, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.StringTemplate.4.0.6.9004\lib\net35\Antlr4.StringTemplate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.1.4.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.1.4\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
