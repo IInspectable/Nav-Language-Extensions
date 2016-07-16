@@ -70,8 +70,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 return;
             }
 
-            // TODO Die Location der Task Deklaration sollte sich über den ganzen Syntaxbereich erstrecken...
-            NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, TaskDeclarationImageIndex, taskDeclarationSymbol.Location, taskDeclarationSymbol.Location.Start));
+            NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, TaskDeclarationImageIndex, taskDeclarationSymbol.Syntax?.GetLocation(), taskDeclarationSymbol.Location.Start));
         }
 
         public override void VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {

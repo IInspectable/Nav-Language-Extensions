@@ -9,11 +9,11 @@ namespace Pharmatechnik.Nav.Language {
                                     Location location, 
                                     TaskDefinitionSyntax syntax, 
                                     TaskDeclarationSymbol taskDeclaration) : base(name, location) {
-            Syntax           = syntax;
-            AsTaskDeclaration  = taskDeclaration;
-            NodeDeclarations = new SymbolCollection<INodeSymbol>();
-            Transitions      = new List<Transition>();
-            ExitTransitions  = new List<ExitTransition>();
+            Syntax            = syntax;
+            AsTaskDeclaration = taskDeclaration;
+            NodeDeclarations  = new SymbolCollection<INodeSymbol>();
+            Transitions       = new List<Transition>();
+            ExitTransitions   = new List<ExitTransition>();
         }
 
         public TaskDefinitionSyntax Syntax { get; }
