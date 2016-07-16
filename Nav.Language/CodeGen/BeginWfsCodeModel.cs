@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
-using System.Linq;
-using System.Collections.Generic;
+using System;
 using System.Collections.Immutable;
 
 using JetBrains.Annotations;
@@ -11,23 +10,38 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     class BeginWfsCodeModel: CodeModel {
+
+        readonly TaskCodeGenInfo _taskCodeGenInfo;
+        readonly ITaskDefinitionSymbol _taskDefinition;
+
+        public BeginWfsCodeModel(ITaskDefinitionSymbol taskDefinition) {
+
+            if (taskDefinition == null) {
+                throw new ArgumentNullException(nameof(taskDefinition));
+            }
+
+            _taskDefinition  = taskDefinition;
+            _taskCodeGenInfo = new TaskCodeGenInfo(taskDefinition);
+        }
         
-        public BeginWfsCodeModel(ITaskDeclarationSymbol taskDeclaration, IEnumerable<string> namespaces) {
-
-            TaskDeclaration = taskDeclaration;
-                        
-            Namespaces = namespaces?.OrderBy(ns => ns.Length).ToImmutableList() ?? ImmutableList<string>.Empty;
-
-        }
-
+        [NotNull]
         public string TaskName {
-            get { return TaskDeclaration.Name; }
+            get { return _taskDefinition.Name??string.Empty; }
         }
 
         [NotNull]
-        public ITaskDeclarationSymbol TaskDeclaration { get; set; }
+        public ITaskDefinitionSymbol TaskDefinition {
+            get { return _taskDefinition; }
+        }
 
         [NotNull]
-        public ImmutableList<string> Namespaces { get; }
+        public string Namespace {
+            get { return _taskCodeGenInfo.WflNamespace; }
+        }
+
+        [NotNull]
+        public ImmutableList<string> Namespaces {
+            get { return GetCodeUsingNamespaces(_taskDefinition.CodeGenerationUnit); }
+        }
     }
 }
