@@ -2,9 +2,9 @@
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public sealed class TaskCodeGenInfo {
+    public sealed class TaskCodeModel: CodeModel {
 
-        public TaskCodeGenInfo(ITaskDefinitionSymbol taskDefinitionSymbol) {
+        public TaskCodeModel(ITaskDefinitionSymbol taskDefinitionSymbol) {
 
             if (taskDefinitionSymbol == null) {
                 throw new ArgumentNullException(nameof(taskDefinitionSymbol));

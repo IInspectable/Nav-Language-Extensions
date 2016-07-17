@@ -44,8 +44,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
 
-            var info     = new TaskCodeGenInfo(taskDefinitionSymbol);
-            var provider = new TaskDeclarationLocationInfoProvider(_textBuffer, info);
+            var codeModel = new TaskCodeModel(taskDefinitionSymbol);
+            var provider  = new TaskDeclarationLocationInfoProvider(_textBuffer, codeModel);
             
             return CreateTagSpan(taskDefinitionSymbol.Location, provider);
         }
@@ -90,9 +90,9 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             }
 
             // GoTo Exit Declaration
-            var info     = new TaskExitCodeGenInfo(connectionPointReferenceSymbol);
-            var provider = new TaskExitDeclarationLocationInfoProvider(_textBuffer, info);
-            var tagSpan  = CreateTagSpan(connectionPointReferenceSymbol.Location, provider);
+            var codeModel = new TaskExitCodeModel(connectionPointReferenceSymbol);
+            var provider  = new TaskExitDeclarationLocationInfoProvider(_textBuffer, codeModel);
+            var tagSpan   = CreateTagSpan(connectionPointReferenceSymbol.Location, provider);
 
             // GoTo Exit Definition
             var defProvider = new SimpleLocationInfoProvider(LocationInfo.FromLocation(
@@ -107,16 +107,16 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public override TagSpan<GoToTag> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
 
-            var info     = new TaskBeginCodeGenInfo(initNodeSymbol);
-            var provider = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, info);
+            var codeModel = new TaskBeginCodeModel(initNodeSymbol);
+            var provider  = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(initNodeSymbol.Location, provider);
         }
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
-            var info     = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
-            var provider = new TriggerDeclarationLocationInfoProvider(_textBuffer, info);
+            var codeModel = new SignalTriggerCodeModel(signalTriggerSymbol);
+            var provider  = new TriggerDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(signalTriggerSymbol.Location, provider);
         }
