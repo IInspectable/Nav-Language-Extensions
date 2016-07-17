@@ -68,11 +68,14 @@
   <ItemGroup>
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
     <Compile Include="CodeGen\BeginWfsCodeModel.cs" />
+    <Compile Include="CodeGen\CodeGenerationOptions.cs" />
+    <Compile Include="CodeGen\CodeGenerationResult.cs" />
+    <Compile Include="CodeGen\CodeGenerator.cs" />
     <Compile Include="CodeGen\CodeModel.cs" />
-    <Compile Include="CodeGen\SignalTriggerCodeGenInfo.cs" />
-    <Compile Include="CodeGen\TaskBeginCodeGenInfo.cs" />
-    <Compile Include="CodeGen\TaskCodeGenInfo.cs" />
-    <Compile Include="CodeGen\TaskExitCodeGenInfo.cs" />
+    <Compile Include="CodeGen\SignalTriggerCodeModel.cs" />
+    <Compile Include="CodeGen\TaskBeginCodeModel.cs" />
+    <Compile Include="CodeGen\TaskCodeModel.cs" />
+    <Compile Include="CodeGen\TaskExitCodeModel.cs" />
     <Compile Include="Common\TextLineExtent.cs" />
     <Compile Include="Common\LinePosition.cs" />
     <Compile Include="Common\LinePositionExtent.cs" />

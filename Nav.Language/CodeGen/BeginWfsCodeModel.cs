@@ -11,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     class BeginWfsCodeModel: CodeModel {
 
-        readonly TaskCodeGenInfo _taskCodeGenInfo;
+        readonly TaskCodeModel _taskCodeModel;
         readonly ITaskDefinitionSymbol _taskDefinition;
 
         public BeginWfsCodeModel(ITaskDefinitionSymbol taskDefinition) {
@@ -21,7 +21,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             _taskDefinition  = taskDefinition;
-            _taskCodeGenInfo = new TaskCodeGenInfo(taskDefinition);
+            _taskCodeModel = new TaskCodeModel(taskDefinition);
         }
         
         [NotNull]
@@ -36,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         [NotNull]
         public string Namespace {
-            get { return _taskCodeGenInfo.WflNamespace; }
+            get { return _taskCodeModel.WflNamespace; }
         }
 
         [NotNull]

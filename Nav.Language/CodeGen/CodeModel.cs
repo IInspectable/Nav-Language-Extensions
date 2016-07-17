@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    abstract class CodeModel {
+    public abstract class CodeModel {
 
         protected ImmutableList<string> GetCodeUsingNamespaces(CodeGenerationUnit codeGenerationUnit) {
 

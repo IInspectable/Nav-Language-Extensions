@@ -18,10 +18,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
     class TriggerDeclarationLocationInfoProvider: CodeAnalysisLocationInfoProvider {
 
-        readonly SignalTriggerCodeGenInfo _codegenInfo;
+        readonly SignalTriggerCodeModel _signalTriggerCodeModel;
 
-        public TriggerDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, SignalTriggerCodeGenInfo codegenInfo): base(sourceBuffer) {
-            _codegenInfo  = codegenInfo;
+        public TriggerDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, SignalTriggerCodeModel signalTriggerCodeModel): base(sourceBuffer) {
+            _signalTriggerCodeModel  = signalTriggerCodeModel;
         }
 
         static ImageMoniker ImageMoniker { get { return KnownMonikers.MethodPublic; } }
@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
             try {
                 var location = await LocationFinder.FindTriggerDeclarationLocationsAsync(
                     project          : project, 
-                    codegenInfo      : _codegenInfo, 
+                    codegenInfo      : _signalTriggerCodeModel, 
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 var locationInfo = LocationInfo.FromLocation(

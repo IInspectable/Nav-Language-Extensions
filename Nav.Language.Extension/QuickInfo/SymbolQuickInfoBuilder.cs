@@ -79,15 +79,17 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         #endregion
 
         public override IEnumerable<object> VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
-            var syntaxText= $"taskref {taskDeclarationSymbol.Name}";
-            var syntax = Syntax.ParseTaskDeclaration(syntaxText);
+
+            var syntaxText = $"taskref {taskDeclarationSymbol.Name}";
+            var syntax     = Syntax.ParseTaskDeclaration(syntaxText);
 
             yield return CreateSymbolQuickInfoControl(syntax, SymbolImageMonikers.TaskDeclaration);
         }
 
         public override IEnumerable<object> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
+
             var syntaxText = $"{taskDefinitionSymbol.Syntax.TaskKeyword} {taskDefinitionSymbol.Name}";
-            var syntax = Syntax.ParseTaskDefinition(syntaxText);
+            var syntax     = Syntax.ParseTaskDefinition(syntaxText);
 
             yield return CreateSymbolQuickInfoControl(syntax, SymbolImageMonikers.TaskDefinition);
         }
@@ -192,7 +194,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         public override IEnumerable<object> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
-            var codeGenInfo = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
+            var signalTriggerCodeModel = new SignalTriggerCodeModel(signalTriggerSymbol);
             
             StackPanel panel = new StackPanel {
                 Orientation = Orientation.Vertical
@@ -200,7 +202,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
             var control = new SymbolQuickInfoControl();
             control.CrispImage.Moniker  = SymbolImageMonikers.SignalTrigger;
-            control.TextContent.Content = SyntaxQuickinfoBuilderService.ToTextBlock(codeGenInfo);
+            control.TextContent.Content = SyntaxQuickinfoBuilderService.ToTextBlock(signalTriggerCodeModel);
 
             panel.Children.Add(control);
 
