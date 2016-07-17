@@ -8,7 +8,7 @@ namespace Pharmatechnik.Nav.Language {
 
         readonly CodeAbstractMethodDeclarationSyntax _codeAbstractMethodDeclaration;
         readonly CodeParamsDeclarationSyntax         _codeParamsDeclaration;
-        readonly DoClauseSyntax                  _doClause;
+        readonly DoClauseSyntax                      _doClause;
 
         internal InitNodeDeclarationSyntax(TextExtent extent,
                 CodeAbstractMethodDeclarationSyntax codeAbstractMethodDeclaration, 
@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language {
 
             AddChildNode(_codeAbstractMethodDeclaration = codeAbstractMethodDeclaration);
             AddChildNode(_codeParamsDeclaration         = codeParamsDeclaration);
-            AddChildNode(_doClause                  = doClause);
+            AddChildNode(_doClause                      = doClause);
         }
 
         public SyntaxToken InitKeyword {
