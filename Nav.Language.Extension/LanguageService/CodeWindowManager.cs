@@ -1,4 +1,5 @@
-﻿#region Using Directives
+﻿//#define ShowMemberCombobox
+#region Using Directives
 
 using System;
 
@@ -64,10 +65,14 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         void AddDropdownBar(IVsDropdownBarManager dropdownManager) {
            
             var dropdownBarClient = new DropdownBarClient(_textView, dropdownManager, _codeWindow, _serviceProvider);
-           
-            // TODO: Entscheiden, ob die "Member Combo" Sinn macht, oder nicht. Bis dahin bleibt sie erst mal ausgeblendet
-            var hr = dropdownManager.AddDropdownBar(cCombos: 2, pClient: dropdownBarClient);
 
+            // TODO: Entscheiden, ob die "Member Combo" Sinn macht, oder nicht. Bis dahin bleibt sie erst mal ausgeblendet
+
+#if ShowMemberCombobox
+            var hr = dropdownManager.AddDropdownBar(cCombos: 3, pClient: dropdownBarClient);
+#else
+            var hr = dropdownManager.AddDropdownBar(cCombos: 2, pClient: dropdownBarClient);
+#endif
             if (ErrorHandler.Failed(hr)) {
                 ErrorHandler.ThrowOnFailure(hr);
             }

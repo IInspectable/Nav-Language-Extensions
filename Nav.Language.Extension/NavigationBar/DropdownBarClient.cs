@@ -1,4 +1,5 @@
-﻿#region Using Directives
+﻿//#define ShowMemberCombobox
+#region Using Directives
 
 using System;
 using System.Linq;
@@ -6,7 +7,8 @@ using System.Windows.Forms;
 using System.Collections.Immutable;
 
 using JetBrains.Annotations;
-
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.PlatformUI;
@@ -15,7 +17,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
-
+using Pharmatechnik.Nav.Utilities.Logging;
 using Control = System.Windows.Controls.Control;
 
 #endregion
@@ -24,6 +26,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
   
     class DropdownBarClient : SemanticModelServiceDependent, IVsDropdownBarClient, IDisposable {
 
+        static readonly Logger Logger = Logger.Create<DropdownBarClient>();
+
         // ReSharper disable NotAccessedField.Local
         readonly IVsCodeWindow _codeWindow;
         readonly IVsImageService2 _imageService;
@@ -31,7 +35,9 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         // ReSharper restore NotAccessedField.Local
         readonly IWpfTextView _textView;
         readonly ImageList _imageList;
-
+        readonly WorkspaceRegistration _workspaceRegistration;
+        [CanBeNull]
+        Workspace _workspace;
         IVsDropdownBar _dropdownBar;
 
         ImmutableList<NavigationItem> _projectItems;
@@ -43,7 +49,9 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             IVsCodeWindow codeWindow,
             
             IServiceProvider serviceProvider): base(textView.TextBuffer) {
-            
+
+            Logger.Trace($"{nameof(DropdownBarClient)}:Ctor");
+
             var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
 
             _textView     = textView;
@@ -53,9 +61,69 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             _imageList    = NavigationImages.CreateImageList(comboBoxBackgroundColor);
             _projectItems = ImmutableList<NavigationItem>.Empty;
             _taskItems    = ImmutableList<NavigationItem>.Empty;
-            
+
             _textView.Caret.PositionChanged += OnCaretPositionChanged;
+            _workspaceRegistration = Workspace.GetWorkspaceRegistration(TextBuffer.AsTextContainer());
+            _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
+
+            if (_workspaceRegistration.Workspace != null) {
+                ConnectToWorkspace(_workspaceRegistration.Workspace);
+            }
         }
+
+        #region Workspace Management
+
+        void OnWorkspaceRegistrationChanged(object sender, EventArgs e) {
+
+            DisconnectFromWorkspace();
+
+            var newWorkspace = _workspaceRegistration.Workspace;
+
+            ConnectToWorkspace(newWorkspace);
+        }
+
+        void ConnectToWorkspace([CanBeNull] Workspace workspace) {
+
+            DisconnectFromWorkspace();
+
+            _workspace = workspace;
+
+            if (_workspace != null) {
+                _workspace.WorkspaceChanged += OnWorkspaceChanged;
+            }
+
+            UpdateProjectItems();
+        }
+
+        void DisconnectFromWorkspace() {
+            
+            if (_workspace != null) {
+                _workspace.WorkspaceChanged -= OnWorkspaceChanged;
+                _workspace = null;
+            }
+        }
+
+        void OnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args) {
+
+            // We're getting an event for a workspace we already disconnected from
+            if (args.NewSolution.Workspace != _workspace) {
+                return;
+            }
+
+            if (args.Kind == WorkspaceChangeKind.SolutionChanged  ||
+                args.Kind == WorkspaceChangeKind.SolutionAdded    ||
+                args.Kind == WorkspaceChangeKind.SolutionRemoved  ||
+                args.Kind == WorkspaceChangeKind.SolutionCleared  ||
+                args.Kind == WorkspaceChangeKind.SolutionReloaded ||
+                args.Kind == WorkspaceChangeKind.ProjectAdded     || 
+                args.Kind == WorkspaceChangeKind.ProjectChanged   ||
+                args.Kind == WorkspaceChangeKind.ProjectReloaded  ||
+                args.Kind == WorkspaceChangeKind.ProjectRemoved) {
+                UpdateProjectItems();
+            }
+        }
+
+        #endregion
 
         int IVsDropdownBarClient.SetDropdownBar(IVsDropdownBar pDropdownBar) {
 
@@ -162,14 +230,20 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         public override void Dispose() {
+
+            Logger.Trace($"{nameof(DropdownBarClient)}:{nameof(Dispose)}");
+
             base.Dispose();
             _textView.Caret.PositionChanged -= OnCaretPositionChanged;
             _imageList.Dispose();
+
+            _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
+            DisconnectFromWorkspace();
         }
 
         void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
 
-            // TODO Im Hintergrund durchführen?s
+            // TODO Im Hintergrund durchführen?
             SetActiveSelection(TaskComboIndex);
             SetActiveSelection(MemberComboIndex);            
         }
@@ -192,7 +266,9 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             UpdateProjectItems();
             UpdateTaskItems();
+#if ShowMemberCombobox
             UpdateMemberItems();
+#endif
         }
 
         const int ProjectComboIndex = 0;
@@ -217,10 +293,12 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             SetActiveSelection(TaskComboIndex);
         }
 
+#if ShowMemberCombobox
         void UpdateMemberItems() {
             
             SetActiveSelection(MemberComboIndex);
         }
+#endif
 
         void SetActiveSelection(int comboBoxId) {
             if (_dropdownBar == null) {
