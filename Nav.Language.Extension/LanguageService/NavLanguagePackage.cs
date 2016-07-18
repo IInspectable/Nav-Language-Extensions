@@ -3,10 +3,11 @@
 using System;
 
 using System.IO;
+using System.Drawing;
 using System.ComponentModel.Design;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
-using System.Windows.Controls;
+
 using JetBrains.Annotations;
 
 using EnvDTE;
@@ -23,6 +24,7 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Utilities.Logging;
+using Control = System.Windows.Controls.Control;
 
 #endregion
 
@@ -289,7 +291,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             }
         }
 
-        public static BitmapSource GetImage(ImageMoniker moniker) {
+        // TODO: Hier evtl den Hintergrund hineingeben
+        public static BitmapSource GetBitmapSource(ImageMoniker moniker, Color? background = null) {
 
             var imageService = GetGlobalService<SVsImageService, IVsImageService2>();
 
@@ -306,8 +309,34 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
             object data =null;
             result?.get_Data(out data);
-
             return data as BitmapSource;
         }
+
+        // TODO: Hier evtl den Hintergrund hineingeben
+        public static Bitmap GetBitmap(ImageMoniker moniker, Color? background=null) {
+
+            var imageService = GetGlobalService<SVsImageService, IVsImageService2>();
+
+            ImageAttributes imageAttributes = new ImageAttributes {
+                StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
+                Flags         = (uint)_ImageAttributesFlags.IAF_RequiredFlags,
+                ImageType     = (uint)_UIImageType.IT_Bitmap,
+                Format        = (uint)_UIDataFormat.DF_WinForms,
+                LogicalHeight = 16,
+                LogicalWidth  = 16
+            };
+            //if (background.HasValue) {
+            //    unchecked {                    
+            //        imageAttributes.Flags &= ((uint) _ImageAttributesFlags.IAF_Background);
+            //    }
+            //    imageAttributes.Background = background.Value.ToRGB();
+            //}
+
+            IVsUIObject result = imageService?.GetImage(moniker, imageAttributes);
+
+            object data = null;
+            result?.get_Data(out data);
+            return data as Bitmap;
+        }       
     }
 }

@@ -2,7 +2,7 @@
 
 using System;
 using System.Linq;
-using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Collections.Immutable;
 
 using JetBrains.Annotations;
@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
+using Control = System.Windows.Controls.Control;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
@@ -25,13 +27,15 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         readonly IWpfTextView _textView;
         readonly IVsDropdownBarManager _manager;
         readonly IVsCodeWindow _codeWindow;
-        readonly IntPtr _imageList;
         readonly IVsImageService2 _imageService;
+        readonly ImageList _imageList;
+
         // ReSharper restore NotAccessedField.Local
         IVsDropdownBar _dropdownBar;
 
         ImmutableList<NavigationItem> _projectItems;
         ImmutableList<NavigationItem> _taskItems;
+
 
         public DropdownBarClient(
             IWpfTextView textView,
@@ -40,11 +44,13 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             
             IServiceProvider serviceProvider): base(textView.TextBuffer) {
 
+            
             _textView     = textView;
             _manager      = manager;
             _codeWindow   = codeWindow;
             _imageService = (IVsImageService2)serviceProvider.GetService(typeof(SVsImageService));
-            _imageList    = GetImageList(serviceProvider);
+            // TODO: Hier evtl den Hintergrund der Combobox hineingeben
+            _imageList = NavigationImages.CreateImageList();
 
             _projectItems = ImmutableList<NavigationItem>.Empty;
             _taskItems    = ImmutableList<NavigationItem>.Empty;
@@ -66,8 +72,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
             puEntryType = (uint)(DROPDOWNENTRYTYPE.ENTRY_TEXT | DROPDOWNENTRYTYPE.ENTRY_ATTR | DROPDOWNENTRYTYPE.ENTRY_IMAGE);
             // ReSharper restore BitwiseOperatorOnEnumWithoutFlags
-            phImageList = _imageList;
-            pcEntries   = (uint)GetItems(iCombo).Count;
+            phImageList = _imageList.Handle;
+            pcEntries   = (uint) GetItems(iCombo).Count;
             
             return VSConstants.S_OK;
         }
@@ -159,6 +165,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         public override void Dispose() {
             base.Dispose();
             _textView.Caret.PositionChanged -= OnCaretPositionChanged;
+            _imageList.Dispose();
         }
 
         void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
@@ -278,20 +285,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             var items = GetItems(iCombo);
             return iIndex < items.Count ? items[iIndex] : null;
-        }
-
-        static IntPtr GetImageList(IServiceProvider serviceProvider) {
-
-            var vsShell = serviceProvider.GetService(typeof(SVsShell)) as IVsShell;
-            if (vsShell != null) {
-                object varImageList;
-                int hresult = vsShell.GetProperty((int)__VSSPROPID.VSSPROPID_ObjectMgrTypesImgList, out varImageList);
-                if (ErrorHandler.Succeeded(hresult) && varImageList != null) {
-                    return (IntPtr)(int)varImageList;
-                }
-            }
-
-            return IntPtr.Zero;
-        }
+        }        
     }
 }

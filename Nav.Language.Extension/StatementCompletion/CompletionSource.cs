@@ -54,7 +54,7 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
             var taskDefinition = codeGenerationUnit.TaskDefinitions
                                                     .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent));
 
-            var img=NavLanguagePackage.GetImage(SymbolImageMonikers.DialogNode);
+            var img=NavLanguagePackage.GetBitmapSource(SymbolImageMonikers.DialogNode);
           
             List<Completion> completions = new List<Completion>();
             if (taskDefinition != null) {
