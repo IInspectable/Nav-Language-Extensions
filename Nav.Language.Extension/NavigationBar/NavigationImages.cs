@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         public static ImageList CreateImageList(Color backgroundColor) {
 
             var baseImage = NavLanguagePackage.GetBitmap(SymbolImageMonikers.TaskDeclaration, backgroundColor);
-            var overlay   = NavLanguagePackage.GetBitmap(KnownMonikers.ReferencedElement, backgroundColor);
+            var overlay   = NavLanguagePackage.GetBitmap(SymbolImageMonikers.TaskDeclarationOverlay, backgroundColor);
 
             Bitmap taskDeclarationImage = new Bitmap(baseImage);
             using (var grfx = Graphics.FromImage(taskDeclarationImage)) {
