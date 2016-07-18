@@ -24,6 +24,7 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Utilities.Logging;
+
 using Control = System.Windows.Controls.Control;
 
 #endregion
@@ -274,7 +275,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                         return null;
                     }
 
-                    var model          = (IComponentModel) Package.GetGlobalService(typeof(SComponentModel));
+                    var model          = (IComponentModel) GetGlobalService(typeof(SComponentModel));
                     var adapterFactory = model.GetService<IVsEditorAdaptersFactoryService>();
                     var wpfTextView    = adapterFactory.GetWpfTextView(textView);
                     return wpfTextView;
@@ -291,52 +292,45 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             }
         }
 
-        // TODO: Hier evtl den Hintergrund hineingeben
-        public static BitmapSource GetBitmapSource(ImageMoniker moniker, Color? background = null) {
+        public static BitmapSource GetBitmapSource(ImageMoniker moniker, Color? backgroundColor = null) {
 
-            var imageService = GetGlobalService<SVsImageService, IVsImageService2>();
-
-            ImageAttributes imageAttributes = new ImageAttributes {
-                StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
-                Flags         = (uint) _ImageAttributesFlags.IAF_RequiredFlags,
-                ImageType     = (uint) _UIImageType.IT_Bitmap,
-                Format        = (uint) _UIDataFormat.DF_WPF,
-                LogicalHeight = 16,
-                LogicalWidth  = 16
-            };
-
-            IVsUIObject result = imageService?.GetImage(moniker, imageAttributes);
+            var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WPF, backgroundColor);
+            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
+            var result          = imageService?.GetImage(moniker, imageAttributes);
 
             object data =null;
             result?.get_Data(out data);
             return data as BitmapSource;
         }
 
-        // TODO: Hier evtl den Hintergrund hineingeben
-        public static Bitmap GetBitmap(ImageMoniker moniker, Color? background=null) {
-
-            var imageService = GetGlobalService<SVsImageService, IVsImageService2>();
-
-            ImageAttributes imageAttributes = new ImageAttributes {
-                StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
-                Flags         = (uint)_ImageAttributesFlags.IAF_RequiredFlags,
-                ImageType     = (uint)_UIImageType.IT_Bitmap,
-                Format        = (uint)_UIDataFormat.DF_WinForms,
-                LogicalHeight = 16,
-                LogicalWidth  = 16
-            };
-            //if (background.HasValue) {
-            //    unchecked {                    
-            //        imageAttributes.Flags &= ((uint) _ImageAttributesFlags.IAF_Background);
-            //    }
-            //    imageAttributes.Background = background.Value.ToRGB();
-            //}
-
-            IVsUIObject result = imageService?.GetImage(moniker, imageAttributes);
+        public static Bitmap GetBitmap(ImageMoniker moniker, Color? backgroundColor=null) {
+            
+            var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WinForms, backgroundColor);
+            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
+            var result          = imageService?.GetImage(moniker, imageAttributes);
 
             object data = null;
             result?.get_Data(out data);
             return data as Bitmap;
-        }       
+        }
+
+        static ImageAttributes GetImageAttributes(_UIImageType imageType, _UIDataFormat format, Color? backgroundColor, int width=16, int height=16) {
+
+            ImageAttributes imageAttributes = new ImageAttributes {
+                StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
+                Flags         = (uint)_ImageAttributesFlags.IAF_RequiredFlags,
+                ImageType     = (uint)imageType,
+                Format        = (uint)format,
+                LogicalHeight = height,
+                LogicalWidth  = width
+            };
+            if(backgroundColor.HasValue) {
+                unchecked {
+                    imageAttributes.Flags |= (uint)_ImageAttributesFlags.IAF_Background;
+                }
+                imageAttributes.Background = (uint)backgroundColor.Value.ToArgb();
+            }
+            return imageAttributes;
+        }
     }
 }

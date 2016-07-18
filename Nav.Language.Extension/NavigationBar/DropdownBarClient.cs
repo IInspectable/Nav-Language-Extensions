@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -24,34 +25,32 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
     class DropdownBarClient : SemanticModelServiceDependent, IVsDropdownBarClient, IDisposable {
 
         // ReSharper disable NotAccessedField.Local
-        readonly IWpfTextView _textView;
-        readonly IVsDropdownBarManager _manager;
         readonly IVsCodeWindow _codeWindow;
         readonly IVsImageService2 _imageService;
+        readonly IVsDropdownBarManager _manager;
+        // ReSharper restore NotAccessedField.Local
+        readonly IWpfTextView _textView;
         readonly ImageList _imageList;
 
-        // ReSharper restore NotAccessedField.Local
         IVsDropdownBar _dropdownBar;
 
         ImmutableList<NavigationItem> _projectItems;
         ImmutableList<NavigationItem> _taskItems;
-
-
+        
         public DropdownBarClient(
             IWpfTextView textView,
             IVsDropdownBarManager manager,
             IVsCodeWindow codeWindow,
             
             IServiceProvider serviceProvider): base(textView.TextBuffer) {
-
             
+            var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
+
             _textView     = textView;
             _manager      = manager;
             _codeWindow   = codeWindow;
             _imageService = (IVsImageService2)serviceProvider.GetService(typeof(SVsImageService));
-            // TODO: Hier evtl den Hintergrund der Combobox hineingeben
-            _imageList = NavigationImages.CreateImageList();
-
+            _imageList    = NavigationImages.CreateImageList(comboBoxBackgroundColor);
             _projectItems = ImmutableList<NavigationItem>.Empty;
             _taskItems    = ImmutableList<NavigationItem>.Empty;
             
