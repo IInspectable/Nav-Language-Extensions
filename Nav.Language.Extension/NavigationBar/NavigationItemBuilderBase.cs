@@ -8,11 +8,6 @@ using System.Collections.Immutable;
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
     abstract class NavigationItemBuilderBase: SymbolVisitor {
-
-        public int TaskDefinitionImageIndex = 0;
-        public int TaskDeclarationImageIndex = 1;
-        public const int TriggerSymbolImageIndex = 0;
-
         protected NavigationItemBuilderBase() {
             NavigationItems = new List<NavigationItem>();
         }

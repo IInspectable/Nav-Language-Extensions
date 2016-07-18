@@ -65,7 +65,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
            
             var navigationBarClient = new DropdownBarClient(_textView, dropdownManager, _codeWindow, _serviceProvider);
            
-            var hr = dropdownManager.AddDropdownBar(cCombos: 3, pClient: navigationBarClient);
+            // TODO: Entscheiden, ob die "Member Combo" Sinn macht, oder nicht. Bis dahin bleibt sie erst mal ausgeblendet
+            var hr = dropdownManager.AddDropdownBar(cCombos: 2, pClient: navigationBarClient);
 
             if (ErrorHandler.Failed(hr)) {
                 ErrorHandler.ThrowOnFailure(hr);

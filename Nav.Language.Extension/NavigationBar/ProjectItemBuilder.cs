@@ -9,7 +9,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
     class ProjectItemBuilder {
 
-        public const int CSharpProjectImageIndex = 197;
 
         public static ImmutableList<NavigationItem> Build(SemanticModelResult semanticModelResult) {
 
@@ -20,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             return new[] {
                 new NavigationItem(
                     displayName    : semanticModelResult.Snapshot.TextBuffer.GetContainingProject()?.Name ?? "Miscellaneous Files",
-                    imageIndex     : CSharpProjectImageIndex,
+                    imageIndex     : NavigationImages.Index.ProjectNode,
                     location       : null,
                     navigationPoint: -1)
             }.ToImmutableList();

@@ -10,10 +10,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
     class TaskNavigationItemBuilder : SymbolVisitor {
 
-        public const int TaskDefinitionImageIndex  = 0;
-        public const int TaskDeclarationImageIndex = 1;
-        public const int TriggerSymbolImageIndex   = 30;
-
         protected TaskNavigationItemBuilder() {
             NavigationItems = new List<NavigationItem>();
             MemberItems     = new List<NavigationItem>();
@@ -54,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
           //  
             NavigationItems.Add(new NavigationItem(
                 displayName    : taskDefinitionSymbol.Name, 
-                imageIndex     : TaskDefinitionImageIndex, 
+                imageIndex     : NavigationImages.Index.TaskDefinition, 
                 location       : taskDefinitionSymbol.Syntax.GetLocation(), 
                 navigationPoint: taskDefinitionSymbol.Location.Start,
                 children       : MemberItems.ToImmutableList()));
@@ -70,11 +66,11 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 return;
             }
 
-            NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, TaskDeclarationImageIndex, taskDeclarationSymbol.Syntax?.GetLocation(), taskDeclarationSymbol.Location.Start));
+            NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, NavigationImages.Index.TaskDeclaration, taskDeclarationSymbol.Syntax?.GetLocation(), taskDeclarationSymbol.Location.Start));
         }
 
         public override void VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
-            MemberItems.Add(new NavigationItem(signalTriggerSymbol.Name, TriggerSymbolImageIndex, signalTriggerSymbol.Transition.Location, signalTriggerSymbol.Start));
+            MemberItems.Add(new NavigationItem(signalTriggerSymbol.Name, NavigationImages.Index.TriggerSymbol, signalTriggerSymbol.Transition.Location, signalTriggerSymbol.Start));
         }
     }
 }
