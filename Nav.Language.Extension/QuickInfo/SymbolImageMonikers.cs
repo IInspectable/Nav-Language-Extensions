@@ -17,6 +17,10 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             get { return KnownMonikers.ActivityDiagram; }
         }
 
+        public static ImageMoniker TaskDeclarationOverlay {
+            get { return KnownMonikers.ReferencedElement; }
+        }
+
         public static ImageMoniker InitConnectionPoint {
             get { return KnownMonikers.InputPin; }
         }

@@ -29,12 +29,14 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             yield break;
         }
         
-        SymbolQuickInfoControl CreateSymbolQuickInfoControl(SyntaxNode syntax, ImageMoniker imageMoniker) {
+        SymbolQuickInfoControl CreateSymbolQuickInfoControl(SyntaxNode syntax, ImageMoniker imageMoniker, ImageMoniker? overlayImageMoniker=null) {
 
             var control = new SymbolQuickInfoControl();
             control.CrispImage.Moniker  = imageMoniker;
+            if(overlayImageMoniker.HasValue) {
+                control.CrispImageOverlay.Moniker = overlayImageMoniker.Value;
+            }
             control.TextContent.Content = SyntaxQuickinfoBuilderService.ToTextBlock(syntax.SyntaxTree);
-
             return control;
         }
 
@@ -83,7 +85,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"taskref {taskDeclarationSymbol.Name}";
             var syntax     = Syntax.ParseTaskDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, SymbolImageMonikers.TaskDeclaration);
+            yield return CreateSymbolQuickInfoControl(syntax, SymbolImageMonikers.TaskDeclaration, SymbolImageMonikers.TaskDeclarationOverlay);
         }
 
         public override IEnumerable<object> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
