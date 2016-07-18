@@ -31,7 +31,10 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 grfx.DrawImage(overlay, 0, 0);
             }
 
-            var imgageList = new ImageList {ImageSize = new Size(16, 16)};
+            var imgageList = new ImageList {
+                ImageSize  = new Size(16, 16),
+                ColorDepth = ColorDepth.Depth32Bit
+            };
 
             imgageList.Images.Add(NavLanguagePackage.GetBitmap(KnownMonikers.CSProjectNode, backgroundColor));
             imgageList.Images.Add(taskDeclarationImage);

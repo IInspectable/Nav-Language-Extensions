@@ -158,7 +158,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             DROPDOWNFONTATTR attributes = DROPDOWNFONTATTR.FONTATTR_PLAIN;
 
             var entries       = GetItems(iCombo);
-            var selectedIndex = GetCurrentSelectionIndex(iCombo);
+            var selectedIndex = CalculateActiveSelection(iCombo);
             var caretPosition = _textView.Caret.Position.BufferPosition.Position;
 
             if(entries.Any() && iIndex < entries.Count &&
@@ -301,35 +301,40 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 #endif
 
         void SetActiveSelection(int comboBoxId) {
+
             if (_dropdownBar == null) {
                 return;
             }
 
-            var newIndex = -1;
-
-            var entries = GetItems(comboBoxId);
-
-            if(entries.Any()) {
-
-                var newPosition    = _textView.Caret.Position.BufferPosition.Position;
-                var entriesByScope = entries.OrderBy(entry => entry.End);
-                var activeEntry    = entriesByScope.FirstOrDefault(entry => newPosition >= entry.Start && newPosition <= entry.End);
-
-                if(activeEntry != null) {
-                    newIndex = entries.IndexOf(activeEntry);
-                } else {
-                    // If outside all entries, select the entry just before it
-                    var closestEntry = entriesByScope.LastOrDefault(entry => newPosition >= entry.End);
-                    if(closestEntry == null) {
-                        // if the mouse is before any entries, select the first one
-                        closestEntry = entries.OrderBy(entry => entry.Start).First();
-                    }
-
-                    newIndex = entries.IndexOf(closestEntry);
-                }
-            }
+            var newIndex = CalculateActiveSelection(comboBoxId);
 
             _dropdownBar.RefreshCombo(comboBoxId, newIndex);
+        }
+
+        int CalculateActiveSelection(int comboBoxId) {
+
+            var newIndex = -1;
+            var items    = GetItems(comboBoxId);
+
+            if(items.Any()) {
+
+                var caretPosition = _textView.Caret.Position.BufferPosition.Position;
+                var activeItem = items.FirstOrDefault(entry => caretPosition >= entry.Start && caretPosition <= entry.End);
+
+                if(activeItem != null) {
+                    newIndex = items.IndexOf(activeItem);
+                } else {
+                    // Den ersten Eintrag nach dem Cursor wählen
+                    var closestEntry = items.FirstOrDefault(entry => caretPosition < entry.Start && caretPosition < entry.End);
+                    if(closestEntry == null) {
+                        // Den letzten Eintrag wählen
+                        closestEntry = items.Last();
+                    }
+
+                    newIndex = items.IndexOf(closestEntry);
+                }
+            }
+            return newIndex;
         }
 
         int GetCurrentSelectionIndex(int iCombo) {
