@@ -43,7 +43,12 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         public override void VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
-      
+            #if ShowMemberCombobox
+            foreach (var symbol in taskDefinitionSymbol.Transitions.SelectMany(trans => trans.Symbols())) {
+                Visit(symbol);
+            }
+            #endif
+
             NavigationItems.Add(new NavigationItem(
                 displayName    : taskDefinitionSymbol.Name, 
                 imageIndex     : NavigationImages.Index.TaskDefinition, 
@@ -63,6 +68,12 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             }
 
             NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, NavigationImages.Index.TaskDeclaration, taskDeclarationSymbol.Syntax?.GetLocation(), taskDeclarationSymbol.Location.Start));
-        }       
+        }
+
+        #if ShowMemberCombobox
+        public override void VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
+            MemberItems.Add(new NavigationItem(signalTriggerSymbol.Name, NavigationImages.Index.TriggerSymbol, signalTriggerSymbol.Transition.Location, signalTriggerSymbol.Start));
+        }
+        #endif
     }
 }
