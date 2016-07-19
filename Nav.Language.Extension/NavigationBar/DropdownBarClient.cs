@@ -2,10 +2,11 @@
 #region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Immutable;
-
+using System.Windows.Threading;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -36,13 +37,17 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         readonly IWpfTextView _textView;
         readonly ImageList _imageList;
         readonly WorkspaceRegistration _workspaceRegistration;
+        readonly Dictionary<int, int> _activeSelections;
+        readonly Dispatcher _dispatcher;
         [CanBeNull]
         Workspace _workspace;
         IVsDropdownBar _dropdownBar;
+        int _focusedCombo;
 
         ImmutableList<NavigationItem> _projectItems;
         ImmutableList<NavigationItem> _taskItems;
-        
+
+
         public DropdownBarClient(
             IWpfTextView textView,
             IVsDropdownBarManager manager,
@@ -54,21 +59,39 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
 
-            _textView     = textView;
-            _manager      = manager;
-            _codeWindow   = codeWindow;
-            _imageService = (IVsImageService2)serviceProvider.GetService(typeof(SVsImageService));
-            _imageList    = NavigationImages.CreateImageList(comboBoxBackgroundColor);
-            _projectItems = ImmutableList<NavigationItem>.Empty;
-            _taskItems    = ImmutableList<NavigationItem>.Empty;
-
-            _textView.Caret.PositionChanged += OnCaretPositionChanged;
+            _textView         = textView;
+            _manager          = manager;
+            _codeWindow       = codeWindow;
+            _imageService     = (IVsImageService2)serviceProvider.GetService(typeof(SVsImageService));
+            _imageList        = NavigationImages.CreateImageList(comboBoxBackgroundColor);
+            _projectItems     = ImmutableList<NavigationItem>.Empty;
+            _taskItems        = ImmutableList<NavigationItem>.Empty;
+            _dispatcher       = Dispatcher.CurrentDispatcher;
+            _activeSelections = new Dictionary<int, int>();
+            _focusedCombo     = -1;
+            
             _workspaceRegistration = Workspace.GetWorkspaceRegistration(TextBuffer.AsTextContainer());
             _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
+            _textView.Caret.PositionChanged         += OnCaretPositionChanged;
+            _textView.GotAggregateFocus             += OnTextViewGotAggregateFocus;
 
-            if (_workspaceRegistration.Workspace != null) {
-                ConnectToWorkspace(_workspaceRegistration.Workspace);
-            }
+
+            ConnectToWorkspace(_workspaceRegistration.Workspace);
+        }
+
+        public override void Dispose() {
+
+            Logger.Trace($"{nameof(DropdownBarClient)}:{nameof(Dispose)}");
+
+            base.Dispose();
+            
+            _imageList.Dispose();
+
+            _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
+            _textView.Caret.PositionChanged         -= OnCaretPositionChanged;
+            _textView.GotAggregateFocus             -= OnTextViewGotAggregateFocus;
+
+            DisconnectFromWorkspace();
         }
 
         #region Workspace Management
@@ -96,11 +119,13 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         void DisconnectFromWorkspace() {
-            
-            if (_workspace != null) {
-                _workspace.WorkspaceChanged -= OnWorkspaceChanged;
-                _workspace = null;
+
+            if (_workspace == null) {
+                return;
             }
+
+            _workspace.WorkspaceChanged -= OnWorkspaceChanged;
+            _workspace = null;
         }
 
         void OnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args) {
@@ -129,7 +154,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             _dropdownBar = pDropdownBar;
 
-            UpdateDropDownEntries();
+            UpdateNavigationItems();
 
             return VSConstants.S_OK;
         }
@@ -158,10 +183,11 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             DROPDOWNFONTATTR attributes = DROPDOWNFONTATTR.FONTATTR_PLAIN;
 
             var entries       = GetItems(iCombo);
-            var selectedIndex = CalculateActiveSelection(iCombo);
+            var selectedIndex = GetActiveSelection(iCombo);
             var caretPosition = _textView.Caret.Position.BufferPosition.Position;
 
-            if(entries.Any() && iIndex < entries.Count &&
+            if(_focusedCombo!=iCombo &&
+                entries.Any() && iIndex < entries.Count &&
                 iIndex == selectedIndex &&
                 (caretPosition < entries[selectedIndex].Start ||
                  caretPosition > entries[selectedIndex].End)) {
@@ -183,9 +209,11 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         int IVsDropdownBarClient.OnItemSelected(int iCombo, int iIndex) {
-            if(iCombo == TaskComboIndex) {
-                SetActiveSelection(MemberComboIndex);
+            #if ShowMemberCombobox
+            if(iCombo == TaskComboIndex) {            
+                SetActiveSelection(MemberComboIndex, refresh: true);    
             }
+            #endif
             return VSConstants.S_OK;
         }
 
@@ -195,7 +223,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 return VSConstants.E_UNEXPECTED;
             }
 
-            var item = GetCurrentSelectionItem(iCombo, iIndex);
+            var item = GetActiveSelectionItem(iCombo, iIndex);
 
             if(item?.NavigationPoint >= 0) {
 
@@ -211,12 +239,14 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
         
         int IVsDropdownBarClient.OnComboGetFocus(int iCombo) {
+            _focusedCombo = iCombo;
+            SetActiveSelection(TaskComboIndex);
             return VSConstants.S_OK;
         }
 
         int IVsDropdownBarClient.GetComboTipText(int iCombo, out string pbstrText) {
 
-            pbstrText = GetCurrentSelectionItem(iCombo)?.DisplayName ?? "";
+            pbstrText = GetActiveSelectionItem(iCombo)?.DisplayName ?? "";
             if(pbstrText != "") {
                 pbstrText += Environment.NewLine + Environment.NewLine;
             }
@@ -226,28 +256,29 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
-            UpdateDropDownEntries();
-        }
-
-        public override void Dispose() {
-
-            Logger.Trace($"{nameof(DropdownBarClient)}:{nameof(Dispose)}");
-
-            base.Dispose();
-            _textView.Caret.PositionChanged -= OnCaretPositionChanged;
-            _imageList.Dispose();
-
-            _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
-            DisconnectFromWorkspace();
-        }
-
-        void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
-
-            // TODO Im Hintergrund durchführen?
-            SetActiveSelection(TaskComboIndex);
-            SetActiveSelection(MemberComboIndex);            
+            _dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(UpdateNavigationItems));
         }
         
+        void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
+            using (Logger.LogBlock(nameof(OnCaretPositionChanged))) {
+                _dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => SetActiveSelection(TaskComboIndex)));
+                #if ShowMemberCombobox
+                _dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => SetActiveSelection(MemberComboIndex)));
+                #endif
+            }
+        }
+
+        void OnTextViewGotAggregateFocus(object sender, EventArgs e) {
+
+            // Es kann keine Combobox mehr einen Fokus haben
+            _focusedCombo = -1;
+            // Leider bekommen wir ein Project Reload nicht mit. Hier nochmal die Chance das aktuelle Projekt zu aktualisieren
+            UpdateProjectItems();
+
+            // Selektion aktualisieren, um FONTATTR_GRAY entprechend zu setzen 
+            SetActiveSelection(TaskComboIndex);
+        }
+
         ImmutableList<NavigationItem> GetItems(int iCombo) {
             switch (iCombo) {
                 case ProjectComboIndex:
@@ -255,20 +286,22 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 case TaskComboIndex:
                     return _taskItems;
                 case MemberComboIndex:
-                    var taskItem= GetCurrentSelectionItem(TaskComboIndex);
+                    var taskItem= GetActiveSelectionItem(TaskComboIndex);
                     return taskItem?.Children?? ImmutableList<NavigationItem>.Empty;
                 default:
                     return ImmutableList<NavigationItem>.Empty;
             }
         }
 
-        void UpdateDropDownEntries() {
+        void UpdateNavigationItems() {
+            using (Logger.LogBlock(nameof(UpdateNavigationItems))) {
 
-            UpdateProjectItems();
-            UpdateTaskItems();
-#if ShowMemberCombobox
-            UpdateMemberItems();
-#endif
+                UpdateProjectItems();
+                UpdateTaskItems();
+                #if ShowMemberCombobox
+                UpdateMemberItems();
+                #endif
+            }
         }
 
         const int ProjectComboIndex = 0;
@@ -284,21 +317,17 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         void UpdateTaskItems() {
 
-            _taskItems = ImmutableList<NavigationItem>.Empty;
-            var cgu = SemanticModelService?.SemanticModelResult?.CodeGenerationUnit;
-            if(cgu != null) {
-                _taskItems = TaskNavigationItemBuilder.Build(cgu);
-            }
+            _taskItems = TaskNavigationItemBuilder.Build(SemanticModelService?.SemanticModelResult);
 
             SetActiveSelection(TaskComboIndex);
         }
 
-#if ShowMemberCombobox
+        #if ShowMemberCombobox
         void UpdateMemberItems() {
             
             SetActiveSelection(MemberComboIndex);
         }
-#endif
+        #endif
 
         void SetActiveSelection(int comboBoxId) {
 
@@ -307,10 +336,47 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             }
 
             var newIndex = CalculateActiveSelection(comboBoxId);
-
+            // Wir speichern die Selektion hier, weil u.a. während des Aufrufs von GetEntryAttributes 
+            // _dropdownBar.GetCurrentSelection nicht den aktuellsten Stand wiederspiegelt.
+            _activeSelections[comboBoxId] = newIndex;
+            // Hier reicht kein _dropdownBar.SetCurrentSelection, da wir u.U. auch die Font Attribute ändern müssen (ausgegraut/nicht ausgegraut)            
             _dropdownBar.RefreshCombo(comboBoxId, newIndex);
         }
 
+        int GetActiveSelection(int comboBoxId) {
+
+            int selection;
+            if (_activeSelections.TryGetValue(comboBoxId, out selection)) {
+                return selection;
+            }
+            return -1;
+        }
+
+        [CanBeNull]
+        NavigationItem GetActiveSelectionItem(int iCombo) {
+
+            var index = GetActiveSelection(iCombo);
+            if(index < 0) {
+                return null;
+            }
+
+            return GetActiveSelectionItem(iCombo, index);
+        }
+
+        [CanBeNull]
+        NavigationItem GetActiveSelectionItem(int iCombo, int iIndex) {
+
+            if(iIndex < 0) {
+                return null;
+            }
+
+            var items = GetItems(iCombo);
+            return iIndex < items.Count ? items[iIndex] : null;
+        }
+
+        /// <summary>
+        /// Berechnet die zu wählende Selektion für die angegebene Combobox ausgehend von der aktuellen Caretposition
+        /// </summary>
         int CalculateActiveSelection(int comboBoxId) {
 
             var newIndex = -1;
@@ -335,38 +401,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 }
             }
             return newIndex;
-        }
-
-        int GetCurrentSelectionIndex(int iCombo) {
-
-            if (_dropdownBar == null) {
-                return -1;
-            }
-            int sel = -1;
-             _dropdownBar?.GetCurrentSelection(iCombo, out sel);
-            return sel;
-        }
-
-        [CanBeNull]
-        NavigationItem GetCurrentSelectionItem(int iCombo) {
-
-            var index = GetCurrentSelectionIndex(iCombo);
-            if(index < 0) {
-                return null;
-            }
-
-            return GetCurrentSelectionItem(iCombo, index);
-        }
-
-        [CanBeNull]
-        NavigationItem GetCurrentSelectionItem(int iCombo, int iIndex) {
-
-            if (iIndex < 0) {
-                return null;
-            }
-
-            var items = GetItems(iCombo);
-            return iIndex < items.Count ? items[iIndex] : null;
-        }        
+        }              
     }
 }
