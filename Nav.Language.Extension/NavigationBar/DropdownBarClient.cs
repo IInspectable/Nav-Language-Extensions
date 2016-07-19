@@ -2,43 +2,49 @@
 #region Using Directives
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Collections.Immutable;
 using System.Windows.Threading;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
 using JetBrains.Annotations;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
 
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Utilities.Logging;
+using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
+
 using Control = System.Windows.Controls.Control;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
   
-    class DropdownBarClient : SemanticModelServiceDependent, IVsDropdownBarClient, IDisposable {
+    class DropdownBarClient : SemanticModelServiceDependent, IVsDropdownBarClient, IVsCodeWindowEvents, IDisposable {
 
         static readonly Logger Logger = Logger.Create<DropdownBarClient>();
 
-        // ReSharper disable NotAccessedField.Local
         readonly IVsCodeWindow _codeWindow;
-        readonly IVsImageService2 _imageService;
         readonly IVsDropdownBarManager _manager;
-        // ReSharper restore NotAccessedField.Local
-        readonly IWpfTextView _textView;
         readonly ImageList _imageList;
         readonly WorkspaceRegistration _workspaceRegistration;
         readonly Dictionary<int, int> _activeSelections;
         readonly Dispatcher _dispatcher;
+        readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
+        readonly Dictionary<IVsTextView, IWpfTextView> _trackedViews;
+        readonly IDisposable _comEventSink;
+
         [CanBeNull]
         Workspace _workspace;
         IVsDropdownBar _dropdownBar;
@@ -49,34 +55,74 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
 
         public DropdownBarClient(
-            IWpfTextView textView,
+            ITextBuffer textBuffer,
             IVsDropdownBarManager manager,
             IVsCodeWindow codeWindow,
             
-            IServiceProvider serviceProvider): base(textView.TextBuffer) {
+            IServiceProvider serviceProvider): base(textBuffer) {
 
             Logger.Trace($"{nameof(DropdownBarClient)}:Ctor");
 
             var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
 
-            _textView         = textView;
             _manager          = manager;
             _codeWindow       = codeWindow;
-            _imageService     = (IVsImageService2)serviceProvider.GetService(typeof(SVsImageService));
             _imageList        = NavigationImages.CreateImageList(comboBoxBackgroundColor);
             _projectItems     = ImmutableList<NavigationItem>.Empty;
             _taskItems        = ImmutableList<NavigationItem>.Empty;
             _dispatcher       = Dispatcher.CurrentDispatcher;
             _activeSelections = new Dictionary<int, int>();
             _focusedCombo     = -1;
-            
+            _trackedViews     = new Dictionary<IVsTextView, IWpfTextView>();
+
             _workspaceRegistration = Workspace.GetWorkspaceRegistration(TextBuffer.AsTextContainer());
             _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
-            _textView.Caret.PositionChanged         += OnCaretPositionChanged;
-            _textView.GotAggregateFocus             += OnTextViewGotAggregateFocus;
 
+            var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
+            _editorAdaptersFactoryService=componentModel.GetService<IVsEditorAdaptersFactoryService>();
+
+            _comEventSink = ComEventSink.Advise<IVsCodeWindowEvents>(codeWindow, this);
+
+            IVsTextView pTextView;
+            codeWindow.GetPrimaryView(out pTextView);            
+            ConnectView(pTextView);
+
+            codeWindow.GetSecondaryView(out pTextView);
+            ConnectView(pTextView);
 
             ConnectToWorkspace(_workspaceRegistration.Workspace);
+        }
+
+        void ConnectView(IVsTextView vsTextView) {
+
+            if(vsTextView == null || _trackedViews.ContainsKey(vsTextView)) {
+                return;
+
+            }
+
+            var wpfTextView = _editorAdaptersFactoryService.GetWpfTextView(vsTextView);
+            if(wpfTextView == null) {
+                return;
+            }
+
+            wpfTextView.Caret.PositionChanged += OnCaretPositionChanged;
+            wpfTextView.GotAggregateFocus     += OnTextViewGotAggregateFocus;
+
+            _trackedViews.Add(vsTextView, wpfTextView);
+        }
+
+        void DisconnectView(IVsTextView vsTextView) {
+
+            if (vsTextView == null || !_trackedViews.ContainsKey(vsTextView)) {
+                return;
+            }
+
+            var wpfTextView = _trackedViews[vsTextView];
+
+            wpfTextView.Caret.PositionChanged -= OnCaretPositionChanged;
+            wpfTextView.GotAggregateFocus     -= OnTextViewGotAggregateFocus;
+
+            _trackedViews.Remove(vsTextView);
         }
 
         public override void Dispose() {
@@ -88,8 +134,13 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             _imageList.Dispose();
 
             _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
-            _textView.Caret.PositionChanged         -= OnCaretPositionChanged;
-            _textView.GotAggregateFocus             -= OnTextViewGotAggregateFocus;
+
+            foreach(var view in _trackedViews.Keys.ToList()) {
+                DisconnectView(view);
+            }
+
+            _manager?.RemoveDropdownBar();
+            _comEventSink?.Dispose();
 
             DisconnectFromWorkspace();
         }
@@ -184,7 +235,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             var entries       = GetItems(iCombo);
             var selectedIndex = GetActiveSelection(iCombo);
-            var caretPosition = _textView.Caret.Position.BufferPosition.Position;
+            var caretPosition = GetCurrentView().Caret.Position.BufferPosition.Position;
 
             if(_focusedCombo!=iCombo &&
                 entries.Any() && iIndex < entries.Count &&
@@ -229,10 +280,10 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
                 _dropdownBar.RefreshCombo(iCombo, iIndex);
 
-                NavLanguagePackage.NavigateToLocation(_textView, item.NavigationPoint);
+                NavLanguagePackage.NavigateToLocation(GetCurrentView(), item.NavigationPoint);
             } else {
                 // ReSharper disable once SuspiciousTypeConversion.Global
-                (_textView as Control)?.Focus();
+                (GetCurrentView() as Control)?.Focus();
             }
 
             return VSConstants.S_OK;
@@ -384,7 +435,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             if(items.Any()) {
 
-                var caretPosition = _textView.Caret.Position.BufferPosition.Position;
+                var caretPosition = GetCurrentView().Caret.Position.BufferPosition.Position;
                 var activeItem = items.FirstOrDefault(entry => caretPosition >= entry.Start && caretPosition <= entry.End);
 
                 if(activeItem != null) {
@@ -401,6 +452,23 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 }
             }
             return newIndex;
-        }              
+        }
+        
+        IWpfTextView GetCurrentView() {
+            IVsTextView lastActiveView;
+            _codeWindow.GetLastActiveView(out lastActiveView);
+            lastActiveView = lastActiveView ?? _trackedViews.Keys.FirstOrDefault();
+            return _editorAdaptersFactoryService.GetWpfTextView(lastActiveView);
+        }
+
+        int IVsCodeWindowEvents.OnNewView(IVsTextView pView) {
+            ConnectView(pView);
+            return VSConstants.S_OK;
+        }
+
+        int IVsCodeWindowEvents.OnCloseView(IVsTextView pView) {
+            DisconnectView(pView);
+            return VSConstants.S_OK;
+        }
     }
 }

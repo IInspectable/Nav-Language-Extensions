@@ -4,9 +4,12 @@
 using System;
 
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Editor;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
+
 using Pharmatechnik.Nav.Language.Extension.NavigationBar;
+using Pharmatechnik.Nav.Utilities.Logging;
 
 #endregion
 
@@ -14,16 +17,20 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
     class CodeWindowManager : IVsCodeWindowManager {
 
+        static readonly Logger Logger = Logger.Create<CodeWindowManager>();
+
         readonly IVsCodeWindow _codeWindow;
-        readonly IWpfTextView _textView;
+        readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         readonly IServiceProvider _serviceProvider;
 
         DropdownBarClient _dropdownBarClient;
 
-        public CodeWindowManager(IVsCodeWindow codeWindow, IWpfTextView textView, IServiceProvider serviceProvider) {
-            _codeWindow      = codeWindow;
-            _textView        = textView;
-            _serviceProvider = serviceProvider;
+        public CodeWindowManager(IVsCodeWindow codeWindow, IServiceProvider serviceProvider) {
+            _codeWindow       = codeWindow;
+            _serviceProvider  = serviceProvider;
+
+            var componentModel = (IComponentModel)_serviceProvider.GetService(typeof(SComponentModel));
+            _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
         }
 
         public int AddAdornments() {
@@ -63,16 +70,29 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         }
 
         void AddDropdownBar(IVsDropdownBarManager dropdownManager) {
-           
-            var dropdownBarClient = new DropdownBarClient(_textView, dropdownManager, _codeWindow, _serviceProvider);
+
+            IVsTextView textView;
+            _codeWindow.GetPrimaryView(out textView);
+
+            if(textView == null) {
+                Logger.Warn($"{nameof(AddDropdownBar)}: Unable to get primary view");
+                return;
+            }
+
+            var wpfTextView = _editorAdaptersFactoryService.GetWpfTextView(textView);
+            if (wpfTextView == null) {
+                Logger.Warn($"{nameof(AddDropdownBar)}: Unable to get IWpfTextView");
+                return;
+            }
+
+            var dropdownBarClient = new DropdownBarClient(wpfTextView.TextBuffer, dropdownManager, _codeWindow, _serviceProvider);
 
             // TODO: Entscheiden, ob die "Member Combo" Sinn macht, oder nicht. Bis dahin bleibt sie erst mal ausgeblendet
-
-#if ShowMemberCombobox
+            #if ShowMemberCombobox
             var hr = dropdownManager.AddDropdownBar(cCombos: 3, pClient: dropdownBarClient);
-#else
+            #else
             var hr = dropdownManager.AddDropdownBar(cCombos: 2, pClient: dropdownBarClient);
-#endif
+            #endif
             if (ErrorHandler.Failed(hr)) {
                 ErrorHandler.ThrowOnFailure(hr);
             }
