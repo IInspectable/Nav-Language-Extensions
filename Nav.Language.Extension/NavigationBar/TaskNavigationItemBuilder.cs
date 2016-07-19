@@ -36,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             }
 
             var items = builder.NavigationItems
-                               .OrderBy(ni => ni.Extent?.Start??-1)
+                               .OrderBy(ni => ni.Start)
                                .ToImmutableList();
 
             return items;
