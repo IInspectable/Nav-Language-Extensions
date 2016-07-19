@@ -18,7 +18,12 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         public List<NavigationItem> NavigationItems { get; }
         public List<NavigationItem> MemberItems { get; }
 
-        public static ImmutableList<NavigationItem> Build(CodeGenerationUnit codeGenerationUnit) {
+        public static ImmutableList<NavigationItem> Build(SemanticModelResult semanticModelResult) {
+
+            var codeGenerationUnit = semanticModelResult?.CodeGenerationUnit;
+            if(codeGenerationUnit == null) {
+                return ImmutableList<NavigationItem>.Empty;
+            }
 
             var builder = new TaskNavigationItemBuilder();
 
@@ -31,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             }
 
             var items = builder.NavigationItems
-                               .OrderBy(ni => ni.Location?.Start??-1)
+                               .OrderBy(ni => ni.Extent?.Start??-1)
                                .ToImmutableList();
 
             return items;
@@ -43,11 +48,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 Visit(symbol);
             }
 
-          //  int max = 100;
-          //  for(int i = 0; i< max; i++) {
-          //      MemberItems.Add(new NavigationItem($"ImageIndex {i}", i, null, -1));
-          //  }
-          //  
             NavigationItems.Add(new NavigationItem(
                 displayName    : taskDefinitionSymbol.Name, 
                 imageIndex     : NavigationImages.Index.TaskDefinition, 

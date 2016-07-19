@@ -318,6 +318,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
             ImageAttributes imageAttributes = new ImageAttributes {
                 StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
+                Dpi           = 96,
                 Flags         = (uint)_ImageAttributesFlags.IAF_RequiredFlags,
                 ImageType     = (uint)imageType,
                 Format        = (uint)format,
