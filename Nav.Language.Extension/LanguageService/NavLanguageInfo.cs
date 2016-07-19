@@ -4,8 +4,6 @@ using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 #endregion
@@ -22,25 +20,9 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         
         public int GetCodeWindowManager(IVsCodeWindow pCodeWin, out IVsCodeWindowManager ppCodeWinMgr) {
 
-            ppCodeWinMgr = null;
-
-            var model = _serviceContainer.GetService(typeof(SComponentModel)) as IComponentModel;
-            var adaptersFactoryService = model?.GetService<IVsEditorAdaptersFactoryService>();
-
-            if(adaptersFactoryService == null) {
-                return VSConstants.E_FAIL;
-            }
+            ppCodeWinMgr = new CodeWindowManager(pCodeWin, _serviceContainer);
             
-            IVsTextView textView;
-            if (ErrorHandler.Succeeded(pCodeWin.GetPrimaryView(out textView))) {
-
-                var wpfTextView = adaptersFactoryService.GetWpfTextView(textView);
-                ppCodeWinMgr    = new CodeWindowManager(pCodeWin, wpfTextView, _serviceContainer);
-
-                return VSConstants.S_OK;
-            }
-            
-            return VSConstants.E_FAIL;
+            return VSConstants.S_OK;
         }
 
         public int GetColorizer(IVsTextLines pBuffer, out IVsColorizer ppColorizer) {
