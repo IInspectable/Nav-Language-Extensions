@@ -262,7 +262,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         int IVsDropdownBarClient.OnItemSelected(int iCombo, int iIndex) {
             #if ShowMemberCombobox
             if(iCombo == TaskComboIndex) {            
-                SetActiveSelection(MemberComboIndex, refresh: true);    
+                SetActiveSelection(MemberComboIndex);    
             }
             #endif
             return VSConstants.S_OK;
