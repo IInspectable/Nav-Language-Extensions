@@ -87,7 +87,6 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
             var dropdownBarClient = new DropdownBarClient(wpfTextView.TextBuffer, dropdownManager, _codeWindow, _serviceProvider);
 
-            // TODO: Entscheiden, ob die "Member Combo" Sinn macht, oder nicht. Bis dahin bleibt sie erst mal ausgeblendet
             #if ShowMemberCombobox
             var hr = dropdownManager.AddDropdownBar(cCombos: 3, pClient: dropdownBarClient);
             #else
