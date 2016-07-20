@@ -68,7 +68,11 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 return;
             }
 
-            NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, NavigationBarImages.Index.TaskDeclaration, taskDeclarationSymbol.Syntax?.GetLocation(), taskDeclarationSymbol.Location.Start));
+            NavigationItems.Add(new NavigationItem(
+                displayName    : taskDeclarationSymbol.Name, 
+                imageIndex     : NavigationBarImages.Index.TaskDeclaration, 
+                location       : taskDeclarationSymbol.Syntax?.GetLocation(), 
+                navigationPoint: taskDeclarationSymbol.Location.Start));
         }
 
         #if ShowMemberCombobox
