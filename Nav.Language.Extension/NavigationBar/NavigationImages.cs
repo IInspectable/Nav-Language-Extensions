@@ -1,10 +1,13 @@
-#region 
+#region
 
+using System;
 using System.Drawing;
-using System.Windows.Forms;
 
 using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Imaging.Interop;
 
+using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
@@ -21,27 +24,64 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             public const int TriggerSymbol   = 3;
         }
 
-        public static ImageList CreateImageList(Color backgroundColor) {
+        static IImageHandle _imageListHandle;
 
-            var baseImage = NavLanguagePackage.GetBitmap(SymbolImageMonikers.TaskDeclaration, backgroundColor);
-            var overlay   = NavLanguagePackage.GetBitmap(SymbolImageMonikers.TaskDeclarationOverlay, backgroundColor);
+        public static IntPtr GetImageList(Color backgroundColor, IVsImageService2 imageService) {
 
-            Bitmap taskDeclarationImage = new Bitmap(baseImage);
-            using (var grfx = Graphics.FromImage(taskDeclarationImage)) {
-                grfx.DrawImage(overlay, 0, 0);
+            InitializeImageMonikers(imageService);
+
+            IntPtr hImageList = NavLanguagePackage.GetImageList(_imageListHandle.Moniker, backgroundColor);
+
+            return hImageList;          
+        }
+
+        static void InitializeImageMonikers(IVsImageService2 imageService) {
+
+            if (_imageListHandle!=null) {
+                return;
             }
 
-            var imgageList = new ImageList {
-                ImageSize  = new Size(16, 16),
-                ColorDepth = ColorDepth.Depth32Bit
+            var taskDelarationMoniker = GetCompositedImageMoniker(imageService,
+                CreateLayer(SymbolImageMonikers.TaskDeclaration),
+                CreateLayer(SymbolImageMonikers.TaskDeclarationOverlay));
+
+            var imageList = new ImageMonikerImageList(
+                    KnownMonikers.CSProjectNode, 
+                    taskDelarationMoniker, 
+                    SymbolImageMonikers.TaskDefinition, 
+                    SymbolImageMonikers.SignalTrigger);
+
+            _imageListHandle = imageService.AddCustomImageList(imageList);
+        }
+
+        static ImageCompositionLayer CreateLayer(
+            ImageMoniker imageMoniker,
+            int virtualWidth   = 16,
+            int virtualYOffset = 0,
+            int virtualXOffset = 0) {
+
+            return new ImageCompositionLayer {
+                VirtualWidth        = virtualWidth,
+                VirtualHeight       = 16,
+                ImageMoniker        = imageMoniker,
+                HorizontalAlignment = (uint)_UIImageHorizontalAlignment.IHA_Left,
+                VerticalAlignment   = (uint)_UIImageVerticalAlignment.IVA_Top,
+                VirtualXOffset      = virtualXOffset,
+                VirtualYOffset      = virtualYOffset,
             };
+        }
 
-            imgageList.Images.Add(NavLanguagePackage.GetBitmap(KnownMonikers.CSProjectNode, backgroundColor));
-            imgageList.Images.Add(taskDeclarationImage);
-            imgageList.Images.Add(NavLanguagePackage.GetBitmap(SymbolImageMonikers.TaskDefinition, backgroundColor));
-            imgageList.Images.Add(NavLanguagePackage.GetBitmap(SymbolImageMonikers.SignalTrigger, backgroundColor));
+        static ImageMoniker GetCompositedImageMoniker(IVsImageService2 imageService, params ImageCompositionLayer[] layers) {
+            
+            var imageHandle = imageService.AddCustomCompositeImage(
+                virtualWidth : 16, 
+                virtualHeight: 16,
+                layerCount   : layers.Length, 
+                layers       : layers);
 
-            return imgageList;
+            var moniker = imageHandle.Moniker;
+
+            return moniker;
         }
     }
 }

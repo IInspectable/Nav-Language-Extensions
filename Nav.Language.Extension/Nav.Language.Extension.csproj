@@ -60,6 +60,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\ComEventSink.cs" />
+    <Compile Include="Common\ImageMonikerImageList.cs" />
+    <Compile Include="Common\ServiceProviderExtensions.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTaggerProvider.cs" />

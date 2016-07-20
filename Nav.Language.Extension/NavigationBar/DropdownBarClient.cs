@@ -2,11 +2,10 @@
 
 using System;
 using System.Linq;
-using System.Windows.Forms;
 using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
+using System.Windows.Forms;
 using JetBrains.Annotations;
 
 using Microsoft.CodeAnalysis;
@@ -18,6 +17,7 @@ using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Utilities.Logging;
@@ -36,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         readonly IVsCodeWindow _codeWindow;
         readonly IVsDropdownBarManager _manager;
-        readonly ImageList _imageList;
+        readonly IntPtr _imageListHandle;
         readonly WorkspaceRegistration _workspaceRegistration;
         readonly Dictionary<int, int> _activeSelections;
         readonly Dispatcher _dispatcher;
@@ -62,11 +62,14 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             Logger.Trace($"{nameof(DropdownBarClient)}:Ctor");
 
+
+            var imageService = (IVsImageService2)serviceProvider.GetService(typeof(SVsImageService));
+
             var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
 
             _manager          = manager;
             _codeWindow       = codeWindow;
-            _imageList        = NavigationImages.CreateImageList(comboBoxBackgroundColor);
+            _imageListHandle  = NavigationImages.GetImageList(comboBoxBackgroundColor, imageService);
             _projectItems     = ImmutableList<NavigationItem>.Empty;
             _taskItems        = ImmutableList<NavigationItem>.Empty;
             _dispatcher       = Dispatcher.CurrentDispatcher;
@@ -89,7 +92,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             codeWindow.GetSecondaryView(out pTextView);
             ConnectView(pTextView);
 
-            ConnectToWorkspace(_workspaceRegistration.Workspace);
+            ConnectToWorkspace(_workspaceRegistration.Workspace);           
         }
 
         void ConnectView(IVsTextView vsTextView) {
@@ -129,8 +132,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             Logger.Trace($"{nameof(DropdownBarClient)}:{nameof(Dispose)}");
 
             base.Dispose();
-            
-            _imageList.Dispose();
 
             _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
 
@@ -214,7 +215,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
             puEntryType = (uint)(DROPDOWNENTRYTYPE.ENTRY_TEXT | DROPDOWNENTRYTYPE.ENTRY_ATTR | DROPDOWNENTRYTYPE.ENTRY_IMAGE);
             // ReSharper restore BitwiseOperatorOnEnumWithoutFlags
-            phImageList = _imageList.Handle;
+            phImageList = _imageListHandle;
             pcEntries   = (uint) GetItems(iCombo).Count;
             
             return VSConstants.S_OK;
