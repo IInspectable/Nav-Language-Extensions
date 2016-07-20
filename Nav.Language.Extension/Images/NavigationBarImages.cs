@@ -21,20 +21,20 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             public const int TriggerSymbol   = 3;
         }
 
-        static IImageHandle _imageListHandle;
+        static IImageHandle ImageListHandle;
 
         public static IntPtr GetImageList(Color backgroundColor, IVsImageService2 imageService) {
 
             EnsureImageListHandle(imageService);
 
-            IntPtr hImageList = NavLanguagePackage.GetImageList(_imageListHandle.Moniker, backgroundColor);
+            IntPtr hImageList = NavLanguagePackage.GetImageList(ImageListHandle.Moniker, backgroundColor);
 
             return hImageList;
         }
 
         static void EnsureImageListHandle(IVsImageService2 imageService) {
 
-            if (_imageListHandle != null) {
+            if (ImageListHandle != null) {
                 return;
             }
             
@@ -44,7 +44,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
                 ImageMonikers.TaskDefinition,
                 ImageMonikers.SignalTrigger);
 
-            _imageListHandle = imageService.AddCustomImageList(imageList);
+            ImageListHandle = imageService.AddCustomImageList(imageList);
         }
     }
 }

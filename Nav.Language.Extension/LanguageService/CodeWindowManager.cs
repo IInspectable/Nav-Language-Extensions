@@ -4,11 +4,11 @@ using System;
 
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
 
-using Pharmatechnik.Nav.Language.Extension.NavigationBar;
 using Pharmatechnik.Nav.Utilities.Logging;
+using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.NavigationBar;
 
 #endregion
 
@@ -19,17 +19,13 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         static readonly Logger Logger = Logger.Create<CodeWindowManager>();
 
         readonly IVsCodeWindow _codeWindow;
-        readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         readonly IServiceProvider _serviceProvider;
 
         DropdownBarClient _dropdownBarClient;
 
         public CodeWindowManager(IVsCodeWindow codeWindow, IServiceProvider serviceProvider) {
-            _codeWindow       = codeWindow;
-            _serviceProvider  = serviceProvider;
-
-            var componentModel = (IComponentModel)_serviceProvider.GetService(typeof(SComponentModel));
-            _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
+            _codeWindow      = codeWindow;
+            _serviceProvider = serviceProvider;
         }
 
         public int AddAdornments() {
@@ -78,7 +74,9 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                 return;
             }
 
-            var wpfTextView = _editorAdaptersFactoryService.GetWpfTextView(textView);
+            var editorAdaptersFactoryService = _serviceProvider.GetMefService<IVsEditorAdaptersFactoryService>();
+
+            var wpfTextView = editorAdaptersFactoryService.GetWpfTextView(textView);
             if (wpfTextView == null) {
                 Logger.Warn($"{nameof(AddDropdownBar)}: Unable to get IWpfTextView");
                 return;
