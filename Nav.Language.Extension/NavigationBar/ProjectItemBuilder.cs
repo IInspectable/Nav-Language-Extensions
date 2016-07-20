@@ -2,6 +2,7 @@
 
 using System.Collections.Immutable;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
@@ -18,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             return new[] {
                 new NavigationItem(
                     displayName: semanticModelResult.Snapshot.TextBuffer.GetContainingProject()?.Name ?? "Miscellaneous Files",
-                    imageIndex : NavigationImages.Index.ProjectNode)
+                    imageIndex : NavigationBarImages.Index.ProjectNode)
             }.ToImmutableList();
         }
     }

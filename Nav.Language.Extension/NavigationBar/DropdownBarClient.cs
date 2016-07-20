@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Utilities.Logging;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 using Control = System.Windows.Controls.Control;
@@ -69,7 +70,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             _manager          = manager;
             _codeWindow       = codeWindow;
-            _imageListHandle  = NavigationImages.GetImageList(comboBoxBackgroundColor, imageService);
+            _imageListHandle  = NavigationBarImages.GetImageList(comboBoxBackgroundColor, imageService);
             _projectItems     = ImmutableList<NavigationItem>.Empty;
             _taskItems        = ImmutableList<NavigationItem>.Empty;
             _dispatcher       = Dispatcher.CurrentDispatcher;

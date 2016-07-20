@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
@@ -54,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
             var taskDefinition = codeGenerationUnit.TaskDefinitions
                                                     .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent));
 
-            var img=NavLanguagePackage.GetBitmapSource(SymbolImageMonikers.DialogNode);
+            var img=NavLanguagePackage.GetBitmapSource(ImageMonikers.DialogNode);
           
             List<Completion> completions = new List<Completion>();
             if (taskDefinition != null) {

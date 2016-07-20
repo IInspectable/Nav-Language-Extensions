@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
 #endregion
@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
             _taskBeginCodeModel = taskBeginCodeModel;
         }
 
-        static ImageMoniker ImageMoniker { get { return KnownMonikers.MethodPublic; } }
+        static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToMethodPublic; } }
 
         protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
