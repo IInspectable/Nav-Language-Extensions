@@ -314,6 +314,27 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             return data as Bitmap;
         }
 
+        public static IntPtr GetImageList(ImageMoniker moniker, Color? backgroundColor = null) {
+
+            var imageAttributes = GetImageAttributes(_UIImageType.IT_ImageList, _UIDataFormat.DF_Win32, backgroundColor);
+            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
+            var result          = imageService?.GetImage(moniker, imageAttributes);
+
+            var imageListData = Microsoft.Internal.VisualStudio.PlatformUI.Utilities.GetObjectData(result) as IVsUIWin32ImageList;
+            if(imageListData == null) {
+                Logger.Warn($"{nameof(GetImageList)}: Unable to get IVsUIWin32ImageList");
+                return IntPtr.Zero;
+            }
+
+            int imageListInt;
+            if(!ErrorHandler.Succeeded(imageListData.GetHIMAGELIST(out imageListInt))) {
+                Logger.Warn($"{nameof(GetImageList)}: Unable to get HIMAGELIST");
+                return IntPtr.Zero;
+
+            }
+            return (IntPtr)imageListInt;            
+        }
+
         static ImageAttributes GetImageAttributes(_UIImageType imageType, _UIDataFormat format, Color? backgroundColor, int width=16, int height=16) {
 
             ImageAttributes imageAttributes = new ImageAttributes {
