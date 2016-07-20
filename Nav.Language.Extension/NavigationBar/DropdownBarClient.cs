@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Windows.Forms;
+
 using JetBrains.Annotations;
 
 using Microsoft.CodeAnalysis;
@@ -16,8 +16,8 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Utilities.Logging;
@@ -36,8 +36,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         static readonly Logger Logger = Logger.Create<DropdownBarClient>();
 
         readonly IVsCodeWindow _codeWindow;
+        readonly IServiceProvider _serviceProvider;
         readonly IVsDropdownBarManager _manager;
-        readonly IntPtr _imageListHandle;
         readonly WorkspaceRegistration _workspaceRegistration;
         readonly Dictionary<int, int> _activeSelections;
         readonly Dispatcher _dispatcher;
@@ -49,6 +49,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         Workspace _workspace;
         IVsDropdownBar _dropdownBar;
         int _focusedCombo;
+        IntPtr _imageListHandle;
 
         ImmutableList<NavigationItem> _projectItems;
         ImmutableList<NavigationItem> _taskItems;
@@ -57,20 +58,14 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         public DropdownBarClient(
             ITextBuffer textBuffer,
             IVsDropdownBarManager manager,
-            IVsCodeWindow codeWindow,
-            
+            IVsCodeWindow codeWindow,            
             IServiceProvider serviceProvider): base(textBuffer) {
 
             Logger.Trace($"{nameof(DropdownBarClient)}:Ctor");
 
-
-            var imageService = (IVsImageService2)serviceProvider.GetService(typeof(SVsImageService));
-
-            var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
-
             _manager          = manager;
             _codeWindow       = codeWindow;
-            _imageListHandle  = NavigationBarImages.GetImageList(comboBoxBackgroundColor, imageService);
+            _serviceProvider  = serviceProvider;
             _projectItems     = ImmutableList<NavigationItem>.Empty;
             _taskItems        = ImmutableList<NavigationItem>.Empty;
             _dispatcher       = Dispatcher.CurrentDispatcher;
@@ -80,6 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             _workspaceRegistration = Workspace.GetWorkspaceRegistration(TextBuffer.AsTextContainer());
             _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
+            VSColorTheme.ThemeChanged += OnThemeChanged;
 
             var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
             _editorAdaptersFactoryService=componentModel.GetService<IVsEditorAdaptersFactoryService>();
@@ -93,14 +89,42 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             codeWindow.GetSecondaryView(out pTextView);
             ConnectView(pTextView);
 
-            ConnectToWorkspace(_workspaceRegistration.Workspace);           
+            ConnectToWorkspace(_workspaceRegistration.Workspace);
+
+            UpdateImageList();
+        }
+
+        public override void Dispose() {
+
+            Logger.Trace($"{nameof(DropdownBarClient)}:{nameof(Dispose)}");
+
+            base.Dispose();
+
+            _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
+            VSColorTheme.ThemeChanged -= OnThemeChanged;
+
+            foreach (var view in _trackedViews.Keys.ToList()) {
+                DisconnectView(view);
+            }
+
+            _manager?.RemoveDropdownBar();
+            _comEventSink?.Dispose();
+
+            DisconnectFromWorkspace();
+        }
+        
+        void UpdateImageList() {
+
+            var imageService = (IVsImageService2) _serviceProvider.GetService(typeof(SVsImageService));
+            var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
+
+            _imageListHandle=NavigationBarImages.GetImageList(comboBoxBackgroundColor, imageService);
         }
 
         void ConnectView(IVsTextView vsTextView) {
 
             if(vsTextView == null || _trackedViews.ContainsKey(vsTextView)) {
                 return;
-
             }
 
             var wpfTextView = _editorAdaptersFactoryService.GetWpfTextView(vsTextView);
@@ -126,25 +150,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             wpfTextView.GotAggregateFocus     -= OnTextViewGotAggregateFocus;
 
             _trackedViews.Remove(vsTextView);
-        }
-
-        public override void Dispose() {
-
-            Logger.Trace($"{nameof(DropdownBarClient)}:{nameof(Dispose)}");
-
-            base.Dispose();
-
-            _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
-
-            foreach(var view in _trackedViews.Keys.ToList()) {
-                DisconnectView(view);
-            }
-
-            _manager?.RemoveDropdownBar();
-            _comEventSink?.Dispose();
-
-            DisconnectFromWorkspace();
-        }
+        }        
 
         #region Workspace Management
 
@@ -329,6 +335,14 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             // Selektion aktualisieren, um FONTATTR_GRAY entprechend zu setzen 
             SetActiveSelection(TaskComboIndex);
+        }
+
+        void OnThemeChanged(ThemeChangedEventArgs e) {
+
+            UpdateImageList();
+
+            SetActiveSelection(TaskComboIndex);
+            SetActiveSelection(ProjectComboIndex);
         }
 
         ImmutableList<NavigationItem> GetItems(int iCombo) {
