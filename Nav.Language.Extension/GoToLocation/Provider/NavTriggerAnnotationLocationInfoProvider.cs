@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
+using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
@@ -18,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
         public NavTriggerAnnotationLocationInfoProvider(NavTriggerAnnotation annotation) : base(annotation) {
         }
 
-        static ImageMoniker ImageMoniker { get { return SymbolImageMonikers.SignalTrigger; } }
+        static ImageMoniker ImageMoniker { get { return ImageMonikers.SignalTrigger; } }
 
         protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new CancellationToken()) {
 

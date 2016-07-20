@@ -2,14 +2,13 @@
 
 using System.Linq;
 
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
-using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
@@ -35,7 +34,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 LocationInfo.FromLocation(
                     location    : includeSymbol.FileLocation, 
                     displayName : includeSymbol.FileName, 
-                    imageMoniker: SymbolImageMonikers.Include));
+                    imageMoniker: ImageMonikers.Include));
         }
 
         public override TagSpan<GoToTag> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
@@ -60,7 +59,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 LocationInfo.FromLocation(
                     location    : taskNodeSymbol.Declaration.Location, 
                     displayName : $"Task {taskNodeSymbol.Declaration.Name}", 
-                    imageMoniker: SymbolImageMonikers.TaskDefinition));
+                    imageMoniker: ImageMonikers.TaskDefinition));
         }
 
         public override TagSpan<GoToTag> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
@@ -73,7 +72,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 LocationInfo.FromLocation(
                     location    : nodeReferenceSymbol.Declaration.Location, 
                     displayName : "Node Declaration", 
-                    imageMoniker: KnownMonikers.GoToReference));
+                    imageMoniker: ImageMonikers.GoToNodeDeclaration));
 
             var nodeTagSpan = Visit(nodeReferenceSymbol.Declaration);
             if(nodeTagSpan!=null && nodeTagSpan.Tag.Provider.Any()) {
@@ -98,7 +97,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             var defProvider = new SimpleLocationInfoProvider(LocationInfo.FromLocation(
                 connectionPointReferenceSymbol.Declaration.Location,
                 $"Exit {connectionPointReferenceSymbol.Name}",
-                SymbolImageMonikers.ExitConnectionPoint));
+                ImageMonikers.ExitConnectionPoint));
 
             tagSpan.Tag.Provider.Add(defProvider);
 

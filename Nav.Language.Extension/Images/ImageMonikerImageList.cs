@@ -2,13 +2,12 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Shell.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
+namespace Pharmatechnik.Nav.Language.Extension.Images {
 
     sealed class ImageMonikerImageList: IVsImageMonikerImageList {
 

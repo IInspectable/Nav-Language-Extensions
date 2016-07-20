@@ -3,6 +3,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
@@ -51,7 +52,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             NavigationItems.Add(new NavigationItem(
                 displayName    : taskDefinitionSymbol.Name, 
-                imageIndex     : NavigationImages.Index.TaskDefinition, 
+                imageIndex     : NavigationBarImages.Index.TaskDefinition, 
                 location       : taskDefinitionSymbol.Syntax.GetLocation(), 
                 navigationPoint: taskDefinitionSymbol.Location.Start,
                 children       : MemberItems.ToImmutableList()));
@@ -67,12 +68,12 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 return;
             }
 
-            NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, NavigationImages.Index.TaskDeclaration, taskDeclarationSymbol.Syntax?.GetLocation(), taskDeclarationSymbol.Location.Start));
+            NavigationItems.Add(new NavigationItem(taskDeclarationSymbol.Name, NavigationBarImages.Index.TaskDeclaration, taskDeclarationSymbol.Syntax?.GetLocation(), taskDeclarationSymbol.Location.Start));
         }
 
         #if ShowMemberCombobox
         public override void VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
-            MemberItems.Add(new NavigationItem(signalTriggerSymbol.Name, NavigationImages.Index.TriggerSymbol, signalTriggerSymbol.Transition.Location, signalTriggerSymbol.Start));
+            MemberItems.Add(new NavigationItem(signalTriggerSymbol.Name, NavigationBarImages.Index.TriggerSymbol, signalTriggerSymbol.Transition.Location, signalTriggerSymbol.Start));
         }
         #endif
     }

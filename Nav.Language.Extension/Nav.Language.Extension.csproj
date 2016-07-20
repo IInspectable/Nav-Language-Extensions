@@ -60,7 +60,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\ComEventSink.cs" />
-    <Compile Include="Common\ImageMonikerImageList.cs" />
+    <Compile Include="Images\ImageMonikerImageList.cs" />
     <Compile Include="Common\ServiceProviderExtensions.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornmentTagger.cs" />
@@ -70,7 +70,6 @@
     <Compile Include="CSharp\GoTo\IntraTextGoToTagger.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToTaggerProvider.cs" />
     <Compile Include="CSharp\IntraTextAdornmentTagger.cs" />
-    <Compile Include="GoToLocation\GoToImageMonikers.cs" />
     <Compile Include="GoToLocation\GoToLocationService.cs" />
     <Compile Include="GoToLocation\GoToTag.cs" />
     <Compile Include="GoToLocation\LocationInfo.cs" />
@@ -90,13 +89,13 @@
     <Compile Include="GoToLocation\Provider\TaskDeclarationLocationInfoProvider.cs" />
     <Compile Include="LanguageService\CodeWindowManager.cs" />
     <Compile Include="NavigationBar\DropdownBarClient.cs" />
-    <Compile Include="NavigationBar\NavigationImages.cs" />
+    <Compile Include="Images\NavigationBarImages.cs" />
     <Compile Include="NavigationBar\NavigationItem.cs" />
     <Compile Include="NavigationBar\ProjectItemBuilder.cs" />
     <Compile Include="NavigationBar\TaskNavigationItemBuilder.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\WeakListenerManager.cs" />
-    <Compile Include="QuickInfo\SymbolImageMonikers.cs" />
+    <Compile Include="Images\ImageMonikers.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandler.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandlerProvider.cs" />
     <Compile Include="StatementCompletion\CompletionSource.cs" />
