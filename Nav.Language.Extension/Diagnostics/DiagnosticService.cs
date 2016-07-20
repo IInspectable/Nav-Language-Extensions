@@ -41,6 +41,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
             _textView.Closed                       += OnTextViewClosed;
             _textView.TextBuffer.Changed           += OnTextBufferChanged;
             _errorTagAggregator.BatchedTagsChanged += OnBatchedTagsChanged;
+
+            // Evtl. gibt es bereits einen Syntaxbaum...
+            Invalidate();
         }
 
         public static DiagnosticService GetOrCreate(IWpfTextView textView) {

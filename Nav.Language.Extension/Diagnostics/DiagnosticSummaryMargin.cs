@@ -37,10 +37,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
 
             _summaryControl = new DiagnosticSummaryControl {
                 CrispImage = {
-                    Moniker = ImageMonikers.WaitingForAnalysis
+                    Moniker = GetImageMoniker()
                 }
             };
-            _summaryControl.MouseLeftButtonDown              += OnMouseLeftButtonDown;
+            _summaryControl.MouseLeftButtonDown    += OnMouseLeftButtonDown;
             
             _diagnosticService.DiagnosticsChanging += OnDiagnosticsChanging;
             _diagnosticService.DiagnosticsChanged  += OnDiagnosticsChanged;
@@ -179,7 +179,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
             return severity.ToString().ToLower() + numerus;
         }
 
-        // TODO ImageMoniker zentralisieren
         ImageMoniker GetImageMoniker() {
 
             if(_diagnosticService.WaitingForAnalysis) {
