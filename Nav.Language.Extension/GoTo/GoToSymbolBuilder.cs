@@ -48,7 +48,19 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             
             return CreateTagSpan(taskDefinitionSymbol.Location, provider);
         }
-        
+
+        public override TagSpan<GoToTag> VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
+
+            if (taskDeclarationSymbol.IsIncluded || taskDeclarationSymbol.Origin==TaskDeclarationOrigin.TaskDefinition) {
+                return null;
+            }
+
+            var codeModel = new TaskDeclarationCodeModel(taskDeclarationSymbol);
+            var provider  = new TaskIBeginInterfaceDeclarationLocationInfoProvider(_textBuffer, codeModel);
+
+            return CreateTagSpan(taskDeclarationSymbol.Location, provider);
+        }
+
         public override TagSpan<GoToTag> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
 
             if (taskNodeSymbol.Declaration == null) {

@@ -60,6 +60,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Common\ComEventSink.cs" />
+    <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
     <Compile Include="Images\ImageMonikerImageList.cs" />
     <Compile Include="Common\ServiceProviderExtensions.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />

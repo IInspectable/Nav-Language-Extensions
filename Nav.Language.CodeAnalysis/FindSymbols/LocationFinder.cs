@@ -40,7 +40,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         const string MsgErrorWhileParsingNavFile0                = "Error while parsing nav file '{0}'";
         const string MsgMissingProjectForAssembly0               = "Missing project for assembly '{0}'.";
-       
+
         // TODO String als CodeGenInfo o.ä.
         const string BeginLogicMethodName = "BeginLogic";
 
@@ -68,12 +68,12 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         /// <exception cref="LocationNotFoundException"/>
         static Task<IEnumerable<TLocation>> FindNavLocationsAsync<TAnnotation, TLocation>(
-                        string sourceText, 
-                        TAnnotation annotation, 
-                        Func<ITaskDefinitionSymbol, TAnnotation, IEnumerable<TLocation>> locBuilder, 
-                        CancellationToken cancellationToken)
-            where TAnnotation: NavTaskAnnotation 
-            where TLocation: Location {
+            string sourceText,
+            TAnnotation annotation,
+            Func<ITaskDefinitionSymbol, TAnnotation, IEnumerable<TLocation>> locBuilder,
+            CancellationToken cancellationToken)
+            where TAnnotation : NavTaskAnnotation
+            where TLocation : Location {
 
             var locationResult = Task.Run(() => {
 
@@ -86,14 +86,14 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
 
                 var task = codeGenerationUnit.Symbols
-                                             .OfType<ITaskDefinitionSymbol>()
-                                             .FirstOrDefault(t => t.Name == annotation.TaskName);
+                    .OfType<ITaskDefinitionSymbol>()
+                    .FirstOrDefault(t => t.Name == annotation.TaskName);
 
                 if (task == null) {
                     throw new LocationNotFoundException(String.Format(MsgUnableToFindTask0InFile1, annotation.TaskName, annotation.NavFileName));
                 }
-                
-                return locBuilder(task, annotation);                
+
+                return locBuilder(task, annotation);
 
             }, cancellationToken);
 
@@ -108,8 +108,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         static IEnumerable<Location> GetTriggerLocations(ITaskDefinitionSymbol task, NavTriggerAnnotation triggerAnnotation) {
 
             var trigger = task.Transitions
-                              .SelectMany(t => t.Triggers)
-                              .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
+                .SelectMany(t => t.Triggers)
+                .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
 
             if (trigger == null) {
                 // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
@@ -123,8 +123,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         static IEnumerable<Location> GetInitLocations(ITaskDefinitionSymbol task, NavInitAnnotation initAnnotation) {
 
             var initNode = task.NodeDeclarations
-                           .OfType<IInitNodeSymbol>()
-                           .FirstOrDefault(n => n.Name == initAnnotation.InitName);
+                .OfType<IInitNodeSymbol>()
+                .FirstOrDefault(n => n.Name == initAnnotation.InitName);
 
             if (initNode == null) {
                 // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
@@ -132,16 +132,16 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                 throw new LocationNotFoundException(String.Format(MsgUnableToFindInit0InTask1, initAnnotation.InitName, task.Name));
             }
 
-            return ToEnumerable(initNode.Location);            
+            return ToEnumerable(initNode.Location);
         }
 
         static IEnumerable<AmbiguousLocation> GetExitLocations(ITaskDefinitionSymbol task, NavExitAnnotation exitAnnotation) {
 
             var exitTransitions = task.ExitTransitions
-                                      .Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
-                                      .Where(et => et.ConnectionPoint != null)
-                                      .Select(et => new AmbiguousLocation(et.ConnectionPoint?.Location, et.ConnectionPoint.Name))
-                                      .ToList();
+                .Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
+                .Where(et => et.ConnectionPoint != null)
+                .Select(et => new AmbiguousLocation(et.ConnectionPoint?.Location, et.ConnectionPoint.Name))
+                .ToList();
 
             if (!exitTransitions.Any()) {
                 // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
@@ -164,71 +164,72 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         public static Task<Location> FindCallBeginLogicDeclarationLocationsAsync(Project project, NavInitCallAnnotation initCallAnnotation, CancellationToken cancellationToken) {
 
             var task = Task.Run(async () => {
-                
+
                 var compilation = await project.GetCompilationAsync(cancellationToken);
-                var beginItf    = compilation.GetTypeByMetadataName(initCallAnnotation.BeginItfFullyQualifiedName);
-                if(beginItf == null) {
+                var beginItf = compilation.GetTypeByMetadataName(initCallAnnotation.BeginItfFullyQualifiedName);
+                if (beginItf == null) {
                     throw new LocationNotFoundException(String.Format(MsgUnableToFindInterface0, initCallAnnotation.BeginItfFullyQualifiedName));
                 }
 
                 var metaLocation = beginItf.Locations.FirstOrDefault(l => l.IsInMetadata);
-                if(metaLocation != null) {
+                if (metaLocation != null) {
                     throw new LocationNotFoundException(String.Format(MsgMissingProjectForAssembly0, metaLocation.MetadataModule.MetadataName));
                 }
 
                 var wfsClass = (await SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken))
-                                           .OfType<INamedTypeSymbol>()
-                                           .FirstOrDefault();
+                    .OfType<INamedTypeSymbol>()
+                    .FirstOrDefault();
 
-                if(wfsClass == null) {
+                if (wfsClass == null) {
                     throw new LocationNotFoundException(String.Format(MsgUnableToFindAClassImplementingInterface0, beginItf.ToDisplayString()));
                 }
 
                 var beginLogicMethods = wfsClass.GetMembers()
-                                                .OfType<IMethodSymbol>()                                               
-                                                .Where(m => m.Name == BeginLogicMethodName);
+                    .OfType<IMethodSymbol>()
+                    .Where(m => m.Name == BeginLogicMethodName);
 
                 // Der erste Parameter ist immer das IBegin---WFS interface.
                 var beginParameter = initCallAnnotation.Parameter.Skip(1).ToList();
-                var beginMethod    = FindBestBeginLogicOverload(beginParameter, beginLogicMethods);
+                var beginMethod = FindBestBeginLogicOverload(beginParameter, beginLogicMethods);
 
                 if (beginMethod == null) {
                     throw new LocationNotFoundException(String.Format(MsgUnableToFindMatchingOverloadForMethod0, BeginLogicMethodName));
                 }
 
-                var memberSyntax   = beginMethod.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
+                var memberSyntax = beginMethod.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
                 var memberLocation = memberSyntax?.Identifier.GetLocation();
-                var location       = ToLocation(memberLocation);
+                var location = ToLocation(memberLocation);
 
-                if(location == null) {
+                if (location == null) {
                     throw new LocationNotFoundException(MsgUnableToGetMemberLoation);
                 }
 
                 return location;
 
             }, cancellationToken);
-            
+
             return task;
         }
-        
+
         static IMethodSymbol FindBestBeginLogicOverload(IList<string> beginParameter, IEnumerable<IMethodSymbol> beginLogicMethods) {
 
             var bestMatch = beginLogicMethods.Select(m => new {
-                                MatchCount     = GetParameterMatchCount(beginParameter, AnnotationReader.ToComparableParameterTypeList(m.Parameters)),
-                                ParameterCount = m.Parameters.Length,
-                                Method         = m})
-                    .Where(x => x.MatchCount >=0 ) // 0 ist OK, falls der Init keine Argumente hat!
-                    .OrderByDescending(x=> x.MatchCount)
-                    .ThenBy(x=> x.ParameterCount)
-                    .Select(x=> x.Method)
-                    .FirstOrDefault();
+                MatchCount = GetParameterMatchCount(beginParameter, AnnotationReader.ToComparableParameterTypeList(m.Parameters)),
+                ParameterCount = m.Parameters.Length,
+                Method = m
+            })
+                .Where(x => x.MatchCount >= 0) // 0 ist OK, falls der Init keine Argumente hat!
+                .OrderByDescending(x => x.MatchCount)
+                .ThenBy(x => x.ParameterCount)
+                .Select(x => x.Method)
+                .FirstOrDefault();
 
             return bestMatch;
         }
 
         static int GetParameterMatchCount(IList<string> beginParameter, IList<string> beginLogicParameter) {
-            
-            if (beginLogicParameter.Count  < beginParameter.Count) {
+
+            if (beginLogicParameter.Count < beginParameter.Count) {
                 return -1;
             }
 
@@ -242,6 +243,53 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             }
             return matchCount;
         }
+
+        #endregion
+
+        #region FindTaskIBeginInterfaceDeclarationLocations
+
+        /// <exception cref="LocationNotFoundException"/>
+        public static Task<IList<Location>> FindTaskIBeginInterfaceDeclarationLocations(Project project, TaskDeclarationCodeModel codegenInfo, CancellationToken cancellationToken) {
+            var task = Task.Run(async () => {
+
+                var compilation = await project.GetCompilationAsync(cancellationToken);
+                var beginItf = compilation?.GetTypeByMetadataName(codegenInfo.FullyQualifiedBeginInterfaceName);
+
+                if (beginItf == null) {
+                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.FullyQualifiedBeginInterfaceName));
+                }
+
+                var metaLocation = beginItf.Locations.FirstOrDefault(l => l.IsInMetadata);
+                if(metaLocation != null) {
+                    throw new LocationNotFoundException(String.Format(MsgMissingProjectForAssembly0, metaLocation.MetadataModule.MetadataName));
+                }
+
+                var impls = beginItf.DeclaringSyntaxReferences.Select(dsr=>dsr.GetSyntax()).OfType<InterfaceDeclarationSyntax>();
+
+                IList<Location> locs = new List<Location>();
+                foreach (var impl in impls) {
+                    var loc = impl.Identifier.GetLocation();
+
+                    var lineSpan = loc.GetLineSpan();
+                    if (!lineSpan.IsValid) {
+                        continue;
+                    }
+                    var filePath   = loc.SourceTree?.FilePath;
+                    var textExtent = loc.SourceSpan.ToTextExtent();
+                    var lineExtent = lineSpan.ToLinePositionExtent();
+
+                    locs.Add(new Location(textExtent, lineExtent, filePath));
+                }
+
+                if (!locs.Any()) {
+                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.FullyQualifiedBeginInterfaceName));
+                }
+                return locs;
+            } , cancellationToken );
+
+            return task;
+        }
+
 
         #endregion
 
