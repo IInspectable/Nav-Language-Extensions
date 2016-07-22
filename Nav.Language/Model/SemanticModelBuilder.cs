@@ -6,6 +6,7 @@ using System.Threading;
 using System.Collections.Generic;
 
 using JetBrains.Annotations;
+using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
