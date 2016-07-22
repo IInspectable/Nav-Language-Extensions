@@ -2,6 +2,7 @@
 
 using System.Linq;
 using System.Collections.Immutable;
+using JetBrains.Annotations;
 
 #endregion
 
@@ -25,6 +26,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return namespaces.ToImmutableList();
         }
 
+        [NotNull]
         public string ToCamelcase(string s) {
 
             if(string.IsNullOrEmpty(s)) {
@@ -34,6 +36,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return s.Substring(0, 1).ToLowerInvariant() + s.Substring(1);
         }
 
+        [NotNull]
         public string ToPascalcase(string s) {
 
             if (string.IsNullOrEmpty(s)) {
@@ -43,14 +46,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return s.Substring(0, 1).ToUpperInvariant() + s.Substring(1);
         }
 
+        [NotNull]
         public string ToFieldName(string s) {
             return s?.StartsWith(FieldPräfix) == true ? ToCamelcase(s) : $"{FieldPräfix}{ToCamelcase(s)}";
         }
 
+        [NotNull]
         public string ToClassName(string s) {
             return ToPascalcase(s);
         }
 
+        [NotNull]
         public string FieldPräfix {
             get { return "_"; }
         }
