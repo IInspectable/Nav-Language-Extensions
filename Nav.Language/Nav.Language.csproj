@@ -88,7 +88,7 @@
     <Compile Include="Diagnostic\DiagnosticSeverity.cs" />
     <Compile Include="Model\ConnectionPointReferenceSymbol.cs" />
     <Compile Include="Model\ConnectionPointSymbol.cs" />
-    <Compile Include="Model\CSharp.cs" />
+    <Compile Include="CodeGen\CSharp.cs" />
     <Compile Include="Model\EdgeModeSymbol.cs" />
     <Compile Include="Model\ExitTransition.cs" />
     <Compile Include="Model\Generated\SymbolVisitor.Generated.cs">
