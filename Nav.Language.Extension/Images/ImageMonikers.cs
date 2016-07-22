@@ -67,6 +67,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             get { return KnownMonikers.ClassPublic; }
         }
 
+        public static ImageMoniker GoToInterfacePublic {
+            get { return KnownMonikers.InterfacePublic; }
+        }
+
         #endregion
 
         #region Symbols
