@@ -62,20 +62,20 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             return textBlock;
         }
 
-        public TextBlock ToTextBlock(SignalTriggerCodeGenInfo codeGenInfo) {
+        public TextBlock ToTextBlock(SignalTriggerCodeModel codeModel) {
 
             var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
             var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
 
             textBlock.SetDefaultTextProperties(formatMap);
 
-            //var nsRun = ToRun(codeGenInfo.WflNamespace+".", SyntaxTokenClassification.Identifier, formatMap);
+            //var nsRun = ToRun(codeModel.WflNamespace+".", SyntaxTokenClassification.Identifier, formatMap);
             //textBlock.Inlines.Add(nsRun);
 
-            var typeRun = ToRun(codeGenInfo.TaskCodeGenInfo.WfsTypeName, SyntaxTokenClassification.TaskName, formatMap);
+            var typeRun = ToRun(codeModel.TaskCodeModel.WfsTypeName, SyntaxTokenClassification.TaskName, formatMap);
             textBlock.Inlines.Add(typeRun);
 
-            var methodRun = ToRun("."+ codeGenInfo.TriggerLogicMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
+            var methodRun = ToRun("."+ codeModel.TriggerLogicMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
             textBlock.Inlines.Add(methodRun);
 
             return textBlock;

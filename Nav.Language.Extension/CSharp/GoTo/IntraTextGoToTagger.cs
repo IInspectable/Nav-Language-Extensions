@@ -110,7 +110,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         void OnWorkspaceRegistrationChanged(object sender, EventArgs e) {
-
+            Logger.Trace($"{nameof(OnWorkspaceRegistrationChanged)}: {_textBuffer.GetTextDocument()?.FilePath}");
             DisconnectFromWorkspace();
 
             var newWorkspace = _workspaceRegistration.Workspace;
@@ -121,23 +121,26 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         void ConnectToWorkspace([CanBeNull] Workspace workspace) {
 
             DisconnectFromWorkspace();
+            Logger.Trace($"{nameof(ConnectToWorkspace)}: {_textBuffer.GetTextDocument()?.FilePath}");
 
             _workspace = workspace;
 
             if(_workspace != null) {
                 // TODO Fehlt uns irgendein Event? Es scheint manchmal vorzukommen, dass die Tags nach dem Starten von VS nicht verfügbar sind...
                 _workspace.WorkspaceChanged += OnWorkspaceChanged;
-                _workspace.DocumentOpened += OnDocumentOpened;
+                _workspace.DocumentOpened   += OnDocumentOpened;
             }
             
             Invalidate();
         }
 
         void DisconnectFromWorkspace() {
-
+            
             _result = null;
 
             if (_workspace != null) {
+                Logger.Trace($"{nameof(DisconnectFromWorkspace)}: {_textBuffer.GetTextDocument()?.FilePath}");
+
                 _workspace.WorkspaceChanged -= OnWorkspaceChanged;
                 _workspace.DocumentOpened   -= OnDocumentOpened;
 
@@ -274,7 +277,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 var document = buildArgs.Snapshot.GetOpenDocumentInCurrentContextWithChanges();
                 if(document == null) {
                     // Wahrscheinlich handelt es sich bei diesem Dokument um ein "externes"
-                    Logger.Info($"{nameof(BuildTags)}: Es steht kein Dokument zur Verfügung. Der Vorgang wurde abgebrochen.");
+                    Logger.Warn($"{nameof(BuildTags)}: Es steht kein Roslyn Dokument für '{buildArgs.DocumentId}' zur Verfügung. Der Vorgang wurde abgebrochen.");
                     return new BuildTagsResult(buildArgs);
                 }
             

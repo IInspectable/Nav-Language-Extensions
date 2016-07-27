@@ -125,6 +125,11 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
         void TrySetResult(SemanticModelResult result) {
 
+            // Dieser Fall kann eintreten, da wir im Ctor "blind" ein Invalidate aufrufen. Möglicherweise gibt es aber noch kein ParseResult,
+            // welches aber noch folgen wird und im Zuge eines OnParseResultChanging abgerbeitet wird.
+            if(result == null) {
+                return;
+            }
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
             // da bereits ein neues berechnet wird.
             if (TextBuffer.CurrentSnapshot != result.Snapshot) {

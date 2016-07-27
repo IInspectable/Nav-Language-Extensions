@@ -1,6 +1,8 @@
 ﻿using Microsoft.CSharp;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language.CodeGen {
+
+    // TODO Gerne in eine andere Klasse
     static class CSharp {
 
         static readonly CSharpCodeProvider CodeProvider =new CSharpCodeProvider();

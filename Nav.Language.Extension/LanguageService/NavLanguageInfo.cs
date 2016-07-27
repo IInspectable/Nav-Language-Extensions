@@ -12,16 +12,17 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
     [Guid(GuidList.NavLanguage)]
     public class NavLanguageInfo : IVsLanguageInfo {
 
-        // ReSharper disable once NotAccessedField.Local
-        private readonly IServiceContainer _serviceContainer;
+        readonly IServiceContainer _serviceContainer;
 
         public NavLanguageInfo(IServiceContainer serviceContainer) {
             _serviceContainer = serviceContainer;
         }
         
         public int GetCodeWindowManager(IVsCodeWindow pCodeWin, out IVsCodeWindowManager ppCodeWinMgr) {
-            ppCodeWinMgr = null;
-            return VSConstants.E_NOTIMPL;
+
+            ppCodeWinMgr = new CodeWindowManager(pCodeWin, _serviceContainer);
+            
+            return VSConstants.S_OK;
         }
 
         public int GetColorizer(IVsTextLines pBuffer, out IVsColorizer ppColorizer) {

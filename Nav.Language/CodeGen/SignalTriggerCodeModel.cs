@@ -7,9 +7,9 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public sealed class SignalTriggerCodeGenInfo {
+    public sealed class SignalTriggerCodeModel: CodeModel {
 
-        public SignalTriggerCodeGenInfo(ISignalTriggerSymbol signalTriggerSymbol) {
+        public SignalTriggerCodeModel(ISignalTriggerSymbol signalTriggerSymbol) {
 
             if (signalTriggerSymbol == null) {
                 throw new ArgumentNullException(nameof(signalTriggerSymbol));
@@ -17,12 +17,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var task = signalTriggerSymbol.Transition.ContainingTask;
 
-            TaskCodeGenInfo        = new TaskCodeGenInfo(task);
+            TaskCodeModel        = new TaskCodeModel(task);
             TriggerLogicMethodName = $"{signalTriggerSymbol.Name}Logic";
         }
 
         [NotNull]
-        public TaskCodeGenInfo TaskCodeGenInfo { get; }
+        public TaskCodeModel TaskCodeModel { get; }
 
         [NotNull]
         public string TriggerLogicMethodName { get; }        

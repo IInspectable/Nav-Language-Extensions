@@ -3,8 +3,10 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Collections.Generic;
 using System.Threading;
+using System.Collections.Generic;
+
+using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
@@ -161,7 +163,9 @@ namespace Pharmatechnik.Nav.Language {
                 var location   = identifier.GetLocation();
                 if(location != null) {
 
-                    var taskDeclaration = new TaskDeclarationSymbol(identifier.ToString(), location, TaskDeclarationOrigin.TaskDeclaration,  _processAsIncludedFile);
+                    var syntax = _processAsIncludedFile ? null : taskDeclarationSyntax;
+
+                    var taskDeclaration = new TaskDeclarationSymbol(identifier.ToString(), location, TaskDeclarationOrigin.TaskDeclaration,  _processAsIncludedFile, syntax);
 
                     AddConnectionPoints(taskDeclaration, taskDeclarationSyntax.ConnectionPoints);
                     AddTaskDeclaration(taskDeclaration);
@@ -176,7 +180,11 @@ namespace Pharmatechnik.Nav.Language {
                 var identifier = taskDefinitionSyntax.Identifier;
                 var location   = identifier.GetLocation();
                 if(location != null) {
-                    var taskDeclaration = new TaskDeclarationSymbol(identifier.ToString(), location, TaskDeclarationOrigin.TaskDefinition, _processAsIncludedFile);
+
+                    var syntax = _processAsIncludedFile ? null : taskDefinitionSyntax;
+
+                    var taskDeclaration = new TaskDeclarationSymbol(identifier.ToString(), location, TaskDeclarationOrigin.TaskDefinition, _processAsIncludedFile, syntax);
+
                     AddConnectionPoints(taskDeclaration, taskDefinitionSyntax.NodeDeclarationBlock?.ConnectionPoints().ToList());
                     AddTaskDeclaration(taskDeclaration);
                 }

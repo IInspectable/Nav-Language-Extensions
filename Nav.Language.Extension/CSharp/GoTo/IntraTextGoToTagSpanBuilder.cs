@@ -7,6 +7,7 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
+using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
@@ -35,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var provider     = new NavTaskAnnotationLocationInfoProvider(navTaskAnnotation);
             var tag = new IntraTextGoToTag(
                 provider    : provider, 
-                imageMoniker: GoToImageMonikers.Definition,
+                imageMoniker: ImageMonikers.GoToDefinition,
                 toolTip     : ToolTipGoToTaskDefinition);
 
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
@@ -50,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var provider     = new NavInitAnnotationLocationInfoProvider(navInitAnnotation);
             var tag = new IntraTextGoToTag(
                 provider    : provider, 
-                imageMoniker: GoToImageMonikers.Definition, 
+                imageMoniker: ImageMonikers.GoToDefinition, 
                 toolTip     : ToolTipGoToInitDefinition);
 
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
@@ -65,7 +66,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var provider     = new NavExitAnnotationLocationInfoProvider(navExitAnnotation);
             var tag = new IntraTextGoToTag(
                 provider    : provider, 
-                imageMoniker: GoToImageMonikers.Definition, 
+                imageMoniker: ImageMonikers.GoToDefinition, 
                 toolTip     : ToolTipGoToExitDefinition);
 
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
@@ -80,7 +81,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var provider     = new NavTriggerAnnotationLocationInfoProvider(navTriggerAnnotation);
             var tag = new IntraTextGoToTag(
                 provider    : provider, 
-                imageMoniker: GoToImageMonikers.Definition, 
+                imageMoniker: ImageMonikers.GoToDefinition, 
                 toolTip     : ToolTipGoToTriggerDefinition);
 
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
@@ -96,7 +97,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             var provider = new NavInitCallLocationInfoProvider(_textSnapshot.TextBuffer, navInitCallAnnotation);
             var tag = new IntraTextGoToTag(
                 provider    : provider, 
-                imageMoniker: GoToImageMonikers.Declaration, 
+                imageMoniker: ImageMonikers.GoToDeclaration, 
                 toolTip     : ToolTipGoToImplementation);      
                   
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
