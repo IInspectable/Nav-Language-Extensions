@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 #endregion
 
@@ -9,12 +10,18 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class TaskDeclarationSymbol : Symbol, ITaskDeclarationSymbol {
 
-        public TaskDeclarationSymbol(string name, Location location, TaskDeclarationOrigin origin, bool isIncluded): base(name, location) {
+        public TaskDeclarationSymbol(string name, Location location, 
+                                    TaskDeclarationOrigin origin, 
+                                    bool isIncluded,
+                                    MemberDeclarationSyntax syntax): base(name, location) {
             Origin           = origin;
+            Syntax           = syntax;
             IsIncluded       = isIncluded;
             References       = new List<ITaskNodeSymbol>();
             ConnectionPoints = new SymbolCollection<ConnectionPointSymbol>();
         }
+
+        public CodeGenerationUnit CodeGenerationUnit { get; private set; }
 
         public SymbolCollection<ConnectionPointSymbol> ConnectionPoints { get; }
         public List<ITaskNodeSymbol> References { get; }
@@ -40,6 +47,8 @@ namespace Pharmatechnik.Nav.Language {
             get { return References; }
         }
 
+        [CanBeNull]
+        public MemberDeclarationSyntax Syntax { get; set; }
         public bool IsIncluded { get; }
 
         public TaskDeclarationOrigin Origin { get; }
@@ -50,6 +59,10 @@ namespace Pharmatechnik.Nav.Language {
             foreach (var symbol in ConnectionPoints) {
                 yield return symbol;
             }
+        }
+
+        internal void FinalConstruct(CodeGenerationUnit codeGenerationUnit) {
+            CodeGenerationUnit = codeGenerationUnit;
         }
     }
 }

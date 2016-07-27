@@ -4,9 +4,11 @@ using System;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.Imaging.Interop;
+
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Imaging.Interop;
+
+using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
@@ -35,10 +37,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
 
             _summaryControl = new DiagnosticSummaryControl {
                 CrispImage = {
-                    Moniker = KnownMonikers.Loading
+                    Moniker = GetImageMoniker()
                 }
             };
-            _summaryControl.MouseLeftButtonDown              += OnMouseLeftButtonDown;
+            _summaryControl.MouseLeftButtonDown    += OnMouseLeftButtonDown;
             
             _diagnosticService.DiagnosticsChanging += OnDiagnosticsChanging;
             _diagnosticService.DiagnosticsChanged  += OnDiagnosticsChanged;
@@ -180,7 +182,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
         ImageMoniker GetImageMoniker() {
 
             if(_diagnosticService.WaitingForAnalysis) {
-                return KnownMonikers.Loading;
+                return ImageMonikers.WaitingForAnalysis;
             }
 
             var severity = _diagnosticService.WorstSeverity;
@@ -191,11 +193,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
             switch (severity) {
                 default:
                 case DiagnosticSeverity.Suggestion:
-                    return KnownMonikers.StatusOK;
+                    return ImageMonikers.AnalysisOK;
                 case DiagnosticSeverity.Warning:
-                    return KnownMonikers.StatusWarning;
+                    return ImageMonikers.AnalysisWarning;
                 case DiagnosticSeverity.Error:
-                    return KnownMonikers.StatusError;               
+                    return ImageMonikers.AnalysisError;               
             }
         }       
     }

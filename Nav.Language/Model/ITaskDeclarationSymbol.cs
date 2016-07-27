@@ -13,6 +13,20 @@ namespace Pharmatechnik.Nav.Language {
     }
     public interface ITaskDeclarationSymbol : ISymbol {
 
+        /// <summary>
+        /// Ist nur dann null, wenn IsIncluded true, da wir keine Syntaxbäume von anderen nav-Dateien 
+        /// im Speicher halten wollen.
+        /// </summary>
+        [CanBeNull]
+        MemberDeclarationSyntax Syntax { get; }
+
+        /// <summary>
+        /// Ist nur dann null, wenn IsIncluded true, da wir keine Syntaxbäume von anderen nav-Dateien 
+        /// im Speicher halten wollen.
+        /// </summary>
+        [CanBeNull]
+        CodeGenerationUnit CodeGenerationUnit { get; }
+
         [NotNull]
         IReadOnlySymbolCollection<IConnectionPointSymbol> ConnectionPoints { get; }
 

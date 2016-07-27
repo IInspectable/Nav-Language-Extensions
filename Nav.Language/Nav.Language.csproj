@@ -44,6 +44,10 @@
       <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net45\Antlr4.Runtime.net45.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Antlr4.StringTemplate, Version=4.0.6.9004, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.StringTemplate.4.0.6.9004\lib\net35\Antlr4.StringTemplate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.1.4.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.1.4\lib\net20\JetBrains.Annotations.dll</HintPath>
       <Private>True</Private>
@@ -63,10 +67,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
-    <Compile Include="CodeGen\SignalTriggerCodeGenInfo.cs" />
-    <Compile Include="CodeGen\TaskBeginCodeGenInfo.cs" />
-    <Compile Include="CodeGen\TaskCodeGenInfo.cs" />
-    <Compile Include="CodeGen\TaskExitCodeGenInfo.cs" />
+    <Compile Include="CodeGen\BeginWfsCodeModel.cs" />
+    <Compile Include="CodeGen\CodeGenerationOptions.cs" />
+    <Compile Include="CodeGen\CodeGenerationResult.cs" />
+    <Compile Include="CodeGen\CodeGenerator.cs" />
+    <Compile Include="CodeGen\CodeModel.cs" />
+    <Compile Include="CodeGen\SignalTriggerCodeModel.cs" />
+    <Compile Include="CodeGen\TaskBeginCodeModel.cs" />
+    <Compile Include="CodeGen\TaskCodeModel.cs" />
+    <Compile Include="CodeGen\TaskDeclarationCodeModel.cs" />
+    <Compile Include="CodeGen\TaskExitCodeModel.cs" />
     <Compile Include="Common\TextLineExtent.cs" />
     <Compile Include="Common\LinePosition.cs" />
     <Compile Include="Common\LinePositionExtent.cs" />
@@ -79,7 +89,7 @@
     <Compile Include="Diagnostic\DiagnosticSeverity.cs" />
     <Compile Include="Model\ConnectionPointReferenceSymbol.cs" />
     <Compile Include="Model\ConnectionPointSymbol.cs" />
-    <Compile Include="Model\CSharp.cs" />
+    <Compile Include="CodeGen\CSharp.cs" />
     <Compile Include="Model\EdgeModeSymbol.cs" />
     <Compile Include="Model\ExitTransition.cs" />
     <Compile Include="Model\Generated\SymbolVisitor.Generated.cs">
@@ -116,6 +126,11 @@
     <Compile Include="Model\TaskDeclarationSymbolBuilder.cs" />
     <Compile Include="Model\TaskDefinitionSymbol.cs" />
     <Compile Include="Model\TriggerSymbol.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Syntax\CodeSyntax.cs" />
     <Compile Include="Diagnostic\DiagnosticDescriptor.cs" />
     <Compile Include="Syntax\Generated\SyntaxNodeWalker.Generated.cs">
@@ -203,6 +218,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagnostic\DiagnosticDescriptors.DeadCode.cs" />
+    <None Include="CodeGen\Templates\IBeginWFS.stg" />
     <None Include="Grammar\NavTokens.g4" />
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
@@ -245,6 +261,12 @@
       <LastGenOutput>SymbolVisitor.Generated.cs</LastGenOutput>
     </Content>
     <None Include="Model\_Missing Diagnostics.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="UpdateProductVersion.targets" />

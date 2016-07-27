@@ -2,14 +2,13 @@
 
 using System.Linq;
 
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
-using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
@@ -35,7 +34,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 LocationInfo.FromLocation(
                     location    : includeSymbol.FileLocation, 
                     displayName : includeSymbol.FileName, 
-                    imageMoniker: SymbolImageMonikers.Include));
+                    imageMoniker: ImageMonikers.Include));
         }
 
         public override TagSpan<GoToTag> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
@@ -44,12 +43,24 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
 
-            var info     = new TaskCodeGenInfo(taskDefinitionSymbol);
-            var provider = new TaskDeclarationLocationInfoProvider(_textBuffer, info);
+            var codeModel = new TaskCodeModel(taskDefinitionSymbol);
+            var provider  = new TaskDeclarationLocationInfoProvider(_textBuffer, codeModel);
             
             return CreateTagSpan(taskDefinitionSymbol.Location, provider);
         }
-        
+
+        public override TagSpan<GoToTag> VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
+
+            if (taskDeclarationSymbol.IsIncluded || taskDeclarationSymbol.Origin==TaskDeclarationOrigin.TaskDefinition) {
+                return null;
+            }
+
+            var codeModel = new TaskDeclarationCodeModel(taskDeclarationSymbol);
+            var provider  = new TaskIBeginInterfaceDeclarationLocationInfoProvider(_textBuffer, codeModel);
+
+            return CreateTagSpan(taskDeclarationSymbol.Location, provider);
+        }
+
         public override TagSpan<GoToTag> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
 
             if (taskNodeSymbol.Declaration == null) {
@@ -60,7 +71,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 LocationInfo.FromLocation(
                     location    : taskNodeSymbol.Declaration.Location, 
                     displayName : $"Task {taskNodeSymbol.Declaration.Name}", 
-                    imageMoniker: SymbolImageMonikers.TaskDefinition));
+                    imageMoniker: ImageMonikers.TaskDefinition));
         }
 
         public override TagSpan<GoToTag> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
@@ -73,7 +84,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 LocationInfo.FromLocation(
                     location    : nodeReferenceSymbol.Declaration.Location, 
                     displayName : "Node Declaration", 
-                    imageMoniker: KnownMonikers.GoToReference));
+                    imageMoniker: ImageMonikers.GoToNodeDeclaration));
 
             var nodeTagSpan = Visit(nodeReferenceSymbol.Declaration);
             if(nodeTagSpan!=null && nodeTagSpan.Tag.Provider.Any()) {
@@ -90,15 +101,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             }
 
             // GoTo Exit Declaration
-            var info     = new TaskExitCodeGenInfo(connectionPointReferenceSymbol);
-            var provider = new TaskExitDeclarationLocationInfoProvider(_textBuffer, info);
-            var tagSpan  = CreateTagSpan(connectionPointReferenceSymbol.Location, provider);
+            var codeModel = new TaskExitCodeModel(connectionPointReferenceSymbol);
+            var provider  = new TaskExitDeclarationLocationInfoProvider(_textBuffer, codeModel);
+            var tagSpan   = CreateTagSpan(connectionPointReferenceSymbol.Location, provider);
 
             // GoTo Exit Definition
             var defProvider = new SimpleLocationInfoProvider(LocationInfo.FromLocation(
                 connectionPointReferenceSymbol.Declaration.Location,
                 $"Exit {connectionPointReferenceSymbol.Name}",
-                SymbolImageMonikers.ExitConnectionPoint));
+                ImageMonikers.ExitConnectionPoint));
 
             tagSpan.Tag.Provider.Add(defProvider);
 
@@ -107,16 +118,16 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public override TagSpan<GoToTag> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
 
-            var info     = new TaskBeginCodeGenInfo(initNodeSymbol);
-            var provider = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, info);
+            var codeModel = new TaskBeginCodeModel(initNodeSymbol);
+            var provider  = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(initNodeSymbol.Location, provider);
         }
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
-            var info     = new SignalTriggerCodeGenInfo(signalTriggerSymbol);
-            var provider = new TriggerDeclarationLocationInfoProvider(_textBuffer, info);
+            var codeModel = new SignalTriggerCodeModel(signalTriggerSymbol);
+            var provider  = new TriggerDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(signalTriggerSymbol.Location, provider);
         }

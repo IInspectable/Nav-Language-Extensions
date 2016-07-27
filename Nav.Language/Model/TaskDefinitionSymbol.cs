@@ -9,11 +9,11 @@ namespace Pharmatechnik.Nav.Language {
                                     Location location, 
                                     TaskDefinitionSyntax syntax, 
                                     TaskDeclarationSymbol taskDeclaration) : base(name, location) {
-            Syntax           = syntax;
-            AsTaskDeclaration  = taskDeclaration;
-            NodeDeclarations = new SymbolCollection<INodeSymbol>();
-            Transitions      = new List<Transition>();
-            ExitTransitions  = new List<ExitTransition>();
+            Syntax            = syntax;
+            AsTaskDeclaration = taskDeclaration;
+            NodeDeclarations  = new SymbolCollection<INodeSymbol>();
+            Transitions       = new List<Transition>();
+            ExitTransitions   = new List<ExitTransition>();
         }
 
         public TaskDefinitionSyntax Syntax { get; }
@@ -21,7 +21,8 @@ namespace Pharmatechnik.Nav.Language {
         public SymbolCollection<INodeSymbol> NodeDeclarations { get; }
         public List<Transition> Transitions { get; }
         public List<ExitTransition> ExitTransitions { get; }
-        
+        public CodeGenerationUnit CodeGenerationUnit { get; private set; }
+
         IReadOnlySymbolCollection<INodeSymbol> ITaskDefinitionSymbol.NodeDeclarations {
             get { return NodeDeclarations; }
         }
@@ -49,6 +50,10 @@ namespace Pharmatechnik.Nav.Language {
             foreach (var symbol in ExitTransitions.SelectMany(et => et.Symbols())) {
                 yield return symbol;
             }
+        }
+
+        internal void FinalConstruct(CodeGenerationUnit codeGenerationUnit) {
+            CodeGenerationUnit = codeGenerationUnit;
         }
     }    
 }

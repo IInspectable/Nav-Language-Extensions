@@ -36,7 +36,7 @@ taskDeclaration
     ;
 
 taskDefinition: TaskKeyword Identifier
-        codeDeclaration       ?
+        codeDeclaration           ?
         codeBaseDeclaration       ?
         codeGenerateToDeclaration ?
         codeParamsDeclaration     ?

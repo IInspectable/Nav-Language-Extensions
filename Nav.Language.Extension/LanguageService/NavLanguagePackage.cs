@@ -3,6 +3,7 @@
 using System;
 
 using System.IO;
+using System.Drawing;
 using System.ComponentModel.Design;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
@@ -23,6 +24,8 @@ using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Utilities.Logging;
+
+using Control = System.Windows.Controls.Control;
 
 #endregion
 
@@ -55,7 +58,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                             ShowSmartIndent       = false,
                             DefaultToInsertSpaces = true,
                             MatchBracesAtCaret    = true,
-                            RequestStockColors    = true,
+                            RequestStockColors    = true,       
                             ShowDropDownOptions   = false)]
     [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageInfo), NavLanguageContentDefinitions.FileExtension)]
@@ -114,6 +117,22 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                 var workspace = componentModel.GetService<VisualStudioWorkspace>();
                 return workspace;
             }
+        }
+
+        /// <summary>
+        /// 1. Moves the caret to the specified index in the current snapshot.  
+        /// 2. Updates the viewport so that the caret will be centered.
+        /// 3. Moves focus to the text view to ensure the user can continue typing.
+        /// </summary>
+        public static void NavigateToLocation(ITextView textView, int location) {
+
+            var bufferPosition = new SnapshotPoint(textView.TextBuffer.CurrentSnapshot, location);
+
+            textView.Caret.MoveTo(bufferPosition);
+            textView.ViewScroller.EnsureSpanVisible(new SnapshotSpan(bufferPosition, 1), EnsureSpanVisibleOptions.AlwaysCenter);
+
+            // ReSharper disable once SuspiciousTypeConversion.Global 
+            (textView as Control)?.Focus();
         }
 
         [CanBeNull]
@@ -256,7 +275,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                         return null;
                     }
 
-                    var model          = (IComponentModel) Package.GetGlobalService(typeof(SComponentModel));
+                    var model          = (IComponentModel) GetGlobalService(typeof(SComponentModel));
                     var adapterFactory = model.GetService<IVsEditorAdaptersFactoryService>();
                     var wpfTextView    = adapterFactory.GetWpfTextView(textView);
                     return wpfTextView;
@@ -273,25 +292,67 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             }
         }
 
-        public static BitmapSource GetImage(ImageMoniker moniker) {
+        public static BitmapSource GetBitmapSource(ImageMoniker moniker, Color? backgroundColor = null) {
 
-            var imageService = GetGlobalService<SVsImageService, IVsImageService2>();
-
-            ImageAttributes imageAttributes = new ImageAttributes {
-                StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
-                Flags         = (uint) _ImageAttributesFlags.IAF_RequiredFlags,
-                ImageType     = (uint) _UIImageType.IT_Bitmap,
-                Format        = (uint) _UIDataFormat.DF_WPF,
-                LogicalHeight = 16,
-                LogicalWidth  = 16
-            };
-
-            IVsUIObject result = imageService?.GetImage(moniker, imageAttributes);
+            var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WPF, backgroundColor);
+            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
+            var result          = imageService?.GetImage(moniker, imageAttributes);
 
             object data =null;
             result?.get_Data(out data);
-
             return data as BitmapSource;
+        }
+
+        public static Bitmap GetBitmap(ImageMoniker moniker, Color? backgroundColor=null) {
+            
+            var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WinForms, backgroundColor);
+            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
+            var result          = imageService?.GetImage(moniker, imageAttributes);
+
+            object data = null;
+            result?.get_Data(out data);
+            return data as Bitmap;
+        }
+
+        public static IntPtr GetImageList(ImageMoniker moniker, Color? backgroundColor = null) {
+
+            var imageAttributes = GetImageAttributes(_UIImageType.IT_ImageList, _UIDataFormat.DF_Win32, backgroundColor);
+            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
+            var result          = imageService?.GetImage(moniker, imageAttributes);
+
+            var imageListData = Microsoft.Internal.VisualStudio.PlatformUI.Utilities.GetObjectData(result) as IVsUIWin32ImageList;
+            if(imageListData == null) {
+                Logger.Warn($"{nameof(GetImageList)}: Unable to get IVsUIWin32ImageList");
+                return IntPtr.Zero;
+            }
+
+            int imageListInt;
+            if(!ErrorHandler.Succeeded(imageListData.GetHIMAGELIST(out imageListInt))) {
+                Logger.Warn($"{nameof(GetImageList)}: Unable to get HIMAGELIST");
+                return IntPtr.Zero;
+
+            }
+            return (IntPtr)imageListInt;            
+        }
+
+        static ImageAttributes GetImageAttributes(_UIImageType imageType, _UIDataFormat format, Color? backgroundColor, int width=16, int height=16) {
+
+            ImageAttributes imageAttributes = new ImageAttributes {
+                StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
+                Dpi           = 96,
+                Flags         = (uint)_ImageAttributesFlags.IAF_RequiredFlags,
+                ImageType     = (uint)imageType,
+                Format        = (uint)format,
+                LogicalHeight = height,
+                LogicalWidth  = width
+            };
+            if(backgroundColor.HasValue) {
+                unchecked {
+                    imageAttributes.Flags |= (uint)_ImageAttributesFlags.IAF_Background;
+                }
+                imageAttributes.Background = (uint)backgroundColor.Value.ToArgb();
+            }
+            return imageAttributes;
         }
     }
 }
