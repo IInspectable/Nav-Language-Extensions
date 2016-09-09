@@ -28,6 +28,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _goToLocationService = goToLocationService;
             _crispImage          = new CrispImage();
 
+            RenderOptions.SetBitmapScalingMode(_crispImage, BitmapScalingMode.NearestNeighbor);
+
             Width       = 20;
             Height      = 20;
             Background  = Brushes.Transparent;
