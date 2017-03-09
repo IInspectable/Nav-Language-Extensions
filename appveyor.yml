@@ -1,0 +1,8 @@
+version: 1.0.{build}
+configuration: Debug
+platform: Any CPU
+build:
+  verbosity: minimal
+artifacts:
+- path: Nav.Language.Extension\bin\Debug\Pharmatechnik.Nav.Language.Extension.vsix
+  name: Nav.Language.Extension
