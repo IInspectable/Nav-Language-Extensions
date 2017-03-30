@@ -1,23 +1,26 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     
-    <TemplatesRoot>$(MSBuildProjectDirectory)\ItemTemplates\$(TaskItemTemplateName)\</TemplatesRoot>
-    <TaskItemTemplateName>Task</TaskItemTemplateName>
-    <TaskItemTemplateDirectory>$(TemplatesRoot)$(TaskItemTemplateName)</TaskItemTemplateDirectory>
+    <TemplatesRoot>$(MSBuildProjectDirectory)\ItemTemplates\</TemplatesRoot>
+  
   </PropertyGroup>
 
   <ItemGroup>
     <TemplateFolders Include="$([System.IO.Directory]::GetDirectories(&quot;$(TemplatesRoot)&quot;))" />
   </ItemGroup>
   
-  <Target Name="ZipTemplates" BeforeTargets="PrepareForBuild">
+  <Target Name="ZipItemTemplates" BeforeTargets="PrepareForBuild" 
+          Inputs  = "@(TemplateFolders)" 
+          Outputs = "$(TemplatesRoot)\%(TemplateFolders.Filename).zip">
 
+    <Message Importance="high" Text="Zipping Folder for Item Template: %(TemplateFolders.FullPath)"/>
+    
     <ItemGroup>
-      <TemplateFiles Include="$(TaskItemTemplateDirectory)\*"/>
+      <TemplateFiles Include="%(TemplateFolders.FullPath)\*"/>
     </ItemGroup>
-    <Message Text="ZipTemplates:" Importance="high" />
+    
 
-    <Zip Files="@(TemplateFiles)" WorkingDirectory="$(TaskItemTemplateDirectory)" ZipFileName="$(TemplatesRoot)\$(TaskItemTemplateName).zip" />
+    <Zip Files="@(TemplateFiles)" WorkingDirectory="%(TemplateFolders.FullPath)" ZipFileName="$(TemplatesRoot)\%(TemplateFolders.Filename).zip" />
     
   </Target>
 </Project>

@@ -16,6 +16,6 @@ task $safeitemname$  [base StandardWFS<$safeitemname$TS> : IWFServiceBase]
     init [params $safeitemname$InitParams initParams];
     exit    End;
 
-    Init --> End;
+    Init --> End; // Haha
 
 }
