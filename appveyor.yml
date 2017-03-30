@@ -5,5 +5,5 @@ platform: Any CPU
 build:
   verbosity: minimal
 artifacts:
-- path: Nav.Language.Extension\bin\Debug\Pharmatechnik.Nav.Language.Extension.vsix
+- path: Nav.Language.Extension\bin\Debug\Pharmatechnik.Nav.Language.Extension.2017.vsix
   name: Nav.Language.Extension
