@@ -1,0 +1,23 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    
+    <TemplatesRoot>$(MSBuildProjectDirectory)\ItemTemplates\$(TaskItemTemplateName)\</TemplatesRoot>
+    <TaskItemTemplateName>Task</TaskItemTemplateName>
+    <TaskItemTemplateDirectory>$(TemplatesRoot)$(TaskItemTemplateName)</TaskItemTemplateDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <TemplateFolders Include="$([System.IO.Directory]::GetDirectories(&quot;$(TemplatesRoot)&quot;))" />
+  </ItemGroup>
+  
+  <Target Name="ZipTemplates" BeforeTargets="PrepareForBuild">
+
+    <ItemGroup>
+      <TemplateFiles Include="$(TaskItemTemplateDirectory)\*"/>
+    </ItemGroup>
+    <Message Text="ZipTemplates:" Importance="high" />
+
+    <Zip Files="@(TemplateFiles)" WorkingDirectory="$(TaskItemTemplateDirectory)" ZipFileName="$(TemplatesRoot)\$(TaskItemTemplateName).zip" />
+    
+  </Target>
+</Project>
