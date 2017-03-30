@@ -2,8 +2,8 @@
                     xmlns:x       = "http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:imaging = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
                     xmlns:utils   = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Utilities"
-                    xmlns:vsui    = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
-                    xmlns:local   = "clr-namespace:Pharmatechnik.Nav.Language.Extension.UI">
+                    xmlns:local   = "clr-namespace:Pharmatechnik.Nav.Language.Extension.UI"
+                    xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
 
     <utils:BrushToColorConverter x:Key="BrushToColorConverter" x:Uid="BrushToColorConverter_1" />
 
@@ -11,7 +11,7 @@
     <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}" TargetType="{x:Type local:VsMenuItem}">
         
         <Border Name="Border" 
-                TextBlock.Foreground = "{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarTextActiveBrushKey}}">
+                TextBlock.Foreground = "{DynamicResource {x:Static platformUi:EnvironmentColors.CommandBarTextActiveBrushKey}}">
             <Grid>
                 
                 <Grid.ColumnDefinitions>
@@ -25,7 +25,7 @@
                                   Margin            = "5,3,4,3"
                                   VerticalAlignment = "Center"
                                   ContentSource     = "Icon"
-                                  imaging:ImageThemingUtilities.ImageBackgroundColor="{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarMenuIconBackgroundColorKey}}"/>
+                                  imaging:ImageThemingUtilities.ImageBackgroundColor="{DynamicResource {x:Static platformUi:EnvironmentColors.CommandBarMenuIconBackgroundColorKey}}"/>
                 
                 <ContentPresenter Name                = "HeaderHost"
                                   Grid.Column         = "1"
@@ -35,7 +35,7 @@
                                   RecognizesAccessKey = "True"/>
                 <TextBlock x:Name            = "InputGestureText"
                            Grid.Column       = "2"                   
-                           Foreground        = "{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarTextInactiveBrushKey}}"
+                           Foreground        = "{DynamicResource {x:Static platformUi:EnvironmentColors.CommandBarTextInactiveBrushKey}}"
                            Text              = "{TemplateBinding InputGestureText}"
                            VerticalAlignment = "Center"
                            Margin            = "5,2,0,2"
@@ -51,14 +51,14 @@
             
             <Trigger Property="IsHighlighted" Value="true">
                 <Setter TargetName="Border" Property="Background"
-                        Value="{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarMenuItemMouseOverBrushKey}}"/>
+                        Value="{DynamicResource {x:Static platformUi:EnvironmentColors.CommandBarMenuItemMouseOverBrushKey}}"/>
 
                 <Setter TargetName="Border" Property="BorderBrush"
-                        Value="{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarMenuItemMouseOverBorderBrushKey}}"/>
+                        Value="{DynamicResource {x:Static platformUi:EnvironmentColors.CommandBarMenuItemMouseOverBorderBrushKey}}"/>
             </Trigger>
             
             <Trigger Property="IsEnabled" Value="false">
-                <Setter Property="TextBlock.Foreground" TargetName="Border" Value="{DynamicResource {x:Static vsui:EnvironmentColors.CommandBarTextInactiveBrushKey}}"/>
+                <Setter Property="TextBlock.Foreground" TargetName="Border" Value="{DynamicResource {x:Static platformUi:EnvironmentColors.CommandBarTextInactiveBrushKey}}"/>
             </Trigger>
                         
         </ControlTemplate.Triggers>
