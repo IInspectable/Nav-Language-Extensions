@@ -233,6 +233,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <Content Include="ItemTemplates\Task.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="ItemTemplates\Task\Task.nav" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
