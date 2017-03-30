@@ -551,6 +551,10 @@
       <Project>{32af2e02-a21a-4d1f-9927-09931715d057}</Project>
       <Name>Nav.Language.CodeAnalysis</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Nav.Language.HostService\Nav.Language.HostService.csproj">
+      <Project>{a40d87e9-c07e-432c-9271-058599f0dbb9}</Project>
+      <Name>Nav.Language.HostService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nav.Language\Nav.Language.csproj">
       <Project>{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}</Project>
       <Name>Nav.Language</Name>

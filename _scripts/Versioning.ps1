@@ -1,6 +1,7 @@
 ﻿
 $targetFiles=
     "$PSScriptRoot'\..\Nav.Language.Extension\UpdateProductVersion.targets",
+    "$PSScriptRoot'\..\Nav.Language.HostService\UpdateProductVersion.targets",
     "$PSScriptRoot'\..\Nav.Language.CodeAnalysis\UpdateProductVersion.targets",
     "$PSScriptRoot'\..\Nav.Language\UpdateProductVersion.targets",
     "$PSScriptRoot'\..\Nav.Utilities\UpdateProductVersion.targets"
