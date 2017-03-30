@@ -2,13 +2,13 @@
   <TemplateData>
     <DefaultName>Task.nav</DefaultName>
     <Name>Nav File</Name>
-    <Description>Description</Description>
+    <Description>An empty nav workflow definition file</Description>
     <ProjectType>CSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>__TemplateIcon.ico</Icon>
   </TemplateData>
   <TemplateContent>
     <References />
-    <ProjectItem SubType="" TargetFileName="$fileinputname$.nav" ReplaceParameters="false">Task.nav</ProjectItem>
+    <ProjectItem SubType="" TargetFileName="$fileinputname$.nav" ReplaceParameters="true">Task.nav</ProjectItem>
   </TemplateContent>
 </VSTemplate>
