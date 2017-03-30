@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26206.0
+VisualStudioVersion = 15.0.26228.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language", "Nav.Language\Nav.Language.csproj", "{C38F8EE6-5DC6-40F3-8994-A33069B05FD8}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.CodeAnalysis", "Nav.Language.CodeAnalysis\Nav.Language.CodeAnalysis.csproj", "{32AF2E02-A21A-4D1F-9927-09931715D057}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Utilities", "Nav.Utilities\Nav.Utilities.csproj", "{AA0629B3-AF39-4049-9723-7989EC93B0A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.HostService", "Nav.Language.HostService\Nav.Language.HostService.csproj", "{A40D87E9-C07E-432C-9271-058599F0DBB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A40D87E9-C07E-432C-9271-058599F0DBB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A40D87E9-C07E-432C-9271-058599F0DBB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A40D87E9-C07E-432C-9271-058599F0DBB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A40D87E9-C07E-432C-9271-058599F0DBB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
