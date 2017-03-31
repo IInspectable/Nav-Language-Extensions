@@ -1,7 +1,5 @@
 ﻿namespace Nav.Language.ServiceHost {
 
-    static partial class ThisAssembly {
-
-        
+    static partial class ThisAssembly {  
     }
 }
