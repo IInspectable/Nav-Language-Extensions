@@ -1,18 +1,27 @@
-﻿using System;
-using System.Diagnostics;
+﻿#region Using Directives
+
+using System;
 using System.Linq;
+using System.Diagnostics;
 using System.Reflection;
+
 using Fclp;
+
+using Pharmatechnik.Nav.Utilities.Logging;
+
+#endregion
 
 namespace Nav.Language.Service {
 
     class CommandLineParamAttribute : Attribute {
     }
 
-    public class ServiceConnectionArgs {
+    public class ServiceConnectionParams {
 
-        public ServiceConnectionArgs() {
-            HostUri = new Uri("net.pipe://localhost/");
+        static readonly Logger Logger = Logger.Create<ServiceConnectionParams>();
+
+        public ServiceConnectionParams() {
+            HostUri    = new Uri("net.pipe://localhost/");
             EndpointId = Guid.Empty.ToString();
         }
 
@@ -20,7 +29,7 @@ namespace Nav.Language.Service {
         public string EndpointId { get; private set; }
 
         [CommandLineParam]
-        public int OwnerProcessId { get; private set; }
+        public int ParentProcessId { get; private set; }
 
         public string ReadyEventName {
             get { return EndpointId; }
@@ -40,30 +49,32 @@ namespace Nav.Language.Service {
             get { return new Uri(HostUri, EndpointId + "/" + AutoCompletionAddress); }
         }
 
-        public const long BindingMaxReceivedMessageSize = 10000000;
+        public long BindingMaxReceivedMessageSize {
+            get { return 10000000; }
+        }
 
-        public static ServiceConnectionArgs CreateNew() {
-            var sca = new ServiceConnectionArgs {
-                OwnerProcessId = Process.GetCurrentProcess().Id,
+        public static ServiceConnectionParams CreateNew() {
+            var sca = new ServiceConnectionParams {
+                ParentProcessId = Process.GetCurrentProcess().Id,
                 EndpointId = Guid.NewGuid().ToString(),
             };
 
             return sca;
         }
 
-        public static ServiceConnectionArgs FromCommandLine(string[] commandline) {
+        public static ServiceConnectionParams FromCommandLine(string[] commandline) {
 
-            var clp = new FluentCommandLineParser<ServiceConnectionArgs>();
-            clp.Setup(i => i.OwnerProcessId).As(nameof(OwnerProcessId)).Required();
+            var clp = new FluentCommandLineParser<ServiceConnectionParams>();
+            clp.Setup(i => i.ParentProcessId).As(nameof(ParentProcessId)).Required();
             clp.Setup(i => i.EndpointId).As(nameof(EndpointId)).Required();
 
             var result = clp.Parse(commandline);
             if (result.HasErrors) {
-                Console.WriteLine(result.ErrorText);
+                Logger.Error($"Unable to parse command line:\n{result.ErrorText}");
                 return null;
             }
 
-            ServiceConnectionArgs cla = clp.Object;
+            ServiceConnectionParams cla = clp.Object;
 
             return cla;
         }
@@ -73,10 +84,9 @@ namespace Nav.Language.Service {
             return string.Join(" ", GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(p => p.GetCustomAttribute<CommandLineParamAttribute>() != null)
                 .Select(property => {
-
-                    var name = property.Name;
+                    var name  = property.Name;
                     var value = property.GetValue(this).ToString();
-                    var arg = $"--{name} {value}";
+                    var arg   = $"--{name} {value}";
                     return arg;
                 }));
         }

@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceConnectionArgs.cs" />
+    <Compile Include="ServiceConnectionParams.cs" />
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
   </ItemGroup>
@@ -60,6 +60,10 @@
     <ProjectReference Include="..\Nav.Language\Nav.Language.csproj">
       <Project>{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}</Project>
       <Name>Nav.Language</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj">
+      <Project>{aa0629b3-af39-4049-9723-7989ec93b0a4}</Project>
+      <Name>Nav.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
