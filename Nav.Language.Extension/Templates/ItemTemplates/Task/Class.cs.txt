@@ -1,0 +1,4 @@
+﻿namespace $rootnamespace$.WFL {
+    public class $safeitemname$ {
+    }
+}

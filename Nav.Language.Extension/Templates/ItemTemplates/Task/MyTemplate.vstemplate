@@ -1,8 +1,8 @@
 <VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Item">
   <TemplateData>
     <DefaultName>Task.nav</DefaultName>
-    <Name>Nav File</Name>
-    <Description>An empty nav workflow definition file</Description>
+    <Name>Workflow Definition (.nav)</Name>
+    <Description>An empty workflow definition</Description>
     <ProjectType>CSharp</ProjectType>
     <SortOrder>10</SortOrder>
     <Icon>__TemplateIcon.ico</Icon>
@@ -10,5 +10,13 @@
   <TemplateContent>
     <References />
     <ProjectItem SubType="" TargetFileName="$fileinputname$.nav" ReplaceParameters="true">Task.nav</ProjectItem>
+    <ProjectItem SubType="Code" TargetFileName="WFL\$fileinputname$TS.cs" ReplaceParameters="true">Class.cs.txt</ProjectItem>
+    <ProjectItem SubType="Code" TargetFileName="WFL\$fileinputname$Result.cs" ReplaceParameters="true">Class.cs.txt</ProjectItem>
+    <ProjectItem SubType="Code" TargetFileName="WFL\$fileinputname$InitParams.cs" ReplaceParameters="true">Class.cs.txt</ProjectItem>
+    
+    <ProjectItem SubType="Code" TargetFileName="WFL\$fileinputname$WFS.cs" ReplaceParameters="false">Empty.cs.txt</ProjectItem>
+    <ProjectItem SubType="Code" TargetFileName="WFL\generated\IBegin$fileinputname$WFS.generated.cs" ReplaceParameters="false">Empty.cs.txt</ProjectItem>
+    <ProjectItem SubType="Code" TargetFileName="WFL\generated\$fileinputname$WFSBase.generated.cs" ReplaceParameters="false">Empty.cs.txt</ProjectItem>
+    <ProjectItem SubType="Code" TargetFileName="IWFL\generated\I$fileinputname$WFS.generated.cs" ReplaceParameters="false">Empty.cs.txt</ProjectItem>
   </TemplateContent>
 </VSTemplate>
