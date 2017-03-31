@@ -81,6 +81,16 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nav.Language.Service\Nav.Language.Service.csproj">
+      <Project>{0e07ed6f-4fc9-47da-96c3-bcd06d583bc9}</Project>
+      <Name>Nav.Language.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Nav.Language\Nav.Language.csproj">
+      <Project>{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}</Project>
+      <Name>Nav.Language</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="UpdateProductVersion.targets" />
 </Project>
