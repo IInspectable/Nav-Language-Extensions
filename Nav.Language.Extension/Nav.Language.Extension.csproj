@@ -218,6 +218,8 @@
     <Compile Include="SemanticModelService\SemanticModelServiceDependent.cs" />
     <Compile Include="SemanticModelService\SemanticModelResult.cs" />
     <Compile Include="SemanticModelService\SemanticModelService.cs" />
+    <None Include="Templates\ItemTemplates\Task\Class.cs.txt" />
+    <None Include="Templates\ItemTemplates\Task\Empty.cs.txt" />
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
     <Compile Include="UI\VsContextMenu.cs" />

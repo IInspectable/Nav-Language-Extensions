@@ -3,16 +3,13 @@
 [using Pharmatechnik.Apotheke.XTplus.Common.IWFL]
 [using Pharmatechnik.Apotheke.XTplus.Common.WFL]
 
-// taskref "MessageBoxes.nav";
-
 task $safeitemname$  [base StandardWFS<$safeitemname$TS> : IWFServiceBase]
-                     [params /*TODO Add constructor injections*/]
-                     [result bool]
+    [params /*TODO Add constructor injections*/]
+    [result $safeitemname$Result]
 {
 
     init [params $safeitemname$InitParams initParams];
     exit    End;
 
     Init --> End;
-
 }
