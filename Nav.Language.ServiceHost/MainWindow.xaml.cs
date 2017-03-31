@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Nav.Language.HostService {
+namespace Nav.Language.ServiceHost {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
