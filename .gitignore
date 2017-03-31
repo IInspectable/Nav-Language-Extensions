@@ -15,6 +15,9 @@
 /Nav.Language.Extension/obj/Debug
 /Nav.Language.Extension/ThisAssembly.generated.cs
 /Nav.Language.Extension/Templates/ItemTemplates/*.zip
+/Nav.Language.Service/bin/Debug
+/Nav.Language.Service/obj/Debug
+/Nav.Language.Service/ThisAssembly.generated.cs
 /Nav.Language.ServiceHost/bin/Debug
 /Nav.Language.ServiceHost/obj/Debug
 /Nav.Language.ServiceHost/ThisAssembly.generated.cs
