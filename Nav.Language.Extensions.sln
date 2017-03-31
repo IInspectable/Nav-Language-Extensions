@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.CodeAnalysis",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Utilities", "Nav.Utilities\Nav.Utilities.csproj", "{AA0629B3-AF39-4049-9723-7989EC93B0A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.HostService", "Nav.Language.HostService\Nav.Language.HostService.csproj", "{A40D87E9-C07E-432C-9271-058599F0DBB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.ServiceHost", "Nav.Language.ServiceHost\Nav.Language.ServiceHost.csproj", "{A40D87E9-C07E-432C-9271-058599F0DBB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
