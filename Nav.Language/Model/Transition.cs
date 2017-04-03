@@ -6,27 +6,26 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed class Transition : ITransition {
 
-        internal Transition(ITaskDefinitionSymbol containingTask, 
-                            TransitionDefinitionSyntax syntax, 
+        internal Transition(TransitionDefinitionSyntax syntax, 
+                            ITaskDefinitionSymbol containingTask, 
                             NodeReferenceSymbol source, 
                             EdgeModeSymbol edgeMode, 
                             NodeReferenceSymbol target, 
                             SymbolCollection<TriggerSymbol> triggers)  {
 
+            if (syntax == null) {
+                throw new ArgumentNullException(nameof(syntax));
+            }        
             if (containingTask == null) {
                 throw new ArgumentNullException(nameof(containingTask));
             }
-
-            if (syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }
-
+            
             ContainingTask = containingTask;
-            Syntax   = syntax;
-            Source   = source;
-            EdgeMode = edgeMode;
-            Target   = target;
-            Triggers = triggers??new SymbolCollection<TriggerSymbol>();
+            Syntax         = syntax;
+            Source         = source;
+            EdgeMode       = edgeMode;
+            Target         = target;
+            Triggers       = triggers??new SymbolCollection<TriggerSymbol>();
 
             foreach (var trigger in Triggers) {
                 trigger.Transition = this;
