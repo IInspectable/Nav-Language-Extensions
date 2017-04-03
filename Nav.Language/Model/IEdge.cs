@@ -6,6 +6,9 @@ namespace Pharmatechnik.Nav.Language {
     public interface IEdge {
 
         [NotNull]
+        ITaskDefinitionSymbol ContainingTask { get; }
+
+        [NotNull]
         Location Location { get; }
 
         [CanBeNull]

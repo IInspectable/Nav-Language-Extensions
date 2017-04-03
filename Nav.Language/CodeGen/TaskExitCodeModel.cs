@@ -16,7 +16,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var exitTransition = connectionPointReferenceSymbol.ExitTransition;
-            var task = exitTransition.TaskDefinition;
+            var task = exitTransition.ContainingTask;
 
             TaskCodeModel = new TaskCodeModel(task);
             AfterLogicMethodName = $"After{exitTransition.Source?.Name}Logic";
