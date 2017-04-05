@@ -82,6 +82,13 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommentUncommentSelectionCommandHandler.cs" />
+    <Compile Include="Commands\UncommentSelectionCommandArgs.cs" />
+    <Compile Include="Commands\CommentSelectionCommandArgs.cs" />
+    <Compile Include="Commands\Extensibility\ExportCommandHandlerAttribute.cs" />
+    <Compile Include="Commands\Extensibility\CommandArgs.cs" />
+    <Compile Include="Commands\Extensibility\CommandState.cs" />
+    <Compile Include="Commands\Extensibility\ICommandHandler.cs" />
     <Compile Include="Common\ComEventSink.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
     <Compile Include="Images\ImageMonikerImageList.cs" />
