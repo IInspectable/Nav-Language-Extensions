@@ -83,6 +83,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commands\CommentUncommentSelectionCommandHandler.cs" />
+    <Compile Include="Commands\Extensibility\CommandHandlerMetadata.cs" />
+    <Compile Include="Commands\Extensibility\CommandHandlerService.cs" />
+    <Compile Include="Commands\Extensibility\CommandHandlerServiceProvider.cs" />
     <Compile Include="Commands\UncommentSelectionCommandArgs.cs" />
     <Compile Include="Commands\CommentSelectionCommandArgs.cs" />
     <Compile Include="Commands\Extensibility\ExportCommandHandlerAttribute.cs" />
@@ -90,6 +93,9 @@
     <Compile Include="Commands\Extensibility\CommandState.cs" />
     <Compile Include="Commands\Extensibility\ICommandHandler.cs" />
     <Compile Include="Common\ComEventSink.cs" />
+    <Compile Include="Common\ContentTypeExtensions.cs" />
+    <Compile Include="Common\DictionaryExtensions.cs" />
+    <Compile Include="Common\TextViewExtensions.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
     <Compile Include="Images\ImageMonikerImageList.cs" />
     <Compile Include="Common\ServiceProviderExtensions.cs" />
