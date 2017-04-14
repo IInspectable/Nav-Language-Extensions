@@ -35,12 +35,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         /// </summary>
         #endregion
         public static int? GetLastNonWhitespacePosition(this ITextSnapshotLine line) {
-            int startPosition = line.Start;
-            var text = line.ToString();
 
-            for(int i = text.Length - 1; i >= 0; i--) {
-                if(!char.IsWhiteSpace(text[i])) {
-                    return startPosition + i;
+            var text = line.GetText();
+
+            for (int i = text.Length - 1; i >= 0; i--) {
+                if (!char.IsWhiteSpace(text[i])) {
+                    return line.Start + i;
                 }
             }
 
