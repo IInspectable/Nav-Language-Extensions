@@ -1,21 +1,24 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
+
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 
-using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
+
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
+    // TODO Code Review
     [ExportCommandHandler("Comment Selection Command Handler", NavLanguageContentDefinitions.ContentType)]
     class CommentUncommentSelectionCommandHandler :
         ICommandHandler<CommentSelectionCommandArgs>,
@@ -33,8 +36,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         public CommandState GetCommandState(CommentSelectionCommandArgs args, Func<CommandState> nextHandler) {
-            // TODO Implement GetCommandState
-            return CommandState.Available;
+            if(args.SubjectBuffer.CheckEditAccess()) {
+                return CommandState.Available;
+            }
+            return nextHandler();
         }
 
         public void ExecuteCommand(CommentSelectionCommandArgs args, Action nextHandler) {
@@ -42,8 +47,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         public CommandState GetCommandState(UncommentSelectionCommandArgs args, Func<CommandState> nextHandler) {
-            // TODO Implement GetCommandState
-            return CommandState.Available;
+            if(args.SubjectBuffer.CheckEditAccess()) {
+                return CommandState.Available;
+            }
+            return nextHandler();
         }
 
         public void ExecuteCommand(UncommentSelectionCommandArgs args, Action nextHandler) {
@@ -84,6 +91,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         void CommentSpan(SnapshotSpan span, ITextEdit textEdit, List<ITrackingSpan> spansToSelect) {
             var firstAndLastLine = DetermineFirstAndLastLine(span);
+            
             // Keine Selection, und in die ganze Zeile ist leer
             if (span.IsEmpty && firstAndLastLine.Item1.IsEmptyOrWhitespace()) {
                 return;
@@ -99,20 +107,25 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var insertPosition = firstNonWhitespaceOnLine ?? firstAndLastLine.Item1.Start;
 
                 // If there isn't a selection, we select the whole line
+                textEdit.Insert(insertPosition, SingleLineCommentString);
+
                 spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(firstAndLastLine.Item1.Start, firstAndLastLine.Item1.End), SpanTrackingMode.EdgeInclusive));
-                InsertText(textEdit, insertPosition, SingleLineCommentString);
             } else {
                 // Partielle Selektion innerhalb einer Zeile
                 if (!SpanIncludesAllTextOnIncludedLines(span) &&
-                   firstAndLastLine.Item1.LineNumber == firstAndLastLine.Item2.LineNumber) {
+                     firstAndLastLine.Item1.LineNumber == firstAndLastLine.Item2.LineNumber) {
+
+                    textEdit.Insert(span.Start, BlockCommentStartString);
+                    textEdit.Insert(span.End,   BlockCommentEndString);
+
                     spansToSelect.Add(span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive));
-                    InsertText(textEdit, span.Start, BlockCommentStartString);
-                    InsertText(textEdit, span.End, BlockCommentEndString);
+
                 } else {
                     // Select the entirety of the lines, so that another comment operation will add more comments, not insert block comments.
-                    spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(firstAndLastLine.Item1.Start.Position, firstAndLastLine.Item2.End.Position), SpanTrackingMode.EdgeInclusive));
                     var indentToCommentAt = DetermineSmallestIndent(span, firstAndLastLine);
                     ApplyCommentToNonBlankLines(textEdit, firstAndLastLine, indentToCommentAt);
+
+                    spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(firstAndLastLine.Item1.Start.Position, firstAndLastLine.Item2.End.Position), SpanTrackingMode.EdgeInclusive));
                 }
             }
         }
@@ -120,13 +133,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         bool TryUncommentSingleLineComments(SnapshotSpan span, ITextEdit textEdit, List<ITrackingSpan> spansToSelect) {
             // First see if we're selecting any lines that have the single-line comment prefix.
             // If so, then we'll just remove the single-line comment prefix from those lines.
-            bool textChanges = false;
+            bool textChanges     = false;
             var firstAndLastLine = DetermineFirstAndLastLine(span);
+
             for (int lineNumber = firstAndLastLine.Item1.LineNumber; lineNumber <= firstAndLastLine.Item2.LineNumber; ++lineNumber) {
-                var line = span.Snapshot.GetLineFromLineNumber(lineNumber);
+
+                var line     = span.Snapshot.GetLineFromLineNumber(lineNumber);
                 var lineText = line.GetText();
+
                 if (lineText.Trim().StartsWith(SingleLineCommentString, StringComparison.Ordinal)) {
-                    DeleteText(textEdit, new Span(line.Start.Position + lineText.IndexOf(SingleLineCommentString, StringComparison.Ordinal), SingleLineCommentString.Length));
+                    textEdit.Delete(new Span(line.Start.Position + lineText.IndexOf(SingleLineCommentString, StringComparison.Ordinal), SingleLineCommentString.Length));
                     textChanges = true;
                 }
             }
@@ -137,8 +153,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 return false;
             }
 
-            spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(firstAndLastLine.Item1.Start.Position,
-                    firstAndLastLine.Item2.End.Position),
+            spansToSelect.Add(span.Snapshot.CreateTrackingSpan(
+                Span.FromBounds(firstAndLastLine.Item1.Start.Position, firstAndLastLine.Item2.End.Position),
                 SpanTrackingMode.EdgeExclusive));
 
             return true;
@@ -178,9 +194,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 return;
             }
 
+            textEdit.Delete(new Span(positionOfStart, BlockCommentStartString.Length));
+            textEdit.Delete(new Span(positionOfEnd,   BlockCommentEndString.Length));
+
             spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(positionOfStart, positionOfEnd + BlockCommentEndString.Length), SpanTrackingMode.EdgeExclusive));
-            DeleteText(textEdit, new Span(positionOfStart, BlockCommentStartString.Length));
-            DeleteText(textEdit, new Span(positionOfEnd, BlockCommentEndString.Length));
         }
 
         /// <summary>
@@ -190,7 +207,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             for (int lineNumber = firstAndLastLine.Item1.LineNumber; lineNumber <= firstAndLastLine.Item2.LineNumber; ++lineNumber) {
                 var line = firstAndLastLine.Item1.Snapshot.GetLineFromLineNumber(lineNumber);
                 if (!line.IsEmptyOrWhitespace()) {
-                    InsertText(textEdit, line.Start + indentToCommentAt, SingleLineCommentString);
+                    textEdit.Insert(line.Start + indentToCommentAt, SingleLineCommentString);
                 }
             }
         }
@@ -201,14 +218,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             TryUncommentContainingBlockComment(span, textEdit, spansToSelect);
-        }
-
-        void InsertText(ITextEdit textEdit, int position, string text) {
-            textEdit.Insert(position, text);
-        }
-
-        void DeleteText(ITextEdit textEdit, Span span) {
-            textEdit.Delete(span);
         }
 
         static Tuple<ITextSnapshotLine, ITextSnapshotLine> DetermineFirstAndLastLine(SnapshotSpan span) {
@@ -227,7 +236,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var firstAndLastLine = DetermineFirstAndLastLine(span);
 
             var firstNonWhitespacePosition = firstAndLastLine.Item1.GetFirstNonWhitespacePosition();
-            var lastNonWhitespacePosition = firstAndLastLine.Item2.GetLastNonWhitespacePosition();
+            var lastNonWhitespacePosition  = firstAndLastLine.Item2.GetLastNonWhitespacePosition();
 
             var allOnFirst = !firstNonWhitespacePosition.HasValue ||
                              span.Start.Position <= firstNonWhitespacePosition.Value;
