@@ -59,5 +59,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             out TProperty value) where TTextView : ITextView {
             return AutoClosingViewProperty<TProperty, TTextView>.GetOrCreateValue(textView, key, valueCreator, out value);
         }
-    }   
+
+         public static void SetSelection(this ITextView textView, SnapshotSpan span, bool isReversed = false) {
+             var spanInView = textView.GetSpanInView(span).Single();
+             textView.Selection.Select(spanInView, isReversed);
+             textView.Caret.MoveTo(isReversed ? spanInView.Start : spanInView.End);
+         }
+
+         public static NormalizedSnapshotSpanCollection GetSpanInView(this ITextView textView, SnapshotSpan span) {
+             return textView.BufferGraph.MapUpToSnapshot(span, SpanTrackingMode.EdgeInclusive, textView.TextSnapshot);
+         }
+
+     }   
 }

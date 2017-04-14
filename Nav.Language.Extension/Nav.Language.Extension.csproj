@@ -101,6 +101,8 @@
     <Compile Include="Common\ComEventSink.cs" />
     <Compile Include="Common\ContentTypeExtensions.cs" />
     <Compile Include="Common\DictionaryExtensions.cs" />
+    <Compile Include="Common\SourceTextExtensions.cs" />
+    <Compile Include="Common\TextSelectionExtensions.cs" />
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
     <Compile Include="Common\TextViewExtensions.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
