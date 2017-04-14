@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands.Extensibility {
         readonly IEnumerable<Lazy<ICommandHandler, CommandHandlerMetadata>> _commandHandlers;
 
         [ImportingConstructor]
-        public CommandHandlerServiceProvider(IEnumerable<Lazy<ICommandHandler, CommandHandlerMetadata>> commandHandlers) {
+        public CommandHandlerServiceProvider([ImportMany]IEnumerable<Lazy<ICommandHandler, CommandHandlerMetadata>> commandHandlers) {
             _commandHandlers = commandHandlers;
         }
 
