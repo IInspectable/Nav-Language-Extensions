@@ -8,7 +8,7 @@ using System.ComponentModel.Composition;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-
+using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 
@@ -67,7 +67,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 using (var textEdit = subjectBuffer.CreateEdit()) {
 
                     var spansToSelect = new List<ITrackingSpan>();
-                    CollectEdits(textView.Selection.GetSnapshotSpansOnBuffer(subjectBuffer), textEdit, spansToSelect, operation);
+                    CollectEdits(textView.Options, textView.Selection.GetSnapshotSpansOnBuffer(subjectBuffer), textEdit, spansToSelect, operation);
 
                     textEdit.Apply();
 
@@ -79,17 +79,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
         }
 
-        void CollectEdits(NormalizedSnapshotSpanCollection selectedSpans, ITextEdit textEdit, List<ITrackingSpan> spansToSelect, Operation operation) {
+        void CollectEdits(IEditorOptions options, NormalizedSnapshotSpanCollection selectedSpans, ITextEdit textEdit, List<ITrackingSpan> spansToSelect, Operation operation) {
             foreach (var span in selectedSpans) {
                 if (operation == Operation.Comment) {
-                    CommentSpan(span, textEdit, spansToSelect);
+                    CommentSpan(options, span, textEdit, spansToSelect);
                 } else {
                     UncommentSpan(span, textEdit, spansToSelect);
                 }
             }
         }
 
-        void CommentSpan(SnapshotSpan span, ITextEdit textEdit, List<ITrackingSpan> spansToSelect) {
+        void CommentSpan(IEditorOptions options, SnapshotSpan span, ITextEdit textEdit, List<ITrackingSpan> spansToSelect) {
             var firstAndLastLine = DetermineFirstAndLastLine(span);
             
             // Keine Selection, und in die ganze Zeile ist leer
@@ -122,8 +122,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
                 } else {
                     // Select the entirety of the lines, so that another comment operation will add more comments, not insert block comments.
-                    var indentToCommentAt = DetermineSmallestIndent(span, firstAndLastLine);
-                    ApplyCommentToNonBlankLines(textEdit, firstAndLastLine, indentToCommentAt);
+                    var indentToColumn = DetermineSmallestSignificantColumn(options, span, firstAndLastLine);
+                    ApplyCommentToNonBlankLines(options, textEdit, firstAndLastLine, indentToColumn);
 
                     spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(firstAndLastLine.Item1.Start.Position, firstAndLastLine.Item2.End.Position), SpanTrackingMode.EdgeInclusive));
                 }
@@ -201,13 +201,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         /// <summary>
-        /// Adds edits to comment out each non-blank line, at the given indent.
+        /// Adds edits to comment out each non-blank line, at the given column.
         /// </summary>
-        void ApplyCommentToNonBlankLines(ITextEdit textEdit, Tuple<ITextSnapshotLine, ITextSnapshotLine> firstAndLastLine, int indentToCommentAt) {
+        void ApplyCommentToNonBlankLines(IEditorOptions options, ITextEdit textEdit, Tuple<ITextSnapshotLine, ITextSnapshotLine> firstAndLastLine, int indentToColumn) {
             for (int lineNumber = firstAndLastLine.Item1.LineNumber; lineNumber <= firstAndLastLine.Item2.LineNumber; ++lineNumber) {
                 var line = firstAndLastLine.Item1.Snapshot.GetLineFromLineNumber(lineNumber);
                 if (!line.IsEmptyOrWhitespace()) {
-                    textEdit.Insert(line.Start + indentToCommentAt, SingleLineCommentString);
+
+                    var offset=line.GetOffsetForColumn(indentToColumn, options.GetTabSize());
+                    textEdit.Insert(line.Start + offset, SingleLineCommentString);
                 }
             }
         }
@@ -247,16 +249,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         /// <summary> Given a set of lines, find the minimum indent of all of the non-blank, non-whitespace lines.</summary>
-        static int DetermineSmallestIndent(SnapshotSpan span, Tuple<ITextSnapshotLine, ITextSnapshotLine> firstAndLastLine) {
-            // TODO: This breaks if you have mixed tabs/spaces, and/or tabsize != indentsize.
+        static int DetermineSmallestSignificantColumn(IEditorOptions options, SnapshotSpan span, Tuple<ITextSnapshotLine, ITextSnapshotLine> firstAndLastLine) {
+
+            var tabSize = options.GetTabSize();
             var indentToCommentAt = int.MaxValue;
+
             for (int lineNumber = firstAndLastLine.Item1.LineNumber; lineNumber <= firstAndLastLine.Item2.LineNumber; ++lineNumber) {
+
                 var line = span.Snapshot.GetLineFromLineNumber(lineNumber);
-                var firstNonWhitespacePosition = line.GetFirstNonWhitespacePosition();
-                var firstNonWhitespaceOnLine = firstNonWhitespacePosition.HasValue
-                    ? firstNonWhitespacePosition.Value - line.Start
-                    : int.MaxValue;
-                indentToCommentAt = Math.Min(indentToCommentAt, firstNonWhitespaceOnLine);
+
+                var significantColumn = line.GetSignificantColumn(tabSize);
+                indentToCommentAt     = Math.Min(indentToCommentAt, significantColumn);
             }
 
             return indentToCommentAt;
