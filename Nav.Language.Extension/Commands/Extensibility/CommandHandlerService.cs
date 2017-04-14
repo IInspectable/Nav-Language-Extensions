@@ -39,6 +39,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands.Extensibility {
             var key = typeof(T);
             if(!_commandHandlersByType.TryGetValue(key, out var commandHandlerList)) {
                 var stronglyTypedHandlers = _commandHandlers.OfType<ICommandHandler<T>>().ToList();
+                commandHandlerList = stronglyTypedHandlers;
                 _commandHandlersByType.Add(key, stronglyTypedHandlers);
             }
 
