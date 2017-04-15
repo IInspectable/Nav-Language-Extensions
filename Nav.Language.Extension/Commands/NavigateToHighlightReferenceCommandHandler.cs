@@ -1,14 +1,20 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
+
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Outlining;
 using Microsoft.VisualStudio.Text.Tagging;
-using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 using Pharmatechnik.Nav.Language.Extension.HighlightReferences;
 
+#endregion
 // TODO Code Review
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
@@ -18,10 +24,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         ICommandHandler<NavigateToHighlightedReferenceCommandArgs> {
 
         readonly IViewTagAggregatorFactoryService _tagAggregatorFactory;
+        readonly IOutliningManagerService _outliningManagerService;
 
         [ImportingConstructor]
-        public NavigateToHighlightReferenceCommandHandler(IViewTagAggregatorFactoryService tagAggregatorFactory) {
-            _tagAggregatorFactory = tagAggregatorFactory;
+        public NavigateToHighlightReferenceCommandHandler(IViewTagAggregatorFactoryService tagAggregatorFactory, IOutliningManagerService outliningManagerService) {
+            _tagAggregatorFactory    = tagAggregatorFactory;
+            _outliningManagerService = outliningManagerService;
 
         }
 
@@ -41,10 +49,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var spans = GetTags(tagger, args.TextView.TextSnapshot.GetFullSpan()).ToList();
 
                 var destTag = GetDestinationTag(tagUnderCursor.Value, spans, args.Direction);
-                // TODO TryMoveCaretToAndEnsureVisible
-                //   if (args.TextView.TryMoveCaretToAndEnsureVisible(destTag.Start, _outliningManagerService)) {
-                args.TextView.SetSelection(destTag);
-               // }
+                if(args.TextView.TryMoveCaretToAndEnsureVisible(destTag.Start, _outliningManagerService)) {
+                    args.TextView.SetSelection(destTag);
+                }
             }
         }
 
