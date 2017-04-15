@@ -16,7 +16,7 @@ using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
-    sealed class ReferenceHighlightTagger : SemanticModelServiceDependent, ITagger<TextMarkerTag> {
+    sealed class ReferenceHighlightTagger : SemanticModelServiceDependent, ITagger<ReferenceHighlightTag> {
 
         [NotNull]
         readonly IDisposable _observable;
@@ -40,6 +40,8 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
             View.Caret.PositionChanged += OnCaretPositionChanged;
             View.LayoutChanged         += OnViewLayoutChanged;
+            // TODO CodeReview
+            RebuildReferences();
         }
         
         public override void Dispose() {
@@ -106,7 +108,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
         
-        public IEnumerable<ITagSpan<TextMarkerTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
+        public IEnumerable<ITagSpan<ReferenceHighlightTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
 
             if(spans.Count == 0 || _referenceSpans.Count == 0) {
                 yield break;
@@ -127,17 +129,22 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             }
 
             // Die "Definition"
-            yield return new TagSpan<TextMarkerTag>(definitionSpan, new DefinitionHighlightTag());
+            yield return new TagSpan<ReferenceHighlightTag>(definitionSpan, new DefinitionHighlightTag());
 
             // Und die zugehörigen Referenzen
-            foreach (SnapshotSpan span in NormalizedSnapshotSpanCollection.Overlap(spans, referenceSpans)) {
-                yield return new TagSpan<TextMarkerTag>(span, new ReferenceHighlightTag());
+            // TODO BUG spans berücksichtigen
+            foreach (SnapshotSpan span in referenceSpans) {
+                yield return new TagSpan<ReferenceHighlightTag>(span, new ReferenceHighlightTag());
             }           
         }
 
         List<SnapshotSpan> RebuildReferences() {
 
             _referenceSpans.Clear();
+
+            if(SemanticModelService?.SemanticModelResult == null) {
+                return _referenceSpans;
+            }
 
             var newReferences = BuildReferences(SemanticModelService.SemanticModelResult).ToList();
             if (newReferences.Count > 1) {

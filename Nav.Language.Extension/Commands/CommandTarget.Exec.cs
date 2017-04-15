@@ -13,6 +13,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     partial class CommandTarget : IOleCommandTarget {
 
+       const VSConstants.VSStd2KCmdID CmdidNextHighlightedReference     = (VSConstants.VSStd2KCmdID)2400;
+       const VSConstants.VSStd2KCmdID CmdidPreviousHighlightedReference = (VSConstants.VSStd2KCmdID)2401;
+
         public virtual int Exec(ref Guid pguidCmdGroup, uint commandId, uint executeInformation, IntPtr pvaIn, IntPtr pvaOut) {
             var subjectBuffer = GetSubjectBufferContainingCaret();
 
@@ -48,6 +51,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                     ExecuteUncommentBlock(subjectBuffer, ExecuteNextCommandTarget);
                     break;
 
+                case CmdidNextHighlightedReference:
+                    ExecuteNextHighlightedReference(subjectBuffer, contentType, ExecuteNextCommandTarget);
+                    break;
+
+                case CmdidPreviousHighlightedReference:
+                    ExecutePreviousHighlightedReference(subjectBuffer, contentType, ExecuteNextCommandTarget);
+                    break;
+
                 default:
                     return NextCommandTarget.Exec(ref pguidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
             }
@@ -64,6 +75,18 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         protected void ExecuteCommentBlock(ITextBuffer subjectBuffer, Action executeNextCommandTarget) {
             HandlerService.Execute(
                 args       : new CommentSelectionCommandArgs(WpfTextView, subjectBuffer),
+                lastHandler: executeNextCommandTarget);
+        }
+
+        protected void ExecutePreviousHighlightedReference(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            HandlerService.Execute(
+                args       : new NavigateToHighlightedReferenceCommandArgs(WpfTextView, subjectBuffer, NavigateDirection.Up),
+                lastHandler: executeNextCommandTarget);
+        }
+
+        protected void ExecuteNextHighlightedReference(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            HandlerService.Execute(
+                args       : new NavigateToHighlightedReferenceCommandArgs(WpfTextView, subjectBuffer, NavigateDirection.Down),
                 lastHandler: executeNextCommandTarget);
         }
     }

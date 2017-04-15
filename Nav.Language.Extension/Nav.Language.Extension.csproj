@@ -90,6 +90,8 @@
     <Compile Include="Commands\Extensibility\CommandHandlerMetadata.cs" />
     <Compile Include="Commands\Extensibility\CommandHandlerService.cs" />
     <Compile Include="Commands\Extensibility\CommandHandlerServiceProvider.cs" />
+    <Compile Include="Commands\NavigateToHighlightedReferenceCommandArgs.cs" />
+    <Compile Include="Commands\NavigateToHighlightReferenceCommandHandler.cs" />
     <Compile Include="Commands\TextViewCreationListener.cs" />
     <Compile Include="Commands\UncommentSelectionCommandArgs.cs" />
     <Compile Include="Commands\CommentSelectionCommandArgs.cs" />

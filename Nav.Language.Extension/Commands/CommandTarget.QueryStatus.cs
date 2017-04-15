@@ -35,23 +35,41 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 case VSConstants.VSStd2KCmdID.UNCOMMENTBLOCK:
                     return QueryUncommentBlockStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
 
+                case CmdidNextHighlightedReference:
+                    return QueryNavigateHighlightedReferenceStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText, NavigateDirection.Down);
+                case CmdidPreviousHighlightedReference:
+                    return QueryNavigateHighlightedReferenceStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText, NavigateDirection.Up);
                 default:
                     return NextCommandTarget.QueryStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
             }
         }
 
-        int QueryUncommentBlockStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText)
-        {
+        int QueryUncommentBlockStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
             return GetCommandState(
-                (v, b) => new UncommentSelectionCommandArgs(v, b),
-                ref pguidCmdGroup, commandCount, prgCmds, commandText);
+                createArgs   : (v, b) => new UncommentSelectionCommandArgs(v, b),
+                pguidCmdGroup: ref pguidCmdGroup,
+                commandCount : commandCount,
+                prgCmds      : prgCmds,
+                commandText  : commandText);
         }
 
-        int QueryCommentBlockStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText)
-        {
+        int QueryCommentBlockStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
             return GetCommandState(
-                (v, b) => new CommentSelectionCommandArgs(v, b),
-                ref pguidCmdGroup, commandCount, prgCmds, commandText);
+                createArgs   : (v, b) => new CommentSelectionCommandArgs(v, b),
+                pguidCmdGroup: ref pguidCmdGroup,
+                commandCount : commandCount,
+                prgCmds      : prgCmds,
+                commandText  : commandText);
+        }
+
+        int QueryNavigateHighlightedReferenceStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText, NavigateDirection navigateDirection) {
+
+            return GetCommandState(
+                createArgs   : (v, b) => new NavigateToHighlightedReferenceCommandArgs(v, b, navigateDirection),
+                pguidCmdGroup: ref pguidCmdGroup,
+                commandCount : commandCount,
+                prgCmds      : prgCmds,
+                commandText  : commandText);
         }
 
         int GetCommandState<T>(
