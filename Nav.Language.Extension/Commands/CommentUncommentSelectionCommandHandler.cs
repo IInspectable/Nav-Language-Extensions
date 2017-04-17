@@ -5,7 +5,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
@@ -175,14 +174,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 // See if we are (textually) contained in a block comment.
                 // This could allow a selection that spans multiple block comments to uncomment the beginning of
                 // the first and end of the last.  Oh well.
-                var text = span.Snapshot.AsText();
-                positionOfStart = text.LastIndexOf(BlockCommentStartString, span.Start, caseSensitive: true);
+                positionOfStart = span.Snapshot.LastIndexOf(BlockCommentStartString, span.Start, caseSensitive: true);
 
                 // If we found a start comment marker, make sure there isn't an end comment marker after it but before our span.
                 if (positionOfStart >= 0) {
-                    var lastEnd = text.LastIndexOf(BlockCommentEndString, span.Start, caseSensitive: true);
+                    var lastEnd = span.Snapshot.LastIndexOf(BlockCommentEndString, span.Start, caseSensitive: true);
                     if (lastEnd < positionOfStart) {
-                        positionOfEnd = text.IndexOf(BlockCommentEndString, span.End, caseSensitive: true);
+                        positionOfEnd = span.Snapshot.IndexOf(BlockCommentEndString, span.End, caseSensitive: true);
                     } else if (lastEnd + BlockCommentEndString.Length > span.End) {
                         // The end of the span is *inside* the end marker, so searching backwards found it.
                         positionOfEnd = lastEnd;
