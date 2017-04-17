@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
-using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 

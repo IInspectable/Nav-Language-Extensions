@@ -77,6 +77,7 @@ namespace Nav.Language.Tests {
         }
 
         void Write(IEnumerable<SyntaxToken> list) {
+            // ReSharper disable once UnusedVariable
             foreach (var value in list) {
                 //Console.WriteLine(value.ToDebuggerDisplayString());
             }

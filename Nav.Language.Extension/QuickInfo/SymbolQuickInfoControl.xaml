@@ -5,11 +5,10 @@
              xmlns:d          = "http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:imaging    = "clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
              xmlns:theming    = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
-             xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
-             xmlns:platformUi1="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:platformUi = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              Orientation="Horizontal"
   
-            theming:ImageThemingUtilities.ImageBackgroundColor="{DynamicResource {x:Static platformUi1:EnvironmentColors.ToolTipColorKey}}"
+            theming:ImageThemingUtilities.ImageBackgroundColor="{DynamicResource {x:Static platformUi:EnvironmentColors.ToolTipColorKey}}"
              mc:Ignorable   = "d"        
             
              d:DesignHeight = "20" 
