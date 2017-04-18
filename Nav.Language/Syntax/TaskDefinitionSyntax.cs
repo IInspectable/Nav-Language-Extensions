@@ -25,10 +25,10 @@ namespace Pharmatechnik.Nav.Language {
                 : base(extent) {
 
             AddChildNode(_codeDeclaration           = codeDeclaration);
-            AddChildNode(_codeBaseDeclaration           = codeBaseDeclaration);
-            AddChildNode(_codeGenerateToDeclaration     = codeGenerateToDeclaration);
-            AddChildNode(_codeParamsDeclaration         = codeParamsDeclaration);
-            AddChildNode(_codeResultDeclaration         = codeResultDeclaration);
+            AddChildNode(_codeBaseDeclaration       = codeBaseDeclaration);
+            AddChildNode(_codeGenerateToDeclaration = codeGenerateToDeclaration);
+            AddChildNode(_codeParamsDeclaration     = codeParamsDeclaration);
+            AddChildNode(_codeResultDeclaration     = codeResultDeclaration);
             AddChildNode(_nodeDeclarationBlock      = nodeDeclarationBlock);
             AddChildNode(_transitionDefinitionBlock = transitionDefinitionBlock);
         }
@@ -82,6 +82,10 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         public TransitionDefinitionBlockSyntax TransitionDefinitionBlock {
             get { return _transitionDefinitionBlock; }
+        }
+
+        protected override bool PromiseNoDescendantNodeOfSameType {
+            get { return true; }
         }
     }
 }

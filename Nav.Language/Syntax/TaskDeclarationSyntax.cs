@@ -83,5 +83,9 @@ namespace Pharmatechnik.Nav.Language {
         public IEnumerable<EndNodeDeclarationSyntax> EndNodes() {
             return ConnectionPoints.OfType<EndNodeDeclarationSyntax>();
         }
+
+        protected override bool PromiseNoDescendantNodeOfSameType {
+            get { return true; }
+        }
     }
 }

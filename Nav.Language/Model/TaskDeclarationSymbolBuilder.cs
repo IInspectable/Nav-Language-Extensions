@@ -55,16 +55,16 @@ namespace Pharmatechnik.Nav.Language {
         void ProcessCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
 
             if (!_processAsIncludedFile) {
-                foreach(var includeDirectiveSyntax in syntax.DescendantNodes().OfType<IncludeDirectiveSyntax>()) {
+                foreach(var includeDirectiveSyntax in syntax.DescendantNodes<IncludeDirectiveSyntax>()) {
                     cancellationToken.ThrowIfCancellationRequested();
                     ProcessIncludeDirective(includeDirectiveSyntax, cancellationToken);
                 }
-                foreach (var taskDeclarationSyntax in syntax.DescendantNodes().OfType<TaskDeclarationSyntax>()) {
+                foreach (var taskDeclarationSyntax in syntax.DescendantNodes<TaskDeclarationSyntax>()) {
                     cancellationToken.ThrowIfCancellationRequested();
                     ProcessTaskDeclaration(taskDeclarationSyntax);
                 }
             }
-            foreach (var taskDefinitionSyntax in syntax.DescendantNodes().OfType<TaskDefinitionSyntax>()) {
+            foreach (var taskDefinitionSyntax in syntax.DescendantNodes<TaskDefinitionSyntax>()) {
                 cancellationToken.ThrowIfCancellationRequested();
                 ProcessTaskDefinition(taskDefinitionSyntax);
             }

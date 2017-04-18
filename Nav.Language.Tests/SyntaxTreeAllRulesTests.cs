@@ -35,8 +35,8 @@ namespace Nav.Language.Tests {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
 
             Assert.That(syntaxTree.Tokens.Count(token => token.Parent == null), Is.EqualTo(0));
-            Assert.That(syntaxTree.GetRoot().DescendantNodes().Count(node => node.RawParent == null), Is.EqualTo(0));
-            Assert.That(syntaxTree.GetRoot().RawParent, Is.Null);
+            Assert.That(syntaxTree.GetRoot().DescendantNodes().Count(node => node.Parent == null), Is.EqualTo(0));
+            Assert.That(syntaxTree.GetRoot().Parent, Is.Null);
         }
 
         [Test]
@@ -266,9 +266,7 @@ namespace Nav.Language.Tests {
         public void TestTaskDefinition() {
             var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
 
-            var taskDefinition = syntaxRoot.DescendantNodes()
-                    .OfType<TaskDefinitionSyntax>()
-                    .First();
+            var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
             Assert.That(taskDefinition.TaskKeyword.ToString(), Is.EqualTo("task"));
             Assert.That(taskDefinition.TaskKeyword.Type, Is.EqualTo(SyntaxTokenType.TaskKeyword));
@@ -330,9 +328,7 @@ namespace Nav.Language.Tests {
 
             var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
 
-            var taskDefinition = syntaxRoot.DescendantNodes()
-                    .OfType<TaskDefinitionSyntax>()
-                    .First();
+            var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
             var nodeDeclarationBlock = taskDefinition.NodeDeclarationBlock;
 
@@ -405,9 +401,7 @@ namespace Nav.Language.Tests {
         public  void TestTransitionDefinitionBlock() {
             var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
 
-            var taskDefinition = syntaxRoot.DescendantNodes()
-                    .OfType<TaskDefinitionSyntax>()
-                    .First();
+            var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
             var transitionDefinitionBlockSyntax = taskDefinition.TransitionDefinitionBlock;
             // init --> Tx on "Something"  if "Condition" do "Action1";

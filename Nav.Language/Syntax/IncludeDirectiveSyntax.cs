@@ -20,5 +20,9 @@ namespace Pharmatechnik.Nav.Language {
         public SyntaxToken Semicolon {
             get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon); }
         }
+
+        protected override bool PromiseNoDescendantNodeOfSameType {
+            get { return true; }
+        }
     }
 }

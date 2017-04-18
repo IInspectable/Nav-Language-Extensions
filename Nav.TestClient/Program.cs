@@ -40,7 +40,7 @@ namespace TestClient
 
         static void PressAnyKeyToContinue() {
             Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         public void Dispose() {
@@ -52,9 +52,10 @@ namespace TestClient
             int maxTokens = 0;
             int sumTokens = 0;
             int files     = 0;
-            
-            var codeGenerationUnits=Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories)
-                                          .AsParallel().WithMergeOptions(ParallelMergeOptions.NotBuffered) // Sofortige Ausgabe der Ergebnisse
+
+            var navFiles = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories).SelectMany(f=> Enumerable.Repeat(f, 1000));
+            var codeGenerationUnits= navFiles
+                                          //   .AsParallel().WithMergeOptions(ParallelMergeOptions.NotBuffered) // Sofortige Ausgabe der Ergebnisse
                                           .Select(BuildCodeGenerationUnit);
 
             foreach(var codeGenerationUnit in codeGenerationUnits.Where(cu => cu!=null)) {
@@ -122,29 +123,29 @@ namespace TestClient
         }
 
         void WriteInfo(string format, params object[] args) {
-            Console.WriteLine(format, args);
+           // Console.WriteLine(format, args);
             WriteLog(format, args);
         }
 
         // ReSharper disable once UnusedMember.Local
         void WriteWarning(string format, params object[] args) {
-            WriteConsole(ConsoleColor.Yellow, format, args);
+           // WriteConsole(ConsoleColor.Yellow, format, args);
             WriteLog(format, args);
         }
 
         void WriteError(string format, params object[] args) {
-            WriteConsole(ConsoleColor.DarkRed, format, args);
+           // WriteConsole(ConsoleColor.DarkRed, format, args);
             WriteLog(format, args);
         }
 
         void WriteLog(string format, object[] args) {
-            _logger.WriteLine(format, args);
+            //_logger.WriteLine(format, args);
         }
         
         static void WriteConsole(ConsoleColor color, string format, params object[] args) {
             var oldColor = Console.ForegroundColor;
             Console.ForegroundColor = color;
-            Console.WriteLine(format, args);
+          //  Console.WriteLine(format, args);
             Console.ForegroundColor = oldColor;
         }
     }

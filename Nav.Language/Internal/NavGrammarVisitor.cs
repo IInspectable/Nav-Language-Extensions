@@ -527,8 +527,8 @@ namespace Pharmatechnik.Nav.Language.Internal {
                     extent:CreateExtent(context),
                     identifierOrString:
                     context.identifierOrString()
-                               .Optional(VisitIdentifierOrString)
-                               .OfSyntaxType<IdentifierOrStringSyntax>());
+                           .Optional(VisitIdentifierOrString)
+                           .OfSyntaxType<IdentifierOrStringSyntax>());
 
             CreateToken(node, context.IfKeyword(), SyntaxTokenClassification.Keyword);
 

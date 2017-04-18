@@ -11,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
         public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(ParseResult parseResult, IOutliningRegionTagCreator tagCreator) {
 
             // Task Declarations
-            foreach (var taskReferenceDefinition in parseResult.SyntaxTree.GetRoot().DescendantNodes().OfType<TaskDeclarationSyntax>()) {
+            foreach (var taskReferenceDefinition in parseResult.SyntaxTree.GetRoot().DescendantNodes<TaskDeclarationSyntax>()) {
                 var extent = taskReferenceDefinition.Extent;
                
                 if (extent.Length <= 0) {
