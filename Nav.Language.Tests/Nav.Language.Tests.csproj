@@ -49,6 +49,7 @@
       <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -91,6 +92,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SyntaxTest.tt</DependentUpon>
     </Compile>
+    <Compile Include="SyntaxFactsTest.cs" />
     <Compile Include="SyntaxStressTests.cs" />
     <Compile Include="SyntaxTreeNavigationTests.cs" />
     <Compile Include="SyntaxTreeAllRulesTests.cs" />

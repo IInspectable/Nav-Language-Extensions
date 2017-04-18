@@ -79,6 +79,7 @@
     <Compile Include="CodeGen\TaskCodeModel.cs" />
     <Compile Include="CodeGen\TaskDeclarationCodeModel.cs" />
     <Compile Include="CodeGen\TaskExitCodeModel.cs" />
+    <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TextLineExtent.cs" />
     <Compile Include="Common\LinePosition.cs" />
     <Compile Include="Common\LinePositionExtent.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Syntax\GenericTypeSyntax.cs" />
     <Compile Include="Syntax\IdentifierOrStringSyntax.cs" />
     <Compile Include="Common\IExtent.cs" />
+    <Compile Include="Syntax\SyntaxFacts.cs" />
     <Compile Include="Syntax\TriggerSyntax.cs" />
     <Compile Include="Syntax\ParameterListSyntax.cs" />
     <Compile Include="Syntax\SimpleTypeSyntax.cs" />

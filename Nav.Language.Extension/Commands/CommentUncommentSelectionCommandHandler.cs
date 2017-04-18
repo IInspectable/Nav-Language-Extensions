@@ -26,10 +26,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         readonly ITextUndoHistoryRegistry _undoHistoryRegistry;
         readonly IEditorOperationsFactoryService _editorOperationsFactoryService;
 
-        const string SingleLineCommentString = "//";
-        const string BlockCommentStartString = "/*";
-        const string BlockCommentEndString   = "*/";
-
         [ImportingConstructor]
         public CommentUncommentSelectionCommandHandler(
             IWaitIndicator waitIndicator,
@@ -115,7 +111,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var insertPosition = firstNonWhitespaceOnLine ?? firstAndLastLine.Item1.Start;
 
                 // es gibt keine Selektion => ganze Zeile auskommentieren
-                textEdit.Insert(insertPosition, SingleLineCommentString);
+                textEdit.Insert(insertPosition, SyntaxFacts.SingleLineComment);
 
                 spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(firstAndLastLine.Item1.Start, firstAndLastLine.Item1.End), SpanTrackingMode.EdgeInclusive));
             } else {
@@ -123,8 +119,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 if (!SpanIncludesAllTextOnIncludedLines(span) &&
                      firstAndLastLine.Item1.LineNumber == firstAndLastLine.Item2.LineNumber) {
 
-                    textEdit.Insert(span.Start, BlockCommentStartString);
-                    textEdit.Insert(span.End,   BlockCommentEndString);
+                    textEdit.Insert(span.Start, SyntaxFacts.BlockCommentStart);
+                    textEdit.Insert(span.End,   SyntaxFacts.BlockCommentEnd);
 
                     spansToSelect.Add(span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive));
 
@@ -156,8 +152,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var line     = span.Snapshot.GetLineFromLineNumber(lineNumber);
                 var lineText = line.GetText();
 
-                if (lineText.Trim().StartsWith(SingleLineCommentString, StringComparison.Ordinal)) {
-                    textEdit.Delete(new Span(line.Start.Position + lineText.IndexOf(SingleLineCommentString, StringComparison.Ordinal), SingleLineCommentString.Length));
+                if (lineText.Trim().StartsWith(SyntaxFacts.SingleLineComment, StringComparison.Ordinal)) {
+                    textEdit.Delete(new Span(line.Start.Position + lineText.IndexOf(SyntaxFacts.SingleLineComment, StringComparison.Ordinal), SyntaxFacts.SingleLineComment.Length));
                     textChanges = true;
                 }
             }
@@ -183,21 +179,21 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var trimmedSpanText = spanText.Trim();
 
             // See if the selection includes just a block comment (plus whitespace)
-            if (trimmedSpanText.StartsWith(BlockCommentStartString, StringComparison.Ordinal) && trimmedSpanText.EndsWith(BlockCommentEndString, StringComparison.Ordinal)) {
-                positionOfStart = span.Start + spanText.IndexOf(BlockCommentStartString, StringComparison.Ordinal);
-                positionOfEnd   = span.Start + spanText.LastIndexOf(BlockCommentEndString, StringComparison.Ordinal);
+            if (trimmedSpanText.StartsWith(SyntaxFacts.BlockCommentStart, StringComparison.Ordinal) && trimmedSpanText.EndsWith(SyntaxFacts.BlockCommentEnd, StringComparison.Ordinal)) {
+                positionOfStart = span.Start + spanText.IndexOf(SyntaxFacts.BlockCommentStart, StringComparison.Ordinal);
+                positionOfEnd   = span.Start + spanText.LastIndexOf(SyntaxFacts.BlockCommentEnd, StringComparison.Ordinal);
             } else {
                 // See if we are (textually) contained in a block comment.
                 // This could allow a selection that spans multiple block comments to uncomment the beginning of
                 // the first and end of the last.  Oh well.
-                positionOfStart = span.Snapshot.LastIndexOf(BlockCommentStartString, span.Start, caseSensitive: true);
+                positionOfStart = span.Snapshot.LastIndexOf(SyntaxFacts.BlockCommentStart, span.Start, caseSensitive: true);
 
                 // If we found a start comment marker, make sure there isn't an end comment marker after it but before our span.
                 if (positionOfStart >= 0) {
-                    var lastEnd = span.Snapshot.LastIndexOf(BlockCommentEndString, span.Start, caseSensitive: true);
+                    var lastEnd = span.Snapshot.LastIndexOf(SyntaxFacts.BlockCommentEnd, span.Start, caseSensitive: true);
                     if (lastEnd < positionOfStart) {
-                        positionOfEnd = span.Snapshot.IndexOf(BlockCommentEndString, span.End, caseSensitive: true);
-                    } else if (lastEnd + BlockCommentEndString.Length > span.End) {
+                        positionOfEnd = span.Snapshot.IndexOf(SyntaxFacts.BlockCommentEnd, span.End, caseSensitive: true);
+                    } else if (lastEnd + SyntaxFacts.BlockCommentEnd.Length > span.End) {
                         // The end of the span is *inside* the end marker, so searching backwards found it.
                         positionOfEnd = lastEnd;
                     }
@@ -208,10 +204,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 return;
             }
 
-            textEdit.Delete(new Span(positionOfStart, BlockCommentStartString.Length));
-            textEdit.Delete(new Span(positionOfEnd,   BlockCommentEndString.Length));
+            textEdit.Delete(new Span(positionOfStart, SyntaxFacts.BlockCommentStart.Length));
+            textEdit.Delete(new Span(positionOfEnd,   SyntaxFacts.BlockCommentEnd.Length));
 
-            spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(positionOfStart, positionOfEnd + BlockCommentEndString.Length), SpanTrackingMode.EdgeExclusive));
+            spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(positionOfStart, positionOfEnd + SyntaxFacts.BlockCommentEnd.Length), SpanTrackingMode.EdgeExclusive));
         }
 
         /// <summary>
@@ -223,7 +219,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 if (!line.IsEmptyOrWhitespace()) {
 
                     var offset=line.GetOffsetForColumn(indentToColumn, options.GetTabSize());
-                    textEdit.Insert(line.Start + offset, SingleLineCommentString);
+                    textEdit.Insert(line.Start + offset, SyntaxFacts.SingleLineComment);
                 }
             }
         }

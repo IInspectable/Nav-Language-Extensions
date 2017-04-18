@@ -35,7 +35,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
 
             foreach (var span in spans) {
 
-                //TODO: könnte evtl effektiver sein, wenn Errors nach Start sortiert sind.
                 //==================
                 // Syntax Fehler
                 foreach (var diagnostic in syntaxTree.Diagnostics) {
