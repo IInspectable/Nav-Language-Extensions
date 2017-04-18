@@ -1,7 +1,7 @@
 ﻿#region Using Directives
 
 using System;
-
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 
@@ -11,9 +11,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
     sealed class TextUndoTransaction: IDisposable {
 
-        readonly IEditorOperations _editorOperations;
-        bool _inTransaction;
+        readonly IEditorOperations _editorOperations;        
+        [CanBeNull]
         ITextUndoTransaction _transaction;
+        bool _inTransaction;
 
         public TextUndoTransaction(
             string description,

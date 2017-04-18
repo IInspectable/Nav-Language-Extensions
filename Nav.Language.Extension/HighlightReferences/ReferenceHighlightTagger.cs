@@ -40,7 +40,6 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
             View.Caret.PositionChanged += OnCaretPositionChanged;
             View.LayoutChanged         += OnViewLayoutChanged;
-            // TODO CodeReview
             RebuildReferences();
         }
         
