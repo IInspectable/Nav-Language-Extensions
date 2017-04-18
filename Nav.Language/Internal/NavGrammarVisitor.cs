@@ -1,6 +1,5 @@
 #region Using Directives
 
-using System.Linq;
 using System.Collections.Generic;
 
 using Antlr4.Runtime;
@@ -39,12 +38,12 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.codeUsingDeclaration()
                        .ZeroOrMore(VisitCodeUsingDeclaration)
                        .OfSyntaxType<CodeUsingDeclarationSyntax>()
-                       .ToList(),
+                       .ToReadOnlyList(expectedCapacity: context.codeUsingDeclaration().Length),
                 memberDeclarations:                
                 context.memberDeclaration()
                        .ZeroOrMore(VisitMemberDeclaration)
                        .OfSyntaxType<MemberDeclarationSyntax>()
-                       .ToList()
+                       .ToReadOnlyList(expectedCapacity: context.memberDeclaration().Length)
               );
 
             CreateToken(node, context.Eof(), SyntaxTokenClassification.Whitespace);
@@ -147,7 +146,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.connectionPointNodeDeclaration()
                        .ZeroOrMore(VisitConnectionPointNodeDeclaration)
                        .OfSyntaxType<ConnectionPointNodeSyntax>()
-                       .ToList()
+                       .ToReadOnlyList(expectedCapacity: context.connectionPointNodeDeclaration().Length)
                 );
 
             CreateToken(node, context.TaskrefKeyword(), SyntaxTokenClassification.Keyword);
@@ -229,7 +228,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.nodeDeclaration()
                        .ZeroOrMore(VisitNodeDeclaration)
                        .OfSyntaxType<NodeDeclarationSyntax>()
-                       .ToList()
+                       .ToReadOnlyList(expectedCapacity: context.nodeDeclaration().Length)
                 );
 
             return node;
@@ -365,12 +364,12 @@ namespace Pharmatechnik.Nav.Language.Internal {
                             context.transitionDefinition()
                                     .ZeroOrMore(VisitTransitionDefinition)
                                     .OfSyntaxType<TransitionDefinitionSyntax>()
-                                    .ToList(),
+                                    .ToReadOnlyList(expectedCapacity: context.transitionDefinition().Length),
                     exitTransitionDefinitions:
                     context.exitTransitionDefinition()
                                     .ZeroOrMore(VisitExitTransitionDefinition)
                                     .OfSyntaxType<ExitTransitionDefinitionSyntax>()
-                                    .ToList()
+                                    .ToReadOnlyList(expectedCapacity: context.exitTransitionDefinition().Length)
                     );
 
             return node;
@@ -728,7 +727,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.codeType()
                     .ZeroOrMore(VisitCodeType)
                     .OfSyntaxType<CodeTypeSyntax>()
-                    .ToList()
+                    .ToReadOnlyList(expectedCapacity: context.codeType().Length)
                 );
 
             CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
@@ -787,7 +786,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.parameter()
                        .ZeroOrMore(VisitParameter)
                        .OfSyntaxType<ParameterSyntax>()
-                       .ToList()
+                       .ToReadOnlyList(expectedCapacity: context.parameter().Length)
                 );
 
             CreateTokens(node, context.Comma(), SyntaxTokenClassification.Punctuation);
@@ -875,7 +874,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.arrayRankSpecifier()
                     .ZeroOrMore(VisitArrayRankSpecifier)
                     .OfSyntaxType<ArrayRankSpecifierSyntax>()
-                    .ToList());
+                    .ToReadOnlyList(expectedCapacity: context.arrayRankSpecifier().Length));
 
             return node;
         }
@@ -900,7 +899,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.codeType()
                        .ZeroOrMore(VisitCodeType)
                        .OfSyntaxType<CodeTypeSyntax>()
-                       .ToList()
+                       .ToReadOnlyList(expectedCapacity: context.codeType().Length)
                 );
 
             CreateToken(node , context.Identifier() , SyntaxTokenClassification.TypeName);
@@ -922,7 +921,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.identifierOrString()
                        .ZeroOrMore(VisitIdentifierOrString)
                        .OfSyntaxType<IdentifierOrStringSyntax>()
-                       .ToList()
+                       .ToReadOnlyList(expectedCapacity: context.identifierOrString().Length)
                 );
 
             CreateTokens(node, context.Comma(), SyntaxTokenClassification.Punctuation);
