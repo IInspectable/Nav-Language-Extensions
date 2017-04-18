@@ -27,33 +27,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         [NotNull]
-        public string ToCamelcase(string s) {
-
-            if(string.IsNullOrEmpty(s)) {
-                return s ?? string.Empty;
-            }
-
-            return s.Substring(0, 1).ToLowerInvariant() + s.Substring(1);
-        }
-
-        [NotNull]
-        public string ToPascalcase(string s) {
-
-            if (string.IsNullOrEmpty(s)) {
-                return s ?? string.Empty;
-            }
-
-            return s.Substring(0, 1).ToUpperInvariant() + s.Substring(1);
-        }
-
-        [NotNull]
         public string ToFieldName(string s) {
-            return s?.StartsWith(FieldPräfix) == true ? ToCamelcase(s) : $"{FieldPräfix}{ToCamelcase(s)}";
+            return s?.StartsWith(FieldPräfix) == true ? s.ToCamelcase() : $"{FieldPräfix}{s.ToCamelcase()}";
         }
 
         [NotNull]
         public string ToClassName(string s) {
-            return ToPascalcase(s);
+            return s.ToPascalcase();
         }
 
         [NotNull]

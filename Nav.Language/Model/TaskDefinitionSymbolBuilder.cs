@@ -237,9 +237,8 @@ namespace Pharmatechnik.Nav.Language {
                 var sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(sourceNodeSyntax.Name);
 
                 // Special case "init": Hier ist implizit auch Groﬂschreibung erlaubt
-                // TODO Keyword in eigene Klasse
-                if (sourceNode == null && sourceNodeSyntax.Name=="init") {
-                    sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol("Init");
+                if (sourceNode == null && sourceNodeSyntax.Name== SyntaxFacts.InitKeyword) {
+                    sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(SyntaxFacts.InitKeywordAlt);
                 }
 
                 var location   = sourceNodeSyntax.GetLocation();
@@ -439,8 +438,7 @@ namespace Pharmatechnik.Nav.Language {
                                 DiagnosticDescriptors.Semantic.Nav0203TriggerNotAllowedAfterChoice));
                     }
 
-                    // TODO Keyword in eigene Klasse
-                    if (trigger.Name == "spontaneous" || trigger.Name == "spont") {
+                    if (trigger.Name == SyntaxFacts.SpontaneousKeyword || trigger.Name == SyntaxFacts.SpontKeyword) {
                         _diagnostics.Add(new Diagnostic(
                             trigger.Location,
                             DiagnosticDescriptors.Semantic.Nav0201SpontaneousNotAllowedInSignalTrigger));
