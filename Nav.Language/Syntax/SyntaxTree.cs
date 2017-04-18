@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language {
             _fileInfo        = fileInfo;
             _encoding    = encoding;
             _diagnostics = diagnostics ?? Enumerable.Empty<Diagnostic>().ToList();
-            _tokens      = tokens      ?? new SyntaxTokenList();
+            _tokens      = tokens      ?? SyntaxTokenList.Empty;
             _textLines   = textLines   ?? new List<TextLineExtent>();
         }
 
@@ -171,8 +171,8 @@ namespace Pharmatechnik.Nav.Language {
 
         static SyntaxTokenList PostprocessTokens(List<SyntaxToken> tokens, NavCommonTokenStream cts, SyntaxNode syntax, CancellationToken cancellationToken) {
 
-            var result = new List<SyntaxToken>(cts.AllTokens.Count);
-            tokens.Sort((x, y) => x.Start - y.Start);
+            var finalTokens = new List<SyntaxToken>(cts.AllTokens.Count);
+            tokens.Sort(SyntaxTokenComparer.Default);
 
             // Wir haben bereits die signifikanten Token (T) im GrammarVisitor erstellt.
             // Wir können nicht alle Tokens hier ermitteln, da der Visitor viel mehr Kontextinformationen
@@ -192,7 +192,7 @@ namespace Pharmatechnik.Nav.Language {
                     var existing = tokens[index];
                     // Das Token wurde bereits im Visitor erfasst (T)
                     if (existing.Start == candidate.StartIndex) {
-                        result.Add(existing);
+                        finalTokens.Add(existing);
                         index++;
                         continue;
                     }
@@ -229,14 +229,14 @@ namespace Pharmatechnik.Nav.Language {
                         throw new ArgumentException();
                 }
                 
-                //TODO: hier evtl. den "echten" Parent herausfinden...
+                // TODO: hier evtl. den "echten" Parent herausfinden...
                 SyntaxNode parent = syntax;
-                result.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
+                finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
             }
 
-            return new SyntaxTokenList(result);
+            return SyntaxTokenList.AttachSortedTokens(finalTokens);
         }
-
+        
         static IReadOnlyList<TextLineExtent> GetTextLines(string text) {
 
             int index;

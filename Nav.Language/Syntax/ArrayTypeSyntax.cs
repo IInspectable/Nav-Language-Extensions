@@ -10,7 +10,7 @@ namespace Pharmatechnik.Nav.Language {
         readonly IReadOnlyList<ArrayRankSpecifierSyntax> _rankSpecifiers;
         readonly CodeTypeSyntax _type;
 
-        internal ArrayTypeSyntax(TextExtent extent, CodeTypeSyntax type, List<ArrayRankSpecifierSyntax> rankSpecifiers) 
+        internal ArrayTypeSyntax(TextExtent extent, CodeTypeSyntax type, IReadOnlyList<ArrayRankSpecifierSyntax> rankSpecifiers) 
             : base(extent) {
 
             AddChildNode( _type           = type);
