@@ -8,30 +8,37 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
+using Microsoft.VisualStudio.Text.Operations;
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
-
 using Pharmatechnik.Nav.Language.Extension.Utilities;
+using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
-    // TODO Code Review
     [ExportCommandHandler("Comment Selection Command Handler", NavLanguageContentDefinitions.ContentType)]
     class CommentUncommentSelectionCommandHandler :
         ICommandHandler<CommentSelectionCommandArgs>,
         ICommandHandler<UncommentSelectionCommandArgs> {
 
         readonly IWaitIndicator _waitIndicator;
+        readonly ITextUndoHistoryRegistry _undoHistoryRegistry;
+        readonly IEditorOperationsFactoryService _editorOperationsFactoryService;
 
         const string SingleLineCommentString = "//";
         const string BlockCommentStartString = "/*";
         const string BlockCommentEndString   = "*/";
 
         [ImportingConstructor]
-        public CommentUncommentSelectionCommandHandler(IWaitIndicator waitIndicator) {
-            _waitIndicator = waitIndicator;
+        public CommentUncommentSelectionCommandHandler(
+            IWaitIndicator waitIndicator,
+            ITextUndoHistoryRegistry undoHistoryRegistry,
+            IEditorOperationsFactoryService editorOperationsFactoryService) {
+
+            _waitIndicator                  = waitIndicator;
+            _undoHistoryRegistry            = undoHistoryRegistry;
+            _editorOperationsFactoryService = editorOperationsFactoryService;
         }
 
         public CommandState GetCommandState(CommentSelectionCommandArgs args, Func<CommandState> nextHandler) {
@@ -63,6 +70,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             using (_waitIndicator.StartWait(title, message, allowCancel: false)) {
 
+                using(var undoTransaction=new TextUndoTransaction(title, textView, _undoHistoryRegistry, _editorOperationsFactoryService))
                 using (var textEdit = subjectBuffer.CreateEdit()) {
 
                     var spansToSelect = new List<ITrackingSpan>();
@@ -70,10 +78,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
                     textEdit.Apply();
 
-                    if(spansToSelect.Any()) {
-                        // TODO, this doesn't currently handle block selection
+                    if(spansToSelect.Any()) {                        
                         textView.SetSelection(spansToSelect.First().GetSpan(subjectBuffer.CurrentSnapshot));
                     }
+
+                    undoTransaction.Commit();
                 }
             }
         }
@@ -105,7 +114,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var firstNonWhitespaceOnLine = firstAndLastLine.Item1.GetFirstNonWhitespacePosition();
                 var insertPosition = firstNonWhitespaceOnLine ?? firstAndLastLine.Item1.Start;
 
-                // If there isn't a selection, we select the whole line
+                // es gibt keine Selektion => ganze Zeile auskommentieren
                 textEdit.Insert(insertPosition, SingleLineCommentString);
 
                 spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(firstAndLastLine.Item1.Start, firstAndLastLine.Item1.End), SpanTrackingMode.EdgeInclusive));
@@ -120,10 +129,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                     spansToSelect.Add(span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive));
 
                 } else {
-                    // Select the entirety of the lines, so that another comment operation will add more comments, not insert block comments.
+                    
+                    // Das Kommentare an der kleinsten Spalte beginnen, die nicht aus einem Leerzeichen besteht
+                    // Bsp.:
+                    // ...A
+                    // ....B
+                    // ->->C
+                    // Kommentar beginnt bei Spalte 3
                     var indentToColumn = DetermineSmallestSignificantColumn(options, span, firstAndLastLine);
                     ApplyCommentToNonBlankLines(options, textEdit, firstAndLastLine, indentToColumn);
 
+                    // Den ganzen "Block" an Zeilen selektieren
                     spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(firstAndLastLine.Item1.Start.Position, firstAndLastLine.Item2.End.Position), SpanTrackingMode.EdgeInclusive));
                 }
             }

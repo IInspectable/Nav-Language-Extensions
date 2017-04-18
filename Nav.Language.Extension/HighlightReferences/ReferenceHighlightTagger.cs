@@ -132,19 +132,14 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             yield return new TagSpan<ReferenceHighlightTag>(definitionSpan, new DefinitionHighlightTag());
 
             // Und die zugehörigen Referenzen
-            // TODO BUG spans berücksichtigen
-            foreach (SnapshotSpan span in referenceSpans) {
-                yield return new TagSpan<ReferenceHighlightTag>(span, new ReferenceHighlightTag());
+            foreach (SnapshotSpan referenceSpan in referenceSpans.Where(spans.IntersectsWith)) {
+                yield return new TagSpan<ReferenceHighlightTag>(referenceSpan, new ReferenceHighlightTag());
             }           
         }
 
         List<SnapshotSpan> RebuildReferences() {
 
             _referenceSpans.Clear();
-
-            if(SemanticModelService?.SemanticModelResult == null) {
-                return _referenceSpans;
-            }
 
             var newReferences = BuildReferences(SemanticModelService.SemanticModelResult).ToList();
             if (newReferences.Count > 1) {
