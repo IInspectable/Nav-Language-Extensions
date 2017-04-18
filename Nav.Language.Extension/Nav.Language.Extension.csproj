@@ -106,6 +106,7 @@
     <Compile Include="Common\TextSelectionExtensions.cs" />
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
     <Compile Include="Common\TextViewExtensions.cs" />
+    <Compile Include="Common\TextUndoTransaction.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
     <Compile Include="Images\ImageMonikerImageList.cs" />
     <Compile Include="Common\ServiceProviderExtensions.cs" />

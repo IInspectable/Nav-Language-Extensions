@@ -125,7 +125,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             int currentColumn = 0;
             for (int index = 0; index < text.Length; index++) {
                 var c = text[index];
-                if (currentColumn == column) {
+                if (currentColumn >= column) {
                     break;
                 }
                 if (c == '\t') {

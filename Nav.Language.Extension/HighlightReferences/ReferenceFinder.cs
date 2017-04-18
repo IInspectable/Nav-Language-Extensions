@@ -37,6 +37,10 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
             yield return taskNodeSymbol;
 
+            if(taskNodeSymbol.Alias != null) {
+                yield return taskNodeSymbol.Alias;
+            }
+
             foreach(var exitTransition in taskNodeSymbol.Outgoings) {
                 yield return exitTransition.Source;
             }

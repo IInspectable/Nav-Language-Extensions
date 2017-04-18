@@ -15,7 +15,6 @@ using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 using Pharmatechnik.Nav.Language.Extension.HighlightReferences;
 
 #endregion
-// TODO Code Review
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
@@ -48,9 +47,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
                 var spans = GetTags(tagger, args.TextView.TextSnapshot.GetFullSpan()).ToList();
 
-                var destTag = GetDestinationTag(tagUnderCursor.Value, spans, args.Direction);
-                if(args.TextView.TryMoveCaretToAndEnsureVisible(destTag.Start, _outliningManagerService)) {
-                    args.TextView.SetSelection(destTag);
+                var destinationTag = GetDestinationTag(tagUnderCursor.Value, spans, args.Direction);
+                if(args.TextView.TryMoveCaretToAndEnsureVisible(destinationTag.Start, _outliningManagerService)) {
+                    args.TextView.SetSelection(destinationTag);
                 }
             }
         }
@@ -79,7 +78,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             return orderedTagSpans[destIndex];
         }
 
-        private SnapshotSpan? FindTagUnderCaret(
+        SnapshotSpan? FindTagUnderCaret(
             ITagAggregator<ReferenceHighlightTag> tagAggregator,
             ITextView textView) {
             // We always want to be working with the surface buffer here, so this line is correct
