@@ -25,5 +25,9 @@ namespace Pharmatechnik.Nav.Language {
         public IReadOnlyList<ExitTransitionDefinitionSyntax> ExitTransitionDefinitions {
             get { return _exitTransitionDefinitions; }
         }
+
+        protected override bool PromiseNoDescendantNodeOfSameType {
+            get { return true; }
+        }
     }
 }

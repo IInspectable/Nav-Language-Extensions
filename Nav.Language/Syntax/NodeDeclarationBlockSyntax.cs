@@ -60,5 +60,9 @@ namespace Pharmatechnik.Nav.Language {
         public IEnumerable<ViewNodeDeclarationSyntax> ViewNodes() {
             return NodeDeclarations.OfType<ViewNodeDeclarationSyntax>();
         }
+
+        protected override bool PromiseNoDescendantNodeOfSameType {
+            get { return true; }
+        }
     }
 }

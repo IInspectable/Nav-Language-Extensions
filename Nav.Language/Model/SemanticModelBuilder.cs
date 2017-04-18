@@ -86,7 +86,7 @@ namespace Pharmatechnik.Nav.Language {
             //====================
             // 2. TaskDefinitions
             //====================
-            foreach (var taskDefinitionSyntax in syntax.DescendantNodes().OfType<TaskDefinitionSyntax>()) {
+            foreach (var taskDefinitionSyntax in syntax.DescendantNodes<TaskDefinitionSyntax>()) {
                 ProcessTaskDefinitionSyntax(taskDefinitionSyntax, cancellationToken);
             }
 
@@ -131,7 +131,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         void ProcessCodeLanguage(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
-            foreach (var codeUsingDeclarationSyntax in syntax.DescendantNodes().OfType<CodeUsingDeclarationSyntax>()) {
+            foreach (var codeUsingDeclarationSyntax in syntax.DescendantNodes<CodeUsingDeclarationSyntax>()) {
 
                 cancellationToken.ThrowIfCancellationRequested();
 

@@ -1,7 +1,11 @@
+#region Using Directives
+
 using System.Collections.Generic;
-using System.Linq;
+
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
@@ -9,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
         public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(ParseResult parseResult, IOutliningRegionTagCreator tagCreator) {
 
-            var transitionBlocks = parseResult.SyntaxTree.GetRoot().DescendantNodes().OfType<TransitionDefinitionBlockSyntax>();
+            var transitionBlocks = parseResult.SyntaxTree.GetRoot().DescendantNodes<TransitionDefinitionBlockSyntax>();
 
             foreach (var transitionBlock in transitionBlocks) {
                 var extent = transitionBlock.Extent;

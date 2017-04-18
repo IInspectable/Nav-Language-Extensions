@@ -1,16 +1,21 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+
 using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Internal;
 
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
     public sealed class SyntaxTokenList: IReadOnlyList<SyntaxToken> {
 
+        static readonly IReadOnlyList<SyntaxToken> EmptyTokens= new List<SyntaxToken>(Enumerable.Empty<SyntaxToken>()).AsReadOnly();
         readonly IReadOnlyList<SyntaxToken> _tokens;
 
         public SyntaxTokenList(): this(null) {                
@@ -18,10 +23,14 @@ namespace Pharmatechnik.Nav.Language {
 
         public SyntaxTokenList(List<SyntaxToken> tokens) {
 
-            var tokenList = new List<SyntaxToken>(tokens??Enumerable.Empty<SyntaxToken>());
-            tokenList.Sort((x, y) => x.Start - y.Start);
+            if(tokens?.Count != 0) {
+                var tokenList = new List<SyntaxToken>(tokens ?? Enumerable.Empty<SyntaxToken>());
+                tokenList.Sort((x, y) => x.Start - y.Start);
 
-            _tokens = tokenList;
+                _tokens = tokenList;
+            } else {
+                _tokens = EmptyTokens;
+            }      
         }
 
         public IEnumerator<SyntaxToken> GetEnumerator() {
