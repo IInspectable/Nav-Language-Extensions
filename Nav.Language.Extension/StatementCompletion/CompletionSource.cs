@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Pharmatechnik.Nav.Language.Extension.Images;
@@ -23,9 +23,9 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets) {
-            if (_disposed)
+            if(_disposed) {
                 throw new ObjectDisposedException("OokCompletionSource");
-
+            }
 
             var codeGenerationUnit = SemanticModelService.SemanticModelResult?.CodeGenerationUnit;
             if(codeGenerationUnit == null) {
@@ -54,7 +54,7 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
             var taskDefinition = codeGenerationUnit.TaskDefinitions
                                                     .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent));
 
-            var img=NavLanguagePackage.GetBitmapSource(ImageMonikers.DialogNode);
+            var img=NavLanguagePackage.GetBitmapSource(ImageMonikers.InitConnectionPoint);
           
             List<Completion> completions = new List<Completion>();
             if (taskDefinition != null) {
@@ -65,9 +65,23 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
                     }
                 }
             }
+            img= NavLanguagePackage.GetBitmapSource(KnownMonikers.IntellisenseKeyword);
+            foreach(var keyword in SyntaxFacts.Keywords.OrderBy(n=>n)) {
+                completions.Add(new Completion(displayText: keyword, insertionText: keyword, description: $"{keyword} Keyword", iconSource: img, iconAutomationText: "keyword"));
+            }
+            
             var applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
 
             completionSets.Add(new CompletionSet("All", "All", applicableTo, completions, Enumerable.Empty<Completion>()));
+
+            completions = new List<Completion>();
+            img = NavLanguagePackage.GetBitmapSource(KnownMonikers.IntellisenseKeyword);
+            foreach (var keyword in SyntaxFacts.Keywords.OrderBy(n => n))
+            {
+                completions.Add(new Completion(displayText: keyword, insertionText: keyword, description: $"{keyword} Keyword", iconSource: img, iconAutomationText: "keyword"));
+            }
+            completionSets.Add(new CompletionSet(moniker: "Keyword", displayName: "Keyword", applicableTo: applicableTo, completions: completions, completionBuilders: Enumerable.Empty<Completion>()));
+
         }
 
         public override void Dispose() {
