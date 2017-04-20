@@ -85,6 +85,9 @@
     <Compile Include="Common\LinePosition.cs" />
     <Compile Include="Common\LinePositionExtent.cs" />
     <Compile Include="Common\Location.cs" />
+    <Compile Include="Dependencies\DependencyExtensions.cs" />
+    <Compile Include="Dependencies\Dependency.cs" />
+    <Compile Include="Dependencies\DependencyItem.cs" />
     <Compile Include="Diagnostic\DiagnosticCategory.cs" />
     <Compile Include="Diagnostic\DiagnosticDescriptors.cs" />
     <Compile Include="Diagnostic\DiagnosticDescriptors.Semantic.cs" />

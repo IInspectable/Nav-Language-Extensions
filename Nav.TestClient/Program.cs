@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Pharmatechnik.Nav.Language;
+using Pharmatechnik.Nav.Language.Dependencies;
 
 #endregion
 
@@ -49,56 +50,69 @@ namespace TestClient
         
         void Run(string directory) {
 
-            int maxTokens = 0;
-            int sumTokens = 0;
-            int files     = 0;
-
-            var navFiles = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories).SelectMany(f=> Enumerable.Repeat(f, 1000));
+            var navFiles = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories);
             var codeGenerationUnits= navFiles
-                                          //   .AsParallel().WithMergeOptions(ParallelMergeOptions.NotBuffered) // Sofortige Ausgabe der Ergebnisse
+                                           .AsParallel().WithMergeOptions(ParallelMergeOptions.NotBuffered) // Sofortige Ausgabe der Ergebnisse
                                           .Select(BuildCodeGenerationUnit);
 
-            foreach(var codeGenerationUnit in codeGenerationUnits.Where(cu => cu!=null)) {
+            var codeGens= codeGenerationUnits.Where(cu => cu != null).ToList();
 
-                files++;
+            var dependencies = codeGens.SelectMany(cg => cg.TaskDefinitions)
+                                       .SelectMany(Dependency.FromTaskDefinition);
+            var usings = dependencies.CollectIncomingDependencies();
 
-                var syntaxTree = codeGenerationUnit.Syntax.SyntaxTree;
-                var file       = syntaxTree.FileInfo;
-
-                bool writeEndSeparator = false;
-
-                if(syntaxTree.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error) || 
-                   codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
-                    WriteInfo("");
-                    WriteInfo("File:");
-                    WriteInfo("=====");
-                    WriteInfo("{0}", file); 
-                    writeEndSeparator = true;
+            foreach (var u in usings.OrderByDescending(u=> u.Value.Count).Take(10)) {
+                Console.WriteLine($"{u.Value.Count,4} ==> {u.Key.TaskName}");
+                foreach (var dependency in u.Value) {
+                    //Console.WriteLine($"   {dependency.UsingItem.Location}");
                 }
-               
-                if (syntaxTree.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
-                    WriteInfo("");
-                    WriteInfo("Syntaxfehler:");
-                    WriteInfo("=============");
-                    WriteErrorDiagnostics(syntaxTree.Diagnostics);
-                }
-
-                if (codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
-                    WriteInfo("");
-                    WriteInfo("Semantikfehler:");
-                    WriteInfo("===============");
-                    WriteErrorDiagnostics(codeGenerationUnit.Diagnostics);
-                }
-
-                if (writeEndSeparator) {
-                    WriteInfo("=============================================================");
-                }
-
-                maxTokens =  Math.Max(maxTokens, syntaxTree.Tokens.Count);
-                sumTokens += syntaxTree.Tokens.Count;
             }
 
-            Console.WriteLine("maxTokens: {0}, sumTokens: {1}, Files {2}", maxTokens, sumTokens, files);
+            //int maxTokens = 0;
+            //int sumTokens = 0;
+            //int files = 0;
+
+            //foreach (var codeGenerationUnit in codeGenerationUnits.Where(cu => cu!=null)) {
+
+            //    files++;
+
+            //    var syntaxTree = codeGenerationUnit.Syntax.SyntaxTree;
+            //    var file       = syntaxTree.FileInfo;
+
+            //    bool writeEndSeparator = false;
+
+            //    if(syntaxTree.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error) || 
+            //       codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
+            //        WriteInfo("");
+            //        WriteInfo("File:");
+            //        WriteInfo("=====");
+            //        WriteInfo("{0}", file); 
+            //        writeEndSeparator = true;
+            //    }
+
+            //    if (syntaxTree.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
+            //        WriteInfo("");
+            //        WriteInfo("Syntaxfehler:");
+            //        WriteInfo("=============");
+            //        WriteErrorDiagnostics(syntaxTree.Diagnostics);
+            //    }
+
+            //    if (codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
+            //        WriteInfo("");
+            //        WriteInfo("Semantikfehler:");
+            //        WriteInfo("===============");
+            //        WriteErrorDiagnostics(codeGenerationUnit.Diagnostics);
+            //    }
+
+            //    if (writeEndSeparator) {
+            //        WriteInfo("=============================================================");
+            //    }
+
+            //    maxTokens =  Math.Max(maxTokens, syntaxTree.Tokens.Count);
+            //    sumTokens += syntaxTree.Tokens.Count;
+            //}
+
+            //Console.WriteLine("maxTokens: {0}, sumTokens: {1}, Files {2}", maxTokens, sumTokens, files);
         }
       
         CodeGenerationUnit BuildCodeGenerationUnit(string filename) {
