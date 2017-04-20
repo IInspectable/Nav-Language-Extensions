@@ -55,7 +55,7 @@ namespace TestClient
                                            .AsParallel().WithMergeOptions(ParallelMergeOptions.NotBuffered) // Sofortige Ausgabe der Ergebnisse
                                           .Select(BuildCodeGenerationUnit);
 
-            var codeGens= codeGenerationUnits.Where(cu => cu != null).ToList();
+            var codeGens= codeGenerationUnits.Where(cu => cu != null);
 
             var dependencies = codeGens.SelectMany(cg => cg.TaskDefinitions)
                                        .SelectMany(Dependency.FromTaskDefinition);
@@ -63,9 +63,9 @@ namespace TestClient
 
             foreach (var u in usings.OrderByDescending(u=> u.Value.Count).Take(10)) {
                 Console.WriteLine($"{u.Value.Count,4} ==> {u.Key.TaskName}");
-                foreach (var dependency in u.Value) {
-                    //Console.WriteLine($"   {dependency.UsingItem.Location}");
-                }
+                //foreach (var dependency in u.Value) {
+                //    //Console.WriteLine($"   {dependency.UsingItem.Location}");
+                //}
             }
 
             //int maxTokens = 0;
