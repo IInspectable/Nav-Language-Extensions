@@ -7,19 +7,16 @@ using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.TextManager.Interop;
-using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Commands
-{
+namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     [Export(typeof(IVsTextViewCreationListener))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
     [TextViewRole(PredefinedTextViewRoles.Interactive)]
-    class TextViewCreationListener : IVsTextViewCreationListener
-    {
+    sealed class TextViewCreationListener : IVsTextViewCreationListener {
 
         readonly ICommandHandlerServiceProvider _commandHandlerServiceProvider;
         readonly IVsEditorAdaptersFactoryService _editorAdaptersFactory;
@@ -27,16 +24,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands
         [ImportingConstructor]
         public TextViewCreationListener(
             IVsEditorAdaptersFactoryService editorAdaptersFactory,
-            ICommandHandlerServiceProvider commandHandlerServiceProvider)
-        {
+            ICommandHandlerServiceProvider commandHandlerServiceProvider) {
 
-            _commandHandlerServiceProvider = commandHandlerServiceProvider;
             _editorAdaptersFactory = editorAdaptersFactory;
-
+            _commandHandlerServiceProvider = commandHandlerServiceProvider;            
         }
 
-        public void VsTextViewCreated(IVsTextView textView)
-        {
+        public void VsTextViewCreated(IVsTextView textView) {
 
             var wpfTextView = _editorAdaptersFactory.GetWpfTextView(textView);
 

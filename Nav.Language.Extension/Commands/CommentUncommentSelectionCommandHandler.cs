@@ -11,16 +11,14 @@ using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text.Operations;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
-using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
-    [ExportCommandHandler("Comment Selection Command Handler", NavLanguageContentDefinitions.ContentType)]
-    class CommentUncommentSelectionCommandHandler :
-        ICommandHandler<CommentSelectionCommandArgs>,
-        ICommandHandler<UncommentSelectionCommandArgs> {
+    [ExportCommandHandler(CommandHandlerNames.CommentUncommentSelectionCommandHandler, NavLanguageContentDefinitions.ContentType)]
+    class CommentUncommentSelectionCommandHandler: ICommandHandler<CommentSelectionCommandArgs>, 
+                                                   ICommandHandler<UncommentSelectionCommandArgs> {
 
         readonly IWaitIndicator _waitIndicator;
         readonly ITextUndoHistoryRegistry _undoHistoryRegistry;
@@ -210,9 +208,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             spansToSelect.Add(span.Snapshot.CreateTrackingSpan(Span.FromBounds(positionOfStart, positionOfEnd + SyntaxFacts.BlockCommentEnd.Length), SpanTrackingMode.EdgeExclusive));
         }
 
-        /// <summary>
-        /// Adds edits to comment out each non-blank line, at the given column.
-        /// </summary>
+        /// <summary> Adds edits to comment out each non-blank line, at the given column. </summary>
         void ApplyCommentToNonBlankLines(IEditorOptions options, ITextEdit textEdit, Tuple<ITextSnapshotLine, ITextSnapshotLine> firstAndLastLine, int indentToColumn) {
             for (int lineNumber = firstAndLastLine.Item1.LineNumber; lineNumber <= firstAndLastLine.Item2.LineNumber; ++lineNumber) {
                 var line = firstAndLastLine.Item1.Snapshot.GetLineFromLineNumber(lineNumber);
@@ -241,9 +237,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             return Tuple.Create(firstLine, lastLine);
         }
 
-        /// <summary>
-        /// Returns true if the span includes all of the non-whitespace text on the first and last line.
-        /// </summary>
+        /// <summary> Returns true if the span includes all of the non-whitespace text on the first and last line. </summary>
         static bool SpanIncludesAllTextOnIncludedLines(SnapshotSpan span) {
             var firstAndLastLine = DetermineFirstAndLastLine(span);
 

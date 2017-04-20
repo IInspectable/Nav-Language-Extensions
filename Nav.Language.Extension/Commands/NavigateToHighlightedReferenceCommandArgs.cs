@@ -1,11 +1,10 @@
 ﻿using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     enum NavigateDirection {
-        Up = -1,
+        Up  = -1,
         Down = 1,
     }
 
