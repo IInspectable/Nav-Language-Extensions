@@ -18,6 +18,7 @@ namespace Pharmatechnik.Nav.Language.Dependencies {
         public DependencyItem UsingItem { get; }
         public DependencyItem UsedItem { get; }
 
+        // TODO Umbenennen und Logik wo anders hin (um welche Dependencies geht es denn?)
         public static IEnumerable<Dependency> FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
 
             foreach (var taskNode in taskDefinition.NodeDeclarations
