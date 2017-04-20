@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System.Collections.Immutable;
+using System.Linq;
 using Pharmatechnik.Nav.Language.Generated;
 
 #endregion
@@ -39,7 +40,7 @@ namespace Pharmatechnik.Nav.Language {
         public static readonly string ModalEdgeKeyword       = "o->";
         public static readonly string ModalEdgeKeywordAlt    = "*->";
 
-        public static readonly ImmutableHashSet<string> Keywords = new[] {
+        public static readonly ImmutableHashSet<string> NavKeywords = new[] {
             TaskKeyword           ,
             TaskrefKeyword        ,
             InitKeyword           ,
@@ -55,6 +56,17 @@ namespace Pharmatechnik.Nav.Language {
             SpontaneousKeyword    ,
             SpontKeyword          ,
             DoKeyword             ,
+            GoToEdgeKeyword       ,
+            NonModalEdgeKeyword   ,
+            ModalEdgeKeyword      ,
+            ModalEdgeKeywordAlt
+        }.ToImmutableHashSet();
+
+        public static bool IsNavKeyword(string value) {
+            return NavKeywords.Contains(value);
+        }
+
+        public static readonly ImmutableHashSet<string> CodeKeywords = new[] {
             ResultKeyword         ,
             ParamsKeyword         ,
             BaseKeyword           ,
@@ -64,12 +76,15 @@ namespace Pharmatechnik.Nav.Language {
             GeneratetoKeyword     ,
             NotimplementedKeyword ,
             AbstractmethodKeyword ,
-            DonotinjectKeyword    ,
-            GoToEdgeKeyword       ,
-            NonModalEdgeKeyword   ,
-            ModalEdgeKeyword      ,
-            ModalEdgeKeywordAlt    
+            DonotinjectKeyword    
+            
         }.ToImmutableHashSet();
+
+        public static bool IsCodeKeyword(string value) {
+            return CodeKeywords.Contains(value);
+        }
+
+        public static readonly ImmutableHashSet<string> Keywords = Enumerable.Concat(NavKeywords, CodeKeywords).ToImmutableHashSet();
 
         public static bool IsKeyword(string value) {
             return Keywords.Contains(value);
