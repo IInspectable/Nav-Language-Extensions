@@ -2,7 +2,6 @@
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 
 #endregion
 

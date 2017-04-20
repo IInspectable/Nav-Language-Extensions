@@ -5,8 +5,6 @@ using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-
-using Pharmatechnik.Nav.Language.Extension.Commands.Extensibility;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion

@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Text.Editor;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Commands.Extensibility {
+namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     abstract class CommandArgs {
 

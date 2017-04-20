@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Commands.Extensibility {
+namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     interface ICommandHandlerService {
         CommandState GetCommandState<T>(T args, Func<CommandState> lastHandler) where T : CommandArgs;

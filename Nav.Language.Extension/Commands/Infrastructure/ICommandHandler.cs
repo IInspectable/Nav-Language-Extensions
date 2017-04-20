@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pharmatechnik.Nav.Language.Extension.Commands.Extensibility {
+namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     interface ICommandHandler {
     }

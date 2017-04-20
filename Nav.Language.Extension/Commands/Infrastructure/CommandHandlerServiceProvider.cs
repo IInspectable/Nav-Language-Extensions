@@ -1,19 +1,17 @@
 ﻿#region Using Directives
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-
+using System.Linq;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
-
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Commands.Extensibility {
+namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     interface ICommandHandlerServiceProvider {
 
@@ -27,12 +25,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands.Extensibility {
         readonly IEnumerable<Lazy<ICommandHandler, CommandHandlerMetadata>> _commandHandlers;
 
         [ImportingConstructor]
-        public CommandHandlerServiceProvider([ImportMany]IEnumerable<Lazy<ICommandHandler, CommandHandlerMetadata>> commandHandlers) {
+        public CommandHandlerServiceProvider([ImportMany] IEnumerable<Lazy<ICommandHandler, CommandHandlerMetadata>> commandHandlers) {
             _commandHandlers = commandHandlers;
         }
 
         public ICommandHandlerService GetService(ITextView textView) {
-            var contentTypes = textView.GetContentTypes();
+            var contentTypes    = textView.GetContentTypes();
             var commandHandlers = SelectCommandHandler(contentTypes);
             return new CommandHandlerService(commandHandlers);
         }

@@ -6,7 +6,7 @@ using System.ComponentModel.Composition;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Commands.Extensibility {
+namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     [MetadataAttribute]
     [AttributeUsage(AttributeTargets.Class)]
