@@ -18,9 +18,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         /// <summary>
         /// The text view that originated this command.
         /// </summary>
-        public ITextView TextView { get; }
+        public IWpfTextView TextView { get; }
 
-        protected CommandArgs(ITextView textView, ITextBuffer subjectBuffer) {
+        protected CommandArgs(IWpfTextView textView, ITextBuffer subjectBuffer) {
             TextView      = textView      ?? throw new ArgumentNullException(nameof(textView));
             SubjectBuffer = subjectBuffer ?? throw new ArgumentNullException(nameof(subjectBuffer));
         }

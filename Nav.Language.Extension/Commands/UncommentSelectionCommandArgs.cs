@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Text.Editor;
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     class UncommentSelectionCommandArgs : CommandArgs {
-        public UncommentSelectionCommandArgs(ITextView textView, ITextBuffer subjectBuffer)
+        public UncommentSelectionCommandArgs(IWpfTextView textView, ITextBuffer subjectBuffer)
             : base(textView, subjectBuffer) {
         }
     }

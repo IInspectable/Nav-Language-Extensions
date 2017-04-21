@@ -1,4 +1,4 @@
-﻿#region Using Directives
+#region Using Directives
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
@@ -7,8 +7,8 @@ using Microsoft.VisualStudio.Text.Editor;
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
-    class ReturnKeyCommandArgs : CommandArgs {
-        public ReturnKeyCommandArgs(IWpfTextView textView, ITextBuffer subjectBuffer)
+    class GoToDefinitionCommandArgs : CommandArgs {
+        public GoToDefinitionCommandArgs(IWpfTextView textView, ITextBuffer subjectBuffer)
             : base(textView, subjectBuffer) {
         }
     }
