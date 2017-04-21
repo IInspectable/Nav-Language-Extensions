@@ -37,6 +37,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                     return QueryNavigateHighlightedReferenceStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText, NavigateDirection.Down);
                 case CmdidPreviousHighlightedReference:
                     return QueryNavigateHighlightedReferenceStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText, NavigateDirection.Up);
+
+                case VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                    return QueryCompleteWordStatus(prgCmds);
+
+                case VSConstants.VSStd2KCmdID.BACKTAB:
+                    return QueryBackTabStatus(prgCmds);
                 default:
                     return NextCommandTarget.QueryStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
             }
@@ -68,6 +74,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 commandCount : commandCount,
                 prgCmds      : prgCmds,
                 commandText  : commandText);
+        }
+
+        int QueryBackTabStatus(OLECMD[] prgCmds) {
+            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
+            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
+            return VSConstants.S_OK;
+        }
+
+        int QueryCompleteWordStatus(OLECMD[] prgCmds) {
+            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
+            return VSConstants.S_OK;
         }
 
         int GetCommandState<T>(
