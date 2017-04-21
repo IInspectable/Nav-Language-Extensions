@@ -7,4 +7,4 @@ if "%config%" == "" (
 
 "%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\MSBuild.exe" Nav.Language.Extensions.sln /p:Configuration="%config%" /maxcpucount:3 /v:n
 
-Pause
+REM Pause
