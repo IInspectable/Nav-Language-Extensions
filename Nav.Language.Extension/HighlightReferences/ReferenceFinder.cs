@@ -8,11 +8,10 @@ using Pharmatechnik.Nav.Language.Extension.Options;
 
 namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
-    // TODO Includes / TaskReferences etc. nochmals durchsehen
-
     // Das erste zurückgeliferte Symbol hat immer den Charakter der "Definition", alle weiteren
     // stellen die Referenzen auf diese Definition dar
     sealed class ReferenceFinder : SymbolVisitor<IEnumerable<ISymbol>> {
+
         readonly IAdvancedOptions _advancedOptions;
 
         ReferenceFinder(IAdvancedOptions advancedOptions) {
@@ -25,8 +24,9 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
                 return Enumerable.Empty<ISymbol>();
             }
 
+            var referenceRoot = ReferenceRootFinder.FindRoot(symbol);
             var finder = new ReferenceFinder(advancedOptions);
-            return finder.Visit(symbol);
+            return finder.Visit(referenceRoot);
         }
 
         protected override IEnumerable<ISymbol> DefaultVisit(ISymbol symbol) {
@@ -51,6 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
         }
 
         public override IEnumerable<ISymbol> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+
             yield return initNodeSymbol;
 
             foreach (var transition in initNodeSymbol.Outgoings) {
@@ -59,6 +60,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
         }
 
         public override IEnumerable<ISymbol> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
+
             yield return exitNodeSymbol;
 
             foreach (var edge in exitNodeSymbol.Incomings) {
@@ -67,6 +69,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
         }
 
         public override IEnumerable<ISymbol> VisitEndNodeSymbol(IEndNodeSymbol endNodeSymbol) {
+
             yield return endNodeSymbol;
 
             foreach (var edge in endNodeSymbol.Incomings) {
@@ -75,6 +78,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
         }
 
         public override IEnumerable<ISymbol> VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
+
             yield return dialogNodeSymbol;
 
             foreach (var transition in dialogNodeSymbol.Outgoings) {
@@ -87,6 +91,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
         }
 
         public override IEnumerable<ISymbol> VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
+
             yield return viewNodeSymbol;
 
             foreach (var transition in viewNodeSymbol.Outgoings) {
@@ -99,6 +104,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
         }
 
         public override IEnumerable<ISymbol> VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
+
             yield return choiceNodeSymbol;
 
             foreach (var transition in choiceNodeSymbol.Outgoings) {
@@ -110,32 +116,13 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             }
         }
 
-        public override IEnumerable<ISymbol> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
-
-            if(nodeReferenceSymbol.Declaration == null) {
-                return DefaultVisit(nodeReferenceSymbol);
-            }
-            return Visit(nodeReferenceSymbol.Declaration);
-        }
-
-        public override IEnumerable<ISymbol> VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
-            return Visit(taskNodeAliasSymbol.TaskNode);
-        }
-
         public override IEnumerable<ISymbol> VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
+
             yield return taskDeclarationSymbol;
-
-
-            foreach (var reference in taskDeclarationSymbol.References) {
+            
+            foreach (var reference in taskDeclarationSymbol.References.SelectMany(VisitTaskNodeSymbol)) {
                 yield return reference;
             }
-        }
-
-        public override IEnumerable<ISymbol> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
-            if(taskDefinitionSymbol.AsTaskDeclaration != null) {
-                return Visit(taskDefinitionSymbol.AsTaskDeclaration);
-            }
-            return DefaultVisit(taskDefinitionSymbol);
         }
 
         public override IEnumerable<ISymbol> VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
@@ -150,7 +137,5 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
                 yield return taskNode;
             }
         }
-
-        // TODO Connection Points
     }
 }
