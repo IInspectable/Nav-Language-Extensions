@@ -45,8 +45,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         IList<ICommandHandler> SelectCommandHandler(IEnumerable<IContentType> contentTypes) {
-            var handler = _commandHandlers.Where(h => contentTypes.Any(d => d.MatchesAny(h.Metadata.ContentTypes)))
-                                          .Select(ch => ch.Value)
+
+            var extensions = _commandHandlers.Where(h => contentTypes.Any(d => d.MatchesAny(h.Metadata.ContentTypes)));
+                
+            var handler = ExtensionOrderer.Order(extensions).Select(ch => ch.Value)
                                           .ToList();
 
             return handler;
