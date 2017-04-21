@@ -111,6 +111,7 @@
     <Compile Include="Common\TextViewExtensions.cs" />
     <Compile Include="Common\TextUndoTransaction.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
+    <Compile Include="HighlightReferences\ReferenceRootFinder.cs" />
     <Compile Include="Images\ImageMonikerImageList.cs" />
     <Compile Include="Common\ServiceProviderExtensions.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />
