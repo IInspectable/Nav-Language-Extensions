@@ -1,7 +1,7 @@
 ﻿#region Using Directives
 
 using System;
-
+using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Utilities;
@@ -41,6 +41,22 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             switch((VSConstants.VSStd2KCmdID) commandId) {
+                case VSConstants.VSStd2KCmdID.TYPECHAR:
+                    ExecuteTypeCharacter(pvaIn, subjectBuffer, contentType, ExecuteNextCommandTarget);
+                    break;
+
+                case VSConstants.VSStd2KCmdID.RETURN:
+                    ExecuteReturn(subjectBuffer, contentType, ExecuteNextCommandTarget);
+                    break;
+
+                case VSConstants.VSStd2KCmdID.TAB:
+                    ExecuteTab(subjectBuffer, contentType, ExecuteNextCommandTarget);
+                    break;
+
+                case VSConstants.VSStd2KCmdID.BACKTAB:
+                    ExecuteBackTab(subjectBuffer, contentType, ExecuteNextCommandTarget);
+                    break;
+                    
                 case VSConstants.VSStd2KCmdID.COMMENTBLOCK:
                 case VSConstants.VSStd2KCmdID.COMMENT_BLOCK:
                     ExecuteCommentBlock(subjectBuffer, ExecuteNextCommandTarget);
@@ -49,6 +65,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 case VSConstants.VSStd2KCmdID.UNCOMMENTBLOCK:
                 case VSConstants.VSStd2KCmdID.UNCOMMENT_BLOCK:
                     ExecuteUncommentBlock(subjectBuffer, ExecuteNextCommandTarget);
+                    break;
+
+                case VSConstants.VSStd2KCmdID.COMPLETEWORD:
+                    ExecuteCommitUniqueCompletionItem(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
 
                 case CmdidNextHighlightedReference:
@@ -66,6 +86,31 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             return result;
         }
 
+        protected void ExecuteTab(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            HandlerService.Execute(
+                args       : new TabKeyCommandArgs(WpfTextView, subjectBuffer),
+                lastHandler: executeNextCommandTarget);
+        }
+
+        protected void ExecuteBackTab(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            HandlerService.Execute(
+                args       : new BackTabKeyCommandArgs(WpfTextView, subjectBuffer),
+                lastHandler: executeNextCommandTarget);
+        }
+
+        protected void ExecuteReturn(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            HandlerService.Execute(
+                args       : new ReturnKeyCommandArgs(WpfTextView, subjectBuffer),
+                lastHandler: executeNextCommandTarget);
+        }
+
+        protected void ExecuteTypeCharacter(IntPtr pvaIn, ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            var typedChar = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
+            HandlerService.Execute(
+                args       : new TypeCharCommandArgs(WpfTextView, subjectBuffer, typedChar),
+                lastHandler: executeNextCommandTarget);
+        }
+
         protected void ExecuteUncommentBlock(ITextBuffer subjectBuffer, Action executeNextCommandTarget) {
             HandlerService.Execute(
                 args       : new UncommentSelectionCommandArgs(WpfTextView, subjectBuffer),
@@ -81,6 +126,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         protected void ExecutePreviousHighlightedReference(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
             HandlerService.Execute(
                 args       : new NavigateToHighlightedReferenceCommandArgs(WpfTextView, subjectBuffer, NavigateDirection.Up),
+                lastHandler: executeNextCommandTarget);
+        }
+
+        protected void ExecuteCommitUniqueCompletionItem(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            HandlerService.Execute(
+                args       : new CommitUniqueCompletionListItemCommandArgs(WpfTextView, subjectBuffer),
                 lastHandler: executeNextCommandTarget);
         }
 
