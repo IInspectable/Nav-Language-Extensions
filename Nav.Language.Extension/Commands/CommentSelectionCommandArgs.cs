@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Text.Editor;
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     class CommentSelectionCommandArgs : CommandArgs {
-        public CommentSelectionCommandArgs(ITextView textView, ITextBuffer subjectBuffer)
+        public CommentSelectionCommandArgs(IWpfTextView textView, ITextBuffer subjectBuffer)
             : base(textView, subjectBuffer) {
         }
     }

@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Text.Editor;
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     class BackTabKeyCommandArgs : CommandArgs {
-        public BackTabKeyCommandArgs(ITextView textView, ITextBuffer subjectBuffer)
+        public BackTabKeyCommandArgs(IWpfTextView textView, ITextBuffer subjectBuffer)
             : base(textView, subjectBuffer) {
         }
     }

@@ -25,11 +25,36 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             var contentType = subjectBuffer.ContentType;
 
-            if(pguidCmdGroup == VSConstants.VSStd2K) {
-                return ExecuteVisualStudio2000(ref pguidCmdGroup, commandId, executeInformation, pvaIn, pvaOut, subjectBuffer, contentType);
+            if (pguidCmdGroup == VSConstants.GUID_VSStandardCommandSet97) {
+                return ExecuteVisualStudio97(ref pguidCmdGroup, commandId, executeInformation, pvaIn, pvaOut, subjectBuffer, contentType);
             }
 
+            if (pguidCmdGroup == VSConstants.VSStd2K) {
+                return ExecuteVisualStudio2000(ref pguidCmdGroup, commandId, executeInformation, pvaIn, pvaOut, subjectBuffer, contentType);
+            }
+            
             return NextCommandTarget.Exec(ref pguidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
+        }
+
+        private int ExecuteVisualStudio97(ref Guid pguidCmdGroup, uint commandId, uint executeInformation, IntPtr pvaIn, IntPtr pvaOut, ITextBuffer subjectBuffer, IContentType contentType) {
+            int result = VSConstants.S_OK;
+            var guidCmdGroup = pguidCmdGroup;
+
+            void ExecuteNextCommandTarget() {
+                result = NextCommandTarget.Exec(ref guidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
+            }
+
+            switch ((VSConstants.VSStd97CmdID) commandId) {
+
+                case VSConstants.VSStd97CmdID.GotoDefn:
+                    ExecuteGoToDefinition(subjectBuffer, contentType, ExecuteNextCommandTarget);
+                    break;
+
+                default:
+                    return NextCommandTarget.Exec(ref pguidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
+            }
+
+            return result;
         }
 
         protected virtual int ExecuteVisualStudio2000(ref Guid pguidCmdGroup, uint commandId, uint executeInformation, IntPtr pvaIn, IntPtr pvaOut, ITextBuffer subjectBuffer, IContentType contentType) {
@@ -84,6 +109,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             return result;
+        }
+
+        protected void ExecuteGoToDefinition(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            HandlerService.Execute(
+                args       : new GoToDefinitionCommandArgs(WpfTextView, subjectBuffer),
+                lastHandler: executeNextCommandTarget);
         }
 
         protected void ExecuteTab(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {

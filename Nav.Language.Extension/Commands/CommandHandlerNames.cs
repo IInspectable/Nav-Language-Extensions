@@ -2,6 +2,7 @@
 {
     static class CommandHandlerNames {
         public const string NavigateToHighlightReferenceCommandHandler = nameof(NavigateToHighlightReferenceCommandHandler);
-        public const string CommentUncommentSelectionCommandHandler    = nameof(CommentUncommentSelectionCommandHandler);        
+        public const string CommentUncommentSelectionCommandHandler    = nameof(CommentUncommentSelectionCommandHandler);
+        public const string GoToDefinitionCommandCommandHandler        = nameof(GoToDefinitionCommandCommandHandler);        
     }
 }

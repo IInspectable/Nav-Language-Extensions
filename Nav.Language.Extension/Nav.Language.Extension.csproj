@@ -84,6 +84,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandHandlerNames.cs" />
+    <Compile Include="Commands\GoToDefinitionCommandCommandHandler.cs" />
     <Compile Include="Commands\Infrastructure\BackTabKeyCommandArgs.cs" />
     <Compile Include="Commands\Infrastructure\CommandTarget.Exec.cs" />
     <Compile Include="Commands\Infrastructure\CommandTarget.QueryStatus.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Commands\Infrastructure\CommandHandlerService.cs" />
     <Compile Include="Commands\Infrastructure\CommandHandlerServiceProvider.cs" />
     <Compile Include="Commands\Infrastructure\CommitUniqueCompletionListItemCommandArgs.cs" />
+    <Compile Include="Commands\Infrastructure\GoToDefinitionCommandArgs.cs" />
     <Compile Include="Commands\Infrastructure\ReturnKeyCommandArgs.cs" />
     <Compile Include="Commands\Infrastructure\TabKeyCommandArgs.cs" />
     <Compile Include="Commands\Infrastructure\TypeCharCommandArgs.cs" />
