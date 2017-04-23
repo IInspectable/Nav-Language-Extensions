@@ -57,7 +57,7 @@ namespace TestClient
 
             var codeGens= codeGenerationUnits.Where(cu => cu != null);
 
-            var dependencies = DependencyChecker.CollectTasksDefinitionDependencies(codeGens);
+            var dependencies = DependencyAnalyzer.CollectTasksDefinitionDependencies(codeGens);
             var usings = dependencies.CollectIncomingDependencies();
 
             foreach (var u in usings.OrderByDescending(u=> u.Value.Count).Take(10)) {
