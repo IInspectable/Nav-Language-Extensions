@@ -1,4 +1,4 @@
-#region Using Directives
+﻿#region Using Directives
 
 using System.Linq;
 using System.Threading;
@@ -16,34 +16,36 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
-
-    class TaskIBeginInterfaceDeclarationLocationInfoProvider : CodeAnalysisLocationInfoProvider {
+    class TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider : CodeAnalysisLocationInfoProvider {
 
         readonly TaskDeclarationCodeModel _taskDeclarationCodeModel;
 
-        public TaskIBeginInterfaceDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskDeclarationCodeModel taskDeclarationCodeModel) : base(sourceBuffer) {
+        public TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider(ITextBuffer sourceBuffer, TaskDeclarationCodeModel taskDeclarationCodeModel) : base(sourceBuffer) {
             _taskDeclarationCodeModel = taskDeclarationCodeModel;
         }
 
-        static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToInterfacePublic; } }
+        static ImageMoniker ImageMoniker {
+            get { return ImageMonikers.CSharpFile; }
+        }
 
         protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
             try {
 
                 var locations = await LocationFinder.FindTaskIBeginInterfaceDeclarationLocations(
-                   project          : project,
-                   codegenInfo      : _taskDeclarationCodeModel,
-                   cancellationToken: cancellationToken).ConfigureAwait(false);
-                
+                        project          : project,
+                        codegenInfo      : _taskDeclarationCodeModel,
+                        cancellationToken: cancellationToken)
+                    .ConfigureAwait(false);
+
                 return locations.Select(location =>
-                    LocationInfo.FromLocation(
-                        location    : location,
-                        displayName : _taskDeclarationCodeModel.FullyQualifiedBeginInterfaceName,
-                        imageMoniker: ImageMoniker))
+                        LocationInfo.FromLocation(
+                            location    : new Location(location.FilePath), // Wir sind nur an dem Dateinamen interessiert
+                            displayName : _taskDeclarationCodeModel.FullyQualifiedBeginInterfaceName,
+                            imageMoniker: ImageMoniker))
                     .OrderBy(li => li.DisplayName);
 
-            } catch(LocationNotFoundException ex) {
+            } catch (LocationNotFoundException ex) {
                 return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
             }
         }
