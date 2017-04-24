@@ -57,9 +57,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 case VSConstants.VSStd97CmdID.GotoDefn:
                     return QueryGoToDefinitionStatus(prgCmds);
 
+                case VSConstants.VSStd97CmdID.ViewCode:
+                    return QueryViewCode(ref pguidCmdGroup, commandCount, prgCmds, commandText);
+
                 //case VSConstants.VSStd97CmdID.FindReferences:
                 //    return QueryFindReferencesStatus(prgCmds);
-            
+
                 default:
                     return NextCommandTarget.QueryStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
             }
@@ -70,8 +73,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
             return VSConstants.S_OK;
         }
-        
-        
+
+        private int QueryViewCode(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
+            return GetCommandState(
+                createArgs   : (v, b) => new ViewCodeCommandArgs(v, b),
+                pguidCmdGroup: ref pguidCmdGroup,
+                commandCount : commandCount,
+                prgCmds      : prgCmds,
+                commandText  : commandText);
+        }
+
         // ReSharper disable once UnusedMember.Local TODO Enablen, wenn Find References implementiert
         private int QueryFindReferencesStatus(OLECMD[] prgCmds) {
             // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags

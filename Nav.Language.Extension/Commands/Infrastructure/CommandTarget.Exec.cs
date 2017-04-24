@@ -49,7 +49,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 case VSConstants.VSStd97CmdID.GotoDefn:
                     ExecuteGoToDefinition(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
-
+                case VSConstants.VSStd97CmdID.ViewCode:
+                    ExecuteViewCode(subjectBuffer, contentType, ExecuteNextCommandTarget);
+                    break;
                 default:
                     return NextCommandTarget.Exec(ref pguidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
             }
@@ -95,7 +97,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     ExecuteCommitUniqueCompletionItem(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
-
+                    
                 case CmdidNextHighlightedReference:
                     ExecuteNextHighlightedReference(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
@@ -114,6 +116,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         protected void ExecuteGoToDefinition(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
             HandlerService.Execute(
                 args       : new GoToDefinitionCommandArgs(WpfTextView, subjectBuffer),
+                lastHandler: executeNextCommandTarget);
+        }
+
+        protected void ExecuteViewCode(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            HandlerService.Execute(
+                args       : new ViewCodeCommandArgs(WpfTextView, subjectBuffer),
                 lastHandler: executeNextCommandTarget);
         }
 
