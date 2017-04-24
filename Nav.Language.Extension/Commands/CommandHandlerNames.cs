@@ -4,6 +4,7 @@
         public const string NavigateToHighlightReferenceCommandHandler = nameof(NavigateToHighlightReferenceCommandHandler);
         public const string CommentUncommentSelectionCommandHandler    = nameof(CommentUncommentSelectionCommandHandler);
         public const string GoToDefinitionCommandCommandHandler        = nameof(GoToDefinitionCommandCommandHandler);
-        public const string ViewCodeCommandHandler                     = nameof(ViewCodeCommandHandler);
+        public const string ViewCSharpCodeCommandHandler               = nameof(ViewCSharpCodeCommandHandler);
+
     }
 }
