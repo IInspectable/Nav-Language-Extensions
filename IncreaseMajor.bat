@@ -1,2 +1,2 @@
 
-powershell.exe -NoExit -Command "& {& '%~dp0_scripts\Increase-Major.ps1'}" -noprofile
+powershell.exe -NoExit -noprofile -Command "& {& '%~dp0_scripts\Increase-Major.ps1'}"
