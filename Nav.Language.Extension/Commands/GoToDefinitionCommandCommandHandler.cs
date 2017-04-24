@@ -1,10 +1,10 @@
 ﻿#region Using Directives
 
 using System;
-using System.Windows;
+using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Text.Tagging;
-using System.ComponentModel.Composition;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
@@ -32,12 +32,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             var tagAggregator     = _viewTagAggregatorFactoryService.CreateTagAggregator<GoToTag>(args.TextView);
             var navigateToTagSpan = args.TextView.GetGoToDefinitionTagSpanAtCaretPosition(tagAggregator);
-
+            
             if (navigateToTagSpan == null) {
-                // TODO Messagebox von VS verwenden
-                // TODO Text
-                // TODO Title
-                MessageBox.Show(messageBoxText: "Cannot navigate to the symbol under the caret.", caption: "", button: MessageBoxButton.OK, icon: MessageBoxImage.Asterisk);
+                ShellUtil.ShowInfoMessage("Cannot navigate to the symbol under the caret.");                
                 return;
             }
 
