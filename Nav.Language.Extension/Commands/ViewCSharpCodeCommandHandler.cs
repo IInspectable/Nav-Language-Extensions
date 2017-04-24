@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
@@ -37,17 +38,18 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 return;
             }
 
-            var navigateToTagSpan = GetGoToDefinitionTagSpanAtCaretPosition(semanticModelResult, args);
+            var navigateToTagSpan = GetGoToCodeTagSpanAtCaretPosition(semanticModelResult, args);
             if (navigateToTagSpan == null) {
                 return;
             }
 
-            var textMarkerGeometry = args.TextView.TextViewLines.GetTextMarkerGeometry(navigateToTagSpan.Span);
-            if (textMarkerGeometry == null) {
+            var caretSpan = args.TextView.Caret.Position.BufferPosition.ExtendToLength1();
+            var caretGeometry = args.TextView.TextViewLines.GetTextMarkerGeometry(caretSpan);
+            if (caretGeometry == null) {
                 return;
             }
-
-            var placementRectangle = textMarkerGeometry.Bounds;
+            
+            var placementRectangle = caretGeometry.Bounds;
             placementRectangle.Offset(-args.TextView.ViewportLeft, -args.TextView.ViewportTop);
 
             await _goToLocationService.GoToLocationInPreviewTabAsync(
@@ -57,13 +59,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         }
 
-        TagSpan<GoToTag> GetGoToDefinitionTagSpanAtCaretPosition(SemanticModelResult semanticModelResult, ViewCodeCommandArgs args) {
-
-            var caretPosition = args.TextView.Caret.Position.BufferPosition;
+        TagSpan<GoToTag> GetGoToCodeTagSpanAtCaretPosition(SemanticModelResult semanticModelResult, ViewCodeCommandArgs args) {
+            
             var tags = BuildTagSpans(semanticModelResult, args.SubjectBuffer)
                                 .OrderBy(tag => tag.Span.Start.Position)
                                 .ToList();
 
+            var caretPosition = args.TextView.Caret.Position.BufferPosition;
             var navigateToTagSpan = tags.FirstOrDefault(tagSpan => caretPosition >= tagSpan.Span.Start.Position && caretPosition <= tagSpan.Span.End.Position);
 
             if (navigateToTagSpan != null) {
@@ -81,18 +83,18 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         IEnumerable<TagSpan<GoToTag>> BuildTagSpans(SemanticModelResult semanticModelResult, ITextBuffer subjectBuffer) {
 
-            foreach (var taskDeclaration in semanticModelResult.CodeGenerationUnit.TaskDeclarations.Where(td=>!td.IsIncluded)) {
+            foreach (var taskDeclaration in semanticModelResult.CodeGenerationUnit.TaskDeclarations.Where(td=>!td.IsIncluded && td.Origin==TaskDeclarationOrigin.TaskDeclaration)) {
                 var codeModel = new TaskDeclarationCodeModel(taskDeclaration);
                 var provider  = new TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider(subjectBuffer, codeModel);
 
-                yield return CreateTagSpan(semanticModelResult, taskDeclaration.Location, provider);
+                yield return CreateTagSpan(semanticModelResult, taskDeclaration.Syntax?.GetLocation(), provider);
             }
 
             foreach (var taskDefinition in semanticModelResult.CodeGenerationUnit.TaskDefinitions) {
                 var codeModel = new TaskCodeModel(taskDefinition);
                 var provider  = new TaskDeclarationCodeFileLocationInfoProvider(subjectBuffer, codeModel);
 
-                yield return CreateTagSpan(semanticModelResult, taskDefinition.Location, provider);
+                yield return CreateTagSpan(semanticModelResult, taskDefinition.Syntax.GetLocation(), provider);
             }
         }
 
