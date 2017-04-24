@@ -34,12 +34,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             var wpfTextView = _editorAdaptersFactory.GetWpfTextView(textView);
 
-            var target = wpfTextView.GetOrCreateAutoClosingProperty(wpfTextView,
+            wpfTextView.GetOrCreateAutoClosingProperty(wpfTextView,
                 tv => new CommandTarget(tv, _commandHandlerServiceProvider, _editorAdaptersFactory)
 
             );
-
-            target.Attach();
         }
     }
 }

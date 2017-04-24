@@ -14,19 +14,21 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
     partial class CommandTarget : IOleCommandTarget {
 
         readonly IWpfTextView _wpfTextView;
-        readonly ICommandHandlerServiceProvider _commandHandlerServiceProvider;
-        readonly IVsEditorAdaptersFactoryService _editorAdaptersFactory;
-
-        ICommandHandlerService _commandHandlerService;
-        IOleCommandTarget _nextCommandTarget;
+        readonly ICommandHandlerService _commandHandlerService;
+        readonly IOleCommandTarget _nextCommandTarget;
 
         public CommandTarget(IWpfTextView wpfTextView,
             ICommandHandlerServiceProvider commandHandlerServiceProvider,
             IVsEditorAdaptersFactoryService editorAdaptersFactory) {
 
             _wpfTextView = wpfTextView;
-            _commandHandlerServiceProvider = commandHandlerServiceProvider;
-            _editorAdaptersFactory = editorAdaptersFactory;
+
+            var vsTextView  = editorAdaptersFactory.GetViewAdapter(_wpfTextView);
+            int returnValue = vsTextView.AddCommandFilter(this, out var nextCommandTarget);
+            Marshal.ThrowExceptionForHR(returnValue);
+
+            _commandHandlerService = commandHandlerServiceProvider.GetService(WpfTextView);
+            _nextCommandTarget     = nextCommandTarget;
         }
 
         public IWpfTextView WpfTextView {
@@ -39,15 +41,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         public ICommandHandlerService HandlerService {
             get { return _commandHandlerService; }
-        }
-
-        internal void Attach() {
-            var vsTextView = _editorAdaptersFactory.GetViewAdapter(_wpfTextView);
-            int returnValue = vsTextView.AddCommandFilter(this, out var nextCommandTarget);
-            Marshal.ThrowExceptionForHR(returnValue);
-
-            _commandHandlerService = _commandHandlerServiceProvider.GetService(WpfTextView);
-            _nextCommandTarget = nextCommandTarget;
         }
 
         protected virtual ITextBuffer GetSubjectBufferContainingCaret() {

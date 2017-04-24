@@ -18,9 +18,9 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     // TODO Code Review
-    [ExportCommandHandler(CommandHandlerNames.ViewCodeCommandHandler, NavLanguageContentDefinitions.ContentType)]
+    [ExportCommandHandler(CommandHandlerNames.ViewCSharpCodeCommandHandler, NavLanguageContentDefinitions.ContentType)]
     class ViewCSharpCodeCommandHandler: ICommandHandler<ViewCodeCommandArgs> {
-        private readonly GoToLocationService _goToLocationService;
+        readonly GoToLocationService _goToLocationService;
 
         [ImportingConstructor]
         public ViewCSharpCodeCommandHandler(GoToLocationService goToLocationService) {
@@ -35,17 +35,20 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var semanticModelService=SemanticModelService.TryGet(args.SubjectBuffer);
             var semanticModelResult = semanticModelService?.SemanticModelResult;
             if (semanticModelResult == null) {
+                nextHandler();
                 return;
             }
 
             var navigateToTagSpan = GetGoToCodeTagSpanAtCaretPosition(semanticModelResult, args);
             if (navigateToTagSpan == null) {
+                nextHandler();
                 return;
             }
 
             var caretSpan = args.TextView.Caret.Position.BufferPosition.ExtendToLength1();
             var caretGeometry = args.TextView.TextViewLines.GetTextMarkerGeometry(caretSpan);
             if (caretGeometry == null) {
+                nextHandler();
                 return;
             }
             
