@@ -2,7 +2,6 @@
 
 using System;
 using System.ComponentModel.Composition;
-
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
@@ -17,11 +16,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         readonly GoToLocationService _goToLocationService;
         readonly IViewTagAggregatorFactoryService _viewTagAggregatorFactoryService;
-        
+
         [ImportingConstructor]
         public GoToDefinitionCommandCommandHandler(IViewTagAggregatorFactoryService viewTagAggregatorFactoryService, GoToLocationService goToLocationService) {
             _goToLocationService = goToLocationService;
-            _viewTagAggregatorFactoryService = viewTagAggregatorFactoryService;            
+            _viewTagAggregatorFactoryService = viewTagAggregatorFactoryService;
         }
 
         public CommandState GetCommandState(GoToDefinitionCommandArgs args, Func<CommandState> nextHandler) {

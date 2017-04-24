@@ -121,6 +121,16 @@ namespace Pharmatechnik.Nav.Language {
             return Punctuations.Contains(value);
         }
 
+        public static bool IsIdentifierCharacter(char c) {
+
+            return c >= 'a' && c <= 'z' ||
+                   c >= 'A' && c <= 'Z' ||
+                   c >= '0' && c <= '9' ||
+                   c == 'Ä' || c == 'Ö' || c == 'Ü' || 
+                   c == 'ä' || c == 'ö' || c == 'ü' || 
+                   c == 'ß' || c == '.';
+        }
+
         // Comment strings
         public static readonly string SingleLineComment = "//";
         public static readonly string BlockCommentStart = "/*";

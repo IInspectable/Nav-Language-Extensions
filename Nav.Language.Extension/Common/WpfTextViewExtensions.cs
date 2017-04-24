@@ -61,9 +61,18 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         [CanBeNull]
         public static ITagSpan<GoToTag> GetGoToDefinitionTagSpanAtCaretPosition(this IWpfTextView textView, ITagAggregator<GoToTag> tagAggregator) {
 
-            var spanAtMousePos = textView.Caret.Position.BufferPosition.ToSnapshotSpan();
-           
-            var mappingTagSpan = tagAggregator.GetTags(spanAtMousePos).FirstOrDefault();
+            var caretPosition = textView.Caret.Position.BufferPosition;
+            
+            // Wenn das Caret am Ende einer "Definition" steht, gehen wir ein Zeichen zurück, damit das "Definition-Tag" auch gefunden wird
+            // Bsp.: Foo|; <= Das Caret steht hinter Foo. Nach der Adaption: Fo|o; <= jetzt wird Foo potentiell gefunden
+            if (!SyntaxFacts.IsIdentifierCharacter(caretPosition.GetChar()) 
+                && caretPosition > caretPosition.GetContainingLine().Start &&
+                SyntaxFacts.IsIdentifierCharacter((caretPosition-1).GetChar())) {
+                caretPosition = caretPosition-1;
+            }
+            
+            var spanAtCaretPos = caretPosition.ToSnapshotSpan();
+            var mappingTagSpan = tagAggregator.GetTags(spanAtCaretPos).FirstOrDefault();
 
             return textView.MapToSingleSnapshotSpan(mappingTagSpan);
         }

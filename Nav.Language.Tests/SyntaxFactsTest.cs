@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System.Linq;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 
@@ -300,6 +301,39 @@ namespace Nav.Language.Tests {
 
             var notAPunctuation = "!";
             Assert.That(SyntaxFacts.IsPunctuation(notAPunctuation), Is.False, $"'{notAPunctuation}' should NOT be a punctuation");
+        }
+
+
+        static char[] _identifierCharacters = new char[] {
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+            'ä','ö','ü',
+            'Ä','Ö','Ü',
+            'ß','.',
+        };
+
+        [Test]
+        [TestCaseSource(nameof(_identifierCharacters))]
+        public void IsIdentifierCharacter(char c) {
+            Assert.That(SyntaxFacts.IsIdentifierCharacter(c), Is.True, $"{c} should be an identifier character");
+        }
+
+        static char[] _nonIdentifierCharacters = new char[] {
+            '-',' ',';', '"','\r',
+        };
+        [Test]
+        [TestCaseSource(nameof(_nonIdentifierCharacters))]
+        public void IsNotIdentifierCharacter(char c) {
+            Assert.That(SyntaxFacts.IsIdentifierCharacter(c), Is.False, $"{c} should NOT be an identifier character");
+        }
+
+        [Test]
+        public void PunctuationIsNotIdentifierCharacter() {
+
+            foreach (var punctuation in SyntaxFacts.Punctuations.Where(p => p.Length == 1)) {
+                var c = punctuation[0];
+                Assert.That(SyntaxFacts.IsIdentifierCharacter(c), Is.False, $"{c} should NOT be an identifier character");
+            }
         }
     }
 }
