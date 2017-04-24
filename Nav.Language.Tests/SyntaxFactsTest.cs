@@ -1,6 +1,5 @@
 ﻿#region Using Directives
 
-using System.Linq;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 
@@ -11,7 +10,7 @@ namespace Nav.Language.Tests {
     [TestFixture]
     public class SyntaxFactsTest {
 
-        readonly string[] _keywords = {
+        static readonly string[] ExpectedKeywords = {
             "spontaneous",
             "choice",
             "generateto",
@@ -43,7 +42,7 @@ namespace Nav.Language.Tests {
             "code"
         };
 
-        readonly string[] _punctuations = {
+        static readonly string[] ExpectedPunctuations = {
             ",",
             ")",
             "(",
@@ -55,6 +54,18 @@ namespace Nav.Language.Tests {
             "{",
             "]",
             "["
+        };
+
+        static readonly char[] ExpectedIdentifierCharacters = new char[] {
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+            'ä','ö','ü',
+            'Ä','Ö','Ü',
+            'ß','.',
+        };
+
+        static readonly char[] SomeExpectedNonIdentifierCharacters = new char[] {
+            '-',' ',';', '"','\r','\n','\\','/','=','*'
         };
 
         [Test]
@@ -274,12 +285,12 @@ namespace Nav.Language.Tests {
         
         [Test]
         public void KeywordsTest() {
-            Assert.That(SyntaxFacts.Keywords, Is.EquivalentTo(_keywords));
+            Assert.That(SyntaxFacts.Keywords, Is.EquivalentTo(ExpectedKeywords));
         }
 
         [Test]
         public void IsKeywordTest() {
-            foreach(var k in _keywords) {
+            foreach(var k in ExpectedKeywords) {
                 Assert.That(SyntaxFacts.IsKeyword(k), Is.True, $"'{k}' should be a keyword");
             }
 
@@ -290,50 +301,36 @@ namespace Nav.Language.Tests {
         
         [Test]
         public void PunctuationsTest() {
-            Assert.That(SyntaxFacts.Punctuations, Is.EquivalentTo(_punctuations));
+            Assert.That(SyntaxFacts.Punctuations, Is.EquivalentTo(ExpectedPunctuations));
         }
 
         [Test]
         public void IsPunctuationTest() {
-            foreach (var p in _punctuations) {
+            foreach (var p in ExpectedPunctuations) {
                 Assert.That(SyntaxFacts.IsPunctuation(p), Is.True, $"'{p}' should be a punctuation");
             }
 
             var notAPunctuation = "!";
             Assert.That(SyntaxFacts.IsPunctuation(notAPunctuation), Is.False, $"'{notAPunctuation}' should NOT be a punctuation");
-        }
-
-
-        static char[] _identifierCharacters = new char[] {
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-            'ä','ö','ü',
-            'Ä','Ö','Ü',
-            'ß','.',
-        };
+        }        
 
         [Test]
-        [TestCaseSource(nameof(_identifierCharacters))]
+        [TestCaseSource(nameof(ExpectedIdentifierCharacters))]
         public void IsIdentifierCharacter(char c) {
             Assert.That(SyntaxFacts.IsIdentifierCharacter(c), Is.True, $"{c} should be an identifier character");
         }
-
-        static char[] _nonIdentifierCharacters = new char[] {
-            '-',' ',';', '"','\r',
-        };
+        
         [Test]
-        [TestCaseSource(nameof(_nonIdentifierCharacters))]
+        [TestCaseSource(nameof(SomeExpectedNonIdentifierCharacters))]
         public void IsNotIdentifierCharacter(char c) {
             Assert.That(SyntaxFacts.IsIdentifierCharacter(c), Is.False, $"{c} should NOT be an identifier character");
         }
 
         [Test]
-        public void PunctuationIsNotIdentifierCharacter() {
-
-            foreach (var punctuation in SyntaxFacts.Punctuations.Where(p => p.Length == 1)) {
-                var c = punctuation[0];
-                Assert.That(SyntaxFacts.IsIdentifierCharacter(c), Is.False, $"{c} should NOT be an identifier character");
-            }
+        [TestCaseSource(nameof(ExpectedPunctuations))]
+        public void PunctuationIsNotIdentifierCharacter(string punctuation) {
+            var c = punctuation[0];
+            Assert.That(SyntaxFacts.IsIdentifierCharacter(c), Is.False, $"{c} should NOT be an identifier character");
         }
     }
 }
