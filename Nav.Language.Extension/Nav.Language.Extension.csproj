@@ -115,6 +115,7 @@
     <Compile Include="Common\ContentTypeExtensions.cs" />
     <Compile Include="Common\DictionaryExtensions.cs" />
     <Compile Include="Common\ExtensionOrderer.cs" />
+    <Compile Include="Common\LocationExtensions.cs" />
     <Compile Include="Common\ShellUtil.cs" />
     <Compile Include="Common\TextSelectionExtensions.cs" />
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />

@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Common {
     public static class TextSpanExtensions {
 
         public static TextExtent ToTextExtent(this TextSpan span) {
-            return new TextExtent(span.Start, span.End);
+            return new TextExtent(start: span.Start, length: span.Length);
         }
     }
 }
