@@ -124,6 +124,9 @@
     <Compile Include="Common\DictionaryExtensions.cs" />
     <Compile Include="Common\ExtensionOrderer.cs" />
     <Compile Include="Common\LocationExtensions.cs" />
+    <Compile Include="Common\ProvideNameDialog.xaml.cs">
+      <DependentUpon>ProvideNameDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Common\ShellUtil.cs" />
     <Compile Include="Common\TextSelectionExtensions.cs" />
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
@@ -632,6 +635,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Common\ProvideNameDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Diagnostics\DiagnosticStripeControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

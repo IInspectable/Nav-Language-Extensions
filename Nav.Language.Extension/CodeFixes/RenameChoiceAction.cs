@@ -7,6 +7,7 @@ using System.Collections.Immutable;
 using Microsoft.VisualStudio.Text;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
@@ -25,10 +26,20 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public override void Invoke(CancellationToken cancellationToken) {
 
             var reserved = CollectReservedNames();
-            //TODO Interavtive Abfrage
-            var choiceName = "Foo";
+
+            //TODO Validation method
+
+            ProvideNameDialog dlg = new ProvideNameDialog {
+                Title        = "Rename choice",
+                ImageMoniker = ImageMonikers.ChoiceNode,
+                InputString  = _choiceSymbol.Name
+            };
+
+            if(dlg.ShowModal() == false) {
+                return;
+            }
             
-            Apply(choiceName);
+            Apply(dlg.InputString);
         }
 
         ImmutableHashSet<string> CollectReservedNames() {
