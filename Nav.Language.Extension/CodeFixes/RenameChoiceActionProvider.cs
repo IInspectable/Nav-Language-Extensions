@@ -5,42 +5,29 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Operations;
-using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     [ExportCodeFixActionProvider(nameof(RenameChoiceActionProvider))]
     class RenameChoiceActionProvider : ICodeFixActionProvider {
-        private readonly IWaitIndicator _waitIndicator;
-        private readonly ITextUndoHistoryRegistry _undoHistoryRegistry;
-        private readonly IEditorOperationsFactoryService _editorOperationsFactoryService;
 
+        readonly CodeFixActionContext _context;
+        
         [ImportingConstructor]
-        public RenameChoiceActionProvider(
-            IWaitIndicator waitIndicator,
-            ITextUndoHistoryRegistry undoHistoryRegistry,
-            IEditorOperationsFactoryService editorOperationsFactoryService) {
-            _waitIndicator = waitIndicator;
-            _undoHistoryRegistry = undoHistoryRegistry;
-            _editorOperationsFactoryService = editorOperationsFactoryService;
+        public RenameChoiceActionProvider(CodeFixActionContext context) {
+            _context = context;
         }
 
-        public IEnumerable<ISuggestedAction> GetSuggestedActions(ImmutableList<ISymbol> symbols, CodeGenerationUnit codeGenerationUnit, ITextView textView, SnapshotSpan range, CancellationToken cancellationToken) {
+        public IEnumerable<ISuggestedAction> GetSuggestedActions(CodeFixActionsArgs codeFixActionsArgs, CancellationToken cancellationToken) {
 
-            var choiceNodeSymbols = ChoiceNodeFinder.FindRelatedChoiceNodes(symbols);
+            var choiceNodeSymbols = ChoiceNodeFinder.FindRelatedChoiceNodes(codeFixActionsArgs.SymbolsInRange);
 
             return choiceNodeSymbols.Select(choiceNodeSymbol => new RenameChoiceAction(
-                choiceSymbol                  : choiceNodeSymbol,
-                textBuffer                    : range.Snapshot.TextBuffer, 
-                textView                      : textView,
-                waitIndicator                 : _waitIndicator,
-                undoHistoryRegistry           : _undoHistoryRegistry,
-                editorOperationsFactoryService: _editorOperationsFactoryService));              
+                choiceSymbol      : choiceNodeSymbol,
+                codeFixActionsArgs: codeFixActionsArgs,
+                context           : _context));              
         }
 
         sealed class ChoiceNodeFinder : SymbolVisitor<IChoiceNodeSymbol> {

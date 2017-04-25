@@ -65,8 +65,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
 
-            var symbol     = FindSymbols(range, semanticModelResult);
-            var actionsets = BuildSuggestedActions(range, symbol, semanticModelResult.CodeGenerationUnit, cancellationToken);
+            var symbols    = FindSymbols(range, semanticModelResult);
+            var args       = new CodeFixActionsArgs(symbols, semanticModelResult, _textView, range);
+            var actionsets = BuildSuggestedActions(args, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) {
                 return ImmutableList<SuggestedActionSet>.Empty;
@@ -78,9 +79,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return actionsetsWithRange.SuggestedActionSets;
         }
 
-        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(SnapshotSpan range, ImmutableList<ISymbol> symbols, CodeGenerationUnit codeGenerationUnit, CancellationToken cancellationToken) {
+        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsArgs codeFixActionsArgs, CancellationToken cancellationToken) {
 
-            var suggestedActions = _codeFixActionProviderService.GetSuggestedActions(symbols, codeGenerationUnit, range, _textView, cancellationToken).ToList();
+            var suggestedActions = _codeFixActionProviderService.GetSuggestedActions(codeFixActionsArgs, cancellationToken).ToList();
             if (suggestedActions.Any()) {
                 var actionsets = new[] { new SuggestedActionSet(suggestedActions) };
                 return actionsets.ToImmutableList();
