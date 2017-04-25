@@ -8,6 +8,7 @@ using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Text.Editor;
 
 #endregion
 
@@ -15,7 +16,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     interface ICodeFixActionProviderService {
 
-        IEnumerable<ISuggestedAction> GetSuggestedActions(SnapshotSpan range, IEnumerable<ISymbol> symbols, CodeGenerationUnit codeGenerationUnit, CancellationToken cancellationToken);
+        IEnumerable<ISuggestedAction> GetSuggestedActions(ImmutableList<ISymbol> symbols, CodeGenerationUnit codeGenerationUnit, SnapshotSpan range, ITextView textView, CancellationToken cancellationToken);
     }
 
     [Export(typeof(ICodeFixActionProviderService))]
@@ -28,8 +29,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             _codeFixActionProviders = codeFixActionProviders?.ToImmutableList()??ImmutableList<ICodeFixActionProvider>.Empty;
         }
         
-        public IEnumerable<ISuggestedAction> GetSuggestedActions(SnapshotSpan range, IEnumerable<ISymbol> symbols, CodeGenerationUnit codeGenerationUnit, CancellationToken cancellationToken) {
-            foreach (var suggestedAction in _codeFixActionProviders.SelectMany(p=> p.GetSuggestedActions(range, symbols, codeGenerationUnit, cancellationToken))) {
+        public IEnumerable<ISuggestedAction> GetSuggestedActions(ImmutableList<ISymbol> symbols, CodeGenerationUnit codeGenerationUnit, SnapshotSpan range, ITextView textView, CancellationToken cancellationToken) {
+            foreach (var suggestedAction in _codeFixActionProviders.SelectMany(p=> p.GetSuggestedActions(symbols, codeGenerationUnit, textView, range, cancellationToken))) {
                 yield return suggestedAction;
             }
         }
