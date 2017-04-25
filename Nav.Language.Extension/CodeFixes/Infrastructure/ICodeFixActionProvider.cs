@@ -12,6 +12,6 @@ using Microsoft.VisualStudio.Text.Editor;
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     
     interface ICodeFixActionProvider {
-        IEnumerable<ISuggestedAction> GetSuggestedActions(ImmutableList<ISymbol> symbols, CodeGenerationUnit codeGenerationUnit, ITextView textView, SnapshotSpan range, CancellationToken cancellationToken);
+        IEnumerable<ISuggestedAction> GetSuggestedActions(CodeFixActionsArgs codeFixActionsArgs, CancellationToken cancellationToken);
     }
 }

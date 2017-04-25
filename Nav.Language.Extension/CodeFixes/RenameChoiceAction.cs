@@ -4,13 +4,9 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Operations;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
 
@@ -19,22 +15,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     class RenameChoiceAction: CodeFixAction {
 
         readonly IChoiceNodeSymbol _choiceSymbol;
-        readonly ITextBuffer _textBuffer;
-        readonly ITextView _textView;
-        readonly IWaitIndicator _waitIndicator;
-        readonly ITextUndoHistoryRegistry _undoHistoryRegistry;
-        readonly IEditorOperationsFactoryService _editorOperationsFactoryService;
-
-        public RenameChoiceAction(IChoiceNodeSymbol choiceSymbol, ITextBuffer textBuffer, ITextView textView, 
-                                  IWaitIndicator waitIndicator, ITextUndoHistoryRegistry undoHistoryRegistry, 
-                                  IEditorOperationsFactoryService editorOperationsFactoryService) {
-
-            _choiceSymbol                   = choiceSymbol;
-            _textBuffer                     = textBuffer;
-            _textView                       = textView;
-            _waitIndicator                  = waitIndicator;
-            _undoHistoryRegistry            = undoHistoryRegistry;
-            _editorOperationsFactoryService = editorOperationsFactoryService;
+        
+        public RenameChoiceAction(IChoiceNodeSymbol choiceSymbol,
+                                  CodeFixActionsArgs codeFixActionsArgs, 
+                                  CodeFixActionContext context): base(context, codeFixActionsArgs) {
+            _choiceSymbol = choiceSymbol;
         }
         
         public override void Invoke(CancellationToken cancellationToken) {
@@ -63,9 +48,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var message = $"Renaming choice '{_choiceSymbol.Name}'...";
             var title   = DisplayText;
 
-            using (_waitIndicator.StartWait(title, message, allowCancel: false))
-            using (var undoTransaction = new TextUndoTransaction(title, _textView, _undoHistoryRegistry, _editorOperationsFactoryService))
-            using (var textEdit = _textBuffer.CreateEdit()) {
+            using (Context.WaitIndicator.StartWait(title, message, allowCancel: false))
+            using (var undoTransaction = new TextUndoTransaction(title, TextView, Context.UndoHistoryRegistry, Context.EditorOperationsFactoryService))
+            using (var textEdit = TextBuffer.CreateEdit()) {
 
                 // Die Choice Deklaration
                 RenameSymbol(textEdit, _choiceSymbol, choiceName);

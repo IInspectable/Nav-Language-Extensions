@@ -7,13 +7,26 @@ using System.Collections.Generic;
 
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     abstract class CodeFixAction : ISuggestedAction {
-        
+
+        readonly CodeFixActionsArgs _codeFixActionsArgs;
+        public CodeFixActionContext Context { get; }
+
+        protected CodeFixAction(CodeFixActionContext context, CodeFixActionsArgs codeFixActionsArgs) {
+            _codeFixActionsArgs = codeFixActionsArgs;
+            Context = context;
+        }
+
+        public ITextView TextView    => _codeFixActionsArgs.TextView;
+        public ITextBuffer TextBuffer => _codeFixActionsArgs.TextBuffer;
+
         public abstract string DisplayText { get; }
 
         public virtual ImageMoniker IconMoniker {
