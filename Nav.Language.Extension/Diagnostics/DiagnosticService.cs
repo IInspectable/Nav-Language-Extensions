@@ -1,15 +1,18 @@
 #region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
+
 using JetBrains.Annotations;
-using Microsoft.VisualStudio.ComponentModelHost;
+
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Outlining;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Text.Outlining;
+using Microsoft.VisualStudio.ComponentModelHost;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
@@ -21,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
 
         readonly IWpfTextView _textView;
         readonly ITagAggregator<DiagnosticErrorTag> _errorTagAggregator;
-        readonly IOutliningManager _outliningManager;
+        readonly IOutliningManagerService _outliningManagerService;
         bool _waitingForAnalysis;
 
         [NotNull]
@@ -30,11 +33,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
         
         DiagnosticService(IWpfTextView textView, IComponentModel componentModel) {
             var viewTagAggregatorFactoryService = componentModel.GetService<IViewTagAggregatorFactoryService>();
-            var outliningManagerService         = componentModel.GetService<IOutliningManagerService>();
+            
 
             _textView           = textView;
+            _outliningManagerService = componentModel.GetService<IOutliningManagerService>();
             _errorTagAggregator = viewTagAggregatorFactoryService.CreateTagAggregator<DiagnosticErrorTag>(textView);
-            _outliningManager   = outliningManagerService.GetOutliningManager(textView);
             _diagnosticMapping  = new Dictionary<DiagnosticSeverity, ReadOnlyCollection<IMappingTagSpan<DiagnosticErrorTag>>>();
             _waitingForAnalysis = true;
             
@@ -192,13 +195,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
             if (tagSpan == null) {
                 return false;
             }
-
-            _outliningManager.ExpandAll(tagSpan.Span, c => c.IsCollapsed);
-
-            _textView.Caret.MoveTo(tagSpan.Span.Start);
-            _textView.ViewScroller.EnsureSpanVisible(tagSpan.Span);
-            
-            return true;
+            return _textView.TryMoveCaretToAndEnsureVisible(tagSpan.Span.Start, _outliningManagerService);
         }
     }
 }
