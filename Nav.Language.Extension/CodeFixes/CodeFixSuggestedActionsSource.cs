@@ -9,19 +9,23 @@ using System.Collections.Immutable;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Text.Editor;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     class CodeFixSuggestedActionsSource : SemanticModelServiceDependent, ISuggestedActionsSource {
+
         readonly ICodeFixActionProviderService _codeFixActionProviderService;
+        readonly ITextView _textView;
+
         ActionSetsWithRange _cachedActionSets;
 
-        public CodeFixSuggestedActionsSource(ITextBuffer textBuffer, ICodeFixActionProviderService codeFixActionProviderService)
+        public CodeFixSuggestedActionsSource(ITextBuffer textBuffer, ICodeFixActionProviderService codeFixActionProviderService, ITextView textView)
             : base(textBuffer) {
-
             _codeFixActionProviderService = codeFixActionProviderService;
+            _textView = textView;
         }
 
         public event EventHandler<EventArgs> SuggestedActionsChanged;
@@ -74,9 +78,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return actionsetsWithRange.SuggestedActionSets;
         }
 
-        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(SnapshotSpan range, IEnumerable<ISymbol> symbols, CodeGenerationUnit codeGenerationUnit, CancellationToken cancellationToken) {
+        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(SnapshotSpan range, ImmutableList<ISymbol> symbols, CodeGenerationUnit codeGenerationUnit, CancellationToken cancellationToken) {
 
-            var suggestedActions = _codeFixActionProviderService.GetSuggestedActions(range, symbols, codeGenerationUnit, cancellationToken).ToList();
+            var suggestedActions = _codeFixActionProviderService.GetSuggestedActions(symbols, codeGenerationUnit, range, _textView, cancellationToken).ToList();
             if (suggestedActions.Any()) {
                 var actionsets = new[] { new SuggestedActionSet(suggestedActions) };
                 return actionsets.ToImmutableList();
@@ -84,10 +88,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return ImmutableList<SuggestedActionSet>.Empty;
         }
 
-        static IEnumerable<ISymbol> FindSymbols(SnapshotSpan range, SemanticModelResult semanticModelResult) {
+        static ImmutableList<ISymbol> FindSymbols(SnapshotSpan range, SemanticModelResult semanticModelResult) {
             var extent  = TextExtent.FromBounds(range.Start, range.End);
             var symbols = semanticModelResult.CodeGenerationUnit.Symbols[extent];
-            return symbols;
+            return symbols.ToImmutableList();
         }
 
         sealed class ActionSetsWithRange {

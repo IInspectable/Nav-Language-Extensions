@@ -28,7 +28,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return null;
             }
             // TODO nur einzelne Textbuffer unterstützen?
-            return new CodeFixSuggestedActionsSource(textBuffer, _codeFixActionProviderService);
+            return new CodeFixSuggestedActionsSource(textBuffer, _codeFixActionProviderService, textView);
         }
     }
 }
