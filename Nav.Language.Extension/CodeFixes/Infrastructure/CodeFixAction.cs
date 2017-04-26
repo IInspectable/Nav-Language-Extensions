@@ -5,28 +5,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
+
+using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     abstract class CodeFixAction : ISuggestedAction {
-
-        readonly CodeFixActionsArgs _codeFixActionsArgs;
-        public CodeFixActionContext Context { get; }
-
-        protected CodeFixAction(CodeFixActionContext context, CodeFixActionsArgs codeFixActionsArgs) {
-            _codeFixActionsArgs = codeFixActionsArgs;
-            Context = context;
+        protected CodeFixAction(CodeFixActionContext context, CodeFixActionsParameter parameter) {
+            Context   = context;
+            Parameter = parameter;
         }
 
-        public ITextView TextView         => _codeFixActionsArgs.TextView;
-        public ITextBuffer TextBuffer     => _codeFixActionsArgs.TextBuffer;
-        public ITextSnapshot TextSnapshot => _codeFixActionsArgs.TextSnapshot;
+        protected CodeFixActionContext Context { get; }
+        protected CodeFixActionsParameter Parameter { get; }
+
+        public virtual Span? ApplicableToSpan { get; } = null;
 
         public abstract string DisplayText { get; }
 
@@ -63,6 +61,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             get { return false; }
         }
 
+        
+
         public virtual Task<object> GetPreviewAsync(CancellationToken cancellationToken) {
             return null;
         }
@@ -74,10 +74,32 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             // nicht mit dem aktuellen Snaphot des textEdits übereinstimmt.
             // Ob es nun Sinn macht, den SnapshotSpan auf den aktuellen TextSnapshot zu transformieren,
             // oder ob es nicht eigentlich besser wäre, die ganze Aktion abzubrechen, wird die Zeit zeigen.
-            var snapshotSpan = new SnapshotSpan(TextSnapshot, location.Start, length: location.Length);
-            var trackingSpan = TextSnapshot.CreateTrackingSpan(snapshotSpan, SpanTrackingMode.EdgeInclusive);
-            var replaceSpan  = trackingSpan.GetSpan(textEdit.Snapshot);
-            return replaceSpan;
+            var snapshotSpan = GetSnapshotSpan(location);
+            var trackingSpan = Parameter.SemanticModelResult.Snapshot.CreateTrackingSpan(snapshotSpan, SpanTrackingMode.EdgeInclusive);
+            var targetSpan   = trackingSpan.GetSpan(textEdit.Snapshot);
+            return targetSpan;
+        }
+
+        protected SnapshotSpan GetSnapshotSpan(Location location) {
+            return location.ToSnapshotSpan(Parameter.SemanticModelResult.Snapshot);
+        }
+
+        protected SnapshotSpan GetSnapshotSpan(ISymbol symbol) {
+            return GetSnapshotSpan(symbol.Location);
+        }
+
+        protected void ApplyTextEdits(string undoDescription, string waitMessage, Action<ITextEdit> action) {
+
+            using (Context.WaitIndicator.StartWait(undoDescription, waitMessage, allowCancel: false))
+            using (var undoTransaction = new TextUndoTransaction(undoDescription, Parameter.TextView, Context.UndoHistoryRegistry, Context.EditorOperationsFactoryService))
+            using (var textEdit = Parameter.TextBuffer.CreateEdit()) {
+
+                action(textEdit);
+  
+                textEdit.Apply();
+
+                undoTransaction.Commit();
+            }
         }
     }
 }

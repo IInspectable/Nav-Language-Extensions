@@ -5,29 +5,35 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
+
 using Microsoft.VisualStudio.Language.Intellisense;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     [ExportCodeFixActionProvider(nameof(RenameChoiceActionProvider))]
-    class RenameChoiceActionProvider : ICodeFixActionProvider {
+    class RenameChoiceActionProvider : CodeFixActionProvider {
 
-        readonly CodeFixActionContext _context;
-        
         [ImportingConstructor]
-        public RenameChoiceActionProvider(CodeFixActionContext context) {
-            _context = context;
+        public RenameChoiceActionProvider(CodeFixActionContext context) : base(context) {
         }
 
-        public IEnumerable<ISuggestedAction> GetSuggestedActions(CodeFixActionsArgs codeFixActionsArgs, CancellationToken cancellationToken) {
+        public override IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var choiceNodeSymbols = ChoiceNodeFinder.FindRelatedChoiceNodes(codeFixActionsArgs.SymbolsInRange);
+            var choiceNodeSymbols = ChoiceNodeFinder.FindRelatedChoiceNodes(parameter.SymbolsInRange);
 
-            return choiceNodeSymbols.Select(choiceNodeSymbol => new RenameChoiceAction(
-                choiceSymbol      : choiceNodeSymbol,
-                codeFixActionsArgs: codeFixActionsArgs,
-                context           : _context));              
+            var actions = choiceNodeSymbols.Select(choiceNodeSymbol => new RenameChoiceAction(
+                choiceSymbol    : choiceNodeSymbol,
+                parameter       : parameter,
+                context         : Context));
+
+            var actionSets = actions.Select(action => new SuggestedActionSet(
+                actions         : new[] {action}, 
+                title           : "Rename Choice", 
+                priority        : SuggestedActionSetPriority.Medium, 
+                applicableToSpan: action.ApplicableToSpan));
+
+            return actionSets;
         }
 
         sealed class ChoiceNodeFinder : SymbolVisitor<IChoiceNodeSymbol> {
