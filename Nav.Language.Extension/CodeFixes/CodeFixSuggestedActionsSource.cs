@@ -66,27 +66,23 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             }
 
             var symbols    = FindSymbols(range, semanticModelResult);
-            var args       = new CodeFixActionsArgs(symbols, semanticModelResult, _textView, range);
-            var actionsets = BuildSuggestedActions(args, cancellationToken);
+            var parameter  = new CodeFixActionsParameter(symbols, semanticModelResult, _textView);
+            var actionsets = BuildSuggestedActions(parameter, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) {
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
 
-            var actionsetsWithRange = new ActionSetsWithRange(range, actionsets.ToImmutableList());
+            var actionsetsWithRange = new ActionSetsWithRange(range, actionsets);
             _cachedActionSets = actionsetsWithRange;
 
             return actionsetsWithRange.SuggestedActionSets;
         }
 
-        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsArgs codeFixActionsArgs, CancellationToken cancellationToken) {
+        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsParameter codeFixActionsParameter, CancellationToken cancellationToken) {
 
-            var suggestedActions = _codeFixActionProviderService.GetSuggestedActions(codeFixActionsArgs, cancellationToken).ToList();
-            if (suggestedActions.Any()) {
-                var actionsets = new[] { new SuggestedActionSet(suggestedActions) };
-                return actionsets.ToImmutableList();
-            }
-            return ImmutableList<SuggestedActionSet>.Empty;
+            var suggestedActions = _codeFixActionProviderService.GetSuggestedActions(codeFixActionsParameter, cancellationToken);
+            return suggestedActions.ToImmutableList();
         }
 
         static ImmutableList<ISymbol> FindSymbols(SnapshotSpan range, SemanticModelResult semanticModelResult) {

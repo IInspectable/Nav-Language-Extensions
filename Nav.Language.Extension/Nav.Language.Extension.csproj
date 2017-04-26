@@ -84,7 +84,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeFixes\CodeFixActionContext.cs" />
-    <Compile Include="CodeFixes\CodeFixActionsArgs.cs" />
+    <Compile Include="CodeFixes\Infrastructure\CodeFixActionProvider.cs" />
+    <Compile Include="CodeFixes\CodeFixActionsParameter.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixAction.cs" />
     <Compile Include="CodeFixes\Infrastructure\ExportCodeFixActionProviderAttribute.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionProviderService.cs" />
