@@ -4,7 +4,10 @@ using System;
 using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
@@ -12,7 +15,7 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
-    // TODO SemanticmodelResult durchschleifen, bzw einen "Context" einführen
+    
     class RenameChoiceAction: CodeFixAction {
 
         readonly IChoiceNodeSymbol _choiceSymbol;
@@ -25,28 +28,41 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         
         public override void Invoke(CancellationToken cancellationToken) {
 
-            var reserved = CollectReservedNames();
+            var declaredNames = GetDeclaredNodeNames();
+            string Validator(string validationText) {
 
-            //TODO Validation method
+                if (!SyntaxFacts.IsValidIdentifier(validationText)) {
+                    return "Invalid identifier";
+                }
 
-            ProvideNameDialog dlg = new ProvideNameDialog {
-                Title        = "Rename choice",
-                ImageMoniker = ImageMonikers.ChoiceNode,
-                InputString  = _choiceSymbol.Name
-            };
+                if (declaredNames.Contains(validationText)) {
+                    return $"A node with the name '{validationText}' is already declared";
+                }
 
-            if(dlg.ShowModal() == false) {
+                return null;
+            }
+
+            var name = Context.InputDialogService.ShowDialog(
+                promptText    : "Name:",
+                title         : "Rename choice",
+                defaultResonse: _choiceSymbol.Name,
+                iconMoniker   : ImageMonikers.ChoiceNode,
+                validator     : Validator
+            );
+
+            if (String.IsNullOrEmpty(name)) {
                 return;
             }
-            
-            Apply(dlg.InputString);
+
+            Apply(name);
         }
 
-        ImmutableHashSet<string> CollectReservedNames() {
-            // TODO Aliase berücksichtigen!!
+        
+
+        ImmutableHashSet<string> GetDeclaredNodeNames() {
             HashSet<string> reserved = new HashSet<string>();
             foreach (var node in _choiceSymbol.ContainingTask.NodeDeclarations) {
-                var name = node.Name;
+                var name = node.Name;                
                 if (!String.IsNullOrEmpty(name) && name!=_choiceSymbol.Name) {
                     reserved.Add(name);
                 }
@@ -95,5 +111,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public override string DisplayText {
             get { return $"Rename choice '{_choiceSymbol.Name}'"; }
         }
+        public override ImageMoniker IconMoniker => KnownMonikers.Rename;
     }
 }
