@@ -1,6 +1,11 @@
+#region Using Directives
+
 using System;
 using System.Collections.Generic;
+
 using JetBrains.Annotations;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
 
@@ -21,13 +26,13 @@ namespace Pharmatechnik.Nav.Language {
             Triggers       = triggers ?? new SymbolCollection<TriggerSymbol>();
 
             if (source != null) {                
-                source.Transition   = this;
+                source.Edge   = this;
             }
             if (edgeMode != null) {
-                edgeMode.Transition = this;
+                edgeMode.Edge = this;
             }
             if (target != null) {
-                target.Transition = this;
+                target.Edge = this;
             }
             foreach (var trigger in Triggers) {
                 trigger.Transition = this;

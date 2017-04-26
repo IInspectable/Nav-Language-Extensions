@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var choiceNodeSymbols = ChoiceNodeFinder.FindRelatedChoiceNodes(parameter.SymbolsInRange);
+            var choiceNodeSymbols = ChoiceNodeFinder.FindRelatedChoiceNodes(parameter.Symbols);
 
             var actions = choiceNodeSymbols.Select(choiceNodeSymbol => new RenameChoiceAction(
                 choiceSymbol    : choiceNodeSymbol,

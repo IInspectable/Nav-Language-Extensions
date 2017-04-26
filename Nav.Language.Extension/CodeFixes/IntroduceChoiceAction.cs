@@ -72,12 +72,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var waitMessage     = $"{undoDescription}...";
             
             ApplyTextEdits(undoDescription, waitMessage, textEdit => {
-                // TODO Tabsize
-                var transition = NodeReference.Transition;
+
+                var edge       = NodeReference.Edge;
+                var edgeMode   = edge.EdgeMode;
                 var nodeSymbol = NodeReference.Declaration;
 
                 var choiceDeclaration = $"{GetTabInSpaces()}{SyntaxFacts.ChoiceKeyword} {choiceName}{SyntaxFacts.Semicolon}";
-                var choiceTransition  = $"{GetTabInSpaces()}{choiceName} {transition.EdgeMode?.Name} {NodeReference.Name}{SyntaxFacts.Semicolon}";
+                var choiceTransition  = $"{GetTabInSpaces()}{choiceName} {edge.EdgeMode?.Name} {NodeReference.Name}{SyntaxFacts.Semicolon}";
 
                 // ReSharper disable once PossibleNullReferenceException Check ist schon früher passiert
                 var choiceDeclaraionLine=textEdit.Snapshot.GetLineFromPosition(nodeSymbol.Start);
@@ -85,6 +86,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                
                 //// Die Node Reference wird nun umgebogen auf die choice
                 ReplaceSymbol(textEdit, NodeReference, choiceName);
+                ReplaceSymbol(textEdit, edgeMode, SyntaxFacts.GoToEdgeKeyword);
 
                 var choiceTransitionLine = textEdit.Snapshot.GetLineFromPosition(NodeReference.End);
                 textEdit.Insert(choiceTransitionLine.End, $"{GetNewLineCharacter()}{choiceTransition}");   

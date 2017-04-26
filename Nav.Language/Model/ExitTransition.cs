@@ -1,6 +1,11 @@
+#region Using Directives
+
 using System;
 using System.Collections.Generic;
+
 using JetBrains.Annotations;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
 
@@ -13,21 +18,23 @@ namespace Pharmatechnik.Nav.Language {
                                 [CanBeNull] EdgeModeSymbol edgeMode,
                                 [CanBeNull] NodeReferenceSymbol target) {
 
-            if (syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }
-            if (containingTask == null) {
-                throw new ArgumentNullException(nameof(containingTask));
-            }
-
-            Syntax          = syntax;
-            ContainingTask  = containingTask;
+            Syntax          = syntax         ?? throw new ArgumentNullException(nameof(syntax));
+            ContainingTask  = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
             Source          = source;
             ConnectionPoint = connectionPoint;
             EdgeMode        = edgeMode;
             Target          = target;
 
-            if(connectionPoint != null) {                
+            if (source != null) {
+                source.Edge = this;
+            }
+            if (edgeMode != null) {
+                edgeMode.Edge = this;
+            }
+            if (target != null) {
+                target.Edge = this;
+            }
+            if (connectionPoint != null) {                
                 connectionPoint.ExitTransition = this;
             }
         }

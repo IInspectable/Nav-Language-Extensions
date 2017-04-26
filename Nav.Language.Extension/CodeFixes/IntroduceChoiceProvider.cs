@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var choiceNodeSymbols = NodeReferenceFinder.FindRelatedNodeReferences(parameter.SymbolsInRange);
+            var choiceNodeSymbols = NodeReferenceFinder.FindRelatedNodeReferences(parameter.Symbols);
 
             var actions = choiceNodeSymbols.Select(nodeReference => new IntroduceChoiceAction(
                 nodeReference   : nodeReference,
@@ -42,9 +42,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
                 return symbols.OfType<INodeReferenceSymbol>()
                               .Where(nodeReference => nodeReference.Type == NodeReferenceType.Target)
-                              .Where(nodeReference => nodeReference.Declaration         != null )
-                              .Where(nodeReference => nodeReference.Transition.Source   != null)
-                              .Where(nodeReference => nodeReference.Transition.EdgeMode != null)
+                              .Where(nodeReference => nodeReference.Declaration   != null )
+                              .Where(nodeReference => nodeReference.Edge.Source   != null)
+                              .Where(nodeReference => nodeReference.Edge.EdgeMode != null)
                               .Where(nodeReference => !(nodeReference.Declaration is IChoiceNodeSymbol));                
             }            
         }

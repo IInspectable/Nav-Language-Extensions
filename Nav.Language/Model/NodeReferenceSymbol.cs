@@ -14,6 +14,6 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         public INodeSymbol Declaration { get; }
         public NodeReferenceType Type { get; }
-        public ITransition Transition { get; set; }
+        public IEdge Edge { get; set; }
     }
 }
