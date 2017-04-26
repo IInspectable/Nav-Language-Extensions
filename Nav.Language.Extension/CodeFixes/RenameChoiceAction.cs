@@ -2,8 +2,6 @@
 
 using System;
 using System.Threading;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging;
@@ -30,20 +28,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public override ImageMoniker IconMoniker => KnownMonikers.Rename;
 
         public override void Invoke(CancellationToken cancellationToken) {
-
-            ImmutableHashSet<string> GetDeclaredNodeNames() {
-                var reserved = new HashSet<string>();
-                foreach (var node in ChoiceSymbol.ContainingTask.NodeDeclarations) {
-                    var nodeName = node.Name;
-                    if (!String.IsNullOrEmpty(nodeName) && nodeName != ChoiceSymbol.Name) {
-                        reserved.Add(nodeName);
-                    }
-                }
-                return reserved.ToImmutableHashSet();
-            }
-
-            var declaredNames = GetDeclaredNodeNames();
-
+            
+            var declaredNames = GetDeclaredNodeNames(ChoiceSymbol.ContainingTask);
+            declaredNames.Remove(ChoiceSymbol.Name); // Ist OK - pasiert halt nix
+            
             string Validator(string validationText) {
 
                 validationText = validationText?.Trim();

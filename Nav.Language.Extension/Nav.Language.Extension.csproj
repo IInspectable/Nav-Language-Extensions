@@ -90,7 +90,9 @@
     <Compile Include="CodeFixes\Infrastructure\ExportCodeFixActionProviderAttribute.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionProviderService.cs" />
     <Compile Include="CodeFixes\Infrastructure\ICodeFixActionProvider.cs" />
+    <Compile Include="CodeFixes\IntroduceChoiceAction.cs" />
     <Compile Include="CodeFixes\RenameChoiceAction.cs" />
+    <Compile Include="CodeFixes\IntroduceChoiceProvider.cs" />
     <Compile Include="CodeFixes\RenameChoiceActionProvider.cs" />
     <Compile Include="Commands\CommandHandlerNames.cs" />
     <Compile Include="Commands\GoToDefinitionCommandCommandHandler.cs" />
