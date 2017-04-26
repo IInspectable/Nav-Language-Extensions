@@ -1,12 +1,13 @@
 #region Using Directives
 
 using System;
+using System.Linq;
 using System.Threading;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
-
+using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
@@ -77,20 +78,85 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 var edgeMode   = edge.EdgeMode;
                 var nodeSymbol = NodeReference.Declaration;
 
-                var choiceDeclaration = $"{GetTabInSpaces()}{SyntaxFacts.ChoiceKeyword} {choiceName}{SyntaxFacts.Semicolon}";
-                var choiceTransition  = $"{GetTabInSpaces()}{choiceName} {edge.EdgeMode?.Name} {NodeReference.Name}{SyntaxFacts.Semicolon}";
-
                 // ReSharper disable once PossibleNullReferenceException Check ist schon früher passiert
-                var choiceDeclaraionLine=textEdit.Snapshot.GetLineFromPosition(nodeSymbol.Start);
-                textEdit.Insert(choiceDeclaraionLine.End, $"{GetNewLineCharacter()}{choiceDeclaration}");
+                var nodeDeclarationLine = textEdit.Snapshot.GetLineFromPosition(nodeSymbol.Start);
+                var nodeTransitionLine  = textEdit.Snapshot.GetLineFromPosition(NodeReference.End);
+
+                var choiceDeclaration = $"{GetFirstWhitespace(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
+                var choiceTransition  = $"{GetFirstWhitespace(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(nodeTransitionLine, edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(nodeTransitionLine, edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
+
+                textEdit.Insert(nodeDeclarationLine.End, $"{GetNewLineCharacter()}{choiceDeclaration}");
                
                 //// Die Node Reference wird nun umgebogen auf die choice
                 ReplaceSymbol(textEdit, NodeReference, choiceName);
                 ReplaceSymbol(textEdit, edgeMode, SyntaxFacts.GoToEdgeKeyword);
-
-                var choiceTransitionLine = textEdit.Snapshot.GetLineFromPosition(NodeReference.End);
-                textEdit.Insert(choiceTransitionLine.End, $"{GetNewLineCharacter()}{choiceTransition}");   
+                
+                textEdit.Insert(nodeTransitionLine.End, $"{GetNewLineCharacter()}{choiceTransition}");   
             });
-        }        
+        }
+
+        string GetFirstWhitespace(ITextSnapshotLine line) {
+
+            var end = line.GetFirstNonWhitespacePosition();
+            if (end == null) {
+                return String.Empty;
+            }
+
+            var startColumn = line.GetColumnForOffset(GetTabSize(), end.Value - line.Start);
+
+            return new String(' ', startColumn);
+        }
+
+        string WhiteSpaceBetweenSourceAndEdgeMode(ITextSnapshotLine line, IEdge edge, string newSourceName) {
+            // TODO Multiline
+            var startOffset = edge.Source?.End;
+            var endOffset   = edge.EdgeMode?.Start;
+            
+            if (startOffset == null || endOffset == null) {
+                return " ";
+            }
+
+            var oldLength   = edge.Source.Location.Length;
+            var newLength   = newSourceName.Length;
+
+            var startColumn = line.GetColumnForOffset(GetTabSize(), startOffset.Value - 1 - line.Start);
+            var endColumn   = line.GetColumnForOffset(GetTabSize(), endOffset.Value   - 1 - line.Start);
+
+            var offset      = Math.Max(1, endColumn - startColumn + oldLength - newLength);
+
+            return new String(' ', offset);
+        }
+
+        string WhiteSpaceBetweenEdgeModeAndTarget(ITextSnapshotLine line, IEdge edge) {
+            // TODO Multiline
+            var startOffset = edge.EdgeMode?.End;
+            var endOffset   = edge.Target?.Start;
+
+            if (startOffset == null || endOffset == null) {
+                return " ";
+            }
+
+            var startColumn = line.GetColumnForOffset(GetTabSize(), startOffset.Value - 1 - line.Start);
+            var endColumn   = line.GetColumnForOffset(GetTabSize(), endOffset.Value - 1 - line.Start);
+
+            var offset      = Math.Max(1, endColumn - startColumn);
+
+            return new String(' ', offset);
+        }
+
+        string WhiteSpaceBetweenKeywordAndIdentifier(INodeSymbol choice) {
+
+            var keyword = choice.Syntax.ChildTokens().First();
+            var identifier = keyword.NextToken();// choice.Syntax.ChildTokens().FirstOrMissing(SyntaxTokenClassification.Identifier);
+            if(keyword.IsMissing || identifier.IsMissing) {
+                return " ";
+            }
+            // TODO Berechnen
+            return " ";
+            //var startIndex    = keyword.End;
+            //var endIndexIndex = identifier.Start;
+
+            //return choice.Syntax.SyntaxTree.SourceText.Substring(startIndex, endIndexIndex - startIndex);
+        }
     }
 }
