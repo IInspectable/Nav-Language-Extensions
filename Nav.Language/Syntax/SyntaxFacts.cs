@@ -1,7 +1,7 @@
 ﻿#region Using Directives
 
-using System.Collections.Immutable;
 using System.Linq;
+using System.Collections.Immutable;
 using Pharmatechnik.Nav.Language.Generated;
 
 #endregion
@@ -128,7 +128,14 @@ namespace Pharmatechnik.Nav.Language {
                    c >= '0' && c <= '9' ||
                    c == 'Ä' || c == 'Ö' || c == 'Ü' || 
                    c == 'ä' || c == 'ö' || c == 'ü' || 
-                   c == 'ß' || c == '.';
+                   c == 'ß' || c == '.' || c == '_';
+        }
+
+        public static bool IsValidIdentifier(string value) {
+            if (string.IsNullOrEmpty(value)) {
+                return false;
+            }
+            return value.All(IsIdentifierCharacter);
         }
 
         // Comment strings
@@ -138,6 +145,6 @@ namespace Pharmatechnik.Nav.Language {
 
         static string GetLiteralName(int tokenType) {
             return NavGrammarLexer.DefaultVocabulary.GetLiteralName(tokenType).Trim('\'');
-        }
+        }        
     }
 }

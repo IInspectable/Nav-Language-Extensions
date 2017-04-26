@@ -56,16 +56,30 @@ namespace Nav.Language.Tests {
             "["
         };
 
-        static readonly char[] ExpectedIdentifierCharacters = new char[] {
+        static readonly char[] ExpectedIdentifierCharacters = {
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-            'ä','ö','ü',
-            'Ä','Ö','Ü',
-            'ß','.',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'ä', 'ö', 'ü',
+            'Ä', 'Ö', 'Ü',
+            'ß', '.', '_'
         };
 
         static readonly char[] SomeExpectedNonIdentifierCharacters = new char[] {
-            '-',' ',';', '"','\r','\n','\\','/','=','*'
+            '-', ' ', ';', '"', '\r', '\n', '\\', '/', '=', '*'
+        };
+
+        private static readonly string[] SomeValidIdentifiers = {
+            "Äpfel",
+            "Straße",
+            "öäüßÄÖÜaAzZ",
+        };
+
+        private static readonly string[] SomeInvalidIdentifiers = {
+            "",
+            " ",
+            " Hans",
+            " Hans ",
+            "Hans ",
         };
 
         [Test]
@@ -324,6 +338,18 @@ namespace Nav.Language.Tests {
         [TestCaseSource(nameof(SomeExpectedNonIdentifierCharacters))]
         public void IsNotIdentifierCharacter(char c) {
             Assert.That(SyntaxFacts.IsIdentifierCharacter(c), Is.False, $"{c} should NOT be an identifier character");
+        }
+
+        [Test]
+        [TestCaseSource(nameof(SomeValidIdentifiers))]
+        public void IsValidIdentifier(string value) {
+            Assert.That(SyntaxFacts.IsValidIdentifier(value), Is.True, $"{value} should be a valid identifier");
+        }
+
+        [Test]
+        [TestCaseSource(nameof(SomeInvalidIdentifiers))]
+        public void IsInvalidIdentifier(string value) {
+            Assert.That(SyntaxFacts.IsValidIdentifier(value), Is.False, $"{value} should NOT be a valid identifier");
         }
 
         [Test]

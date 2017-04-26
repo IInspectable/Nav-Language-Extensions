@@ -108,6 +108,9 @@
     <Compile Include="Commands\Infrastructure\TypeCharCommandArgs.cs" />
     <Compile Include="Commands\Infrastructure\ViewCodeCommandArgs.cs" />
     <Compile Include="Commands\ViewCSharpCodeCommandHandler.cs" />
+    <Compile Include="Common\AbstractNotifyPropertyChanged.cs" />
+    <Compile Include="Common\InputDialogService.cs" />
+    <Compile Include="Common\InputDialogViewModel.cs" />
     <Compile Include="Common\IOrderableMetadata.cs" />
     <Compile Include="Commands\NavigateToHighlightedReferenceCommandArgs.cs" />
     <Compile Include="Commands\NavigateToHighlightReferenceCommandHandler.cs" />
@@ -124,8 +127,8 @@
     <Compile Include="Common\DictionaryExtensions.cs" />
     <Compile Include="Common\ExtensionOrderer.cs" />
     <Compile Include="Common\LocationExtensions.cs" />
-    <Compile Include="Common\ProvideNameDialog.xaml.cs">
-      <DependentUpon>ProvideNameDialog.xaml</DependentUpon>
+    <Compile Include="Common\InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\ShellUtil.cs" />
     <Compile Include="Common\TextSelectionExtensions.cs" />
@@ -635,7 +638,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Common\ProvideNameDialog.xaml">
+    <Page Include="Common\InputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
