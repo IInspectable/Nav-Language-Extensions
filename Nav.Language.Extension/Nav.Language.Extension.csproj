@@ -83,9 +83,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CodeFixes\CodeFixActionContext.cs" />
+    <Compile Include="CodeFixes\Infrastructure\CodeFixActionContext.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionProvider.cs" />
-    <Compile Include="CodeFixes\CodeFixActionsParameter.cs" />
+    <Compile Include="CodeFixes\Infrastructure\CodeFixActionsParameter.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixAction.cs" />
     <Compile Include="CodeFixes\Infrastructure\ExportCodeFixActionProviderAttribute.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionProviderService.cs" />
@@ -276,8 +276,8 @@
     <Compile Include="SemanticModelService\SemanticModelService.cs" />
     <None Include="Templates\ItemTemplates\Task\Class.cs.txt" />
     <None Include="Templates\ItemTemplates\Task\Empty.cs.txt" />
-    <Compile Include="CodeFixes\CodeFixSuggestedActionsSource.cs" />
-    <Compile Include="CodeFixes\CodeFixSuggestedActionsSourceProvider.cs" />
+    <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.cs" />
+    <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSourceProvider.cs" />
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
     <Compile Include="UI\VsContextMenu.cs" />
