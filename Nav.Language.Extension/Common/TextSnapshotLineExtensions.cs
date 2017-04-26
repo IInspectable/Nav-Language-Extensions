@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
             return null;
         }
-
+        
         #region Dokumentation
         /// <summary>
         /// Returns the last non-whitespace position on the given line, or null if 
@@ -62,16 +62,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         #endregion
         public static int GetColumnForOffset(this ITextSnapshotLine line, int tabSize, int offset) {
             var text = line.GetText();
-            var column = 0;
-            for (int index = 0; index < offset; index++) {
-                var c = text[index];
-                if (c == '\t') {
-                    column += tabSize - column % tabSize;
-                } else {
-                    column++;
-                }
-            }
-            return column;
+            return text.GetColumnForOffset(tabSize, offset);         
         }
 
         #region Dokumentation

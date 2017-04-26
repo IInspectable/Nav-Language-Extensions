@@ -134,6 +134,7 @@
       <DependentUpon>InputDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common\ShellUtil.cs" />
+    <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TextSelectionExtensions.cs" />
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
     <Compile Include="Common\TextViewExtensions.cs" />
