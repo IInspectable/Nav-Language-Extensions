@@ -101,5 +101,21 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 undoTransaction.Commit();
             }
         }
+
+        protected HashSet<string> GetDeclaredNodeNames(ITaskDefinitionSymbol taskDefinitionSymbol) {
+
+            var declaredNodeNames = new HashSet<string>();
+            if (taskDefinitionSymbol == null) {
+                return declaredNodeNames;
+            }
+
+            foreach (var node in taskDefinitionSymbol.NodeDeclarations) {
+                var nodeName = node.Name;
+                if (!String.IsNullOrEmpty(nodeName)) {
+                    declaredNodeNames.Add(nodeName);
+                }
+            }
+            return declaredNodeNames;
+        }
     }
 }
