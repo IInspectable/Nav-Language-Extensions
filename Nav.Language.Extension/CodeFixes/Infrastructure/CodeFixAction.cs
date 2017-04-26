@@ -24,8 +24,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             Context = context;
         }
 
-        public ITextView TextView    => _codeFixActionsArgs.TextView;
-        public ITextBuffer TextBuffer => _codeFixActionsArgs.TextBuffer;
+        public ITextView TextView         => _codeFixActionsArgs.TextView;
+        public ITextBuffer TextBuffer     => _codeFixActionsArgs.TextBuffer;
+        public ITextSnapshot TextSnapshot => _codeFixActionsArgs.TextSnapshot;
 
         public abstract string DisplayText { get; }
 
@@ -66,6 +67,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return null;
         }
 
-        public abstract void Invoke(CancellationToken cancellationToken);              
+        public abstract void Invoke(CancellationToken cancellationToken);
+
+        protected SnapshotSpan GetTextEditSpan(ITextEdit textEdit, Location location) {
+            // Theoretisch kann es sein, das der Snapshot, auf dem die Semantic Anayse gelaufen ist,
+            // nicht mit dem aktuellen Snaphot des textEdits übereinstimmt.
+            // Ob es nun Sinn macht, den SnapshotSpan auf den aktuellen TextSnapshot zu transformieren,
+            // oder ob es nicht eigentlich besser wäre, die ganze Aktion abzubrechen, wird die Zeit zeigen.
+            var snapshotSpan = new SnapshotSpan(TextSnapshot, location.Start, length: location.Length);
+            var trackingSpan = TextSnapshot.CreateTrackingSpan(snapshotSpan, SpanTrackingMode.EdgeInclusive);
+            var replaceSpan  = trackingSpan.GetSpan(textEdit.Snapshot);
+            return replaceSpan;
+        }
     }
 }

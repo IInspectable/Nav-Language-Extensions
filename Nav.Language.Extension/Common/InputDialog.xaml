@@ -29,17 +29,27 @@
         <Thickness x:Key="ButtonPanelMargin">18,11,18,11</Thickness>
 
         <ControlTemplate x:Key="ValidationTemplate">
-            <StackPanel Orientation="Horizontal">
-                <AdornedElementPlaceholder x:Name="adorner"/>
-                <imaging:CrispImage 
-                                    Moniker             = "{x:Static ic:KnownMonikers.StatusInvalid}"                                    
+            <Grid >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="8"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="8"/>
+                </Grid.ColumnDefinitions>
+                <AdornedElementPlaceholder Grid.Row="1" Grid.ColumnSpan="2" Grid.RowSpan="2" x:Name="adorner"/>
+                <imaging:CrispImage Grid.ColumnSpan="2" Grid.RowSpan="2" Grid.Column="1" Grid.Row="0"
+                                    Moniker             = "{x:Static ic:KnownMonikers.StatusExcluded}"                                    
                                     Width               = "16"
                                     Height              = "16"                                                            
-                                    Margin              = "2, 0, 2, 0"     
+                                    Margin              = "0, 0, 0, 0"     
                                     ToolTip             = "{Binding Path=/ErrorContent}"
-                                    VerticalAlignment   = "Center"
+                                    VerticalAlignment   = "Top"
                                     HorizontalAlignment = "Right"/>
-            </StackPanel>
+            </Grid>
         </ControlTemplate>
     </Window.Resources>
     <Grid >
@@ -91,6 +101,7 @@
                              Content  = "OK" 
                              Margin   = "0, 0, 0, 0" 
                              Padding  = "{StaticResource ResourceKey=OkCancelButtonPadding}"
+                             IsEnabled= "{Binding NotHasErrors, Mode=OneWay}"
                              IsDefault= "True"
                              MinWidth = "73"
                              MinHeight= "21"/>
