@@ -18,8 +18,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             Range              = range;
         }
 
-        public ITextBuffer TextBuffer => Snapshot.TextBuffer;
-        public ITextSnapshot Snapshot => _semanticModelResult.Snapshot;
+        public ITextBuffer TextBuffer => TextSnapshot.TextBuffer;
+        public ITextSnapshot TextSnapshot => _semanticModelResult.Snapshot;
         public ImmutableList<ISymbol> SymbolsInRange { get; }
         public CodeGenerationUnit CodeGenerationUnit => _semanticModelResult.CodeGenerationUnit;
         public ITextView TextView { get; }

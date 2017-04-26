@@ -50,8 +50,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             get => _textError;
             set {
                 if (SetProperty(ref _textError, value)) {
-                    // ReSharper disable once ExplicitCallerInfoArgument
+                    // ReSharper disable ExplicitCallerInfoArgument
                     NotifyPropertyChanged(nameof(HasErrors));
+                    NotifyPropertyChanged(nameof(NotHasErrors));
+                    // ReSharper restore ExplicitCallerInfoArgument
                     ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Text)));
                 } }
         }
@@ -63,6 +65,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             yield return TextError;
         }
 
+        public bool NotHasErrors => !HasErrors;
         public bool HasErrors => !String.IsNullOrEmpty(TextError);
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 

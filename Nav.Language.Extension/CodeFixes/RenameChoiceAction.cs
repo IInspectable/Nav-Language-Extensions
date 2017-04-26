@@ -31,6 +31,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var declaredNames = GetDeclaredNodeNames();
             string Validator(string validationText) {
 
+                validationText = validationText?.Trim();
+
                 if (!SyntaxFacts.IsValidIdentifier(validationText)) {
                     return "Invalid identifier";
                 }
@@ -48,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 defaultResonse: _choiceSymbol.Name,
                 iconMoniker   : ImageMonikers.ChoiceNode,
                 validator     : Validator
-            );
+            )?.Trim();
 
             if (String.IsNullOrEmpty(name)) {
                 return;
@@ -56,9 +58,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             Apply(name);
         }
-
         
-
         ImmutableHashSet<string> GetDeclaredNodeNames() {
             HashSet<string> reserved = new HashSet<string>();
             foreach (var node in _choiceSymbol.ContainingTask.NodeDeclarations) {
@@ -98,16 +98,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             }
         }
 
-        static void RenameSymbol(ITextEdit textEdit, ISymbol symbol, string name) {
+        void RenameSymbol(ITextEdit textEdit, ISymbol symbol, string name) {
+
             if (symbol == null || symbol.Name==name) {
                 return;
             }
-            // TODO Hier mit TrackingSpans arbeiten!
-            var location = symbol.Location;
-            var span =new Span(location.Start, length: location.Length);
-            textEdit.Replace(span, name);
-        }
 
+            var replaceSpan = GetTextEditSpan(textEdit, symbol.Location);
+            textEdit.Replace(replaceSpan, name);
+        }
+        
         public override string DisplayText {
             get { return $"Rename choice '{_choiceSymbol.Name}'"; }
         }

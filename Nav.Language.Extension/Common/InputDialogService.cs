@@ -32,7 +32,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
                 return null;
             }
 
-            return viewModel.PromptText;
+            return viewModel.Text;
         }
     }
 }
