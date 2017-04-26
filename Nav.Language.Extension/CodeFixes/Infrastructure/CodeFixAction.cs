@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
-
+using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
@@ -60,8 +60,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public virtual bool HasPreview {
             get { return false; }
         }
-
-        
 
         public virtual Task<object> GetPreviewAsync(CancellationToken cancellationToken) {
             return null;
@@ -116,6 +114,28 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 }
             }
             return declaredNodeNames;
+        }
+
+        protected void ReplaceSymbol(ITextEdit textEdit, ISymbol symbol, string name) {
+
+            if (symbol == null || symbol.Name == name) {
+                return;
+            }
+
+            var replaceSpan = GetTextEditSpan(textEdit, symbol.Location);
+            textEdit.Replace(replaceSpan, name);
+        }
+
+        protected int GetTabSize() {
+            return Parameter.TextView.Options.GetTabSize();
+        }
+
+        protected string GetTabInSpaces(int tabCount = 1) {
+            return new string(' ', tabCount * GetTabSize());
+        }
+
+        protected string GetNewLineCharacter() {
+            return Parameter.TextView.Options.GetNewLineCharacter();
         }
     }
 }

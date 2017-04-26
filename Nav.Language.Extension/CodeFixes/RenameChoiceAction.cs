@@ -69,28 +69,18 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             
             ApplyTextEdits(undoDescription, waitMessage, textEdit => {
                 // Die Choice Deklaration
-                RenameSymbol(textEdit, ChoiceSymbol, newChoiceName);
+                ReplaceSymbol(textEdit, ChoiceSymbol, newChoiceName);
 
                 // Die Choice-Referenzen auf der "linken Seite"
                 foreach (var transition in ChoiceSymbol.Outgoings) {
-                    RenameSymbol(textEdit, transition.Source, newChoiceName);
+                    ReplaceSymbol(textEdit, transition.Source, newChoiceName);
                 }
 
                 // Die Choice-Referenzen auf der "rechten Seite"
                 foreach (var transition in ChoiceSymbol.Incomings) {
-                    RenameSymbol(textEdit, transition.Target, newChoiceName);
+                    ReplaceSymbol(textEdit, transition.Target, newChoiceName);
                 }
             });
-        }
-
-        void RenameSymbol(ITextEdit textEdit, ISymbol symbol, string name) {
-
-            if (symbol == null || symbol.Name==name) {
-                return;
-            }
-
-            var replaceSpan = GetTextEditSpan(textEdit, symbol.Location);
-            textEdit.Replace(replaceSpan, name);
         }        
     }
 }
