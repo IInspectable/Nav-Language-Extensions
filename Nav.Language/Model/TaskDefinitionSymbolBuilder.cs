@@ -243,7 +243,7 @@ namespace Pharmatechnik.Nav.Language {
 
                 var location   = sourceNodeSyntax.GetLocation();
                 if(location != null) {
-                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceNode);
+                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceNode, NodeReferenceType.Source);
                 }
             }
 
@@ -255,7 +255,7 @@ namespace Pharmatechnik.Nav.Language {
                 var targetNode = _taskDefinition.NodeDeclarations.TryFindSymbol(targetNodeSyntax.Name);
                 var location = targetNodeSyntax.GetLocation();
                 if (location != null) {
-                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, location, targetNode);                
+                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, location, targetNode, NodeReferenceType.Target);                
                 }
             }
             
@@ -538,7 +538,7 @@ namespace Pharmatechnik.Nav.Language {
                 var location         = sourceNodeSyntax.GetLocation();
 
                 if (location != null) {
-                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceTaskNodeSymbol);
+                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceTaskNodeSymbol, NodeReferenceType.Source);
                 }
             }
 
@@ -565,7 +565,7 @@ namespace Pharmatechnik.Nav.Language {
                 var location   = targetNodeSyntax.GetLocation();
 
                 if(location != null) {
-                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, location, targetNode);
+                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, location, targetNode, NodeReferenceType.Target);
                 }
             }
 

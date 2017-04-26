@@ -13,23 +13,20 @@ namespace Pharmatechnik.Nav.Language {
                             NodeReferenceSymbol target, 
                             SymbolCollection<TriggerSymbol> triggers)  {
 
-            if (syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }        
-            if (containingTask == null) {
-                throw new ArgumentNullException(nameof(containingTask));
-            }
-            
-            ContainingTask = containingTask;
-            Syntax         = syntax;
+            ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
+            Syntax         = syntax         ?? throw new ArgumentNullException(nameof(syntax));
             Source         = source;
             EdgeMode       = edgeMode;
             Target         = target;
-            Triggers       = triggers??new SymbolCollection<TriggerSymbol>();
+            Triggers       = triggers ?? new SymbolCollection<TriggerSymbol>();
+
+            source.Transition   = this;
+            edgeMode.Transition = this;
+            target.Transition   = this;
 
             foreach (var trigger in Triggers) {
                 trigger.Transition = this;
-            }
+            }            
         }
 
         [NotNull]
