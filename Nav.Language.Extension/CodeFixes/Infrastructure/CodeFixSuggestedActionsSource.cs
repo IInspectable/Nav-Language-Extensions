@@ -26,6 +26,20 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             : base(textBuffer) {
             _codeFixActionProviderService = codeFixActionProviderService;
             _textView = textView;
+            _textView.Caret.PositionChanged += OnCaretPositionChanged;
+        }
+
+        void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
+            var caretPosition = _textView.Caret.Position.BufferPosition;
+            if(IsCacheValid(_cachedActionSets, caretPosition)) {
+                return;
+            }
+            InvalidateSuggestedActions();
+        }
+
+        public override void Dispose() {
+            base.Dispose();
+            _textView.Caret.PositionChanged -= OnCaretPositionChanged;
         }
 
         public event EventHandler<EventArgs> SuggestedActionsChanged;
@@ -38,34 +52,51 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
 
             var cachedActionSets = _cachedActionSets;
+            var caretPosition    =_textView.Caret.Position.BufferPosition;
 
-            if (cachedActionSets?.Range == range) {
+            if (IsCacheValid(cachedActionSets, caretPosition)) {
                 return cachedActionSets.SuggestedActionSets;
             }
 
-            return BuildSuggestedActions(range, cancellationToken);
+            return BuildSuggestedActions(caretPosition, cancellationToken);
         }
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
-            return Task.Factory.StartNew(() => BuildSuggestedActions(range, cancellationToken).Any(), cancellationToken);
+            var caretPosition = _textView.Caret.Position.BufferPosition;
+            return Task.Factory.StartNew(() => BuildSuggestedActions(caretPosition, cancellationToken).Any(), cancellationToken);
         }
 
         protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
             base.OnSemanticModelChanged(sender, e);
             _cachedActionSets = null;
-            SuggestedActionsChanged?.Invoke(this, EventArgs.Empty);
+            InvalidateSuggestedActions();
         }
         
-        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(SnapshotSpan range, CancellationToken cancellationToken) {
+        static bool IsCacheValid(ActionSetsWithRange cache, SnapshotPoint point) {
+            if (cache == null) {
+                return false;
+            }
+            if (cache.Range.Snapshot != point.Snapshot) {
+                return false;
+            }
+            return cache.Range.Contains(point);
+        }
+
+        void InvalidateSuggestedActions() {
+            _cachedActionSets = null;
+            SuggestedActionsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(SnapshotPoint caretPoint, CancellationToken cancellationToken) {
 
             var semanticModelResult = SemanticModelService?.SemanticModelResult;
 
-            if (semanticModelResult == null || !semanticModelResult.IsCurrent(range.Snapshot)) {
+            if (semanticModelResult == null || !semanticModelResult.IsCurrent(caretPoint.Snapshot)) {
                 _cachedActionSets = null;
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
 
-            var symbols    = FindSymbols(range, semanticModelResult);
+            var symbols    = FindSymbols(caretPoint, semanticModelResult).ToImmutableList();
             var parameter  = new CodeFixActionsParameter(symbols, semanticModelResult, _textView);
             var actionsets = BuildSuggestedActions(parameter, cancellationToken);
 
@@ -73,10 +104,21 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
 
-            var actionsetsWithRange = new ActionSetsWithRange(range, actionsets);
+            var symbolRange         = ToSnapshotSpan(caretPoint.Snapshot, symbols);
+            var actionsetsWithRange = new ActionSetsWithRange(symbolRange, actionsets);
             _cachedActionSets = actionsetsWithRange;
 
             return actionsetsWithRange.SuggestedActionSets;
+        }
+
+        SnapshotSpan ToSnapshotSpan(ITextSnapshot textSnapshot, ImmutableList<ISymbol> symbols) {
+            if(symbols.Count == 0) {
+                return new SnapshotSpan(textSnapshot, 0, 0);
+            }
+            var start = symbols.First().Start;
+            var end   = symbols.Last().End;
+
+            return new SnapshotSpan(textSnapshot, start, end - start);
         }
 
         protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsParameter codeFixActionsParameter, CancellationToken cancellationToken) {
@@ -85,10 +127,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return suggestedActions.ToImmutableList();
         }
 
-        static ImmutableList<ISymbol> FindSymbols(SnapshotSpan range, SemanticModelResult semanticModelResult) {
-            var extent  = TextExtent.FromBounds(range.Start, range.End);
-            var symbols = semanticModelResult.CodeGenerationUnit.Symbols[extent];
-            return symbols.ToImmutableList();
+        static IEnumerable<ISymbol> FindSymbols(SnapshotPoint caretPoint, SemanticModelResult semanticModelResult) {
+
+            var symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position);
+            if(symbol == null && caretPoint.Position > 0) {
+                symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position-1);
+            }
+
+            if(symbol == null) {
+                yield break;
+            }
+            yield return symbol;
         }
 
         sealed class ActionSetsWithRange {

@@ -9,6 +9,6 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public EdgeMode EdgeMode { get;}
-        public ITransition Transition { get; set; }
+        public IEdge Edge { get; set; }
     }
 }

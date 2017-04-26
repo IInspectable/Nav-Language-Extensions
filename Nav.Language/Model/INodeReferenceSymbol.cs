@@ -1,4 +1,8 @@
-﻿using JetBrains.Annotations;
+﻿#region Using Directives
+
+using JetBrains.Annotations;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
 
@@ -12,6 +16,6 @@ namespace Pharmatechnik.Nav.Language {
         INodeSymbol Declaration { get;}
         NodeReferenceType Type { get; }
         [NotNull]
-        ITransition Transition { get; }
+        IEdge Edge { get; }
     }
 }
