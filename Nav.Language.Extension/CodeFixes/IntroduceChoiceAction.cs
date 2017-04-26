@@ -51,53 +51,44 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return null;
             }
 
-            var newChoiceName = Context.InputDialogService.ShowDialog(
+            var choiceName = Context.InputDialogService.ShowDialog(
                 promptText    : "Name:",
-                title         : "Introduce choice",
+                title         : DisplayText,
                 defaultResonse: $"Choice_{NodeReference.Name}",
                 iconMoniker   : ImageMonikers.ChoiceNode,
                 validator     : Validator
             )?.Trim();
 
-            if (String.IsNullOrEmpty(newChoiceName)) {
+            if (String.IsNullOrEmpty(choiceName)) {
                 return;
             }
 
-            Apply(newChoiceName);
+            Apply(choiceName);
         }
 
-        void Apply(string newChoiceName) {
+        void Apply(string choiceName) {
 
-            var undoDescription = DisplayText;
-            var waitMessage     = $"Introduce choice 'newChoiceName'...";
+            var undoDescription = $"{DisplayText} '{choiceName}'";
+            var waitMessage     = $"{undoDescription}...";
             
             ApplyTextEdits(undoDescription, waitMessage, textEdit => {
+                // TODO Tabsize
+                var transition = NodeReference.Transition;
+                var nodeSymbol = NodeReference.Declaration;
 
-                
-                // TODO
-                //// Die Choice Deklaration
-                //RenameSymbol(textEdit, NodeReference, newChoiceName);
-               //
-               //// Die Choice-Referenzen auf der "linken Seite"
-               //foreach (var transition in ChoiceSymbol.Outgoings) {
-               //    RenameSymbol(textEdit, transition.Source, newChoiceName);
-               //}
-               //
-               //// Die Choice-Referenzen auf der "rechten Seite"
-               //foreach (var transition in ChoiceSymbol.Incomings) {
-               //    RenameSymbol(textEdit, transition.Target, newChoiceName);
-               //}
+                var choiceDeclaration = $"{GetTabInSpaces()}{SyntaxFacts.ChoiceKeyword} {choiceName}{SyntaxFacts.Semicolon}";
+                var choiceTransition  = $"{GetTabInSpaces()}{choiceName} {transition.EdgeMode?.Name} {NodeReference.Name}{SyntaxFacts.Semicolon}";
+
+                // ReSharper disable once PossibleNullReferenceException Check ist schon früher passiert
+                var choiceDeclaraionLine=textEdit.Snapshot.GetLineFromPosition(nodeSymbol.Start);
+                textEdit.Insert(choiceDeclaraionLine.End, $"{GetNewLineCharacter()}{choiceDeclaration}");
+               
+                //// Die Node Reference wird nun umgebogen auf die choice
+                ReplaceSymbol(textEdit, NodeReference, choiceName);
+
+                var choiceTransitionLine = textEdit.Snapshot.GetLineFromPosition(NodeReference.End);
+                textEdit.Insert(choiceTransitionLine.End, $"{GetNewLineCharacter()}{choiceTransition}");   
             });
-        }
-
-        //void RenameSymbol(ITextEdit textEdit, ISymbol symbol, string name) {
-
-        //    if (symbol == null || symbol.Name==name) {
-        //        return;
-        //    }
-
-        //    var replaceSpan = GetTextEditSpan(textEdit, symbol.Location);
-        //    textEdit.Replace(replaceSpan, name);
-        //}        
+        }        
     }
 }

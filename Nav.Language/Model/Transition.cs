@@ -20,10 +20,15 @@ namespace Pharmatechnik.Nav.Language {
             Target         = target;
             Triggers       = triggers ?? new SymbolCollection<TriggerSymbol>();
 
-            source.Transition   = this;
-            edgeMode.Transition = this;
-            target.Transition   = this;
-
+            if (source != null) {                
+                source.Transition   = this;
+            }
+            if (edgeMode != null) {
+                edgeMode.Transition = this;
+            }
+            if (target != null) {
+                target.Transition = this;
+            }
             foreach (var trigger in Triggers) {
                 trigger.Transition = this;
             }            
