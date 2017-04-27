@@ -69,23 +69,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public abstract void Invoke(CancellationToken cancellationToken);
 
-        protected SnapshotSpan GetTextEditSpan(ITextEdit textEdit, Location location) {
-            // Theoretisch kann es sein, das der Snapshot, auf dem die Semantic Anayse gelaufen ist,
-            // nicht mit dem aktuellen Snaphot des textEdits übereinstimmt.
-            // Ob es nun Sinn macht, den SnapshotSpan auf den aktuellen TextSnapshot zu transformieren,
-            // oder ob es nicht eigentlich besser wäre, die ganze Aktion abzubrechen, wird die Zeit zeigen.
-            var snapshotSpan = GetSnapshotSpan(location);
-            var trackingSpan = Parameter.SemanticModelResult.Snapshot.CreateTrackingSpan(snapshotSpan, SpanTrackingMode.EdgeInclusive);
-            var targetSpan   = trackingSpan.GetSpan(textEdit.Snapshot);
-            return targetSpan;
-        }
-
-        protected EditorSettings EditorSettings {
-            get {
-                return new EditorSettings(
-                    tabSize: Parameter.TextView.Options.GetTabSize(),
-                    newLine: Parameter.TextView.Options.GetNewLineCharacter());
-            }
+        protected EditorSettings GetEditorSettings() {
+            return new EditorSettings(
+                tabSize: Parameter.TextView.Options.GetTabSize(),
+                newLine: Parameter.TextView.Options.GetNewLineCharacter());
         }
 
         protected SnapshotSpan GetSnapshotSpan(Location location) {
@@ -95,7 +82,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         protected SnapshotSpan GetSnapshotSpan(ISymbol symbol) {
             return GetSnapshotSpan(symbol.Location);
         }
-
+        
         protected void ApplyTextChanges(string undoDescription, string waitMessage, IEnumerable<TextChange> textChanges) {
 
             using (Context.WaitIndicator.StartWait(undoDescription, waitMessage, allowCancel: false))
@@ -103,7 +90,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             using (var textEdit = Parameter.TextBuffer.CreateEdit()) {
 
                 foreach (var change in textChanges) {
-                    textEdit.Replace(change.Extent.Start, change.Extent.Length, change.NewText);
+                    var span = ToTextEditSpan(textEdit, change.Extent);
+                    textEdit.Replace(span, change.NewText);
                 }
 
                 textEdit.Apply();
@@ -112,46 +100,19 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             }
         }
 
-        [Obsolete]
-        protected void ApplyTextEdits(string undoDescription, string waitMessage, Action<ITextEdit> action) {
-
-            using (Context.WaitIndicator.StartWait(undoDescription, waitMessage, allowCancel: false))
-            using (var undoTransaction = new TextUndoTransaction(undoDescription, Parameter.TextView, Context.UndoHistoryRegistry, Context.EditorOperationsFactoryService))
-            using (var textEdit = Parameter.TextBuffer.CreateEdit()) {
-
-                action(textEdit);
-  
-                textEdit.Apply();
-
-                undoTransaction.Commit();
-            }
+        SnapshotSpan ToTextEditSpan(ITextEdit textEdit, TextExtent extent) {
+            // Theoretisch kann es sein, das der Snapshot, auf dem die Semantic Anayse gelaufen ist,
+            // nicht mit dem aktuellen Snaphot des textEdits übereinstimmt.
+            // Ob es nun Sinn macht, den SnapshotSpan auf den aktuellen TextSnapshot zu transformieren,
+            // oder ob es nicht eigentlich besser wäre, die ganze Aktion abzubrechen, wird die Zeit zeigen.
+            var snapshotSpan = GetSnapshotSpan(extent);
+            var trackingSpan = Parameter.SemanticModelResult.Snapshot.CreateTrackingSpan(snapshotSpan, SpanTrackingMode.EdgeInclusive);
+            var targetSpan = trackingSpan.GetSpan(textEdit.Snapshot);
+            return targetSpan;
         }
 
-        protected HashSet<string> GetDeclaredNodeNames(ITaskDefinitionSymbol taskDefinitionSymbol) {
-
-            var declaredNodeNames = new HashSet<string>();
-            if (taskDefinitionSymbol == null) {
-                return declaredNodeNames;
-            }
-
-            foreach (var node in taskDefinitionSymbol.NodeDeclarations) {
-                var nodeName = node.Name;
-                if (!String.IsNullOrEmpty(nodeName)) {
-                    declaredNodeNames.Add(nodeName);
-                }
-            }
-            return declaredNodeNames;
-        }
-
-        [Obsolete]
-        protected void ReplaceSymbol(ITextEdit textEdit, ISymbol symbol, string name) {
-
-            if (symbol == null || symbol.Name == name) {
-                return;
-            }
-
-            var replaceSpan = GetTextEditSpan(textEdit, symbol.Location);
-            textEdit.Replace(replaceSpan, name);
+        SnapshotSpan GetSnapshotSpan(TextExtent extent) {
+            return new SnapshotSpan(Parameter.SemanticModelResult.Snapshot, start: extent.Start, length: extent.Length);
         }
     }
 }

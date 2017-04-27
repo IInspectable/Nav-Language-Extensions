@@ -3,14 +3,16 @@
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Language.Intellisense;
 
+using Pharmatechnik.Nav.Language.CodeFixes;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+
     [ExportCodeFixActionProvider(nameof(RenameChoiceActionProvider))]
     class RenameChoiceActionProvider : CodeFixActionProvider {
 
@@ -20,10 +22,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var choiceNodeSymbols = ChoiceNodeFinder.FindRelatedChoiceNodes(parameter.Symbols);
+            var choiceNodeSymbols = CodeFixFinder.FindCodeFixes(parameter);
 
-            var actions = choiceNodeSymbols.Select(choiceNodeSymbol => new RenameChoiceAction(
-                choiceSymbol    : choiceNodeSymbol,
+            var actions = choiceNodeSymbols.Select(codeFix => new RenameChoiceAction(
+                codeFix         : codeFix,
                 parameter       : parameter,
                 context         : Context));
 
@@ -36,11 +38,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return actionSets;
         }
 
-        sealed class ChoiceNodeFinder : SymbolVisitor<IChoiceNodeSymbol> {
+        sealed class CodeFixFinder : SymbolVisitor<IChoiceNodeSymbol> {
 
-            public static IEnumerable<IChoiceNodeSymbol> FindRelatedChoiceNodes(ImmutableList<ISymbol> symbols) {
-                var finder = new ChoiceNodeFinder();
-                return symbols.Select(finder.Visit).Where(choiceNodeSymbol => choiceNodeSymbol != null);                
+            public static IEnumerable<RenameChoiceCodeFix> FindCodeFixes(CodeFixActionsParameter parameter) {
+                var finder = new CodeFixFinder();
+                return parameter.Symbols.Select(finder.Visit).Where(choiceNodeSymbol => choiceNodeSymbol != null)
+                                .Select( choiceNode=> new RenameChoiceCodeFix(parameter.SemanticModelResult.CodeGenerationUnit, choiceNode))
+                                .Where(codeFix=>codeFix.CanApplyFix());                
             }
 
             public override IChoiceNodeSymbol VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {

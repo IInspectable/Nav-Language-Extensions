@@ -71,6 +71,7 @@
     <Compile Include="CodeFixes\CodeFix.cs" />
     <Compile Include="CodeFixes\EditorSettings.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
+    <Compile Include="CodeFixes\RenameChoiceCodeFix.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
     <Compile Include="CodeGen\BeginWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeGenerationOptions.cs" />

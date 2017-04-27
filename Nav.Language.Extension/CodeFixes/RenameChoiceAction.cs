@@ -7,31 +7,31 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 
+using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    // TODO RenameChoiceCodeFix
     class RenameChoiceAction : CodeFixAction {
 
-        public RenameChoiceAction(IChoiceNodeSymbol choiceSymbol,
+        public RenameChoiceAction(RenameChoiceCodeFix codeFix,
                                   CodeFixActionsParameter parameter, 
                                   CodeFixActionContext context): base(context, parameter) {
 
-            ChoiceSymbol = choiceSymbol;
+            CodeFix = codeFix ?? throw new ArgumentNullException(nameof(codeFix));
         }
 
-        public IChoiceNodeSymbol ChoiceSymbol { get; }
-        public override Span? ApplicableToSpan   => GetSnapshotSpan(ChoiceSymbol);
-        public override string DisplayText       => $"Rename choice '{ChoiceSymbol.Name}'";
+        public RenameChoiceCodeFix CodeFix { get; }
+        public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.ChoiceNodeSymbol);
+        public override string DisplayText       => $"Rename choice '{CodeFix.ChoiceNodeSymbol.Name}'";
         public override ImageMoniker IconMoniker => KnownMonikers.Rename;
 
         public override void Invoke(CancellationToken cancellationToken) {
-            
-            var declaredNames = GetDeclaredNodeNames(ChoiceSymbol.ContainingTask);
-            declaredNames.Remove(ChoiceSymbol.Name); // Ist OK - pasiert halt nix
+
+            var declaredNames = CodeFix.GetUsedNodeNames();
+            declaredNames.Remove(CodeFix.ChoiceNodeSymbol.Name); // Ist OK - pasiert halt nix
             
             string Validator(string validationText) {
 
@@ -51,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var newChoiceName = Context.InputDialogService.ShowDialog(
                 promptText    : "Name:",
                 title         : "Rename choice",
-                defaultResonse: ChoiceSymbol.Name,
+                defaultResonse: CodeFix.ChoiceNodeSymbol.Name,
                 iconMoniker   : ImageMonikers.ChoiceNode,
                 validator     : Validator
             )?.Trim();
@@ -66,24 +66,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         void Apply(string newChoiceName) {
 
             var undoDescription = DisplayText;
-            var waitMessage     = $"Renaming choice '{ChoiceSymbol.Name}'...";
-            
-            ApplyTextEdits(undoDescription, waitMessage, textEdit => {
+            var waitMessage     = $"Renaming choice '{CodeFix.ChoiceNodeSymbol.Name}'...";
+            var textChanges     = CodeFix.GetTextChanges(newChoiceName, GetEditorSettings());
 
-                // TODO CodeFix daraus machen und ins Nav.Language Assembly
-                // Die Choice Deklaration
-                ReplaceSymbol(textEdit, ChoiceSymbol, newChoiceName);
-
-                // Die Choice-Referenzen auf der "linken Seite"
-                foreach (var transition in ChoiceSymbol.Outgoings) {
-                    ReplaceSymbol(textEdit, transition.Source, newChoiceName);
-                }
-
-                // Die Choice-Referenzen auf der "rechten Seite"
-                foreach (var transition in ChoiceSymbol.Incomings) {
-                    ReplaceSymbol(textEdit, transition.Target, newChoiceName);
-                }
-            });
+            ApplyTextChanges(undoDescription, waitMessage, textChanges);
         }        
     }
 }

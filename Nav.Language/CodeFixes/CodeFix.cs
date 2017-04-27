@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -19,6 +20,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public abstract bool CanApplyFix();
 
+        [CanBeNull]
         protected static TextChange? NewReplace(ISymbol symbol, string newName) {
             if (symbol == null || symbol.Name == newName) {
                 return null;
@@ -26,6 +28,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return new TextChange(symbol.Location.Extent, newName);
         }
 
+        [CanBeNull]
         protected static TextChange? NewInsert(int position, string newText) {
             return new TextChange(TextExtent.FromBounds(position, position), newText);
         }
