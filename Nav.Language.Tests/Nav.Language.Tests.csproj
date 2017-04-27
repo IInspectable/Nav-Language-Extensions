@@ -96,6 +96,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SyntaxTest.tt</DependentUpon>
     </Compile>
+    <Compile Include="RenameChoiceCodeFixTests.cs" />
     <Compile Include="SyntaxFactsTest.cs" />
     <Compile Include="SyntaxStressTests.cs" />
     <Compile Include="SyntaxTreeNavigationTests.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="SyntaxTokenTests.cs" />
+    <Compile Include="TextChangeWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

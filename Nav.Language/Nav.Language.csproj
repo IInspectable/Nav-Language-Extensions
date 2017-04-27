@@ -228,6 +228,7 @@
     <Compile Include="Syntax\SyntaxTokenClassification.cs" />
     <Compile Include="Internal\NavErrorListener.cs" />
     <Compile Include="Text\TextChange.cs" />
+    <Compile Include="Text\TextChangeWriter.cs" />
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
   </ItemGroup>
