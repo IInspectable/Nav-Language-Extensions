@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.VisualStudio.Text.Editor;
@@ -44,6 +45,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
             void OnTextViewClosed(object sender, EventArgs e) {
                 _textView.Closed -= OnTextViewClosed;
+
+                if(_textView.Properties.TryGetProperty<AutoClosingViewProperty<TProperty, TTextView>>(typeof(AutoClosingViewProperty<TProperty, TTextView>), out var properties)) {
+                    foreach(var disposable in properties.Values.OfType<IDisposable>()) {
+                        disposable.Dispose();
+                    }
+                }
                 _textView.Properties.RemoveProperty(typeof(AutoClosingViewProperty<TProperty, TTextView>));
             }
 
@@ -54,6 +61,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             void Add(object key, TProperty value) {
                 _map[key] = value;
             }
+
+            IEnumerable<TProperty> Values => _map.Values;
+
         }
     }
 }
