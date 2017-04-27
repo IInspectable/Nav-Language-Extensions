@@ -9,7 +9,9 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
+using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -78,6 +80,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return targetSpan;
         }
 
+        protected EditorSettings EditorSettings {
+            get {
+                return new EditorSettings(
+                    tabSize: Parameter.TextView.Options.GetTabSize(),
+                    newLine: Parameter.TextView.Options.GetNewLineCharacter());
+            }
+        }
+
         protected SnapshotSpan GetSnapshotSpan(Location location) {
             return location.ToSnapshotSpan(Parameter.SemanticModelResult.Snapshot);
         }
@@ -86,6 +96,23 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return GetSnapshotSpan(symbol.Location);
         }
 
+        protected void ApplyTextChanges(string undoDescription, string waitMessage, IEnumerable<TextChange> textChanges) {
+
+            using (Context.WaitIndicator.StartWait(undoDescription, waitMessage, allowCancel: false))
+            using (var undoTransaction = new TextUndoTransaction(undoDescription, Parameter.TextView, Context.UndoHistoryRegistry, Context.EditorOperationsFactoryService))
+            using (var textEdit = Parameter.TextBuffer.CreateEdit()) {
+
+                foreach (var change in textChanges) {
+                    textEdit.Replace(change.Extent.Start, change.Extent.Length, change.NewText);
+                }
+
+                textEdit.Apply();
+
+                undoTransaction.Commit();
+            }
+        }
+
+        [Obsolete]
         protected void ApplyTextEdits(string undoDescription, string waitMessage, Action<ITextEdit> action) {
 
             using (Context.WaitIndicator.StartWait(undoDescription, waitMessage, allowCancel: false))
@@ -116,6 +143,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return declaredNodeNames;
         }
 
+        [Obsolete]
         protected void ReplaceSymbol(ITextEdit textEdit, ISymbol symbol, string name) {
 
             if (symbol == null || symbol.Name == name) {
@@ -124,18 +152,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var replaceSpan = GetTextEditSpan(textEdit, symbol.Location);
             textEdit.Replace(replaceSpan, name);
-        }
-
-        protected int GetTabSize() {
-            return Parameter.TextView.Options.GetTabSize();
-        }
-
-        protected string GetTabInSpaces(int tabCount = 1) {
-            return new string(' ', tabCount * GetTabSize());
-        }
-
-        protected string GetNewLineCharacter() {
-            return Parameter.TextView.Options.GetNewLineCharacter();
         }
     }
 }

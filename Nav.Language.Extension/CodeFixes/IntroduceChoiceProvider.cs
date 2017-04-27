@@ -11,6 +11,7 @@ using Pharmatechnik.Nav.Language.CodeFixes;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+
     [ExportCodeFixActionProvider(nameof(IntroduceChoiceProvider))]
     class IntroduceChoiceProvider : CodeFixActionProvider {
 
@@ -20,10 +21,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var choiceNodeSymbols = NodeReferenceFinder.FindRelatedNodeReferences(parameter);
+            var codeFixes = FindCodeFixes(parameter);
 
-            var actions = choiceNodeSymbols.Select(nodeReference => new IntroduceChoiceAction(
-                nodeReference   : nodeReference,
+            var actions = codeFixes.Select(codeFix => new IntroduceChoiceAction(
+                codeFix         : codeFix,
                 parameter       : parameter,
                 context         : Context));
 
@@ -36,12 +37,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return actionSets;
         }
 
-        static class NodeReferenceFinder  {
-
-            public static IEnumerable<INodeReferenceSymbol> FindRelatedNodeReferences(CodeFixActionsParameter parameter) {
-                var codeFix = new IntroduceChoiceCodeFix(parameter.SemanticModelResult.CodeGenerationUnit);
-                return parameter.Symbols.OfType<INodeReferenceSymbol>().Where(codeFix.CanApplyFix);                
-            }            
-        }
+        public static IEnumerable<IntroduceChoiceCodeFix> FindCodeFixes(CodeFixActionsParameter parameter) {
+            return parameter.Symbols
+                            .OfType<INodeReferenceSymbol>()
+                            .Select(fix => new IntroduceChoiceCodeFix(parameter.SemanticModelResult.CodeGenerationUnit, fix))
+                            .Where(fix => fix.CanApplyFix());
+        }        
     }
 }

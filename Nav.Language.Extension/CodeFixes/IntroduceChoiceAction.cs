@@ -15,29 +15,26 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     
     class IntroduceChoiceAction : CodeFixAction {
 
-        public IntroduceChoiceAction(INodeReferenceSymbol nodeReference,
+        public IntroduceChoiceAction(IntroduceChoiceCodeFix codeFix,
                                      CodeFixActionsParameter parameter, 
                                      CodeFixActionContext context): base(context, parameter) {
 
-            NodeReference = nodeReference;
-            CodeFix       = new IntroduceChoiceCodeFix(Parameter.SemanticModelResult.CodeGenerationUnit);
+            CodeFix = codeFix ?? throw new ArgumentNullException(nameof(codeFix));
         }
 
         IntroduceChoiceCodeFix CodeFix { get; }
 
-        public INodeReferenceSymbol NodeReference { get; }
-        public override Span? ApplicableToSpan   => GetSnapshotSpan(NodeReference);
+        public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.NodeReference);
         public override string DisplayText       => "Introduce choice";
         public override ImageMoniker IconMoniker => KnownMonikers.InsertClause;
 
         public override void Invoke(CancellationToken cancellationToken) {
 
-            var containingTask = NodeReference.Declaration?.ContainingTask;
-            if (containingTask == null) {
+            if (!CodeFix.CanApplyFix()) {
                 return;
             }
             
-            var declaredNames = GetDeclaredNodeNames(containingTask);
+            var declaredNames = CodeFix.GetUsedNodeNames();
 
             string Validator(string validationText) {
 
@@ -57,7 +54,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var choiceName = Context.InputDialogService.ShowDialog(
                 promptText    : "Name:",
                 title         : DisplayText,
-                defaultResonse: $"Choice_{NodeReference.Name}",
+                defaultResonse: $"Choice_{CodeFix.NodeReference.Name}",
                 iconMoniker   : ImageMonikers.ChoiceNode,
                 validator     : Validator
             )?.Trim();
@@ -73,15 +70,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var undoDescription = $"{DisplayText} '{choiceName}'";
             var waitMessage     = $"{undoDescription}...";
-            
-            ApplyTextEdits(undoDescription, waitMessage, textEdit => {
-                
-                var changes = CodeFix.GetTextChanges(NodeReference, choiceName, GetTabSize(), GetNewLineCharacter());
+            var textChanges     = CodeFix.GetTextChanges(choiceName, EditorSettings);
 
-                foreach (var change in changes) {
-                    textEdit.Replace(change.Extent.Start, change.Extent.Length, change.NewText);
-                }
-            });
+            ApplyTextChanges(undoDescription, waitMessage, textChanges);
         }               
     }
 }
