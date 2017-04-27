@@ -5,14 +5,9 @@ namespace Pharmatechnik.Nav.Language {
 
     abstract partial class Symbol: ISymbol {
 
-        protected Symbol(string name, Location location) {
-
-            if(location == null) {
-                throw new ArgumentNullException(nameof(location));
-            }
-
+        protected Symbol(string name, [NotNull] Location location) {
             Name     = name;
-            Location = location;
+            Location = location ?? throw new ArgumentNullException(nameof(location));
         }
 
         public virtual string Name { get; }
