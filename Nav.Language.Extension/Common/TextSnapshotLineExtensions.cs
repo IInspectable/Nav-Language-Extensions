@@ -79,22 +79,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         /// </example>
         #endregion
         public static int GetSignificantColumn(this ITextSnapshotLine line, int tabSize) {
-            bool hasSignificantContent = false;
-            int column = 0;
             var text = line.GetText();
-            for (int index = 0; index < text.Length; index++) {
-                var c = text[index];
-
-                if (c == '\t') {
-                    column += tabSize - column % tabSize;
-                } else if (Char.IsWhiteSpace(c)) {
-                    column++;
-                } else {
-                    hasSignificantContent = true;
-                    break;
-                }
-            }
-            return hasSignificantContent ? column : Int32.MaxValue;
+            return text.GetSignificantColumn(tabSize);
         }
 
         #region Using Directives

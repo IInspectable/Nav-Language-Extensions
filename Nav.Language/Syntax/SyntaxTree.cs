@@ -96,8 +96,56 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         LinePosition GetLinePosition(int position) {
-           var lineInformaton = _textLines.FindElementAtPosition(position);
-           return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
+            var lineInformaton = GetTextLineExtentCore(position);
+            return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
+        }
+
+        public TextLineExtent GetTextLineExtent(int position) {
+            if (position < 0 || position > SourceText.Length) {
+                throw new ArgumentOutOfRangeException(nameof(position));
+            }
+            return GetTextLineExtentCore(position);
+        }
+
+        TextLineExtent GetTextLineExtentCore(int position) {
+            var lineInformaton = _textLines.FindElementAtPosition(position);
+            return lineInformaton;
+        }
+
+        public int GetEndColumn(Location location, int tabSize) {
+            if (location == null) {
+                throw new ArgumentNullException(nameof(location));
+            }
+            if (tabSize < 0) {
+                throw new ArgumentOutOfRangeException(nameof(tabSize));
+            }
+
+            var endLineExtent  = GetTextLineExtent(location.End);
+            var lineStartIndex = endLineExtent.Extent.Start;
+            var length         = location.EndLinePosition.Character;
+
+            var text   = SourceText.Substring(lineStartIndex, length);
+            var column = text.GetColumnForOffset(tabSize, length);
+
+            return column;
+        }
+
+        public int GetStartColumn(Location location, int tabSize) {
+            if (location == null) {
+                throw new ArgumentNullException(nameof(location));
+            }
+            if (tabSize < 0) {
+                throw new ArgumentOutOfRangeException(nameof(tabSize));
+            }
+
+            var startLineExtent = GetTextLineExtent(location.Start);
+            var lineStartIndex  = startLineExtent.Extent.Start;
+            var length          = location.StartLinePosition.Character;
+
+            var text   = SourceText.Substring(lineStartIndex, length);
+            var column = text.GetColumnForOffset(tabSize, length);
+
+            return column;
         }
 
         #region Parse Methods
