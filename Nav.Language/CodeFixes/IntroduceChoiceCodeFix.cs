@@ -28,21 +28,40 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                  !(NodeReference.Declaration is IChoiceNodeSymbol);
         }
 
-        public HashSet<string> GetUsedNodeNames() {
-            return GetDeclaredNodeNames(ContainingTask);
+        public string ValidateChoiceName(string choiceName) {
+
+            choiceName = choiceName?.Trim();
+
+            if (!SyntaxFacts.IsValidIdentifier(choiceName)) {
+                return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
+            }
+
+            var declaredNodeNames = GetDeclaredNodeNames(ContainingTask);
+            if (declaredNodeNames.Contains(choiceName)) {
+                return String.Format(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared.MessageFormat, choiceName);
+            }
+
+            return null;
         }
 
         public IList<TextChange> GetTextChanges(string choiceName, EditorSettings editorSettings) {
-
+            
             if (!CanApplyFix()) {
-                return Enumerable.Empty<TextChange>().ToList();
+                throw new InvalidOperationException();
+            }
+
+            choiceName = choiceName?.Trim();
+
+            var validationMessage = ValidateChoiceName(choiceName);
+            if(!String.IsNullOrEmpty(validationMessage)) {
+                throw new ArgumentException(validationMessage, nameof(choiceName));
             }
 
             var edge       = NodeReference.Edge;
             var edgeMode   = edge.EdgeMode;
             var nodeSymbol = NodeReference.Declaration;
 
-            // ReSharper disable once PossibleNullReferenceException Check ist schon früher passiert
+            // ReSharper disable once PossibleNullReferenceException Check ist schon in CanApplyFix passiert
             var nodeDeclarationLine = SyntaxTree.GetTextLineExtent(nodeSymbol.Start);
             var nodeTransitionLine  = SyntaxTree.GetTextLineExtent(NodeReference.End);
 

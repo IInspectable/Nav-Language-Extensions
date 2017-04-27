@@ -29,47 +29,23 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public override ImageMoniker IconMoniker => KnownMonikers.Rename;
 
         public override void Invoke(CancellationToken cancellationToken) {
-
-            var declaredNames = CodeFix.GetUsedNodeNames();
-            declaredNames.Remove(CodeFix.ChoiceNodeSymbol.Name); // Ist OK - pasiert halt nix
             
-            string Validator(string validationText) {
-
-                validationText = validationText?.Trim();
-
-                if (!SyntaxFacts.IsValidIdentifier(validationText)) {
-                    return "Invalid identifier";
-                }
-
-                if (declaredNames.Contains(validationText)) {
-                    return $"A node with the name '{validationText}' is already declared";
-                }
-
-                return null;
-            }
-
-            var newChoiceName = Context.InputDialogService.ShowDialog(
+            var newChoiceName = Context.DialogService.ShowInputDialog(
                 promptText    : "Name:",
                 title         : "Rename choice",
                 defaultResonse: CodeFix.ChoiceNodeSymbol.Name,
                 iconMoniker   : ImageMonikers.ChoiceNode,
-                validator     : Validator
+                validator     : CodeFix.ValidateChoiceName
             )?.Trim();
 
             if (String.IsNullOrEmpty(newChoiceName)) {
                 return;
             }
 
-            Apply(newChoiceName);
+            ApplyTextChanges(
+                undoDescription: DisplayText, 
+                waitMessage    : $"Renaming choice '{CodeFix.ChoiceNodeSymbol.Name}'...", 
+                textChanges    : CodeFix.GetTextChanges(newChoiceName, GetEditorSettings()));
         }
-
-        void Apply(string newChoiceName) {
-
-            var undoDescription = DisplayText;
-            var waitMessage     = $"Renaming choice '{CodeFix.ChoiceNodeSymbol.Name}'...";
-            var textChanges     = CodeFix.GetTextChanges(newChoiceName, GetEditorSettings());
-
-            ApplyTextChanges(undoDescription, waitMessage, textChanges);
-        }        
     }
 }

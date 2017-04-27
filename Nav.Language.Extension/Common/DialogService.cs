@@ -9,15 +9,15 @@ using Microsoft.VisualStudio.Imaging.Interop;
 
 namespace Pharmatechnik.Nav.Language.Extension.Common {
 
-    interface IInputDialogService {
+    interface IDialogService {
 
-        string ShowDialog(string promptText, string title = null, string defaultResonse = null, ImageMoniker iconMoniker = default(ImageMoniker), Func<string, string> validator = null);
+        string ShowInputDialog(string promptText, string title = null, string defaultResonse = null, ImageMoniker iconMoniker = default(ImageMoniker), Func<string, string> validator = null);
     }
 
-    [Export(typeof(IInputDialogService))]
-    class InputDialogService: IInputDialogService {
+    [Export(typeof(IDialogService))]
+    class DialogService: IDialogService {
 
-        public string ShowDialog(string promptText, string title = null, string defaultResonse = null, ImageMoniker iconMoniker = new ImageMoniker(), Func<string, string> validator = null) {
+        public string ShowInputDialog(string promptText, string title = null, string defaultResonse = null, ImageMoniker iconMoniker = new ImageMoniker(), Func<string, string> validator = null) {
 
             var viewModel = new InputDialogViewModel {
                 PromptText  = promptText,

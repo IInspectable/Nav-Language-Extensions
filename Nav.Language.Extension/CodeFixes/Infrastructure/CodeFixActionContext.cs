@@ -18,17 +18,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public CodeFixActionContext(IWaitIndicator waitIndicator, 
             ITextUndoHistoryRegistry undoHistoryRegistry,
             IEditorOperationsFactoryService editorOperationsFactoryService, 
-            IInputDialogService inputDialogService) {
+            IDialogService dialogService) {
 
             WaitIndicator                  = waitIndicator;
             UndoHistoryRegistry            = undoHistoryRegistry;
             EditorOperationsFactoryService = editorOperationsFactoryService;
-            InputDialogService             = inputDialogService;
+            DialogService             = dialogService;
         }
 
         public IWaitIndicator WaitIndicator { get; }
         public ITextUndoHistoryRegistry UndoHistoryRegistry { get; }
         public IEditorOperationsFactoryService EditorOperationsFactoryService { get; }
-        public IInputDialogService InputDialogService { get; }
+        public IDialogService DialogService { get; }
     }
 }
