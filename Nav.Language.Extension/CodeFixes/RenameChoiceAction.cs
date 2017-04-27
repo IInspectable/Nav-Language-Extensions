@@ -12,8 +12,9 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
-    
-    class RenameChoiceAction: CodeFixAction {
+
+    // TODO RenameChoiceCodeFix
+    class RenameChoiceAction : CodeFixAction {
 
         public RenameChoiceAction(IChoiceNodeSymbol choiceSymbol,
                                   CodeFixActionsParameter parameter, 

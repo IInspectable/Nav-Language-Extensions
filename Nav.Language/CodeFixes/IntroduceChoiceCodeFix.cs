@@ -10,85 +10,65 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
 
-    public class IntroduceChoiceCodeFix {
+    public class IntroduceChoiceCodeFix: CodeFix {
 
-        readonly CodeGenerationUnit _codeGenerationUnit;
-
-        // TODO INodeReferenceSymbol gleich mitgeben? Kostet ja nichts... Und dann Interface mit CanApply Methode ohne Parameter...
-        public IntroduceChoiceCodeFix(CodeGenerationUnit codeGenerationUnit) {
-            _codeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
+        public IntroduceChoiceCodeFix(CodeGenerationUnit codeGenerationUnit, INodeReferenceSymbol nodeReference): base(codeGenerationUnit) {            
+            NodeReference  = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }
 
-        public bool CanApplyFix(INodeReferenceSymbol nodeReference) {
-            // TODO überprüfen, ob Node Reference in CodeGenerationUnit?
-            return nodeReference.Type == NodeReferenceType.Target &&
-                   nodeReference.Declaration != null &&
-                   nodeReference.Edge.Source != null &&
-                   nodeReference.Edge.EdgeMode != null &&
-                   !(nodeReference.Declaration is IChoiceNodeSymbol);
+        public INodeReferenceSymbol NodeReference { get; }
+        public ITaskDefinitionSymbol ContainingTask => NodeReference.Declaration?.ContainingTask;
+        
+        public override bool CanApplyFix() {
+
+            return NodeReference.Type == NodeReferenceType.Target &&
+                   NodeReference.Declaration   != null &&
+                   NodeReference.Edge.Source   != null &&
+                   NodeReference.Edge.EdgeMode != null &&
+                 !(NodeReference.Declaration is IChoiceNodeSymbol);
         }
 
-        public IList<TextChange> GetTextChanges(INodeReferenceSymbol nodeReference, string choiceName, int tabSize, string newLineCharacter) {
+        public HashSet<string> GetUsedNodeNames() {
+            return GetDeclaredNodeNames(ContainingTask);
+        }
 
-            if (!CanApplyFix(nodeReference)) {
+        public IList<TextChange> GetTextChanges(string choiceName, EditorSettings editorSettings) {
+
+            if (!CanApplyFix()) {
                 return Enumerable.Empty<TextChange>().ToList();
             }
-            
-            var syntaxTree = _codeGenerationUnit.Syntax.SyntaxTree;
 
-            var edge       = nodeReference.Edge;
+            var edge       = NodeReference.Edge;
             var edgeMode   = edge.EdgeMode;
-            var nodeSymbol = nodeReference.Declaration;
+            var nodeSymbol = NodeReference.Declaration;
 
             // ReSharper disable once PossibleNullReferenceException Check ist schon früher passiert
-            var nodeDeclarationLine = syntaxTree.GetTextLineExtent(nodeSymbol.Start);
-            var nodeTransitionLine  = syntaxTree.GetTextLineExtent(nodeReference.End);
+            var nodeDeclarationLine = SyntaxTree.GetTextLineExtent(nodeSymbol.Start);
+            var nodeTransitionLine  = SyntaxTree.GetTextLineExtent(NodeReference.End);
 
-            var choiceDeclaration = $"{GetSignificantColumn(syntaxTree, nodeDeclarationLine, tabSize)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol, tabSize)}{choiceName}{SyntaxFacts.Semicolon}";
-            var choiceTransition  = $"{GetSignificantColumn(syntaxTree, nodeTransitionLine, tabSize)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName, tabSize)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge, tabSize)}{nodeReference.Name}{SyntaxFacts.Semicolon}";
+            var choiceDeclaration = $"{GetSignificantColumn(nodeDeclarationLine, editorSettings.TabSize)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol, editorSettings.TabSize)}{choiceName}{SyntaxFacts.Semicolon}";
+            var choiceTransition  = $"{GetSignificantColumn(nodeTransitionLine , editorSettings.TabSize)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName, editorSettings.TabSize)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge, editorSettings.TabSize)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
 
             var textChanges = new List<TextChange?>();
             // Die Choice Deklaration: choice NeueChoice;
-            textChanges.Add(NewInsert(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{newLineCharacter}"));
+            textChanges.Add(NewInsert(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{editorSettings.NewLine}"));
             // Die Node Reference wird nun umgebogen auf die choice
-            textChanges.Add(NewReplace(nodeReference, choiceName));
+            textChanges.Add(NewReplace(NodeReference, choiceName));
             // Die Edge der choice ist immer '-->'
             textChanges.Add(NewReplace(edgeMode, SyntaxFacts.GoToEdgeKeyword));
             // Die neue choice Transition 
-            textChanges.Add(NewInsert(nodeTransitionLine.Extent.End, $"{choiceTransition}{newLineCharacter}"));
+            textChanges.Add(NewInsert(nodeTransitionLine.Extent.End, $"{choiceTransition}{editorSettings.NewLine}"));
 
             return textChanges.OfType<TextChange>().ToList();
         }
 
-        // TODO Infrastrukur in Basisklasse
-        static TextChange? NewReplace(ISymbol symbol, string newName) {
-            if (symbol == null || symbol.Name == newName) {
-                return null;
-            }
-            return new TextChange(symbol.Location.Extent, newName);
-        }
-
-        public static TextChange? NewInsert(int position, string newText) {
-            return new TextChange(TextExtent.FromBounds(position, position), newText);
-        }
-        
-        static string GetSignificantColumn(SyntaxTree syntaxTree, TextLineExtent lineExtent, int tabSize) {
-
-            var line = syntaxTree.SourceText.Substring(lineExtent.Extent.Start, lineExtent.Extent.Length);
-
-            var startColumn = line.GetSignificantColumn(tabSize);
-
-            return new String(' ', startColumn);
-        }
-
-        static string WhiteSpaceBetweenSourceAndEdgeMode(IEdge edge, string newSourceName, int tabSize) {
+        string WhiteSpaceBetweenSourceAndEdgeMode(IEdge edge, string newSourceName, int tabSize) {
 
             if (edge.Source == null || edge.EdgeMode == null) {
                 return " ";
             }
 
-            var syntaxTree = edge.ContainingTask.Syntax.SyntaxTree;
-            var oldOffset = ColumnsBetweenLocations(syntaxTree, edge.Source.Location, edge.EdgeMode.Location, tabSize);
+            var oldOffset = ColumnsBetweenLocations(edge.Source.Location, edge.EdgeMode.Location, tabSize);
 
             var oldLength = edge.Source.Location.Length;
             var newLength = newSourceName.Length;
@@ -97,25 +77,23 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return new String(' ', offset);
         }
 
-        static string WhiteSpaceBetweenEdgeModeAndTarget(IEdge edge, int tabSize) {
+        string WhiteSpaceBetweenEdgeModeAndTarget(IEdge edge, int tabSize) {
 
             if (edge.EdgeMode == null || edge.Target == null) {
                 return " ";
             }
-            var syntaxTree = edge.ContainingTask.Syntax.SyntaxTree;
-            var offset     = ColumnsBetweenLocations(syntaxTree, edge.EdgeMode.Location, edge.Target.Location, tabSize);
+            var offset     = ColumnsBetweenLocations(edge.EdgeMode.Location, edge.Target.Location, tabSize);
             return new String(' ', offset);
         }
 
-        static string WhiteSpaceBetweenChoiceKeywordAndIdentifier(INodeSymbol referenceNode, int tabSize) {
+        string WhiteSpaceBetweenChoiceKeywordAndIdentifier(INodeSymbol referenceNode, int tabSize) {
 
             var locations = KeywordAndIdentifierFinder.Find(referenceNode.Syntax);
             if (locations == null) {
                 return " ";
             }
 
-            var syntaxTree = referenceNode.ContainingTask.Syntax.SyntaxTree;
-            var oldOffset  = ColumnsBetweenLocations(syntaxTree, locations.Item1, locations.Item2, tabSize);
+            var oldOffset = ColumnsBetweenLocations(locations.Item1, locations.Item2, tabSize);
 
             var oldLength = locations.Item1.Length;
             var newLength = SyntaxFacts.ChoiceKeyword.Length;
@@ -124,7 +102,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return new String(' ', offset);
         }
 
-        static int ColumnsBetweenLocations(SyntaxTree syntaxTree, Location location1, Location location2, int tabSize) {
+        int ColumnsBetweenLocations(Location location1, Location location2, int tabSize) {
 
             if (location1 == null || location2 == null) {
                 return 0;
@@ -133,13 +111,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             int spaceCount = 1;
             if (location1.EndLine != location2.StartLine) {
                 // Locations in unterschiedliche Zeilen
-                var column = syntaxTree.GetStartColumn(location2, tabSize);
+                var column = SyntaxTree.GetStartColumn(location2, tabSize);
                 spaceCount = column;
             }
             else {
                 // Locations in selber Zeile
-                var startColumn = syntaxTree.GetEndColumn(location1, tabSize);
-                var endColumn = syntaxTree.GetStartColumn(location2, tabSize);
+                var startColumn = SyntaxTree.GetEndColumn(location1, tabSize);
+                var endColumn   = SyntaxTree.GetStartColumn(location2, tabSize);
 
                 spaceCount = Math.Max(1, endColumn - startColumn);
             }
