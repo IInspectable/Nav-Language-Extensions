@@ -70,7 +70,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var undoDescription = $"{DisplayText} '{choiceName}'";
             var waitMessage     = $"{undoDescription}...";
-            var textChanges     = CodeFix.GetTextChanges(choiceName, EditorSettings);
+            var textChanges     = CodeFix.GetTextChanges(choiceName, GetEditorSettings());
 
             ApplyTextChanges(undoDescription, waitMessage, textChanges);
         }               
