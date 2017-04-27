@@ -83,7 +83,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 var nodeTransitionLine  = textEdit.Snapshot.GetLineFromPosition(NodeReference.End);
 
                 var choiceDeclaration = $"{GetFirstWhitespace(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
-                var choiceTransition  = $"{GetFirstWhitespace(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(nodeTransitionLine, edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(nodeTransitionLine, edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
+                var choiceTransition  = $"{GetFirstWhitespace(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
 
                 textEdit.Insert(nodeDeclarationLine.End, $"{GetNewLineCharacter()}{choiceDeclaration}");
                
@@ -107,41 +107,35 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return new String(' ', startColumn);
         }
 
-        string WhiteSpaceBetweenSourceAndEdgeMode(ITextSnapshotLine line, IEdge edge, string newSourceName) {
-            // TODO Multiline
-            var startOffset = edge.Source?.End;
-            var endOffset   = edge.EdgeMode?.Start;
+        string WhiteSpaceBetweenSourceAndEdgeMode(IEdge edge, string newSourceName) {
             
-            if (startOffset == null || endOffset == null) {
+            var sourceLocation = edge.Source?.Location;
+            var edgeLocation   = edge.EdgeMode?.Location;
+
+            if (sourceLocation == null || edgeLocation == null) {
                 return " ";
             }
+            
+            var sourceText = edge.ContainingTask.Syntax.SyntaxTree.SourceText;
+            var oldOffset = SpaceBetweenLocations(sourceText, sourceLocation, edgeLocation, GetTabSize()).Length;
 
-            var oldLength   = edge.Source.Location.Length;
-            var newLength   = newSourceName.Length;
-
-            var startColumn = line.GetColumnForOffset(GetTabSize(), startOffset.Value - 1 - line.Start);
-            var endColumn   = line.GetColumnForOffset(GetTabSize(), endOffset.Value   - 1 - line.Start);
-
-            var offset      = Math.Max(1, endColumn - startColumn + oldLength - newLength);
+            var oldLength = edge.Source.Location.Length;
+            var newLength = newSourceName.Length;
+            var offset = Math.Max(1, oldOffset + oldLength - newLength);
 
             return new String(' ', offset);
         }
 
-        string WhiteSpaceBetweenEdgeModeAndTarget(ITextSnapshotLine line, IEdge edge) {
-            // TODO Multiline
-            var startOffset = edge.EdgeMode?.End;
-            var endOffset   = edge.Target?.Start;
+        string WhiteSpaceBetweenEdgeModeAndTarget(IEdge edge) {
 
-            if (startOffset == null || endOffset == null) {
+            var location1 = edge.EdgeMode?.Location;
+            var location2 = edge.Target?.Location;
+
+            if (location1 == null || location2 == null) {
                 return " ";
             }
-
-            var startColumn = line.GetColumnForOffset(GetTabSize(), startOffset.Value - 1 - line.Start);
-            var endColumn   = line.GetColumnForOffset(GetTabSize(), endOffset.Value - 1 - line.Start);
-
-            var offset      = Math.Max(1, endColumn - startColumn);
-
-            return new String(' ', offset);
+            var sourceText=edge.ContainingTask.Syntax.SyntaxTree.SourceText;
+            return SpaceBetweenLocations(sourceText, location1, location2, GetTabSize());
         }
 
         string WhiteSpaceBetweenKeywordAndIdentifier(INodeSymbol choice) {
@@ -157,6 +151,46 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             //var endIndexIndex = identifier.Start;
 
             //return choice.Syntax.SyntaxTree.SourceText.Substring(startIndex, endIndexIndex - startIndex);
+        }
+
+        // TODO Columns Between Locations?
+        string SpaceBetweenLocations(string sourceText, Location location1, Location location2, int tabSize) {
+            // TODO Missing?
+            if (location1 == null || location2 == null) {
+                return String.Empty;
+            }
+
+            int spaceCount = 1;
+            if(location1.EndLine != location2.StartLine) {
+                // Symbols in unterschiedliche Zeilen                
+                var column = GetStartColumn(sourceText, location2, tabSize);
+                spaceCount = column;
+            } else {
+                var startColumn = GetEndColumn(sourceText, location1, tabSize);
+                var endColumn   = GetStartColumn(sourceText, location2, tabSize);
+
+                spaceCount = Math.Max(1, endColumn - startColumn);
+            }
+
+            return new String(' ', Math.Max(1, spaceCount));
+        }
+
+        int GetEndColumn(string sourceText, Location location, int tabSize) {
+
+            var lineStartIndex = location.End - location.EndLinePosition.Character;
+            var length         = location.EndLinePosition.Character;
+            var text           = sourceText.Substring(lineStartIndex, length);
+            var column         = text.GetColumnForOffset(tabSize, length);
+            return column;
+        }
+
+        int GetStartColumn(string sourceText, Location location, int tabSize) {
+
+            var lineStartIndex = location.Start - location.StartLinePosition.Character;
+            var length         = location.StartLinePosition.Character;
+            var text           = sourceText.Substring(lineStartIndex, length);
+            var column         = text.GetColumnForOffset(tabSize, length);
+            return column;
         }
     }
 }
