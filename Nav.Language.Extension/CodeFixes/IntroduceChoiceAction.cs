@@ -23,7 +23,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         }
 
         IntroduceChoiceCodeFix CodeFix { get; }
-
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.NodeReference);
         public override string DisplayText       => "Introduce choice";
         public override ImageMoniker IconMoniker => KnownMonikers.InsertClause;
@@ -34,45 +33,22 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return;
             }
             
-            var declaredNames = CodeFix.GetUsedNodeNames();
-
-            string Validator(string validationText) {
-
-                validationText = validationText?.Trim();
-
-                if (!SyntaxFacts.IsValidIdentifier(validationText)) {
-                    return "Invalid identifier";
-                }
-
-                if (declaredNames.Contains(validationText)) {
-                    return $"A node with the name '{validationText}' is already declared";
-                }
-
-                return null;
-            }
-
-            var choiceName = Context.InputDialogService.ShowDialog(
+            var choiceName = Context.DialogService.ShowInputDialog(
                 promptText    : "Name:",
                 title         : DisplayText,
                 defaultResonse: $"Choice_{CodeFix.NodeReference.Name}",
                 iconMoniker   : ImageMonikers.ChoiceNode,
-                validator     : Validator
+                validator     : CodeFix.ValidateChoiceName
             )?.Trim();
 
             if (String.IsNullOrEmpty(choiceName)) {
                 return;
             }
 
-            Apply(choiceName);
-        }
-
-        void Apply(string choiceName) {
-
-            var undoDescription = $"{DisplayText} '{choiceName}'";
-            var waitMessage     = $"{undoDescription}...";
-            var textChanges     = CodeFix.GetTextChanges(choiceName, GetEditorSettings());
-
-            ApplyTextChanges(undoDescription, waitMessage, textChanges);
-        }               
+            ApplyTextChanges(
+                undoDescription: $"{DisplayText} '{choiceName}'",
+                waitMessage    : $"{DisplayText} '{choiceName}'...",
+                textChanges    : CodeFix.GetTextChanges(choiceName, GetEditorSettings()));
+        }          
     }
 }
