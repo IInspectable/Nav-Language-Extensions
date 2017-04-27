@@ -68,6 +68,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
     <Compile Include="CodeGen\BeginWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeGenerationOptions.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Syntax\SyntaxTokenClassification.cs" />
     <Compile Include="Internal\NavErrorListener.cs" />
+    <Compile Include="Text\TextChange.cs" />
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
   </ItemGroup>

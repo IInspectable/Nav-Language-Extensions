@@ -3,10 +3,10 @@
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Language.Intellisense;
+using Pharmatechnik.Nav.Language.CodeFixes;
 
 #endregion
 
@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var choiceNodeSymbols = NodeReferenceFinder.FindRelatedNodeReferences(parameter.Symbols);
+            var choiceNodeSymbols = NodeReferenceFinder.FindRelatedNodeReferences(parameter);
 
             var actions = choiceNodeSymbols.Select(nodeReference => new IntroduceChoiceAction(
                 nodeReference   : nodeReference,
@@ -38,14 +38,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         static class NodeReferenceFinder  {
 
-            public static IEnumerable<INodeReferenceSymbol> FindRelatedNodeReferences(ImmutableList<ISymbol> symbols) {
-
-                return symbols.OfType<INodeReferenceSymbol>()
-                              .Where(nodeReference => nodeReference.Type == NodeReferenceType.Target)
-                              .Where(nodeReference => nodeReference.Declaration   != null )
-                              .Where(nodeReference => nodeReference.Edge.Source   != null)
-                              .Where(nodeReference => nodeReference.Edge.EdgeMode != null)
-                              .Where(nodeReference => !(nodeReference.Declaration is IChoiceNodeSymbol));                
+            public static IEnumerable<INodeReferenceSymbol> FindRelatedNodeReferences(CodeFixActionsParameter parameter) {
+                var codeFix = new IntroduceChoiceCodeFix(parameter.SemanticModelResult.CodeGenerationUnit);
+                return parameter.Symbols.OfType<INodeReferenceSymbol>().Where(codeFix.CanApplyFix);                
             }            
         }
     }

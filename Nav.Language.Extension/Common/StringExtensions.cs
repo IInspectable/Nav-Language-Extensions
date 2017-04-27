@@ -1,4 +1,10 @@
-﻿namespace Pharmatechnik.Nav.Language.Extension.Common {
+﻿#region Using Directives
+
+using System;
+
+#endregion
+
+namespace Pharmatechnik.Nav.Language.Extension.Common {
     static class StringExtensions {
 
         #region Dokumentation
@@ -26,6 +32,39 @@
                 }
             }
             return column;
+        }
+
+        #region Dokumentation
+        /// <summary>
+        /// Liefert den Spaltenindex (beginnend bei 0) für das erste Signifikante Zeichen in der angegebenen Zeile.
+        /// Als nicht signifikant gelten alle Arten von Leerzeichen. Dabei werden Tabulatoren entsprechend umgerechnet.
+        /// </summary>
+        /// <example>
+        /// Gegeben sei folgende Zeile mit gemischten Leerzeichen (o) und Tabulatoren (->) mit einer Tabulatorweite 
+        /// von 4 und anschließendem Text (T):
+        /// --->oo->TTTTTT
+        /// --------^ 
+        /// Der Signifikante Spaltenindex für diese Zeile ist 8.
+        /// </example>
+        #endregion
+        public static int GetSignificantColumn(this string text, int tabSize) {
+            bool hasSignificantContent = false;
+            int column = 0;
+            for (int index = 0; index < text.Length; index++) {
+                var c = text[index];
+
+                if (c == '\t') {
+                    column += tabSize - column % tabSize;
+                }
+                else if (Char.IsWhiteSpace(c)) {
+                    column++;
+                }
+                else {
+                    hasSignificantContent = true;
+                    break;
+                }
+            }
+            return hasSignificantContent ? column : Int32.MaxValue;
         }
     }
 }

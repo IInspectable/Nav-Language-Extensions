@@ -68,6 +68,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var waitMessage     = $"Renaming choice '{ChoiceSymbol.Name}'...";
             
             ApplyTextEdits(undoDescription, waitMessage, textEdit => {
+
+                // TODO CodeFix daraus machen und ins Nav.Language Assembly
                 // Die Choice Deklaration
                 ReplaceSymbol(textEdit, ChoiceSymbol, newChoiceName);
 
