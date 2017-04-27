@@ -44,7 +44,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> intraTextGoToTagger, GoToLocationService goToLocationService) {
-            return view.Properties.GetOrCreateSingletonProperty( () => new IntraTextGoToAdornmentTagger(
+            return view.GetOrCreateAutoClosingProperty( v => new IntraTextGoToAdornmentTagger(
                 textView           : view, 
                 intraTextGoToTagger: intraTextGoToTagger.Value, 
                 goToLocationService: goToLocationService));
