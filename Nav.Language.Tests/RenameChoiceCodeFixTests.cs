@@ -34,8 +34,8 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
 
     init --> MessageBoxOK;  
     
-    MessageBoxOK --> Choice_Ok on Ok;
-    Choice_Ok    --> Ok;
+    MessageBoxOK   --> Choice_Ok on Ok;
+    Choice_Ok      --> Ok;
 }
 ";
             var expected = @"
@@ -53,8 +53,8 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
 
     init --> MessageBoxOK;  
     
-    MessageBoxOK --> Choice_Renamed on Ok;
-    Choice_Renamed    --> Ok;
+    MessageBoxOK   --> Choice_Renamed on Ok;
+    Choice_Renamed --> Ok;
 }
 ";            
             var taskName  = "MessageBox";
