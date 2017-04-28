@@ -53,6 +53,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 throw new ArgumentException(validationMessage, nameof(newChoiceName));
             }
 
+            // TODO Whitespace Kompensation
+
             var textChanges = new List<TextChange?>();
             // Die Choice Deklaration
             textChanges.Add(NewReplace(ChoiceNodeSymbol, newChoiceName));

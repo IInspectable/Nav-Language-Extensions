@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Images;
@@ -25,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         IntroduceChoiceCodeFix CodeFix { get; }
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.NodeReference);
         public override string DisplayText       => "Introduce choice";
-        public override ImageMoniker IconMoniker => KnownMonikers.InsertClause;
+        public override ImageMoniker IconMoniker => ImageMonikers.InsertNode;
 
         public override void Invoke(CancellationToken cancellationToken) {
 

@@ -145,6 +145,22 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         #endregion
 
+        #region Actions
+
+        public static ImageMoniker AddEdge {
+            get { return KnownMonikers.AddAssociation; }
+        }
+
+        public static ImageMoniker RenameNode {
+            get { return KnownMonikers.Rename; }
+        }
+
+        public static ImageMoniker InsertNode {
+            get { return KnownMonikers.InsertClause; }
+        }
+
+        #endregion
+
         #region Helper
 
         static ImageCompositionLayer CreateLayer(

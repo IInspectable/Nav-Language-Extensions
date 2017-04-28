@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public override Span? ApplicableToSpan => GetSnapshotSpan(CodeFix.TargetNode);
         public override string DisplayText => $"Add outgoing edge for exit '{CodeFix.ConnectionPoint.Name}";
 
-        public override ImageMoniker IconMoniker => ImageMonikers.ExitConnectionPoint;
+        public override ImageMoniker IconMoniker => ImageMonikers.AddEdge;
 
         public override void Invoke(CancellationToken cancellationToken) {
 
