@@ -828,10 +828,19 @@ namespace Pharmatechnik.Nav.Language {
 
                         if (!actualExits.Exists(cpRef => cpRef.Declaration == expectedExit)) {
 
-                            _diagnostics.Add(new Diagnostic(
-                                taskNode.Location,
-                                DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
-                                expectedExit.Name));
+                            foreach (var targetNode in taskNode.Incomings
+                                                                 .Select(edge => edge.Target)
+                                                                 .Where(nodeReference => nodeReference != null)) {
+                                _diagnostics.Add(new Diagnostic(
+                                    targetNode.Location,
+                                    DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
+                                    expectedExit.Name));
+                            }
+
+                            //_diagnostics.Add(new Diagnostic(
+                            //    taskNode.Location,
+                            //    DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
+                            //    expectedExit.Name));
                         }
                     }
 

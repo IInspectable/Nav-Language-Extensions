@@ -83,6 +83,8 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeFixes\AddMissingExitTransitionAction.cs" />
+    <Compile Include="CodeFixes\AddMissingExitTransitionActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionContext.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionsParameter.cs" />
