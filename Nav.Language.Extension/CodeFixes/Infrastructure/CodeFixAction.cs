@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
-using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Text;
 
@@ -68,13 +66,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         }
 
         public abstract void Invoke(CancellationToken cancellationToken);
-
-        protected EditorSettings GetEditorSettings() {
-            return new EditorSettings(
-                tabSize: Parameter.TextView.Options.GetTabSize(),
-                newLine: Parameter.TextView.Options.GetNewLineCharacter());
-        }
-
+        
         protected SnapshotSpan GetSnapshotSpan(Location location) {
             return location.ToSnapshotSpan(Parameter.SemanticModelResult.Snapshot);
         }

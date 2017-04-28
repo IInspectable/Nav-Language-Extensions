@@ -40,7 +40,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public static IEnumerable<IntroduceChoiceCodeFix> FindCodeFixes(CodeFixActionsParameter parameter) {
             return parameter.Symbols
                             .OfType<INodeReferenceSymbol>()
-                            .Select(fix => new IntroduceChoiceCodeFix(parameter.SemanticModelResult.CodeGenerationUnit, fix))
+                            .Select(nodeReference => new IntroduceChoiceCodeFix(parameter.GetEditorSettings(), parameter.SemanticModelResult.CodeGenerationUnit, nodeReference))
                             .Where(fix => fix.CanApplyFix());
         }        
     }

@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             public static IEnumerable<RenameChoiceCodeFix> FindCodeFixes(CodeFixActionsParameter parameter) {
                 var finder = new CodeFixFinder();
                 return parameter.Symbols.Select(finder.Visit).Where(choiceNodeSymbol => choiceNodeSymbol != null)
-                                .Select( choiceNode=> new RenameChoiceCodeFix(parameter.SemanticModelResult.CodeGenerationUnit, choiceNode))
+                                .Select( choiceNode=> new RenameChoiceCodeFix(parameter.GetEditorSettings(), parameter.SemanticModelResult.CodeGenerationUnit, choiceNode))
                                 .Where(codeFix=>codeFix.CanApplyFix());                
             }
 

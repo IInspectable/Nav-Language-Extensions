@@ -11,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public sealed class RenameChoiceCodeFix: CodeFix {
         
-        public RenameChoiceCodeFix(CodeGenerationUnit codeGenerationUnit, IChoiceNodeSymbol choiceNodeSymbol) : base(codeGenerationUnit) {
+        public RenameChoiceCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit, IChoiceNodeSymbol choiceNodeSymbol) : base(editorSettings, codeGenerationUnit) {
             ChoiceNodeSymbol = choiceNodeSymbol ?? throw new ArgumentNullException(nameof(choiceNodeSymbol));
         }
 
@@ -40,7 +40,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return null;
         }
 
-        public IEnumerable<TextChange> GetTextChanges(string newChoiceName, EditorSettings editorSettings) {
+        public IEnumerable<TextChange> GetTextChanges(string newChoiceName) {
 
             if (!CanApplyFix()) {
                 throw new InvalidOperationException();

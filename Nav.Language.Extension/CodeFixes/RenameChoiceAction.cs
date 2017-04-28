@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             ApplyTextChanges(
                 undoDescription: DisplayText, 
                 waitMessage    : $"Renaming choice '{CodeFix.ChoiceNodeSymbol.Name}'...", 
-                textChanges    : CodeFix.GetTextChanges(newChoiceName, GetEditorSettings()));
+                textChanges    : CodeFix.GetTextChanges(newChoiceName));
         }
     }
 }
