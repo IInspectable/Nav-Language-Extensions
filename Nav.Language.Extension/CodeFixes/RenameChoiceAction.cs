@@ -4,7 +4,6 @@ using System;
 using System.Threading;
 
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 
 using Pharmatechnik.Nav.Language.CodeFixes;
@@ -26,7 +25,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public RenameChoiceCodeFix CodeFix { get; }
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.ChoiceNodeSymbol);
         public override string DisplayText       => $"Rename choice '{CodeFix.ChoiceNodeSymbol.Name}'";
-        public override ImageMoniker IconMoniker => KnownMonikers.Rename;
+        public override ImageMoniker IconMoniker => ImageMonikers.RenameNode;
 
         public override void Invoke(CancellationToken cancellationToken) {
             

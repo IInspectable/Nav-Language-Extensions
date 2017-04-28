@@ -34,6 +34,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         protected static TextChange? NewInsert(int position, string newText) {
             return new TextChange(TextExtent.FromBounds(position, position), newText);
         }
+        // TODO GnerateEdgeWithTemplate
 
         protected string GetSignificantColumn(TextLineExtent lineExtent) {
 
