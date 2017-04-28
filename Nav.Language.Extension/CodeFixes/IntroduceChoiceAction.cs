@@ -48,7 +48,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             ApplyTextChanges(
                 undoDescription: $"{DisplayText} '{choiceName}'",
                 waitMessage    : $"{DisplayText} '{choiceName}'...",
-                textChanges    : CodeFix.GetTextChanges(choiceName, GetEditorSettings()));
+                textChanges    : CodeFix.GetTextChanges(choiceName));
         }          
     }
 }

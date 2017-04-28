@@ -65,11 +65,11 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
             Assert.That(orgCodeGenerationUnit.Diagnostics.Any(), Is.False, "Test Code should not have any diagnostics");
 
             var choiceNodeSymbol = FindNodeSymbol<IChoiceNodeSymbol>(orgCodeGenerationUnit, taskName, orgChoice);
-            RenameChoiceCodeFix codeFix = new RenameChoiceCodeFix(orgCodeGenerationUnit, choiceNodeSymbol);
+            RenameChoiceCodeFix codeFix = new RenameChoiceCodeFix(GetEditorSettings(), orgCodeGenerationUnit, choiceNodeSymbol);
 
             Assert.That(codeFix.CanApplyFix(), Is.True);
 
-            var textChanges = codeFix.GetTextChanges(newChoice, GetEditorSettings());
+            var textChanges = codeFix.GetTextChanges(newChoice);
 
             var actual = ApplyChanges(orgText, textChanges);
             var actualCodeGenerationUnit = GetCodeGenerationUnit(actual);
