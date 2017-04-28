@@ -69,8 +69,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 var oldSourceNode = transition.Source;
                 var replaceExtent = oldSourceNode.Location.Extent;
                 var replaceText   = newChoiceName;
-                if (transition.EdgeMode != null) {
-                    // Find teh First non-Whitespace Token after Source Edge
+                if (transition.EdgeMode != null && transition.Source.Location.EndLine== transition.EdgeMode.Location.StartLine) {
+                    // Find the First non-Whitespace Token after Source Edge
                     var firstNonWSpaceToken = transition.Syntax.SyntaxTree
                                                         .Tokens[TextExtent.FromBounds(oldSourceNode.End, transition.EdgeMode.End)]
                                                         .SkipWhile(token => token.Type==SyntaxTokenType.Whitespace).FirstOrDefault();
