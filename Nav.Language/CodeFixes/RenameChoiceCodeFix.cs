@@ -46,7 +46,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 throw new InvalidOperationException();
             }
 
-            newChoiceName = newChoiceName?.Trim();
+            newChoiceName = newChoiceName?.Trim()??String.Empty;
 
             var validationMessage = ValidateChoiceName(newChoiceName);
             if (!String.IsNullOrEmpty(validationMessage)) {
@@ -61,7 +61,33 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
             // Die Choice-Referenzen auf der "linken Seite"
             foreach (var transition in ChoiceNodeSymbol.Outgoings) {
-                textChanges.Add(NewReplace(transition.Source, newChoiceName));
+                if (transition.Source == null) {
+                    continue;
+                }
+
+                // TODO Make pretty
+                var oldSourceNode = transition.Source;
+                var replaceExtent = oldSourceNode.Location.Extent;
+                var replaceText   = newChoiceName;
+                if (transition.EdgeMode != null) {
+                    // Find teh First non-Whitespace Token after Source Edge
+                    var firstNonWSpaceToken = transition.Syntax.SyntaxTree
+                                                        .Tokens[TextExtent.FromBounds(oldSourceNode.End, transition.EdgeMode.End)]
+                                                        .SkipWhile(token => token.Type==SyntaxTokenType.Whitespace).FirstOrDefault();
+         
+                    if (!firstNonWSpaceToken.IsMissing) {
+                        
+                        var availableSpace = oldSourceNode.Location.Length+ColumnsBetweenLocations(oldSourceNode.Location, firstNonWSpaceToken.GetLocation());
+
+                        replaceExtent = TextExtent.FromBounds(oldSourceNode.Location.Start, firstNonWSpaceToken.Start);
+
+                        var spaces = Math.Max(1, availableSpace - newChoiceName.Length);
+
+                        replaceText = newChoiceName + new string(' ', spaces);
+                    }
+                }
+                                
+                textChanges.Add(new TextChange(replaceExtent, replaceText));
             }
 
             // Die Choice-Referenzen auf der "rechten Seite"
