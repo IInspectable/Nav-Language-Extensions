@@ -68,8 +68,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeFixes\CodeFix.cs" />
-    <Compile Include="CodeFixes\EditorSettings.cs" />
+    <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
+    <Compile Include="CodeFixes\Infrastructure\CodeFix.cs" />
+    <Compile Include="CodeFixes\Infrastructure\EditorSettings.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
     <Compile Include="CodeFixes\RenameChoiceCodeFix.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
