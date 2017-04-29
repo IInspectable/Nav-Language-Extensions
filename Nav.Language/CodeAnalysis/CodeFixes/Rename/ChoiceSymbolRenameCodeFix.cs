@@ -10,9 +10,9 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes.Rename {
 
-    public sealed class ChoiceSymbolRenameCodeFix: SymbolRenameCodeFix {
+    sealed class ChoiceSymbolRenameCodeFix: SymbolRenameCodeFix {
         
-        public ChoiceSymbolRenameCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit, IChoiceNodeSymbol choiceNodeSymbol) : base(editorSettings, codeGenerationUnit) {
+        internal ChoiceSymbolRenameCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit, IChoiceNodeSymbol choiceNodeSymbol) : base(editorSettings, codeGenerationUnit) {
             ChoiceNodeSymbol = choiceNodeSymbol ?? throw new ArgumentNullException(nameof(choiceNodeSymbol));
         }
 
