@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Language.Intellisense;
-
-using Pharmatechnik.Nav.Language.CodeFixes;
+using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes.Rename;
 
 #endregion
 
@@ -22,9 +21,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var choiceNodeSymbols = CodeFixFinder.FindCodeFixes(parameter);
+            var editorSettings     = parameter.GetEditorSettings();
+            var codeGenerationUnit = parameter.SemanticModelResult.CodeGenerationUnit;
+            var renameCodeFixes    = parameter.Symbols
+                                              .Select(symbol => Renamer.TryFindRenameCodeFix(symbol, editorSettings, codeGenerationUnit))
+                                              .Where(codeFix => codeFix?.CanApplyFix()==true); 
 
-            var actions = choiceNodeSymbols.Select(codeFix => new RenameChoiceAction(
+            var actions = renameCodeFixes.Select(codeFix => new RenameChoiceAction(
                 codeFix         : codeFix,
                 parameter       : parameter,
                 context         : Context));
@@ -36,24 +39,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 applicableToSpan: action.ApplicableToSpan));
 
             return actionSets;
-        }
-
-        sealed class CodeFixFinder : SymbolVisitor<IChoiceNodeSymbol> {
-
-            public static IEnumerable<RenameChoiceCodeFix> FindCodeFixes(CodeFixActionsParameter parameter) {
-                var finder = new CodeFixFinder();
-                return parameter.Symbols.Select(finder.Visit).Where(choiceNodeSymbol => choiceNodeSymbol != null)
-                                .Select( choiceNode=> new RenameChoiceCodeFix(parameter.GetEditorSettings(), parameter.SemanticModelResult.CodeGenerationUnit, choiceNode))
-                                .Where(codeFix=>codeFix.CanApplyFix());                
-            }
-
-            public override IChoiceNodeSymbol VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
-                return choiceNodeSymbol;
-            }
-
-            public override IChoiceNodeSymbol VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
-                return nodeReferenceSymbol.Declaration == null ? DefaultVisit(nodeReferenceSymbol) : Visit(nodeReferenceSymbol.Declaration);
-            }
         }
     }
 }

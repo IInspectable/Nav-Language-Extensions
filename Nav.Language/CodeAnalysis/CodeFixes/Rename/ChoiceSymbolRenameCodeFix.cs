@@ -3,44 +3,46 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes.Rename {
 
-    public sealed class RenameChoiceCodeFix: CodeFix {
+    public sealed class ChoiceSymbolRenameCodeFix: SymbolRenameCodeFix {
         
-        public RenameChoiceCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit, IChoiceNodeSymbol choiceNodeSymbol) : base(editorSettings, codeGenerationUnit) {
+        public ChoiceSymbolRenameCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit, IChoiceNodeSymbol choiceNodeSymbol) : base(editorSettings, codeGenerationUnit) {
             ChoiceNodeSymbol = choiceNodeSymbol ?? throw new ArgumentNullException(nameof(choiceNodeSymbol));
         }
 
-        public IChoiceNodeSymbol ChoiceNodeSymbol { get; }
-        public ITaskDefinitionSymbol ContainingTask => ChoiceNodeSymbol.ContainingTask;
+        public override ISymbol Symbol => ChoiceNodeSymbol; 
+        IChoiceNodeSymbol ChoiceNodeSymbol { get; }
+        ITaskDefinitionSymbol ContainingTask => ChoiceNodeSymbol.ContainingTask;
 
         public override bool CanApplyFix() {
             return true;
         }
 
-        public string ValidateChoiceName(string choiceName) {
+        public override string ValidateSymbolName(string symbolName) {
 
-            choiceName = choiceName?.Trim();
+            symbolName = symbolName?.Trim();
 
-            if (!SyntaxFacts.IsValidIdentifier(choiceName)) {
+            if (!SyntaxFacts.IsValidIdentifier(symbolName)) {
                 return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
             }
 
             var declaredNames = GetDeclaredNodeNames(ContainingTask);
             declaredNames.Remove(ChoiceNodeSymbol.Name); // Ist OK - pasiert halt nix
 
-            if (declaredNames.Contains(choiceName)) {
-                return String.Format(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared.MessageFormat, choiceName);
+            if (declaredNames.Contains(symbolName)) {
+                return String.Format(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared.MessageFormat, symbolName);
             }
 
             return null;
         }
-
-        public IEnumerable<TextChange> GetTextChanges(string newChoiceName) {
+        
+        public override IEnumerable<TextChange> GetTextChanges(string newChoiceName) {
 
             if (!CanApplyFix()) {
                 throw new InvalidOperationException();
@@ -48,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
             newChoiceName = newChoiceName?.Trim()??String.Empty;
 
-            var validationMessage = ValidateChoiceName(newChoiceName);
+            var validationMessage = ValidateSymbolName(newChoiceName);
             if (!String.IsNullOrEmpty(validationMessage)) {
                 throw new ArgumentException(validationMessage, nameof(newChoiceName));
             }
