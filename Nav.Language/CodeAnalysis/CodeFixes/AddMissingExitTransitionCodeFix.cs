@@ -8,7 +8,7 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes {
 
     public sealed class AddMissingExitTransitionCodeFix: CodeFix {
         public INodeReferenceSymbol TargetNode { get; }

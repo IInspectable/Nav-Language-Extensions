@@ -5,8 +5,7 @@ using System.Threading;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
-
-using Pharmatechnik.Nav.Language.CodeFixes;
+using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes.Rename;
 using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
@@ -15,16 +14,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     class RenameChoiceAction : CodeFixAction {
 
-        public RenameChoiceAction(RenameChoiceCodeFix codeFix,
+        public RenameChoiceAction(SymbolRenameCodeFix codeFix,
                                   CodeFixActionsParameter parameter, 
                                   CodeFixActionContext context): base(context, parameter) {
 
             CodeFix = codeFix ?? throw new ArgumentNullException(nameof(codeFix));
         }
-
-        public RenameChoiceCodeFix CodeFix { get; }
-        public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.ChoiceNodeSymbol);
-        public override string DisplayText       => $"Rename choice '{CodeFix.ChoiceNodeSymbol.Name}'";
+        // TODO Allgemeiner Rename Fix: Namen/Texte(Icons generalisiere
+        public SymbolRenameCodeFix CodeFix { get; }
+        public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.Symbol);
+        public override string DisplayText       => $"Rename choice '{CodeFix.Symbol.Name}'";
         public override ImageMoniker IconMoniker => ImageMonikers.RenameNode;
 
         public override void Invoke(CancellationToken cancellationToken) {
@@ -32,9 +31,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var newChoiceName = Context.DialogService.ShowInputDialog(
                 promptText    : "Name:",
                 title         : "Rename choice",
-                defaultResonse: CodeFix.ChoiceNodeSymbol.Name,
+                defaultResonse: CodeFix.Symbol.Name,
                 iconMoniker   : ImageMonikers.ChoiceNode,
-                validator     : CodeFix.ValidateChoiceName
+                validator     : CodeFix.ValidateSymbolName
             )?.Trim();
 
             if (String.IsNullOrEmpty(newChoiceName)) {
@@ -43,7 +42,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             ApplyTextChanges(
                 undoDescription: DisplayText, 
-                waitMessage    : $"Renaming choice '{CodeFix.ChoiceNodeSymbol.Name}'...", 
+                waitMessage    : $"Renaming choice '{CodeFix.Symbol.Name}'...", 
                 textChanges    : CodeFix.GetTextChanges(newChoiceName));
         }
     }

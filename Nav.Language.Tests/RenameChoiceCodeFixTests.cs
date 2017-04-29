@@ -6,7 +6,8 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 using Pharmatechnik.Nav.Language;
-using Pharmatechnik.Nav.Language.CodeFixes;
+using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes;
+using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes.Rename;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -258,7 +259,7 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
             Assert.That(orgCodeGenerationUnit.Diagnostics.Any(), Is.False, "Test Code should not have any diagnostics");
 
             var choiceNodeSymbol = FindNodeSymbol<IChoiceNodeSymbol>(orgCodeGenerationUnit, taskName, choiceName);
-            RenameChoiceCodeFix codeFix = new RenameChoiceCodeFix(GetEditorSettings(), orgCodeGenerationUnit, choiceNodeSymbol);
+            ChoiceSymbolRenameCodeFix codeFix = new ChoiceSymbolRenameCodeFix(GetEditorSettings(), orgCodeGenerationUnit, choiceNodeSymbol);
 
             Assert.That(codeFix.CanApplyFix(), Is.True);
 

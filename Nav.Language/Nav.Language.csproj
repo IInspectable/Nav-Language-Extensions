@@ -68,11 +68,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
-    <Compile Include="CodeFixes\Infrastructure\CodeFix.cs" />
-    <Compile Include="CodeFixes\Infrastructure\EditorSettings.cs" />
-    <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
-    <Compile Include="CodeFixes\RenameChoiceCodeFix.cs" />
+    <Compile Include="CodeAnalysis\CodeFixes\AddMissingExitTransitionCodeFix.cs" />
+    <Compile Include="CodeAnalysis\CodeFixes\CodeFix.cs" />
+    <Compile Include="CodeAnalysis\CodeFixes\EditorSettings.cs" />
+    <Compile Include="CodeAnalysis\CodeFixes\IntroduceChoiceCodeFix.cs" />
+    <Compile Include="CodeAnalysis\CodeFixes\Rename\ChoiceSymbolRenameCodeFix.cs" />
+    <Compile Include="CodeAnalysis\CodeFixes\Rename\Renamer.cs" />
+    <Compile Include="CodeAnalysis\CodeFixes\Rename\SymbolRenameCodeFix.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
     <Compile Include="CodeGen\BeginWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeGenerationOptions.cs" />
