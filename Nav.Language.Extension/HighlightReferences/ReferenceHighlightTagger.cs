@@ -75,7 +75,8 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
         void Invalidate(bool clearImmediately=false) {
 
-            var point = GetCaretSnapshotPoint();
+            var point1 = View.GetCaretPoint();
+            var point = point1;
 
             // Wenn das Caret nur innerhalb der Referenzen positioniert wurde, und kein Neubau erforderlich ist
             // dann bleibt alles wie es ist.
@@ -150,26 +151,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
         IEnumerable<SnapshotSpan> BuildReferences(SemanticModelResult semanticModelResult) {
 
-            if(semanticModelResult == null) {
-                yield break;
-            }
-
-            var point = GetCaretSnapshotPoint();
-                     
-            if(point == null) {
-                yield break;
-            }
-
-            if(!semanticModelResult.IsCurrent(point.Value.Snapshot)) {
-                yield break;
-            }
-
-            var symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position);
-
-            if (symbol == null && point.Value!= point.Value.GetContainingLine().Start) {
-                symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position-1);
-            }
-
+            var symbol = View.TryFindSymbolUnderCaret(semanticModelResult);
             if (symbol == null) {
                 yield break;
             }
@@ -200,11 +182,5 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
             return referenceSpans.Any(r => r.Span.Start <= point.Value.Position && r.Span.End >= point.Value.Position);
         }
-
-        SnapshotPoint? GetCaretSnapshotPoint() {
-
-            var point = View.Caret.Position.Point.GetPoint(TextBuffer, View.Caret.Position.Affinity);
-            return point;
-        }        
     }
 }

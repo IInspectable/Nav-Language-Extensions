@@ -25,8 +25,15 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
         public bool IsCurrent(ITextSnapshot snapshot) {
+            // TODO ReiteratedVersionNumber verwenden? => Undo würde "optimiert"
+            if(snapshot != Snapshot) {
+                return false;
+            }
             return Snapshot.Version.VersionNumber == snapshot.Version.VersionNumber;
         }
-    }
 
+        public bool IsCurrent(ITextBuffer textBuffer) {
+            return IsCurrent(textBuffer.CurrentSnapshot);
+        }        
+    }
 }
