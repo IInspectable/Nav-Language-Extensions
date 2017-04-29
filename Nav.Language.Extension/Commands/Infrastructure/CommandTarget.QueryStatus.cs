@@ -45,6 +45,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     return QueryCompleteWordStatus(prgCmds);
 
+                case VSConstants.VSStd2KCmdID.RENAME:
+                    return QueryRenameStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
+
                 case VSConstants.VSStd2KCmdID.BACKTAB:
                     return QueryBackTabStatus(prgCmds);
                 default:
@@ -128,6 +131,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
             prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
             return VSConstants.S_OK;
+        }
+
+        int QueryRenameStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
+            return GetCommandState(
+                (v, b) => new RenameCommandArgs(v, b),
+                ref pguidCmdGroup, commandCount, prgCmds, commandText);
         }
 
         int GetCommandState<T>(

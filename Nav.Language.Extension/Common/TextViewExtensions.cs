@@ -30,6 +30,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             return span?.Start;
         }
 
+         public static SnapshotPoint? GetCaretPoint(this ITextView textView) {
+            var caretPoint = textView.Caret.Position.Point.GetPoint(textView.TextBuffer, textView.Caret.Position.Affinity);
+             return caretPoint;
+         }
+
         /// <summary>
         /// Gets or creates a view property that would go away when view gets closed
         /// </summary>
@@ -107,5 +112,29 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
              return textView.BufferGraph.MapUpToSnapshot(point, PointTrackingMode.Positive, PositionAffinity.Successor, textView.TextSnapshot);
          }
 
+
+         public static ISymbol TryFindSymbolUnderCaret(this ITextView textView, SemanticModelResult semanticModelResult) {
+
+            if (semanticModelResult == null) {
+                 return null;
+             }
+
+             var point = textView.GetCaretPoint();
+             if(point == null) {
+                 return null;
+             }
+
+             if(!semanticModelResult.IsCurrent(point.Value.Snapshot)) {
+                 return null;
+             }
+
+             var symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position);
+
+             if(symbol == null && point.Value != point.Value.GetContainingLine().Start) {
+                 symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position - 1);
+             }
+
+             return symbol;
+         }
      }   
 }

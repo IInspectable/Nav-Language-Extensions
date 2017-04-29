@@ -5,6 +5,6 @@
         public const string CommentUncommentSelectionCommandHandler    = nameof(CommentUncommentSelectionCommandHandler);
         public const string GoToDefinitionCommandCommandHandler        = nameof(GoToDefinitionCommandCommandHandler);
         public const string ViewCSharpCodeCommandHandler               = nameof(ViewCSharpCodeCommandHandler);
-
+        public const string RenameCommandHandler                       = nameof(RenameCommandHandler);
     }
 }

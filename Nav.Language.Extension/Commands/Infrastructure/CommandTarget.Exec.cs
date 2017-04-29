@@ -80,6 +80,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                     ExecuteTab(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
 
+                case VSConstants.VSStd2KCmdID.RENAME:
+                    ExecuteRename(subjectBuffer, contentType, ExecuteNextCommandTarget);
+                    break;
                 case VSConstants.VSStd2KCmdID.BACKTAB:
                     ExecuteBackTab(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
@@ -128,6 +131,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         protected void ExecuteTab(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
             HandlerService.Execute(
                 args       : new TabKeyCommandArgs(WpfTextView, subjectBuffer),
+                lastHandler: executeNextCommandTarget);
+        }
+
+        protected void ExecuteRename(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
+            HandlerService.Execute(
+                args       : new RenameCommandArgs(WpfTextView, subjectBuffer),
                 lastHandler: executeNextCommandTarget);
         }
 
