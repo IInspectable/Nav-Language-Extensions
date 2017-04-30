@@ -115,6 +115,7 @@
     <Compile Include="Commands\RenameCommandHandler.cs" />
     <Compile Include="Commands\ViewCSharpCodeCommandHandler.cs" />
     <Compile Include="Common\AbstractNotifyPropertyChanged.cs" />
+    <Compile Include="Common\AndSnapshot.cs" />
     <Compile Include="Common\DialogService.cs" />
     <Compile Include="Common\InputDialogViewModel.cs" />
     <Compile Include="Common\IOrderableMetadata.cs" />
