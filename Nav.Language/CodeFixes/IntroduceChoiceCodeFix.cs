@@ -25,7 +25,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                    NodeReference.Declaration   != null &&
                    NodeReference.Edge.Source   != null &&
                    NodeReference.Edge.EdgeMode != null &&
-                 !(NodeReference.Declaration is IChoiceNodeSymbol);
+                 !(NodeReference.Declaration is IChoiceNodeSymbol) &&
+                 !(NodeReference.Edge.Source.Declaration is IChoiceNodeSymbol);
         }
 
         public string ValidateChoiceName(string choiceName) {

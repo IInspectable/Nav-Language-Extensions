@@ -15,6 +15,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             ChoiceNodeSymbol = choiceNodeSymbol ?? throw new ArgumentNullException(nameof(choiceNodeSymbol));
         }
 
+        public override string DisplayName => "choice";
         public override ISymbol Symbol => ChoiceNodeSymbol; 
         IChoiceNodeSymbol ChoiceNodeSymbol { get; }
         ITaskDefinitionSymbol ContainingTask => ChoiceNodeSymbol.ContainingTask;

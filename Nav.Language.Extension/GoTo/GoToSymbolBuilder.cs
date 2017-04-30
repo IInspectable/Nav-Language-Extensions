@@ -71,7 +71,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 LocationInfo.FromLocation(
                     location    : taskNodeSymbol.Declaration.Location, 
                     displayName : $"Task {taskNodeSymbol.Declaration.Name}", 
-                    imageMoniker: ImageMonikers.TaskDefinition));
+                    imageMoniker: ImageMonikers.FromSymbol(taskNodeSymbol)));
         }
 
         public override TagSpan<GoToTag> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
