@@ -5,7 +5,7 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes.Rename {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     public abstract class SymbolRenameCodeFix: CodeFix {
         

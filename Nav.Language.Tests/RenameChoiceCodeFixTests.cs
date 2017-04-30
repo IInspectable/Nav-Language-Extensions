@@ -6,8 +6,8 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 using Pharmatechnik.Nav.Language;
-using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes;
-using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes.Rename;
+using Pharmatechnik.Nav.Language.CodeFixes;
+using Pharmatechnik.Nav.Language.CodeFixes.Rename;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion

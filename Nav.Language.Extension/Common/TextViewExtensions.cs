@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text.Outlining;
-using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes;
+using Pharmatechnik.Nav.Language.CodeFixes;
 
 #endregion
 
