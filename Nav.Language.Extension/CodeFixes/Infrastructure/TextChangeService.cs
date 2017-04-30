@@ -17,7 +17,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     interface ITextChangeService {
         // TODO TextChange With Snapshot
-        void ApplyTextChanges(ITextView textView, string undoDescription, string waitMessage, IEnumerable<TextChange> textChanges, ITextSnapshot textChangeSnapshot);
+        void ApplyTextChanges(ITextView textView, string undoDescription, IEnumerable<TextChange> textChanges, ITextSnapshot textChangeSnapshot);
     }
    
     [Export(typeof(ITextChangeService))]
@@ -39,8 +39,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         
         // TODO TextChange With Snapshot
-        public void ApplyTextChanges(ITextView textView, string undoDescription, string waitMessage, IEnumerable<TextChange> textChanges, ITextSnapshot textChangeSnapshot) {
+        public void ApplyTextChanges(ITextView textView, string undoDescription, IEnumerable<TextChange> textChanges, ITextSnapshot textChangeSnapshot) {
 
+            var waitMessage = $"{undoDescription} in progress...";
             using (_waitIndicator.StartWait(undoDescription, waitMessage, allowCancel: false))
             using (var undoTransaction = new TextUndoTransaction(undoDescription, textView, _undoHistoryRegistry, _editorOperationsFactoryService))
             using (var textEdit = textView.TextBuffer.CreateEdit()) {
