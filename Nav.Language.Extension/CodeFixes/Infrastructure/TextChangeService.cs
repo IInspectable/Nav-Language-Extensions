@@ -1,13 +1,10 @@
 ﻿#region Using Directives
 
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
-
-using Pharmatechnik.Nav.Language.Text;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
@@ -16,8 +13,7 @@ using Pharmatechnik.Nav.Language.Extension.Utilities;
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     interface ITextChangeService {
-        // TODO TextChangeAndSnapshot
-        void ApplyTextChanges(ITextView textView, string undoDescription, IEnumerable<TextChange> textChanges, ITextSnapshot textChangeSnapshot);
+        void ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot);
     }
    
     [Export(typeof(ITextChangeService))]
@@ -37,17 +33,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             _editorOperationsFactoryService = editorOperationsFactoryService;
         }
 
-        
-        // TODO TextChange With Snapshot
-        public void ApplyTextChanges(ITextView textView, string undoDescription, IEnumerable<TextChange> textChanges, ITextSnapshot textChangeSnapshot) {
+        public void ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot) {
 
             var waitMessage = $"{undoDescription} in progress...";
+
             using (_waitIndicator.StartWait(undoDescription, waitMessage, allowCancel: false))
             using (var undoTransaction = new TextUndoTransaction(undoDescription, textView, _undoHistoryRegistry, _editorOperationsFactoryService))
             using (var textEdit = textView.TextBuffer.CreateEdit()) {
 
-                foreach (var change in textChanges) {
-                    var span = TranslateToTextEditSpan(textChangeSnapshot, change.Extent, textEdit);
+                foreach (var change in textChangesAndSnapshot.TextChanges) {
+                    var span = TranslateToTextEditSpan(textChangesAndSnapshot.Snapshot, change.Extent, textEdit);
                     textEdit.Replace(span, change.NewText);
                 }
 

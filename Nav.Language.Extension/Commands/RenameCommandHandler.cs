@@ -60,13 +60,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 return;
             }
 
-            var textChanges = renameCodeFix.GetTextChanges(newSymbolName);
+            var textChangesAndSnapshot = new TextChangesAndSnapshot(
+                textChanges: renameCodeFix.GetTextChanges(newSymbolName),
+                snapshot   : codeGenerationUnitAndSnapshot.Snapshot);
 
             _textChangeService.ApplyTextChanges(
-                textView          : args.TextView, 
-                undoDescription   : renameCodeFix.DisplayText, 
-                textChanges       : textChanges, 
-                textChangeSnapshot: codeGenerationUnitAndSnapshot.Snapshot);            
+                textView              : args.TextView, 
+                undoDescription       : renameCodeFix.DisplayText,
+                textChangesAndSnapshot: textChangesAndSnapshot);            
         }
 
         CodeGenerationUnitAndSnapshot TryGetCodeGenerationUnitAndSnapshot(ITextBuffer textBuffer) {

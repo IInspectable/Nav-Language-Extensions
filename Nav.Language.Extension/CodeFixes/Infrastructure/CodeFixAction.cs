@@ -73,11 +73,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         }
 
         protected void ApplyTextChanges(IEnumerable<TextChange> textChanges) {
+
+            var textChangesAndSnapshot = new TextChangesAndSnapshot(
+                textChanges: textChanges, 
+                snapshot   : Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
+
             Context.TextChangeService.ApplyTextChanges(
-                textView          : Parameter.TextView, 
-                undoDescription   : DisplayText, 
-                textChanges       : textChanges, 
-                textChangeSnapshot: Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
+                textView              : Parameter.TextView, 
+                undoDescription       : DisplayText,
+                textChangesAndSnapshot: textChangesAndSnapshot);
         }
     }
 }
