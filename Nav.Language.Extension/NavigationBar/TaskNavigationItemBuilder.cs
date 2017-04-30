@@ -19,9 +19,9 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         public List<NavigationItem> NavigationItems { get; }
         public List<NavigationItem> MemberItems { get; }
 
-        public static ImmutableList<NavigationItem> Build(SemanticModelResult semanticModelResult) {
+        public static ImmutableList<NavigationItem> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
-            var codeGenerationUnit = semanticModelResult?.CodeGenerationUnit;
+            var codeGenerationUnit = codeGenerationUnitAndSnapshot?.CodeGenerationUnit;
             if(codeGenerationUnit == null) {
                 return ImmutableList<NavigationItem>.Empty;
             }

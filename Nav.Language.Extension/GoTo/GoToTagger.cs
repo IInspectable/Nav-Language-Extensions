@@ -32,19 +32,19 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public IEnumerable<ITagSpan<GoToTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
 
-            var semanticModelResult = SemanticModelService.SemanticModelResult;
-            if (semanticModelResult == null) {
+            var codeGenerationUnitAndSnapshot = SemanticModelService.CodeGenerationUnitAndSnapshot;
+            if (codeGenerationUnitAndSnapshot == null) {
                 yield break;
             }
             
             foreach (var span in spans) {
                 
                 var extent  = TextExtent.FromBounds(span.Start, span.End);
-                var symbols = semanticModelResult.CodeGenerationUnit.Symbols[extent, includeOverlapping: true];
+                var symbols = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols[extent, includeOverlapping: true];
 
                 foreach (var symbol in symbols) {
 
-                    var goToTag = GoToSymbolBuilder.Build(semanticModelResult, symbol, TextBuffer);
+                    var goToTag = GoToSymbolBuilder.Build(codeGenerationUnitAndSnapshot, symbol, TextBuffer);
                     if(goToTag != null) {
                         yield return goToTag;
                     }

@@ -26,23 +26,23 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         public CommandState GetCommandState(RenameCommandArgs args, Func<CommandState> nextHandler) {
 
-            var semanticModelResult = TryGetSemanticModelResult(args.SubjectBuffer);
-            var symbol = args.TextView.TryFindSymbolUnderCaret(semanticModelResult);
+            var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
+            var symbol = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
 
             return symbol != null ? CommandState.Available : nextHandler();
         }
 
         public void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
 
-            var semanticModelResult = TryGetSemanticModelResult(args.SubjectBuffer);
-            var symbol = args.TextView.TryFindSymbolUnderCaret(semanticModelResult);
+            var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
+            var symbol = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
             if(symbol == null) {
                 nextHandler();
                 return;
             }
 
             var editorSettings = args.TextView.GetEditorSettings();
-            var renameCodeFix  = Renamer.TryFindRenameCodeFix(symbol, editorSettings, semanticModelResult.CodeGenerationUnit);
+            var renameCodeFix  = Renamer.TryFindRenameCodeFix(symbol, editorSettings, codeGenerationUnitAndSnapshot.CodeGenerationUnit);
 
             if (renameCodeFix == null || !renameCodeFix.CanApplyFix()) {
                 ShellUtil.ShowErrorMessage("You must rename an identifier.");
@@ -66,11 +66,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 textView          : args.TextView, 
                 undoDescription   : renameCodeFix.DisplayText, 
                 textChanges       : textChanges, 
-                textChangeSnapshot: semanticModelResult.Snapshot);            
+                textChangeSnapshot: codeGenerationUnitAndSnapshot.Snapshot);            
         }
 
-        SemanticModelResult TryGetSemanticModelResult(ITextBuffer textBuffer) {
-            return SemanticModelService.TryGet(textBuffer)?.SemanticModelResult;
+        CodeGenerationUnitAndSnapshot TryGetCodeGenerationUnitAndSnapshot(ITextBuffer textBuffer) {
+            return SemanticModelService.TryGet(textBuffer)?.CodeGenerationUnitAndSnapshot;
         }
     }
 }

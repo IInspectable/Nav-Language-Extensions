@@ -9,9 +9,9 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 namespace Pharmatechnik.Nav.Language.Extension {
     
-    sealed class SemanticModelResult: AndSnapshot {
+    sealed class CodeGenerationUnitAndSnapshot: AndSnapshot {
 
-        internal SemanticModelResult([NotNull] CodeGenerationUnit codeGenerationUnit, [NotNull] ITextSnapshot snapshot): base(snapshot) {
+        internal CodeGenerationUnitAndSnapshot([NotNull] CodeGenerationUnit codeGenerationUnit, [NotNull] ITextSnapshot snapshot): base(snapshot) {
             CodeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
         }
 

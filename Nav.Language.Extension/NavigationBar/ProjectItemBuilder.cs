@@ -11,15 +11,15 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
     class ProjectItemBuilder {
         
-        public static ImmutableList<NavigationItem> Build(SemanticModelResult semanticModelResult) {
+        public static ImmutableList<NavigationItem> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
-            if (semanticModelResult == null) {
+            if (codeGenerationUnitAndSnapshot == null) {
                 return ImmutableList<NavigationItem>.Empty;
             }
 
             return new[] {
                 new NavigationItem(
-                    displayName: semanticModelResult.Snapshot.TextBuffer.GetContainingProject()?.Name ?? "Miscellaneous Files",
+                    displayName: codeGenerationUnitAndSnapshot.Snapshot.TextBuffer.GetContainingProject()?.Name ?? "Miscellaneous Files",
                     imageIndex : NavigationBarImages.Index.ProjectNode)
             }.ToImmutableList();
         }

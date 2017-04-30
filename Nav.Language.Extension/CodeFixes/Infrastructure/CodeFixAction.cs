@@ -69,7 +69,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public abstract void Invoke(CancellationToken cancellationToken);
 
         protected SnapshotSpan GetSnapshotSpan(ISymbol symbol) {
-            return symbol.GetSnapshotSpan(Parameter.SemanticModelResult.Snapshot);
+            return symbol.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
         }
 
         protected void ApplyTextChanges(IEnumerable<TextChange> textChanges) {
@@ -77,7 +77,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 textView          : Parameter.TextView, 
                 undoDescription   : DisplayText, 
                 textChanges       : textChanges, 
-                textChangeSnapshot: Parameter.SemanticModelResult.Snapshot);
+                textChangeSnapshot: Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
         }
     }
 }

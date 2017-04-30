@@ -33,13 +33,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         public async void ExecuteCommand(ViewCodeCommandArgs args, Action nextHandler) {
 
             var semanticModelService=SemanticModelService.TryGet(args.SubjectBuffer);
-            var semanticModelResult = semanticModelService?.SemanticModelResult;
-            if (semanticModelResult == null) {
+            var codeGenerationUnitAndSnapshot = semanticModelService?.CodeGenerationUnitAndSnapshot;
+            if (codeGenerationUnitAndSnapshot == null) {
                 nextHandler();
                 return;
             }
 
-            var navigateToTagSpan = GetGoToCodeTagSpanAtCaretPosition(semanticModelResult, args);
+            var navigateToTagSpan = GetGoToCodeTagSpanAtCaretPosition(codeGenerationUnitAndSnapshot, args);
             if (navigateToTagSpan == null) {
                 nextHandler();
                 return;
@@ -62,9 +62,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         }
 
-        TagSpan<GoToTag> GetGoToCodeTagSpanAtCaretPosition(SemanticModelResult semanticModelResult, ViewCodeCommandArgs args) {
+        TagSpan<GoToTag> GetGoToCodeTagSpanAtCaretPosition(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ViewCodeCommandArgs args) {
             
-            var tags = BuildTagSpans(semanticModelResult, args.SubjectBuffer)
+            var tags = BuildTagSpans(codeGenerationUnitAndSnapshot, args.SubjectBuffer)
                                 .OrderBy(tag => tag.Span.Start.Position)
                                 .ToList();
 
@@ -84,25 +84,25 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             return navigateToTagSpan;
         }
 
-        IEnumerable<TagSpan<GoToTag>> BuildTagSpans(SemanticModelResult semanticModelResult, ITextBuffer subjectBuffer) {
+        IEnumerable<TagSpan<GoToTag>> BuildTagSpans(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextBuffer subjectBuffer) {
 
-            foreach (var taskDeclaration in semanticModelResult.CodeGenerationUnit.TaskDeclarations.Where(td=>!td.IsIncluded && td.Origin==TaskDeclarationOrigin.TaskDeclaration)) {
+            foreach (var taskDeclaration in codeGenerationUnitAndSnapshot.CodeGenerationUnit.TaskDeclarations.Where(td=>!td.IsIncluded && td.Origin==TaskDeclarationOrigin.TaskDeclaration)) {
                 var codeModel = new TaskDeclarationCodeModel(taskDeclaration);
                 var provider  = new TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider(subjectBuffer, codeModel);
 
-                yield return CreateTagSpan(semanticModelResult, taskDeclaration.Syntax?.GetLocation(), provider);
+                yield return CreateTagSpan(codeGenerationUnitAndSnapshot, taskDeclaration.Syntax?.GetLocation(), provider);
             }
 
-            foreach (var taskDefinition in semanticModelResult.CodeGenerationUnit.TaskDefinitions) {
+            foreach (var taskDefinition in codeGenerationUnitAndSnapshot.CodeGenerationUnit.TaskDefinitions) {
                 var codeModel = new TaskCodeModel(taskDefinition);
                 var provider  = new TaskDeclarationCodeFileLocationInfoProvider(subjectBuffer, codeModel);
 
-                yield return CreateTagSpan(semanticModelResult, taskDefinition.Syntax.GetLocation(), provider);
+                yield return CreateTagSpan(codeGenerationUnitAndSnapshot, taskDefinition.Syntax.GetLocation(), provider);
             }
         }
 
-        TagSpan<GoToTag> CreateTagSpan(SemanticModelResult semanticModelResult, Location sourceLocation, ILocationInfoProvider provider) {
-            var tagSpan = new SnapshotSpan(semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.Length);
+        TagSpan<GoToTag> CreateTagSpan(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, Location sourceLocation, ILocationInfoProvider provider) {
+            var tagSpan = new SnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot, sourceLocation.Start, sourceLocation.Length);
             var tag     = new GoToTag(provider);
 
             return new TagSpan<GoToTag>(tagSpan, tag);

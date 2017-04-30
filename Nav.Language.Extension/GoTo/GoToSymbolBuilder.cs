@@ -16,16 +16,16 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
     sealed class GoToSymbolBuilder : SymbolVisitor<TagSpan<GoToTag>> {
 
-        readonly SemanticModelResult _semanticModelResult;
+        readonly CodeGenerationUnitAndSnapshot _codeGenerationUnitAndSnapshot;
         readonly ITextBuffer _textBuffer;
 
-        GoToSymbolBuilder(SemanticModelResult semanticModelResult, ITextBuffer textBuffer) {
-            _semanticModelResult = semanticModelResult;
+        GoToSymbolBuilder(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextBuffer textBuffer) {
+            _codeGenerationUnitAndSnapshot = codeGenerationUnitAndSnapshot;
             _textBuffer = textBuffer;
         }
 
-        public static TagSpan<GoToTag> Build(SemanticModelResult semanticModelResult, ISymbol source, ITextBuffer textBuffer) {
-            var builder = new GoToSymbolBuilder(semanticModelResult, textBuffer);
+        public static TagSpan<GoToTag> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ISymbol source, ITextBuffer textBuffer) {
+            var builder = new GoToSymbolBuilder(codeGenerationUnitAndSnapshot, textBuffer);
             return builder.Visit(source);
         }
 
@@ -140,7 +140,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
         
         TagSpan<GoToTag> CreateTagSpan(Location sourceLocation, ILocationInfoProvider provider) {
-            var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.Length);
+            var tagSpan = new SnapshotSpan(_codeGenerationUnitAndSnapshot.Snapshot, sourceLocation.Start, sourceLocation.Length);
             var tag     = new GoToTag(provider);
 
             return new TagSpan<GoToTag>(tagSpan, tag);

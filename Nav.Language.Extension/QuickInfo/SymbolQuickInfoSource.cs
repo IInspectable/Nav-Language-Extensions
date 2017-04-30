@@ -21,18 +21,18 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan) {
             applicableToSpan = null;
 
-            var semanticModelResult = SemanticModelService.SemanticModelResult;
-            if (semanticModelResult == null) {
+            var codeGenerationUnitAndSnapshot = SemanticModelService.CodeGenerationUnitAndSnapshot;
+            if (codeGenerationUnitAndSnapshot == null) {
                return;
             }
 
             // Map the trigger point down to our buffer.
-            SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(semanticModelResult.Snapshot);
+            SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(codeGenerationUnitAndSnapshot.Snapshot);
             if (!subjectTriggerPoint.HasValue) {
                 return;
             }
            
-            var triggerSymbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(subjectTriggerPoint.Value.Position);
+            var triggerSymbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(subjectTriggerPoint.Value.Position);
 
             if (triggerSymbol == null) {
                 return;
@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             }
             
             var location = triggerSymbol.Location;
-            applicableToSpan = semanticModelResult.Snapshot.CreateTrackingSpan(
+            applicableToSpan = codeGenerationUnitAndSnapshot.Snapshot.CreateTrackingSpan(
                     location.Start,
                     location.Length,
                     SpanTrackingMode.EdgeExclusive);

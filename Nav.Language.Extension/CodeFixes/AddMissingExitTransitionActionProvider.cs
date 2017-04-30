@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
                 foreach (var connectionPoint in GetMissingExitTransitionConnectionPoints(taskNode)) {
 
-                    var codeFix = new AddMissingExitTransitionCodeFix(parameter.GetEditorSettings(), parameter.SemanticModelResult.CodeGenerationUnit, targetNode, connectionPoint);
+                    var codeFix = new AddMissingExitTransitionCodeFix(parameter.GetEditorSettings(), parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit, targetNode, connectionPoint);
                     if (codeFix.CanApplyFix()) {
                         yield return codeFix;
                     }

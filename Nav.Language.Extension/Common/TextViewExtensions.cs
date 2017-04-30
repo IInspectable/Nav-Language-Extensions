@@ -115,9 +115,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
          }
 
 
-         public static ISymbol TryFindSymbolUnderCaret(this ITextView textView, SemanticModelResult semanticModelResult) {
+         public static ISymbol TryFindSymbolUnderCaret(this ITextView textView, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
-            if (semanticModelResult == null) {
+            if (codeGenerationUnitAndSnapshot == null) {
                  return null;
              }
 
@@ -126,14 +126,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
                  return null;
              }
 
-             if(!semanticModelResult.IsCurrent(point.Value.Snapshot)) {
+             if(!codeGenerationUnitAndSnapshot.IsCurrent(point.Value.Snapshot)) {
                  return null;
              }
 
-             var symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position);
+             var symbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position);
 
              if(symbol == null && point.Value != point.Value.GetContainingLine().Start) {
-                 symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position - 1);
+                 symbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position - 1);
              }
 
              return symbol;

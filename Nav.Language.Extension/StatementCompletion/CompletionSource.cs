@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
                 throw new ObjectDisposedException("OokCompletionSource");
             }
 
-            var codeGenerationUnit = SemanticModelService.SemanticModelResult?.CodeGenerationUnit;
+            var codeGenerationUnit = SemanticModelService.CodeGenerationUnitAndSnapshot?.CodeGenerationUnit;
             if(codeGenerationUnit == null) {
                 return;
             }

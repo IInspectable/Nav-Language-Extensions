@@ -29,20 +29,20 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span) {
             var result = new List<ClassificationSpan>();
             
-            var semanticModelResult = SemanticModelService.SemanticModelResult;
-            if(semanticModelResult == null) {
+            var codeGenerationUnitAndSnapshot = SemanticModelService.CodeGenerationUnitAndSnapshot;
+            if(codeGenerationUnitAndSnapshot == null) {
                 return result;
             }
 
             var classificationType = ClassificationTypeRegistryService.GetClassificationType(ClassificationTypeNames.DeadCode);
 
             var extent      = TextExtent.FromBounds(span.Start.Position, span.End.Position);
-            var diagnostics = semanticModelResult.CodeGenerationUnit.Diagnostics;
+            var diagnostics = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Diagnostics;
             var candidates  = diagnostics.Where(diagnostic => diagnostic.Category == DiagnosticCategory.DeadCode)
                                          .Where(d => d.Location.Extent.IntersectsWith(extent)); 
 
             foreach (var diagnostic in candidates) {
-                var diagnosticSpan = new SnapshotSpan(semanticModelResult.Snapshot, new Span(diagnostic.Location.Start, diagnostic.Location.Length));
+                var diagnosticSpan = new SnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot, new Span(diagnostic.Location.Start, diagnostic.Location.Length));
 
                 var classification = new ClassificationSpan(
                         diagnosticSpan.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive),
