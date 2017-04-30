@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
             var newSymbolName = _dialogService.ShowInputDialog(
                 promptText    : "Name:",
-                title         : $"Rename {renameCodeFix.DisplayName}",
+                title         : renameCodeFix.DisplayText,
                 defaultResonse: renameCodeFix.Symbol.Name,
                 iconMoniker   : ImageMonikers.FromSymbol(symbol),
                 validator     : renameCodeFix.ValidateSymbolName
@@ -64,8 +64,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             _textChangeService.ApplyTextChanges(
                 textView          : args.TextView, 
-                undoDescription   : $"Rename {renameCodeFix.DisplayName}", 
-                waitMessage       : $"Renaming {renameCodeFix.DisplayName}...", 
+                undoDescription   : renameCodeFix.DisplayText, 
                 textChanges       : textChanges, 
                 textChangeSnapshot: semanticModelResult.Snapshot);            
         }

@@ -16,9 +16,20 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             NodeReference  = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }
 
+        public override string DisplayText => "Introduce choice";
         public INodeReferenceSymbol NodeReference { get; }
         public ITaskDefinitionSymbol ContainingTask => NodeReference.Declaration?.ContainingTask;
-        
+
+        public string SuggestChoiceName() {
+            string baseName   = $"Choice_{NodeReference.Name}";
+            string choiceName = baseName;
+            int number = 1;
+            while(!String.IsNullOrEmpty(ValidateChoiceName(choiceName))) {
+                choiceName = $"{baseName}{number++}";
+            }
+            return choiceName;
+        }
+
         public override bool CanApplyFix() {
 
             return NodeReference.Type == NodeReferenceType.Target &&

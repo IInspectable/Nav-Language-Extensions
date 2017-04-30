@@ -16,6 +16,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             CodeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
         }
 
+        public abstract string DisplayText{ get; }
         public CodeGenerationUnit CodeGenerationUnit { get; }
         public CodeGenerationUnitSyntax Syntax => CodeGenerationUnit.Syntax;
         public SyntaxTree SyntaxTree => Syntax.SyntaxTree;

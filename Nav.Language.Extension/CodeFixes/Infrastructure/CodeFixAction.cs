@@ -72,10 +72,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return symbol.GetSnapshotSpan(Parameter.SemanticModelResult.Snapshot);
         }
 
-        protected void ApplyTextChanges(string undoDescription, string waitMessage, IEnumerable<TextChange> textChanges) {
-
-            Context.TextChangeService.ApplyTextChanges(Parameter.TextView, undoDescription, waitMessage, textChanges, Parameter.SemanticModelResult.Snapshot);
-
+        protected void ApplyTextChanges(IEnumerable<TextChange> textChanges) {
+            Context.TextChangeService.ApplyTextChanges(
+                textView          : Parameter.TextView, 
+                undoDescription   : DisplayText, 
+                textChanges       : textChanges, 
+                textChangeSnapshot: Parameter.SemanticModelResult.Snapshot);
         }
     }
 }

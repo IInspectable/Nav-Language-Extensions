@@ -23,9 +23,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         AddMissingExitTransitionCodeFix CodeFix { get; }
 
-        public override Span? ApplicableToSpan => GetSnapshotSpan(CodeFix.TargetNode);
-        public override string DisplayText => $"Add outgoing edge for exit '{CodeFix.ConnectionPoint.Name}";
-
+        public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.TargetNode);
+        public override string DisplayText       => CodeFix.DisplayText;
         public override ImageMoniker IconMoniker => ImageMonikers.AddEdge;
 
         public override void Invoke(CancellationToken cancellationToken) {
@@ -34,10 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return;
             }
             
-            ApplyTextChanges(
-                undoDescription: $"{DisplayText} '{CodeFix.ConnectionPoint.Name}'",
-                waitMessage    : $"{DisplayText} '{CodeFix.ConnectionPoint.Name}'...",
-                textChanges    : CodeFix.GetTextChanges());
+            ApplyTextChanges(CodeFix.GetTextChanges());
 
             // TODO Selection Logik?
         }

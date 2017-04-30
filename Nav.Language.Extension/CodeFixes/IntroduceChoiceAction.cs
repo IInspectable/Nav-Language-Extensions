@@ -23,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         IntroduceChoiceCodeFix CodeFix { get; }
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.NodeReference);
-        public override string DisplayText       => "Introduce choice";
+        public override string DisplayText       => CodeFix.DisplayText;
         public override ImageMoniker IconMoniker => ImageMonikers.InsertNode;
 
         public override void Invoke(CancellationToken cancellationToken) {
@@ -35,7 +35,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var choiceName = Context.DialogService.ShowInputDialog(
                 promptText    : "Name:",
                 title         : DisplayText,
-                defaultResonse: $"Choice_{CodeFix.NodeReference.Name}",
+                defaultResonse: CodeFix.SuggestChoiceName(),
                 iconMoniker   : ImageMonikers.ChoiceNode,
                 validator     : CodeFix.ValidateChoiceName
             )?.Trim();
@@ -44,10 +44,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return;
             }
 
-            ApplyTextChanges(
-                undoDescription: $"{DisplayText} '{choiceName}'",
-                waitMessage    : $"{DisplayText} '{choiceName}'...",
-                textChanges    : CodeFix.GetTextChanges(choiceName));
+            ApplyTextChanges(CodeFix.GetTextChanges(choiceName));
         }          
     }
 }

@@ -16,7 +16,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             InitializeComponent();
             Loaded += (o, e)=> InputText.SelectAll();
             DataContext = _viewModel;
-            // TODO Initiale Validation
         }
         
         void OnOkClick(object sender, RoutedEventArgs e) {
