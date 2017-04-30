@@ -4,7 +4,7 @@ using System;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public sealed class EditorSettings {
         

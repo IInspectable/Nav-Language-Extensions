@@ -1,14 +1,13 @@
 ﻿#region Using Directives
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-
+using System.Linq;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes.Rename {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class ChoiceSymbolRenameCodeFix: SymbolRenameCodeFix {
         

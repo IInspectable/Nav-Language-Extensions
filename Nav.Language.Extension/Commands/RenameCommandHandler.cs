@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Text;
-using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes.Rename;
+using Pharmatechnik.Nav.Language.CodeFixes.Rename;
 using Pharmatechnik.Nav.Language.Extension.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
@@ -33,6 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         public void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
+
             var semanticModelResult = TryGetSemanticModelResult(args.SubjectBuffer);
             var symbol = args.TextView.TryFindSymbolUnderCaret(semanticModelResult);
             if(symbol == null) {
@@ -41,27 +42,34 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             var editorSettings = args.TextView.GetEditorSettings();
-            var codeFix=Renamer.TryFindRenameCodeFix(symbol, editorSettings, semanticModelResult.CodeGenerationUnit);
-            if(codeFix == null || !codeFix.CanApplyFix()) {
+            var renameCodeFix  = Renamer.TryFindRenameCodeFix(symbol, editorSettings, semanticModelResult.CodeGenerationUnit);
+
+            if (renameCodeFix == null || !renameCodeFix.CanApplyFix()) {
                 ShellUtil.ShowErrorMessage("You must rename an identifier.");
                 return;
             }
-            // Generischer Text
+            // TODO Generischer Text/Smbol
             var newSymbolName = _dialogService.ShowInputDialog(
                 promptText    : "Name:",
                 title         : "Rename choice",
-                defaultResonse: codeFix.Symbol.Name,
+                defaultResonse: renameCodeFix.Symbol.Name,
                 iconMoniker   : ImageMonikers.ChoiceNode,
-                validator     : codeFix.ValidateSymbolName
+                validator     : renameCodeFix.ValidateSymbolName
             )?.Trim();
 
             if (String.IsNullOrEmpty(newSymbolName)) {
                 return;
             }
 
-            var textChanges = codeFix.GetTextChanges(newSymbolName);
+            var textChanges = renameCodeFix.GetTextChanges(newSymbolName);
 
-            _textChangeService.ApplyTextChanges(args.TextView, "", "", textChanges, semanticModelResult.Snapshot);            
+            // TODO Gnerische Und-Description / Wait-Message
+            _textChangeService.ApplyTextChanges(
+                textView          : args.TextView, 
+                undoDescription   : "Rename Symbol", 
+                waitMessage       : "Renaming Symbol...", 
+                textChanges       : textChanges, 
+                textChangeSnapshot: semanticModelResult.Snapshot);            
         }
 
         SemanticModelResult TryGetSemanticModelResult(ITextBuffer textBuffer) {

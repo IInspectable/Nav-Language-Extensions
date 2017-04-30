@@ -4,7 +4,7 @@ using System.Collections.Immutable;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes;
+using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
