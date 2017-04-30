@@ -4,8 +4,8 @@ using System.Collections.Immutable;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Pharmatechnik.Nav.Language.CodeAnalysis.CodeFixes;
+using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
@@ -25,9 +25,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public ITextBuffer TextBuffer => SemanticModelResult.Snapshot.TextBuffer;
 
         public EditorSettings GetEditorSettings() {
-            return new EditorSettings(
-                tabSize: TextView.Options.GetTabSize(),
-                newLine: TextView.Options.GetNewLineCharacter());
+            return TextView.GetEditorSettings();
         }
     }
 }

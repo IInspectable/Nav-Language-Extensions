@@ -2,7 +2,6 @@
 
 using System.ComponentModel.Composition;
 
-using Microsoft.VisualStudio.Text.Operations;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
@@ -14,20 +13,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     class CodeFixActionContext {
         
         [ImportingConstructor]
-        public CodeFixActionContext(IWaitIndicator waitIndicator, 
-            ITextUndoHistoryRegistry undoHistoryRegistry,
-            IEditorOperationsFactoryService editorOperationsFactoryService, 
+        public CodeFixActionContext(IWaitIndicator waitIndicator,
+            ITextChangeService textChangeService, 
             IDialogService dialogService) {
 
-            WaitIndicator                  = waitIndicator;
-            UndoHistoryRegistry            = undoHistoryRegistry;
-            EditorOperationsFactoryService = editorOperationsFactoryService;
-            DialogService             = dialogService;
+            WaitIndicator     = waitIndicator;
+            TextChangeService = textChangeService;
+            DialogService     = dialogService;
         }
 
         public IWaitIndicator WaitIndicator { get; }
-        public ITextUndoHistoryRegistry UndoHistoryRegistry { get; }
-        public IEditorOperationsFactoryService EditorOperationsFactoryService { get; }
+        public ITextChangeService TextChangeService { get; }
         public IDialogService DialogService { get; }       
     }
 }
