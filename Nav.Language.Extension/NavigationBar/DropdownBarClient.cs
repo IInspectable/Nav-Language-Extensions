@@ -376,14 +376,14 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         void UpdateProjectItems() {
 
-            _projectItems = ProjectItemBuilder.Build(SemanticModelService?.SemanticModelResult);
+            _projectItems = ProjectItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
            
             _dropdownBar?.RefreshCombo(ProjectComboIndex, 0);
         }
 
         void UpdateTaskItems() {
 
-            _taskItems = TaskNavigationItemBuilder.Build(SemanticModelService?.SemanticModelResult);
+            _taskItems = TaskNavigationItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
 
             SetActiveSelection(TaskComboIndex);
         }

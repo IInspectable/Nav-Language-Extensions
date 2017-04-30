@@ -13,16 +13,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     class CodeFixActionsParameter {
         
-        public CodeFixActionsParameter(ImmutableList<ISymbol> symbols, SemanticModelResult semanticModelResult, ITextView textView) {
-            SemanticModelResult = semanticModelResult;
+        public CodeFixActionsParameter(ImmutableList<ISymbol> symbols, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextView textView) {
+            CodeGenerationUnitAndSnapshot = codeGenerationUnitAndSnapshot;
             Symbols             = symbols;
             TextView            = textView;
         }
         
-        public SemanticModelResult SemanticModelResult { get; }
+        public CodeGenerationUnitAndSnapshot CodeGenerationUnitAndSnapshot { get; }
         public ImmutableList<ISymbol> Symbols { get; }
         public ITextView TextView { get; }
-        public ITextBuffer TextBuffer => SemanticModelResult.Snapshot.TextBuffer;
+        public ITextBuffer TextBuffer => CodeGenerationUnitAndSnapshot.Snapshot.TextBuffer;
 
         public EditorSettings GetEditorSettings() {
             return TextView.GetEditorSettings();

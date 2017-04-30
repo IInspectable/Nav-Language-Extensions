@@ -280,7 +280,7 @@
     <Compile Include="QuickInfo\SymbolQuickInfoSource.cs" />
     <Compile Include="QuickInfo\SyntaxQuickinfoBuilderService.cs" />
     <Compile Include="SemanticModelService\SemanticModelServiceDependent.cs" />
-    <Compile Include="SemanticModelService\SemanticModelResult.cs" />
+    <Compile Include="SemanticModelService\CodeGenerationUnitAndSnapshot.cs" />
     <Compile Include="SemanticModelService\SemanticModelService.cs" />
     <None Include="Templates\ItemTemplates\Task\Class.cs.txt" />
     <None Include="Templates\ItemTemplates\Task\Empty.cs.txt" />

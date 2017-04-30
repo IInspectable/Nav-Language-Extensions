@@ -89,15 +89,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(SnapshotPoint caretPoint, CancellationToken cancellationToken) {
 
-            var semanticModelResult = SemanticModelService?.SemanticModelResult;
+            var codeGenerationUnitAndSnapshot = SemanticModelService?.CodeGenerationUnitAndSnapshot;
 
-            if (semanticModelResult == null || !semanticModelResult.IsCurrent(caretPoint.Snapshot)) {
+            if (codeGenerationUnitAndSnapshot == null || !codeGenerationUnitAndSnapshot.IsCurrent(caretPoint.Snapshot)) {
                 _cachedActionSets = null;
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
 
-            var symbols    = FindSymbols(caretPoint, semanticModelResult).ToImmutableList();
-            var parameter  = new CodeFixActionsParameter(symbols, semanticModelResult, _textView);
+            var symbols    = FindSymbols(caretPoint, codeGenerationUnitAndSnapshot).ToImmutableList();
+            var parameter  = new CodeFixActionsParameter(symbols, codeGenerationUnitAndSnapshot, _textView);
             var actionsets = BuildSuggestedActions(parameter, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) {
@@ -127,11 +127,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return suggestedActions.ToImmutableList();
         }
 
-        static IEnumerable<ISymbol> FindSymbols(SnapshotPoint caretPoint, SemanticModelResult semanticModelResult) {
+        static IEnumerable<ISymbol> FindSymbols(SnapshotPoint caretPoint, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
-            var symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position);
+            var symbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position);
             if(symbol == null && caretPoint.Position > 0) {
-                symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position-1);
+                symbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position-1);
             }
 
             if(symbol == null) {

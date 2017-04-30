@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
         static readonly Logger Logger = Logger.Create<SemanticModelService>();
 
         readonly IDisposable _observable;
-        SemanticModelResult _semanticModelResult;
+        CodeGenerationUnitAndSnapshot _codeGenerationUnitAndSnapshot;
         bool _waitingForAnalysis;
 
         public SemanticModelService(ITextBuffer textBuffer): base(textBuffer) {
@@ -55,8 +55,8 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
         [CanBeNull]
-        public SemanticModelResult SemanticModelResult {
-            get { return _semanticModelResult; }
+        public CodeGenerationUnitAndSnapshot CodeGenerationUnitAndSnapshot {
+            get { return _codeGenerationUnitAndSnapshot; }
         }
         
         public static TextBufferScopedValue<SemanticModelService> GetOrCreateSingelton(ITextBuffer textBuffer) {
@@ -97,7 +97,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             SemanticModelChanged?.Invoke(this, e);
         }
 
-         static async Task<SemanticModelResult> BuildResultAsync(ParseResult parseResult, CancellationToken cancellationToken) {
+         static async Task<CodeGenerationUnitAndSnapshot> BuildResultAsync(ParseResult parseResult, CancellationToken cancellationToken) {
             return await Task.Run(() => {
 
                 using(Logger.LogBlock(nameof(BuildResultAsync))) {
@@ -118,12 +118,12 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
                     var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
 
-                    return new SemanticModelResult(codeGenerationUnit, snapshot);
+                    return new CodeGenerationUnitAndSnapshot(codeGenerationUnit, snapshot);
                 }
             }, cancellationToken).ConfigureAwait(false);
         }
 
-        void TrySetResult(SemanticModelResult result) {
+        void TrySetResult(CodeGenerationUnitAndSnapshot result) {
 
             // Dieser Fall kann eintreten, da wir im Ctor "blind" ein Invalidate aufrufen. Möglicherweise gibt es aber noch kein ParseResult,
             // welches aber noch folgen wird und im Zuge eines OnParseResultChanging abgerbeitet wird.
@@ -140,7 +140,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
                 return;
             }
 
-            _semanticModelResult = result;
+            _codeGenerationUnitAndSnapshot = result;
 
             OnSemanticModelChanged(new SnapshotSpanEventArgs(result.Snapshot.GetFullSpan()));
         }        

@@ -141,7 +141,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
             _referenceSpans.Clear();
 
-            var newReferences = BuildReferences(SemanticModelService.SemanticModelResult).ToList();
+            var newReferences = BuildReferences(SemanticModelService.CodeGenerationUnitAndSnapshot).ToList();
             if (newReferences.Count > 1) {
                 _referenceSpans.AddRange(newReferences);
             }
@@ -149,9 +149,9 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             return _referenceSpans;
         }
 
-        IEnumerable<SnapshotSpan> BuildReferences(SemanticModelResult semanticModelResult) {
+        IEnumerable<SnapshotSpan> BuildReferences(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
-            var symbol = View.TryFindSymbolUnderCaret(semanticModelResult);
+            var symbol = View.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
             if (symbol == null) {
                 yield break;
             }
@@ -161,7 +161,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             foreach (var reference in ReferenceFinder.FindReferences(symbol, advancedOptions)) {
 
                 yield return new SnapshotSpan(
-                    new SnapshotPoint(semanticModelResult.Snapshot, reference.Start), 
+                    new SnapshotPoint(codeGenerationUnitAndSnapshot.Snapshot, reference.Start), 
                     reference.Location.Length);
             }
         }
