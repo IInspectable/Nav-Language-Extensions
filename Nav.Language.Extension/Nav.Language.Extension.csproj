@@ -92,6 +92,7 @@
     <Compile Include="CodeFixes\Infrastructure\ExportCodeFixActionProviderAttribute.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionProviderService.cs" />
     <Compile Include="CodeFixes\Infrastructure\ICodeFixActionProvider.cs" />
+    <Compile Include="CodeFixes\Infrastructure\TextChangeService.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceAction.cs" />
     <Compile Include="CodeFixes\RenameChoiceAction.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceProvider.cs" />
@@ -139,6 +140,7 @@
     </Compile>
     <Compile Include="Common\ShellUtil.cs" />
     <Compile Include="Common\StringExtensions.cs" />
+    <Compile Include="Common\SymbolExtensions.cs" />
     <Compile Include="Common\TextSelectionExtensions.cs" />
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
     <Compile Include="Common\TextViewExtensions.cs" />
