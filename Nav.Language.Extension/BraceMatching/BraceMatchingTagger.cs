@@ -75,12 +75,12 @@ namespace Pharmatechnik.Nav.Language.Extension.BraceMatching {
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         void OnTagsChanged() {
-            var parseResult = ParserService.ParseResult;
-            if(parseResult==null) {
+            var syntaxTreeAndSnapshot = ParserService.SyntaxTreeAndSnapshot;
+            if(syntaxTreeAndSnapshot==null) {
                 return;
             }
 
-            var snapshot = parseResult.Snapshot;
+            var snapshot = syntaxTreeAndSnapshot.Snapshot;
             var snapshotSpan = new SnapshotSpan(snapshot, new Span(0, snapshot.Length));
 
             TagsChanged?.Invoke(this, new SnapshotSpanEventArgs(snapshotSpan));
@@ -108,13 +108,13 @@ namespace Pharmatechnik.Nav.Language.Extension.BraceMatching {
                 currentChar = currentChar.TranslateTo(spans[0].Snapshot, PointTrackingMode.Positive);
             }
 
-            var parseResult = ParserService.ParseResult;
-            if (parseResult == null || !parseResult.IsCurrent(currentChar.Snapshot)) {
+            var syntaxTreeAndSnapshot = ParserService.SyntaxTreeAndSnapshot;
+            if (syntaxTreeAndSnapshot == null || !syntaxTreeAndSnapshot.IsCurrent(currentChar.Snapshot)) {
                 yield break;
             }
 
-            var openToken  = parseResult.SyntaxTree.Tokens.FindAtPosition(currentChar.Position);
-            var closeToken = parseResult.SyntaxTree.Tokens.FindAtPosition(currentChar.Position - 1);
+            var openToken  = syntaxTreeAndSnapshot.SyntaxTree.Tokens.FindAtPosition(currentChar.Position);
+            var closeToken = syntaxTreeAndSnapshot.SyntaxTree.Tokens.FindAtPosition(currentChar.Position - 1);
 
             if (IsOpenBrace(openToken.Type)) {
                 var node = openToken.Parent;
@@ -122,8 +122,8 @@ namespace Pharmatechnik.Nav.Language.Extension.BraceMatching {
 
                     closeToken = node.ChildTokens().FirstOrDefault(GetCloseBraceType(openToken.Type));
                     if (!closeToken.IsMissing) {
-                        yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, openToken.Start) , 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
-                        yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, closeToken.Start), 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
+                        yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, openToken.Start) , 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
+                        yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, closeToken.Start), 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
                     }
                 }
             } else if (IsCloseBrace(closeToken.Type)) {
@@ -132,19 +132,19 @@ namespace Pharmatechnik.Nav.Language.Extension.BraceMatching {
 
                     openToken = node.ChildTokens().FirstOrDefault(GetOpenBraceType(closeToken.Type));
                     if (!openToken.IsMissing) {
-                        yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, openToken.Start) , 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
-                        yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, closeToken.Start), 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
+                        yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, openToken.Start) , 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
+                        yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, closeToken.Start), 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
                     }
                 }
             } else if (openToken.Type == SyntaxTokenType.StringLiteral) {
                 if (!openToken.IsMissing && currentChar.Position==openToken.Start) {
-                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, openToken.Start)  , 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
-                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, openToken.End - 1), 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
+                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, openToken.Start)  , 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
+                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, openToken.End - 1), 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
                 }
             } else if (closeToken.Type == SyntaxTokenType.StringLiteral) {
                 if (!closeToken.IsMissing && currentChar.Position == closeToken.End) {
-                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, closeToken.Start)  , 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
-                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, closeToken.End - 1), 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
+                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, closeToken.Start)  , 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
+                    yield return new TagSpan<TextMarkerTag>(new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, closeToken.End - 1), 1), new TextMarkerTag(BraceMatchingTypeNames.BraceMatching));
                 }
             }
         }
