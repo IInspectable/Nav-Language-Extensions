@@ -25,13 +25,15 @@ task MessageBoxContinue				[base StandardWFS : ILegacyMessageBoxWFS]
 {
     init [params string message, MessageBoxImage messageBoxImage];
 
-    view MessageBoxContinue;
+    dialog MessageBoxContinue;
     
     exit Ok;
+    choice Choice_Ok;
 
     init --> MessageBoxContinue;  
     
-    MessageBoxContinue --> Ok    on Ok;
+    MessageBoxContinue --> Choice_Ok    on Ok;
+    Choice_Ok          --> Ok;
 }
  
 task MessageBoxYesNo				[base StandardWFS : ILegacyMessageBoxWFS]

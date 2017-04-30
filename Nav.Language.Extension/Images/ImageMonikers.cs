@@ -78,7 +78,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         #endregion
 
         #region Symbols
-
+        
         static IImageHandle TaskDeclarationImageHandle;
 
         public static ImageMoniker TaskDeclaration {
@@ -141,6 +141,102 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         public static ImageMoniker SignalTrigger {
             get { return KnownMonikers.EventTrigger; }
+        }
+
+        public static ImageMoniker FromSymbol(ISymbol symbol) {
+            return SymbolImageMonikerFinder.FindImageMoniker(symbol);
+        }
+
+        sealed class SymbolImageMonikerFinder : SymbolVisitor<ImageMoniker> {
+
+            public static ImageMoniker FindImageMoniker(ISymbol symbol) {
+                var finder = new SymbolImageMonikerFinder();
+                return finder.Visit(symbol);
+            }
+
+            public override ImageMoniker VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
+                return TaskDeclaration;
+            }
+
+            public override ImageMoniker VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
+                return TaskDefinition;
+            }
+            
+            public override ImageMoniker VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
+                return Include;
+            }
+
+            public override ImageMoniker VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
+                return SignalTrigger;
+            }
+            
+            #region ConnectionPoints
+
+            public override ImageMoniker VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
+                if (connectionPointReferenceSymbol.Declaration == null) {
+                    return DefaultVisit(connectionPointReferenceSymbol);
+                }
+
+                return Visit(connectionPointReferenceSymbol.Declaration);
+            }
+
+            public override ImageMoniker VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
+                return InitConnectionPoint;
+            }
+
+            public override ImageMoniker VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol) {
+                return ExitConnectionPoint;
+            }
+
+            public override ImageMoniker VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol) {
+                return EndConnectionPoint;
+            }
+
+            #endregion
+
+            #region Nodes
+
+            public override ImageMoniker VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
+                if (nodeReferenceSymbol.Declaration == null) {
+                    return DefaultVisit(nodeReferenceSymbol);
+                }
+
+                return Visit(nodeReferenceSymbol.Declaration);
+            }
+
+            public override ImageMoniker VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+                return InitNode;
+            }
+
+            public override ImageMoniker VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
+                return ExitNode;
+            }
+
+            public override ImageMoniker VisitEndNodeSymbol(IEndNodeSymbol endNodeSymbol) {
+                return EndNode;
+            }
+
+            public override ImageMoniker VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
+                return TaskNode;
+            }
+
+            public override ImageMoniker VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAlias) {
+                return Visit(taskNodeAlias.TaskNode);
+            }
+
+            public override ImageMoniker VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
+                return ChoiceNode;
+            }
+
+            public override ImageMoniker VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
+                return ViewNode;
+            }
+
+            public override ImageMoniker VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
+                return DialogNode;
+            }
+
+            #endregion
         }
 
         #endregion

@@ -57,7 +57,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"{initConnectionPointSymbol.Syntax.InitKeyword} {initConnectionPointSymbol.Syntax.Identifier}";
             var syntax     = Syntax.ParseInitNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.InitConnectionPoint);           
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(initConnectionPointSymbol));           
         }
 
         public override IEnumerable<object> VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol) {
@@ -65,7 +65,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"{exitConnectionPointSymbol.Syntax.ExitKeyword} {exitConnectionPointSymbol.Syntax.Identifier}";
             var syntax     = Syntax.ParseExitNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.ExitConnectionPoint);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(exitConnectionPointSymbol));
         }
 
         public override IEnumerable<object> VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol) {
@@ -73,7 +73,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = endConnectionPointSymbol.Name;
             var syntax     = Syntax.ParseEndNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.EndConnectionPoint);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(endConnectionPointSymbol));
         }
 
         #endregion
@@ -83,7 +83,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"taskref {taskDeclarationSymbol.Name}";
             var syntax     = Syntax.ParseTaskDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.TaskDeclaration);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(taskDeclarationSymbol));
         }
 
         public override IEnumerable<object> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
@@ -91,7 +91,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"{taskDefinitionSymbol.Syntax.TaskKeyword} {taskDefinitionSymbol.Name}";
             var syntax     = Syntax.ParseTaskDefinition(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.TaskDefinition);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(taskDefinitionSymbol));
         }
 
         public override IEnumerable<object> VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
@@ -101,7 +101,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             };
             
             var control = new SymbolQuickInfoControl();
-            control.CrispImage.Moniker  = ImageMonikers.Include;
+            control.CrispImage.Moniker  = ImageMonikers.FromSymbol(includeSymbol);
             control.TextContent.Content = SyntaxQuickinfoBuilderService.ToTextBlock(includeSymbol.FileName, SyntaxTokenClassification.Identifier);
 
             panel.Children.Add(control);
@@ -133,7 +133,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"{initNodeSymbol.Syntax.InitKeyword} {initNodeSymbol.Syntax.Identifier}";
             var syntax     = Syntax.ParseInitNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.InitNode);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(initNodeSymbol));
         }
         
         public override IEnumerable<object> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
@@ -141,7 +141,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"{exitNodeSymbol.Syntax.ExitKeyword} {exitNodeSymbol.Syntax.Identifier}";
             var syntax     = Syntax.ParseExitNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.ExitNode);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(exitNodeSymbol));
         }
 
         public override IEnumerable<object> VisitEndNodeSymbol(IEndNodeSymbol endNodeSymbol) {
@@ -149,7 +149,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = endNodeSymbol.Name;
             var syntax     = Syntax.ParseEndNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.EndNode);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(endNodeSymbol));
         }
 
         public override IEnumerable<object> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
@@ -159,7 +159,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"{taskNodeSymbol.Syntax.TaskKeyword} {taskNodeSymbol.Syntax.Identifier} {alias}";
             var syntax     = Syntax.ParseTaskNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.TaskNode);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(taskNodeSymbol));
         }
 
         public override IEnumerable<object> VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAlias) {
@@ -171,7 +171,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"{choiceNodeSymbol.Syntax.ChoiceKeyword} {choiceNodeSymbol.Syntax.Identifier}";
             var syntax     = Syntax.ParseChoiceNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.ChoiceNode);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(choiceNodeSymbol));
         }
         
         public override IEnumerable<object> VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
@@ -179,7 +179,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"{viewNodeSymbol.Syntax.ViewKeyword} {viewNodeSymbol.Syntax.Identifier}";
             var syntax     = Syntax.ParseViewNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.ViewNode);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(viewNodeSymbol));
         }
         
         public override IEnumerable<object> VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
@@ -187,7 +187,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var syntaxText = $"{dialogNodeSymbol.Syntax.DialogKeyword} {dialogNodeSymbol.Syntax.Identifier}";
             var syntax = Syntax.ParseDialogNodeDeclaration(syntaxText);
 
-            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.DialogNode);
+            yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(dialogNodeSymbol));
         }
 
         #endregion
@@ -201,7 +201,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             };
 
             var control = new SymbolQuickInfoControl();
-            control.CrispImage.Moniker  = ImageMonikers.SignalTrigger;
+            control.CrispImage.Moniker  = ImageMonikers.FromSymbol(signalTriggerSymbol);
             control.TextContent.Content = SyntaxQuickinfoBuilderService.ToTextBlock(signalTriggerCodeModel);
 
             panel.Children.Add(control);

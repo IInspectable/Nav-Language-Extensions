@@ -48,12 +48,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 ShellUtil.ShowErrorMessage("You must rename an identifier.");
                 return;
             }
-            // TODO Generischer Text/Smbol
             var newSymbolName = _dialogService.ShowInputDialog(
                 promptText    : "Name:",
-                title         : "Rename choice",
+                title         : $"Rename {renameCodeFix.DisplayName}",
                 defaultResonse: renameCodeFix.Symbol.Name,
-                iconMoniker   : ImageMonikers.ChoiceNode,
+                iconMoniker   : ImageMonikers.FromSymbol(symbol),
                 validator     : renameCodeFix.ValidateSymbolName
             )?.Trim();
 
@@ -63,11 +62,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             var textChanges = renameCodeFix.GetTextChanges(newSymbolName);
 
-            // TODO Gnerische Und-Description / Wait-Message
             _textChangeService.ApplyTextChanges(
                 textView          : args.TextView, 
-                undoDescription   : "Rename Symbol", 
-                waitMessage       : "Renaming Symbol...", 
+                undoDescription   : $"Rename {renameCodeFix.DisplayName}", 
+                waitMessage       : $"Renaming {renameCodeFix.DisplayName}...", 
                 textChanges       : textChanges, 
                 textChangeSnapshot: semanticModelResult.Snapshot);            
         }
