@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
         static readonly object ParseMethodKey = new Object();
         readonly IDisposable _parserObs;
-        ParseResult _parseResult;
+        SyntaxTreeAndSnapshot _syntaxTreeAndSnapshot;
         bool _waitingForAnalysis;
 
         ParserService(ITextBuffer textBuffer) {
@@ -69,8 +69,8 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
         [CanBeNull]
-        public ParseResult ParseResult {
-            get { return _parseResult; }           
+        public SyntaxTreeAndSnapshot SyntaxTreeAndSnapshot {
+            get { return _syntaxTreeAndSnapshot; }           
         }
         
         public static ParseMethod GetParseMethod(ITextBuffer textBuffer) {
@@ -138,7 +138,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
         /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorischt bzgl. thread safety!
         /// Deshalb werden die BuildResultArgs bereits vorab im GUI Thread erstellt.
         /// </summary>
-        static async Task<ParseResult> BuildResultAsync(BuildResultArgs args, CancellationToken cancellationToken) {
+        static async Task<SyntaxTreeAndSnapshot> BuildResultAsync(BuildResultArgs args, CancellationToken cancellationToken) {
             
             return await Task.Run(() => {
 
@@ -146,17 +146,17 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
                     var syntaxTree = args.ParseMethod(args.Text, args.FilePath, cancellationToken).SyntaxTree;
 
-                    return new ParseResult(syntaxTree, args.Snapshot);
+                    return new SyntaxTreeAndSnapshot(syntaxTree, args.Snapshot);
                 }
 
             }, cancellationToken).ConfigureAwait(false);            
         }
         
-        void TrySetResult(ParseResult parseResult) {
+        void TrySetResult(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot) {
 
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
             // da bereits ein neues berechnet wird.
-            if (TextBuffer.CurrentSnapshot != parseResult.Snapshot) {
+            if (TextBuffer.CurrentSnapshot != syntaxTreeAndSnapshot.Snapshot) {
                 if (!WaitingForAnalysis) {
                     // Dieser Fall sollte eigentlich nicht eintreten, denn es muss bereits eine neue Berechnung angetriggert worden sein
                     Invalidate();
@@ -164,9 +164,9 @@ namespace Pharmatechnik.Nav.Language.Extension {
                 return;
             }
 
-            _parseResult = parseResult;
+            _syntaxTreeAndSnapshot = syntaxTreeAndSnapshot;
 
-            var snapshotSpan = parseResult.Snapshot.GetFullSpan();
+            var snapshotSpan = syntaxTreeAndSnapshot.Snapshot.GetFullSpan();
             OnParseResultChanged(new SnapshotSpanEventArgs(snapshotSpan));
         }
         

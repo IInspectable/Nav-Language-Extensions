@@ -29,7 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
                                   .Throttle(ServiceProperties.SemanticModelServiceThrottleTime)
                                   .Select(_ => Observable.DeferAsync(async token =>
                                       {
-                                          var parseResult = await BuildResultAsync(ParserService.ParseResult, token).ConfigureAwait(false);
+                                          var parseResult = await BuildResultAsync(ParserService.SyntaxTreeAndSnapshot, token).ConfigureAwait(false);
 
                                           return Observable.Return(parseResult);
                                       }))
@@ -97,18 +97,18 @@ namespace Pharmatechnik.Nav.Language.Extension {
             SemanticModelChanged?.Invoke(this, e);
         }
 
-         static async Task<CodeGenerationUnitAndSnapshot> BuildResultAsync(ParseResult parseResult, CancellationToken cancellationToken) {
+         static async Task<CodeGenerationUnitAndSnapshot> BuildResultAsync(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, CancellationToken cancellationToken) {
             return await Task.Run(() => {
 
                 using(Logger.LogBlock(nameof(BuildResultAsync))) {
 
-                    if(parseResult == null) {
+                    if(syntaxTreeAndSnapshot == null) {
                         Logger.Debug("Es gibt kein ParesResult. Der Vorgang wird abgebrochen.");
                         return null;
                     }
 
-                    var syntaxTree = parseResult.SyntaxTree;
-                    var snapshot = parseResult.Snapshot;
+                    var syntaxTree = syntaxTreeAndSnapshot.SyntaxTree;
+                    var snapshot = syntaxTreeAndSnapshot.Snapshot;
 
                     var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
                     if(codeGenerationUnitSyntax == null) {
@@ -125,7 +125,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
         void TrySetResult(CodeGenerationUnitAndSnapshot result) {
 
-            // Dieser Fall kann eintreten, da wir im Ctor "blind" ein Invalidate aufrufen. Möglicherweise gibt es aber noch kein ParseResult,
+            // Dieser Fall kann eintreten, da wir im Ctor "blind" ein Invalidate aufrufen. Möglicherweise gibt es aber noch kein SyntaxTreeAndSnapshot,
             // welches aber noch folgen wird und im Zuge eines OnParseResultChanging abgerbeitet wird.
             if(result == null) {
                 return;

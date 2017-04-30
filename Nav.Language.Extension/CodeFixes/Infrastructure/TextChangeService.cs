@@ -16,7 +16,7 @@ using Pharmatechnik.Nav.Language.Extension.Utilities;
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     interface ITextChangeService {
-        // TODO TextChange With Snapshot
+        // TODO TextChangeAndSnapshot
         void ApplyTextChanges(ITextView textView, string undoDescription, IEnumerable<TextChange> textChanges, ITextSnapshot textChangeSnapshot);
     }
    

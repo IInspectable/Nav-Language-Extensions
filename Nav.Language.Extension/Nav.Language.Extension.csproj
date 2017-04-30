@@ -257,7 +257,7 @@
     <Compile Include="Outlining\OutlineTagger\TaskDefinitionsOutlineTagger.cs" />
     <Compile Include="Outlining\OutlineTagger\TaskReferenceOutlineTagger.cs" />
     <Compile Include="Outlining\OutlineTagger\TransitionDefinitionBlockOutlineTagger.cs" />
-    <Compile Include="ParserService\ParseResult.cs" />
+    <Compile Include="ParserService\SyntaxTreeAndSnapshot.cs" />
     <Compile Include="BraceCompletion\BraceCompletionProvider.cs" />
     <Compile Include="ParserService\ParserServiceDependent.cs" />
     <Compile Include="QuickInfo\IntellisenseController.cs" />

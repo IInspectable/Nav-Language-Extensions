@@ -11,9 +11,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
     class TransitionDefinitionBlockOutlineTagger {
 
-        public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(ParseResult parseResult, IOutliningRegionTagCreator tagCreator) {
+        public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
 
-            var transitionBlocks = parseResult.SyntaxTree.GetRoot().DescendantNodes<TransitionDefinitionBlockSyntax>();
+            var transitionBlocks = syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<TransitionDefinitionBlockSyntax>();
 
             foreach (var transitionBlock in transitionBlocks) {
                 var extent = transitionBlock.Extent;
@@ -22,15 +22,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
                     continue;
                 }
 
-                var startLine = parseResult.Snapshot.GetLineNumberFromPosition(extent.Start);
-                var endLine = parseResult.Snapshot.GetLineNumberFromPosition(extent.End);
+                var startLine = syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(extent.Start);
+                var endLine = syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(extent.End);
                 if (startLine == endLine) {
                     continue;
                 }
 
                 var collapsedForm = "Transitions";
-                var rgnSpan  = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, extent.Start), extent.Length);
-                var hintSpan = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, extent.Start), extent.Length);
+                var rgnSpan  = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extent.Start), extent.Length);
+                var hintSpan = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extent.Start), extent.Length);
                 var rgnTag   = tagCreator.CreateTag(collapsedForm, hintSpan);
 
                 yield return new TagSpan<IOutliningRegionTag>(rgnSpan, rgnTag);

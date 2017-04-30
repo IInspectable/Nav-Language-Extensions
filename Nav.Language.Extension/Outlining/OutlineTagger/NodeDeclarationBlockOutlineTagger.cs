@@ -11,9 +11,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
     class NodeDeclarationBlockOutlineTagger {
 
-        public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(ParseResult parseResult, IOutliningRegionTagCreator tagCreator) {
+        public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
 
-            var nodeDeclarationBlocks = parseResult.SyntaxTree.GetRoot().DescendantNodes<NodeDeclarationBlockSyntax>();
+            var nodeDeclarationBlocks = syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<NodeDeclarationBlockSyntax>();
 
             foreach (var nodeDeclarationBlock in nodeDeclarationBlocks) {
 
@@ -23,14 +23,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
                     continue;
                 }
 
-                var startLine = parseResult.Snapshot.GetLineNumberFromPosition(extent.Start);
-                var endLine =   parseResult.Snapshot.GetLineNumberFromPosition(extent.End);
+                var startLine = syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(extent.Start);
+                var endLine =   syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(extent.End);
                 if (startLine == endLine) {
                     continue;
                 }
 
-                var rgnSpan  = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, extent.Start), extent.Length);
-                var hintSpan = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, extent.Start), extent.Length);
+                var rgnSpan  = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extent.Start), extent.Length);
+                var hintSpan = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extent.Start), extent.Length);
                 var rgnTag   = tagCreator.CreateTag("Declarations", hintSpan);
 
                 yield return new TagSpan<IOutliningRegionTag>(rgnSpan, rgnTag);
