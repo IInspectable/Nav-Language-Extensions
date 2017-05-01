@@ -29,22 +29,22 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         public async void ExecuteCommand(GoToDefinitionCommandArgs args, Action nextHandler) {
 
-            var tagAggregator     = _viewTagAggregatorFactoryService.CreateTagAggregator<GoToTag>(args.TextView);
-            var navigateToTagSpan = args.TextView.GetGoToDefinitionTagSpanAtCaretPosition(tagAggregator);
-            
-            if (navigateToTagSpan == null) {
-                ShellUtil.ShowInfoMessage("Cannot navigate to the symbol under the caret.");                
-                return;
+            using(var tagAggregator = _viewTagAggregatorFactoryService.CreateTagAggregator<GoToTag>(args.TextView)) {
+                var navigateToTagSpan = args.TextView.GetGoToDefinitionTagSpanAtCaretPosition(tagAggregator);
+
+                if(navigateToTagSpan == null) {
+                    ShellUtil.ShowInfoMessage("Cannot navigate to the symbol under the caret.");
+                    return;
+                }
+
+                var placementRectangle = args.TextView.TextViewLines.GetTextMarkerGeometry(navigateToTagSpan.Span).Bounds;
+                placementRectangle.Offset(-args.TextView.ViewportLeft, -args.TextView.ViewportTop);
+
+                await _goToLocationService.GoToLocationInPreviewTabAsync(
+                    originatingTextView: args.TextView,
+                    placementRectangle: placementRectangle,
+                    provider: navigateToTagSpan.Tag.Provider);
             }
-
-            var placementRectangle = args.TextView.TextViewLines.GetTextMarkerGeometry(navigateToTagSpan.Span).Bounds;
-            placementRectangle.Offset(-args.TextView.ViewportLeft, -args.TextView.ViewportTop);
-
-            await _goToLocationService.GoToLocationInPreviewTabAsync(
-                originatingTextView: args.TextView,
-                placementRectangle : placementRectangle,
-                provider           : navigateToTagSpan.Tag.Provider);
-
         }
     }
 }
