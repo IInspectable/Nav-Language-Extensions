@@ -79,15 +79,15 @@ namespace Pharmatechnik.Nav.Language.Extension {
             return parseMethod ?? Syntax.ParseCodeGenerationUnit;
         }
 
-        public static TextBufferScopedValue<ParserService> GetOrCreateSingelton(ITextBuffer textBuffer) {
-            return TextBufferScopedValue<ParserService>.GetOrCreate(
-                textBuffer, 
+        public static ParserService GetOrCreateSingelton(ITextBuffer textBuffer) {
+            return textBuffer.Properties.GetOrCreateSingletonProperty(
                 typeof(ParserService), 
                 () => new ParserService(textBuffer));
         }
 
         public static ParserService TryGet(ITextBuffer textBuffer) {
-            return TextBufferScopedValue<ParserService>.TryGet(textBuffer, typeof(ParserService));
+            textBuffer.Properties.TryGetProperty< ParserService>(typeof(ParserService), out var parserService);
+            return parserService;
         }
         
         public static void SetParseMethod(ITextBuffer textBuffer, ParseMethod parseMethod) {

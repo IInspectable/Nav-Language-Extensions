@@ -4,8 +4,10 @@ using System;
 using System.Threading;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+
 using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 
@@ -59,16 +61,16 @@ namespace Pharmatechnik.Nav.Language.Extension {
             get { return _codeGenerationUnitAndSnapshot; }
         }
         
-        public static TextBufferScopedValue<SemanticModelService> GetOrCreateSingelton(ITextBuffer textBuffer) {
-            return TextBufferScopedValue<SemanticModelService>.GetOrCreate(
-                textBuffer,
+        public static SemanticModelService GetOrCreateSingelton(ITextBuffer textBuffer) {
+            return textBuffer.Properties.GetOrCreateSingletonProperty (
                 typeof(SemanticModelService),
                 () => new SemanticModelService(textBuffer));
         }
         
         [CanBeNull]
         public static SemanticModelService TryGet(ITextBuffer textBuffer) {
-            return TextBufferScopedValue<SemanticModelService>.TryGet(textBuffer, typeof(SemanticModelService));
+            textBuffer.Properties.TryGetProperty<SemanticModelService>(typeof(SemanticModelService), out var semanticModelService);
+            return semanticModelService;
         }
 
         public void Invalidate() {
