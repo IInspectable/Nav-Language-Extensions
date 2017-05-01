@@ -39,7 +39,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
                                    .Throttle(ServiceProperties.ParserServiceThrottleTime)
                                    .Select( args => Observable.DeferAsync(async token => 
                                        {
-                                           var parseResult = await BuildResultAsync(args, token).ConfigureAwait(false);
+                                           var parseResult = await BuildAsync(args, token).ConfigureAwait(false);
 
                                            return Observable.Return(parseResult);
                                        }))
@@ -99,14 +99,13 @@ namespace Pharmatechnik.Nav.Language.Extension {
             OnRebuildTriggered(EventArgs.Empty);
         }
 
-        // TODO Naming
-        public SyntaxTreeAndSnapshot GetCurrentResultSync() {
+        public SyntaxTreeAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default(CancellationToken)) {
             var syntaxTreeAndSnapshot = SyntaxTreeAndSnapshot;
             if (syntaxTreeAndSnapshot!=null && syntaxTreeAndSnapshot.IsCurrent(TextBuffer)) {
                 return syntaxTreeAndSnapshot;
             }
 
-            syntaxTreeAndSnapshot = BuildResultSync(CreateBuildResultArgs(), default(CancellationToken));
+            syntaxTreeAndSnapshot = BuildSynchronously(CreateBuildResultArgs(), cancellationToken);
             TrySetResult(syntaxTreeAndSnapshot);
 
             return syntaxTreeAndSnapshot;
@@ -151,19 +150,18 @@ namespace Pharmatechnik.Nav.Language.Extension {
         /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorischt bzgl. thread safety!
         /// Deshalb werden die BuildResultArgs bereits vorab im GUI Thread erstellt.
         /// </summary>
-        static async Task<SyntaxTreeAndSnapshot> BuildResultAsync(BuildResultArgs args, CancellationToken cancellationToken) {
+        static async Task<SyntaxTreeAndSnapshot> BuildAsync(BuildResultArgs args, CancellationToken cancellationToken) {
             
             return await Task.Run(() => {
 
-                using(Logger.LogBlock(nameof(BuildResultAsync))) {
-
-                    return BuildResultSync(args, cancellationToken);
+                using(Logger.LogBlock(nameof(BuildAsync))) {
+                    return BuildSynchronously(args, cancellationToken);
                 }
 
             }, cancellationToken).ConfigureAwait(false);            
         }
 
-        static SyntaxTreeAndSnapshot BuildResultSync(BuildResultArgs args, CancellationToken cancellationToken) {
+        static SyntaxTreeAndSnapshot BuildSynchronously(BuildResultArgs args, CancellationToken cancellationToken) {
 
             var syntaxTree = args.ParseMethod(args.Text, args.FilePath, cancellationToken).SyntaxTree;
 

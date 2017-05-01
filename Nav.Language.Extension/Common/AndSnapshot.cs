@@ -23,11 +23,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         }
 
         public bool IsCurrent(ITextSnapshot snapshot) {
-            // TODO ReiteratedVersionNumber verwenden? => Undo würde "optimiert"
             if (snapshot != Snapshot) {
                 return false;
             }
-            return Snapshot.Version.VersionNumber == snapshot.Version.VersionNumber;
+            return Snapshot.Version.ReiteratedVersionNumber == snapshot.Version.ReiteratedVersionNumber;
         }
 
         public bool IsCurrent(ITextBuffer textBuffer) {

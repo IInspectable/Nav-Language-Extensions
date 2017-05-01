@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             ApplyTextChanges(CodeFix.GetTextChanges());
 
-            var codeGenerationUnitAndSnapshot = SemanticModelService.TryGet(Parameter.TextBuffer)?.GetCurrentResultSync();
+            var codeGenerationUnitAndSnapshot = SemanticModelService.TryGet(Parameter.TextBuffer)?.UpdateSynchronously();
             if(codeGenerationUnitAndSnapshot == null) {
                 return;
             }
