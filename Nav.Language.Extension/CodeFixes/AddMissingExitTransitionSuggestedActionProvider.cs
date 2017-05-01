@@ -5,7 +5,6 @@ using System.Threading;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
-using Microsoft.VisualStudio.Language.Intellisense;
 using Pharmatechnik.Nav.Language.CodeFixes;
 
 #endregion
@@ -19,22 +18,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public AddMissingExitTransitionSuggestedActionProvider(CodeFixActionContext context) : base(context) {
         }
 
-        public override IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
+        public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
             var codeFixes = FindCodeFixes(parameter);
 
             var actions = codeFixes.Select(codeFix => new AddMissingExitTransitionSuggestedAction(
-                codeFix         : codeFix,
-                parameter       : parameter,
-                context         : Context));
-
-            var actionSets = actions.Select(action => new SuggestedActionSet(
-                actions         : new[] {action},
-                title           : null,
-                priority        : SuggestedActionSetPriority.High,
-                applicableToSpan: action.ApplicableToSpan));
-
-            return actionSets;
+                codeFix  : codeFix,
+                parameter: parameter,
+                context  : Context));
+         
+            return actions;
         }
 
         public static IEnumerable<AddMissingExitTransitionCodeFix> FindCodeFixes(CodeFixActionsParameter parameter) {
