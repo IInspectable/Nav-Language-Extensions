@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         readonly ICodeFixActionProviderService _codeFixActionProviderService;
         readonly ITextView _textView;
 
-        volatile ActionSetsWithRange _cachedActionSets;
+        volatile SuggestedActionSetsAndRange _cachedSuggestedActionSets;
 
         public CodeFixSuggestedActionsSource(ITextBuffer textBuffer, ICodeFixActionProviderService codeFixActionProviderService, ITextView textView)
             : base(textBuffer) {
@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
             var caretPosition = _textView.Caret.Position.BufferPosition;
-            if(IsCacheValid(_cachedActionSets, caretPosition)) {
+            if(IsCacheValid(_cachedSuggestedActionSets, caretPosition)) {
                 return;
             }
             InvalidateSuggestedActions();
@@ -51,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
 
-            var cachedActionSets = _cachedActionSets;
+            var cachedActionSets = _cachedSuggestedActionSets;
             var caretPosition    =_textView.Caret.Position.BufferPosition;
 
             if (IsCacheValid(cachedActionSets, caretPosition)) {
@@ -68,11 +68,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
             base.OnSemanticModelChanged(sender, e);
-            _cachedActionSets = null;
+            _cachedSuggestedActionSets = null;
             InvalidateSuggestedActions();
         }
         
-        static bool IsCacheValid(ActionSetsWithRange cache, SnapshotPoint point) {
+        static bool IsCacheValid(SuggestedActionSetsAndRange cache, SnapshotPoint point) {
             if (cache == null) {
                 return false;
             }
@@ -83,7 +83,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         }
 
         void InvalidateSuggestedActions() {
-            _cachedActionSets = null;
+            _cachedSuggestedActionSets = null;
             SuggestedActionsChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -92,7 +92,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var codeGenerationUnitAndSnapshot = SemanticModelService?.CodeGenerationUnitAndSnapshot;
 
             if (codeGenerationUnitAndSnapshot == null || !codeGenerationUnitAndSnapshot.IsCurrent(caretPoint.Snapshot)) {
-                _cachedActionSets = null;
+                _cachedSuggestedActionSets = null;
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
 
@@ -104,19 +104,20 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
 
-            var symbolRange         = ToSnapshotSpan(caretPoint.Snapshot, symbols);
-            var actionsetsWithRange = new ActionSetsWithRange(symbolRange, actionsets);
-            _cachedActionSets = actionsetsWithRange;
+            var symbolRange        = ToSnapshotSpan(caretPoint.Snapshot, symbols);
+            var actionsetsAndRange = new SuggestedActionSetsAndRange(symbolRange, actionsets);
 
-            return actionsetsWithRange.SuggestedActionSets;
+            _cachedSuggestedActionSets = actionsetsAndRange;
+
+            return actionsetsAndRange.SuggestedActionSets;
         }
 
-        SnapshotSpan ToSnapshotSpan(ITextSnapshot textSnapshot, ImmutableList<ISymbol> symbols) {
-            if(symbols.Count == 0) {
+        SnapshotSpan ToSnapshotSpan(ITextSnapshot textSnapshot, ImmutableList<ISymbol> orderedSymbols) {
+            if(orderedSymbols.Count == 0) {
                 return new SnapshotSpan(textSnapshot, 0, 0);
             }
-            var start = symbols.First().Start;
-            var end   = symbols.Last().End;
+            var start = orderedSymbols.First().Start;
+            var end   = orderedSymbols.Last().End;
 
             return new SnapshotSpan(textSnapshot, start, end - start);
         }
@@ -145,8 +146,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             yield return symbol;
         }
 
-        sealed class ActionSetsWithRange {
-            public ActionSetsWithRange(SnapshotSpan range, ImmutableList<SuggestedActionSet> suggestedActionSets) {
+        sealed class SuggestedActionSetsAndRange {
+            public SuggestedActionSetsAndRange(SnapshotSpan range, ImmutableList<SuggestedActionSet> suggestedActionSets) {
                 Range = range;
                 SuggestedActionSets = suggestedActionSets;
             }
