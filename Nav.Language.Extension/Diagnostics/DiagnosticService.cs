@@ -34,7 +34,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
         DiagnosticService(IWpfTextView textView, IComponentModel componentModel) {
             var viewTagAggregatorFactoryService = componentModel.GetService<IViewTagAggregatorFactoryService>();
             
-
             _textView           = textView;
             _outliningManagerService = componentModel.GetService<IOutliningManagerService>();
             _errorTagAggregator = viewTagAggregatorFactoryService.CreateTagAggregator<DiagnosticErrorTag>(textView);
@@ -61,6 +60,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
             _textView.Closed                       -= OnTextViewClosed;
             _textView.TextBuffer.Changed           -= OnTextBufferChanged;
             _errorTagAggregator.BatchedTagsChanged -= OnBatchedTagsChanged;
+            _errorTagAggregator?.Dispose();
         }
 
         void OnTextBufferChanged(object sender, TextContentChangedEventArgs e) {

@@ -29,7 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
                                   .Throttle(ServiceProperties.SemanticModelServiceThrottleTime)
                                   .Select(_ => Observable.DeferAsync(async token =>
                                       {
-                                          var codeGenerationUnitAndSnapshot = await BuildResultAsync(ParserService.SyntaxTreeAndSnapshot, token).ConfigureAwait(false);
+                                          var codeGenerationUnitAndSnapshot = await BuildAsync(ParserService.SyntaxTreeAndSnapshot, token).ConfigureAwait(false);
 
                                           return Observable.Return(codeGenerationUnitAndSnapshot);
                                       }))
@@ -76,17 +76,16 @@ namespace Pharmatechnik.Nav.Language.Extension {
             OnRebuildTriggered(EventArgs.Empty);
         }
 
-        // TODO Naming
-        public CodeGenerationUnitAndSnapshot GetCurrentResultSync() {
+        public CodeGenerationUnitAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default(CancellationToken)) {
 
             var codeGenerationUnitAndSnapshot = CodeGenerationUnitAndSnapshot;
             if(codeGenerationUnitAndSnapshot != null && codeGenerationUnitAndSnapshot.IsCurrent(TextBuffer)) {
                 return codeGenerationUnitAndSnapshot;
             }
 
-            var tree=ParserService.GetCurrentResultSync();
+            var syntaxTreeAndSnapshot=ParserService.UpdateSynchronously(cancellationToken);
 
-            codeGenerationUnitAndSnapshot = BuildResultSync(tree, default(CancellationToken));
+            codeGenerationUnitAndSnapshot = BuildSynchronously(syntaxTreeAndSnapshot, cancellationToken);
             TrySetResult(codeGenerationUnitAndSnapshot);
 
             return codeGenerationUnitAndSnapshot;
@@ -114,15 +113,15 @@ namespace Pharmatechnik.Nav.Language.Extension {
             SemanticModelChanged?.Invoke(this, e);
         }
 
-        static async Task<CodeGenerationUnitAndSnapshot> BuildResultAsync(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, CancellationToken cancellationToken) {
+        static async Task<CodeGenerationUnitAndSnapshot> BuildAsync(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, CancellationToken cancellationToken) {
             return await Task.Run(() => {
-                using(Logger.LogBlock(nameof(BuildResultAsync))) {
-                    return BuildResultSync(syntaxTreeAndSnapshot, cancellationToken);
+                using(Logger.LogBlock(nameof(BuildAsync))) {
+                    return BuildSynchronously(syntaxTreeAndSnapshot, cancellationToken);
                 }
             }, cancellationToken).ConfigureAwait(false);
         }
 
-        static CodeGenerationUnitAndSnapshot BuildResultSync(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, CancellationToken cancellationToken) {
+        static CodeGenerationUnitAndSnapshot BuildSynchronously(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, CancellationToken cancellationToken) {
 
             if(syntaxTreeAndSnapshot == null) {
                 Logger.Debug("Es gibt kein ParesResult. Der Vorgang wird abgebrochen.");
