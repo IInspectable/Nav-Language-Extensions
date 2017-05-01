@@ -1,7 +1,7 @@
 ﻿#region Using Directives
 
 using System.ComponentModel.Composition;
-
+using System.Threading;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
@@ -13,7 +13,7 @@ using Pharmatechnik.Nav.Language.Extension.Utilities;
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     interface ITextChangeService {
-        ITextSnapshot ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot);
+        ITextSnapshot ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot, string waitMessage = null);
     }
    
     [Export(typeof(ITextChangeService))]
@@ -33,9 +33,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             _editorOperationsFactoryService = editorOperationsFactoryService;
         }
 
-        public ITextSnapshot ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot) {
+        public ITextSnapshot ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot, string waitMessage=null) {
 
-            var waitMessage = $"{undoDescription} in progress...";
+            waitMessage = waitMessage??undoDescription;
 
             using (_waitIndicator.StartWait(undoDescription, waitMessage, allowCancel: false))
             using (var undoTransaction = new TextUndoTransaction(undoDescription, textView, _undoHistoryRegistry, _editorOperationsFactoryService))

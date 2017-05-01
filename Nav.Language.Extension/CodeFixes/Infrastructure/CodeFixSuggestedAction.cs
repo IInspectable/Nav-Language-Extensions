@@ -82,8 +82,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             return Context.TextChangeService.ApplyTextChanges(
                 textView              : Parameter.TextView, 
-                undoDescription       : UndoDescription,
-                textChangesAndSnapshot: textChangesAndSnapshot);
+                undoDescription       : UndoDescription,                
+                textChangesAndSnapshot: textChangesAndSnapshot,
+                waitMessage           : DisplayText);
         }
     }   
 }
