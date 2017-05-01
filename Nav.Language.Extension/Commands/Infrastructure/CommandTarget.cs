@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Text;
@@ -43,6 +44,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             get { return _commandHandlerService; }
         }
 
+        [CanBeNull]
         protected virtual ITextBuffer GetSubjectBufferContainingCaret() {
             return _wpfTextView.GetBufferContainingCaret();
         }

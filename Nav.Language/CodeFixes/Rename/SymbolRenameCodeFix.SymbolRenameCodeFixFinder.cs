@@ -1,28 +1,23 @@
 ﻿#region Using Directives
 
-using JetBrains.Annotations;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
-    public static class Renamer {
-        
-        [CanBeNull]
-        public static SymbolRenameCodeFix TryFindRenameCodeFix(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
-            return SymbolRenameCodeFixFinder.FindRenameCodeFix(symbol, editorSettings, codeGenerationUnit);
-        }
 
-        sealed class SymbolRenameCodeFixFinder: SymbolVisitor<SymbolRenameCodeFix> {
-            
+    public abstract partial class SymbolRenameCodeFix: CodeFix {
+
+        sealed class SymbolRenameCodeFixFinder : SymbolVisitor<SymbolRenameCodeFix> {
+
             SymbolRenameCodeFixFinder(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
-                EditorSettings     = editorSettings;
+                EditorSettings = editorSettings;
                 CodeGenerationUnit = codeGenerationUnit;
             }
 
             EditorSettings EditorSettings { get; }
             CodeGenerationUnit CodeGenerationUnit { get; }
 
-            public static SymbolRenameCodeFix FindRenameCodeFix(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
+            public static SymbolRenameCodeFix Find(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
                 var finder = new SymbolRenameCodeFixFinder(editorSettings, codeGenerationUnit);
                 return finder.Visit(symbol);
             }
@@ -36,5 +31,4 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             }
         }
     }
-
 }

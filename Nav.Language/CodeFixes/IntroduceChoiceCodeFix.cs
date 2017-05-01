@@ -16,7 +16,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             NodeReference  = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }
 
-        public override string DisplayText => "Introduce choice";
+        public override string Name => "Introduce Choice";
         public INodeReferenceSymbol NodeReference { get; }
         public ITaskDefinitionSymbol ContainingTask => NodeReference.Declaration?.ContainingTask;
 

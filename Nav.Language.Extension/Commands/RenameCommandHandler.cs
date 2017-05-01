@@ -42,7 +42,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             var editorSettings = args.TextView.GetEditorSettings();
-            var renameCodeFix  = Renamer.TryFindRenameCodeFix(symbol, editorSettings, codeGenerationUnitAndSnapshot.CodeGenerationUnit);
+            var renameCodeFix  = SymbolRenameCodeFix.TryFindCodeFix(symbol, editorSettings, codeGenerationUnitAndSnapshot.CodeGenerationUnit);
 
             if (renameCodeFix == null || !renameCodeFix.CanApplyFix()) {
                 ShellUtil.ShowErrorMessage("You must rename an identifier.");
@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
             var newSymbolName = _dialogService.ShowInputDialog(
                 promptText    : "Name:",
-                title         : renameCodeFix.DisplayText,
+                title         : renameCodeFix.Name,
                 defaultResonse: renameCodeFix.Symbol.Name,
                 iconMoniker   : ImageMonikers.FromSymbol(symbol),
                 validator     : renameCodeFix.ValidateSymbolName
@@ -66,7 +66,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             _textChangeService.ApplyTextChanges(
                 textView              : args.TextView, 
-                undoDescription       : renameCodeFix.DisplayText,
+                undoDescription       : renameCodeFix.Name,
                 textChangesAndSnapshot: textChangesAndSnapshot);            
         }
 

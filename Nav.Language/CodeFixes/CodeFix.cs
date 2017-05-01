@@ -8,19 +8,20 @@ using Pharmatechnik.Nav.Language.Text;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
-    public abstract class CodeFix {
-        public EditorSettings EditorSettings { get; }
 
+    public abstract class CodeFix {
+      
         protected CodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
-            EditorSettings    = editorSettings      ?? throw new ArgumentNullException(nameof(editorSettings));
+            EditorSettings     = editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings));
             CodeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
         }
-
-        public abstract string DisplayText{ get; }
+        
+        public EditorSettings EditorSettings { get; }
         public CodeGenerationUnit CodeGenerationUnit { get; }
         public CodeGenerationUnitSyntax Syntax => CodeGenerationUnit.Syntax;
         public SyntaxTree SyntaxTree => Syntax.SyntaxTree;
 
+        public abstract string Name { get; }
         public abstract bool CanApplyFix();
 
         [CanBeNull]

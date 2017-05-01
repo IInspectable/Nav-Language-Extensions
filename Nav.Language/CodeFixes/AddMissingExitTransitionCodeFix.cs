@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
         }
 
-        public override string DisplayText => $"Add outgoing edge for exit '{ConnectionPoint.Name}";
+        public override string Name => "Add Missing Edge";
         public ITaskNodeSymbol TaskNode { get ; }
         public IConnectionPointSymbol ConnectionPoint { get; }
         public ITaskDefinitionSymbol ContainingTask => TaskNode.ContainingTask;
