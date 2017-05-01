@@ -29,9 +29,9 @@ namespace Pharmatechnik.Nav.Language.Extension {
                                   .Throttle(ServiceProperties.SemanticModelServiceThrottleTime)
                                   .Select(_ => Observable.DeferAsync(async token =>
                                       {
-                                          var parseResult = await BuildResultAsync(ParserService.SyntaxTreeAndSnapshot, token).ConfigureAwait(false);
+                                          var codeGenerationUnitAndSnapshot = await BuildResultAsync(ParserService.SyntaxTreeAndSnapshot, token).ConfigureAwait(false);
 
-                                          return Observable.Return(parseResult);
+                                          return Observable.Return(codeGenerationUnitAndSnapshot);
                                       }))
                                   .Switch()
                                   .ObserveOn(SynchronizationContext.Current)
@@ -66,6 +66,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
                 () => new SemanticModelService(textBuffer));
         }
         
+        [CanBeNull]
         public static SemanticModelService TryGet(ITextBuffer textBuffer) {
             return TextBufferScopedValue<SemanticModelService>.TryGet(textBuffer, typeof(SemanticModelService));
         }
@@ -74,7 +75,23 @@ namespace Pharmatechnik.Nav.Language.Extension {
             OnSemanticModelChanging(EventArgs.Empty);
             OnRebuildTriggered(EventArgs.Empty);
         }
-        
+
+        // TODO Naming
+        public CodeGenerationUnitAndSnapshot GetCurrentResultSync() {
+
+            var codeGenerationUnitAndSnapshot = CodeGenerationUnitAndSnapshot;
+            if(codeGenerationUnitAndSnapshot != null && codeGenerationUnitAndSnapshot.IsCurrent(TextBuffer)) {
+                return codeGenerationUnitAndSnapshot;
+            }
+
+            var tree=ParserService.GetCurrentResultSync();
+
+            codeGenerationUnitAndSnapshot = BuildResultSync(tree, default(CancellationToken));
+            TrySetResult(codeGenerationUnitAndSnapshot);
+
+            return codeGenerationUnitAndSnapshot;
+        }
+
         protected override void OnParseResultChanging(object sender, EventArgs e) {
             OnSemanticModelChanging(EventArgs.Empty);
         }
@@ -97,52 +114,51 @@ namespace Pharmatechnik.Nav.Language.Extension {
             SemanticModelChanged?.Invoke(this, e);
         }
 
-         static async Task<CodeGenerationUnitAndSnapshot> BuildResultAsync(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, CancellationToken cancellationToken) {
+        static async Task<CodeGenerationUnitAndSnapshot> BuildResultAsync(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, CancellationToken cancellationToken) {
             return await Task.Run(() => {
-
                 using(Logger.LogBlock(nameof(BuildResultAsync))) {
-
-                    if(syntaxTreeAndSnapshot == null) {
-                        Logger.Debug("Es gibt kein ParesResult. Der Vorgang wird abgebrochen.");
-                        return null;
-                    }
-
-                    var syntaxTree = syntaxTreeAndSnapshot.SyntaxTree;
-                    var snapshot = syntaxTreeAndSnapshot.Snapshot;
-
-                    var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
-                    if(codeGenerationUnitSyntax == null) {
-                        Logger.Debug($"Der SyntaxRoot ist nicht vom Typ {typeof(CodeGenerationUnitSyntax)}. Der Vorgang wird abgebrochen.");
-                        return null;
-                    }
-
-                    var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
-
-                    return new CodeGenerationUnitAndSnapshot(codeGenerationUnit, snapshot);
+                    return BuildResultSync(syntaxTreeAndSnapshot, cancellationToken);
                 }
             }, cancellationToken).ConfigureAwait(false);
         }
 
-        void TrySetResult(CodeGenerationUnitAndSnapshot result) {
+        static CodeGenerationUnitAndSnapshot BuildResultSync(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, CancellationToken cancellationToken) {
+
+            if(syntaxTreeAndSnapshot == null) {
+                Logger.Debug("Es gibt kein ParesResult. Der Vorgang wird abgebrochen.");
+                return null;
+            }
+
+            var syntaxTree = syntaxTreeAndSnapshot.SyntaxTree;
+            var snapshot   = syntaxTreeAndSnapshot.Snapshot;
+
+            var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
+            if(codeGenerationUnitSyntax == null) {
+                Logger.Debug($"Der SyntaxRoot ist nicht vom Typ {typeof(CodeGenerationUnitSyntax)}. Der Vorgang wird abgebrochen.");
+                return null;
+            }
+
+            var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, cancellationToken);
+
+            return new CodeGenerationUnitAndSnapshot(codeGenerationUnit, snapshot);
+        }
+
+        void TrySetResult(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
             // Dieser Fall kann eintreten, da wir im Ctor "blind" ein Invalidate aufrufen. Möglicherweise gibt es aber noch kein SyntaxTreeAndSnapshot,
             // welches aber noch folgen wird und im Zuge eines OnParseResultChanging abgerbeitet wird.
-            if(result == null) {
+            if(codeGenerationUnitAndSnapshot == null) {
                 return;
             }
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
             // da bereits ein neues berechnet wird.
-            if (TextBuffer.CurrentSnapshot != result.Snapshot) {
-                if (!WaitingForAnalysis) {
-                    // Dieser Fall sollte eigentlich nicht eintreten, denn es muss bereits eine neue Analyse angetriggert worden sein
-                    Invalidate();
-                }
+            if (!codeGenerationUnitAndSnapshot.IsCurrent(TextBuffer)) {
                 return;
             }
 
-            _codeGenerationUnitAndSnapshot = result;
+            _codeGenerationUnitAndSnapshot = codeGenerationUnitAndSnapshot;
 
-            OnSemanticModelChanged(new SnapshotSpanEventArgs(result.Snapshot.GetFullSpan()));
+            OnSemanticModelChanged(new SnapshotSpanEventArgs(codeGenerationUnitAndSnapshot.Snapshot.GetFullSpan()));
         }        
     }
 }

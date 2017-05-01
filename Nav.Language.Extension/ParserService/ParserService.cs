@@ -99,6 +99,19 @@ namespace Pharmatechnik.Nav.Language.Extension {
             OnRebuildTriggered(EventArgs.Empty);
         }
 
+        // TODO Naming
+        public SyntaxTreeAndSnapshot GetCurrentResultSync() {
+            var syntaxTreeAndSnapshot = SyntaxTreeAndSnapshot;
+            if (syntaxTreeAndSnapshot!=null && syntaxTreeAndSnapshot.IsCurrent(TextBuffer)) {
+                return syntaxTreeAndSnapshot;
+            }
+
+            syntaxTreeAndSnapshot = BuildResultSync(CreateBuildResultArgs(), default(CancellationToken));
+            TrySetResult(syntaxTreeAndSnapshot);
+
+            return syntaxTreeAndSnapshot;
+        }
+
         void OnRebuildTriggered(EventArgs e) {
             RebuildTriggered?.Invoke(this, e);
         }
@@ -144,23 +157,24 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
                 using(Logger.LogBlock(nameof(BuildResultAsync))) {
 
-                    var syntaxTree = args.ParseMethod(args.Text, args.FilePath, cancellationToken).SyntaxTree;
-
-                    return new SyntaxTreeAndSnapshot(syntaxTree, args.Snapshot);
+                    return BuildResultSync(args, cancellationToken);
                 }
 
             }, cancellationToken).ConfigureAwait(false);            
         }
-        
+
+        static SyntaxTreeAndSnapshot BuildResultSync(BuildResultArgs args, CancellationToken cancellationToken) {
+
+            var syntaxTree = args.ParseMethod(args.Text, args.FilePath, cancellationToken).SyntaxTree;
+
+            return new SyntaxTreeAndSnapshot(syntaxTree, args.Snapshot);
+        }
+
         void TrySetResult(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot) {
 
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
             // da bereits ein neues berechnet wird.
-            if (TextBuffer.CurrentSnapshot != syntaxTreeAndSnapshot.Snapshot) {
-                if (!WaitingForAnalysis) {
-                    // Dieser Fall sollte eigentlich nicht eintreten, denn es muss bereits eine neue Berechnung angetriggert worden sein
-                    Invalidate();
-                }
+            if (!syntaxTreeAndSnapshot.IsCurrent(TextBuffer)) {
                 return;
             }
 

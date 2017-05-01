@@ -13,7 +13,7 @@ using Pharmatechnik.Nav.Language.Extension.Utilities;
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     interface ITextChangeService {
-        void ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot);
+        ITextSnapshot ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot);
     }
    
     [Export(typeof(ITextChangeService))]
@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             _editorOperationsFactoryService = editorOperationsFactoryService;
         }
 
-        public void ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot) {
+        public ITextSnapshot ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot) {
 
             var waitMessage = $"{undoDescription} in progress...";
 
@@ -46,9 +46,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                     textEdit.Replace(span, change.NewText);
                 }
 
-                textEdit.Apply();
+                var textSnapshot=textEdit.Apply();
 
                 undoTransaction.Commit();
+
+                return textSnapshot;
             }
         }
 

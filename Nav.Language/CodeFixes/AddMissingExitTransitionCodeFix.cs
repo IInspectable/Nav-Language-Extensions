@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -31,10 +32,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public override bool CanApplyFix() {
 
-            var transitionReference = GetReferenceEdge();
+            var templateEdge = GetTemplateEdge();
 
-            // 1. Wir brauchen eine vollständige Transition
-            if (transitionReference?.Source == null || transitionReference.EdgeMode == null || transitionReference.Target == null) {
+            // 1. Wir brauchen eine vollständige Kante als "Formatvorlage"
+            if (templateEdge?.Source == null || templateEdge.EdgeMode == null || templateEdge.Target == null) {
                 return false;
             }
             // 2. Es darf noch keine ExitTransition mit dem Verbindungspunkt geben
@@ -50,28 +51,39 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 throw new InvalidOperationException();
             }
 
-            var targetName = GetApplicableTargetName();
-            var sourceName = $"{TaskNode.Name}{SyntaxFacts.Colon}{ConnectionPoint.Name}";
-            var sampleEdge = GetReferenceEdge();
-            // ReSharper disable once PossibleNullReferenceException Check unter CanApplyFix
-            var transitionLine = SyntaxTree.GetTextLineExtent(sampleEdge.Source.Start);
+            var textChanges  = new List<TextChange?>();
 
-            var exitTransition = $"{GetSignificantColumn(transitionLine)}{sourceName}{WhiteSpaceBetweenSourceAndEdgeMode(sampleEdge, sourceName)}{SyntaxFacts.GoToEdgeKeyword}{WhiteSpaceBetweenEdgeModeAndTarget(sampleEdge)}{targetName}{SyntaxFacts.Semicolon}";
-
-            var textChanges = new List<TextChange?>();
+            var sourceName   = $"{TaskNode.Name}{SyntaxFacts.Colon}{ConnectionPoint.Name}";
+            var edgeKeyword  = SyntaxFacts.GoToEdgeKeyword;
+            var targetName   = GetApplicableTargetName();
+            var templateEdge = GetTemplateEdge();
             // Die neue Exit Transition
+            var exitTransition = ComposeEdge(templateEdge, sourceName, edgeKeyword, targetName);
+            
+            // ReSharper disable once PossibleNullReferenceException Check unter CanApplyFix
+            var transitionLine = SyntaxTree.GetTextLineExtent(templateEdge.Source.Start);
             textChanges.Add(NewInsert(transitionLine.Extent.End, $"{exitTransition}{EditorSettings.NewLine}"));
 
             return textChanges.OfType<TextChange>().ToList();
         }
 
-        IEdge GetReferenceEdge() {
+        public TextExtent TryGetSelectionAfterChanges([CanBeNull] CodeGenerationUnit codegenerationUnit) {
+  
+            var taskDef    = codegenerationUnit?.TryFindTaskDefinition(TargetNode.Declaration?.ContainingTask.Name);
+            var taskNode   = taskDef.TryFindNode<ITaskNodeSymbol>(TaskNode.Name);
+            var exitEdge   = taskNode?.Outgoings.FirstOrDefault(e => e.ConnectionPoint?.Name == ConnectionPoint.Name);
+            var targetNode = exitEdge?.Target;
+
+            return targetNode?.Location.Extent?? TextExtent.Missing;
+        }
+        
+        IEdge GetTemplateEdge() {
             return TargetNode.Edge;
         }
 
         string GetApplicableTargetName() {
             var guiNode=TaskNode.ContainingTask.NodeDeclarations.OfType<IGuiNodeSymbol>().FirstOrDefault();
-            return guiNode?.Name?? "TO_BE_FILLED";
+            return guiNode?.Name ?? "TO_BE_FILLED";
         }
     }
 }
