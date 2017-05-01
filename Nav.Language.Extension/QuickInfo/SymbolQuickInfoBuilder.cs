@@ -15,14 +15,16 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         
         #region Infrastructure
 
-        SymbolQuickInfoBuilder(SyntaxQuickinfoBuilderService syntaxQuickinfoBuilderService) {
+        SymbolQuickInfoBuilder(ISymbol originatingSymbol, SyntaxQuickinfoBuilderService syntaxQuickinfoBuilderService) {
+            OriginatingSymbol = originatingSymbol;
             SyntaxQuickinfoBuilderService = syntaxQuickinfoBuilderService;
         }
 
+        ISymbol OriginatingSymbol { get; }
         SyntaxQuickinfoBuilderService SyntaxQuickinfoBuilderService { get; }
 
         public static IEnumerable<object> Build(ISymbol source, SyntaxQuickinfoBuilderService syntaxQuickinfoBuilderService) {
-            var builder = new SymbolQuickInfoBuilder(syntaxQuickinfoBuilderService);
+            var builder = new SymbolQuickInfoBuilder(source, syntaxQuickinfoBuilderService);
             return builder.Visit(source);
         }
 
@@ -129,13 +131,20 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         }
 
         public override IEnumerable<object> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
-
+            // Wir zeigen keinen Tooltip für das init Keyword an, wenn es einen Alias gibt
+            if(OriginatingSymbol == initNodeSymbol && initNodeSymbol.Alias != null) {
+                yield break;
+            }
             var syntaxText = $"{initNodeSymbol.Syntax.InitKeyword} {initNodeSymbol.Syntax.Identifier}";
             var syntax     = Syntax.ParseInitNodeDeclaration(syntaxText);
 
             yield return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(initNodeSymbol));
         }
-        
+
+        public override IEnumerable<object> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+            return Visit(initNodeAliasSymbol.InitNode);
+        }
+
         public override IEnumerable<object> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
 
             var syntaxText = $"{exitNodeSymbol.Syntax.ExitKeyword} {exitNodeSymbol.Syntax.Identifier}";

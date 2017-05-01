@@ -20,6 +20,10 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             return DefaultVisit(taskDefinitionSymbol);
         }
 
+        public override ISymbol VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+            return Visit(initNodeAliasSymbol.InitNode);
+        }
+
         public override ISymbol VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
 
             if (taskNodeSymbol.Declaration?.IsIncluded == false) {
