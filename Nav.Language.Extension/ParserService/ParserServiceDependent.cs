@@ -1,8 +1,9 @@
 ﻿#region Using Directives
 
 using System;
+using System.Windows;
+
 using Microsoft.VisualStudio.Text;
-using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
@@ -10,30 +11,28 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
     abstract class ParserServiceDependent: IDisposable {
         
-        readonly TextBufferScopedValue<ParserService> _parserServiceSingelton;
+        readonly ParserService _parserService;
 
         protected ParserServiceDependent(ITextBuffer textBuffer) {
 
             TextBuffer = textBuffer;
 
-            _parserServiceSingelton = ParserService.GetOrCreateSingelton(textBuffer);
+            _parserService = ParserService.GetOrCreateSingelton(textBuffer);
 
-            ParserService.ParseResultChanging += OnParseResultChanging;
-            ParserService.ParseResultChanged  += OnParseResultChanged;
+            WeakEventManager<ParserService, EventArgs>.AddHandler(_parserService, nameof(ParserService.ParseResultChanging), OnParseResultChanging);
+            WeakEventManager<ParserService, SnapshotSpanEventArgs>.AddHandler(_parserService, nameof(ParserService.ParseResultChanged), OnParseResultChanged);
         }
 
         public virtual void Dispose() {
 
-            ParserService.ParseResultChanging -= OnParseResultChanging;
-            ParserService.ParseResultChanged  -= OnParseResultChanged;
-
-            _parserServiceSingelton.Dispose();
+            WeakEventManager<ParserService, EventArgs>.RemoveHandler(_parserService, nameof(ParserService.ParseResultChanging), OnParseResultChanging);
+            WeakEventManager<ParserService, SnapshotSpanEventArgs>.RemoveHandler(_parserService, nameof(ParserService.ParseResultChanged), OnParseResultChanged);
         }
 
         protected ITextBuffer TextBuffer { get; }
 
         protected ParserService ParserService {
-            get { return _parserServiceSingelton.Value; }
+            get { return _parserService; }
         }
 
         protected virtual void OnParseResultChanging(object sender, EventArgs e) {
