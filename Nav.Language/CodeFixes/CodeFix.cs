@@ -36,9 +36,20 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         protected static TextChange? NewInsert(int position, string newText) {
             return new TextChange(TextExtent.FromBounds(position, position), newText);
         }
-        // TODO GnerateEdgeWithTemplate
 
-        protected string GetSignificantColumn(TextLineExtent lineExtent) {
+        protected string ComposeEdge(IEdge templateEdge, string sourceName, string edgeKeyword, string targetName) {
+
+            string indent = new string(' ', EditorSettings.TabSize);
+            if (templateEdge.Source != null) {
+                var templateEdgeLine = SyntaxTree.GetTextLineExtent(templateEdge.Source.Start);
+                indent = GetIndent(templateEdgeLine);
+            }
+
+            var exitTransition = $"{indent}{sourceName}{WhiteSpaceBetweenSourceAndEdgeMode(templateEdge, sourceName)}{edgeKeyword}{WhiteSpaceBetweenEdgeModeAndTarget(templateEdge)}{targetName}{SyntaxFacts.Semicolon}";
+            return exitTransition;
+        }
+
+        protected string GetIndent(TextLineExtent lineExtent) {
 
             var line = SyntaxTree.SourceText.Substring(lineExtent.Extent.Start, lineExtent.Extent.Length);
 

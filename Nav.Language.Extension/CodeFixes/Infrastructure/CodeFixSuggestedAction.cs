@@ -74,13 +74,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return symbol.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
         }
 
-        protected void ApplyTextChanges(IEnumerable<TextChange> textChanges) {
+        protected ITextSnapshot ApplyTextChanges(IEnumerable<TextChange> textChanges) {
 
             var textChangesAndSnapshot = new TextChangesAndSnapshot(
                 textChanges: textChanges, 
                 snapshot   : Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
 
-            Context.TextChangeService.ApplyTextChanges(
+            return Context.TextChangeService.ApplyTextChanges(
                 textView              : Parameter.TextView, 
                 undoDescription       : UndoDescription,
                 textChangesAndSnapshot: textChangesAndSnapshot);

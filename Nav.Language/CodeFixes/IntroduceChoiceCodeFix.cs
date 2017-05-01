@@ -77,8 +77,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var nodeDeclarationLine = SyntaxTree.GetTextLineExtent(nodeSymbol.Start);
             var nodeTransitionLine  = SyntaxTree.GetTextLineExtent(NodeReference.End);
 
-            var choiceDeclaration = $"{GetSignificantColumn(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
-            var choiceTransition  = $"{GetSignificantColumn(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
+            var choiceDeclaration = $"{GetIndent(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
+            var choiceTransition  = $"{GetIndent(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
 
             var textChanges = new List<TextChange?>();
             // Die Choice Deklaration: choice NeueChoice;

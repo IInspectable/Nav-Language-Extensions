@@ -5,6 +5,7 @@ using System.Threading;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Language.CodeFixes;
+using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
@@ -27,10 +28,18 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             if (!CodeFix.CanApplyFix()) {
                 return;
             }
-            
+
             ApplyTextChanges(CodeFix.GetTextChanges());
 
-            // TODO Selection Logik?
+            var codeGenerationUnitAndSnapshot = SemanticModelService.TryGet(Parameter.TextBuffer)?.GetCurrentResultSync();
+            if(codeGenerationUnitAndSnapshot == null) {
+                return;
+            }
+
+            var selection=CodeFix.TryGetSelectionAfterChanges(codeGenerationUnitAndSnapshot.CodeGenerationUnit);
+            if(!selection.IsMissing) {
+                Parameter.TextView.SetSelection(selection.ToSnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot));
+            }
         }
     }
 }

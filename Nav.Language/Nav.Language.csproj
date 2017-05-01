@@ -102,6 +102,7 @@
     <Compile Include="Diagnostic\DiagnosticExtensions.cs" />
     <Compile Include="Diagnostic\DiagnosticId.cs" />
     <Compile Include="Diagnostic\DiagnosticSeverity.cs" />
+    <Compile Include="Model\CodeGenerationUnitExtensions.cs" />
     <Compile Include="Model\ConnectionPointReferenceSymbol.cs" />
     <Compile Include="Model\ConnectionPointSymbol.cs" />
     <Compile Include="CodeGen\CSharp.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="Model\NodeReferenceSymbol.cs" />
     <Compile Include="Model\SymbolList.cs" />
     <Compile Include="Model\TaskDeclarationSymbol.cs" />
+    <Compile Include="Model\TaskDefinitionSymbolExtensions.cs" />
     <Compile Include="Model\TaskNodeAliasSymbol.cs" />
     <Compile Include="Model\TaskNodeSymbolExtensions.cs" />
     <Compile Include="Model\Transition.cs" />

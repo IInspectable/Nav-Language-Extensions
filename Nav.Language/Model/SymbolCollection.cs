@@ -42,7 +42,7 @@ namespace Pharmatechnik.Nav.Language {
 
         [CanBeNull]
         public T TryFindSymbol(string key) {
-            if (Contains(key)) {
+            if(!string.IsNullOrEmpty(key) && Contains(key)) {
                 return this[key];
             }
             return default(T);
