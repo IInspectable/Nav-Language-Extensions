@@ -73,8 +73,8 @@
     <Compile Include="CodeFixes\EditorSettings.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\ChoiceSymbolRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\Renamer.cs" />
     <Compile Include="CodeFixes\Rename\SymbolRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\SymbolRenameCodeFix.SymbolRenameCodeFixFinder.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
     <Compile Include="CodeGen\BeginWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeGenerationOptions.cs" />

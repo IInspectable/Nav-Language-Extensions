@@ -75,8 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
         void Invalidate(bool clearImmediately=false) {
 
-            var point1 = View.GetCaretPoint();
-            var point = point1;
+            var point = View.GetCaretPoint();
 
             // Wenn das Caret nur innerhalb der Referenzen positioniert wurde, und kein Neubau erforderlich ist
             // dann bleibt alles wie es ist.

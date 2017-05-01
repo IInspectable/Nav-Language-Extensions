@@ -12,19 +12,16 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     
-    class IntroduceChoiceAction : CodeFixAction {
+    class IntroduceChoiceAction : CodeFixAction<IntroduceChoiceCodeFix> {
 
         public IntroduceChoiceAction(IntroduceChoiceCodeFix codeFix,
                                      CodeFixActionsParameter parameter, 
-                                     CodeFixActionContext context): base(context, parameter) {
-
-            CodeFix = codeFix ?? throw new ArgumentNullException(nameof(codeFix));
+                                     CodeFixActionContext context): base(context, parameter, codeFix) {
         }
 
-        IntroduceChoiceCodeFix CodeFix { get; }
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.NodeReference);
-        public override string DisplayText       => CodeFix.DisplayText;
         public override ImageMoniker IconMoniker => ImageMonikers.InsertNode;
+        public override string DisplayText       => "Introduce Choice";
 
         public override void Invoke(CancellationToken cancellationToken) {
 
@@ -34,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             
             var choiceName = Context.DialogService.ShowInputDialog(
                 promptText    : "Name:",
-                title         : DisplayText,
+                title         : CodeFix.Name,
                 defaultResonse: CodeFix.SuggestChoiceName(),
                 iconMoniker   : ImageMonikers.ChoiceNode,
                 validator     : CodeFix.ValidateChoiceName

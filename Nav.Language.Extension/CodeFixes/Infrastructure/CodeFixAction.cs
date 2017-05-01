@@ -8,18 +8,19 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
-using Pharmatechnik.Nav.Language.Extension.Common;
+
 using Pharmatechnik.Nav.Language.Text;
+using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
-
+    
     abstract class CodeFixAction : ISuggestedAction {
 
         protected CodeFixAction(CodeFixActionContext context, CodeFixActionsParameter parameter) {
-            Context = context;
-            Parameter = parameter;
+            Context   = context   ?? throw new ArgumentNullException(nameof(context));
+            Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
         }
 
         protected CodeFixActionContext Context { get; }
@@ -28,6 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public virtual Span? ApplicableToSpan { get; } = null;
 
         public abstract string DisplayText { get; }
+        public abstract string UndoDescription { get; }
 
         public virtual ImageMoniker IconMoniker {
             get { return default(ImageMoniker); }
@@ -80,8 +82,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             Context.TextChangeService.ApplyTextChanges(
                 textView              : Parameter.TextView, 
-                undoDescription       : DisplayText,
+                undoDescription       : UndoDescription,
                 textChangesAndSnapshot: textChangesAndSnapshot);
         }
-    }
+    }   
 }

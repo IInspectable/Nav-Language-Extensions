@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
                 spans = bufferGraph.MapUpToFirstMatch(span, SpanTrackingMode.EdgeExclusive, match);
             }
 
-            return spans.Select(s => (SnapshotSpan?) s).FirstOrDefault();
+            return spans.FirstOrDefault();
         }        
     }
 }
