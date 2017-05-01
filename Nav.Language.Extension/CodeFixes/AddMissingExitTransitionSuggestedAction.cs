@@ -21,7 +21,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.TargetNode);
         public override ImageMoniker IconMoniker => ImageMonikers.AddEdge;
-        public override string DisplayText       => $"Add mising edge for exit '{CodeFix.ConnectionPoint.Name}'";
+        public override string DisplayText       => $"Add missing edge for exit '{CodeFix.ConnectionPoint.Name}'";
 
         public override void Invoke(CancellationToken cancellationToken) {
 
@@ -39,7 +39,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var selection=CodeFix.TryGetSelectionAfterChanges(codeGenerationUnitAndSnapshot.CodeGenerationUnit);
             if(!selection.IsMissing) {
                 Parameter.TextView.SetSelection(selection.ToSnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot));
-            }
+            }            
         }
     }
 }
