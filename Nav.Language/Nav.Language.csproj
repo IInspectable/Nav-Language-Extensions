@@ -126,6 +126,7 @@
     <Compile Include="Model\SymbolList.cs" />
     <Compile Include="Model\TaskDeclarationSymbol.cs" />
     <Compile Include="Model\TaskNodeAliasSymbol.cs" />
+    <Compile Include="Model\TaskNodeSymbolExtensions.cs" />
     <Compile Include="Model\Transition.cs" />
     <Compile Include="Model\IConnectionPointSymbol.cs" />
     <Compile Include="Model\ITransition.cs" />

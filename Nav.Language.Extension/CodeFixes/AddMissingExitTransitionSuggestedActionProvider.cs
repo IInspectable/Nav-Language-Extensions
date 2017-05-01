@@ -48,34 +48,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                     continue;
                 }
 
-                foreach (var connectionPoint in GetMissingExitTransitionConnectionPoints(taskNode)) {
-
-                    var codeFix = new AddMissingExitTransitionCodeFix(parameter.GetEditorSettings(), parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit, targetNode, connectionPoint);
+                foreach (var missingExitConnectionPoint in taskNode.GetMissingExitTransitionConnectionPoints()) {
+                    var codeFix = new AddMissingExitTransitionCodeFix(parameter.GetEditorSettings(), parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit, targetNode, missingExitConnectionPoint);
                     if (codeFix.CanApplyFix()) {
                         yield return codeFix;
                     }
                 }
             }           
-        }
-
-        // TODO Evtl in ITaskNodeSymbol respektive TaskNodeSymbolExtensions
-       static  IEnumerable<IConnectionPointSymbol> GetMissingExitTransitionConnectionPoints(ITaskNodeSymbol taskNode) {
-            if (taskNode.Declaration == null) {
-                yield break;
-            }
-            var expectedExits = taskNode.Declaration.Exits();
-            var actualExits = taskNode.Outgoings
-                                      .Select(et => et.ConnectionPoint)
-                                      .Where(cp => cp != null)
-                                      .ToList();
-
-            foreach (var expectedExit in expectedExits) {
-
-                if (!actualExits.Exists(cpRef => cpRef.Declaration == expectedExit)) {
-
-                    yield return expectedExit;
-                }
-            }
         }
     }
 }
