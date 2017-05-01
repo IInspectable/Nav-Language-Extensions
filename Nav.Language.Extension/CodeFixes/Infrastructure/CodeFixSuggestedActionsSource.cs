@@ -123,6 +123,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsParameter codeFixActionsParameter, CancellationToken cancellationToken) {
 
+            // TODO Hier erst die Suggesten Actions zusammenbauen.
             var suggestedActions = _codeFixActionProviderService.GetSuggestedActions(codeFixActionsParameter, cancellationToken);
             return suggestedActions.ToImmutableList();
         }

@@ -83,20 +83,20 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CodeFixes\AddMissingExitTransitionAction.cs" />
-    <Compile Include="CodeFixes\AddMissingExitTransitionActionProvider.cs" />
+    <Compile Include="CodeFixes\AddMissingExitTransitionSuggestedAction.cs" />
+    <Compile Include="CodeFixes\AddMissingExitTransitionSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionContext.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionOfT.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionsParameter.cs" />
-    <Compile Include="CodeFixes\Infrastructure\CodeFixAction.cs" />
+    <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedAction.cs" />
     <Compile Include="CodeFixes\Infrastructure\ExportCodeFixActionProviderAttribute.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionProviderService.cs" />
     <Compile Include="CodeFixes\Infrastructure\ICodeFixActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\TextChangesAndSnapshot.cs" />
     <Compile Include="CodeFixes\Infrastructure\TextChangeService.cs" />
-    <Compile Include="CodeFixes\IntroduceChoiceAction.cs" />
-    <Compile Include="CodeFixes\IntroduceChoiceProvider.cs" />
+    <Compile Include="CodeFixes\IntroduceChoiceSuggestedAction.cs" />
+    <Compile Include="CodeFixes\IntroduceChoiceSuggestedActionProvider.cs" />
     <Compile Include="Commands\CommandHandlerNames.cs" />
     <Compile Include="Commands\GoToDefinitionCommandCommandHandler.cs" />
     <Compile Include="Commands\Infrastructure\BackTabKeyCommandArgs.cs" />

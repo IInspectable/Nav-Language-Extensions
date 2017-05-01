@@ -16,9 +16,9 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     
-    abstract class CodeFixAction : ISuggestedAction {
+    abstract class CodeFixSuggestedAction : ISuggestedAction {
 
-        protected CodeFixAction(CodeFixActionContext context, CodeFixActionsParameter parameter) {
+        protected CodeFixSuggestedAction(CodeFixActionContext context, CodeFixActionsParameter parameter) {
             Context   = context   ?? throw new ArgumentNullException(nameof(context));
             Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
         }

@@ -12,11 +12,11 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     
-    class IntroduceChoiceAction : CodeFixAction<IntroduceChoiceCodeFix> {
+    class IntroduceChoiceSuggestedAction : CodeFixSuggestedAction<IntroduceChoiceCodeFix> {
 
-        public IntroduceChoiceAction(IntroduceChoiceCodeFix codeFix,
-                                     CodeFixActionsParameter parameter, 
-                                     CodeFixActionContext context): base(context, parameter, codeFix) {
+        public IntroduceChoiceSuggestedAction(IntroduceChoiceCodeFix codeFix,
+                                              CodeFixActionsParameter parameter, 
+                                              CodeFixActionContext context): base(context, parameter, codeFix) {
         }
 
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.NodeReference);

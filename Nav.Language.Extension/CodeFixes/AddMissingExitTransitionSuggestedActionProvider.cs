@@ -12,18 +12,18 @@ using Pharmatechnik.Nav.Language.CodeFixes;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    [ExportCodeFixActionProvider(nameof(AddMissingExitTransitionActionProvider))]
-    class AddMissingExitTransitionActionProvider : CodeFixActionProvider {
+    [ExportCodeFixActionProvider(nameof(AddMissingExitTransitionSuggestedActionProvider))]
+    class AddMissingExitTransitionSuggestedActionProvider : CodeFixActionProvider {
 
         [ImportingConstructor]
-        public AddMissingExitTransitionActionProvider(CodeFixActionContext context) : base(context) {
+        public AddMissingExitTransitionSuggestedActionProvider(CodeFixActionContext context) : base(context) {
         }
 
         public override IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
             var codeFixes = FindCodeFixes(parameter);
 
-            var actions = codeFixes.Select(codeFix => new AddMissingExitTransitionAction(
+            var actions = codeFixes.Select(codeFix => new AddMissingExitTransitionSuggestedAction(
                 codeFix         : codeFix,
                 parameter       : parameter,
                 context         : Context));
