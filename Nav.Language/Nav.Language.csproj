@@ -118,7 +118,9 @@
     <Compile Include="Model\IEdgeModeSymbol.cs" />
     <Compile Include="Model\IExitTransition.cs" />
     <Compile Include="Model\IIncludeSymbol.cs" />
+    <Compile Include="Model\IInitNodeAliasSymbol.cs" />
     <Compile Include="Model\IncludeSymbol.cs" />
+    <Compile Include="Model\InitNodeAliasSymbol.cs" />
     <Compile Include="Model\ISymbol.cs" />
     <Compile Include="Model\ITaskDefinitionSymbol.cs" />
     <Compile Include="Model\ITaskNodeAlias.cs" />

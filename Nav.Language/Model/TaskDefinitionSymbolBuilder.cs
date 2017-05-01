@@ -73,12 +73,13 @@ namespace Pharmatechnik.Nav.Language {
         public override void VisitInitNodeDeclaration(InitNodeDeclarationSyntax initNodeDeclarationSyntax) {
 
             var identifier = initNodeDeclarationSyntax.InitKeyword;
-            var name       = "Init";
-
-            // TODO: InitNodeAlias einf¸hren => Implizite Groﬂschreibung von init, falls kein Alias angegeben wurde
-            if (!initNodeDeclarationSyntax.Identifier.IsMissing) {
-                identifier = initNodeDeclarationSyntax.Identifier;
-                name       = identifier.ToString();
+            var taskAlias  = initNodeDeclarationSyntax.Identifier;
+           
+            InitNodeAliasSymbol initNodeAlias = null;
+            if (!taskAlias.IsMissing) {
+                var aliasName     = taskAlias.ToString();
+                var aliasLocation = taskAlias.GetLocation();
+                initNodeAlias = new InitNodeAliasSymbol(aliasName, aliasLocation);
             }
             
             var location = identifier.GetLocation();
@@ -86,7 +87,7 @@ namespace Pharmatechnik.Nav.Language {
                 return;
             }
 
-            var decl = new InitNodeSymbol(name, location, initNodeDeclarationSyntax, _taskDefinition);
+            var decl = new InitNodeSymbol("Init", location, initNodeDeclarationSyntax, initNodeAlias, _taskDefinition);
 
             AddNodeDeclaration(decl);
         }

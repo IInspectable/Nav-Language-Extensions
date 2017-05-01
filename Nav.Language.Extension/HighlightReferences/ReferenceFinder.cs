@@ -33,12 +33,30 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             yield break;
         }
 
+        public override IEnumerable<ISymbol> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+
+            if (initNodeSymbol.Alias != null) {
+                yield return initNodeSymbol.Alias;
+            }
+            else {
+                yield return initNodeSymbol;
+            }
+
+            foreach (var transition in initNodeSymbol.Outgoings) {
+                yield return transition.Source;
+            }
+        }
+
+        public override IEnumerable<ISymbol> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+            return Visit(initNodeAliasSymbol.InitNode);
+        }
+
         public override IEnumerable<ISymbol> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
-
-            yield return taskNodeSymbol;
-
+            
             if(taskNodeSymbol.Alias != null) {
                 yield return taskNodeSymbol.Alias;
+            } else {
+                yield return taskNodeSymbol;
             }
 
             foreach(var exitTransition in taskNodeSymbol.Outgoings) {
@@ -48,15 +66,6 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             foreach (var edge in taskNodeSymbol.Incomings) {
                 yield return edge.Target;
             }
-        }
-
-        public override IEnumerable<ISymbol> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
-
-            yield return initNodeSymbol;
-
-            foreach (var transition in initNodeSymbol.Outgoings) {
-                yield return transition.Source;
-            }           
         }
 
         public override IEnumerable<ISymbol> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {

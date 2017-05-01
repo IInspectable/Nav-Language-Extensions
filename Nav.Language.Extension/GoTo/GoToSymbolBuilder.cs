@@ -117,11 +117,21 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
 
         public override TagSpan<GoToTag> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+            if(initNodeSymbol.Alias != null) {
+                return DefaultVisit(initNodeSymbol);
+            }
 
             var codeModel = new TaskBeginCodeModel(initNodeSymbol);
             var provider  = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(initNodeSymbol.Location, provider);
+        }
+
+        public override TagSpan<GoToTag> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+            var codeModel = new TaskBeginCodeModel(initNodeAliasSymbol.InitNode);
+            var provider = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
+
+            return CreateTagSpan(initNodeAliasSymbol.Location, provider);
         }
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {

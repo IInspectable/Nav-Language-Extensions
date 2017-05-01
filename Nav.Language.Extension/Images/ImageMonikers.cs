@@ -207,6 +207,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             public override ImageMoniker VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
                 return InitNode;
             }
+           
+            public override ImageMoniker VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+                return Visit(initNodeAliasSymbol.InitNode);
+            }
 
             public override ImageMoniker VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
                 return ExitNode;
