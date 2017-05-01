@@ -11,12 +11,11 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    class AddMissingExitTransitionAction : CodeFixAction<AddMissingExitTransitionCodeFix> {
+    class AddMissingExitTransitionSuggestedAction : CodeFixSuggestedAction<AddMissingExitTransitionCodeFix> {
 
-        public AddMissingExitTransitionAction(AddMissingExitTransitionCodeFix codeFix,
-                                              CodeFixActionsParameter parameter,
-                                              CodeFixActionContext context) : base(context, parameter, codeFix) {
-
+        public AddMissingExitTransitionSuggestedAction(AddMissingExitTransitionCodeFix codeFix,
+                                                       CodeFixActionsParameter parameter,
+                                                       CodeFixActionContext context) : base(context, parameter, codeFix) {
         }
         
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.TargetNode);

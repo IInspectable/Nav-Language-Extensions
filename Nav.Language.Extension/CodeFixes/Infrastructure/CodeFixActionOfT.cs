@@ -7,9 +7,9 @@ using Pharmatechnik.Nav.Language.CodeFixes;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    abstract class CodeFixAction<T> : CodeFixAction where T : CodeFix {
+    abstract class CodeFixSuggestedAction<T> : CodeFixSuggestedAction where T : CodeFix {
 
-        protected CodeFixAction(CodeFixActionContext context, CodeFixActionsParameter parameter, T codeFix) : base(context, parameter) {
+        protected CodeFixSuggestedAction(CodeFixActionContext context, CodeFixActionsParameter parameter, T codeFix) : base(context, parameter) {
             CodeFix = codeFix ?? throw new ArgumentNullException(nameof(codeFix));
         }
 
