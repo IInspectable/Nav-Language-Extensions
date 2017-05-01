@@ -3,11 +3,13 @@
 using System.Threading;
 using System.Collections.Generic;
 
-using Microsoft.VisualStudio.Language.Intellisense;
-
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+
+    interface ICodeFixActionProvider {
+        IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken);
+    }
 
     abstract class CodeFixActionProvider : ICodeFixActionProvider {
 
@@ -17,6 +19,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         protected CodeFixActionContext Context { get; }
 
-        public abstract IEnumerable<SuggestedActionSet> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken);
+        public abstract IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken);
     }
 }

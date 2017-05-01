@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         readonly ICodeFixActionProviderService _codeFixActionProviderService;
         readonly ITextView _textView;
 
-        ActionSetsWithRange _cachedActionSets;
+        volatile ActionSetsWithRange _cachedActionSets;
 
         public CodeFixSuggestedActionsSource(ITextBuffer textBuffer, ICodeFixActionProviderService codeFixActionProviderService, ITextView textView)
             : base(textBuffer) {
@@ -123,9 +123,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsParameter codeFixActionsParameter, CancellationToken cancellationToken) {
 
-            // TODO Hier erst die Suggesten Actions zusammenbauen.
             var suggestedActions = _codeFixActionProviderService.GetSuggestedActions(codeFixActionsParameter, cancellationToken);
-            return suggestedActions.ToImmutableList();
+            var actionSets = new List<SuggestedActionSet>();
+            foreach( var actionsInSpan in suggestedActions.GroupBy(action=> action.ApplicableToSpan)) {
+                actionSets.Add(new SuggestedActionSet(actionsInSpan, actionsInSpan.Key));
+            }
+
+            return actionSets.ToImmutableList();
         }
 
         static IEnumerable<ISymbol> FindSymbols(SnapshotPoint caretPoint, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {

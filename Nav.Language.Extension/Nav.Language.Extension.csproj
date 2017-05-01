@@ -92,7 +92,6 @@
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedAction.cs" />
     <Compile Include="CodeFixes\Infrastructure\ExportCodeFixActionProviderAttribute.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionProviderService.cs" />
-    <Compile Include="CodeFixes\Infrastructure\ICodeFixActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\TextChangesAndSnapshot.cs" />
     <Compile Include="CodeFixes\Infrastructure\TextChangeService.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceSuggestedAction.cs" />
