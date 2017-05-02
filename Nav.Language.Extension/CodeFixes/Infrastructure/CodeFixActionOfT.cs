@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Threading;
 using Pharmatechnik.Nav.Language.CodeFixes;
 
 #endregion
@@ -15,5 +16,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public T CodeFix { get; }
         public override string UndoDescription => CodeFix.Name;
+
+        public override void Invoke(CancellationToken cancellationToken) {
+            if (!CodeFix.CanApplyFix()) {
+                return;
+            }
+
+            Apply(cancellationToken);
+
+            SemanticModelService.TryGet(Parameter.TextBuffer)?.UpdateSynchronously();
+        }
     }
 }

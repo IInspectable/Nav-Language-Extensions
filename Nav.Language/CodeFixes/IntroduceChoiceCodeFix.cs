@@ -40,20 +40,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                  !(NodeReference.Edge.Source.Declaration is IChoiceNodeSymbol);
         }
 
-        public string ValidateChoiceName(string choiceName) {
-
-            choiceName = choiceName?.Trim();
-
-            if (!SyntaxFacts.IsValidIdentifier(choiceName)) {
-                return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
-            }
-
-            var declaredNodeNames = GetDeclaredNodeNames(ContainingTask);
-            if (declaredNodeNames.Contains(choiceName)) {
-                return String.Format(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared.MessageFormat, choiceName);
-            }
-
-            return null;
+        public string ValidateChoiceName(string choiceName) {     
+            return ValidateNewNodeName(choiceName, ContainingTask);
         }
 
         public IList<TextChange> GetTextChanges(string choiceName) {
