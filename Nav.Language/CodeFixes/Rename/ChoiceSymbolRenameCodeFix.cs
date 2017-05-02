@@ -25,21 +25,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
         }
 
         public override string ValidateSymbolName(string symbolName) {
-
-            symbolName = symbolName?.Trim();
-
-            if (!SyntaxFacts.IsValidIdentifier(symbolName)) {
-                return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
+            // De facto kein Rename, aber OK
+            if (symbolName == ChoiceNodeSymbol.Name) {
+                return null;
             }
-
-            var declaredNames = GetDeclaredNodeNames(ContainingTask);
-            declaredNames.Remove(ChoiceNodeSymbol.Name); // Ist OK - pasiert halt nix
-
-            if (declaredNames.Contains(symbolName)) {
-                return String.Format(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared.MessageFormat, symbolName);
-            }
-
-            return null;
+            return ValidateNewNodeName(symbolName, ContainingTask);            
         }
         
         public override IEnumerable<TextChange> GetTextChanges(string newChoiceName) {

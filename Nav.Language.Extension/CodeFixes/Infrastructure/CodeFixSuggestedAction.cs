@@ -70,6 +70,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public abstract void Invoke(CancellationToken cancellationToken);
 
+        protected abstract void Apply(CancellationToken cancellationToken);
+
         protected SnapshotSpan GetSnapshotSpan(ISymbol symbol) {
             return symbol.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
         }

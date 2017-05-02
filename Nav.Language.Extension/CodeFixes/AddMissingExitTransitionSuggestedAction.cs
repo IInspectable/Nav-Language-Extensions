@@ -23,11 +23,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public override ImageMoniker IconMoniker => ImageMonikers.AddEdge;
         public override string DisplayText       => $"Add missing edge for exit '{CodeFix.ConnectionPoint.Name}'";
 
-        public override void Invoke(CancellationToken cancellationToken) {
-
-            if (!CodeFix.CanApplyFix()) {
-                return;
-            }
+        protected override void Apply(CancellationToken cancellationToken) {
 
             ApplyTextChanges(CodeFix.GetTextChanges());
 

@@ -23,12 +23,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public override ImageMoniker IconMoniker => ImageMonikers.InsertNode;
         public override string DisplayText       => "Introduce Choice";
 
-        public override void Invoke(CancellationToken cancellationToken) {
-
-            if (!CodeFix.CanApplyFix()) {
-                return;
-            }
-            
+        protected override void Apply(CancellationToken cancellationToken) {
+          
             var choiceName = Context.DialogService.ShowInputDialog(
                 promptText    : "Name:",
                 title         : CodeFix.Name,

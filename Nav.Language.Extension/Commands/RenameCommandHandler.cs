@@ -67,7 +67,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             _textChangeService.ApplyTextChanges(
                 textView              : args.TextView, 
                 undoDescription       : renameCodeFix.Name,
-                textChangesAndSnapshot: textChangesAndSnapshot);            
+                textChangesAndSnapshot: textChangesAndSnapshot);
+
+            SemanticModelService.TryGet(args.SubjectBuffer)?.UpdateSynchronously();
         }
 
         CodeGenerationUnitAndSnapshot TryGetCodeGenerationUnitAndSnapshot(ITextBuffer textBuffer) {

@@ -58,6 +58,22 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return new String(' ', startColumn);
         }
 
+        protected string ValidateNewNodeName(string nodeName, ITaskDefinitionSymbol taskDefinitionSymbol) {
+
+            nodeName = nodeName?.Trim();
+
+            if (!SyntaxFacts.IsValidIdentifier(nodeName) || SyntaxFacts.IsKeyword(nodeName)) {
+                return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
+            }
+
+            var declaredNodeNames = GetDeclaredNodeNames(taskDefinitionSymbol);
+            if (declaredNodeNames.Contains(nodeName)) {
+                return String.Format(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared.MessageFormat, nodeName);
+            }
+
+            return null;
+        }
+
         protected HashSet<string> GetDeclaredNodeNames(ITaskDefinitionSymbol taskDefinitionSymbol) {
 
             var declaredNodeNames = new HashSet<string>();
