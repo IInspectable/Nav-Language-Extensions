@@ -4,10 +4,14 @@ using System;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Imaging.Interop;
+
+using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.CodeFixes.Rename;
-using Pharmatechnik.Nav.Language.Extension.CodeFixes;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
+using Pharmatechnik.Nav.Language.Extension.CodeFixes;
 
 #endregion
 
@@ -49,14 +53,23 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 return;
             }
 
-            // TODO renameCodeFix.Impact auswerten
+            string note         = null;
+            var noteIconMoniker = default(ImageMoniker);
+            if (renameCodeFix.Impact != CodeFixImpact.None) {
+                // TODO Text
+                note            = "Renaming this symbol might break existing code!";
+                noteIconMoniker = ImageMonikers.FromCodeFixImpact(renameCodeFix.Impact);
+            }
 
             var newSymbolName = _dialogService.ShowInputDialog(
-                promptText    : "Name:",
-                title         : renameCodeFix.Name,
-                defaultResonse: renameCodeFix.Symbol.Name,
-                iconMoniker   : ImageMonikers.FromSymbol(symbol),
-                validator     : renameCodeFix.ValidateSymbolName
+                promptText     : "Name:",
+                title          : renameCodeFix.Name,
+                defaultResonse : renameCodeFix.Symbol.Name,
+                iconMoniker    : ImageMonikers.FromSymbol(symbol),
+                validator      : renameCodeFix.ValidateSymbolName,
+                noteIconMoniker: noteIconMoniker,
+                note           : note
+                
             )?.Trim();
 
             if (String.IsNullOrEmpty(newSymbolName)) {

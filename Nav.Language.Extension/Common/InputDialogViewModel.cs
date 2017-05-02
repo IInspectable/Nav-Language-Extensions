@@ -46,23 +46,23 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         }
 
         public bool ShouldDisplayImpactText {
-            get { return !String.IsNullOrEmpty(ImpactText); }
+            get { return !String.IsNullOrEmpty(Note); }
         }
 
-        private string _impactText;
-        public string ImpactText {
-            get => _impactText;
+        private string _note;
+        public string Note {
+            get => _note;
             set {
-                if (SetProperty(ref _impactText, value)) {
+                if (SetProperty(ref _note, value)) {
                     // ReSharper disable ExplicitCallerInfoArgument
                     NotifyPropertyChanged(nameof(ShouldDisplayImpactText));
                 } }
         }
 
-        private ImageMoniker _impactMoniker;
-        public ImageMoniker ImpactMoniker {
-            get => _impactMoniker;
-            set => SetProperty(ref _impactMoniker, value);
+        private ImageMoniker _noteIconMoniker;
+        public ImageMoniker NoteIconMoniker {
+            get => _noteIconMoniker;
+            set => SetProperty(ref _noteIconMoniker, value);
         }
 
         private string _textError;
