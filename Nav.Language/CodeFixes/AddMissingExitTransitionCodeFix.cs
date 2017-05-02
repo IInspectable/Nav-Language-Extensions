@@ -25,7 +25,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
         }
 
-        public override string Name => "Add Missing Edge";
+        public override string Name          => "Add Missing Edge";
+        public override CodeFixImpact Impact => CodeFixImpact.None;
         public ITaskNodeSymbol TaskNode { get ; }
         public IConnectionPointSymbol ConnectionPoint { get; }
         public ITaskDefinitionSymbol ContainingTask => TaskNode.ContainingTask;

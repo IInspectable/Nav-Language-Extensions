@@ -48,6 +48,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 ShellUtil.ShowErrorMessage("You must rename an identifier.");
                 return;
             }
+
+            // TODO renameCodeFix.Impact auswerten
+
             var newSymbolName = _dialogService.ShowInputDialog(
                 promptText    : "Name:",
                 title         : renameCodeFix.Name,

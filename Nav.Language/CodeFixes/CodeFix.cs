@@ -2,13 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
-
     public abstract class CodeFix {
       
         protected CodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
@@ -22,10 +22,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public SyntaxTree SyntaxTree => Syntax.SyntaxTree;
 
         public abstract string Name { get; }
+        public abstract CodeFixImpact Impact { get; }
         public abstract bool CanApplyFix();
 
         [CanBeNull]
-        protected static TextChange? NewReplace(ISymbol symbol, string newName) {
+        protected static TextChange? TryRename(ISymbol symbol, string newName) {
             if (symbol == null || symbol.Name == newName) {
                 return null;
             }
@@ -35,6 +36,46 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         [CanBeNull]
         protected static TextChange? NewInsert(int position, string newText) {
             return new TextChange(TextExtent.FromBounds(position, position), newText);
+        }
+
+        [CanBeNull]
+        protected TextChange? TryRenameSource(ITransition transition, string newSourceName) {
+
+            if (transition?.Source == null) {
+                return null;
+            }
+
+            var replaceText = newSourceName;
+            // TODO Whitespace Kompensation
+
+            // TODO Make pretty
+            var oldSourceNode = transition.Source;
+            var replaceExtent = oldSourceNode.Location.Extent;
+
+            if (transition.EdgeMode != null && transition.Source.Location.EndLine == transition.EdgeMode.Location.StartLine) {
+                // Find the First non-Whitespace Token after Source Edge
+                var firstNonWSpaceToken = transition.Syntax.SyntaxTree
+                                                    .Tokens[TextExtent.FromBounds(oldSourceNode.End, transition.EdgeMode.End)]
+                                                    .SkipWhile(token => token.Type == SyntaxTokenType.Whitespace)
+                                                    .FirstOrDefault();
+
+                if (!firstNonWSpaceToken.IsMissing) {
+                    var availableSpace = oldSourceNode.Location.Length + ColumnsBetweenLocations(oldSourceNode.Location, firstNonWSpaceToken.GetLocation());
+
+                    replaceExtent = TextExtent.FromBounds(oldSourceNode.Location.Start, firstNonWSpaceToken.Start);
+
+                    var spaces = Math.Max(1, availableSpace - newSourceName.Length);
+
+                    replaceText = newSourceName + new string(' ', spaces);
+                }
+            }
+
+            return new TextChange(replaceExtent, replaceText);           
+        }
+
+        [CanBeNull]
+        protected static TextChange? TryRenameTarget(IEdge transition, string newSourceName) {
+            return TryRename(transition.Target, newSourceName);
         }
 
         protected string ComposeEdge(IEdge templateEdge, string sourceName, string edgeKeyword, string targetName) {

@@ -24,7 +24,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public override string DisplayText       => "Introduce Choice";
 
         protected override void Apply(CancellationToken cancellationToken) {
-          
+
+            // TODO CodeFix.Impact auswerten
             var choiceName = Context.DialogService.ShowInputDialog(
                 promptText    : "Name:",
                 title         : CodeFix.Name,
