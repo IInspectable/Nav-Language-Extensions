@@ -2,7 +2,7 @@
 
 using System;
 using System.ComponentModel.Composition;
-
+using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 
 #endregion
@@ -20,11 +20,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         public string ShowInputDialog(string promptText, string title = null, string defaultResonse = null, ImageMoniker iconMoniker = new ImageMoniker(), Func<string, string> validator = null) {
 
             var viewModel = new InputDialogViewModel {
-                PromptText  = promptText,
-                Title       = title,
-                Text        = defaultResonse,
-                IconMoniker = iconMoniker,
-                Validator   = validator
+                PromptText    = promptText,
+                Title         = title,
+                Text          = defaultResonse,
+                IconMoniker   = iconMoniker,
+                Validator     = validator,
+                //ImpactText    = "Renaming this symbol might break existing C# code",
+                //ImpactMoniker = KnownMonikers.StatusWarning
             };
 
             var dlg = new InputDialog(viewModel);

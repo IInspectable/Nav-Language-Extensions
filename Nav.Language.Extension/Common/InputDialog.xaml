@@ -11,10 +11,10 @@
                  xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
                  xmlns:ic="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
                  mc:Ignorable="d"                  
-                 Width="350"
-                 Height="165" 
+                 Width="400"
+                 SizeToContent="Height"
                  MinWidth="300"
-                 MinHeight="150"                  
+                     
                  HasHelpButton="False"
                  Title="{Binding Title}"
                  FocusManager.FocusedElement="{Binding ElementName=InputText}"
@@ -23,6 +23,8 @@
                  HasDialogFrame="True"
                  WindowStartupLocation="CenterOwner">
     <Window.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Thickness x:Key="LabelPadding">0, 5, 0, 2</Thickness>
         <Thickness x:Key="OkCancelButtonPadding">9,2,9,2</Thickness>
         <Thickness x:Key="TextBoxPadding">0,2,0,2</Thickness>
@@ -54,7 +56,7 @@
     </Window.Resources>
     <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -65,7 +67,12 @@
         <Grid x:Name="ContentPanel" 
               Background="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}"
               platformUi:ImageThemingUtilities.ImageBackgroundColor="{Binding ElementName=ContentPanel, Path=Background}">
-            
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -77,18 +84,32 @@
                                 Grid.Column         = "0"
                                 Width               = "32"
                                 Height              = "32"                                                            
-                                Margin              = "25, 0, 0, 0"                           
-                                VerticalAlignment   = "Center"
+                                Margin              = "25, 0, 9, 0"                           
+                                VerticalAlignment   = "Bottom"
                                 HorizontalAlignment = "Left"/>
 
-            <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="9,0,33,0">
+            <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="0, 20, 30, 0">
+                
                 <Label Padding="{StaticResource ResourceKey=LabelPadding}" Content="{Binding PromptText}"/>
                 <TextBox x:Name="InputText" 
                          Padding="{StaticResource ResourceKey=TextBoxPadding}" 
                          Validation.ErrorTemplate="{StaticResource ValidationTemplate}"
                          Text="{Binding Text, NotifyOnValidationError=True, UpdateSourceTrigger=PropertyChanged}"/>
+                               
             </StackPanel>
 
+            <DockPanel Grid.Row="1" Grid.Column="1" Margin="0, 2, 30, 0" VerticalAlignment="Top" Visibility="{Binding ShouldDisplayImpactText, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <imaging:CrispImage
+                    DockPanel.Dock      = "Left"
+                    Moniker             = "{Binding ImpactMoniker}"
+                    Width               = "16"
+                    Height              = "16"                                                            
+                    Margin              = "0, 5, 4, 0"                           
+                    VerticalAlignment   = "Top"
+                    HorizontalAlignment = "Left"/>
+                <TextBlock TextWrapping = "WrapWithOverflow" Padding="0, 5, 0, 2" Text="{Binding ImpactText}"/>
+            </DockPanel>
+            
         </Grid>
                  
         <StackPanel Grid.Row            = "1" 
