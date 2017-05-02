@@ -1,8 +1,10 @@
 #region Using Directives
 
+using System;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
+using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
@@ -14,6 +16,24 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         public static ImageMoniker ProjectNode {
             get { return KnownMonikers.CSProjectNode; }
         }
+
+        #region CodeFixImpact
+
+        public static ImageMoniker FromCodeFixImpact(CodeFixImpact impact) {
+            switch (impact) {
+                case CodeFixImpact.None:
+                    return default(ImageMoniker);
+                case CodeFixImpact.Medium:
+                    return KnownMonikers.StatusWarning;
+                case CodeFixImpact.High:
+                    // TODO ImageMoniker für CodeFixImpact.High
+                    return KnownMonikers.StatusWarning;
+                default:
+                    return default(ImageMoniker);
+            }
+        }
+
+        #endregion
 
         #region Analysis
 

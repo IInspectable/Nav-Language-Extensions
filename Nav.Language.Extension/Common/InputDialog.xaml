@@ -101,13 +101,13 @@
             <DockPanel Grid.Row="1" Grid.Column="1" Margin="0, 2, 30, 0" VerticalAlignment="Top" Visibility="{Binding ShouldDisplayImpactText, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <imaging:CrispImage
                     DockPanel.Dock      = "Left"
-                    Moniker             = "{Binding ImpactMoniker}"
+                    Moniker             = "{Binding NoteIconMoniker}"
                     Width               = "16"
                     Height              = "16"                                                            
                     Margin              = "0, 5, 4, 0"                           
                     VerticalAlignment   = "Top"
                     HorizontalAlignment = "Left"/>
-                <TextBlock TextWrapping = "WrapWithOverflow" Padding="0, 5, 0, 2" Text="{Binding ImpactText}"/>
+                <TextBlock TextWrapping = "WrapWithOverflow" Padding="0, 5, 0, 2" Text="{Binding Note}"/>
             </DockPanel>
             
         </Grid>
