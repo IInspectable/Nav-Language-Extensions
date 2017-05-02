@@ -15,10 +15,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             InitNodeAlias = initNodeAliasSymbol ?? throw new ArgumentNullException(nameof(initNodeAliasSymbol));
         }
 
-        public override string Name => "Rename Init Alias";
-        public override ISymbol Symbol => InitNodeAlias;
-        IInitNodeAliasSymbol InitNodeAlias { get; }
+        public override string Name          => "Rename Init Alias";
+        public override CodeFixImpact Impact => CodeFixImpact.None;
+        public override ISymbol Symbol       => InitNodeAlias;
         ITaskDefinitionSymbol ContainingTask => InitNodeAlias.InitNode.ContainingTask;
+        IInitNodeAliasSymbol InitNodeAlias { get; }
 
         public override bool CanApplyFix() {
             return true;
@@ -44,45 +45,17 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             if (!String.IsNullOrEmpty(validationMessage)) {
                 throw new ArgumentException(validationMessage, nameof(newAliasName));
             }
-
-            // TODO Whitespace Kompensation
-
+            
             var textChanges = new List<TextChange?>();
             // Den Init Alias
-            textChanges.Add(NewReplace(InitNodeAlias, newAliasName));
+            textChanges.Add(TryRename(InitNodeAlias, newAliasName));
 
             // Die Choice-Referenzen auf der "linken Seite"
             foreach (var transition in InitNodeAlias.InitNode.Outgoings) {
-                if (transition.Source == null) {
-                    continue;
-                }
-
-                // TODO Make pretty Selber Code wie in ChoiceSymbolRenameCodeFix!
-                var oldSourceNode = transition.Source;
-                var replaceExtent = oldSourceNode.Location.Extent;
-                var replaceText   = newAliasName;
-                if (transition.EdgeMode != null && transition.Source.Location.EndLine== transition.EdgeMode.Location.StartLine) {
-                    // Find the First non-Whitespace Token after Source Edge
-                    var firstNonWSpaceToken = transition.Syntax.SyntaxTree
-                                                        .Tokens[TextExtent.FromBounds(oldSourceNode.End, transition.EdgeMode.End)]
-                                                        .SkipWhile(token => token.Type==SyntaxTokenType.Whitespace).FirstOrDefault();
-         
-                    if (!firstNonWSpaceToken.IsMissing) {
-                        
-                        var availableSpace = oldSourceNode.Location.Length+ColumnsBetweenLocations(oldSourceNode.Location, firstNonWSpaceToken.GetLocation());
-
-                        replaceExtent = TextExtent.FromBounds(oldSourceNode.Location.Start, firstNonWSpaceToken.Start);
-
-                        var spaces = Math.Max(1, availableSpace - newAliasName.Length);
-
-                        replaceText = newAliasName + new string(' ', spaces);
-                    }
-                }
-                                
-                textChanges.Add(new TextChange(replaceExtent, replaceText));
+                var textChange = TryRenameSource(transition, newAliasName);
+                textChanges.Add(textChange);
             }
            
-
             return textChanges.OfType<TextChange>().ToList();
         }
     }

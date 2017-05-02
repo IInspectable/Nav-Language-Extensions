@@ -16,7 +16,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             NodeReference  = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }
 
-        public override string Name => "Introduce Choice";
+        public override string Name          => "Introduce Choice";
+        public override CodeFixImpact Impact => CodeFixImpact.None;
         public INodeReferenceSymbol NodeReference { get; }
         public ITaskDefinitionSymbol ContainingTask => NodeReference.Declaration?.ContainingTask;
 
@@ -72,9 +73,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             // Die Choice Deklaration: choice NeueChoice;
             textChanges.Add(NewInsert(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{EditorSettings.NewLine}"));
             // Die Node Reference wird nun umgebogen auf die choice
-            textChanges.Add(NewReplace(NodeReference, choiceName));
+            textChanges.Add(TryRename(NodeReference, choiceName));
             // Die Edge der choice ist immer '-->'
-            textChanges.Add(NewReplace(edgeMode, SyntaxFacts.GoToEdgeKeyword));
+            textChanges.Add(TryRename(edgeMode, SyntaxFacts.GoToEdgeKeyword));
             // Die neue choice Transition 
             textChanges.Add(NewInsert(nodeTransitionLine.Extent.End, $"{choiceTransition}{EditorSettings.NewLine}"));
 
