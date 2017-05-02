@@ -15,7 +15,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         public abstract ISymbol Symbol { get; }
         public abstract string ValidateSymbolName(string symbolName);
-        public abstract IEnumerable<TextChange> GetTextChanges(string newChoiceName);
+        public abstract IEnumerable<TextChange> GetTextChanges(string newSymbolName);
 
         [CanBeNull]
         public static SymbolRenameCodeFix TryFindCodeFix(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {

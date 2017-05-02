@@ -72,6 +72,7 @@
     <Compile Include="CodeFixes\CodeFix.cs" />
     <Compile Include="CodeFixes\EditorSettings.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\InitAliasSymbolRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\ChoiceSymbolRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\SymbolRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\SymbolRenameCodeFix.SymbolRenameCodeFixFinder.cs" />
