@@ -66,18 +66,18 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var nodeDeclarationLine = SyntaxTree.GetTextLineExtent(nodeSymbol.Start);
             var nodeTransitionLine  = SyntaxTree.GetTextLineExtent(NodeReference.End);
 
-            var choiceDeclaration = $"{GetIndent(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
-            var choiceTransition  = $"{GetIndent(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
+            var choiceDeclaration = $"{GetLineIndent(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
+            var choiceTransition  = $"{GetLineIndent(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
 
             var textChanges = new List<TextChange?>();
             // Die Choice Deklaration: choice NeueChoice;
-            textChanges.Add(NewInsert(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{EditorSettings.NewLine}"));
+            textChanges.Add(TryInsert(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{EditorSettings.NewLine}"));
             // Die Node Reference wird nun umgebogen auf die choice
             textChanges.Add(TryRename(NodeReference, choiceName));
             // Die Edge der choice ist immer '-->'
             textChanges.Add(TryRename(edgeMode, SyntaxFacts.GoToEdgeKeyword));
             // Die neue choice Transition 
-            textChanges.Add(NewInsert(nodeTransitionLine.Extent.End, $"{choiceTransition}{EditorSettings.NewLine}"));
+            textChanges.Add(TryInsert(nodeTransitionLine.Extent.End, $"{choiceTransition}{EditorSettings.NewLine}"));
 
             return textChanges.OfType<TextChange>().ToList();
         }

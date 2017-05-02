@@ -35,6 +35,17 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 return new InitAliasSymbolRenameCodeFix(EditorSettings, CodeGenerationUnit, initNodeAliasSymbol);
             }
 
+            public override SymbolRenameCodeFix VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
+                if (OriginatingSymbol == taskNodeSymbol || taskNodeSymbol.Alias == null) {
+                    return DefaultVisit(taskNodeSymbol);
+                }
+                return Visit(taskNodeSymbol.Alias);
+            }
+
+            public override SymbolRenameCodeFix VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
+                return new TaskNodeAliasSymbolRenameCodeFix(EditorSettings, CodeGenerationUnit, taskNodeAliasSymbol);
+            }
+
             public override SymbolRenameCodeFix VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
                 return new ChoiceSymbolRenameCodeFix(EditorSettings, CodeGenerationUnit, choiceNodeSymbol);
             }
