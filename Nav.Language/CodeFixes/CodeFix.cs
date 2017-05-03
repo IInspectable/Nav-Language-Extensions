@@ -12,8 +12,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public abstract partial class CodeFix {
 
-        protected CodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
-            EditorSettings = editorSettings ?? throw new ArgumentNullException(nameof(editorSettings));
+        protected CodeFix(CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+            EditorSettings     = editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings));
             CodeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
         }
 
