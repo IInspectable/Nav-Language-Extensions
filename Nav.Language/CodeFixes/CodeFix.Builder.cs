@@ -12,17 +12,17 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public abstract partial class CodeFix {
 
-        public static IEnumerable<CodeFix> FindCodeFixes(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
-            return FindCodeFixes<CodeFix>(symbol, editorSettings, codeGenerationUnit);
+        public static IEnumerable<CodeFix> GetCodeFixes(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
+            return GetCodeFixes<CodeFix>(symbol, editorSettings, codeGenerationUnit);
         }
 
-        public static IEnumerable<T> FindCodeFixes<T>(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) where T: CodeFix {
-            return CodeFixFinder.Find(symbol, editorSettings, codeGenerationUnit).OfType<T>();
+        public static IEnumerable<T> GetCodeFixes<T>(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) where T: CodeFix {
+            return CodeFixBuilder.Build(symbol, editorSettings, codeGenerationUnit).OfType<T>();
         }
 
-        sealed class CodeFixFinder : SymbolVisitor<IEnumerable<CodeFix>> {
+        sealed class CodeFixBuilder : SymbolVisitor<IEnumerable<CodeFix>> {
 
-            CodeFixFinder(ISymbol originatingSymbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
+            CodeFixBuilder(ISymbol originatingSymbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
                 OriginatingSymbol  = originatingSymbol;
                 EditorSettings     = editorSettings;
                 CodeGenerationUnit = codeGenerationUnit;
@@ -32,8 +32,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             EditorSettings EditorSettings { get; }
             CodeGenerationUnit CodeGenerationUnit { get; }
 
-            public static IEnumerable<CodeFix> Find(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit){
-                var finder = new CodeFixFinder(
+            public static IEnumerable<CodeFix> Build(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit){
+                var finder = new CodeFixBuilder(
                     symbol             ?? throw new ArgumentNullException(nameof(symbol)),
                     editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings)),
                     codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit))

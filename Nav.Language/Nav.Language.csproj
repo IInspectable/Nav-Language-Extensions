@@ -69,7 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
-    <Compile Include="CodeFixes\CodeFix.CodeFixFinder.cs" />
+    <Compile Include="CodeFixes\CodeFix.Builder.cs" />
     <Compile Include="CodeFixes\CodeFix.cs" />
     <Compile Include="CodeFixes\CodeFixImpact.cs" />
     <Compile Include="CodeFixes\EditorSettings.cs" />

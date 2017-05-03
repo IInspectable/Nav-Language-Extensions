@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var editorSettings = parameter.GetEditorSettings();
             var codeGenerationUnitAndSnapshot= parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit;
-            var codeFixes = parameter.Symbols.SelectMany(symbol => CodeFix.FindCodeFixes<AddMissingExitTransitionCodeFix>(symbol, editorSettings, codeGenerationUnitAndSnapshot));
+            var codeFixes = parameter.Symbols.SelectMany(symbol => CodeFix.GetCodeFixes<AddMissingExitTransitionCodeFix>(symbol, editorSettings, codeGenerationUnitAndSnapshot));
 
             var actions = codeFixes.Select(codeFix => new AddMissingExitTransitionSuggestedAction(
                 codeFix  : codeFix,
