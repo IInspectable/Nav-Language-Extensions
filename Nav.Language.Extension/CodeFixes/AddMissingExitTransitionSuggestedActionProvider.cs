@@ -20,7 +20,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var codeFixes = FindCodeFixes(parameter);
+            var editorSettings = parameter.GetEditorSettings();
+            var codeGenerationUnitAndSnapshot= parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit;
+            var codeFixes = parameter.Symbols.SelectMany(symbol => CodeFix.FindCodeFixes<AddMissingExitTransitionCodeFix>(symbol, editorSettings, codeGenerationUnitAndSnapshot));
 
             var actions = codeFixes.Select(codeFix => new AddMissingExitTransitionSuggestedAction(
                 codeFix  : codeFix,
@@ -28,26 +30,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 context  : Context));
          
             return actions;
-        }
-
-        public static IEnumerable<AddMissingExitTransitionCodeFix> FindCodeFixes(CodeFixActionsParameter parameter) {
-
-            var targetNodes = parameter.Symbols.OfType<INodeReferenceSymbol>().Where(nr => nr.Type == NodeReferenceType.Target);
-
-            foreach (var targetNode in targetNodes) {
-
-                var taskNode = targetNode.Declaration as ITaskNodeSymbol;
-                if (taskNode == null) {
-                    continue;
-                }
-
-                foreach (var missingExitConnectionPoint in taskNode.GetMissingExitTransitionConnectionPoints()) {
-                    var codeFix = new AddMissingExitTransitionCodeFix(parameter.GetEditorSettings(), parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit, targetNode, missingExitConnectionPoint);
-                    if (codeFix.CanApplyFix()) {
-                        yield return codeFix;
-                    }
-                }
-            }           
-        }
+        }       
     }
 }

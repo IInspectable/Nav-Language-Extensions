@@ -1,6 +1,9 @@
 #region Using Directives
 
+using System;
+using System.Linq;
 using System.Collections.Generic;
+
 using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Text;
 
@@ -8,18 +11,21 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    public abstract partial class SymbolRenameCodeFix: CodeFix {
+    public abstract class SymbolRenameCodeFix: CodeFix {
         
-        protected SymbolRenameCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) : base(editorSettings, codeGenerationUnit) {
+        protected SymbolRenameCodeFix(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) : base(editorSettings, codeGenerationUnit) {
+            Symbol = symbol ?? throw new ArgumentNullException(nameof(symbol));
         }
 
-        public abstract ISymbol Symbol { get; }
+        [NotNull]
+        public ISymbol Symbol { get; }
         public abstract string ValidateSymbolName(string symbolName);
         public abstract IEnumerable<TextChange> GetTextChanges(string newSymbolName);
 
         [CanBeNull]
         public static SymbolRenameCodeFix TryFindCodeFix(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
-            return SymbolRenameCodeFixFinder.Find(symbol, editorSettings, codeGenerationUnit);
+            // Es darf nie mehr als einen Rename CodeFix für ein und das selbe Symbol geben
+            return FindCodeFixes<SymbolRenameCodeFix>(symbol, editorSettings, codeGenerationUnit).SingleOrDefault();
         }
     }
 }

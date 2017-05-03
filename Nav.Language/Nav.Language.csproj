@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
+    <Compile Include="CodeFixes\CodeFix.CodeFixFinder.cs" />
     <Compile Include="CodeFixes\CodeFix.cs" />
     <Compile Include="CodeFixes\CodeFixImpact.cs" />
     <Compile Include="CodeFixes\EditorSettings.cs" />
@@ -77,7 +78,6 @@
     <Compile Include="CodeFixes\Rename\InitAliasSymbolRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\ChoiceSymbolRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\SymbolRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\SymbolRenameCodeFix.SymbolRenameCodeFixFinder.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
     <Compile Include="CodeGen\BeginWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeGenerationOptions.cs" />
