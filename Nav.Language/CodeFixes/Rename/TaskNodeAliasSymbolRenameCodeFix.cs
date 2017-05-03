@@ -11,13 +11,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class TaskNodeAliasSymbolRenameCodeFix : SymbolRenameCodeFix {
         
-        internal TaskNodeAliasSymbolRenameCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit, ITaskNodeAliasSymbol taskNodeAliasSymbol) : base(editorSettings, codeGenerationUnit) {
-            TaskNodeAlias = taskNodeAliasSymbol ?? throw new ArgumentNullException(nameof(taskNodeAliasSymbol));
+        internal TaskNodeAliasSymbolRenameCodeFix(ITaskNodeAliasSymbol taskNodeAlias, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
+            : base(taskNodeAlias, codeGenerationUnit, editorSettings) {
+            TaskNodeAlias = taskNodeAlias ?? throw new ArgumentNullException(nameof(taskNodeAlias));
         }
 
         public override string Name          => "Rename Task Alias";
         public override CodeFixImpact Impact => CodeFixImpact.Medium;
-        public override ISymbol Symbol       => TaskNodeAlias;
         ITaskDefinitionSymbol ContainingTask => TaskNodeAlias.TaskNode.ContainingTask;
         ITaskNodeAliasSymbol TaskNodeAlias { get; }
 

@@ -11,13 +11,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class ChoiceSymbolRenameCodeFix: SymbolRenameCodeFix {
         
-        internal ChoiceSymbolRenameCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit, IChoiceNodeSymbol choiceNodeSymbol) : base(editorSettings, codeGenerationUnit) {
+        internal ChoiceSymbolRenameCodeFix(IChoiceNodeSymbol choiceNodeSymbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
+            : base(choiceNodeSymbol, codeGenerationUnit, editorSettings) {
             ChoiceNodeSymbol = choiceNodeSymbol ?? throw new ArgumentNullException(nameof(choiceNodeSymbol));
         }
 
         public override string Name          => "Rename Choice";
         public override CodeFixImpact Impact => CodeFixImpact.None;
-        public override ISymbol Symbol       => ChoiceNodeSymbol; 
         ITaskDefinitionSymbol ContainingTask => ChoiceNodeSymbol.ContainingTask;
         IChoiceNodeSymbol ChoiceNodeSymbol { get; }
 

@@ -20,21 +20,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var codeFixes = FindCodeFixes(parameter);
-
+            var editorSettings = parameter.GetEditorSettings();
+            var codeGenerationUnitAndSnapshot = parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit;
+            var codeFixes = parameter.Symbols.SelectMany(symbol => CodeFix.FindCodeFixes<IntroduceChoiceCodeFix>(symbol, editorSettings, codeGenerationUnitAndSnapshot));
+            
             var actions = codeFixes.Select(codeFix => new IntroduceChoiceSuggestedAction(
                 codeFix  : codeFix,
                 parameter: parameter,
                 context  : Context));
 
             return actions;
-        }
-
-        public static IEnumerable<IntroduceChoiceCodeFix> FindCodeFixes(CodeFixActionsParameter parameter) {
-            return parameter.Symbols
-                            .OfType<INodeReferenceSymbol>()
-                            .Select(nodeReference => new IntroduceChoiceCodeFix(parameter.GetEditorSettings(), parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit, nodeReference))
-                            .Where(fix => fix.CanApplyFix());
-        }        
+        }   
     }
 }
