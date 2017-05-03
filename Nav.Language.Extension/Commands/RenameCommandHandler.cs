@@ -16,6 +16,7 @@ using Pharmatechnik.Nav.Language.Extension.CodeFixes;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
+
     [ExportCommandHandler(CommandHandlerNames.RenameCommandHandler, NavLanguageContentDefinitions.ContentType)]
     class RenameCommandHandler : ICommandHandler<RenameCommandArgs> {
 
@@ -46,9 +47,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             var editorSettings = args.TextView.GetEditorSettings();
-            var renameCodeFix  = SymbolRenameCodeFix.TryFindCodeFix(symbol, editorSettings, codeGenerationUnitAndSnapshot.CodeGenerationUnit);
+            var renameCodeFix  = RenameCodeFix.GetCodeFix(symbol, editorSettings, codeGenerationUnitAndSnapshot.CodeGenerationUnit);
 
             if (renameCodeFix == null || !renameCodeFix.CanApplyFix()) {
+                // TODO In IDialogService?
                 ShellUtil.ShowErrorMessage("You must rename an identifier.");
                 return;
             }
@@ -64,7 +66,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var newSymbolName = _dialogService.ShowInputDialog(
                 promptText     : "Name:",
                 title          : renameCodeFix.Name,
-                defaultResonse : renameCodeFix.Symbol.Name,
+                defaultResonse : renameCodeFix.ProvideDefaultName(),
                 iconMoniker    : ImageMonikers.FromSymbol(symbol),
                 validator      : renameCodeFix.ValidateSymbolName,
                 noteIconMoniker: noteIconMoniker,
