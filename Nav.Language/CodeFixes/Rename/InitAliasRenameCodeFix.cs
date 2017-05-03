@@ -32,26 +32,26 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             return ValidateNewNodeName(symbolName, ContainingTask);            
         }
         
-        public override IEnumerable<TextChange> GetTextChanges(string newAliasName) {
+        public override IEnumerable<TextChange> GetTextChanges(string newName) {
 
             if (!CanApplyFix()) {
                 throw new InvalidOperationException();
             }
 
-            newAliasName = newAliasName?.Trim()??String.Empty;
+            newName = newName?.Trim()??String.Empty;
 
-            var validationMessage = ValidateSymbolName(newAliasName);
+            var validationMessage = ValidateSymbolName(newName);
             if (!String.IsNullOrEmpty(validationMessage)) {
-                throw new ArgumentException(validationMessage, nameof(newAliasName));
+                throw new ArgumentException(validationMessage, nameof(newName));
             }
             
             var textChanges = new List<TextChange?>();
             // Den Init Alias
-            textChanges.Add(TryRename(InitNodeAlias, newAliasName));
+            textChanges.Add(TryRename(InitNodeAlias, newName));
 
             // Die Choice-Referenzen auf der "linken Seite"
             foreach (var transition in InitNodeAlias.InitNode.Outgoings) {
-                var textChange = TryRenameSource(transition, newAliasName);
+                var textChange = TryRenameSource(transition, newName);
                 textChanges.Add(textChange);
             }
            
