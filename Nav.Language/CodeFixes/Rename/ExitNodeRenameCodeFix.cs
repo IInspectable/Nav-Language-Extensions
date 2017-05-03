@@ -9,7 +9,7 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    sealed class ExitNodeRenameCodeFix : RenameCodeFix<IExitNodeSymbol> {
+    sealed class ExitNodeRenameCodeFix : RenameNodeCodeFix<IExitNodeSymbol> {
         
         internal ExitNodeRenameCodeFix(IExitNodeSymbol exitNodeSymbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
             : base(exitNodeSymbol, codeGenerationUnit, editorSettings) {
@@ -17,20 +17,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         public override string Name          => "Rename Exit";
         public override CodeFixImpact Impact => CodeFixImpact.High;
-        ITaskDefinitionSymbol ContainingTask => ExitNode.ContainingTask;
         IExitNodeSymbol ExitNode             => Symbol;
-
-        public override bool CanApplyFix() {
-            return true;
-        }
-
-        public override string ValidateSymbolName(string symbolName) {
-            // De facto kein Rename, aber OK
-            if (symbolName == ExitNode.Name) {
-                return null;
-            }
-            return ValidateNewNodeName(symbolName, ContainingTask);            
-        }
         
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
 

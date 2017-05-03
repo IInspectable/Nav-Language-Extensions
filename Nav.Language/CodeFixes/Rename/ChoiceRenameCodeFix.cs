@@ -9,7 +9,7 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    sealed class ChoiceRenameCodeFix: RenameCodeFix<IChoiceNodeSymbol> {
+    sealed class ChoiceRenameCodeFix: RenameNodeCodeFix<IChoiceNodeSymbol> {
         
         internal ChoiceRenameCodeFix(IChoiceNodeSymbol choiceNodeSymbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
             : base(choiceNodeSymbol, codeGenerationUnit, editorSettings) {
@@ -17,20 +17,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         public override string Name          => "Rename Choice";
         public override CodeFixImpact Impact => CodeFixImpact.None;
-        ITaskDefinitionSymbol ContainingTask => ChoiceNodeSymbol.ContainingTask;
         IChoiceNodeSymbol ChoiceNodeSymbol   => Symbol;
-
-        public override bool CanApplyFix() {
-            return true;
-        }
-
-        public override string ValidateSymbolName(string symbolName) {
-            // De facto kein Rename, aber OK
-            if (symbolName == ChoiceNodeSymbol.Name) {
-                return null;
-            }
-            return ValidateNewNodeName(symbolName, ContainingTask);            
-        }
         
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
 
