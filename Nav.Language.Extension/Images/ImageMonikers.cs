@@ -24,10 +24,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
                 case CodeFixImpact.None:
                     return default(ImageMoniker);
                 case CodeFixImpact.Medium:
-                    return KnownMonikers.StatusWarning;
+                    return KnownMonikers.StatusWarningOutline;
                 case CodeFixImpact.High:
-                    // TODO ImageMoniker für CodeFixImpact.High
-                    return KnownMonikers.StatusWarning;
+                    return KnownMonikers.StatusInvalidOutline;
                 default:
                     return default(ImageMoniker);
             }
