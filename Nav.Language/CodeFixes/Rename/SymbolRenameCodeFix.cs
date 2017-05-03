@@ -25,7 +25,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
         [CanBeNull]
         public static SymbolRenameCodeFix TryFindCodeFix(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
             // Es darf nie mehr als einen Rename CodeFix für ein und das selbe Symbol geben
-            return FindCodeFixes<SymbolRenameCodeFix>(symbol, editorSettings, codeGenerationUnit).SingleOrDefault();
+            return GetCodeFixes<SymbolRenameCodeFix>(symbol, editorSettings, codeGenerationUnit).SingleOrDefault();
         }
     }
 }
