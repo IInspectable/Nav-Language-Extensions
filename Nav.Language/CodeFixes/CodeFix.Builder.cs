@@ -54,7 +54,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
 
             public override IEnumerable<CodeFix> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
-                yield return new InitAliasSymbolRenameCodeFix(initNodeAliasSymbol, CodeGenerationUnit, EditorSettings);
+                yield return new InitAliasRenameCodeFix(initNodeAliasSymbol, CodeGenerationUnit, EditorSettings);
             }
 
             public override IEnumerable<CodeFix> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
@@ -66,11 +66,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
 
             public override IEnumerable<CodeFix> VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
-                yield return new TaskNodeAliasSymbolRenameCodeFix(taskNodeAliasSymbol, CodeGenerationUnit, EditorSettings);
+                yield return new TaskNodeAliasRenameCodeFix(taskNodeAliasSymbol, CodeGenerationUnit, EditorSettings);
             }
 
             public override IEnumerable<CodeFix> VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
-                yield return new ChoiceSymbolRenameCodeFix(choiceNodeSymbol, CodeGenerationUnit, EditorSettings);
+                yield return new ChoiceRenameCodeFix(choiceNodeSymbol, CodeGenerationUnit, EditorSettings);
             }
 
             public override IEnumerable<CodeFix> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
