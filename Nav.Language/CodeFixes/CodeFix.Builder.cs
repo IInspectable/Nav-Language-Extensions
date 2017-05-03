@@ -63,6 +63,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
             public override IEnumerable<CodeFix> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
                 if (OriginatingSymbol == taskNodeSymbol || taskNodeSymbol.Alias == null) {
+                    // TODO RenameTaskDeclaration?
                     return DefaultVisit(taskNodeSymbol);
                 }
 
