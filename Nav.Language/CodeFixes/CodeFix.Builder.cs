@@ -57,6 +57,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 yield return new InitAliasRenameCodeFix(initNodeAliasSymbol, CodeGenerationUnit, EditorSettings);
             }
 
+            public override IEnumerable<CodeFix> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
+                yield return new ExitNodeRenameCodeFix(exitNodeSymbol, CodeGenerationUnit, EditorSettings);
+            }
+
             public override IEnumerable<CodeFix> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
                 if (OriginatingSymbol == taskNodeSymbol || taskNodeSymbol.Alias == null) {
                     return DefaultVisit(taskNodeSymbol);
