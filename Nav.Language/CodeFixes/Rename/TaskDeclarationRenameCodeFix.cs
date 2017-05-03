@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
             symbolName = symbolName?.Trim();
 
-            if (!SyntaxFacts.IsValidIdentifier(symbolName) || SyntaxFacts.IsKeyword(symbolName)) {
+            if (!SyntaxFacts.IsValidIdentifier(symbolName)) {
                 return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
             }
 

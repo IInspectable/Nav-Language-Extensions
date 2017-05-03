@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
             nodeName = nodeName?.Trim();
 
-            if (!SyntaxFacts.IsValidIdentifier(nodeName) || SyntaxFacts.IsKeyword(nodeName)) {
+            if (!SyntaxFacts.IsValidIdentifier(nodeName)) {
                 return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
             }
 

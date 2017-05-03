@@ -135,6 +135,9 @@ namespace Pharmatechnik.Nav.Language {
             if (string.IsNullOrEmpty(value)) {
                 return false;
             }
+            if(Keywords.Contains(value)) {
+                return false;
+            }
             return value.All(IsIdentifierCharacter);
         }
 

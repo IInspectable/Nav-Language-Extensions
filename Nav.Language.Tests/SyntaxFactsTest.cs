@@ -353,6 +353,12 @@ namespace Nav.Language.Tests {
         }
 
         [Test]
+        [TestCaseSource(nameof(ExpectedKeywords))]
+        public void KeywordsIsInvalidIdentifier(string value) {
+            Assert.That(SyntaxFacts.IsValidIdentifier(value), Is.False, $"Keyword '{value}' should NOT be a valid identifier");
+        }
+
+        [Test]
         [TestCaseSource(nameof(ExpectedPunctuations))]
         public void PunctuationIsNotIdentifierCharacter(string punctuation) {
             var c = punctuation[0];

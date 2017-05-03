@@ -9,7 +9,7 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    sealed class ViewNodeRenameCodeFix : RenameCodeFix<IViewNodeSymbol> {
+    sealed class ViewNodeRenameCodeFix : RenameNodeCodeFix<IViewNodeSymbol> {
         
         internal ViewNodeRenameCodeFix(IViewNodeSymbol viewNodeSymbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
             : base(viewNodeSymbol, codeGenerationUnit, editorSettings) {
@@ -17,20 +17,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         public override string Name          => "Rename View Node";
         public override CodeFixImpact Impact => CodeFixImpact.High;
-        ITaskDefinitionSymbol ContainingTask => ViewNode.ContainingTask;
         IViewNodeSymbol ViewNode             => Symbol;
-
-        public override bool CanApplyFix() {
-            return true;
-        }
-
-        public override string ValidateSymbolName(string symbolName) {
-            // De facto kein Rename, aber OK
-            if (symbolName == ViewNode.Name) {
-                return null;
-            }
-            return ValidateNewNodeName(symbolName, ContainingTask);            
-        }
         
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
 
