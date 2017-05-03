@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
         
         public abstract string ProvideDefaultName();
         public abstract string ValidateSymbolName(string symbolName);
-        public abstract IEnumerable<TextChange> GetTextChanges(string newSymbolName);
+        public abstract IEnumerable<TextChange> GetTextChanges(string newName);
 
         [CanBeNull]
         public static RenameCodeFix GetCodeFix(ISymbol symbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {

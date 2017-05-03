@@ -77,6 +77,14 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 yield return new ChoiceRenameCodeFix(choiceNodeSymbol, CodeGenerationUnit, EditorSettings);
             }
 
+            public override IEnumerable<CodeFix> VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
+                yield return new DialogNodeRenameCodeFix(dialogNodeSymbol, CodeGenerationUnit, EditorSettings);
+            }
+
+            public override IEnumerable<CodeFix> VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
+                yield return new ViewNodeRenameCodeFix(viewNodeSymbol, CodeGenerationUnit, EditorSettings);
+            }
+
             public override IEnumerable<CodeFix> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
 
                 // Renames

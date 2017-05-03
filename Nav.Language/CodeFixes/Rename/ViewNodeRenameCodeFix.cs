@@ -9,16 +9,16 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    sealed class TaskNodeAliasRenameCodeFix : RenameCodeFix<ITaskNodeAliasSymbol> {
+    sealed class ViewNodeRenameCodeFix : RenameCodeFix<IViewNodeSymbol> {
         
-        internal TaskNodeAliasRenameCodeFix(ITaskNodeAliasSymbol taskNodeAlias, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
-            : base(taskNodeAlias, codeGenerationUnit, editorSettings) {
+        internal ViewNodeRenameCodeFix(IViewNodeSymbol viewNodeSymbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
+            : base(viewNodeSymbol, codeGenerationUnit, editorSettings) {
         }
 
-        public override string Name          => "Rename Task Alias";
-        public override CodeFixImpact Impact => CodeFixImpact.Medium;
-        ITaskDefinitionSymbol ContainingTask => TaskNodeAlias.TaskNode.ContainingTask;
-        ITaskNodeAliasSymbol TaskNodeAlias    => Symbol;
+        public override string Name          => "Rename View Node";
+        public override CodeFixImpact Impact => CodeFixImpact.High;
+        ITaskDefinitionSymbol ContainingTask => ViewNode.ContainingTask;
+        IViewNodeSymbol ViewNode             => Symbol;
 
         public override bool CanApplyFix() {
             return true;
@@ -26,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         public override string ValidateSymbolName(string symbolName) {
             // De facto kein Rename, aber OK
-            if (symbolName == TaskNodeAlias.Name) {
+            if (symbolName == ViewNode.Name) {
                 return null;
             }
             return ValidateNewNodeName(symbolName, ContainingTask);            
@@ -46,17 +46,17 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             }
             
             var textChanges = new List<TextChange?>();
-            // Den Task Alias
-            textChanges.Add(TryRename(TaskNodeAlias, newName));
+            // Die Dialog Node
+            textChanges.Add(TryRename(ViewNode, newName));
 
-            // Die Task-Referenzen auf der "linken Seite"
-            foreach (var transition in TaskNodeAlias.TaskNode.Outgoings) {
+            // Die Dialog-Referenzen auf der "linken Seite"
+            foreach (var transition in ViewNode.Outgoings) {
                 var textChange = TryRenameSource(transition, newName);
                 textChanges.Add(textChange);
             }
 
-            // Die Task-Referenzen auf der "rechten Seite"
-            foreach (var transition in TaskNodeAlias.TaskNode.Incomings) {
+            // Die Dialog-Referenzen auf der "rechten Seite"
+            foreach (var transition in ViewNode.Incomings) {
                 var textChange = TryRenameTarget(transition, newName);
                 textChanges.Add(textChange);
             }
