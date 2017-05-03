@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     public abstract class SymbolRenameCodeFix: CodeFix {
         
-        protected SymbolRenameCodeFix(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) : base(editorSettings, codeGenerationUnit) {
+        protected SymbolRenameCodeFix(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) : base(codeGenerationUnit, editorSettings) {
             Symbol = symbol ?? throw new ArgumentNullException(nameof(symbol));
         }
 

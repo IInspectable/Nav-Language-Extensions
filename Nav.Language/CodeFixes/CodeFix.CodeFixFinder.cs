@@ -82,13 +82,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                     }
                 }
 
-                yield return new IntroduceChoiceCodeFix(EditorSettings, CodeGenerationUnit, nodeReferenceSymbol);
+                yield return new IntroduceChoiceCodeFix(nodeReferenceSymbol, CodeGenerationUnit, EditorSettings);
 
                 // Add Missing Edge
                 var taskNode = nodeReferenceSymbol.Declaration as ITaskNodeSymbol;
                 if (taskNode != null) {
                     foreach (var missingExitConnectionPoint in taskNode.GetMissingExitTransitionConnectionPoints()) {
-                        yield return new AddMissingExitTransitionCodeFix(EditorSettings, CodeGenerationUnit, nodeReferenceSymbol, missingExitConnectionPoint);   
+                        yield return new AddMissingExitTransitionCodeFix(nodeReferenceSymbol, missingExitConnectionPoint, CodeGenerationUnit, EditorSettings);   
                     }
                 }                
             }

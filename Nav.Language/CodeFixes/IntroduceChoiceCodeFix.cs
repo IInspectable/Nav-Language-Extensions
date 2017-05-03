@@ -11,9 +11,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public class IntroduceChoiceCodeFix: CodeFix {
 
-        public IntroduceChoiceCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit, INodeReferenceSymbol nodeReference)
-                : base(editorSettings, codeGenerationUnit) {            
-            NodeReference  = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
+        public IntroduceChoiceCodeFix(INodeReferenceSymbol nodeReference, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
+            : base(codeGenerationUnit, editorSettings) {
+            NodeReference = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }
 
         public override string Name          => "Introduce Choice";

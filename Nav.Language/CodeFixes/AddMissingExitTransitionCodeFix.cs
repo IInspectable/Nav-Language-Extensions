@@ -11,13 +11,12 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public sealed class AddMissingExitTransitionCodeFix: CodeFix {
-        public INodeReferenceSymbol TargetNode { get; }
+        
+        public AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNode, IConnectionPointSymbol connectionPoint, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
+            : base(codeGenerationUnit, editorSettings) {
 
-        public AddMissingExitTransitionCodeFix(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit, INodeReferenceSymbol targetNode, IConnectionPointSymbol connectionPoint) 
-            : base(editorSettings, codeGenerationUnit) {
-
-            ConnectionPoint = connectionPoint ?? throw new ArgumentNullException(nameof(connectionPoint));
-            TargetNode      = targetNode ?? throw new ArgumentNullException(nameof(targetNode));
+            ConnectionPoint = connectionPoint                           ?? throw new ArgumentNullException(nameof(connectionPoint));
+            TargetNode      = targetNode                                ?? throw new ArgumentNullException(nameof(targetNode));
             TaskNode        = targetNode.Declaration as ITaskNodeSymbol ?? throw new ArgumentException(nameof(targetNode));
             
             if (TaskNode.Declaration != ConnectionPoint.TaskDeclaration) {
@@ -29,6 +28,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public override CodeFixImpact Impact => CodeFixImpact.None;
         public ITaskNodeSymbol TaskNode { get ; }
         public IConnectionPointSymbol ConnectionPoint { get; }
+        public INodeReferenceSymbol TargetNode { get; }
         public ITaskDefinitionSymbol ContainingTask => TaskNode.ContainingTask;
 
         public override bool CanApplyFix() {
