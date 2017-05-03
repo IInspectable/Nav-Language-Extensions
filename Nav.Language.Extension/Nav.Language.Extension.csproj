@@ -283,8 +283,6 @@
     <Compile Include="SemanticModelService\SemanticModelServiceDependent.cs" />
     <Compile Include="SemanticModelService\CodeGenerationUnitAndSnapshot.cs" />
     <Compile Include="SemanticModelService\SemanticModelService.cs" />
-    <None Include="Templates\ItemTemplates\Task\Class.cs.txt" />
-    <None Include="Templates\ItemTemplates\Task\Empty.cs.txt" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSourceProvider.cs" />
     <Compile Include="ThisAssembly.cs" />
@@ -306,11 +304,6 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\ItemTemplates\Task.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <None Include="Templates\ItemTemplates\Task\Task.nav" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -318,8 +311,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ActivityDiagram_32x.ico" />
-    <None Include="Templates\ItemTemplates\Task\MyTemplate.vstemplate" />
-    <None Include="Templates\ItemTemplates\Task\__TemplateIcon.ico" />
     <Content Include="Resources\ActivityDiagram_32x.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -328,7 +319,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="ZipTemplates.targets" />
     <None Include="UpdateProductVersion.targets" />
   </ItemGroup>
   <ItemGroup>
@@ -705,7 +695,6 @@
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="Additional.VsixSuppression.targets" />
   <Import Project="UpdateProductVersion.targets" />
-  <Import Project="ZipTemplates.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
