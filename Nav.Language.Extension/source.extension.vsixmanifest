@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="NavLanguageExtensions.IUnknown.6f7c79dd-948f-43d5-ab92-8cea51aeac2e" Version="3.0.34" Language="en-US" Publisher="Dipl.-Ing. Maximilian Hänel" />
+    <Identity Id="NavLanguageExtensions.IUnknown.6f7c79dd-948f-43d5-ab92-8cea51aeac2e" Version="3.0.35" Language="en-US" Publisher="Dipl.-Ing. Maximilian Hänel" />
     <DisplayName>Nav Language Extensions</DisplayName>
     <Description xml:space="preserve">Support for the Pharmatechnik Nav language like syntax highlighting and semantic analysis.</Description>
     <MoreInfo>https://github.com/IInspectable/Nav.Language.Extensions</MoreInfo>
