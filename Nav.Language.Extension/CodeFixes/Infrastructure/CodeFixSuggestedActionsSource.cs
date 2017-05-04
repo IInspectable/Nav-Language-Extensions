@@ -14,8 +14,7 @@ using Microsoft.VisualStudio.Text.Editor;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
-
-    class CodeFixSuggestedActionsSource : SemanticModelServiceDependent, ISuggestedActionsSource {
+    partial class CodeFixSuggestedActionsSource : SemanticModelServiceDependent, ISuggestedActionsSource {
 
         readonly ICodeFixActionProviderService _codeFixActionProviderService;
         readonly ITextView _textView;
@@ -125,10 +124,21 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsParameter codeFixActionsParameter, CancellationToken cancellationToken) {
 
-            var suggestedActions = _codeFixActionProviderService.GetSuggestedActions(codeFixActionsParameter, cancellationToken);
+            var prios = new[] {
+                SuggestedActionSetPriority.High,
+                SuggestedActionSetPriority.Medium,
+                SuggestedActionSetPriority.Low,
+                SuggestedActionSetPriority.None
+            };
+
+            var groupedActions   = _codeFixActionProviderService.GetSuggestedActions(codeFixActionsParameter, cancellationToken)
+                                                                .GroupBy(action => action.ApplicableToSpan)
+                                                                .OrderBy(g => g.Key, SpanLengthComparer.Default).ToList();
+            var prioIndex = 0;
             var actionSets = new List<SuggestedActionSet>();
-            foreach( var actionsInSpan in suggestedActions.GroupBy(action=> action.ApplicableToSpan)) {
-                actionSets.Add(new SuggestedActionSet(actionsInSpan, actionsInSpan.Key));
+            foreach ( var actionsInSpan in groupedActions) {
+                actionSets.Add(new SuggestedActionSet(actionsInSpan, actionsInSpan.Key, prios[prioIndex]));
+                prioIndex = Math.Min(prios.Length - 1, prioIndex + 1);
             }
 
             return actionSets.ToImmutableList();
