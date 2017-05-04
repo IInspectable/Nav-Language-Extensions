@@ -69,13 +69,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
-    <Compile Include="CodeFixes\CodeFix.Builder.cs" />
+    <Compile Include="CodeFixes\AddMissingExitTransitionCodeFixProvider.cs" />
     <Compile Include="CodeFixes\CodeFix.cs" />
     <Compile Include="CodeFixes\CodeFixImpact.cs" />
     <Compile Include="CodeFixes\EditorSettings.cs" />
+    <Compile Include="CodeFixes\IntroduceChoiceCodeFixProvider.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\DialogNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\ExitNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\RenameCodeFixProvider.cs" />
     <Compile Include="CodeFixes\Rename\RenameNodeCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\TaskDeclarationRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\TaskNodeRenameCodeFix.cs" />

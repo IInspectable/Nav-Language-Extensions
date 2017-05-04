@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -14,6 +15,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public IntroduceChoiceCodeFix(INodeReferenceSymbol nodeReference, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
             : base(codeGenerationUnit, editorSettings) {
             NodeReference = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
+        }
+
+        [CanBeNull]
+        public static IEnumerable<IntroduceChoiceCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+            return IntroduceChoiceCodeFixProvider.TryGetCodeFix(symbol, codeGenerationUnit, editorSettings);
         }
 
         public override string Name          => "Introduce Choice";
