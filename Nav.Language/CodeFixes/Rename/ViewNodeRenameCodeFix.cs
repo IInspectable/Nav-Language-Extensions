@@ -15,7 +15,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             : base(viewNodeSymbol, codeGenerationUnit, editorSettings) {
         }
 
-        public override string Name          => "Rename View Node";
+        public override string Name          => "Rename View";
         public override CodeFixImpact Impact => CodeFixImpact.High;
         IViewNodeSymbol ViewNode             => Symbol;
         

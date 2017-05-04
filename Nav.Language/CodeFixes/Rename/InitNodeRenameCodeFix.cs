@@ -9,16 +9,16 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    sealed class InitAliasRenameCodeFix : RenameCodeFix<IInitNodeAliasSymbol> {
+    sealed class InitNodeRenameCodeFix : RenameCodeFix<IInitNodeSymbol> {
         
-        internal InitAliasRenameCodeFix(IInitNodeAliasSymbol initNodeAlias, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
+        internal InitNodeRenameCodeFix(IInitNodeSymbol initNodeAlias, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
             : base(initNodeAlias, codeGenerationUnit, editorSettings) {
         }
 
-        public override string Name          => "Rename Init Alias";
+        public override string Name          => "Rename Init";
         public override CodeFixImpact Impact => CodeFixImpact.None;
-        ITaskDefinitionSymbol ContainingTask => InitNodeAlias.InitNode.ContainingTask;
-        IInitNodeAliasSymbol InitNodeAlias   => Symbol;
+        ITaskDefinitionSymbol ContainingTask => InitNode.ContainingTask;
+        IInitNodeSymbol InitNode             => Symbol;
 
         public override bool CanApplyFix() {
             return true;
@@ -26,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         public override string ValidateSymbolName(string symbolName) {
             // De facto kein Rename, aber OK
-            if (symbolName == InitNodeAlias.Name) {
+            if (symbolName == InitNode.Name) {
                 return null;
             }
             return ValidateNewNodeName(symbolName, ContainingTask);            
@@ -46,11 +46,18 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             }
             
             var textChanges = new List<TextChange?>();
-            // Den Init Alias
-            textChanges.Add(TryRename(InitNodeAlias, newName));
-
+            
+            if (InitNode.Alias != null) {
+                // Alias umbenennen
+                textChanges.Add(TryRename(InitNode.Alias, newName));
+            }
+            else {
+                // Alias hinzufügen
+                textChanges.Add(TryInsert(InitNode.Syntax.InitKeyword.End, $" {newName}"));
+            }
+            
             // Die Choice-Referenzen auf der "linken Seite"
-            foreach (var transition in InitNodeAlias.InitNode.Outgoings) {
+            foreach (var transition in InitNode.Outgoings) {
                 var textChange = TryRenameSource(transition, newName);
                 textChanges.Add(textChange);
             }

@@ -15,13 +15,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     class IntroduceChoiceSuggestedAction : CodeFixSuggestedAction<IntroduceChoiceCodeFix> {
 
         public IntroduceChoiceSuggestedAction(IntroduceChoiceCodeFix codeFix,
-                                              CodeFixActionsParameter parameter, 
-                                              CodeFixActionContext context): base(context, parameter, codeFix) {
+                                              CodeFixActionsParameter parameter,
+                                              CodeFixActionContext context)
+            : base(context, parameter, codeFix) {
         }
 
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.NodeReference);
         public override ImageMoniker IconMoniker => ImageMonikers.InsertNode;
-        public override string DisplayText       => "Introduce Choice";
+        public override string DisplayText       => CodeFix.Name;
 
         protected override void Apply(CancellationToken cancellationToken) {
 

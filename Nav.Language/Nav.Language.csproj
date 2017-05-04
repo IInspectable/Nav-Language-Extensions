@@ -78,8 +78,8 @@
     <Compile Include="CodeFixes\Rename\ExitNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\RenameNodeCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\TaskDeclarationRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\TaskNodeAliasRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\InitAliasRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\TaskNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\InitNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\ChoiceRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\RenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\ViewNodeRenameCodeFix.cs" />

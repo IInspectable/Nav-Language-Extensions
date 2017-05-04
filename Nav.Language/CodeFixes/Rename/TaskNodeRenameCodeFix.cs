@@ -9,16 +9,16 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    sealed class TaskNodeAliasRenameCodeFix : RenameCodeFix<ITaskNodeAliasSymbol> {
+    sealed class TaskNodeRenameCodeFix : RenameCodeFix<ITaskNodeSymbol> {
         
-        internal TaskNodeAliasRenameCodeFix(ITaskNodeAliasSymbol taskNodeAlias, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
-            : base(taskNodeAlias, codeGenerationUnit, editorSettings) {
+        internal TaskNodeRenameCodeFix(ITaskNodeSymbol taskNode, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
+            : base(taskNode, codeGenerationUnit, editorSettings) {
         }
 
-        public override string Name          => "Rename Task Alias";
+        public override string Name          => "Rename Task Node";
         public override CodeFixImpact Impact => CodeFixImpact.Medium;
-        ITaskDefinitionSymbol ContainingTask => TaskNodeAlias.TaskNode.ContainingTask;
-        ITaskNodeAliasSymbol TaskNodeAlias    => Symbol;
+        ITaskDefinitionSymbol ContainingTask => TaskNode.ContainingTask;
+        ITaskNodeSymbol TaskNode             => Symbol;
 
         public override bool CanApplyFix() {
             return true;
@@ -26,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         public override string ValidateSymbolName(string symbolName) {
             // De facto kein Rename, aber OK
-            if (symbolName == TaskNodeAlias.Name) {
+            if (symbolName == TaskNode.Name) {
                 return null;
             }
             return ValidateNewNodeName(symbolName, ContainingTask);            
@@ -46,17 +46,23 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             }
             
             var textChanges = new List<TextChange?>();
-            // Den Task Alias
-            textChanges.Add(TryRename(TaskNodeAlias, newName));
+
+            if (TaskNode.Alias != null) {
+                // Alias umbenennen
+                textChanges.Add(TryRename(TaskNode.Alias, newName));
+            } else {
+                // Alias hinzufügen
+                textChanges.Add(TryInsert(TaskNode.Syntax.Identifier.End, $" {newName}"));
+            }
 
             // Die Task-Referenzen auf der "linken Seite"
-            foreach (var transition in TaskNodeAlias.TaskNode.Outgoings) {
+            foreach (var transition in TaskNode.Outgoings) {
                 var textChange = TryRenameSource(transition, newName);
                 textChanges.Add(textChange);
             }
 
             // Die Task-Referenzen auf der "rechten Seite"
-            foreach (var transition in TaskNodeAlias.TaskNode.Incomings) {
+            foreach (var transition in TaskNode.Incomings) {
                 var textChange = TryRenameTarget(transition, newName);
                 textChanges.Add(textChange);
             }
