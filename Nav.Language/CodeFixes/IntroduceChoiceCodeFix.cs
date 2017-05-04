@@ -12,7 +12,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public class IntroduceChoiceCodeFix: CodeFix {
 
-        public IntroduceChoiceCodeFix(INodeReferenceSymbol nodeReference, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
+        internal IntroduceChoiceCodeFix(INodeReferenceSymbol nodeReference, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
             : base(codeGenerationUnit, editorSettings) {
             NodeReference = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }

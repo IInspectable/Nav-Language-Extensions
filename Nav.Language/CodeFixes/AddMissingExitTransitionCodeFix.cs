@@ -11,7 +11,7 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes {
     public sealed class AddMissingExitTransitionCodeFix: CodeFix {
         
-        public AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNode, IConnectionPointSymbol connectionPoint, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
+        internal AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNode, IConnectionPointSymbol connectionPoint, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
             : base(codeGenerationUnit, editorSettings) {
 
             ConnectionPoint = connectionPoint                           ?? throw new ArgumentNullException(nameof(connectionPoint));
