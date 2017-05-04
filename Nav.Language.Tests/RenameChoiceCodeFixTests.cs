@@ -261,8 +261,6 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
             var choiceNodeSymbol = FindNodeSymbol<IChoiceNodeSymbol>(orgCodeGenerationUnit, taskName, choiceName);
             ChoiceRenameCodeFix codeFix = new ChoiceRenameCodeFix(choiceNodeSymbol, orgCodeGenerationUnit, GetEditorSettings());
 
-            Assert.That(codeFix.CanApplyFix(), Is.True);
-
             var textChanges = codeFix.GetTextChanges(newChoiceName);
 
             var actual = ApplyChanges(originalSourceText, textChanges);

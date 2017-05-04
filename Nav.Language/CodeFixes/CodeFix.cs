@@ -23,7 +23,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public abstract string Name { get; }
         public abstract CodeFixImpact Impact { get; }
-        public abstract bool CanApplyFix();
         
         [CanBeNull]
         protected static TextChange? TryRename(ISymbol symbol, string newName) {

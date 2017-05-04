@@ -49,7 +49,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var editorSettings = args.TextView.GetEditorSettings();
             var renameCodeFix  = RenameCodeFix.TryGetCodeFix(symbol, codeGenerationUnitAndSnapshot.CodeGenerationUnit, editorSettings);
 
-            if (renameCodeFix == null || !renameCodeFix.CanApplyFix()) {
+            if (renameCodeFix == null) {
                 // TODO In IDialogService?
                 ShellUtil.ShowErrorMessage("You must rename an identifier.");
                 return;
