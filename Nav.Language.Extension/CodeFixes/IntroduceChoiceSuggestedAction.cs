@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             : base(context, parameter, codeFix) {
         }
 
-        public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.NodeReference);
+        public override Span? ApplicableToSpan   => GetSnapshotSpan(Parameter.OriginatingSymbol);
         public override ImageMoniker IconMoniker => ImageMonikers.InsertNode;
         public override string DisplayText       => CodeFix.Name;
 
@@ -39,6 +39,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             }
 
             ApplyTextChanges(CodeFix.GetTextChanges(choiceName));
+
+            // TODO Selection Logik?
         }          
     }
 }

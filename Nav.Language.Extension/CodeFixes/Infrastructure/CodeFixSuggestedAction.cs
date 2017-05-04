@@ -26,8 +26,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         protected CodeFixActionContext Context { get; }
         protected CodeFixActionsParameter Parameter { get; }
 
-        public virtual Span? ApplicableToSpan { get; } = null;
-
+        public abstract Span? ApplicableToSpan { get; }
         public abstract string DisplayText { get; }
         public abstract string UndoDescription { get; }
 
@@ -72,8 +71,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         protected abstract void Apply(CancellationToken cancellationToken);
 
-        protected SnapshotSpan GetSnapshotSpan(ISymbol symbol) {
-            return symbol.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
+        protected SnapshotSpan? GetSnapshotSpan(ISymbol symbol) {
+            return symbol?.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
         }
 
         protected ITextSnapshot ApplyTextChanges(IEnumerable<TextChange> textChanges) {
