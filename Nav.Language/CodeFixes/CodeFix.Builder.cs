@@ -47,14 +47,15 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
 
             public override IEnumerable<CodeFix> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
-                if (OriginatingSymbol == initNodeSymbol || initNodeSymbol.Alias == null) {
-                    return DefaultVisit(initNodeSymbol);
+                // Wenn es bereits einen Alias gibt, dann funktioniert der Rename nur auf dem Alias-Symbol
+                if (OriginatingSymbol == initNodeSymbol && initNodeSymbol.Alias != null) {
+                    yield break;
                 }
-                return Visit(initNodeSymbol.Alias);
+                yield return new InitNodeRenameCodeFix(initNodeSymbol, CodeGenerationUnit, EditorSettings);
             }
-
+            
             public override IEnumerable<CodeFix> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
-                yield return new InitAliasRenameCodeFix(initNodeAliasSymbol, CodeGenerationUnit, EditorSettings);
+                yield return new InitNodeRenameCodeFix(initNodeAliasSymbol.InitNode, CodeGenerationUnit, EditorSettings);
             }
 
             public override IEnumerable<CodeFix> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
@@ -62,16 +63,15 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
 
             public override IEnumerable<CodeFix> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
-                if (OriginatingSymbol == taskNodeSymbol || taskNodeSymbol.Alias == null) {
-                    // TODO RenameTaskDeclaration?
-                    return DefaultVisit(taskNodeSymbol);
+                // Wenn es bereits einen Alias gibt, dann funktioniert der Rename nur auf dem Alias-Symbol
+                if (OriginatingSymbol == taskNodeSymbol && taskNodeSymbol.Alias != null) {
+                    yield break;
                 }
-
-                return Visit(taskNodeSymbol.Alias);
+                yield return new TaskNodeRenameCodeFix(taskNodeSymbol, CodeGenerationUnit, EditorSettings);
             }
 
             public override IEnumerable<CodeFix> VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
-                yield return new TaskNodeAliasRenameCodeFix(taskNodeAliasSymbol, CodeGenerationUnit, EditorSettings);
+                yield return new TaskNodeRenameCodeFix(taskNodeAliasSymbol.TaskNode, CodeGenerationUnit, EditorSettings);
             }
 
             public override IEnumerable<CodeFix> VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {

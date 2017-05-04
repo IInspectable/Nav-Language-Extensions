@@ -16,9 +16,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public AddMissingExitTransitionSuggestedAction(AddMissingExitTransitionCodeFix codeFix,
                                                        CodeFixActionsParameter parameter,
-                                                       CodeFixActionContext context) : base(context, parameter, codeFix) {
+                                                       CodeFixActionContext context)
+            : base(context, parameter, codeFix) {
         }
-        
+
         public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.TargetNode);
         public override ImageMoniker IconMoniker => ImageMonikers.AddEdge;
         public override string DisplayText       => $"Add missing edge for exit '{CodeFix.ConnectionPoint.Name}'";
