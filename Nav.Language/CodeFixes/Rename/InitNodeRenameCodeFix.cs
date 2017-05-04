@@ -19,10 +19,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
         public override CodeFixImpact Impact => CodeFixImpact.None;
         ITaskDefinitionSymbol ContainingTask => InitNode.ContainingTask;
         IInitNodeSymbol InitNode             => Symbol;
-
-        public override bool CanApplyFix() {
-            return true;
-        }
+        
 
         public override string ValidateSymbolName(string symbolName) {
             // De facto kein Rename, aber OK
@@ -33,10 +30,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
         }
         
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
-
-            if (!CanApplyFix()) {
-                throw new InvalidOperationException();
-            }
 
             newName = newName?.Trim()??String.Empty;
 

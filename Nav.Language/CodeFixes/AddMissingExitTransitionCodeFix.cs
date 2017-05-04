@@ -34,7 +34,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public INodeReferenceSymbol TargetNode { get; }
         public ITaskDefinitionSymbol ContainingTask => TaskNode.ContainingTask;
 
-        public override bool CanApplyFix() {
+        internal bool CanApplyFix() {
 
             var templateEdge = GetTemplateEdge();
 

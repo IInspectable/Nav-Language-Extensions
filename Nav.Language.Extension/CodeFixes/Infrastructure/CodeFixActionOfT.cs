@@ -18,10 +18,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public override string UndoDescription => CodeFix.Name;
 
         public override void Invoke(CancellationToken cancellationToken) {
-            if (!CodeFix.CanApplyFix()) {
-                return;
-            }
-
+          
             Apply(cancellationToken);
 
             SemanticModelService.TryGet(Parameter.TextBuffer)?.UpdateSynchronously();

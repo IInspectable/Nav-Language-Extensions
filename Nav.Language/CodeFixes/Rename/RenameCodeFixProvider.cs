@@ -33,11 +33,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             );
 
             var codeFix = finder.Visit(symbol);
-            if (codeFix != null && codeFix.CanApplyFix()) {
-                return codeFix;
-            }
-
-            return null;
+            return codeFix;
         }
 
         public override RenameCodeFix VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {

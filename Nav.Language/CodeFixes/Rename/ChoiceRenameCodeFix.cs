@@ -21,10 +21,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
         
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
 
-            if (!CanApplyFix()) {
-                throw new InvalidOperationException();
-            }
-
             newName = newName?.Trim()??String.Empty;
 
             var validationMessage = ValidateSymbolName(newName);
