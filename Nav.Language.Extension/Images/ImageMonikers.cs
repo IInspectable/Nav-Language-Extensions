@@ -278,6 +278,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             get { return KnownMonikers.InsertClause; }
         }
 
+        public static ImageMoniker DeleteQuotationMarks {
+            get { return KnownMonikers.DeleteTag; }
+        }
+
         #endregion
 
         #region Helper

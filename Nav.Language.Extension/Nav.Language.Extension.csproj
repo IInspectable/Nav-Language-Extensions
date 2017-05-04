@@ -83,6 +83,8 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeFixes\RemoveUnnecessaryQuotationsSuggestedActionProvider.cs" />
+    <Compile Include="CodeFixes\RemoveUnnecessaryQuotationsSuggestedAction.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionSuggestedAction.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionContext.cs" />

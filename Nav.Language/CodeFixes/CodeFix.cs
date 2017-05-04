@@ -23,7 +23,15 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public abstract string Name { get; }
         public abstract CodeFixImpact Impact { get; }
-        
+
+        [CanBeNull]
+        protected static TextChange? TryRemove(TextExtent extent) {
+            if (extent.IsMissing) {
+                return null;
+            }
+            return new TextChange(extent, String.Empty);
+        }
+
         [CanBeNull]
         protected static TextChange? TryRename(ISymbol symbol, string newName) {
             if (symbol == null || symbol.Name == newName) {
