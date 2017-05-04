@@ -17,7 +17,7 @@
             if (symbolName == Symbol.Name) {
                 return null;
             }
-            return ValidateNewNodeName(symbolName, ContainingTask);
+            return ContainingTask.ValidateNewNodeName(symbolName);
         }
     }
 }

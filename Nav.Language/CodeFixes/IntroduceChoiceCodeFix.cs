@@ -47,7 +47,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         }
 
         public string ValidateChoiceName(string choiceName) {     
-            return ValidateNewNodeName(choiceName, ContainingTask);
+            return ContainingTask.ValidateNewNodeName(choiceName);
         }
 
         public IList<TextChange> GetTextChanges(string choiceName) {
