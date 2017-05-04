@@ -1,9 +1,9 @@
 ﻿#region Using Directives
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
+using System.Collections.Generic;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
