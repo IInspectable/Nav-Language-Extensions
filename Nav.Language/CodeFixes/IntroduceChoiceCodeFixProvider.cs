@@ -19,6 +19,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         CodeGenerationUnit CodeGenerationUnit { get; }
 
         public static IEnumerable<IntroduceChoiceCodeFix> TryGetCodeFix(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+            if (symbol == null) {
+                return Enumerable.Empty<IntroduceChoiceCodeFix>();
+            }
+
             var provider = new IntroduceChoiceCodeFixProvider(
                 editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings)),
                 codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit))
