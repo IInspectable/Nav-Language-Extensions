@@ -23,7 +23,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
         }
 
-        [CanBeNull]
         public static IEnumerable<AddMissingExitTransitionCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
             return AddMissingExitTransitionCodeFixProvider.TryGetCodeFixes(symbol, codeGenerationUnit, editorSettings);
         }

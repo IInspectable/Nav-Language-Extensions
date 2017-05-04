@@ -19,6 +19,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         CodeGenerationUnit CodeGenerationUnit { get; }
 
         public static IEnumerable<AddMissingExitTransitionCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+            if (symbol == null) {
+                return Enumerable.Empty<AddMissingExitTransitionCodeFix>();
+            }
             var provider = new AddMissingExitTransitionCodeFixProvider(
                 editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings)),
                 codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit))

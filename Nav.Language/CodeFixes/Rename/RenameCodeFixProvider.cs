@@ -22,8 +22,12 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         [CanBeNull]
         public static RenameCodeFix TryGetCodeFix(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+            if (symbol == null) {
+                return null;
+            }
+
             var finder = new RenameCodeFixProvider(
-                symbol             ?? throw new ArgumentNullException(nameof(symbol)),
+                symbol,
                 editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings)),
                 codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit))
             );

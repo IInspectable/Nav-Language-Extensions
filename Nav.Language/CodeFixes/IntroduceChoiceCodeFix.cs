@@ -17,7 +17,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             NodeReference = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }
 
-        [CanBeNull]
         public static IEnumerable<IntroduceChoiceCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
             return IntroduceChoiceCodeFixProvider.TryGetCodeFix(symbol, codeGenerationUnit, editorSettings);
         }
