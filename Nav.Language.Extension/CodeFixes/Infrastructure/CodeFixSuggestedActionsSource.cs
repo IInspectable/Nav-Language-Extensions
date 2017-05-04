@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Editor;
@@ -96,8 +96,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
 
-            var symbols    = FindSymbols(caretPoint, codeGenerationUnitAndSnapshot).ToImmutableList();
-            var parameter  = new CodeFixActionsParameter(symbols, codeGenerationUnitAndSnapshot, _textView);
+            var symbols = FindSymbols(caretPoint, codeGenerationUnitAndSnapshot).ToImmutableList();
+            var node    = FindNode(caretPoint, codeGenerationUnitAndSnapshot);
+            var parameter  = new CodeFixActionsParameter(node, symbols, codeGenerationUnitAndSnapshot, _textView);
             var actionsets = BuildSuggestedActions(parameter, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) {
@@ -111,7 +112,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             return actionsetsAndRange.SuggestedActionSets;
         }
-
+        
         SnapshotSpan ToSnapshotSpan(ITextSnapshot textSnapshot, ImmutableList<ISymbol> orderedSymbols) {
             if(orderedSymbols.Count == 0) {
                 return new SnapshotSpan(textSnapshot, 0, 0);
@@ -133,10 +134,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return actionSets.ToImmutableList();
         }
 
+        // TODO Wir arbeiten eigentlich eh immmer nur mit einem Symbol => IEnumerable eliminieren
         static IEnumerable<ISymbol> FindSymbols(SnapshotPoint caretPoint, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
+            var caretLine = caretPoint.GetContainingLine();
             var symbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position);
-            if(symbol == null && caretPoint.Position > 0) {
+            if (symbol == null && caretPoint.Position > caretLine.Start.Position) {
                 symbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position-1);
             }
 
@@ -144,6 +147,16 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 yield break;
             }
             yield return symbol;
+        }
+
+        [CanBeNull]
+        private SyntaxNode FindNode(SnapshotPoint caretPoint, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
+            var caretLine = caretPoint.GetContainingLine();
+            var token = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Syntax.SyntaxTree.Tokens.FindAtPosition(caretPoint.Position);
+            if (token.Classification == SyntaxTokenClassification.Whitespace && caretPoint.Position > caretLine.Start.Position) {
+                token = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Syntax.SyntaxTree.Tokens.FindAtPosition(caretPoint.Position-1);
+            }
+            return token.Parent;
         }
 
         sealed class SuggestedActionSetsAndRange {

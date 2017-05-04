@@ -9,7 +9,6 @@ using Pharmatechnik.Nav.Language.Text;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
-
     public sealed class AddMissingExitTransitionCodeFix: CodeFix {
         
         public AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNode, IConnectionPointSymbol connectionPoint, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
@@ -22,6 +21,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             if (TaskNode.Declaration != ConnectionPoint.TaskDeclaration) {
                 throw new ArgumentException();
             }
+        }
+
+        [CanBeNull]
+        public static IEnumerable<AddMissingExitTransitionCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+            return AddMissingExitTransitionCodeFixProvider.TryGetCodeFixes(symbol, codeGenerationUnit, editorSettings);
         }
 
         public override string Name          => "Add Missing Edge";

@@ -1,7 +1,7 @@
 #region Using Directives
 
 using System.Collections.Immutable;
-
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Pharmatechnik.Nav.Language.CodeFixes;
@@ -13,12 +13,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     class CodeFixActionsParameter {
         
-        public CodeFixActionsParameter(ImmutableList<ISymbol> symbols, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextView textView) {
+        public CodeFixActionsParameter(SyntaxNode syntaxNode, ImmutableList<ISymbol> symbols, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextView textView) {
+            SyntaxNode = syntaxNode;
+            Symbols    = symbols;
+            TextView   = textView;
             CodeGenerationUnitAndSnapshot = codeGenerationUnitAndSnapshot;
-            Symbols             = symbols;
-            TextView            = textView;
         }
-        
+
+        [CanBeNull]
+        public SyntaxNode SyntaxNode { get; }
         public CodeGenerationUnitAndSnapshot CodeGenerationUnitAndSnapshot { get; }
         public ImmutableList<ISymbol> Symbols { get; }
         public ITextView TextView { get; }
