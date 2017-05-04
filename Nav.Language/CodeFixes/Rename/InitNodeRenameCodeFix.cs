@@ -29,7 +29,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             if (symbolName == InitNode.Name) {
                 return null;
             }
-            return ValidateNewNodeName(symbolName, ContainingTask);            
+            return ContainingTask.ValidateNewNodeName(symbolName);            
         }
         
         public override IEnumerable<TextChange> GetTextChanges(string newName) {

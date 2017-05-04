@@ -1,7 +1,6 @@
 #region Using Directives
 
 using System;
-using System.Collections.Generic;
 
 using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Text;
@@ -10,7 +9,7 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
 
-    public abstract partial class CodeFix {
+    public abstract class CodeFix {
 
         protected CodeFix(CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
             EditorSettings     = editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings));
@@ -25,23 +24,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public abstract string Name { get; }
         public abstract CodeFixImpact Impact { get; }
         public abstract bool CanApplyFix();
-
-        protected string ValidateNewNodeName(string nodeName, ITaskDefinitionSymbol taskDefinitionSymbol) {
-
-            nodeName = nodeName?.Trim();
-
-            if (!SyntaxFacts.IsValidIdentifier(nodeName)) {
-                return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
-            }
-
-            var declaredNodeNames = GetDeclaredNodeNames(taskDefinitionSymbol);
-            if (declaredNodeNames.Contains(nodeName)) {
-                return String.Format(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared.MessageFormat, nodeName);
-            }
-
-            return null;
-        }
-
+        
         [CanBeNull]
         protected static TextChange? TryRename(ISymbol symbol, string newName) {
             if (symbol == null || symbol.Name == newName) {
@@ -91,22 +74,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         protected string GetLineIndent(TextLineExtent lineExtent) {
             return SyntaxTree.GetLineIndent(lineExtent, EditorSettings);
-        }
-
-        HashSet<string> GetDeclaredNodeNames(ITaskDefinitionSymbol taskDefinitionSymbol) {
-
-            var declaredNodeNames = new HashSet<string>();
-            if (taskDefinitionSymbol == null) {
-                return declaredNodeNames;
-            }
-
-            foreach (var node in taskDefinitionSymbol.NodeDeclarations) {
-                var nodeName = node.Name;
-                if (!String.IsNullOrEmpty(nodeName)) {
-                    declaredNodeNames.Add(nodeName);
-                }
-            }
-            return declaredNodeNames;
-        }
+        }        
     }
 }
