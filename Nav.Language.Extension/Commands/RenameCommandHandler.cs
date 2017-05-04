@@ -88,6 +88,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 textChangesAndSnapshot: textChangesAndSnapshot);
 
             SemanticModelService.TryGet(args.SubjectBuffer)?.UpdateSynchronously();
+
+            // TODO Selection Logik?
         }
 
         CodeGenerationUnitAndSnapshot TryGetCodeGenerationUnitAndSnapshot(ITextBuffer textBuffer) {

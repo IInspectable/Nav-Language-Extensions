@@ -15,17 +15,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     class CodeFixActionsParameter {
         
-        public CodeFixActionsParameter(SyntaxNode syntaxNode, ISymbol symbol, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextView textView) {
-            SyntaxNode = syntaxNode;
-            Symbols    = symbol;
+        public CodeFixActionsParameter(SyntaxNode originatingNode, ISymbol originatingSymbol, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextView textView) {
+            OriginatingNode = originatingNode;
+            OriginatingSymbol     = originatingSymbol;
             TextView   = textView ?? throw new ArgumentNullException(nameof(textView));
             CodeGenerationUnitAndSnapshot = codeGenerationUnitAndSnapshot ?? throw new ArgumentNullException(nameof(codeGenerationUnitAndSnapshot));
         }
 
         [CanBeNull]
-        public SyntaxNode SyntaxNode { get; }
+        public SyntaxNode OriginatingNode { get; }
         [CanBeNull]
-        public ISymbol Symbols { get; }
+        public ISymbol OriginatingSymbol { get; }
         [NotNull]
         public ITextView TextView { get; }
         [NotNull]

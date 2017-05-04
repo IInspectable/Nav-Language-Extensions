@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             : base(context, parameter, codeFix) {
         }
 
-        public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.TargetNode);
+        public override Span? ApplicableToSpan   => GetSnapshotSpan(Parameter.OriginatingSymbol);
         public override ImageMoniker IconMoniker => ImageMonikers.AddEdge;
         public override string DisplayText       => $"Add missing edge for exit '{CodeFix.ConnectionPoint.Name}'";
 
