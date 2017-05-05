@@ -11,9 +11,9 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    class RemoveUnnecessaryQuotationsSuggestedAction : CodeFixSuggestedAction<RemoveUnnecessaryQuotationsCodeFix> {
+    class RemoveSignalTriggerQuotationMarksSuggestedAction : CodeFixSuggestedAction<RemoveSignalTriggerQuotationMarksCodeFix> {
 
-        public RemoveUnnecessaryQuotationsSuggestedAction(RemoveUnnecessaryQuotationsCodeFix codeFix,
+        public RemoveSignalTriggerQuotationMarksSuggestedAction(RemoveSignalTriggerQuotationMarksCodeFix codeFix,
                                                           CodeFixActionsParameter parameter,
                                                           CodeFixActionContext context)
             : base(context, parameter, codeFix) {

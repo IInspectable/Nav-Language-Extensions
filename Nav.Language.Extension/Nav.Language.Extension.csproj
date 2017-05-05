@@ -84,8 +84,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeFixes\Infrastructure\SpanLengthComparer.cs" />
-    <Compile Include="CodeFixes\RemoveUnnecessaryQuotationsSuggestedActionProvider.cs" />
-    <Compile Include="CodeFixes\RemoveUnnecessaryQuotationsSuggestedAction.cs" />
+    <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedActionProvider.cs" />
+    <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedAction.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionSuggestedAction.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixActionContext.cs" />

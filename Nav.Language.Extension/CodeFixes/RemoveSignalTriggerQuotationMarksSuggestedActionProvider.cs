@@ -11,20 +11,20 @@ using Pharmatechnik.Nav.Language.CodeFixes;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    [ExportCodeFixActionProvider(nameof(RemoveUnnecessaryQuotationsSuggestedActionProvider))]
-    class RemoveUnnecessaryQuotationsSuggestedActionProvider : CodeFixActionProvider {
+    [ExportCodeFixActionProvider(nameof(RemoveSignalTriggerQuotationMarksSuggestedActionProvider))]
+    class RemoveSignalTriggerQuotationMarksSuggestedActionProvider : CodeFixActionProvider {
 
         [ImportingConstructor]
-        public RemoveUnnecessaryQuotationsSuggestedActionProvider(CodeFixActionContext context) : base(context) {
+        public RemoveSignalTriggerQuotationMarksSuggestedActionProvider(CodeFixActionContext context) : base(context) {
         }
 
         public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
             var editorSettings = parameter.GetEditorSettings();
             var codeGenerationUnitAndSnapshot = parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit;
-            var codeFixes = RemoveUnnecessaryQuotationsCodeFixProvider.TryGetCodeFixes(parameter.OriginatingNode, codeGenerationUnitAndSnapshot, editorSettings);
+            var codeFixes = RemoveSignalTriggerQuotationMarksCodeFixProvider.TryGetCodeFixes(parameter.OriginatingNode, codeGenerationUnitAndSnapshot, editorSettings);
 
-            var actions = codeFixes.Select(codeFix => new RemoveUnnecessaryQuotationsSuggestedAction(
+            var actions = codeFixes.Select(codeFix => new RemoveSignalTriggerQuotationMarksSuggestedAction(
                 codeFix  : codeFix,
                 parameter: parameter,
                 context  : Context));
