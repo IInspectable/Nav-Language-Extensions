@@ -84,7 +84,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedAction.cs" />
-    <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.SpanLengthComparer.cs" />
     <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.SuggestedActionSetComparer.cs" />
     <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedActionProvider.cs" />

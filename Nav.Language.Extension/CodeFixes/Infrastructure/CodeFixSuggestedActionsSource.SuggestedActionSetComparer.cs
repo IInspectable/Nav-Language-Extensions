@@ -14,19 +14,21 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         sealed class SuggestedActionSetComparer : IComparer<SuggestedActionSet> {
 
             readonly SnapshotPoint? _triggerPoint;
+            readonly SnapshotSpan   _defaultSpan;
 
-            public SuggestedActionSetComparer(SnapshotPoint? triggerPoint) {
+            public SuggestedActionSetComparer(SnapshotPoint? triggerPoint, SnapshotSpan defaultSpan) {
+                
                 _triggerPoint = triggerPoint;
+                _defaultSpan = defaultSpan;
             }
 
-            private static int Distance(Span? textSpan, SnapshotPoint? targetPoint) {
+            int Distance(Span span) {
                 // If we don't have a text span or target point we cannot calculate the distance between them
-                if(textSpan == null || targetPoint == null) {
+                if(_triggerPoint == null) {
                     return int.MaxValue;
                 }
 
-                var span = textSpan.Value;
-                var position = targetPoint.Value.Position;
+                var position = _triggerPoint.Value.Position;
 
                 if(position < span.Start) {
                     return span.Start - position;
@@ -38,13 +40,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             }
 
             public int Compare(SuggestedActionSet x, SuggestedActionSet y) {
-                if(_triggerPoint?.Position == null || x?.ApplicableToSpan == null || y?.ApplicableToSpan == null) {
-                    // Not enough data to compare, consider them equal
+                var triggerPoint = _triggerPoint;
+                if (triggerPoint == null) {
+                    // Ohne Triggerpoint kann keine Aussage getroffen werden
                     return 0;
                 }
 
-                var distanceX = Distance(x.ApplicableToSpan, _triggerPoint);
-                var distanceY = Distance(y.ApplicableToSpan, _triggerPoint);
+                var xSpan = x?.ApplicableToSpan ?? _defaultSpan.Span;
+                var ySpan = y?.ApplicableToSpan ?? _defaultSpan.Span;
+
+                var distanceX = Distance(xSpan);
+                var distanceY = Distance(ySpan);
 
                 if(distanceX != 0 || distanceY != 0) {
                     return distanceX.CompareTo(distanceY);
@@ -52,18 +58,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
                 // This is the case when both actions sets' spans contain the trigger point.
                 // Now we compare first by start position then by end position. 
-                // ReSharper disable once PossibleInvalidOperationException Kann nicht null sein Wegen Distance Aufruf
-                var targetPosition = _triggerPoint.Value.Position;
+                var triggerPosition = triggerPoint.Value.Position;
 
-                var distanceToStartX = targetPosition - x.ApplicableToSpan.Value.Start;
-                var distanceToStartY = targetPosition - y.ApplicableToSpan.Value.Start;
+                var distanceToStartX = triggerPosition - xSpan.Start;
+                var distanceToStartY = triggerPosition - ySpan.Start;
 
                 if(distanceToStartX != distanceToStartY) {
                     return distanceToStartX.CompareTo(distanceToStartY);
                 }
 
-                var distanceToEndX = x.ApplicableToSpan.Value.End - targetPosition;
-                var distanceToEndY = y.ApplicableToSpan.Value.End - targetPosition;
+                var distanceToEndX = xSpan.End - triggerPosition;
+                var distanceToEndY = ySpan.End - triggerPosition;
 
                 return distanceToEndX.CompareTo(distanceToEndY);
             }
