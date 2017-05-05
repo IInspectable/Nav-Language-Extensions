@@ -39,17 +39,57 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var caretPoint = _textView.GetCaretPoint();
             var cachedActionSets = _cachedSuggestedActionSets;
-            IEnumerable<SuggestedActionSet> suggestedActionSets;
+            IEnumerable<CodeFixSuggestedAction> suggestedActionSets;
             if(IsCacheValid(cachedActionSets, range)) {                
                 suggestedActionSets = cachedActionSets.SuggestedActionSets;
             } else {
                 suggestedActionSets = BuildSuggestedActions(range, cancellationToken);
             }
 
-            // TODO Sortierung funktioniert nicht...
-            var orderedSuggestionSets= suggestedActionSets.OrderBy(s => s, new SuggestedActionSetComparer(caretPoint));
+            // Nach Span Gruppieren
+            var groupedActions = suggestedActionSets.GroupBy(action => action.ApplicableToSpan);
+            var suggestedActionSet = new List<SuggestedActionSet>();
+            foreach (var actionsInSpan in groupedActions) {
+                suggestedActionSet.Add(new SuggestedActionSet(actionsInSpan, applicableToSpan: actionsInSpan.Key ?? range));
+            }
+            
+            // Sortierung nach Nähe zum Caret Point
+            var orderedSuggestionSets = suggestedActionSet.OrderBy(s => s, new SuggestedActionSetComparer(caretPoint, range));
+            // Doppelte Actions entfernen. Es bleibt nur die zum Caret nächste Action bestehen.
+            var filteredSets = FilterDuplicateTitles(orderedSuggestionSets);
 
-            return orderedSuggestionSets;
+            return filteredSets;
+        }
+
+        IEnumerable<SuggestedActionSet> FilterDuplicateTitles(IEnumerable<SuggestedActionSet> actionSets) {
+
+            var result = new List<SuggestedActionSet>();
+
+            var seenTitles = new HashSet<string>();
+
+            foreach (var set in actionSets) {
+                var filteredSet = FilterDuplicateTitles(set, seenTitles);
+                if (filteredSet != null) {
+                    result.Add(filteredSet);
+                }
+            }
+
+            return result.ToImmutableArray();
+        }
+
+        SuggestedActionSet FilterDuplicateTitles(SuggestedActionSet actionSet, HashSet<string> seenTitles) {
+
+            var actions = new List<ISuggestedAction>();
+
+            foreach(var action in actionSet.Actions) {
+                if (seenTitles.Add(action.DisplayText)) {
+                    actions.Add(action);
+                }
+            }
+
+            return actions.Count == 0
+                ? null
+                : new SuggestedActionSet(actions, actionSet.Title, actionSet.Priority, actionSet.ApplicableToSpan);
         }
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
@@ -75,19 +115,19 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             SuggestedActionsChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(SnapshotSpan range, CancellationToken cancellationToken) {
+        protected ImmutableList<CodeFixSuggestedAction> BuildSuggestedActions(SnapshotSpan range, CancellationToken cancellationToken) {
 
             var codeGenerationUnitAndSnapshot = SemanticModelService?.CodeGenerationUnitAndSnapshot;
             if (codeGenerationUnitAndSnapshot == null || !codeGenerationUnitAndSnapshot.IsCurrent(range.Snapshot)) {
                 _cachedSuggestedActionSets = null;
-                return ImmutableList<SuggestedActionSet>.Empty;
+                return ImmutableList<CodeFixSuggestedAction>.Empty;
             }
             
             var parameter  = new CodeFixActionsParameter(range, codeGenerationUnitAndSnapshot, _textView);
-            var actionsets = BuildSuggestedActions(parameter, cancellationToken);
+            var actionsets = _codeFixActionProviderService.GetSuggestedActions(parameter, cancellationToken).ToImmutableList();
 
             if (cancellationToken.IsCancellationRequested || actionsets.Count==0) {
-                return ImmutableList<SuggestedActionSet>.Empty;
+                return ImmutableList<CodeFixSuggestedAction>.Empty;
             }
 
             var actionsetsAndRange = new SuggestedActionSetsAndRange(range, actionsets);
@@ -96,28 +136,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             return actionsetsAndRange.SuggestedActionSets;
         }
-        
-        protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsParameter codeFixActionsParameter, CancellationToken cancellationToken) {
-
-            // TODO: Mach diese Gruppierung Sinn?
-            var groupedActions   = _codeFixActionProviderService.GetSuggestedActions(codeFixActionsParameter, cancellationToken)
-                                                                .GroupBy(action => action.ApplicableToSpan);
-            var actionSets = new List<SuggestedActionSet>();
-            foreach ( var actionsInSpan in groupedActions) {
-                actionSets.Add(new SuggestedActionSet(actionsInSpan, applicableToSpan: actionsInSpan.Key/*, prios[prioIndex]*/));
-            }
-
-            return actionSets.ToImmutableList();
-        }
-       
+               
         sealed class SuggestedActionSetsAndRange {
-            public SuggestedActionSetsAndRange(SnapshotSpan range, ImmutableList<SuggestedActionSet> suggestedActionSets) {
+            public SuggestedActionSetsAndRange(SnapshotSpan range, ImmutableList<CodeFixSuggestedAction> suggestedActionSets) {
                 Range = range;
                 SuggestedActionSets = suggestedActionSets;
             }
 
             public SnapshotSpan Range { get; }
-            public ImmutableList<SuggestedActionSet> SuggestedActionSets { get; }
+            public ImmutableList<CodeFixSuggestedAction> SuggestedActionSets { get; }
         }
     }
 }
