@@ -6,10 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Editor;
+using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
@@ -94,32 +94,30 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 _cachedSuggestedActionSets = null;
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
-
-            var symbol     = TryFindSymbol(caretPoint, codeGenerationUnitAndSnapshot);
-            var node       = TryFindNode(caretPoint, codeGenerationUnitAndSnapshot);
-            var parameter  = new CodeFixActionsParameter(caretPoint, node, symbol, codeGenerationUnitAndSnapshot, _textView);
+            
+            var parameter  = new CodeFixActionsParameter(caretPoint, _textView, codeGenerationUnitAndSnapshot);
             var actionsets = BuildSuggestedActions(parameter, cancellationToken);
 
-            if (cancellationToken.IsCancellationRequested) {
+            if (cancellationToken.IsCancellationRequested || actionsets.Count==0) {
                 return ImmutableList<SuggestedActionSet>.Empty;
             }
 
-            var symbolRange        =  ToSnapshotSpan(caretPoint.Snapshot, symbol);
+            var symbolRange = GetRange(parameter, codeGenerationUnitAndSnapshot);
             var actionsetsAndRange = new SuggestedActionSetsAndRange(symbolRange, actionsets);
 
             _cachedSuggestedActionSets = actionsetsAndRange;
 
             return actionsetsAndRange.SuggestedActionSets;
         }
-        
-        SnapshotSpan ToSnapshotSpan(ITextSnapshot textSnapshot, ISymbol symbol) {
-            if(symbol == null) {
-                return new SnapshotSpan(textSnapshot, 0, 0);
-            }
-            var start = symbol.Start;
-            var end   = symbol.End;
 
-            return new SnapshotSpan(textSnapshot, start, end - start);
+        // TODO Passt das so?
+        private static SnapshotSpan GetRange(CodeFixActionsParameter parameter, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
+            var symbol = parameter.CodeFixContext.TryFindSymbolAtPosition();
+            if (symbol == null) {
+                return new SnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot, 0, 0);
+            } else {
+                return symbol.GetSnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot);
+            }
         }
 
         protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsParameter codeFixActionsParameter, CancellationToken cancellationToken) {
@@ -143,28 +141,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             return actionSets.ToImmutableList();
         }
-
-        [CanBeNull]
-        static ISymbol TryFindSymbol(SnapshotPoint caretPoint, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
-
-            var caretLine = caretPoint.GetContainingLine();
-            var symbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position);
-            if (symbol == null && caretPoint.Position > caretLine.Start.Position) {
-                symbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(caretPoint.Position-1);
-            }
-            return symbol;
-        }
-
-        [CanBeNull]
-        private SyntaxNode TryFindNode(SnapshotPoint caretPoint, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
-            var caretLine = caretPoint.GetContainingLine();
-            var token = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Syntax.SyntaxTree.Tokens.FindAtPosition(caretPoint.Position);
-            if (token.Classification == SyntaxTokenClassification.Whitespace && caretPoint.Position > caretLine.Start.Position) {
-                token = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Syntax.SyntaxTree.Tokens.FindAtPosition(caretPoint.Position-1);
-            }
-            return token.Parent;
-        }
-
+       
         sealed class SuggestedActionSetsAndRange {
             public SuggestedActionSetsAndRange(SnapshotSpan range, ImmutableList<SuggestedActionSet> suggestedActionSets) {
                 Range = range;

@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var codeFixes = RemoveSignalTriggerQuotationMarksCodeFixProvider.SuggestCodeFixes(parameter.GetCodeFixContext(), cancellationToken);
+            var codeFixes = RemoveSignalTriggerQuotationMarksCodeFixProvider.SuggestCodeFixes(parameter.CodeFixContext, cancellationToken);
 
             var actions = codeFixes.Select(codeFix => new RemoveSignalTriggerQuotationMarksSuggestedAction(
                 codeFix  : codeFix,

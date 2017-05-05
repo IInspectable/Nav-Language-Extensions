@@ -75,8 +75,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return symbol?.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
         }
 
+        protected SnapshotSpan? GetSnapshotSpan(TextLineExtent lineExtent) {
+            return lineExtent.Extent.ToSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
+        }
+
         protected SnapshotSpan? GetSnapshotSpan(SyntaxNode node) {
-            return node.GetLocation()?.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
+            return node?.GetLocation()?.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
         }
 
         protected ITextSnapshot ApplyTextChanges(IEnumerable<TextChange> textChanges) {
