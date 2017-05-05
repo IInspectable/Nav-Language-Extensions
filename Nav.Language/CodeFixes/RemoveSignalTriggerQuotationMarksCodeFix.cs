@@ -10,14 +10,14 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
 
-    public class RemoveUnnecessaryQuotationsCodeFix : CodeFix {
+    public class RemoveSignalTriggerQuotationMarksCodeFix : CodeFix {
 
-        internal RemoveUnnecessaryQuotationsCodeFix(TransitionDefinitionBlockSyntax transitionDefinitionBlock, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
+        internal RemoveSignalTriggerQuotationMarksCodeFix(TransitionDefinitionBlockSyntax transitionDefinitionBlock, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
             : base(codeGenerationUnit, editorSettings) {
             TransitionDefinitionBlock = transitionDefinitionBlock ?? throw new ArgumentNullException(nameof(transitionDefinitionBlock));
         }
         
-        public override string Name          => "Remove Unnecessary Quotation Marks";
+        public override string Name          => "Remove Quotation Marks from Trigger Names";
         public override CodeFixImpact Impact => CodeFixImpact.None;
         public TransitionDefinitionBlockSyntax TransitionDefinitionBlock { get; }
        
