@@ -24,9 +24,9 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
                 return Enumerable.Empty<ISymbol>();
             }
 
-            var referenceRoot = ReferenceRootFinder.FindRoot(symbol);
+            var rootSymbol = ReferenceRootFinder.FindRoot(symbol);
             var finder = new ReferenceFinder(advancedOptions);
-            return finder.Visit(referenceRoot);
+            return finder.Visit(rootSymbol);
         }
 
         protected override IEnumerable<ISymbol> DefaultVisit(ISymbol symbol) {
@@ -129,8 +129,15 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
             yield return taskDeclarationSymbol;
             
-            foreach (var reference in taskDeclarationSymbol.References.SelectMany(VisitTaskNodeSymbol)) {
-                yield return reference;
+            foreach (var taskNode in taskDeclarationSymbol.References) {
+                // Wenn der alias null ist, dann steigen wir direkt runter bis auf Node Reference Ebene
+                if (taskNode.Alias == null) {
+                    foreach (var symbol in VisitTaskNodeSymbol(taskNode)) {
+                        yield return symbol;
+                    }
+                } else {
+                    yield return taskNode;
+                }                
             }
         }
 
