@@ -8,35 +8,39 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
 
-    sealed class IntroduceChoiceCodeFixProvider : SymbolVisitor<IEnumerable<IntroduceChoiceCodeFix>> {
-
-        IntroduceChoiceCodeFixProvider(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
-            EditorSettings = editorSettings;
-            CodeGenerationUnit = codeGenerationUnit;
-        }
-
-        EditorSettings EditorSettings { get; }
-        CodeGenerationUnit CodeGenerationUnit { get; }
-
-        public static IEnumerable<IntroduceChoiceCodeFix> TryGetCodeFix(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+    public static class IntroduceChoiceCodeFixProvider {
+        
+        public static IEnumerable<IntroduceChoiceCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
             if (symbol == null) {
                 return Enumerable.Empty<IntroduceChoiceCodeFix>();
             }
 
-            var provider = new IntroduceChoiceCodeFixProvider(
-                editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings)),
+            var provider = new Visitor(
+                editorSettings ?? throw new ArgumentNullException(nameof(editorSettings)),
                 codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit))
             );
 
             return provider.Visit(symbol).Where(cf => cf.CanApplyFix());
         }
 
-        protected override IEnumerable<IntroduceChoiceCodeFix> DefaultVisit(ISymbol symbol) {
-            yield break;
-        }
+        sealed class Visitor : SymbolVisitor<IEnumerable<IntroduceChoiceCodeFix>> {
 
-        public override IEnumerable<IntroduceChoiceCodeFix> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
-            yield return new IntroduceChoiceCodeFix(nodeReferenceSymbol, CodeGenerationUnit, EditorSettings);
+            public Visitor(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
+                EditorSettings     = editorSettings;
+                CodeGenerationUnit = codeGenerationUnit;
+            }
+
+            EditorSettings EditorSettings { get; }
+            CodeGenerationUnit CodeGenerationUnit { get; }
+            
+            protected override IEnumerable<IntroduceChoiceCodeFix> DefaultVisit(ISymbol symbol) {
+                yield break;
+            }
+
+            public override IEnumerable<IntroduceChoiceCodeFix> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
+                yield return new IntroduceChoiceCodeFix(nodeReferenceSymbol, CodeGenerationUnit, EditorSettings);
+            }
         }
     }
+
 }

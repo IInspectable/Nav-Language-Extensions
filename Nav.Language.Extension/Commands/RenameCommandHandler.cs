@@ -47,7 +47,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             var editorSettings = args.TextView.GetEditorSettings();
-            var renameCodeFix  = RenameCodeFix.TryGetCodeFix(symbol, codeGenerationUnitAndSnapshot.CodeGenerationUnit, editorSettings);
+            var renameCodeFix  = RenameCodeFixProvider.TryGetCodeFix(symbol, codeGenerationUnitAndSnapshot.CodeGenerationUnit, editorSettings);
 
             if (renameCodeFix == null) {
                 // TODO In IDialogService?
