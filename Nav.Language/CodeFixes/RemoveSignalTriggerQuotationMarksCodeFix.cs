@@ -17,8 +17,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             TransitionDefinitionBlock = transitionDefinitionBlock ?? throw new ArgumentNullException(nameof(transitionDefinitionBlock));
         }
         
-        public override string Name          => "Remove Quotation Marks from Trigger Names";
-        public override CodeFixImpact Impact => CodeFixImpact.None;
+        public override string Name              => "Remove Quotation Marks from Trigger Names";
+        public override CodeFixImpact Impact     => CodeFixImpact.None;
+        public override TextExtent? ApplicableTo => null;
         public TransitionDefinitionBlockSyntax TransitionDefinitionBlock { get; }
        
         internal bool CanApplyFix() {

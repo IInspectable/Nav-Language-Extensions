@@ -2,6 +2,7 @@
 
 using System.Linq;
 using System.Collections.Generic;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -15,6 +16,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public override string Name => "Add missing ';' on Include Directives";
         public override CodeFixImpact Impact => CodeFixImpact.None;
+        // TODO
+        public override TextExtent? ApplicableTo => null;
 
         internal bool CanApplyFix() {
             return GetCanditates().Any();

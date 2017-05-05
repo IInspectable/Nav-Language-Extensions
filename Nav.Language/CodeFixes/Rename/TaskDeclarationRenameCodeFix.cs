@@ -11,8 +11,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class TaskDeclarationRenameCodeFix : RenameCodeFix<ITaskDeclarationSymbol> {
         
-        internal TaskDeclarationRenameCodeFix(ITaskDeclarationSymbol taskDeclarationSymbol, CodeFixContext context) 
-            : base(taskDeclarationSymbol, context) {
+        internal TaskDeclarationRenameCodeFix(ITaskDeclarationSymbol taskDeclarationSymbol, ISymbol originatingSymbol, CodeFixContext context) 
+            : base(taskDeclarationSymbol, originatingSymbol, context) {
         }
 
         public override string Name            => "Rename Task";

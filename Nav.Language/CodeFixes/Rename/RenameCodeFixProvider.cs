@@ -32,15 +32,15 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 if (OriginatingSymbol == initNodeSymbol && initNodeSymbol.Alias != null) {
                     return DefaultVisit(initNodeSymbol);
                 }
-                return new InitNodeRenameCodeFix(initNodeSymbol, Context);
+                return new InitNodeRenameCodeFix(initNodeSymbol, OriginatingSymbol, Context);
             }
 
             public override RenameCodeFix VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
-                return new InitNodeRenameCodeFix(initNodeAliasSymbol.InitNode, Context);
+                return new InitNodeRenameCodeFix(initNodeAliasSymbol.InitNode, OriginatingSymbol, Context);
             }
 
             public override RenameCodeFix VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
-                return new ExitNodeRenameCodeFix(exitNodeSymbol, Context);
+                return new ExitNodeRenameCodeFix(exitNodeSymbol, OriginatingSymbol, Context);
             }
 
             public override RenameCodeFix VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
@@ -48,27 +48,27 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 if (OriginatingSymbol == taskNodeSymbol && taskNodeSymbol.Alias != null) {
                     return DefaultVisit(taskNodeSymbol);
                 }
-                return new TaskNodeRenameCodeFix(taskNodeSymbol, Context);
+                return new TaskNodeRenameCodeFix(taskNodeSymbol, OriginatingSymbol, Context);
             }
 
             public override RenameCodeFix VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
-                return new TaskNodeRenameCodeFix(taskNodeAliasSymbol.TaskNode, Context);
+                return new TaskNodeRenameCodeFix(taskNodeAliasSymbol.TaskNode, OriginatingSymbol, Context);
             }
 
             public override RenameCodeFix VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
-                return new ChoiceRenameCodeFix(choiceNodeSymbol, Context);
+                return new ChoiceRenameCodeFix(choiceNodeSymbol, OriginatingSymbol, Context);
             }
 
             public override RenameCodeFix VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
-                return new DialogNodeRenameCodeFix(dialogNodeSymbol, Context);
+                return new DialogNodeRenameCodeFix(dialogNodeSymbol, OriginatingSymbol, Context);
             }
 
             public override RenameCodeFix VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
-                return new ViewNodeRenameCodeFix(viewNodeSymbol, Context);
+                return new ViewNodeRenameCodeFix(viewNodeSymbol, OriginatingSymbol, Context);
             }
 
             public override RenameCodeFix VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
-                return new TaskDeclarationRenameCodeFix(taskDeclarationSymbol, Context);
+                return new TaskDeclarationRenameCodeFix(taskDeclarationSymbol, OriginatingSymbol, Context);
             }
 
             public override RenameCodeFix VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {

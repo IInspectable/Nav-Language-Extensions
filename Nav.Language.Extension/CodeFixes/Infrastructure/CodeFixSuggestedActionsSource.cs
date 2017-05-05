@@ -109,7 +109,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var prioIndex = 0;
             var actionSets = new List<SuggestedActionSet>();
             foreach ( var actionsInSpan in groupedActions) {
-                actionSets.Add(new SuggestedActionSet(actionsInSpan, actionsInSpan.Key/*, prios[prioIndex]*/));
+                actionSets.Add(new SuggestedActionSet(actionsInSpan, applicableToSpan: actionsInSpan.Key/*, prios[prioIndex]*/));
                 prioIndex = Math.Min(prios.Length - 1, prioIndex + 1);
             }
 
