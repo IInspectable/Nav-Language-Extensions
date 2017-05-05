@@ -37,15 +37,19 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
 
-            var cachedActionSets = _cachedSuggestedActionSets;
             var caretPoint = _textView.GetCaretPoint();
-            // TODO Caching ist schlecht, da wir je nach CaretPosition sortieren - oder wir sortieren die Actionsets erst hier
-            if (IsCacheValid(cachedActionSets, range)) {
-                // TODO Sortierung funktioniert nicht...
-                return cachedActionSets.SuggestedActionSets.OrderBy(s=>s, new SuggestedActionSetComparer(caretPoint));
+            var cachedActionSets = _cachedSuggestedActionSets;
+            IEnumerable<SuggestedActionSet> suggestedActionSets;
+            if(IsCacheValid(cachedActionSets, range)) {                
+                suggestedActionSets = cachedActionSets.SuggestedActionSets;
+            } else {
+                suggestedActionSets = BuildSuggestedActions(range, cancellationToken);
             }
 
-            return BuildSuggestedActions(range, cancellationToken);
+            // TODO Sortierung funktioniert nicht...
+            var orderedSuggestionSets= suggestedActionSets.OrderBy(s => s, new SuggestedActionSetComparer(caretPoint));
+
+            return orderedSuggestionSets;
         }
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
@@ -95,22 +99,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         
         protected ImmutableList<SuggestedActionSet> BuildSuggestedActions(CodeFixActionsParameter codeFixActionsParameter, CancellationToken cancellationToken) {
 
-            var prios = new[] {
-                SuggestedActionSetPriority.High,
-                SuggestedActionSetPriority.Medium,
-                SuggestedActionSetPriority.Low,
-                SuggestedActionSetPriority.None
-            };
-
-            // TODO Sortierung je nach Caret Position! Siehe Roslyn SuggestedActionSetComparer?
+            // TODO: Mach diese Gruppierung Sinn?
             var groupedActions   = _codeFixActionProviderService.GetSuggestedActions(codeFixActionsParameter, cancellationToken)
-                                                                .GroupBy(action => action.ApplicableToSpan)
-                                                                .OrderBy(g => g.Key, SpanLengthComparer.Default).ToList();
-            var prioIndex = 0;
+                                                                .GroupBy(action => action.ApplicableToSpan);
             var actionSets = new List<SuggestedActionSet>();
             foreach ( var actionsInSpan in groupedActions) {
                 actionSets.Add(new SuggestedActionSet(actionsInSpan, applicableToSpan: actionsInSpan.Key/*, prios[prioIndex]*/));
-                prioIndex = Math.Min(prios.Length - 1, prioIndex + 1);
             }
 
             return actionSets.ToImmutableList();
