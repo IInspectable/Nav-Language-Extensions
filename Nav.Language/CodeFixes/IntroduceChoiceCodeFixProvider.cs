@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 #endregion
 
@@ -10,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public static class IntroduceChoiceCodeFixProvider {
         
-        public static IEnumerable<IntroduceChoiceCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+        public static IEnumerable<IntroduceChoiceCodeFix> SuggestCodeFixes([CanBeNull] ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
             if (symbol == null) {
                 return Enumerable.Empty<IntroduceChoiceCodeFix>();
             }

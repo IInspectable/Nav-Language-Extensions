@@ -11,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
     public static class RenameCodeFixProvider {
 
         [CanBeNull]
-        public static RenameCodeFix TryGetCodeFix(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+        public static RenameCodeFix TryGetCodeFix([CanBeNull] ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
             if (symbol == null) {
                 return null;
             }
