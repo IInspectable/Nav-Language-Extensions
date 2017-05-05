@@ -7,8 +7,8 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
 
-    sealed class RemoveUnnecessaryQuotationsCodeFixProvider {
-
+    public sealed class RemoveUnnecessaryQuotationsCodeFixProvider {
+        
         public static IEnumerable<RemoveUnnecessaryQuotationsCodeFix> TryGetCodeFixes(SyntaxNode syntaxNode, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
 
             var transitionDefinitionBlock = syntaxNode.AncestorsAndSelf().OfType<TransitionDefinitionBlockSyntax>().FirstOrDefault();
@@ -22,5 +22,4 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
         }
     }
-
 }

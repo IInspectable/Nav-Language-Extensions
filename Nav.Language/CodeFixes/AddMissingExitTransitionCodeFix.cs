@@ -23,10 +23,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
         }
 
-        public static IEnumerable<AddMissingExitTransitionCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
-            return AddMissingExitTransitionCodeFixProvider.TryGetCodeFixes(symbol, codeGenerationUnit, editorSettings);
-        }
-
         public override string Name          => "Add Missing Edge";
         public override CodeFixImpact Impact => CodeFixImpact.None;
         public ITaskNodeSymbol TaskNode { get ; }

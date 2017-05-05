@@ -17,10 +17,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             NodeReference = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }
 
-        public static IEnumerable<IntroduceChoiceCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
-            return IntroduceChoiceCodeFixProvider.TryGetCodeFix(symbol, codeGenerationUnit, editorSettings);
-        }
-
+       
         public override string Name          => "Introduce Choice";
         public override CodeFixImpact Impact => CodeFixImpact.None;
         public INodeReferenceSymbol NodeReference { get; }
@@ -91,6 +88,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             
             var offset = ColumnsBetweenKeywordAndIdentifier(sampleNode, newKeyword: SyntaxFacts.ChoiceKeyword);
             return new String(' ', offset);
-        }       
+        }
     }
 }

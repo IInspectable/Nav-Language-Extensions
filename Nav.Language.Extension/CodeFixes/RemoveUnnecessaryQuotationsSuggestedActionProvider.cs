@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var editorSettings = parameter.GetEditorSettings();
             var codeGenerationUnitAndSnapshot = parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit;
-            var codeFixes = RemoveUnnecessaryQuotationsCodeFix.TryGetCodeFixes(parameter.OriginatingNode, codeGenerationUnitAndSnapshot, editorSettings);
+            var codeFixes = RemoveUnnecessaryQuotationsCodeFixProvider.TryGetCodeFixes(parameter.OriginatingNode, codeGenerationUnitAndSnapshot, editorSettings);
 
             var actions = codeFixes.Select(codeFix => new RemoveUnnecessaryQuotationsSuggestedAction(
                 codeFix  : codeFix,

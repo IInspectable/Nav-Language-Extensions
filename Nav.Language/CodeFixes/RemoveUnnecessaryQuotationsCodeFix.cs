@@ -16,11 +16,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             : base(codeGenerationUnit, editorSettings) {
             TransitionDefinitionBlock = transitionDefinitionBlock ?? throw new ArgumentNullException(nameof(transitionDefinitionBlock));
         }
-
-        public static IEnumerable<RemoveUnnecessaryQuotationsCodeFix> TryGetCodeFixes(SyntaxNode syntaxNode, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
-            return RemoveUnnecessaryQuotationsCodeFixProvider.TryGetCodeFixes(syntaxNode, codeGenerationUnit, editorSettings);
-        }
-
+        
         public override string Name          => "Remove Unnecessary Quotation Marks";
         public override CodeFixImpact Impact => CodeFixImpact.None;
         public TransitionDefinitionBlockSyntax TransitionDefinitionBlock { get; }
@@ -47,6 +43,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 textChanges.Add(TryRemove(TextExtent.FromBounds(stringLiteralSyntax.End-1, stringLiteralSyntax.End)));
             }
             return textChanges.OfType<TextChange>().ToList();
-        }            
+        }
     }
 }
