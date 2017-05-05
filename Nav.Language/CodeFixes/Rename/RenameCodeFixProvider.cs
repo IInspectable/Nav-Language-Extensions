@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
-using System;
-
+using System.Threading;
 using JetBrains.Annotations;
 
 #endregion
@@ -11,16 +10,14 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
     public static class RenameCodeFixProvider {
 
         [CanBeNull]
-        public static RenameCodeFix TryGetCodeFix([CanBeNull] ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+        public static RenameCodeFix TryGetCodeFix(CodeFixContext context, CancellationToken cancellationToken= default(CancellationToken)) {
+
+            var symbol = context.TryFindSymbolAtPosition();
             if (symbol == null) {
                 return null;
             }
 
-            var finder = new Visitor(
-                symbol,
-                editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings)),
-                codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit))
-            );
+            var finder = new Visitor(symbol, context);
 
             var codeFix = finder.Visit(symbol);
             return codeFix;
@@ -28,30 +25,29 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         sealed class Visitor : SymbolVisitor<RenameCodeFix> {
 
-            public Visitor(ISymbol originatingSymbol, EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
+            public Visitor(ISymbol originatingSymbol, CodeFixContext context) {
                 OriginatingSymbol  = originatingSymbol;
-                EditorSettings     = editorSettings;
-                CodeGenerationUnit = codeGenerationUnit;
+                Context = context;
             }
 
             ISymbol OriginatingSymbol { get; }
-            EditorSettings EditorSettings { get; }
-            CodeGenerationUnit CodeGenerationUnit { get; }
+            CodeFixContext Context { get; }
+
             
             public override RenameCodeFix VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
                 // Wenn es bereits einen Alias gibt, dann funktioniert der Rename nur auf dem Alias-Symbol
                 if (OriginatingSymbol == initNodeSymbol && initNodeSymbol.Alias != null) {
                     return DefaultVisit(initNodeSymbol);
                 }
-                return new InitNodeRenameCodeFix(initNodeSymbol, CodeGenerationUnit, EditorSettings);
+                return new InitNodeRenameCodeFix(initNodeSymbol, Context);
             }
 
             public override RenameCodeFix VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
-                return new InitNodeRenameCodeFix(initNodeAliasSymbol.InitNode, CodeGenerationUnit, EditorSettings);
+                return new InitNodeRenameCodeFix(initNodeAliasSymbol.InitNode, Context);
             }
 
             public override RenameCodeFix VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
-                return new ExitNodeRenameCodeFix(exitNodeSymbol, CodeGenerationUnit, EditorSettings);
+                return new ExitNodeRenameCodeFix(exitNodeSymbol, Context);
             }
 
             public override RenameCodeFix VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
@@ -59,27 +55,27 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 if (OriginatingSymbol == taskNodeSymbol && taskNodeSymbol.Alias != null) {
                     return DefaultVisit(taskNodeSymbol);
                 }
-                return new TaskNodeRenameCodeFix(taskNodeSymbol, CodeGenerationUnit, EditorSettings);
+                return new TaskNodeRenameCodeFix(taskNodeSymbol, Context);
             }
 
             public override RenameCodeFix VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
-                return new TaskNodeRenameCodeFix(taskNodeAliasSymbol.TaskNode, CodeGenerationUnit, EditorSettings);
+                return new TaskNodeRenameCodeFix(taskNodeAliasSymbol.TaskNode, Context);
             }
 
             public override RenameCodeFix VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
-                return new ChoiceRenameCodeFix(choiceNodeSymbol, CodeGenerationUnit, EditorSettings);
+                return new ChoiceRenameCodeFix(choiceNodeSymbol, Context);
             }
 
             public override RenameCodeFix VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
-                return new DialogNodeRenameCodeFix(dialogNodeSymbol, CodeGenerationUnit, EditorSettings);
+                return new DialogNodeRenameCodeFix(dialogNodeSymbol, Context);
             }
 
             public override RenameCodeFix VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
-                return new ViewNodeRenameCodeFix(viewNodeSymbol, CodeGenerationUnit, EditorSettings);
+                return new ViewNodeRenameCodeFix(viewNodeSymbol, Context);
             }
 
             public override RenameCodeFix VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
-                return new TaskDeclarationRenameCodeFix(taskDeclarationSymbol, CodeGenerationUnit, EditorSettings);
+                return new TaskDeclarationRenameCodeFix(taskDeclarationSymbol, Context);
             }
 
             public override RenameCodeFix VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {

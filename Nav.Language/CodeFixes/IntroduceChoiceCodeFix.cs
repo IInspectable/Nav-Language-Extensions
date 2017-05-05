@@ -12,8 +12,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public class IntroduceChoiceCodeFix: CodeFix {
 
-        internal IntroduceChoiceCodeFix(INodeReferenceSymbol nodeReference, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
-            : base(codeGenerationUnit, editorSettings) {
+        internal IntroduceChoiceCodeFix(INodeReferenceSymbol nodeReference, CodeFixContext context)
+            : base(context) {
             NodeReference = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }
 
@@ -73,13 +73,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
             var textChanges = new List<TextChange?>();
             // Die Choice Deklaration: choice NeueChoice;
-            textChanges.Add(TryInsert(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{EditorSettings.NewLine}"));
+            textChanges.Add(TryInsert(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{Context.EditorSettings.NewLine}"));
             // Die Node Reference wird nun umgebogen auf die choice
             textChanges.Add(TryRename(NodeReference, choiceName));
             // Die Edge der choice ist immer '-->'
             textChanges.Add(TryRename(edgeMode, SyntaxFacts.GoToEdgeKeyword));
             // Die neue choice Transition 
-            textChanges.Add(TryInsert(nodeTransitionLine.Extent.End, $"{choiceTransition}{EditorSettings.NewLine}"));
+            textChanges.Add(TryInsert(nodeTransitionLine.Extent.End, $"{choiceTransition}{Context.EditorSettings.NewLine}"));
 
             return textChanges.OfType<TextChange>().ToList();
         }

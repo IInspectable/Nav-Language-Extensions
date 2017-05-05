@@ -2,8 +2,8 @@
 
     abstract class RenameNodeCodeFix<T> : RenameCodeFix<T> where T : class, INodeSymbol {
 
-        protected RenameNodeCodeFix(T symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
-            : base(symbol, codeGenerationUnit, editorSettings) {
+        protected RenameNodeCodeFix(T symbol, CodeFixContext context)
+            : base(symbol, context) {
         }
 
         public ITaskDefinitionSymbol ContainingTask => Symbol.ContainingTask;

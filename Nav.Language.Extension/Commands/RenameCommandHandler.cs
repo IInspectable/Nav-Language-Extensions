@@ -40,14 +40,26 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         public void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
 
             var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
-            var symbol = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
-            if(symbol == null) {
+
+            var caretPoint = args.TextView.GetCaretPoint();
+            if (caretPoint == null) {
                 nextHandler();
                 return;
             }
 
-            var editorSettings = args.TextView.GetEditorSettings();
-            var renameCodeFix  = RenameCodeFixProvider.TryGetCodeFix(symbol, codeGenerationUnitAndSnapshot.CodeGenerationUnit, editorSettings);
+            if (!codeGenerationUnitAndSnapshot.IsCurrent(caretPoint.Value.Snapshot)) {
+                nextHandler();
+                return;
+            }
+
+            var codeFixContext = new CodeFixContext(
+                    caretPoint.Value, 
+                    codeGenerationUnitAndSnapshot.CodeGenerationUnit, 
+                    args.TextView.GetEditorSettings());
+
+            var symbol = codeFixContext.TryFindSymbolAtPosition();
+
+            var renameCodeFix  = RenameCodeFixProvider.TryGetCodeFix(codeFixContext);
 
             if (renameCodeFix == null) {
                 // TODO In IDialogService?

@@ -10,16 +10,16 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public abstract class CodeFix {
-
-        protected CodeFix(CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
-            EditorSettings     = editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings));
-            CodeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
+        
+        protected CodeFix(CodeFixContext context) {
+            Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public EditorSettings EditorSettings { get; }
-        public CodeGenerationUnit CodeGenerationUnit { get; }
-        public CodeGenerationUnitSyntax Syntax => CodeGenerationUnit.Syntax;
-        public SyntaxTree SyntaxTree => Syntax.SyntaxTree;
+        public CodeFixContext Context { get; }
+
+        public CodeGenerationUnit CodeGenerationUnit => Context.CodeGenerationUnit;
+        public CodeGenerationUnitSyntax Syntax       => CodeGenerationUnit.Syntax;
+        public SyntaxTree SyntaxTree                 => Syntax.SyntaxTree;
 
         public abstract string Name { get; }
         public abstract CodeFixImpact Impact { get; }
@@ -50,12 +50,12 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         [CanBeNull]
         protected TextChange? TryRenameSource(ITransition transition, string newSourceName) {
-            return SyntaxTree.TryRenameSource(transition, newSourceName, EditorSettings);
+            return SyntaxTree.TryRenameSource(transition, newSourceName, Context.EditorSettings);
         }
 
         [CanBeNull]
         protected TextChange? TryRenameSource(IExitTransition transition, string newSourceName) {
-            return SyntaxTree.TryRenameSource(transition, newSourceName, EditorSettings);
+            return SyntaxTree.TryRenameSource(transition, newSourceName, Context.EditorSettings);
         }
 
         [CanBeNull]
@@ -64,23 +64,23 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         }
 
         protected string ComposeEdge(IEdge templateEdge, string sourceName, string edgeKeyword, string targetName) {
-            return SyntaxTree.ComposeEdge(templateEdge, sourceName, edgeKeyword, targetName, EditorSettings);
+            return SyntaxTree.ComposeEdge(templateEdge, sourceName, edgeKeyword, targetName, Context.EditorSettings);
         }
 
         protected string WhiteSpaceBetweenSourceAndEdgeMode(IEdge edge, string newSourceName) {
-            return SyntaxTree.WhiteSpaceBetweenSourceAndEdgeMode(edge, newSourceName, EditorSettings);
+            return SyntaxTree.WhiteSpaceBetweenSourceAndEdgeMode(edge, newSourceName, Context.EditorSettings);
         }
 
         protected string WhiteSpaceBetweenEdgeModeAndTarget(IEdge edge) {
-            return SyntaxTree.WhiteSpaceBetweenEdgeModeAndTarget(edge, EditorSettings);
+            return SyntaxTree.WhiteSpaceBetweenEdgeModeAndTarget(edge, Context.EditorSettings);
         }
 
         protected int ColumnsBetweenKeywordAndIdentifier(INodeSymbol node, string newKeyword = null) {
-            return SyntaxTree.ColumnsBetweenKeywordAndIdentifier(node, newKeyword, EditorSettings);
+            return SyntaxTree.ColumnsBetweenKeywordAndIdentifier(node, newKeyword, Context.EditorSettings);
         }
 
         protected string GetLineIndent(TextLineExtent lineExtent) {
-            return SyntaxTree.GetLineIndent(lineExtent, EditorSettings);
+            return SyntaxTree.GetLineIndent(lineExtent, Context.EditorSettings);
         }        
     }
 }

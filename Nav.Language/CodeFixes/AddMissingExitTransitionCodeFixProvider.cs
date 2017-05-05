@@ -1,39 +1,35 @@
 #region Using Directives
 
-using System;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
-
+    
     public static class AddMissingExitTransitionCodeFixProvider {
         
-        public static IEnumerable<AddMissingExitTransitionCodeFix> SuggestCodeFixes([CanBeNull] ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+        public static IEnumerable<AddMissingExitTransitionCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
+
+            var symbol = context.TryFindSymbolAtPosition();
             if (symbol == null) {
                 return Enumerable.Empty<AddMissingExitTransitionCodeFix>();
             }
 
-            var provider = new Visitor(
-                editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings)),
-                codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit))
-            );
+            var provider = new Visitor(context);
 
             return provider.Visit(symbol).Where(cf => cf.CanApplyFix());
         }
 
         sealed class Visitor : SymbolVisitor<IEnumerable<AddMissingExitTransitionCodeFix>> {
-
-            public Visitor(EditorSettings editorSettings, CodeGenerationUnit codeGenerationUnit) {
-                EditorSettings     = editorSettings;
-                CodeGenerationUnit = codeGenerationUnit;
+            
+            public Visitor(CodeFixContext context) {
+                Context = context;
             }
 
-            EditorSettings EditorSettings { get; }
-            CodeGenerationUnit CodeGenerationUnit { get; }
-            
+            CodeFixContext Context { get; }
+
             protected override IEnumerable<AddMissingExitTransitionCodeFix> DefaultVisit(ISymbol symbol) {
                 yield break;
             }
@@ -44,7 +40,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 var taskNode = nodeReferenceSymbol.Declaration as ITaskNodeSymbol;
                 if (taskNode != null) {
                     foreach (var missingExitConnectionPoint in taskNode.GetMissingExitTransitionConnectionPoints()) {
-                        yield return new AddMissingExitTransitionCodeFix(nodeReferenceSymbol, missingExitConnectionPoint, CodeGenerationUnit, EditorSettings);
+                        yield return new AddMissingExitTransitionCodeFix(nodeReferenceSymbol, missingExitConnectionPoint, Context);
                     }
                 }
             }

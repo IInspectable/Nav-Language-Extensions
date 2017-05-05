@@ -20,9 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var editorSettings = parameter.GetEditorSettings();
-            var codeGenerationUnitAndSnapshot = parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit;
-            var codeFixes = AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.SuggestCodeFixes(parameter.OriginatingNode, codeGenerationUnitAndSnapshot, editorSettings);
+            var codeFixes = AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.SuggestCodeFixes(parameter.GetCodeFixContext(), cancellationToken);
 
             var actions = codeFixes.Select(codeFix => new AddMissingSemicolonsOnIncludeDirectivesSuggestedAction(
                 codeFix  : codeFix,

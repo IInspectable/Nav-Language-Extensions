@@ -20,9 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
-            var editorSettings = parameter.GetEditorSettings();
-            var codeGenerationUnitAndSnapshot= parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit;
-            var codeFixes = AddMissingExitTransitionCodeFixProvider.SuggestCodeFixes(parameter.OriginatingSymbol, codeGenerationUnitAndSnapshot, editorSettings);
+            var codeFixes = AddMissingExitTransitionCodeFixProvider.SuggestCodeFixes(parameter.GetCodeFixContext(), cancellationToken);
 
             var actions = codeFixes.Select(codeFix => new AddMissingExitTransitionSuggestedAction(
                 codeFix  : codeFix,

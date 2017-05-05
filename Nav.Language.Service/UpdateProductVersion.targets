@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Service</ProductName>
-    <ProductVersion>3.0.38</ProductVersion>
+    <ProductVersion>3.0.39</ProductVersion>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyInfoFile>$(MSBuildProjectDirectory)\ThisAssembly.generated.cs</AssemblyInfoFile>
