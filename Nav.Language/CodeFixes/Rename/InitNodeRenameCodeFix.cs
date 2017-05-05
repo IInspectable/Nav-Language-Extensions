@@ -10,10 +10,10 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class InitNodeRenameCodeFix : RenameCodeFix<IInitNodeSymbol> {
-        
-        internal InitNodeRenameCodeFix(IInitNodeSymbol initNodeAlias, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
-            : base(initNodeAlias, codeGenerationUnit, editorSettings) {
-        }
+
+        internal InitNodeRenameCodeFix(IInitNodeSymbol initNodeAlias, CodeFixContext context)
+            : base(initNodeAlias, context) {
+        }     
 
         public override string Name          => "Rename Init";
         public override CodeFixImpact Impact => CodeFixImpact.None;

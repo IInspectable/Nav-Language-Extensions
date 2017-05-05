@@ -11,8 +11,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class ChoiceRenameCodeFix: RenameNodeCodeFix<IChoiceNodeSymbol> {
         
-        internal ChoiceRenameCodeFix(IChoiceNodeSymbol choiceNodeSymbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
-            : base(choiceNodeSymbol, codeGenerationUnit, editorSettings) {
+        internal ChoiceRenameCodeFix(IChoiceNodeSymbol choiceNodeSymbol, CodeFixContext context) 
+            : base(choiceNodeSymbol, context) {
         }
 
         public override string Name          => "Rename Choice";

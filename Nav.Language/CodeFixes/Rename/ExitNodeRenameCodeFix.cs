@@ -11,8 +11,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class ExitNodeRenameCodeFix : RenameNodeCodeFix<IExitNodeSymbol> {
         
-        internal ExitNodeRenameCodeFix(IExitNodeSymbol exitNodeSymbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
-            : base(exitNodeSymbol, codeGenerationUnit, editorSettings) {
+        internal ExitNodeRenameCodeFix(IExitNodeSymbol exitNodeSymbol, CodeFixContext context) 
+            : base(exitNodeSymbol, context) {
         }
 
         public override string Name          => "Rename Exit";

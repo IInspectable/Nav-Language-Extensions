@@ -9,8 +9,8 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes {
     public class AddMissingSemicolonsOnIncludeDirectivesCodeFix : CodeFix {
 
-        internal AddMissingSemicolonsOnIncludeDirectivesCodeFix(CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
-            : base(codeGenerationUnit, editorSettings) {
+        internal AddMissingSemicolonsOnIncludeDirectivesCodeFix(CodeFixContext context)
+            : base(context) {
         }
 
         public override string Name => "Add missing ';' on Include Directives";

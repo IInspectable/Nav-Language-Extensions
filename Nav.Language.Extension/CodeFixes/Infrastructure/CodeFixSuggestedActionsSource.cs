@@ -97,7 +97,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var symbol     = TryFindSymbol(caretPoint, codeGenerationUnitAndSnapshot);
             var node       = TryFindNode(caretPoint, codeGenerationUnitAndSnapshot);
-            var parameter  = new CodeFixActionsParameter(node, symbol, codeGenerationUnitAndSnapshot, _textView);
+            var parameter  = new CodeFixActionsParameter(caretPoint, node, symbol, codeGenerationUnitAndSnapshot, _textView);
             var actionsets = BuildSuggestedActions(parameter, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested) {

@@ -13,8 +13,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     public abstract class RenameCodeFix: CodeFix {
         
-        protected RenameCodeFix(CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
-            : base(codeGenerationUnit, editorSettings) {           
+        protected RenameCodeFix(CodeFixContext context)
+            : base(context) {           
         }
         
         public abstract string ProvideDefaultName();
@@ -24,8 +24,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     abstract class RenameCodeFix<T>: RenameCodeFix where T: class, ISymbol {
 
-        protected RenameCodeFix(T symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
-            : base(codeGenerationUnit, editorSettings) {
+        protected RenameCodeFix(T symbol, CodeFixContext context) 
+            : base(context) {
 
             Symbol = symbol ?? throw new ArgumentNullException(nameof(symbol));
         }

@@ -12,8 +12,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public class RemoveSignalTriggerQuotationMarksCodeFix : CodeFix {
 
-        internal RemoveSignalTriggerQuotationMarksCodeFix(TransitionDefinitionBlockSyntax transitionDefinitionBlock, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings)
-            : base(codeGenerationUnit, editorSettings) {
+        internal RemoveSignalTriggerQuotationMarksCodeFix(TransitionDefinitionBlockSyntax transitionDefinitionBlock, CodeFixContext context)
+            : base(context) {
             TransitionDefinitionBlock = transitionDefinitionBlock ?? throw new ArgumentNullException(nameof(transitionDefinitionBlock));
         }
         

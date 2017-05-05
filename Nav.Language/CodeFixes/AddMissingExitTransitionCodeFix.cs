@@ -11,8 +11,8 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes {
     public sealed class AddMissingExitTransitionCodeFix: CodeFix {
         
-        internal AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNode, IConnectionPointSymbol connectionPoint, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) 
-            : base(codeGenerationUnit, editorSettings) {
+        internal AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNode, IConnectionPointSymbol connectionPoint, CodeFixContext context) 
+            : base(context) {
 
             ConnectionPoint = connectionPoint                           ?? throw new ArgumentNullException(nameof(connectionPoint));
             TargetNode      = targetNode                                ?? throw new ArgumentNullException(nameof(targetNode));
@@ -62,7 +62,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             
             // ReSharper disable once PossibleNullReferenceException Check unter CanApplyFix
             var transitionLine = SyntaxTree.GetTextLineExtent(templateEdge.Source.Start);
-            textChanges.Add(TryInsert(transitionLine.Extent.End, $"{exitTransition}{EditorSettings.NewLine}"));
+            textChanges.Add(TryInsert(transitionLine.Extent.End, $"{exitTransition}{Context.EditorSettings.NewLine}"));
 
             return textChanges.OfType<TextChange>().ToList();
         }
