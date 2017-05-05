@@ -11,8 +11,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class ViewNodeRenameCodeFix : RenameNodeCodeFix<IViewNodeSymbol> {
         
-        internal ViewNodeRenameCodeFix(IViewNodeSymbol viewNodeSymbol, CodeFixContext context) 
-            : base(viewNodeSymbol, context) {
+        internal ViewNodeRenameCodeFix(IViewNodeSymbol viewNodeSymbol, ISymbol originatingSymbol, CodeFixContext context) 
+            : base(viewNodeSymbol, originatingSymbol, context) {
         }
 
         public override string Name          => "Rename View";

@@ -11,8 +11,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class DialogNodeRenameCodeFix : RenameNodeCodeFix<IDialogNodeSymbol> {
         
-        internal DialogNodeRenameCodeFix(IDialogNodeSymbol dialogNodeSymbol, CodeFixContext context) 
-            : base(dialogNodeSymbol, context) {
+        internal DialogNodeRenameCodeFix(IDialogNodeSymbol dialogNodeSymbol, ISymbol originatingSymbol, CodeFixContext context) 
+            : base(dialogNodeSymbol, originatingSymbol, context) {
         }
 
         public override string Name          => "Rename Dialog";

@@ -11,8 +11,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class InitNodeRenameCodeFix : RenameCodeFix<IInitNodeSymbol> {
 
-        internal InitNodeRenameCodeFix(IInitNodeSymbol initNodeAlias, CodeFixContext context)
-            : base(initNodeAlias, context) {
+        internal InitNodeRenameCodeFix(IInitNodeSymbol initNodeAlias, ISymbol originatingSymbol, CodeFixContext context)
+            : base(initNodeAlias, originatingSymbol, context) {
         }     
 
         public override string Name          => "Rename Init";

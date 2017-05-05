@@ -2,6 +2,8 @@
 
 using System;
 using System.Threading;
+
+using Microsoft.VisualStudio.Text;
 using Pharmatechnik.Nav.Language.CodeFixes;
 
 #endregion
@@ -16,6 +18,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public T CodeFix { get; }
         public override string UndoDescription => CodeFix.Name;
+        public sealed override Span? ApplicableToSpan => GetSnapshotSpan(CodeFix.ApplicableTo);
 
         public override void Invoke(CancellationToken cancellationToken) {
           

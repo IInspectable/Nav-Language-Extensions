@@ -2,7 +2,6 @@
 
 using System.Threading;
 
-using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Images;
@@ -19,7 +18,6 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             : base(context, parameter, codeFix) {
         }
 
-        public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.TransitionDefinitionBlock);
         public override ImageMoniker IconMoniker => ImageMonikers.DeleteQuotationMarks;
         public override string DisplayText       => CodeFix.Name;
 

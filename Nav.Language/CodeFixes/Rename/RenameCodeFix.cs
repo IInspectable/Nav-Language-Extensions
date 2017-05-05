@@ -23,12 +23,18 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
     }
 
     abstract class RenameCodeFix<T>: RenameCodeFix where T: class, ISymbol {
+        
 
-        protected RenameCodeFix(T symbol, CodeFixContext context) 
+        protected RenameCodeFix(T symbol, ISymbol originatingSymbol, CodeFixContext context) 
             : base(context) {
 
             Symbol = symbol ?? throw new ArgumentNullException(nameof(symbol));
+            OriginatingSymbol = originatingSymbol ?? throw new ArgumentNullException(nameof(originatingSymbol));
         }
+
+        protected ISymbol OriginatingSymbol { get; }
+
+        public override TextExtent? ApplicableTo => OriginatingSymbol.Location.Extent;
 
         [NotNull]
         public T Symbol { get; }
