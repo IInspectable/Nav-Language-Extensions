@@ -3,13 +3,12 @@
 using System.Collections.Generic;
 
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Language.Intellisense;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    partial class CodeFixSuggestedActionsSource : SemanticModelServiceDependent, ISuggestedActionsSource {
+    partial class CodeFixSuggestedActionsSource {
 
         sealed class SpanLengthComparer: IComparer<Span?> {
 
