@@ -1,7 +1,8 @@
 ﻿#region Using Directives
 
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using JetBrains.Annotations;
 
 #endregion
 
@@ -9,18 +10,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     public static class RenameCodeFixProvider {
 
-        [CanBeNull]
-        public static RenameCodeFix TryGetCodeFix(CodeFixContext context, CancellationToken cancellationToken= default(CancellationToken)) {
-
-            var symbol = context.TryFindSymbolAtPosition();
-            if (symbol == null) {
-                return null;
-            }
-
-            var finder = new Visitor(symbol, context);
-
-            var codeFix = finder.Visit(symbol);
-            return codeFix;
+        public static IEnumerable<RenameCodeFix> TryGetCodeFix(CodeFixContext context, CancellationToken cancellationToken= default(CancellationToken)) {
+            return context.FindSymbols()
+                          .Select(symbol => new Visitor(symbol, context).Visit(symbol))
+                          .Where(codeFix => codeFix != null);
         }
 
         sealed class Visitor : SymbolVisitor<RenameCodeFix> {

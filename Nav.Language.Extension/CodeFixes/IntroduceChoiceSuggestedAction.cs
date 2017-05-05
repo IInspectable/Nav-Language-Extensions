@@ -20,7 +20,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             : base(context, parameter, codeFix) {
         }
 
-        public override Span? ApplicableToSpan   => GetSnapshotSpan(CodeFix.Context.TryFindNodeAtPosition());
+        // TODO ApplicableToSpan
+        public override Span? ApplicableToSpan   => null;
         public override ImageMoniker IconMoniker => ImageMonikers.InsertNode;
         public override string DisplayText       => CodeFix.Name;
 

@@ -15,12 +15,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     class CodeFixActionsParameter {
         
-        public CodeFixActionsParameter(SnapshotPoint caretPoint, ITextView textView, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
+        public CodeFixActionsParameter(SnapshotSpan range, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextView textView) {
             TextView = textView ?? throw new ArgumentNullException(nameof(textView));
             CodeGenerationUnitAndSnapshot = codeGenerationUnitAndSnapshot ?? throw new ArgumentNullException(nameof(codeGenerationUnitAndSnapshot));
-
+            // TODO Range checking
             CodeFixContext = new CodeFixContext(
-                position          : caretPoint,
+                extent          : new TextExtent(range.Start, range.Length),
                 codeGenerationUnit: CodeGenerationUnitAndSnapshot.CodeGenerationUnit,
                 editorSettings    : TextView.GetEditorSettings());
         }

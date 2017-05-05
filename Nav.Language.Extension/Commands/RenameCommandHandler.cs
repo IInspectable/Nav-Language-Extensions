@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Text;
@@ -40,26 +41,23 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         public void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
 
             var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
-
-            var caretPoint = args.TextView.GetCaretPoint();
-            if (caretPoint == null) {
+            if (!codeGenerationUnitAndSnapshot.IsCurrent(args.SubjectBuffer.CurrentSnapshot)) {
                 nextHandler();
                 return;
             }
 
-            if (!codeGenerationUnitAndSnapshot.IsCurrent(caretPoint.Value.Snapshot)) {
+            var symbol = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
+            if (symbol == null) {
                 nextHandler();
                 return;
             }
-
+          
             var codeFixContext = new CodeFixContext(
-                    caretPoint.Value, 
+                    symbol.Location.Extent, 
                     codeGenerationUnitAndSnapshot.CodeGenerationUnit, 
                     args.TextView.GetEditorSettings());
-
-            var symbol = codeFixContext.TryFindSymbolAtPosition();
-
-            var renameCodeFix  = RenameCodeFixProvider.TryGetCodeFix(codeFixContext);
+            
+            var renameCodeFix  = RenameCodeFixProvider.TryGetCodeFix(codeFixContext).FirstOrDefault();
 
             if (renameCodeFix == null) {
                 // TODO In IDialogService?

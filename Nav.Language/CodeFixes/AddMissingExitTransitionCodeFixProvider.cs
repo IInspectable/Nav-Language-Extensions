@@ -12,14 +12,12 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         
         public static IEnumerable<AddMissingExitTransitionCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
 
-            var symbol = context.TryFindSymbolAtPosition();
-            if (symbol == null) {
-                return Enumerable.Empty<AddMissingExitTransitionCodeFix>();
-            }
+            var visitor = new Visitor(context);
 
-            var provider = new Visitor(context);
-
-            return provider.Visit(symbol).Where(cf => cf.CanApplyFix());
+            return context.FindSymbols()
+                          .Select(symbol => visitor.Visit(symbol))
+                          .SelectMany(codeFixes=>codeFixes)
+                          .Where(codeFix => codeFix != null && codeFix.CanApplyFix());
         }
 
         sealed class Visitor : SymbolVisitor<IEnumerable<AddMissingExitTransitionCodeFix>> {

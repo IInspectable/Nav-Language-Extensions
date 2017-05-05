@@ -11,15 +11,12 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
     public static class IntroduceChoiceCodeFixProvider {
         
         public static IEnumerable<IntroduceChoiceCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
-
-            var symbol = context.TryFindSymbolAtPosition();
-            if (symbol == null) {
-                return Enumerable.Empty<IntroduceChoiceCodeFix>();
-            }
-
             var visitor = new Visitor(context);
 
-            return visitor.Visit(symbol).Where(choiceCodeFix => choiceCodeFix.CanApplyFix());
+            return context.FindSymbols()
+                          .Select(symbol=> visitor.Visit(symbol))
+                          .SelectMany(s=>s)
+                          .Where(codeFix => codeFix != null && codeFix.CanApplyFix());
         }
 
         sealed class Visitor : SymbolVisitor<IEnumerable<IntroduceChoiceCodeFix>> {
@@ -35,7 +32,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
 
             public override IEnumerable<IntroduceChoiceCodeFix> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
-                // TODO Context weiterreichen
                 yield return new IntroduceChoiceCodeFix(nodeReferenceSymbol, Context);
             }
         }
