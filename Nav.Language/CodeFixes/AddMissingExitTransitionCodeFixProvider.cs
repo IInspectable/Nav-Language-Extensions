@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 #endregion
 
@@ -10,10 +11,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public static class AddMissingExitTransitionCodeFixProvider {
         
-        public static IEnumerable<AddMissingExitTransitionCodeFix> TryGetCodeFixes(ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+        public static IEnumerable<AddMissingExitTransitionCodeFix> SuggestCodeFixes([CanBeNull] ISymbol symbol, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
             if (symbol == null) {
                 return Enumerable.Empty<AddMissingExitTransitionCodeFix>();
             }
+
             var provider = new Visitor(
                 editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings)),
                 codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit))

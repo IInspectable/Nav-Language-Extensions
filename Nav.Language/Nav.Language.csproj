@@ -70,6 +70,8 @@
   <ItemGroup>
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesCodeFix.cs" />
+    <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.cs" />
     <Compile Include="CodeFixes\CodeFix.cs" />
     <Compile Include="CodeFixes\CodeFixImpact.cs" />
     <Compile Include="CodeFixes\EditorSettings.cs" />

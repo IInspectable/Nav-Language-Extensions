@@ -11,20 +11,20 @@ using Pharmatechnik.Nav.Language.CodeFixes;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    [ExportCodeFixActionProvider(nameof(IntroduceChoiceSuggestedActionProvider))]
-    class IntroduceChoiceSuggestedActionProvider : CodeFixActionProvider {
+    [ExportCodeFixActionProvider(nameof(AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider))]
+    class AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider : CodeFixActionProvider {
 
         [ImportingConstructor]
-        public IntroduceChoiceSuggestedActionProvider(CodeFixActionContext context) : base(context) {
+        public AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider(CodeFixActionContext context) : base(context) {
         }
 
         public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
 
             var editorSettings = parameter.GetEditorSettings();
             var codeGenerationUnitAndSnapshot = parameter.CodeGenerationUnitAndSnapshot.CodeGenerationUnit;
-            var codeFixes = IntroduceChoiceCodeFixProvider.SuggestCodeFixes(parameter.OriginatingSymbol, codeGenerationUnitAndSnapshot, editorSettings);
+            var codeFixes = AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.SuggestCodeFixes(parameter.OriginatingNode, codeGenerationUnitAndSnapshot, editorSettings);
 
-            var actions = codeFixes.Select(codeFix => new IntroduceChoiceSuggestedAction(
+            var actions = codeFixes.Select(codeFix => new AddMissingSemicolonsOnIncludeDirectivesSuggestedAction(
                 codeFix  : codeFix,
                 parameter: parameter,
                 context  : Context));

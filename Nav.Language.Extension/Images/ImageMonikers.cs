@@ -279,7 +279,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         }
 
         public static ImageMoniker DeleteQuotationMarks {
-            get { return KnownMonikers.DeleteTag; }
+            get { return KnownMonikers.PendingDeleteNode; }
+        }
+
+        public static ImageMoniker AddSemicolon {
+            get { return KnownMonikers.PendingAddNode; }
         }
 
         #endregion

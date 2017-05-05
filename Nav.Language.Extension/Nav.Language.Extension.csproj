@@ -83,7 +83,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedAction.cs" />
     <Compile Include="CodeFixes\Infrastructure\SpanLengthComparer.cs" />
+    <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedAction.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionSuggestedAction.cs" />

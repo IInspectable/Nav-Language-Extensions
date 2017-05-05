@@ -15,6 +15,7 @@ namespace Nav.Language.Tests {
             Assert.That(syntaxTree.Diagnostics.Count,     Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count % 2, Is.EqualTo(1));
 
+            Assert.That(syntaxTree.Tokens.FindAtPosition(-1).IsMissing, Is.True);
             Assert.That(syntaxTree.Tokens.FindAtPosition(0).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
             Assert.That(syntaxTree.Tokens.FindAtPosition(1).Type, Is.EqualTo(SyntaxTokenType.OpenBracket));
             Assert.That(syntaxTree.Tokens.FindAtPosition(2).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
@@ -25,6 +26,7 @@ namespace Nav.Language.Tests {
             Assert.That(syntaxTree.Tokens.FindAtPosition(7).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
             Assert.That(syntaxTree.Tokens.FindAtPosition(8).Type, Is.EqualTo(SyntaxTokenType.Identifier));
             Assert.That(syntaxTree.Tokens.FindAtPosition(9).Type, Is.EqualTo(SyntaxTokenType.CloseBracket));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(10).IsMissing, Is.True);
         }
 
         [Test]

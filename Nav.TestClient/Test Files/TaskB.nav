@@ -4,7 +4,7 @@
 [using Pharmatechnik.Apotheke.XTplus.Framework.Core.IWFL] 
 
 taskref "TaskA.nav";
-taskref "TaskC.nav";
+taskref "TaskC.nav"
 
 taskref Foo {
     init;
@@ -34,7 +34,8 @@ task TaskB [base StandardWFS : ILegacyMessageBoxWFS]
     c1--> MessageBoxOK;
     c1--> TaskA;
 
-    TaskA:Ok --> Ok;
+  //  TaskA:Ok --> Ok;
      
-    MessageBoxOK --> Ok on Ok;
+    MessageBoxOK --> Ok on "Ok";
+    MessageBoxOK --> Ok on "Bsr";
 }

@@ -62,7 +62,7 @@ namespace Pharmatechnik.Nav.Language {
             if(position < 0) {
                 return SyntaxToken.Missing;
             }
-            return _tokens.FindElementAtPosition(position);
+            return _tokens.FindElementAtPosition(position, defaultIfNotFound: true);
         }
 
         internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, SyntaxTokenType type, bool nextToken) {
