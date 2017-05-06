@@ -9,9 +9,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     [MetadataAttribute]
     [AttributeUsage(AttributeTargets.Class)]
-    class ExportCodeFixActionProviderAttribute : ExportAttribute {
+    class ExportCodeFixSuggestedActionProviderAttribute : ExportAttribute {
     
-        public ExportCodeFixActionProviderAttribute(string name): base(typeof(ICodeFixActionProvider)) {
+        public ExportCodeFixSuggestedActionProviderAttribute(string name): base(typeof(ICodeFixSuggestedActionProvider)) {
             Name = name;
         }
 

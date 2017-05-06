@@ -17,13 +17,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     
     abstract class CodeFixSuggestedAction : ISuggestedAction {
 
-        protected CodeFixSuggestedAction(CodeFixActionContext context, CodeFixActionsParameter parameter) {
+        protected CodeFixSuggestedAction(CodeFixSuggestedActionContext context, CodeFixSuggestedActionParameter parameter) {
             Context   = context   ?? throw new ArgumentNullException(nameof(context));
             Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
         }
 
-        protected CodeFixActionContext Context { get; }
-        protected CodeFixActionsParameter Parameter { get; }
+        protected CodeFixSuggestedActionContext Context { get; }
+        protected CodeFixSuggestedActionParameter Parameter { get; }
 
         public abstract Span? ApplicableToSpan { get; }
         public abstract string DisplayText { get; }

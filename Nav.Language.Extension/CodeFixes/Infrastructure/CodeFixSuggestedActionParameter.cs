@@ -13,12 +13,11 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    class CodeFixActionsParameter {
+    class CodeFixSuggestedActionParameter {
         
-        public CodeFixActionsParameter(SnapshotSpan range, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextView textView) {
+        public CodeFixSuggestedActionParameter(SnapshotSpan range, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextView textView) {
             TextView = textView ?? throw new ArgumentNullException(nameof(textView));
             CodeGenerationUnitAndSnapshot = codeGenerationUnitAndSnapshot ?? throw new ArgumentNullException(nameof(codeGenerationUnitAndSnapshot));
-            // TODO Range checking
             CodeFixContext = new CodeFixContext(
                 range          : new TextExtent(range.Start, range.Length),
                 codeGenerationUnit: CodeGenerationUnitAndSnapshot.CodeGenerationUnit,

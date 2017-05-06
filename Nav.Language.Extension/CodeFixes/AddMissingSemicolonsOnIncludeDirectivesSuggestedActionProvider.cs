@@ -11,14 +11,14 @@ using Pharmatechnik.Nav.Language.CodeFixes;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    [ExportCodeFixActionProvider(nameof(AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider))]
-    class AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider : CodeFixActionProvider {
+    [ExportCodeFixSuggestedActionProvider(nameof(AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider))]
+    class AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider : CodeFixSuggestedActionProvider {
 
         [ImportingConstructor]
-        public AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider(CodeFixActionContext context) : base(context) {
+        public AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider(CodeFixSuggestedActionContext context) : base(context) {
         }
 
-        public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
+        public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixSuggestedActionParameter parameter, CancellationToken cancellationToken) {
 
             var codeFixes = AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.SuggestCodeFixes(parameter.CodeFixContext, cancellationToken);
 
