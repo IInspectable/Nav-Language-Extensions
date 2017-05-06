@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     abstract class CodeFixSuggestedAction<T> : CodeFixSuggestedAction where T : CodeFix {
 
-        protected CodeFixSuggestedAction(CodeFixActionContext context, CodeFixActionsParameter parameter, T codeFix) : base(context, parameter) {
+        protected CodeFixSuggestedAction(CodeFixSuggestedActionContext context, CodeFixSuggestedActionParameter parameter, T codeFix) : base(context, parameter) {
             CodeFix = codeFix ?? throw new ArgumentNullException(nameof(codeFix));
         }
 

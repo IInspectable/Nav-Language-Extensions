@@ -14,8 +14,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     class IntroduceChoiceSuggestedAction : CodeFixSuggestedAction<IntroduceChoiceCodeFix> {
 
         public IntroduceChoiceSuggestedAction(IntroduceChoiceCodeFix codeFix,
-                                              CodeFixActionsParameter parameter,
-                                              CodeFixActionContext context)
+                                              CodeFixSuggestedActionParameter parameter,
+                                              CodeFixSuggestedActionContext context)
             : base(context, parameter, codeFix) {
         }
 

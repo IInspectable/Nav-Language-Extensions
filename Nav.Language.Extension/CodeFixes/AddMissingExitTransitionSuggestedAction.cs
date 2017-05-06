@@ -14,8 +14,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     class AddMissingExitTransitionSuggestedAction : CodeFixSuggestedAction<AddMissingExitTransitionCodeFix> {
 
         public AddMissingExitTransitionSuggestedAction(AddMissingExitTransitionCodeFix codeFix,
-                                                       CodeFixActionsParameter parameter,
-                                                       CodeFixActionContext context)
+                                                       CodeFixSuggestedActionParameter parameter,
+                                                       CodeFixSuggestedActionContext context)
             : base(context, parameter, codeFix) {
         }
 

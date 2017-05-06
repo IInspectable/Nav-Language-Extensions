@@ -13,8 +13,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     class RemoveSignalTriggerQuotationMarksSuggestedAction : CodeFixSuggestedAction<RemoveSignalTriggerQuotationMarksCodeFix> {
 
         public RemoveSignalTriggerQuotationMarksSuggestedAction(RemoveSignalTriggerQuotationMarksCodeFix codeFix,
-                                                          CodeFixActionsParameter parameter,
-                                                          CodeFixActionContext context)
+                                                          CodeFixSuggestedActionParameter parameter,
+                                                          CodeFixSuggestedActionContext context)
             : base(context, parameter, codeFix) {
         }
 

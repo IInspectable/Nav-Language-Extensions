@@ -13,8 +13,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     class AddMissingSemicolonsOnIncludeDirectivesSuggestedAction : CodeFixSuggestedAction<AddMissingSemicolonsOnIncludeDirectivesCodeFix> {
 
         public AddMissingSemicolonsOnIncludeDirectivesSuggestedAction(AddMissingSemicolonsOnIncludeDirectivesCodeFix codeFix,
-                                                                      CodeFixActionsParameter parameter,
-                                                                      CodeFixActionContext context)
+                                                                      CodeFixSuggestedActionParameter parameter,
+                                                                      CodeFixSuggestedActionContext context)
             : base(context, parameter, codeFix) {
         }
 

@@ -11,14 +11,14 @@ using Pharmatechnik.Nav.Language.CodeFixes;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    [ExportCodeFixActionProvider(nameof(AddMissingExitTransitionSuggestedActionProvider))]
-    class AddMissingExitTransitionSuggestedActionProvider : CodeFixActionProvider {
+    [ExportCodeFixSuggestedActionProvider(nameof(AddMissingExitTransitionSuggestedActionProvider))]
+    class AddMissingExitTransitionSuggestedActionProvider : CodeFixSuggestedActionProvider {
 
         [ImportingConstructor]
-        public AddMissingExitTransitionSuggestedActionProvider(CodeFixActionContext context) : base(context) {
+        public AddMissingExitTransitionSuggestedActionProvider(CodeFixSuggestedActionContext context) : base(context) {
         }
 
-        public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixActionsParameter parameter, CancellationToken cancellationToken) {
+        public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixSuggestedActionParameter parameter, CancellationToken cancellationToken) {
 
             var codeFixes = AddMissingExitTransitionCodeFixProvider.SuggestCodeFixes(parameter.CodeFixContext, cancellationToken);
 

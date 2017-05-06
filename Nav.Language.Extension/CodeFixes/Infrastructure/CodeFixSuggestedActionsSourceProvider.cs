@@ -16,11 +16,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     [ContentType(NavLanguageContentDefinitions.ContentType)]
     internal class CodeFixSuggestedActionsSourceProvider : ISuggestedActionsSourceProvider {
 
-        readonly ICodeFixActionProviderService _codeFixActionProviderService;
+        readonly ICodeFixSuggestedActionProviderService _codeFixSuggestedActionProviderService;
 
         [ImportingConstructor]
-        public CodeFixSuggestedActionsSourceProvider(ICodeFixActionProviderService codeFixActionProviderService) {
-            _codeFixActionProviderService = codeFixActionProviderService;
+        public CodeFixSuggestedActionsSourceProvider(ICodeFixSuggestedActionProviderService codeFixSuggestedActionProviderService) {
+            _codeFixSuggestedActionProviderService = codeFixSuggestedActionProviderService;
         }
         
         public ISuggestedActionsSource CreateSuggestedActionsSource(ITextView textView, ITextBuffer textBuffer) {
@@ -28,7 +28,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return null;
             }
             // TODO nur einzelne Textbuffer unterstützen?
-            return new CodeFixSuggestedActionsSource(textBuffer, _codeFixActionProviderService, textView);
+            return new CodeFixSuggestedActionsSource(textBuffer, _codeFixSuggestedActionProviderService, textView);
         }
     }
 }

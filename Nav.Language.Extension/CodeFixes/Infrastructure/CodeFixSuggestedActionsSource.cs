@@ -17,14 +17,14 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     partial class CodeFixSuggestedActionsSource : SemanticModelServiceDependent, ISuggestedActionsSource {
 
-        readonly ICodeFixActionProviderService _codeFixActionProviderService;
+        readonly ICodeFixSuggestedActionProviderService _codeFixSuggestedActionProviderService;
         readonly ITextView _textView;
 
         volatile SuggestedActionSetsAndRange _cachedSuggestedActionSets;
 
-        public CodeFixSuggestedActionsSource(ITextBuffer textBuffer, ICodeFixActionProviderService codeFixActionProviderService, ITextView textView)
+        public CodeFixSuggestedActionsSource(ITextBuffer textBuffer, ICodeFixSuggestedActionProviderService codeFixSuggestedActionProviderService, ITextView textView)
             : base(textBuffer) {
-            _codeFixActionProviderService = codeFixActionProviderService;
+            _codeFixSuggestedActionProviderService = codeFixSuggestedActionProviderService;
             _textView = textView;
         }
         
@@ -123,8 +123,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 return ImmutableList<CodeFixSuggestedAction>.Empty;
             }
             
-            var parameter  = new CodeFixActionsParameter(range, codeGenerationUnitAndSnapshot, _textView);
-            var actionsets = _codeFixActionProviderService.GetSuggestedActions(parameter, cancellationToken).ToImmutableList();
+            var parameter  = new CodeFixSuggestedActionParameter(range, codeGenerationUnitAndSnapshot, _textView);
+            var actionsets = _codeFixSuggestedActionProviderService.GetCodeFixSuggestedActions(parameter, cancellationToken).ToImmutableList();
 
             if (cancellationToken.IsCancellationRequested || actionsets.Count==0) {
                 return ImmutableList<CodeFixSuggestedAction>.Empty;

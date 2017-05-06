@@ -9,11 +9,11 @@ using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    [Export(typeof(CodeFixActionContext))]
-    class CodeFixActionContext {
+    [Export(typeof(CodeFixSuggestedActionContext))]
+    class CodeFixSuggestedActionContext {
         
         [ImportingConstructor]
-        public CodeFixActionContext(IWaitIndicator waitIndicator,
+        public CodeFixSuggestedActionContext(IWaitIndicator waitIndicator,
             ITextChangeService textChangeService, 
             IDialogService dialogService) {
 
