@@ -9,13 +9,15 @@ using System.Collections.Generic;
 namespace Pharmatechnik.Nav.Language.CodeFixes {
     public sealed class CodeFixContext {
 
-        public CodeFixContext(TextExtent extent, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+        public CodeFixContext(TextExtent range, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
             
             CodeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
             EditorSettings     = editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings));
-            Range              = extent;
+            Range              = range;
 
-            // TODO Verify, Unit Tests
+            if(range.End > codeGenerationUnit.Syntax.SyntaxTree.SourceText.Length) {
+                throw new ArgumentOutOfRangeException(nameof(range));
+            }
         }
 
         public TextExtent Range { get; }
