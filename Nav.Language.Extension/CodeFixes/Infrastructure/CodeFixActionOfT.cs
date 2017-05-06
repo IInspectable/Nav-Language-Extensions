@@ -5,6 +5,7 @@ using System.Threading;
 
 using Microsoft.VisualStudio.Text;
 using Pharmatechnik.Nav.Language.CodeFixes;
+using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
@@ -17,14 +18,18 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         }
 
         public T CodeFix { get; }
-        public override string UndoDescription => CodeFix.Name;
+        public sealed override string UndoDescription => CodeFix.Name;
         public sealed override Span? ApplicableToSpan => GetSnapshotSpan(CodeFix.ApplicableTo);
 
-        public override void Invoke(CancellationToken cancellationToken) {
+        public sealed override void Invoke(CancellationToken cancellationToken) {
           
             Apply(cancellationToken);
 
             SemanticModelService.TryGet(Parameter.TextBuffer)?.UpdateSynchronously();
+        }
+
+        SnapshotSpan? GetSnapshotSpan(TextExtent? lineExtent) {
+            return lineExtent?.ToSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
         }
     }
 }

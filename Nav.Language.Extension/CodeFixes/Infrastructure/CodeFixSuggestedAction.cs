@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 
 using Pharmatechnik.Nav.Language.Text;
-using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
@@ -70,19 +69,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public abstract void Invoke(CancellationToken cancellationToken);
 
         protected abstract void Apply(CancellationToken cancellationToken);
-
-        protected SnapshotSpan? GetSnapshotSpan(ISymbol symbol) {
-            return symbol?.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
-        }
-
-        protected SnapshotSpan? GetSnapshotSpan(TextExtent? lineExtent) {
-            return lineExtent?.ToSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
-        }
-
-        protected SnapshotSpan? GetSnapshotSpan(SyntaxNode node) {
-            return node?.GetLocation()?.GetSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
-        }
-
+        
         protected ITextSnapshot ApplyTextChanges(IEnumerable<TextChange> textChanges) {
 
             var textChangesAndSnapshot = new TextChangesAndSnapshot(

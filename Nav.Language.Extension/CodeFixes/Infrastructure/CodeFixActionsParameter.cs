@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             CodeGenerationUnitAndSnapshot = codeGenerationUnitAndSnapshot ?? throw new ArgumentNullException(nameof(codeGenerationUnitAndSnapshot));
             // TODO Range checking
             CodeFixContext = new CodeFixContext(
-                extent          : new TextExtent(range.Start, range.Length),
+                range          : new TextExtent(range.Start, range.Length),
                 codeGenerationUnit: CodeGenerationUnitAndSnapshot.CodeGenerationUnit,
                 editorSettings    : TextView.GetEditorSettings());
         }
