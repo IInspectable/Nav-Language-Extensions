@@ -76,10 +76,12 @@
     <Compile Include="CodeFixes\CodeFixContext.cs" />
     <Compile Include="CodeFixes\CodeFixImpact.cs" />
     <Compile Include="CodeFixes\EditorSettings.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedNodesCodeFix.cs" />
     <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksCodeFix.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceCodeFixProvider.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
     <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedNodesCodeFixProvider.cs" />
     <Compile Include="CodeFixes\Rename\DialogNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\ExitNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\RenameCodeFixProvider.cs" />
