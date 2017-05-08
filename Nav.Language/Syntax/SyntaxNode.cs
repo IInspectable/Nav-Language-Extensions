@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 using JetBrains.Annotations;
-using Pharmatechnik.Nav.Language.Internal;
 
 #endregion
 
@@ -154,50 +153,47 @@ namespace Pharmatechnik.Nav.Language {
             return TextExtent.FromBounds(GetLeadingTriviaExtent().Start, GetTrailingTriviaExtent().End);
         }
 
-        // TODO Implement GetLeadingTriviaExtent
         public TextExtent GetLeadingTriviaExtent() {
-            
-            if (Start == 0) {
-                return TextExtent.Empty;
-            }
-            
-            var index     = SyntaxTree.Tokens.FindIndexAtPosition(Start - 1);
-            var nextToken = SyntaxTree.Tokens[index+1];
-            var start     = 0;
-            while (index > 0) {
 
-                var token=SyntaxTree.Tokens[index];
-                if (!SyntaxFacts.IsTrivia(token.Classification)) {
-                    start = nextToken.Type==SyntaxTokenType.NewLine? nextToken.End: token.End;
-                    break;
+            var nodeStartLine = SyntaxTree.GetTextLineExtentAtPosition(Start);
+            var leadingExtent = TextExtent.FromBounds(nodeStartLine.Extent.Start, Start);
+
+            var start = Start;
+            // Wenn  bis zum Zeilenanfang nur Trivia Tokens, werden alle vorigen Zeilen, die nur aus Trivias bestehen, auch mit dazu genommen
+            if (SyntaxTree.Tokens[leadingExtent].All(token => SyntaxFacts.IsTrivia(token.Classification))) {
+                // Trivia geht mindestens zum Zeilenanfang der Node
+                start = leadingExtent.Start;
+                // Jetzt alle vorigen Zeilen durchlaufen
+                var line = nodeStartLine.Line-1;
+                while (line >= 0) {
+
+                    var lineExtent=SyntaxTree.GetTextLineExtent(line).Extent;
+                    if (!SyntaxTree.Tokens[lineExtent].All(token => SyntaxFacts.IsTrivia(token.Classification))) {
+                        // Zeile besteht nicht nur aus Trivias
+                        break;
+                    }
+
+                    start = lineExtent.Start;
+                    line -= 1;
                 }
-     
-                nextToken = token;
-                index--;
             }
-            
+          
             return TextExtent.FromBounds(start, Start);
         }
 
-        // TODO Implement GetTrailingTriviaExtent
+        // Die Trailing Trivias gehen bis zum nächsten Token, respektive zum Ende der Zeile
         public TextExtent GetTrailingTriviaExtent() {
 
-            var endLine = SyntaxTree.GetTextLineExtent(End);
-
-            var start = End;
-            var end = endLine.Extent.End;
-
-            var trailingExtent = TextExtent.FromBounds(End, endLine.Extent.End);
+            var nodeEndLine    = SyntaxTree.GetTextLineExtentAtPosition(End);            
+            var trailingExtent = TextExtent.FromBounds(End, nodeEndLine.Extent.End);
 
             var endToken = SyntaxTree.Tokens[trailingExtent]
                                      .SkipWhile(token => SyntaxFacts.IsTrivia(token.Classification))
                                      .FirstOrDefault();
 
-            if (!endToken.IsMissing) {
-                end = endToken.Type == SyntaxTokenType.NewLine ? endToken.End : endToken.Start;
-            }
+            var end = endToken.IsMissing? nodeEndLine.Extent.End: endToken.Start;
 
-            return TextExtent.FromBounds(start, end);
+            return TextExtent.FromBounds(End, end);
         }
 
         [NotNull]

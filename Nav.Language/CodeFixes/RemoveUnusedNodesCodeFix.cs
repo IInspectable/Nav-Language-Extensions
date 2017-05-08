@@ -33,58 +33,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var textChanges = new List<TextChange?>();
 
             foreach(var node in GetCanditates()) {
-                var extent = ExpandToLeadingAndTrailingTrivia(node.Syntax);
-                textChanges.Add(TryRemove(extent));
+                textChanges.Add(TryRemove(node.Syntax.GetFullExtent()));
             }
             return textChanges.OfType<TextChange>().ToList();
-        }
-
-        TextExtent ExpandToLeadingAndTrailingTrivia(SyntaxNode node) {
-            
-            var start = GetLeadingTriviaExtent(node).Start;
-            var end   = GetTrailingTriviaExtent(node).End;
-          
-            return TextExtent.FromBounds(start, end);
-        }
-
-        // TODO GetLeadingTriviaExtent => nach SyntaxNode
-        private TextExtent GetLeadingTriviaExtent(SyntaxNode node) {
-            var startLine = SyntaxTree.GetTextLineExtent(node.Start);
-
-            var start = startLine.Extent.Start;
-            var end   = node.Start;
-            
-            var leadingExtent = TextExtent.FromBounds(startLine.Extent.Start, node.Start);
-            var nwsToken = SyntaxTree.Tokens[leadingExtent]
-                                     .Reverse()
-                                     .SkipWhile(token => token.Classification == SyntaxTokenClassification.Whitespace || token.Classification == SyntaxTokenClassification.Comment)
-                                     .FirstOrDefault();
-            if (!nwsToken.IsMissing) {
-                start = nwsToken.End;
-            }
-
-            return TextExtent.FromBounds(start, end);
-        }
-
-        // TODO GetTrailingTriviaExtent => nach SyntaxNode
-        TextExtent GetTrailingTriviaExtent(SyntaxNode node) {
-            
-            var endLine = SyntaxTree.GetTextLineExtent(node.End);
-
-            var start = node.Start;
-            var end   = endLine.Extent.End;
-
-            var trailingExtent = TextExtent.FromBounds(node.End, endLine.Extent.End);
-
-            var endToken=SyntaxTree.Tokens[trailingExtent]
-                                   .SkipWhile(token => token.Classification == SyntaxTokenClassification.Whitespace || token.Classification == SyntaxTokenClassification.Comment)
-                                   .FirstOrDefault();
-
-            if (!endToken.IsMissing) {
-                end = endToken.Type == SyntaxTokenType.NewLine ? endToken.End : endToken.Start;
-            }
-
-            return TextExtent.FromBounds(start, end);
-        }
+        }     
     }
 }

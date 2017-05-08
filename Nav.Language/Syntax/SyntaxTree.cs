@@ -89,25 +89,29 @@ namespace Pharmatechnik.Nav.Language {
 
         LinePositionExtent GetLinePositionExtent(TextExtent extent) {
 
-            var start = GetLinePosition(extent.Start);
-            var end   = GetLinePosition(extent.End);
+            var start = GetLinePositionAtPosition(extent.Start);
+            var end   = GetLinePositionAtPosition(extent.End);
 
             return new LinePositionExtent(start, end);
         }
 
-        LinePosition GetLinePosition(int position) {
-            var lineInformaton = GetTextLineExtentCore(position);
+        LinePosition GetLinePositionAtPosition(int position) {
+            var lineInformaton = GetTextLineExtentAtPositionCore(position);
             return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
         }
 
-        public TextLineExtent GetTextLineExtent(int position) {
+        public TextLineExtent GetTextLineExtent(int line) {
+            return _textLines[line];
+        }
+
+        public TextLineExtent GetTextLineExtentAtPosition(int position) {
             if (position < 0 || position > SourceText.Length) {
                 throw new ArgumentOutOfRangeException(nameof(position));
             }
-            return GetTextLineExtentCore(position);
+            return GetTextLineExtentAtPositionCore(position);
         }
 
-        TextLineExtent GetTextLineExtentCore(int position) {
+        TextLineExtent GetTextLineExtentAtPositionCore(int position) {
             var lineInformaton = _textLines.FindElementAtPosition(position);
             return lineInformaton;
         }

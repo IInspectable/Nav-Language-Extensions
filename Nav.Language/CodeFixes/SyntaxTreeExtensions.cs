@@ -79,7 +79,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
             string indent = new string(' ', editorSettings.TabSize);
             if (templateEdge.Source != null) {
-                var templateEdgeLine = syntaxTree.GetTextLineExtent(templateEdge.Source.Start);
+                var templateEdgeLine = syntaxTree.GetTextLineExtentAtPosition(templateEdge.Source.Start);
                 indent = syntaxTree.GetLineIndent(templateEdgeLine, editorSettings);
             }
 
@@ -138,7 +138,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         }
 
         public static int GetEndColumn(this SyntaxTree syntaxTree, Location location, EditorSettings editorSettings) {
-            var endLineExtent = syntaxTree.GetTextLineExtent(location.End);
+            var endLineExtent = syntaxTree.GetTextLineExtentAtPosition(location.End);
             var lineStartIndex = endLineExtent.Extent.Start;
             var length = location.EndLinePosition.Character;
 
@@ -150,7 +150,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public static int GetStartColumn(this SyntaxTree syntaxTree, Location location, EditorSettings editorSettings) {
 
-            var startLineExtent = syntaxTree.GetTextLineExtent(location.Start);
+            var startLineExtent = syntaxTree.GetTextLineExtentAtPosition(location.Start);
             var lineStartIndex = startLineExtent.Extent.Start;
             var length = location.StartLinePosition.Character;
 
