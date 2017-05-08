@@ -245,6 +245,10 @@ namespace Pharmatechnik.Nav.Language {
                 
                 // TODO: hier evtl. den "echten" Parent herausfinden...
                 SyntaxNode parent = syntax;
+                if (candidate.Type == NavGrammarLexer.SingleLineComment) {
+                    int newLineIndex = candidate.StopIndex+1;
+                    // TODO NewLine Bugfix
+                }
                 finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
             }
 

@@ -109,7 +109,33 @@ namespace Nav.Language.Tests {
             }
         }
 
-        
+        [Test]
+        public void TestNewLineAfterSingleLineComments() {
+            string source =
+@"//Comment
+task B;
+";
+            var ndb = Syntax.ParseNodeDeclarationBlock(source);
+            var tokens = ndb.SyntaxTree.Tokens;
+
+            Assert.That(tokens[0].Type, Is.EqualTo(SyntaxTokenType.SingleLineComment));
+            Assert.That(tokens[1].Type, Is.EqualTo(SyntaxTokenType.NewLine));
+            Assert.That(tokens[2].Type, Is.EqualTo(SyntaxTokenType.TaskKeyword));
+        }
+
+        [Test]
+        public void TestNewLineAfterMultiLineComments() {
+            string source =
+@"/*Comment*/
+task B;
+";
+            var ndb = Syntax.ParseNodeDeclarationBlock(source);
+            var tokens = ndb.SyntaxTree.Tokens;
+
+            Assert.That(tokens[0].Type, Is.EqualTo(SyntaxTokenType.MultiLineComment));
+            Assert.That(tokens[1].Type, Is.EqualTo(SyntaxTokenType.NewLine));
+            Assert.That(tokens[2].Type, Is.EqualTo(SyntaxTokenType.TaskKeyword));
+        }
 
         [Test]
         public void TestEmptyToken() {
