@@ -245,14 +245,35 @@ namespace Pharmatechnik.Nav.Language {
                 
                 // TODO: hier evtl. den "echten" Parent herausfinden...
                 SyntaxNode parent = syntax;
+
+                // Fix Für Single Line Comments, da diese leider immer auch das EOL beinhalten
                 if (candidate.Type == NavGrammarLexer.SingleLineComment) {
-                    int newLineIndex = candidate.StopIndex+1;
-                    // TODO NewLine Bugfix
+                    int newLineIndex = FindNewLineIndexInSingleLineComment(candidate.Text);
+                    if (newLineIndex > 0) {
+                        var tokenExtent   = TextExtent.FromBounds(candidate.StartIndex, candidate.StartIndex + newLineIndex);
+                        var newLineExtent = TextExtent.FromBounds(candidate.StartIndex + newLineIndex, candidate.StopIndex + 1);
+
+                        finalTokens.Add(SyntaxTokenFactory.CreateToken(tokenExtent  , SyntaxTokenType.SingleLineComment, SyntaxTokenClassification.Comment   , parent));
+                        finalTokens.Add(SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine          , SyntaxTokenClassification.Whitespace, parent));
+                        continue;
+                    }
                 }
                 finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
             }
 
             return SyntaxTokenList.AttachSortedTokens(finalTokens);
+        }
+
+        static int FindNewLineIndexInSingleLineComment(string text) {
+            char c1 = text[text.Length - 2];
+            char c2 = text[text.Length - 1];
+            if (c2 == '\n' || c2== '\r') {
+                if (c1 == '\n') {
+                    return text.Length - 2;
+                }
+                return text.Length - 1;
+            }
+            return -1;
         }
         
         static IReadOnlyList<TextLineExtent> GetTextLines(string text) {
