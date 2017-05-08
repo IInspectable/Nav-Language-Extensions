@@ -148,6 +148,10 @@ namespace Pharmatechnik.Nav.Language {
 
         static string GetLiteralName(int tokenType) {
             return NavGrammarLexer.DefaultVocabulary.GetLiteralName(tokenType).Trim('\'');
-        }        
+        }
+
+        public static bool IsTrivia(SyntaxTokenClassification classification) {
+            return classification == SyntaxTokenClassification.Comment || classification == SyntaxTokenClassification.Whitespace;
+        }
     }
 }
