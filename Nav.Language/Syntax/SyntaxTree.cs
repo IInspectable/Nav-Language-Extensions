@@ -251,21 +251,29 @@ namespace Pharmatechnik.Nav.Language {
                 SyntaxNode parent = syntax;
 
                 // Fix Für Single Line Comments, da diese leider immer auch das EOL beinhalten
-                if (candidate.Type == NavGrammarLexer.SingleLineComment) {
-                    int newLineIndex = FindNewLineIndexInSingleLineComment(candidate.Text);
-                    if (newLineIndex > 0) {
-                        var tokenExtent   = TextExtent.FromBounds(candidate.StartIndex, candidate.StartIndex + newLineIndex);
-                        var newLineExtent = TextExtent.FromBounds(candidate.StartIndex + newLineIndex, candidate.StopIndex + 1);
-
-                        finalTokens.Add(SyntaxTokenFactory.CreateToken(tokenExtent  , SyntaxTokenType.SingleLineComment, SyntaxTokenClassification.Comment   , parent));
-                        finalTokens.Add(SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine          , SyntaxTokenClassification.Whitespace, parent));
-                        continue;
+                if(candidate.Type == NavGrammarLexer.SingleLineComment) {
+                    foreach(var token in SplitSingleLineCommenTokens(candidate, parent)) {
+                        finalTokens.Add(token);
                     }
-                }
-                finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
-            }
+                } else {
+                    finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
+                }                
+            }   
 
             return SyntaxTokenList.AttachSortedTokens(finalTokens);
+        }
+
+        static IEnumerable<SyntaxToken> SplitSingleLineCommenTokens(IToken candidate, SyntaxNode parent) {
+            int newLineIndex = FindNewLineIndexInSingleLineComment(candidate.Text);
+            if(newLineIndex > 0) {
+                var tokenExtent = TextExtent.FromBounds(candidate.StartIndex, candidate.StartIndex + newLineIndex);
+                var newLineExtent = TextExtent.FromBounds(candidate.StartIndex + newLineIndex, candidate.StopIndex + 1);
+
+                yield return SyntaxTokenFactory.CreateToken(tokenExtent, SyntaxTokenType.SingleLineComment, SyntaxTokenClassification.Comment, parent);
+                yield return SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine, SyntaxTokenClassification.Whitespace, parent);
+            } else {
+                yield return SyntaxTokenFactory.CreateToken(candidate, SyntaxTokenClassification.Comment, parent);
+            }
         }
 
         static int FindNewLineIndexInSingleLineComment(string text) {
