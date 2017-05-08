@@ -124,6 +124,25 @@ task B;
         }
 
         [Test]
+        public void TestNewLineAfterSingleLineComments2() {
+            string source =
+@"task A;
+                 //Comment
+task B;
+";
+            var ndb = Syntax.ParseNodeDeclarationBlock(source);
+            var tokens = ndb.SyntaxTree.Tokens;
+            Assert.That(tokens[0].Type, Is.EqualTo(SyntaxTokenType.TaskKeyword));
+            Assert.That(tokens[1].Type, Is.EqualTo(SyntaxTokenType.Whitespace));
+            Assert.That(tokens[2].Type, Is.EqualTo(SyntaxTokenType.Identifier));
+            Assert.That(tokens[3].Type, Is.EqualTo(SyntaxTokenType.Semicolon));
+            Assert.That(tokens[4].Type, Is.EqualTo(SyntaxTokenType.NewLine));
+            Assert.That(tokens[5].Type, Is.EqualTo(SyntaxTokenType.Whitespace));
+            Assert.That(tokens[6].Type, Is.EqualTo(SyntaxTokenType.SingleLineComment));
+            Assert.That(tokens[7].Type, Is.EqualTo(SyntaxTokenType.NewLine));
+        }
+
+        [Test]
         public void TestNewLineAfterMultiLineComments() {
             string source =
 @"/*Comment*/
