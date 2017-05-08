@@ -10,11 +10,11 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    class RemoveUnusedNodesSuggestedAction : CodeFixSuggestedAction<RemoveUnusedNodesCodeFix> {
+    class RemoveUnusedTaskDeclarationSuggestedAction : CodeFixSuggestedAction<RemoveUnusedTaskDeclarationCodeFix> {
 
-        public RemoveUnusedNodesSuggestedAction(RemoveUnusedNodesCodeFix codeFix,
-                                                CodeFixSuggestedActionParameter parameter,
-                                                CodeFixSuggestedActionContext context)
+        public RemoveUnusedTaskDeclarationSuggestedAction(RemoveUnusedTaskDeclarationCodeFix codeFix,
+                                                          CodeFixSuggestedActionParameter parameter,
+                                                          CodeFixSuggestedActionContext context)
             : base(context, parameter, codeFix) {
         }
 

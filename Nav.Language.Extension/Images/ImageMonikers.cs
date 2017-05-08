@@ -282,7 +282,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             get { return KnownMonikers.PendingDeleteNode; }
         }
 
-        public static ImageMoniker RemoveUnusedNodes {
+        public static ImageMoniker RemoveUnusedSymbol {
             get { return KnownMonikers.PendingDeleteNode; }
         }
 

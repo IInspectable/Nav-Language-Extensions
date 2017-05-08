@@ -31,12 +31,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             if (codeFix.CanApplyFix()) {
                 yield return codeFix;
             }
-
-
-        //  return context.FindSymbols<ITaskDefinitionSymbol>()
-        //                .Select(taskDefinition => new RemoveUnusedNodesCodeFix(taskDefinition, context))
-        //                .Where(codeFix => codeFix.CanApplyFix());
-        //
         }
     }
 }
