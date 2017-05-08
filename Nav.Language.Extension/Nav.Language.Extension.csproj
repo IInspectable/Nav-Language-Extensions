@@ -86,8 +86,9 @@
     <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedAction.cs" />
     <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.SuggestedActionSetComparer.cs" />
-    <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedAction.cs" />
+    <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedActionProvider.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedNodesSuggestedAction.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionSuggestedAction.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionContext.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="CodeFixes\Infrastructure\TextChangeService.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceSuggestedAction.cs" />
     <Compile Include="CodeFixes\IntroduceChoiceSuggestedActionProvider.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedNodesSuggestedActionProvider.cs" />
     <Compile Include="Commands\CommandHandlerNames.cs" />
     <Compile Include="Commands\GoToDefinitionCommandCommandHandler.cs" />
     <Compile Include="Commands\Infrastructure\BackTabKeyCommandArgs.cs" />

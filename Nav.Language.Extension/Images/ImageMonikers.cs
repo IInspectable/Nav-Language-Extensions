@@ -282,6 +282,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             get { return KnownMonikers.PendingDeleteNode; }
         }
 
+        public static ImageMoniker RemoveUnusedNodes {
+            get { return KnownMonikers.PendingDeleteNode; }
+        }
+
         public static ImageMoniker AddSemicolon {
             get { return KnownMonikers.PendingAddNode; }
         }
