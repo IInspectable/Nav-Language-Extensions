@@ -23,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.Internal
                 return TextExtent.Missing;
             }
 
-            if (startToken.StartIndex == -1 || endToken.StopIndex == -1) {
+            if (startToken.StartIndex == -1 || endToken.StopIndex < -1) {
                 return TextExtent.Missing;
             }
 

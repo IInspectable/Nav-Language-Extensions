@@ -12,7 +12,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count,     Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count % 2, Is.EqualTo(1));
 
             Assert.That(syntaxTree.Tokens.FindAtPosition(-1).IsMissing, Is.True);
@@ -200,6 +200,44 @@ task B;
             var next = missing.PreviousToken();
 
             Assert.That(next.IsMissing, Is.True);
+        }
+
+        [Test]
+        public void TestCommentAtEndOfFile() {
+            string usingText = " [using U]" +
+                               "//Comment";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+            var tokens = syntaxTree.Tokens;
+            Assert.That(tokens[tokens.Count - 1].Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
+        }
+
+        [Test]
+        public void TestEndOfFile() {
+            string usingText = " [using U]";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+            var tokens = syntaxTree.Tokens;
+            Assert.That(tokens[tokens.Count - 1].Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
+        }
+
+        [Test]
+        public void TestEndOfFileOnEmptyString() {
+            string usingText = "";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+            var tokens = syntaxTree.Tokens;
+            Assert.That(tokens.Count, Is.EqualTo(1));
+            Assert.That(tokens[tokens.Count - 1].Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
+        }
+
+        [Test]
+        public void TestEndOfFileOnSpace() {
+            string usingText = " ";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+            var tokens = syntaxTree.Tokens;
+            Assert.That(tokens[tokens.Count - 1].Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
         }
     }
 }
