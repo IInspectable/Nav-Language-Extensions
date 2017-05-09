@@ -11,26 +11,28 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
     public sealed class RemoveUnusedNodesCodeFixProvider {
 
         public static IEnumerable<RemoveUnusedNodesCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
-
             // Wir schlagen den Codefix nur vor, wenn sich das Caret in einer Node Declaration befindet
-            var nodeDeclarationSyntax = context.FindNodes<NodeDeclarationSyntax>().FirstOrDefault();
+            var nodeDeclarationSyntaxes = context.FindNodes<NodeDeclarationSyntax>();
 
-            // Von dieser Node Declaration laufen wir hoch zum ganzen Block
-            var nodeDeclarationBlock = nodeDeclarationSyntax?.AncestorsAndSelf().OfType<NodeDeclarationBlockSyntax>().FirstOrDefault();
-            if (nodeDeclarationBlock == null) {
-                yield break;
-            }
+            // Die zugehörigen TaskDefinitionen
+            var taskDefinitionSyntaxes = nodeDeclarationSyntaxes
+                .Select(nodeDeclaration => nodeDeclaration?.Ancestors().OfType<TaskDefinitionSyntax>().FirstOrDefault())
+                .Where(taskDefinitionSyntax => taskDefinitionSyntax != null)
+                // Wenn der Range mehr als eine NodeDeclaration enthält, dann müssen wir hier die doppelten Taskdefinitionen entfernen
+                .Distinct();
 
-            // Und von dort zur Task Definition
-            var taskDefinition = context.CodeGenerationUnit.TaskDefinitions.FirstOrDefault(td => td.Syntax.NodeDeclarationBlock == nodeDeclarationBlock);
-            if (taskDefinition == null) {
-                // Sollte eigentlich nicht möglich sein
-                yield break;
-            }
-            var codeFix = new RemoveUnusedNodesCodeFix(taskDefinition, context);
-            if (codeFix.CanApplyFix()) {
-                yield return codeFix;
-            }
+            // Die TaskDefinitionSymbols
+            var taskDefinitionSymbols = taskDefinitionSyntaxes
+                // Das zur TaskDefinition gehörige Symbol finden
+                .Select(taskDefinitionSyntax => context.CodeGenerationUnit.TaskDefinitions.FirstOrDefault(taskDefinition => taskDefinition.Syntax == taskDefinitionSyntax))
+                .Where(taskDefinition => taskDefinition != null);
+
+            // Die Codefxes
+            var codeFixes = taskDefinitionSymbols
+                .Select(taskDefinition => new RemoveUnusedNodesCodeFix(taskDefinition, context))
+                .Where(codeFix => codeFix.CanApplyFix());
+
+            return codeFixes;
         }
     }
 }
