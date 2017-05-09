@@ -14,9 +14,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             : base(context) {
         }
 
-        public override string Name => "Add missing ';' on Include Directives";
-        public override CodeFixImpact Impact => CodeFixImpact.None;
-        // TODO
+        public override string Name              => "Add missing ';' on Include Directives";
+        public override CodeFixImpact Impact     => CodeFixImpact.None;
         public override TextExtent? ApplicableTo => null;
 
         internal bool CanApplyFix() {
@@ -29,12 +28,12 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public IList<TextChange> GetTextChanges() {
 
-            var textChanges = new List<TextChange?>();
+            var textChanges = new List<TextChange>();
 
             foreach (var includeDirectiveSyntax in GetCanditates()) {
-                textChanges.Add(TryInsert(includeDirectiveSyntax.End, SyntaxFacts.Semicolon));
+                textChanges.AddRange(GetInsertChanges(includeDirectiveSyntax.End, SyntaxFacts.Semicolon));
             }
-            return textChanges.OfType<TextChange>().ToList();
+            return textChanges;
         }
     }
 }

@@ -32,7 +32,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public IList<TextChange> GetTextChanges() {
 
             var textChanges = new List<TextChange?>();
-            foreach (var textChange in GetCandidates().SelectMany(c => TryRemoveSyntaxNode(c.Syntax))) {
+            foreach (var textChange in GetCandidates().SelectMany(c => GetRemoveSyntaxNodeChanges(c.Syntax))) {
                 textChanges.Add(textChange);
             }
             return textChanges.OfType<TextChange>().ToList();

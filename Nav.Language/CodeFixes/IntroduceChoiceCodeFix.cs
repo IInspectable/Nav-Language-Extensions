@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 using Pharmatechnik.Nav.Language.Text;
@@ -72,17 +71,17 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var choiceDeclaration = $"{GetLineIndent(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
             var choiceTransition  = $"{GetLineIndent(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
 
-            var textChanges = new List<TextChange?>();
+            var textChanges = new List<TextChange>();
             // Die Choice Deklaration: choice NeueChoice;
-            textChanges.Add(TryInsert(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{Context.EditorSettings.NewLine}"));
+            textChanges.AddRange(GetInsertChanges(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{Context.EditorSettings.NewLine}"));
             // Die Node Reference wird nun umgebogen auf die choice
-            textChanges.Add(TryRename(NodeReference, choiceName));
+            textChanges.AddRange(GetRenameSymbolChanges(NodeReference, choiceName));
             // Die Edge der choice ist immer '-->'
-            textChanges.Add(TryRename(edgeMode, SyntaxFacts.GoToEdgeKeyword));
+            textChanges.AddRange(GetRenameSymbolChanges(edgeMode, SyntaxFacts.GoToEdgeKeyword));
             // Die neue choice Transition 
-            textChanges.Add(TryInsert(nodeTransitionLine.Extent.End, $"{choiceTransition}{Context.EditorSettings.NewLine}"));
+            textChanges.AddRange(GetInsertChanges(nodeTransitionLine.Extent.End, $"{choiceTransition}{Context.EditorSettings.NewLine}"));
 
-            return textChanges.OfType<TextChange>().ToList();
+            return textChanges;
         }
 
         string WhiteSpaceBetweenChoiceKeywordAndIdentifier(INodeSymbol sampleNode) {

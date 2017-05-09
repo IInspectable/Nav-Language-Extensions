@@ -34,7 +34,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 throw new InvalidOperationException();
             }
             var textChanges = new List<TextChange?>();
-            foreach (var textChange in TryRemoveSyntaxNode(TaskDeclaration.Syntax)) {
+            foreach (var textChange in GetRemoveSyntaxNodeChanges(TaskDeclaration.Syntax)) {
                 textChanges.Add(textChange);
             }
             return textChanges.OfType<TextChange>().ToList();

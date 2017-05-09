@@ -52,7 +52,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 throw new InvalidOperationException();
             }
 
-            var textChanges  = new List<TextChange?>();
+            var textChanges  = new List<TextChange>();
 
             var sourceName   = $"{TaskNode.Name}{SyntaxFacts.Colon}{ConnectionPoint.Name}";
             var edgeKeyword  = SyntaxFacts.GoToEdgeKeyword;
@@ -63,9 +63,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             
             // ReSharper disable once PossibleNullReferenceException Check unter CanApplyFix
             var transitionLine = SyntaxTree.GetTextLineExtentAtPosition(templateEdge.Source.Start);
-            textChanges.Add(TryInsert(transitionLine.Extent.End, $"{exitTransition}{Context.EditorSettings.NewLine}"));
+            textChanges.AddRange(GetInsertChanges(transitionLine.Extent.End, $"{exitTransition}{Context.EditorSettings.NewLine}"));
 
-            return textChanges.OfType<TextChange>().ToList();
+            return textChanges;
         }
 
         public TextExtent TryGetSelectionAfterChanges([CanBeNull] CodeGenerationUnit codegenerationUnit) {

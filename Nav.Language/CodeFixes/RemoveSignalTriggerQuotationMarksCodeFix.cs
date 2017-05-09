@@ -37,13 +37,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public IList<TextChange> GetTextChanges() {
            
-            var textChanges = new List<TextChange?>();
+            var textChanges = new List<TextChange>();
 
             foreach(var stringLiteralSyntax in GetCanditates()) {
-                textChanges.Add(TryRemove(TextExtent.FromBounds(stringLiteralSyntax.Start, stringLiteralSyntax.Start + 1)));
-                textChanges.Add(TryRemove(TextExtent.FromBounds(stringLiteralSyntax.End-1, stringLiteralSyntax.End)));
+                textChanges.AddRange(GetRemoveChanges(TextExtent.FromBounds(stringLiteralSyntax.Start, stringLiteralSyntax.Start + 1)));
+                textChanges.AddRange(GetRemoveChanges(TextExtent.FromBounds(stringLiteralSyntax.End-1, stringLiteralSyntax.End)));
             }
-            return textChanges.OfType<TextChange>().ToList();
+            return textChanges;
         }
     }
 }

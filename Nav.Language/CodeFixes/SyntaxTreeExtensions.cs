@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
@@ -13,11 +14,25 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     static class SyntaxTreeExtensions {
 
-        [CanBeNull]
-        public static TextChange? TryRenameSource(this SyntaxTree syntaxTree, ITransition transition, string newSourceName, EditorSettings editorSettings) {
+        [NotNull]
+        public static IEnumerable<TextChange> GetRemoveSyntaxNodeChanges(this SyntaxTree syntaxTree, SyntaxNode syntaxNode, EditorSettings editorSettings) {
+
+            var fullExtent = syntaxNode.GetFullExtent(onlyWhiteSpace: true);
+            yield return new TextChange(fullExtent, String.Empty);
+
+            var lineExtent = syntaxTree.GetTextLineExtentAtPosition(fullExtent.End - 1).Extent;
+            // Prinzipiell enthalten die TrailingTrivia auch das NL Token. Wenn wir aber nicht die einzige Syntax in der Zeile sind,
+            // soll das NL erhalten bleiben. Deswegen schieben wir das durch den fullExtent gelöschte NL hier wieder ein.
+            if (fullExtent.Start > lineExtent.Start && fullExtent.End == lineExtent.End) {
+                yield return new TextChange(TextExtent.FromBounds(lineExtent.End, lineExtent.End), editorSettings.NewLine);
+            }
+        }
+
+        [NotNull]
+        public static IEnumerable<TextChange> GetRenameSourceChanges(this SyntaxTree syntaxTree, ITransition transition, string newSourceName, EditorSettings editorSettings) {
 
             if (transition?.Source == null) {
-                return null;
+                yield break;
             }
 
             var replaceText = newSourceName;
@@ -38,14 +53,14 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 }
             }
 
-            return new TextChange(replaceExtent, replaceText);
+            yield return new TextChange(replaceExtent, replaceText);
         }
 
-        [CanBeNull]
-        public static TextChange? TryRenameSource(this SyntaxTree syntaxTree, IExitTransition transition, string newSourceName, EditorSettings editorSettings) {
+        [NotNull]
+        public static IEnumerable<TextChange> GetRenameSourceChanges(this SyntaxTree syntaxTree, IExitTransition transition, string newSourceName, EditorSettings editorSettings) {
 
             if (transition?.Source == null || transition.ConnectionPoint == null) {
-                return null;
+                yield break;
             }
 
             var replaceText = $"{newSourceName}{SyntaxFacts.Colon}{transition.ConnectionPoint.Name}";
@@ -72,7 +87,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 }
             }
 
-            return new TextChange(replaceExtent, replaceText);
+            yield return new TextChange(replaceExtent, replaceText);
         }
 
         public static string ComposeEdge(this SyntaxTree syntaxTree, IEdge templateEdge, string sourceName, string edgeKeyword, string targetName, EditorSettings editorSettings) {
