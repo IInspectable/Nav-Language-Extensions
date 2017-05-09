@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -28,17 +28,17 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 throw new ArgumentException(validationMessage, nameof(newName));
             }
             
-            var textChanges = new List<TextChange?>();
+            var textChanges = new List<TextChange>();
             // Das Exit selbst
-            textChanges.Add(TryRename(ExitNode, newName));
+            textChanges.AddRange(GetRenameSymbolChanges(ExitNode, newName));
 
             // Die Exit-Referenzen auf der "rechten Seite"
             foreach (var transition in ExitNode.Incomings) {
-                var textChange = TryRenameTarget(transition, newName);
-                textChanges.Add(textChange);
+                var textChange = GetRenameTargetChanges(transition, newName);
+                textChanges.AddRange(textChange);
             }
 
-            return textChanges.OfType<TextChange>().ToList();
+            return textChanges;
         }
     }
 }

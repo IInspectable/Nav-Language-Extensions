@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -37,29 +36,29 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 throw new ArgumentException(validationMessage, nameof(newName));
             }
             
-            var textChanges = new List<TextChange?>();
+            var textChanges = new List<TextChange>();
 
             if (TaskNode.Alias != null) {
                 // Alias umbenennen
-                textChanges.Add(TryRename(TaskNode.Alias, newName));
+                textChanges.AddRange(GetRenameSymbolChanges(TaskNode.Alias, newName));
             } else {
                 // Alias hinzufügen
-                textChanges.Add(TryInsert(TaskNode.Syntax.Identifier.End, $" {newName}"));
+                textChanges.AddRange(GetInsertChanges(TaskNode.Syntax.Identifier.End, $" {newName}"));
             }
 
             // Die Task-Referenzen auf der "linken Seite"
             foreach (var transition in TaskNode.Outgoings) {
-                var textChange = TryRenameSource(transition, newName);
-                textChanges.Add(textChange);
+                var textChange = GetRenameSourceChanges(transition, newName);
+                textChanges.AddRange(textChange);
             }
 
             // Die Task-Referenzen auf der "rechten Seite"
             foreach (var transition in TaskNode.Incomings) {
-                var textChange = TryRenameTarget(transition, newName);
-                textChanges.Add(textChange);
+                var textChange = GetRenameTargetChanges(transition, newName);
+                textChanges.AddRange(textChange);
             }
 
-            return textChanges.OfType<TextChange>().ToList();
+            return textChanges;
         }
     }
 }

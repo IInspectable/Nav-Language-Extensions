@@ -48,14 +48,14 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 throw new ArgumentException(validationMessage, nameof(newName));
             }
             
-            var textChanges = new List<TextChange?>();
+            var textChanges = new List<TextChange>();
             // Die Declaration selbst
-            textChanges.Add(TryRename(TaskDeclaration, newName));
+            textChanges.AddRange(GetRenameSymbolChanges(TaskDeclaration, newName));
 
             foreach(var taskNode in TaskDeclaration.References) {
 
                 // Die Task Node selbst
-                textChanges.Add(TryRename(taskNode, newName));
+                textChanges.AddRange(GetRenameSymbolChanges(taskNode, newName));
 
                 // Wenn der Knoten einen Alias hat, dann sind wir hier fertig
                 if (taskNode.Alias != null) {
@@ -64,18 +64,18 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 
                 // Die Task-Referenzen auf der "linken Seite"
                 foreach (var transition in taskNode.Outgoings) {
-                    var textChange = TryRenameSource(transition, newName);
-                    textChanges.Add(textChange);
+                    var textChange = GetRenameSourceChanges(transition, newName);
+                    textChanges.AddRange(textChange);
                 }
 
                 // Die Task-Referenzen auf der "rechten Seite"
                 foreach (var transition in taskNode.Incomings) {
-                    var textChange = TryRenameTarget(transition, newName);
-                    textChanges.Add(textChange);
+                    var textChange = GetRenameTargetChanges(transition, newName);
+                    textChanges.AddRange(textChange);
                 }
             }
             
-            return textChanges.OfType<TextChange>().ToList();
+            return textChanges;
         }
     }
 }

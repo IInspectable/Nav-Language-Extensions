@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -28,23 +27,23 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 throw new ArgumentException(validationMessage, nameof(newName));
             }
             
-            var textChanges = new List<TextChange?>();
+            var textChanges = new List<TextChange>();
             // Die Dialog Node
-            textChanges.Add(TryRename(DialogNode, newName));
+            textChanges.AddRange(GetRenameSymbolChanges(DialogNode, newName));
 
             // Die Dialog-Referenzen auf der "linken Seite"
             foreach (var transition in DialogNode.Outgoings) {
-                var textChange = TryRenameSource(transition, newName);
-                textChanges.Add(textChange);
+                var textChange = GetRenameSourceChanges(transition, newName);
+                textChanges.AddRange(textChange);
             }
 
             // Die Dialog-Referenzen auf der "rechten Seite"
             foreach (var transition in DialogNode.Incomings) {
-                var textChange = TryRenameTarget(transition, newName);
-                textChanges.Add(textChange);
+                var textChange = GetRenameTargetChanges(transition, newName);
+                textChanges.AddRange(textChange);
             }
 
-            return textChanges.OfType<TextChange>().ToList();
+            return textChanges;
         }
     }
 }

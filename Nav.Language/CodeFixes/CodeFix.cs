@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -23,57 +23,42 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public abstract string Name { get; }
         public abstract CodeFixImpact Impact { get; }
-        // TODO Evtl. Alle TryXY auf IEnumerable umstellen?
-        [CanBeNull]
-        protected static TextChange? TryRemove(TextExtent extent) {
+        
+        protected static IEnumerable<TextChange> GetRemoveChanges(TextExtent extent) {
             if (extent.IsMissing) {
-                return null;
+                yield break;
             }
-            return new TextChange(extent, String.Empty);
+            yield return new TextChange(extent, String.Empty);
         }
 
-        protected IEnumerable<TextChange> TryRemoveSyntaxNode(SyntaxNode syntaxNode) {
-
-            var fullExtent = syntaxNode.GetFullExtent(onlyWhiteSpace: true);
-            yield return new TextChange(fullExtent, String.Empty);
-
-            var lineExtent= SyntaxTree.GetTextLineExtentAtPosition(fullExtent.End-1).Extent;
-            // Prinzipiell enthalten die TrailingTrivia auch das NL Token. Wenn wir aber nicht die einzige Syntax in der Zeile sind,
-            // soll das NL erhalten bleiben. Deswegen schieben wir das durch den fullExtent gelöschte NL hier wieder ein.
-            if (fullExtent.Start > lineExtent.Start && fullExtent.End == lineExtent.End) {
-                yield return new TextChange(TextExtent.FromBounds(lineExtent.End, lineExtent.End), Context.EditorSettings.NewLine);
-            }
-        }
-
-        [CanBeNull]
-        protected static TextChange? TryRename(ISymbol symbol, string newName) {
-            if (symbol == null || symbol.Name == newName) {
-                return null;
-            }
-            return new TextChange(symbol.Location.Extent, newName);
-        }
-
-        [CanBeNull]
-        protected static TextChange? TryInsert(int position, string newText) {
+        protected static IEnumerable<TextChange> GetInsertChanges(int position, string newText) {
             if (newText == null) {
-                return null;
+                yield break;
             }
-            return new TextChange(TextExtent.FromBounds(position, position), newText);
+            yield return new TextChange(TextExtent.FromBounds(position, position), newText);
         }
 
-        [CanBeNull]
-        protected TextChange? TryRenameSource(ITransition transition, string newSourceName) {
-            return SyntaxTree.TryRenameSource(transition, newSourceName, Context.EditorSettings);
+        protected IEnumerable<TextChange> GetRemoveSyntaxNodeChanges(SyntaxNode syntaxNode) {
+            return SyntaxTree.GetRemoveSyntaxNodeChanges(syntaxNode, Context.EditorSettings);            
+        }
+        
+        protected IEnumerable<TextChange> GetRenameSourceChanges(ITransition transition, string newSourceName) {
+            return SyntaxTree.GetRenameSourceChanges(transition, newSourceName, Context.EditorSettings);
         }
 
-        [CanBeNull]
-        protected TextChange? TryRenameSource(IExitTransition transition, string newSourceName) {
-            return SyntaxTree.TryRenameSource(transition, newSourceName, Context.EditorSettings);
+        protected IEnumerable<TextChange> GetRenameSourceChanges(IExitTransition transition, string newSourceName) {
+            return SyntaxTree.GetRenameSourceChanges(transition, newSourceName, Context.EditorSettings);
         }
 
-        [CanBeNull]
-        protected static TextChange? TryRenameTarget(IEdge transition, string newSourceName) {
-            return TryRename(transition.Target, newSourceName);
+        protected static IEnumerable<TextChange> GetRenameTargetChanges(IEdge transition, string newSourceName) {
+            return GetRenameSymbolChanges(transition.Target, newSourceName);
+        }
+
+        protected static IEnumerable<TextChange> GetRenameSymbolChanges(ISymbol symbol, string newName) {
+            if (symbol == null || symbol.Name == newName) {
+                yield break;
+            }
+            yield return new TextChange(symbol.Location.Extent, newName);
         }
 
         protected string ComposeEdge(IEdge templateEdge, string sourceName, string edgeKeyword, string targetName) {

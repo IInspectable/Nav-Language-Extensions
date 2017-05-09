@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -38,24 +38,24 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 throw new ArgumentException(validationMessage, nameof(newName));
             }
             
-            var textChanges = new List<TextChange?>();
+            var textChanges = new List<TextChange>();
             
             if (InitNode.Alias != null) {
                 // Alias umbenennen
-                textChanges.Add(TryRename(InitNode.Alias, newName));
+                textChanges.AddRange(GetRenameSymbolChanges(InitNode.Alias, newName));
             }
             else {
                 // Alias hinzufügen
-                textChanges.Add(TryInsert(InitNode.Syntax.InitKeyword.End, $" {newName}"));
+                textChanges.AddRange(GetInsertChanges(InitNode.Syntax.InitKeyword.End, $" {newName}"));
             }
             
             // Die Choice-Referenzen auf der "linken Seite"
             foreach (var transition in InitNode.Outgoings) {
-                var textChange = TryRenameSource(transition, newName);
-                textChanges.Add(textChange);
+                var textChange = GetRenameSourceChanges(transition, newName);
+                textChanges.AddRange(textChange);
             }
            
-            return textChanges.OfType<TextChange>().ToList();
+            return textChanges;
         }
     }
 }
