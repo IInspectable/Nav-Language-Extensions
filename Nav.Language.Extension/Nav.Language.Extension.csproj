@@ -88,6 +88,8 @@
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.SuggestedActionSetComparer.cs" />
     <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedAction.cs" />
     <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedActionProvider.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedIncludeDirectiveSuggestedAction.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedIncludeDirectiveSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\RemoveUnusedTaskDeclarationSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\RemoveUnusedTaskDeclarationSuggestedAction.cs" />
     <Compile Include="CodeFixes\RemoveUnusedNodesSuggestedAction.cs" />

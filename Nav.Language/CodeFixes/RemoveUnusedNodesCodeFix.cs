@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -33,6 +34,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var textChanges = new List<TextChange?>();
 
             foreach(var node in GetCanditates()) {
+                // TODO Wirklich der FullExtent?
                 textChanges.Add(TryRemove(node.Syntax.GetFullExtent()));
             }
             return textChanges.OfType<TextChange>().ToList();
