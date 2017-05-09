@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 
@@ -22,6 +23,7 @@ namespace Nav.Language.Tests {
     task B; //Comment
 task C;
 ";
+            Assert.That(Environment.NewLine.Length, Is.EqualTo(2), "Environment.NewLine");
             var ndb= Syntax.ParseNodeDeclarationBlock(source);
 
             var taskA=ndb.NodeDeclarations[0];
