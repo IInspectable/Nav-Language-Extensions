@@ -22,8 +22,15 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return GetCandidates().Any();
         }
 
-        IEnumerable<IIncludeSymbol> GetCandidates() {
-            return CodeGenerationUnit.Includes.Where(i => !i.TaskDeklarations.SelectMany(td => td.References).Any());
+        IEnumerable<IncludeDirectiveSyntax> GetCandidates() {
+
+            var includeDirectiveSyntaxes=SyntaxTree.GetRoot().DescendantNodes<IncludeDirectiveSyntax>();
+            foreach (var includeDirectiveSyntax in includeDirectiveSyntaxes) {
+               var includeSymbol = CodeGenerationUnit.Includes.FirstOrDefault(i => i.Syntax == includeDirectiveSyntax);
+                if (includeSymbol == null || !includeSymbol.TaskDeklarations.SelectMany(td => td.References).Any()) {
+                    yield return includeDirectiveSyntax;
+                }               
+            }
         }
         
         public IList<TextChange> GetTextChanges() {
@@ -31,7 +38,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var textChanges = new List<TextChange?>();
             foreach (var candidate in GetCandidates()) {
                 // TODO Wirklich der FullExtent?
-                textChanges.Add(TryRemove(candidate.Syntax.GetFullExtent()));
+                textChanges.Add(TryRemove(candidate.GetFullExtent()));
             }            
             return textChanges.OfType<TextChange>().ToList();
         }     

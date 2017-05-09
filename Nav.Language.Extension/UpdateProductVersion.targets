@@ -1,7 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Extensions</ProductName>
-    <ProductVersion>3.0.43</ProductVersion>
+    <ProductVersion>3.0.44</ProductVersion>
   </PropertyGroup>
   <PropertyGroup>
     <VsixmanifestFile>$(MSBuildProjectDirectory)\source.extension.vsixmanifest</VsixmanifestFile>
