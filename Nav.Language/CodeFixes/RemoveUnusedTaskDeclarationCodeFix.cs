@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -34,6 +35,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             }
             var textChanges = new List<TextChange?>();
             // ReSharper disable once PossibleNullReferenceException Siehe CanApplyFix
+            // TODO Wirklich der FullExtent?
             textChanges.Add(TryRemove(TaskDeclaration.Syntax.GetFullExtent()));
             return textChanges.OfType<TextChange>().ToList();
         }     
