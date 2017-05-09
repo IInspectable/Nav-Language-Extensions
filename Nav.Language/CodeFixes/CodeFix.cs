@@ -17,6 +17,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public CodeFixContext Context { get; }
         public abstract TextExtent? ApplicableTo { get; }
+        public abstract CodeFixPrio Prio { get; }
         public CodeGenerationUnit CodeGenerationUnit => Context.CodeGenerationUnit;
         public CodeGenerationUnitSyntax Syntax       => CodeGenerationUnit.Syntax;
         public SyntaxTree SyntaxTree                 => Syntax.SyntaxTree;

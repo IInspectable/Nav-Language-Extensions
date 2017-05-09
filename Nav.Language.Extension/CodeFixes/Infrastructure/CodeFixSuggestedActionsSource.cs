@@ -50,7 +50,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var groupedActions = suggestedActionSets.GroupBy(action => action.ApplicableToSpan);
             var suggestedActionSet = new List<SuggestedActionSet>();
             foreach (var actionsInSpan in groupedActions) {
-                suggestedActionSet.Add(new SuggestedActionSet(actionsInSpan, applicableToSpan: actionsInSpan.Key ?? range));
+                var orderedActions = actionsInSpan.OrderByDescending(codeFixSuggestedAction => codeFixSuggestedAction.Prio);
+                suggestedActionSet.Add(new SuggestedActionSet(orderedActions, applicableToSpan: actionsInSpan.Key ?? range));
             }
             
             // Sortierung nach Nähe zum Caret Point

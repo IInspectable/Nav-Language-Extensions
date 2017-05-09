@@ -20,6 +20,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         public T CodeFix { get; }
         public sealed override string UndoDescription => CodeFix.Name;
         public sealed override Span? ApplicableToSpan => GetSnapshotSpan(CodeFix.ApplicableTo);
+        public override CodeFixPrio Prio              => CodeFix.Prio;
+
 
         public sealed override void Invoke(CancellationToken cancellationToken) {
           

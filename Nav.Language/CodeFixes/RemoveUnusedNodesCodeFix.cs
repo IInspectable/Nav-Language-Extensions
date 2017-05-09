@@ -16,9 +16,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             TaskDefinition = taskDefinitionSymbol ?? throw new ArgumentNullException(nameof(taskDefinitionSymbol));
         }
 
-        public override string Name => "Remove Unused Nodes";
-        public override CodeFixImpact Impact => CodeFixImpact.None;
+        public override string Name              => "Remove Unused Nodes";
+        public override CodeFixImpact Impact     => CodeFixImpact.None;
         public override TextExtent? ApplicableTo => null;
+        public override CodeFixPrio Prio         => CodeFixPrio.Medium;
         public ITaskDefinitionSymbol TaskDefinition { get; }
 
         internal bool CanApplyFix() {

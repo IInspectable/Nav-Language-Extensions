@@ -17,6 +17,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public override string Name              => "Add missing ';' on Include Directives";
         public override CodeFixImpact Impact     => CodeFixImpact.None;
         public override TextExtent? ApplicableTo => null;
+        public override CodeFixPrio Prio         => CodeFixPrio.Low;
 
         internal bool CanApplyFix() {
             return GetCanditates().Any();
