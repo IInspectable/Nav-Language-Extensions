@@ -89,7 +89,7 @@ task C;
             var ndb = Syntax.ParseNodeDeclarationBlock(source);
 
             var taskA = ndb.NodeDeclarations[0];
-            var lteA  = new TextExtent(5 + _nlCharCount, length: 2 + _nlCharCount);
+            var lteA  = new TextExtent(5 + _nlCharCount, length: 4);
             var tteA  = new TextExtent(lteA.End + 7,     length: _nlCharCount);
             Assert.That(taskA.GetLeadingTriviaExtent(onlyWhiteSpace: true), Is.EqualTo(lteA));
             Assert.That(taskA.GetTrailingTriviaExtent(onlyWhiteSpace: true), Is.EqualTo(tteA));
