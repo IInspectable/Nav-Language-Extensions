@@ -98,7 +98,7 @@
     </Compile>
     <Compile Include="RenameChoiceCodeFixTests.cs" />
     <Compile Include="SyntaxFactsTest.cs" />
-    <Compile Include="SyntaxNodeTests.cs" />
+    <Compile Include="SyntaxNodeTriviaTests.cs" />
     <Compile Include="SyntaxStressTests.cs" />
     <Compile Include="SyntaxTreeNavigationTests.cs" />
     <Compile Include="SyntaxTreeAllRulesTests.cs" />

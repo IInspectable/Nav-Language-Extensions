@@ -149,18 +149,18 @@ namespace Pharmatechnik.Nav.Language {
             return null;
         }
 
-        public TextExtent GetFullExtent() {
-            return TextExtent.FromBounds(GetLeadingTriviaExtent().Start, GetTrailingTriviaExtent().End);
+        public TextExtent GetFullExtent(bool onlyWhiteSpace = false) {
+            return TextExtent.FromBounds(GetLeadingTriviaExtent(onlyWhiteSpace).Start, GetTrailingTriviaExtent(onlyWhiteSpace).End);
         }
 
-        public TextExtent GetLeadingTriviaExtent() {
-
+        public TextExtent GetLeadingTriviaExtent(bool onlyWhiteSpace = false) {
+            var isTrivia      = GetIsTriviaFunc(onlyWhiteSpace);
             var nodeStartLine = SyntaxTree.GetTextLineExtentAtPosition(Start);
             var leadingExtent = TextExtent.FromBounds(nodeStartLine.Extent.Start, Start);
 
             var start = Start;
             // Wenn  bis zum Zeilenanfang nur Trivia Tokens, werden alle vorigen Zeilen, die nur aus Trivias bestehen, auch mit dazu genommen
-            if (SyntaxTree.Tokens[leadingExtent].All(token => SyntaxFacts.IsTrivia(token.Classification))) {
+            if (SyntaxTree.Tokens[leadingExtent].All(token => isTrivia(token.Classification))) {
                 // Trivia geht mindestens zum Zeilenanfang der Node
                 start = leadingExtent.Start;
                 // Jetzt alle vorigen Zeilen durchlaufen
@@ -168,7 +168,7 @@ namespace Pharmatechnik.Nav.Language {
                 while (line >= 0) {
 
                     var lineExtent=SyntaxTree.GetTextLineExtent(line).Extent;
-                    if (!SyntaxTree.Tokens[lineExtent].All(token => SyntaxFacts.IsTrivia(token.Classification))) {
+                    if (!SyntaxTree.Tokens[lineExtent].All(token => isTrivia(token.Classification))) {
                         // Zeile besteht nicht nur aus Trivias
                         break;
                     }
@@ -182,19 +182,26 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         // Die Trailing Trivias gehen bis zum nächsten Token, respektive zum Ende der Zeile
-        public TextExtent GetTrailingTriviaExtent() {
+        public TextExtent GetTrailingTriviaExtent(bool onlyWhiteSpace=false) {
 
+            var isTrivia       = GetIsTriviaFunc(onlyWhiteSpace);
             var nodeEndLine    = SyntaxTree.GetTextLineExtentAtPosition(End);            
             var trailingExtent = TextExtent.FromBounds(End, nodeEndLine.Extent.End);
 
             var endToken = SyntaxTree.Tokens[trailingExtent]
-                                     .SkipWhile(token => SyntaxFacts.IsTrivia(token.Classification))
+                                     .SkipWhile(token => isTrivia(token.Classification))
                                      .FirstOrDefault();
 
             var end = endToken.IsMissing? nodeEndLine.Extent.End: endToken.Start;
 
             return TextExtent.FromBounds(End, end);
         }
+
+        static Func<SyntaxTokenClassification, bool> GetIsTriviaFunc(bool onlyWhiteSpace = false) {
+            return onlyWhiteSpace ? (c => c == SyntaxTokenClassification.Whitespace) : 
+                                    new Func<SyntaxTokenClassification, bool>(SyntaxFacts.IsTrivia);            
+        }
+
 
         [NotNull]
         public SyntaxTree SyntaxTree {
