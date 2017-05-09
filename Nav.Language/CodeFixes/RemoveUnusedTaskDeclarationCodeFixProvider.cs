@@ -13,24 +13,18 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public static IEnumerable<RemoveUnusedTaskDeclarationCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
 
             // Wir schlagen den Codefix nur vor, wenn sich das Caret in einer Task Declaration befindet
-            var taskDeclarationSyntax = context.FindNodes<SyntaxNode>()
-                                               .Select(n => n.AncestorsAndSelf().OfType<TaskDeclarationSyntax>().FirstOrDefault())
-                                               .FirstOrDefault(tds => tds!=null);
+            var taskDeclarationSyntaxes = context.FindNodes<SyntaxNode>()
+                                                 .Select(n => n.AncestorsAndSelf().OfType<TaskDeclarationSyntax>().FirstOrDefault())
+                                                 .Distinct();
 
-            if (taskDeclarationSyntax == null) {
-                yield break;
-            }
-
-            // Und von dort zum Symbol
-            var taskDeclaration = context.CodeGenerationUnit.TaskDeclarations.FirstOrDefault(td => td.Syntax == taskDeclarationSyntax);
-            if (taskDeclaration == null) {
-                // Sollte eigentlich nicht möglich sein
-                yield break;
-            }
-
-            var codeFix = new RemoveUnusedTaskDeclarationCodeFix(taskDeclaration, context);
-            if (codeFix.CanApplyFix()) {
-                yield return codeFix;
+            foreach (var taskDeclarationSyntax in taskDeclarationSyntaxes) {
+                var taskDeclaration = context.CodeGenerationUnit.TaskDeclarations.FirstOrDefault(td => td.Syntax == taskDeclarationSyntax);
+                if (taskDeclaration != null) {
+                    var codeFix = new RemoveUnusedTaskDeclarationCodeFix(taskDeclaration, context);
+                    if (codeFix.CanApplyFix()) {
+                        yield return codeFix;
+                    }
+                }
             }
         }
     }
