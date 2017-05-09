@@ -17,9 +17,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         }
 
        
-        public override string Name             => "Introduce Choice";
-        public override CodeFixImpact Impact    => CodeFixImpact.None;
+        public override string Name              => "Introduce Choice";
+        public override CodeFixImpact Impact     => CodeFixImpact.None;
         public override TextExtent? ApplicableTo => NodeReference.Location.Extent;
+        public override CodeFixPrio Prio         => CodeFixPrio.Medium;
         public INodeReferenceSymbol NodeReference { get; }
         public ITaskDefinitionSymbol ContainingTask => NodeReference.Declaration?.ContainingTask;
 

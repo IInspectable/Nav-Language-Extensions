@@ -18,7 +18,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public override string Name              => "Remove Quotation Marks from Trigger Names";
         public override CodeFixImpact Impact     => CodeFixImpact.None;
         public override TextExtent? ApplicableTo => null;
-       
+        public override CodeFixPrio Prio         => CodeFixPrio.Low;
+
         internal bool CanApplyFix() {
             return GetCanditates().Any();
         }

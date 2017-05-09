@@ -20,6 +20,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public override string Name              => "Remove Unused Task Declaration";
         public override CodeFixImpact Impact     => CodeFixImpact.None;
         public override TextExtent? ApplicableTo => null;
+        public override CodeFixPrio Prio         => CodeFixPrio.Medium;
         public ITaskDeclarationSymbol TaskDeclaration { get; }
        
         internal bool CanApplyFix() {

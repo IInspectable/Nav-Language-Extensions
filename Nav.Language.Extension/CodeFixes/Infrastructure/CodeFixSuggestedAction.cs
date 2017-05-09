@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
-
+using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -26,9 +26,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         protected CodeFixSuggestedActionParameter Parameter { get; }
 
         public abstract Span? ApplicableToSpan { get; }
+        public abstract CodeFixPrio Prio { get; }
         public abstract string DisplayText { get; }
         public abstract string UndoDescription { get; }
-
+        
         public virtual ImageMoniker IconMoniker {
             get { return default(ImageMoniker); }
         }

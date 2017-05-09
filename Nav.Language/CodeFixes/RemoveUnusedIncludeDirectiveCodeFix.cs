@@ -17,7 +17,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public override string Name              => "Remove Unused Taskref Directive";
         public override CodeFixImpact Impact     => CodeFixImpact.None;
         public override TextExtent? ApplicableTo => null;
-       
+        public override CodeFixPrio Prio         => CodeFixPrio.Medium;
+
         internal bool CanApplyFix() {
             return GetCandidates().Any();
         }

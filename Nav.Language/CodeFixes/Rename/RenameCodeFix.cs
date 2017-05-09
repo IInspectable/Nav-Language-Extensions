@@ -35,6 +35,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
         protected ISymbol OriginatingSymbol { get; }
 
         public override TextExtent? ApplicableTo => OriginatingSymbol.Location.Extent;
+        public override CodeFixPrio Prio         => CodeFixPrio.Low;
 
         [NotNull]
         public T Symbol { get; }
