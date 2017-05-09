@@ -87,7 +87,7 @@ task C;
 
             var taskA = ndb.NodeDeclarations[0];
 
-            Assert.That(taskA.GetLeadingTriviaExtent(onlyWhiteSpace: true), Is.EqualTo(new TextExtent(7, length: 4)));
+            Assert.That(taskA.GetLeadingTriviaExtent(onlyWhiteSpace: true), Is.EqualTo(new TextExtent(7, length: 2+ _nlCharCount)));
             Assert.That(taskA.GetTrailingTriviaExtent(onlyWhiteSpace: true), Is.EqualTo(new TextExtent(18, length: _nlCharCount)));
 
             var taskB = ndb.NodeDeclarations[1];
