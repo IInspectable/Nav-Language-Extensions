@@ -36,11 +36,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public IList<TextChange> GetTextChanges() {
 
             var textChanges = new List<TextChange?>();
-            foreach (var candidate in GetCandidates()) {
-                // TODO Wirklich der FullExtent?
-                textChanges.Add(TryRemove(candidate.GetFullExtent()));
+            foreach (var textChange in GetCandidates().SelectMany(TryRemoveSyntaxNode)) {
+                textChanges.Add(textChange);
             }            
             return textChanges.OfType<TextChange>().ToList();
-        }     
+        }        
     }
 }

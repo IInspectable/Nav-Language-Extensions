@@ -34,9 +34,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 throw new InvalidOperationException();
             }
             var textChanges = new List<TextChange?>();
-            // ReSharper disable once PossibleNullReferenceException Siehe CanApplyFix
-            // TODO Wirklich der FullExtent?
-            textChanges.Add(TryRemove(TaskDeclaration.Syntax.GetFullExtent()));
+            foreach (var textChange in TryRemoveSyntaxNode(TaskDeclaration.Syntax)) {
+                textChanges.Add(textChange);
+            }
             return textChanges.OfType<TextChange>().ToList();
         }     
     }

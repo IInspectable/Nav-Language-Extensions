@@ -1,7 +1,7 @@
 #region Using Directives
 
 using System;
-
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Text;
 
@@ -23,13 +23,26 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public abstract string Name { get; }
         public abstract CodeFixImpact Impact { get; }
-
+        // TODO Evtl. Alle TryXY auf IEnumerable umstellen?
         [CanBeNull]
         protected static TextChange? TryRemove(TextExtent extent) {
             if (extent.IsMissing) {
                 return null;
             }
             return new TextChange(extent, String.Empty);
+        }
+
+        protected IEnumerable<TextChange> TryRemoveSyntaxNode(SyntaxNode syntaxNode) {
+
+            var fullExtent = syntaxNode.GetFullExtent(onlyWhiteSpace: true);
+            yield return new TextChange(fullExtent, String.Empty);
+
+            var lineExtent= SyntaxTree.GetTextLineExtentAtPosition(fullExtent.End-1).Extent;
+            // Prinzipiell enthalten die TrailingTrivia auch das NL Token. Wenn wir aber nicht die einzige Syntax in der Zeile sind,
+            // soll das NL erhalten bleiben. Deswegen schieben wir das durch den fullExtent gelöschte NL hier wieder ein.
+            if (fullExtent.Start > lineExtent.Start && fullExtent.End == lineExtent.End) {
+                yield return new TextChange(TextExtent.FromBounds(lineExtent.End, lineExtent.End), Context.EditorSettings.NewLine);
+            }
         }
 
         [CanBeNull]
