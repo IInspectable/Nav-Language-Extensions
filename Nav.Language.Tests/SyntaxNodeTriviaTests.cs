@@ -31,7 +31,6 @@ namespace Nav.Language.Tests {
     task B; //Comment
 task C;
 ";
-            Assert.That(_nlCharCount, Is.EqualTo(2), "Environment.NewLine");
             var ndb= Syntax.ParseNodeDeclarationBlock(source);
 
             var taskA=ndb.NodeDeclarations[0];
