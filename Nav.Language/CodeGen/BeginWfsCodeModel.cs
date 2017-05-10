@@ -15,13 +15,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         readonly ITaskDefinitionSymbol _taskDefinition;
 
         public BeginWfsCodeModel(ITaskDefinitionSymbol taskDefinition) {
-
-            if (taskDefinition == null) {
-                throw new ArgumentNullException(nameof(taskDefinition));
-            }
-
-            _taskDefinition  = taskDefinition;
-            _taskCodeModel = new TaskCodeModel(taskDefinition);
+            _taskDefinition = taskDefinition ?? throw new ArgumentNullException(nameof(taskDefinition));
+            _taskCodeModel  = new TaskCodeModel(taskDefinition);
         }
         
         [NotNull]

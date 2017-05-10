@@ -103,12 +103,14 @@
     <Compile Include="CodeGen\CodeGenerationOptions.cs" />
     <Compile Include="CodeGen\CodeGenerationResult.cs" />
     <Compile Include="CodeGen\CodeGenerator.cs" />
+    <Compile Include="CodeGen\CodeGeneratorContext.cs" />
     <Compile Include="CodeGen\CodeModel.cs" />
     <Compile Include="CodeGen\SignalTriggerCodeModel.cs" />
     <Compile Include="CodeGen\TaskBeginCodeModel.cs" />
     <Compile Include="CodeGen\TaskCodeModel.cs" />
     <Compile Include="CodeGen\TaskDeclarationCodeModel.cs" />
     <Compile Include="CodeGen\TaskExitCodeModel.cs" />
+    <Compile Include="CodeGen\Templates\Resources.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TextLineExtent.cs" />
@@ -169,11 +171,6 @@
     <Compile Include="Model\TaskDeclarationSymbolBuilder.cs" />
     <Compile Include="Model\TaskDefinitionSymbol.cs" />
     <Compile Include="Model\TriggerSymbol.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Syntax\CodeSyntax.cs" />
     <Compile Include="Diagnostic\DiagnosticDescriptor.cs" />
     <Compile Include="Syntax\Generated\SyntaxNodeWalker.Generated.cs">
@@ -267,7 +264,7 @@
   <ItemGroup>
     <Compile Include="Diagnostic\DiagnosticDescriptors.DeadCode.cs" />
     <None Include="app.config" />
-    <None Include="CodeGen\Templates\IBeginWFS.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\IBeginWFS.stg" />
     <None Include="Grammar\NavTokens.g4" />
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
@@ -310,12 +307,6 @@
       <LastGenOutput>SymbolVisitor.Generated.cs</LastGenOutput>
     </Content>
     <None Include="Model\_Missing Diagnostics.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="UpdateProductVersion.targets" />

@@ -2,8 +2,6 @@
 
     public class CodeGenerationOptions {
 
-        public bool GenerateIBeginWfsInterface { get; set; }
-
+        public static CodeGenerationOptions Default => new CodeGenerationOptions();
     }
-
 }

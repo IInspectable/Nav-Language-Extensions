@@ -1,10 +1,13 @@
 ﻿#region Using Directives
 
-using System.Collections.Generic;
+using System;
+using System.Linq;
+using System.Collections.Immutable;
 
 using Antlr4.StringTemplate;
+using JetBrains.Annotations;
 
-using Pharmatechnik.Nav.Language.Properties;
+using Pharmatechnik.Nav.Language.CodeGen.Templates;
 
 #endregion
 
@@ -12,41 +15,44 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public class CodeGenerator {
 
-        readonly CodeGenerationOptions _options;
-
         public CodeGenerator(CodeGenerationOptions options) {
-            _options = options;
+            Options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
-        // TODO Error / Warning Logging
-        public IEnumerable<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit) {
-            // TODO Diagnostic check
+        [NotNull]
+        public CodeGenerationOptions Options { get; }
 
-            foreach(var taskDefinition in codeGenerationUnit.TaskDefinitions) {
-                var result = Generate(taskDefinition);
-                yield return result;
+        public IImmutableList<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit) {
+
+            if (codeGenerationUnit.Syntax.SyntaxTree.Diagnostics.HasErrors()) {
+                throw new ArgumentException("Syntax errors detected");
             }
+
+            if (codeGenerationUnit.Diagnostics.HasErrors()) {
+                throw new ArgumentException("Semantic errors detected");
+            }
+
+            return codeGenerationUnit.TaskDefinitions
+                                     .Select(Generate)
+                                     .ToImmutableList();
         }
 
         CodeGenerationResult Generate(ITaskDefinitionSymbol taskDefinition) {
 
-            // TODO Diagnostic check
+            var context = new CodeGeneratorContext(this);
+            var model   = new BeginWfsCodeModel(taskDefinition);
+            var group   = new TemplateGroupString(Resources.BeginWFSTemplate);
 
-            var result = new CodeGenerationResult(taskDefinition);
+            // IBegin...WFS
+            var st = group.GetInstanceOf("IBeginWFS");
+            st.Add("model", model);
+            st.Add("context", context);
 
-            if (_options.GenerateIBeginWfsInterface) {
+            var beginWfsInterfaceCode = st.Render();
 
-                var model = new BeginWfsCodeModel(taskDefinition);
-                var group = new TemplateGroupString(Resources.IBeginWFS);
-                var st    = group.GetInstanceOf("IBeginWFS");
-
-                st.Add("model", model);
-                // TODO Add Context?
-
-                result.BeginWfsInterface = st.Render();
-            }
-
-            return result;
+            return new CodeGenerationResult(
+                taskDefinition       : taskDefinition, 
+                beginWfsInterfaceCode: beginWfsInterfaceCode);
         }
     }
 }
