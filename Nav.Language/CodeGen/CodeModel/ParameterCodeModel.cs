@@ -1,7 +1,11 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-    public class ParameterCodeModel {
+    public class ParameterCodeModel : CodeModel {
         
         public ParameterCodeModel(string parameterType, string parameterName) {
             ParameterType = parameterType ?? String.Empty;

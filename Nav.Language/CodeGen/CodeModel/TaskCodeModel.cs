@@ -1,4 +1,8 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
