@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
 
-            var codeModel = new TaskCodeModel(taskDefinitionSymbol);
+            var codeModel = TaskCodeModel.FromTaskDefinition(taskDefinitionSymbol);
             var provider  = new TaskDeclarationLocationInfoProvider(_textBuffer, codeModel);
             
             return CreateTagSpan(taskDefinitionSymbol.Location, provider);
