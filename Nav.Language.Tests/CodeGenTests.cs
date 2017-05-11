@@ -32,13 +32,15 @@ namespace Nav.Language.Tests {
 task TaskA [base StandardWFS : ILegacyMessageBoxWFS]
 				  [result MessageBoxResult]
 {
-    init [params string message, MessageBoxImage messageBoxImage];
+    init I1 [params string message];
+    init I2 [params string message, MessageBoxImage messageBoxImage];
         
     view MessageBoxOK;
     
     exit Ok;
 
-    init --> MessageBoxOK;  
+    I1 --> MessageBoxOK;  
+    I2 --> MessageBoxOK; 
     
     MessageBoxOK --> Ok on Ok;
 }";

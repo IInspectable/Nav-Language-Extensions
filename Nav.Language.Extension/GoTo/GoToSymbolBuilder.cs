@@ -121,15 +121,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return DefaultVisit(initNodeSymbol);
             }
 
-            var codeModel = new TaskBeginCodeModel(initNodeSymbol);
+            var codeModel = TaskInitCodeModel.FromInitNode(initNodeSymbol);
             var provider  = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(initNodeSymbol.Location, provider);
         }
 
         public override TagSpan<GoToTag> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
-            var codeModel = new TaskBeginCodeModel(initNodeAliasSymbol.InitNode);
-            var provider = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
+            var codeModel = TaskInitCodeModel.FromInitNode(initNodeAliasSymbol.InitNode);
+            var provider  = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(initNodeAliasSymbol.Location, provider);
         }

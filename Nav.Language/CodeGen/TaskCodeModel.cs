@@ -16,11 +16,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var baseNamespace = (task.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString();
 
             WflNamespace    = $"{baseNamespace}.WFL";
+            IwflNamespace   = $"{baseNamespace}.IWFL";
             WfsBaseTypeName = $"{name}WFSBase";
             WfsTypeName     = $"{name}WFS";
         }
 
         public string WflNamespace { get; }
+        public string IwflNamespace { get; }
         public string WfsBaseTypeName { get; }
         public string WfsTypeName { get; }
 
