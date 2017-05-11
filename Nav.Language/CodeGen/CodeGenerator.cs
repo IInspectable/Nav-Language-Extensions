@@ -40,19 +40,24 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         CodeGenerationResult Generate(ITaskDefinitionSymbol taskDefinition) {
 
             var context = new CodeGeneratorContext(this);
-            var model   = new BeginWfsCodeModel(taskDefinition);
-            var group   = new TemplateGroupString(Resources.BeginWFSTemplate);
-
-            // IBegin...WFS
-            var st = group.GetInstanceOf("IBeginWFS");
-            st.Add("model", model);
-            st.Add("context", context);
-
-            var beginWfsInterfaceCode = st.Render();
 
             return new CodeGenerationResult(
-                taskDefinition       : taskDefinition, 
-                beginWfsInterfaceCode: beginWfsInterfaceCode);
+                taskDefinition        : taskDefinition, 
+                iBeginWfsInterfaceCode: GenerateIBeginWfsInterface(taskDefinition, context));
+        }
+
+        static string GenerateIBeginWfsInterface(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
+
+            var model = IBeginWfsCodeModel.FromTaskDefinition(taskDefinition);
+            var group = new TemplateGroupString(Resources.IBeginWfsTemplate);
+            
+            var st = group.GetInstanceOf("IBeginWFS");
+            st.Add("model"  , model);
+            st.Add("context", context);
+
+            var result = st.Render();
+
+            return result;
         }
     }
 }

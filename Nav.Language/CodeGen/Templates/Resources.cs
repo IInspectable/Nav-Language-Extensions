@@ -8,7 +8,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen.Templates {
 
     static class Resources {
         
-        public static string BeginWFSTemplate => LoadText("IBeginWFS.stg");
+        // ReSharper disable once InconsistentNaming
+        public static string IBeginWfsTemplate => LoadText("IBeginWFS.stg");
 
         static string LoadText(string resourceName) {
 

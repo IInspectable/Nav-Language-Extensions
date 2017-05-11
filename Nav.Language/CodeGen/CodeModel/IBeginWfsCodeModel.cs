@@ -11,33 +11,43 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    sealed class BeginWfsCodeModel : CodeModel {
+    // ReSharper disable once InconsistentNaming
+    sealed class IBeginWfsCodeModel : CodeModel {
 
-        public BeginWfsCodeModel(ITaskDefinitionSymbol taskDefinition) {
+        IBeginWfsCodeModel(ImmutableList<string> usingNamespaces, string wflNamespace, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits) {
+            UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
+            Namespace         = wflNamespace      ?? throw new ArgumentNullException(nameof(usingNamespaces));
+            TaskName          = taskName          ?? throw new ArgumentNullException(nameof(usingNamespaces));
+            BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(usingNamespaces));
+            TaskInits         = taskInits         ?? throw new ArgumentNullException(nameof(usingNamespaces));
+        }
+
+        public static IBeginWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
 
             if (taskDefinition == null) {
                 throw new ArgumentNullException(nameof(taskDefinition));
             }
 
             var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
-            
+
             // UsingNamespaces
             var namespaces = new List<string>();
             namespaces.Add(taskCodeModel.IwflNamespace);
             namespaces.AddRange(GetCodeUsingNamespaces(taskDefinition.CodeGenerationUnit));
-           
+
             // Inits
             var taskInits = new List<TaskInitCodeModel>();
             foreach (var initNode in taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
                 var taskInit = TaskInitCodeModel.FromInitNode(initNode, taskCodeModel);
                 taskInits.Add(taskInit);
             }
-            
-            UsingNamespaces        = namespaces.ToImmutableList();
-            Namespace         = taskCodeModel.WflNamespace;
-            TaskName          = taskDefinition.Name ?? string.Empty;
-            BaseInterfaceName = "IBeginWFService";
-            TaskInits         = taskInits.ToImmutableList();
+
+            return new IBeginWfsCodeModel (
+             usingNamespaces   : namespaces.ToImmutableList(),
+             wflNamespace      : taskCodeModel.WflNamespace,
+             taskName          : taskDefinition.Name ?? string.Empty,
+             baseInterfaceName :"IBeginWFService",
+             taskInits         : taskInits.ToImmutableList());
         }
 
         [NotNull]

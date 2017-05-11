@@ -44,6 +44,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var parameter = new List<ParameterCodeModel>();
             var paramterList = initNodeSymbol.Syntax.CodeParamsDeclaration?.ParameterList;
             if (paramterList != null) {
+                // TODO parameterName Fallback? p0..pn?
                 foreach (var parameterSyntax in paramterList) {
                     parameter.Add(new ParameterCodeModel(
                         parameterType: parameterSyntax.Type?.ToString(), 
