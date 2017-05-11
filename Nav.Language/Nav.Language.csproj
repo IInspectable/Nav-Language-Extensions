@@ -105,8 +105,9 @@
     <Compile Include="CodeGen\CodeGenerator.cs" />
     <Compile Include="CodeGen\CodeGeneratorContext.cs" />
     <Compile Include="CodeGen\CodeModel.cs" />
+    <Compile Include="CodeGen\ParameterCodeModel.cs" />
     <Compile Include="CodeGen\SignalTriggerCodeModel.cs" />
-    <Compile Include="CodeGen\TaskBeginCodeModel.cs" />
+    <Compile Include="CodeGen\TaskInitCodeModel.cs" />
     <Compile Include="CodeGen\TaskCodeModel.cs" />
     <Compile Include="CodeGen\TaskDeclarationCodeModel.cs" />
     <Compile Include="CodeGen\TaskExitCodeModel.cs" />

@@ -385,7 +385,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         #region FindTaskBeginDeclarationLocationAsync
 
         /// <exception cref="LocationNotFoundException"/>
-        public static Task<Location> FindTaskBeginDeclarationLocationAsync(Project project, TaskBeginCodeModel codegenInfo, CancellationToken cancellationToken) {
+        public static Task<Location> FindTaskBeginDeclarationLocationAsync(Project project, TaskInitCodeModel codegenInfo, CancellationToken cancellationToken) {
             var task = Task.Run(async () => {
 
                 var compilation = await project.GetCompilationAsync(cancellationToken);
