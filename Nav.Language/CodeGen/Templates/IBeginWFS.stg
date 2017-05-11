@@ -5,12 +5,10 @@ IBeginWFS(model, context) ::=
 #region Using Directives
 #pragma warning disable 0105
 
-using <model.IwflNamespace>;
-
 using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL;
 using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL;
 
-<model.Namespaces:writeUsing(); separator="\r\n">
+<model.UsingNamespaces:writeUsing(); separator="\r\n">
 
 #pragma warning restore 0105
 #endregion
@@ -21,7 +19,7 @@ namespace <model.Namespace> {
     #pragma warning disable 0108
 
     public interface IBegin<model.TaskName>WFS: <model.BaseInterfaceName> {
-        <model.TaskBegins:writeTaskBegin(); separator="\r\n">
+        <model.TaskInits:writeTaskInit(); separator="\r\n">
     }
 }
 >>
@@ -30,8 +28,8 @@ writeUsing(namespace) ::=<<
 using <namespace>;
 >>
 
-writeTaskBegin(taskBegin) ::=<<
-    IINIT_TASK <taskBegin.BeginMethodName>(<taskBegin.Parameter:writeParameter(); separator=", ">);
+writeTaskInit(taskInit) ::=<<
+    IINIT_TASK <taskInit.BeginMethodName>(<taskInit.Parameter:writeParameter(); separator=", ">);
 >>
 
 writeParameter(parameter) ::=<<

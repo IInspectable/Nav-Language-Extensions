@@ -2,6 +2,7 @@
 
 using System.Linq;
 using System.Collections.Immutable;
+
 using JetBrains.Annotations;
 
 #endregion
@@ -10,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public abstract class CodeModel {
 
-        protected ImmutableList<string> GetCodeUsingNamespaces(CodeGenerationUnit codeGenerationUnit) {
+        public static ImmutableList<string> GetCodeUsingNamespaces(CodeGenerationUnit codeGenerationUnit) {
 
             if(codeGenerationUnit == null) {
                 return ImmutableList<string>.Empty;
@@ -27,21 +28,21 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         [NotNull]
-        public string ToFieldName(string s) {
+        public static string ToFieldName(string s) {
             return s?.StartsWith(FieldPräfix) == true ? s.ToCamelcase() : $"{FieldPräfix}{s.ToCamelcase()}";
         }
 
         [NotNull]
-        public string ToClassName(string s) {
+        public static string ToClassName(string s) {
             return s.ToPascalcase();
         }
 
         [NotNull]
-        public string FieldPräfix {
+        public static string FieldPräfix {
             get { return "_"; }
         }
 
-        public bool IsValidIdentifier(string value) {
+        public static bool IsValidIdentifier(string value) {
             return CSharp.IsValidIdentifier(value);
         }
     }

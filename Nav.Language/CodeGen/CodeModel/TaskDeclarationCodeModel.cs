@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+
 using JetBrains.Annotations;
 
 #endregion
