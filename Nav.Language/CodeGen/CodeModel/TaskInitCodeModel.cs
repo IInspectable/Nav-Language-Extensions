@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(initNodeSymbol));
             }
 
-            var taskCodeModel = new TaskCodeModel(initNodeSymbol.ContainingTask);
+            var taskCodeModel = TaskCodeModel.FromTaskDefinition(initNodeSymbol.ContainingTask);
 
             return FromInitNode(initNodeSymbol, taskCodeModel);
         }

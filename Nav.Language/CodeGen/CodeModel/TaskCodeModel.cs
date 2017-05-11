@@ -7,35 +7,35 @@ using System;
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public sealed class TaskCodeModel: CodeModel {
+        
+        TaskCodeModel(string wflNamespace, string iwflNamespace, string wfsBaseTypeName, string wfsTypeName) {
+            WflNamespace    = wflNamespace    ?? String.Empty;
+            IwflNamespace   = iwflNamespace   ?? String.Empty;
+            WfsBaseTypeName = wfsBaseTypeName ?? String.Empty;
+            WfsTypeName     = wfsTypeName     ?? String.Empty;
+        }
 
-        public TaskCodeModel(ITaskDefinitionSymbol taskDefinitionSymbol) {
+        public static TaskCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
 
-            if (taskDefinitionSymbol == null) {
-                throw new ArgumentNullException(nameof(taskDefinitionSymbol));
+            if (taskDefinition == null) {
+                throw new ArgumentNullException(nameof(taskDefinition));
             }
 
-            var task = taskDefinitionSymbol;
+            var taskName      = taskDefinition.Name;
+            var baseNamespace = (taskDefinition.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString() ?? String.Empty;
 
-            var name = task.Name;
-            var baseNamespace = (task.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString();
-
-            WflNamespace    = $"{baseNamespace}.WFL";
-            IwflNamespace   = $"{baseNamespace}.IWFL";
-            WfsBaseTypeName = $"{name}WFSBase";
-            WfsTypeName     = $"{name}WFS";
+            return new TaskCodeModel(
+                wflNamespace   : $"{baseNamespace}.WFL",
+                iwflNamespace  : $"{baseNamespace}.IWFL",
+                wfsBaseTypeName: $"{taskName}WFSBase",
+                wfsTypeName    : $"{taskName}WFS");
         }
 
         public string WflNamespace { get; }
         public string IwflNamespace { get; }
         public string WfsBaseTypeName { get; }
         public string WfsTypeName { get; }
-
-        public string FullyQualifiedWfsName {
-            get { return $"{WflNamespace}.{WfsTypeName}"; }
-        }
-
-        public string FullyQualifiedWfsBaseName {
-            get { return $"{WflNamespace}.{WfsBaseTypeName}"; }
-        }
+        public string FullyQualifiedWfsName     => $"{WflNamespace}.{WfsTypeName}";
+        public string FullyQualifiedWfsBaseName => $"{WflNamespace}.{WfsBaseTypeName}";
     }
 }

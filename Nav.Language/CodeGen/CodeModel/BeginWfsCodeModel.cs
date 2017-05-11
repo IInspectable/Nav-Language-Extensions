@@ -19,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(taskDefinition));
             }
 
-            var taskCodeModel = new TaskCodeModel(taskDefinition);
+            var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
             
             // UsingNamespaces
             var namespaces = new List<string>();

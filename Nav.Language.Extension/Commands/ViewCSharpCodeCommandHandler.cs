@@ -94,7 +94,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             foreach (var taskDefinition in codeGenerationUnitAndSnapshot.CodeGenerationUnit.TaskDefinitions) {
-                var codeModel = new TaskCodeModel(taskDefinition);
+                var codeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
                 var provider  = new TaskDeclarationCodeFileLocationInfoProvider(subjectBuffer, codeModel);
 
                 yield return CreateTagSpan(codeGenerationUnitAndSnapshot, taskDefinition.Syntax.GetLocation(), provider);

@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var task = signalTriggerSymbol.Transition.ContainingTask;
 
-            TaskCodeModel        = new TaskCodeModel(task);
+            TaskCodeModel        = TaskCodeModel.FromTaskDefinition(task);
             TriggerLogicMethodName = $"{signalTriggerSymbol.Name}Logic";
         }
 
