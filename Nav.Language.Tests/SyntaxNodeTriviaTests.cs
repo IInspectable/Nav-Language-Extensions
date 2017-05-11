@@ -23,7 +23,7 @@ namespace Nav.Language.Tests {
         // TODO Weitere Tests für Trivias
         [Test]
         public void GetLeadingTriviaExtentTests() {
-
+            Assert.That(_nlCharCount, Is.EqualTo(2));
             string source = 
 @"//Foo
     task A;
