@@ -16,7 +16,7 @@ namespace Nav.Language.Tests {
 
         [Test]
         public void TestResources() {
-            var n = Resources.BeginWFSTemplate;
+            var n = Resources.IBeginWfsTemplate;
             Assert.That(n, Is.Not.Empty);
         }
 
@@ -30,7 +30,7 @@ namespace Nav.Language.Tests {
 
 
 task TaskA [base StandardWFS : ILegacyMessageBoxWFS]
-				  [result MessageBoxResult]
+                  [result MessageBoxResult]
 {
     init I1 [params string message];
     init I2 [params string message, MessageBoxImage messageBoxImage];
@@ -52,7 +52,7 @@ task TaskA [base StandardWFS : ILegacyMessageBoxWFS]
 
             Assert.That(results.Count, Is.EqualTo(1));
 
-            Assert.That(results[0].BeginWfsInterfaceCode, Is.Not.Empty);
+            Assert.That(results[0].IBeginWfsInterfaceCode, Is.Not.Empty);
         }
     }
 }

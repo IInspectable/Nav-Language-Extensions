@@ -99,12 +99,12 @@
     <Compile Include="CodeFixes\Rename\ViewNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\TaskDefinitionSymbolExtensions.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
-    <Compile Include="CodeGen\CodeModel\BeginWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeGenerationOptions.cs" />
     <Compile Include="CodeGen\CodeGenerationResult.cs" />
     <Compile Include="CodeGen\CodeGenerator.cs" />
     <Compile Include="CodeGen\CodeGeneratorContext.cs" />
     <Compile Include="CodeGen\CodeModel\CodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\IBeginWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\ParameterCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\SignalTriggerCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TaskInitCodeModel.cs" />
