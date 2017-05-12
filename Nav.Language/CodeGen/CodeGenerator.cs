@@ -12,7 +12,6 @@ using Pharmatechnik.Nav.Language.CodeGen.Templates;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-
     public class CodeGenerator {
 
         const string TemplateName         = "Begin";
@@ -45,20 +44,28 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var context = new CodeGeneratorContext(this);
 
-            return new CodeGenerationResult(
-                taskDefinition        : taskDefinition, 
-                iBeginWfsInterfaceCode: GenerateIBeginWfsInterface(taskDefinition, context),
-                iWfsInterfaceCode     : GenerateIWfsInterface(taskDefinition, context),
-                wfsBaseCode           : GenerateWfsBase(taskDefinition, context),
-                wfsOneShotCode        : GenerateWfsOneShot(taskDefinition, context));
+            var codeModelResult = new CodeModelResult(
+                taskDefinition   : taskDefinition,
+                beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition),
+                wfsCodeModel     : IWfsCodeModel.FromTaskDefinition(taskDefinition),
+                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition)
+                );
+
+            var codeGenerationResult= new CodeGenerationResult(
+                taskDefinition        : taskDefinition,
+                iBeginWfsInterfaceCode: GenerateIBeginWfsInterface(codeModelResult.IBeginWfsCodeModel, context),
+                iWfsInterfaceCode     : GenerateIWfsInterface(codeModelResult.IWfsCodeModel          , context),
+                wfsBaseCode           : GenerateWfsBase(codeModelResult.WfsBaseCodeModel             , context),
+                wfsOneShotCode        : GenerateWfsOneShot(codeModelResult.WfsBaseCodeModel          , context));
+
+            return codeGenerationResult;
         }
 
-        static string GenerateIBeginWfsInterface(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
+        static string GenerateIBeginWfsInterface(IBeginWfsCodeModel model, CodeGeneratorContext context) {
 
-            var model = IBeginWfsCodeModel.FromTaskDefinition(taskDefinition);
-            var group = new TemplateGroupString(Resources.IBeginWfsTemplate);
-            
-            var st = group.GetInstanceOf(TemplateName);
+            var group = new TemplateGroupString(Resources.IBeginWfsTemplate);            
+            var st    = group.GetInstanceOf(TemplateName);
+
             st.Add(ModelAttributeName  , model);
             st.Add(ContextAttributeName, context);
 
@@ -67,12 +74,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return result;
         }
 
-        static string GenerateIWfsInterface(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
+        static string GenerateIWfsInterface(IWfsCodeModel model, CodeGeneratorContext context) {
 
-            var model = IWfsCodeModel.FromTaskDefinition(taskDefinition);
             var group = new TemplateGroupString(Resources.IWfsTemplate);
+            var st    = group.GetInstanceOf(TemplateName);
 
-            var st = group.GetInstanceOf(TemplateName);
             st.Add(ModelAttributeName  , model);
             st.Add(ContextAttributeName, context);
 
@@ -81,12 +87,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return result;
         }
 
-        static string GenerateWfsBase(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
+        static string GenerateWfsBase(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
-            var model = WfsBaseCodeModel.FromTaskDefinition(taskDefinition);
             var group = new TemplateGroupString(Resources.WfsBaseTemplate);
+            var st    = group.GetInstanceOf(TemplateName);
 
-            var st = group.GetInstanceOf(TemplateName);
             st.Add(ModelAttributeName  , model);
             st.Add(ContextAttributeName, context);
 
@@ -95,12 +100,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return result;
         }
 
-        static string GenerateWfsOneShot(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
+        static string GenerateWfsOneShot(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
-            var model = WfsBaseCodeModel.FromTaskDefinition(taskDefinition);
             var group = new TemplateGroupString(Resources.WFSOneShotTemplate);
+            var st    = group.GetInstanceOf(TemplateName);
 
-            var st = group.GetInstanceOf(TemplateName);
             st.Add(ModelAttributeName, model);
             st.Add(ContextAttributeName, context);
 
