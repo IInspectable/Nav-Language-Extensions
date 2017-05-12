@@ -1,49 +1,49 @@
-﻿#region Using Directives
-
-using System.Linq;
-using System.Collections.Immutable;
-
-using JetBrains.Annotations;
-
-#endregion
-
-namespace Pharmatechnik.Nav.Language.CodeGen {
+﻿namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public abstract class CodeModel {
-
-        public static ImmutableList<string> GetCodeUsingNamespaces(CodeGenerationUnit codeGenerationUnit) {
-
-            if(codeGenerationUnit == null) {
-                return ImmutableList<string>.Empty;
-            }
-
-            var namespaces = codeGenerationUnit.Syntax
-                                               .CodeUsings
-                                               .Select(cu => cu.Namespace?.Text)
-                                               .Where(ns => ns != null)
-                                               .Distinct()
-                                               .OrderBy(ns => ns.Length);
-
-            return namespaces.ToImmutableList();
-        }
-
-        [NotNull]
-        public static string ToFieldName(string s) {
-            return s?.StartsWith(FieldPräfix) == true ? s.ToCamelcase() : $"{FieldPräfix}{s.ToCamelcase()}";
-        }
-
-        [NotNull]
-        public static string ToClassName(string s) {
-            return s.ToPascalcase();
-        }
-
-        [NotNull]
-        public static string FieldPräfix {
-            get { return "_"; }
-        }
-
-        public static bool IsValidIdentifier(string value) {
-            return CSharp.IsValidIdentifier(value);
-        }
+        /// <summary>
+        /// IWFService
+        /// </summary>
+        protected const string DefaultIwfsBaseType = "IWFService";
+        /// <summary>
+        /// IBeginWFService
+        /// </summary>
+        protected const string DefaultIBeginWfsBaseType = "IBeginWFService";
+        /// <summary>
+        /// Logic
+        /// </summary>
+        protected const string LogicMethodSuffix = "Logic";
+        /// <summary>
+        /// TO
+        /// </summary>
+        protected const string ToClassNameSuffix = "TO";
+        /// <summary>
+        /// WFL
+        /// </summary>
+        protected const string WflNamespaceSuffix = "WFL";
+        /// <summary>
+        /// IWFL
+        /// </summary>
+        protected const string IwflNamespaceSuffix = "IWFL";
+        /// <summary>
+        /// WFSBase
+        /// </summary>
+        protected const string WfsBaseClassSuffix = "WFSBase";
+        /// <summary>
+        /// WFS
+        /// </summary>
+        protected const string WfsClassSuffix = "WFS";       
+        /// <summary>
+        /// Begin
+        /// </summary>
+        protected const string BeginMethodPrefix = "Begin";
+        /// <summary>
+        /// After
+        /// </summary>
+        protected const string ExitMethodSuffix = "After";
+        /// <summary>
+        /// IBegin
+        /// </summary>
+        protected const string BeginInterfacePrefix = "IBegin";
     }
 }

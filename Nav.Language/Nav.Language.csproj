@@ -105,6 +105,7 @@
     <Compile Include="CodeGen\CodeGeneratorContext.cs" />
     <Compile Include="CodeGen\CodeModel\CodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\IBeginWfsCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\IWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\ParameterCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\SignalTriggerCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TaskInitCodeModel.cs" />
@@ -266,6 +267,7 @@
     <Compile Include="Diagnostic\DiagnosticDescriptors.DeadCode.cs" />
     <None Include="app.config" />
     <EmbeddedResource Include="CodeGen\Templates\IBeginWFS.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\IWFS.stg" />
     <None Include="Grammar\NavTokens.g4" />
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>

@@ -16,8 +16,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             TaskCodeModel        = taskCodeModel ?? throw new ArgumentNullException(nameof(taskCodeModel));
             Parameter            = parameter     ?? throw new ArgumentNullException(nameof(parameter));
-            BeginMethodName      = "Begin";
-            BeginLogicMethodName = "BeginLogic";           
+            BeginMethodName      = $"{BeginMethodPrefix}";
+            BeginLogicMethodName = $"{BeginMethodPrefix}{LogicMethodSuffix}";           
             InitName             = initName ?? String.Empty;
         }
         
@@ -53,22 +53,18 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
             
             return new TaskInitCodeModel(initName     : initNodeSymbol.Name ?? String.Empty, 
-                                          taskCodeModel: taskCodeModel, 
-                                          parameter    : parameter.ToImmutableList());
+                                         taskCodeModel: taskCodeModel, 
+                                         parameter    : parameter.ToImmutableList());
         }
 
         [NotNull]
         public TaskCodeModel TaskCodeModel { get; }
-
         [NotNull]
         public string BeginLogicMethodName { get; }
-
         [NotNull]
         public string BeginMethodName { get; }
-
         [NotNull]
         public string InitName { get; }
-
         [NotNull]
         public ImmutableList<ParameterCodeModel> Parameter { get; }
     }

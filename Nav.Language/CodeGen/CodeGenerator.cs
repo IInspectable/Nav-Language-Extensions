@@ -43,7 +43,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             return new CodeGenerationResult(
                 taskDefinition        : taskDefinition, 
-                iBeginWfsInterfaceCode: GenerateIBeginWfsInterface(taskDefinition, context));
+                iBeginWfsInterfaceCode: GenerateIBeginWfsInterface(taskDefinition, context),
+                iWfsInterfaceCode     : GenerateIWfsInterface(taskDefinition, context));
         }
 
         static string GenerateIBeginWfsInterface(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
@@ -53,6 +54,20 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             
             var st = group.GetInstanceOf("IBeginWFS");
             st.Add("model"  , model);
+            st.Add("context", context);
+
+            var result = st.Render();
+
+            return result;
+        }
+
+        static string GenerateIWfsInterface(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
+
+            var model = IWfsCodeModel.FromTaskDefinition(taskDefinition);
+            var group = new TemplateGroupString(Resources.IWfsTemplate);
+
+            var st = group.GetInstanceOf("IWFS");
+            st.Add("model", model);
             st.Add("context", context);
 
             var result = st.Render();

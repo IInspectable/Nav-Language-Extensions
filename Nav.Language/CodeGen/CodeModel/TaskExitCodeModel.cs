@@ -19,12 +19,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var task = exitTransition.ContainingTask;
 
             TaskCodeModel = TaskCodeModel.FromTaskDefinition(task);
-            AfterLogicMethodName = $"After{exitTransition.Source?.Name}Logic";
+            AfterLogicMethodName = $"{ExitMethodSuffix}{exitTransition.Source?.Name}{LogicMethodSuffix}";
         }
 
         [NotNull]
         public TaskCodeModel TaskCodeModel { get; }
-
         [NotNull]
         public string AfterLogicMethodName { get; }
     }
