@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using JetBrains.Annotations;
 
 #endregion
 
@@ -25,17 +26,23 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var baseNamespace = (taskDefinition.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString() ?? String.Empty;
 
             return new TaskCodeModel(
-                wflNamespace   : $"{baseNamespace}.WFL",
-                iwflNamespace  : $"{baseNamespace}.IWFL",
-                wfsBaseTypeName: $"{taskName}WFSBase",
-                wfsTypeName    : $"{taskName}WFS");
+                wflNamespace   : $"{baseNamespace}.{WflNamespaceSuffix}",
+                iwflNamespace  : $"{baseNamespace}.{IwflNamespaceSuffix}",
+                wfsBaseTypeName: $"{taskName}{WfsBaseClassSuffix}",
+                wfsTypeName    : $"{taskName}{WfsClassSuffix}");
         }
 
+        [NotNull]
         public string WflNamespace { get; }
+        [NotNull]
         public string IwflNamespace { get; }
+        [NotNull]
         public string WfsBaseTypeName { get; }
+        [NotNull]
         public string WfsTypeName { get; }
+        [NotNull]
         public string FullyQualifiedWfsName     => $"{WflNamespace}.{WfsTypeName}";
+        [NotNull]
         public string FullyQualifiedWfsBaseName => $"{WflNamespace}.{WfsBaseTypeName}";
     }
 }

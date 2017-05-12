@@ -136,7 +136,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
-            var codeModel = new SignalTriggerCodeModel(signalTriggerSymbol);
+            var codeModel = SignalTriggerCodeModel.FromSignalTrigger(signalTriggerSymbol);
             var provider  = new TriggerDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(signalTriggerSymbol.Location, provider);

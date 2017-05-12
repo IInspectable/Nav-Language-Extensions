@@ -1,13 +1,13 @@
 ﻿#region Using Directives
 
 using System;
-
 using JetBrains.Annotations;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
+    // TODO FROM Factory-Methode einbauen
     public sealed class TaskDeclarationCodeModel: CodeModel {
 
         public TaskDeclarationCodeModel(ITaskDeclarationSymbol taskDeclarationSymbol) {
@@ -33,18 +33,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         [NotNull]
         public string Taskname { get; }
-
         [NotNull]
         public string NamespacePräfix { get; }
-
         [NotNull]
-        public string WflNamespace {
-            get { return $"{NamespacePräfix}.WFL"; }
-        }
-
+        public string WflNamespace => $"{NamespacePräfix}.{WflNamespaceSuffix}";
         [NotNull]
-        public string FullyQualifiedBeginInterfaceName {
-            get { return $"{WflNamespace}.IBegin{Taskname}WFS"; }
-        }
+        public string FullyQualifiedBeginInterfaceName => $"{WflNamespace}.{BeginInterfacePrefix}{Taskname}{WfsClassSuffix}";
     }
 }

@@ -7,9 +7,10 @@ using System.IO;
 namespace Pharmatechnik.Nav.Language.CodeGen.Templates {
 
     static class Resources {
-        
-        // ReSharper disable once InconsistentNaming
+        // ReSharper disable InconsistentNaming
         public static string IBeginWfsTemplate => LoadText("IBeginWFS.stg");
+        public static string IWfsTemplate      => LoadText("IWFS.stg");
+        // ReSharper restore InconsistentNaming
 
         static string LoadText(string resourceName) {
 

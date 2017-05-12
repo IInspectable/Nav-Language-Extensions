@@ -11,8 +11,8 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public static string ToCamelcase(this string s) {
 
-            if (string.IsNullOrEmpty(s)) {
-                return s ?? string.Empty;
+            if (String.IsNullOrEmpty(s)) {
+                return s ?? String.Empty;
             }
 
             return s.Substring(0, 1).ToLowerInvariant() + s.Substring(1);
@@ -21,11 +21,24 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public static string ToPascalcase(this string s) {
 
-            if (string.IsNullOrEmpty(s)) {
-                return s ?? string.Empty;
+            if (String.IsNullOrEmpty(s)) {
+                return s ?? String.Empty;
             }
 
             return s.Substring(0, 1).ToUpperInvariant() + s.Substring(1);
+        }
+
+        [NotNull]
+        public static string FieldPräfix => "_";
+
+        [NotNull]
+        public static string ToFieldName(this string s) {
+            return s?.StartsWith(FieldPräfix) == true ? s.ToCamelcase() : $"{FieldPräfix}{s.ToCamelcase()}";
+        }
+
+        [NotNull]
+        public static string ToClassName(this string s) {
+            return s.ToPascalcase();
         }
 
         #region Dokumentation

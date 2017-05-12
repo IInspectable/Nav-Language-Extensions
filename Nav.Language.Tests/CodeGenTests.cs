@@ -43,6 +43,7 @@ task TaskA [base StandardWFS : ILegacyMessageBoxWFS]
     I2 --> MessageBoxOK; 
     
     MessageBoxOK --> Ok on Ok;
+    MessageBoxOK --> Ok on OnFoo;
 }";
             var codeGenerationUnitSyntax= Syntax.ParseCodeGenerationUnit(navCode, @"c:\TaskA.nav");
             var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
@@ -53,6 +54,7 @@ task TaskA [base StandardWFS : ILegacyMessageBoxWFS]
             Assert.That(results.Count, Is.EqualTo(1));
 
             Assert.That(results[0].IBeginWfsInterfaceCode, Is.Not.Empty);
+            Assert.That(results[0].IWfsInterfaceCode, Is.Not.Empty);
         }
     }
 }

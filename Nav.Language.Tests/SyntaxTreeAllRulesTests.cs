@@ -288,8 +288,11 @@ namespace Nav.Language.Tests {
             Assert.That(baseDeclaration.BaseTypes.Count, Is.EqualTo(3));
             // TODO Base
             Assert.That(((SimpleTypeSyntax)baseDeclaration.BaseTypes[0]).Identifier.ToString(), Is.EqualTo("B0"));
+            Assert.That(baseDeclaration.WfsBaseType.ToString(), Is.EqualTo("B0"));
             Assert.That(((SimpleTypeSyntax)baseDeclaration.BaseTypes[1]).Identifier.ToString(), Is.EqualTo("B1"));
+            Assert.That(baseDeclaration.IwfsBaseType.ToString(), Is.EqualTo("B1"));
             Assert.That(((SimpleTypeSyntax)baseDeclaration.BaseTypes[2]).Identifier.ToString(), Is.EqualTo("B2"));
+            Assert.That(baseDeclaration.IBeginWfsBaseType.ToString(), Is.EqualTo("B2"));
 
             // [generateto "g1"]
             var generateToDeclaration = taskDefinition.CodeGenerateToDeclaration;

@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // UsingNamespaces
             var namespaces = new List<string>();
             namespaces.Add(taskCodeModel.IwflNamespace);
-            namespaces.AddRange(GetCodeUsingNamespaces(taskDefinition.CodeGenerationUnit));
+            namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
             // Inits
             var taskInits = new List<TaskInitCodeModel>();
@@ -46,7 +46,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
              usingNamespaces   : namespaces.ToImmutableList(),
              wflNamespace      : taskCodeModel.WflNamespace,
              taskName          : taskDefinition.Name ?? string.Empty,
-             baseInterfaceName :"IBeginWFService",
+             baseInterfaceName : taskDefinition.Syntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString()?? DefaultIBeginWfsBaseType,
              taskInits         : taskInits.ToImmutableList());
         }
 
