@@ -12,19 +12,11 @@ using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL;
 #pragma warning restore 0105
 #endregion
 
-namespace <model.Namespace> {
-
-    public interface I<model.TaskName>WFS: <model.BaseInterfaceName> {
-        <model.SignalTriggers:writeSignalTrigger(); separator="\r\n">
-    }
+namespace <model.Namespace> {	
+	// TODO   
 }
 >>
 
 writeUsing(namespace) ::=<<
 using <namespace>;
->>
-
-
-writeSignalTrigger(signalTrigger) ::=<<
-INavCommand <signalTrigger.TriggerMethodName>(<signalTrigger.TOClassName> to);
 >>

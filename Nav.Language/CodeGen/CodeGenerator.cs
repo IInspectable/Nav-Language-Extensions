@@ -15,6 +15,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public class CodeGenerator {
 
+        const string TemplateName         = "Begin";
+        const string ModelAttributeName   = "model";
+        const string ContextAttributeName = "context";
+
         public CodeGenerator(CodeGenerationOptions options) {
             Options = options ?? throw new ArgumentNullException(nameof(options));
         }
@@ -44,7 +48,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new CodeGenerationResult(
                 taskDefinition        : taskDefinition, 
                 iBeginWfsInterfaceCode: GenerateIBeginWfsInterface(taskDefinition, context),
-                iWfsInterfaceCode     : GenerateIWfsInterface(taskDefinition, context));
+                iWfsInterfaceCode     : GenerateIWfsInterface(taskDefinition, context),
+                wfsBaseCode           : GenerateWfsBase(taskDefinition, context),
+                wfsOneShotCode        : GenerateWfsOneShot(taskDefinition, context));
         }
 
         static string GenerateIBeginWfsInterface(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
@@ -52,9 +58,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var model = IBeginWfsCodeModel.FromTaskDefinition(taskDefinition);
             var group = new TemplateGroupString(Resources.IBeginWfsTemplate);
             
-            var st = group.GetInstanceOf("IBeginWFS");
-            st.Add("model"  , model);
-            st.Add("context", context);
+            var st = group.GetInstanceOf(TemplateName);
+            st.Add(ModelAttributeName  , model);
+            st.Add(ContextAttributeName, context);
 
             var result = st.Render();
 
@@ -66,13 +72,41 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var model = IWfsCodeModel.FromTaskDefinition(taskDefinition);
             var group = new TemplateGroupString(Resources.IWfsTemplate);
 
-            var st = group.GetInstanceOf("IWFS");
-            st.Add("model", model);
-            st.Add("context", context);
+            var st = group.GetInstanceOf(TemplateName);
+            st.Add(ModelAttributeName  , model);
+            st.Add(ContextAttributeName, context);
 
             var result = st.Render();
 
             return result;
         }
+
+        static string GenerateWfsBase(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
+
+            var model = WfsBaseCodeModel.FromTaskDefinition(taskDefinition);
+            var group = new TemplateGroupString(Resources.WfsBaseTemplate);
+
+            var st = group.GetInstanceOf(TemplateName);
+            st.Add(ModelAttributeName  , model);
+            st.Add(ContextAttributeName, context);
+
+            var result = st.Render();
+
+            return result;
+        }
+
+        static string GenerateWfsOneShot(ITaskDefinitionSymbol taskDefinition, CodeGeneratorContext context) {
+
+            var model = WfsBaseCodeModel.FromTaskDefinition(taskDefinition);
+            var group = new TemplateGroupString(Resources.WFSOneShotTemplate);
+
+            var st = group.GetInstanceOf(TemplateName);
+            st.Add(ModelAttributeName, model);
+            st.Add(ContextAttributeName, context);
+
+            var result = st.Render();
+
+            return result;
+        }        
     }
 }
