@@ -17,9 +17,11 @@
                     <RowDefinition MinHeight="4"/>
                     <RowDefinition MinHeight="22"/>
                     <RowDefinition MinHeight="22"/>
+                    <RowDefinition MinHeight="22"/>
                 </Grid.RowDefinitions>
-                <CheckBox Name="HighlightReferencesUnderCursor" IsChecked="True" Grid.Row="1" >_Highlight references to symbol under cursor</CheckBox>
-                <CheckBox Name="HighlightReferencesUnderInclude" Grid.Row="2" Margin="12,0,0,0"
+                <CheckBox Name="SemanticHighlighting" IsChecked="True" Grid.Row="1" >Enable _semantic highlighting</CheckBox>
+                <CheckBox Name="HighlightReferencesUnderCursor" IsChecked="True" Grid.Row="2" >_Highlight references to symbol under cursor</CheckBox>
+                <CheckBox Name="HighlightReferencesUnderInclude" Grid.Row="3" Margin="12,0,0,0"
                           IsEnabled="{Binding ElementName=HighlightReferencesUnderCursor, Path=IsChecked}">
                             _Highlight references to taskref (include) under cursor
                 </CheckBox>

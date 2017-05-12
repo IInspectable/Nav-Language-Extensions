@@ -212,12 +212,53 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.DeadCode)]
         [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
+        [Order(Before = Priority.High)]
         internal sealed class DeadCodeClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public DeadCodeClassificationFormatDefinition() {
                 DisplayName       = "Nav Dead Code";
                 ForegroundOpacity = 0.5;               
+            }
+        }
+
+        #endregion
+
+        #region ChoiceNode
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(ClassificationTypeNames.ChoiceNode)]
+        [BaseDefinition(ClassificationTypeNames.Identifier)]
+        static ClassificationTypeDefinition ChoiceNode;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.ChoiceNode)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Low)]
+        internal sealed class ChoiceNodeClassificationFormatDefinition : ClassificationFormatDefinition {
+
+            public ChoiceNodeClassificationFormatDefinition() {
+                IsItalic=true;
+            }
+        }
+
+        #endregion      
+
+        #region ConnectionPoint
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(ClassificationTypeNames.ConnectionPoint)]
+        [BaseDefinition(ClassificationTypeNames.Identifier)]
+        static ClassificationTypeDefinition ConnectionPoint;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.ConnectionPoint)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Low)]
+        internal sealed class ConnectionPointClassificationFormatDefinition : ClassificationFormatDefinition {
+
+            public ConnectionPointClassificationFormatDefinition() {
+                IsItalic = true;
+                IsBold   = true;
             }
         }
 
