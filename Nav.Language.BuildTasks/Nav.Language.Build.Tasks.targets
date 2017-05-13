@@ -1,0 +1,5 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ 
+  <UsingTask TaskName="CodeSweep.BuildTask.ScannerTask" AssemblyFile="Nav.Language.BuildTasks" />
+  
+</Project>
