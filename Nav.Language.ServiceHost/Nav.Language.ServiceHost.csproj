@@ -80,9 +80,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Nav.Language.Service\Nav.Language.Service.csproj">
       <Project>{0e07ed6f-4fc9-47da-96c3-bcd06d583bc9}</Project>
       <Name>Nav.Language.Service</Name>
