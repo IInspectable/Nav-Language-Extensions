@@ -7,9 +7,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
     class CodeUsingDirectiveOutlineTagger {
 
-        public static IEnumerable< ITagSpan<IOutliningRegionTag>> GetTags(ParseResult parseResult, IOutliningRegionTagCreator tagCreator) {
+        public static IEnumerable< ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
 
-            var usingDirectives = parseResult.SyntaxTree.GetRoot().DescendantNodes<CodeUsingDeclarationSyntax>().ToList();
+            var usingDirectives = syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<CodeUsingDeclarationSyntax>().ToList();
             if (usingDirectives.Count<2) {
                 yield break;
             }
@@ -32,8 +32,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
                 yield break;
             }
 
-            var regionSpan = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, start), length);
-            var hintSpan   = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, extendStart.Start), extendEnd.End- extendStart.Start);
+            var regionSpan = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, start), length);
+            var hintSpan   = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extendStart.Start), extendEnd.End- extendStart.Start);
             var tag        = tagCreator.CreateTag("...", hintSpan);
 
             yield return new TagSpan<IOutliningRegionTag>(regionSpan, tag);

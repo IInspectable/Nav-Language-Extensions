@@ -35,13 +35,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         public IList<ClassificationSpan> GetClassificationSpans(SnapshotSpan span) {
             var result = new List<ClassificationSpan>();
 
-            var parseResult = ParserService.ParseResult;
-            if (parseResult == null) {
+            var syntaxTreeAndSnapshot = ParserService.SyntaxTreeAndSnapshot;
+            if (syntaxTreeAndSnapshot == null) {
                 return result;
             }
 
             var extent = TextExtent.FromBounds(span.Start.Position, span.End.Position);
-            foreach(var token in parseResult.SyntaxTree.Tokens[extent, includeOverlapping: true]) {
+            foreach(var token in syntaxTreeAndSnapshot.SyntaxTree.Tokens[extent, includeOverlapping: true]) {
 
                 IClassificationType ct;
                 _classificationMap.TryGetValue(token.Classification, out ct);
@@ -49,7 +49,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                     continue;
                 }
 
-                var tokenSpan = new SnapshotSpan(parseResult.Snapshot, new Span(token.Start, token.Length));
+                var tokenSpan = new SnapshotSpan(syntaxTreeAndSnapshot.Snapshot, new Span(token.Start, token.Length));
                 
                 var classification = new ClassificationSpan(
                         tokenSpan.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive),

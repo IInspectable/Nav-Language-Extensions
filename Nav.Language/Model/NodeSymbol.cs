@@ -137,11 +137,31 @@ namespace Pharmatechnik.Nav.Language {
 
     sealed partial class InitNodeSymbol : NodeSymbolWithOutgoings<InitNodeDeclarationSyntax, ITransition>, IInitNodeSymbol {
 
-        public InitNodeSymbol(string name, Location location, InitNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
+        public InitNodeSymbol(string name, Location location, InitNodeDeclarationSyntax syntax, InitNodeAliasSymbol alias, TaskDefinitionSymbol containingTask) 
             : base(name, location, syntax, containingTask) {
+
+            if (alias != null) {
+                alias.InitNode = this;
+                Alias = alias;
+            }
+        }
+
+        [CanBeNull]
+        public IInitNodeAliasSymbol Alias { get; }
+
+        public override string Name {
+            get { return Alias?.Name ?? base.Name; }
         }
 
         IReadOnlyList<ITransition> IInitNodeSymbol.Outgoings { get { return Outgoings; } }
+
+        public override IEnumerable<ISymbol> SymbolsAndSelf() {
+            yield return this;
+
+            if (Alias != null) {
+                yield return Alias;
+            }
+        }
     }
 
     sealed partial class ExitNodeSymbol : NodeSymbolWithIncomings<ExitNodeDeclarationSyntax, IEdge>, IExitNodeSymbol {

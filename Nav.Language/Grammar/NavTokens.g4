@@ -1,5 +1,9 @@
 lexer grammar NavLexer;
 
+channels {
+    TriviaChannel
+}
+
 TaskKeyword            : 'task';
 TaskrefKeyword         : 'taskref';
 InitKeyword            : 'init';

@@ -25,6 +25,7 @@
         void VisitSpontaneousTriggerSymbol(ISpontaneousTriggerSymbol spontaneousTriggerSymbol);
         void VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol);
         void VisitIncludeSymbol(IIncludeSymbol includeSymbol);
+        void VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol);
     }
 
     public interface ISymbolVisitor<T> {
@@ -47,6 +48,7 @@
         T VisitSpontaneousTriggerSymbol(ISpontaneousTriggerSymbol spontaneousTriggerSymbol);
         T VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol);
         T VisitIncludeSymbol(IIncludeSymbol includeSymbol);
+        T VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol);
     }
 
     partial class Symbol {
@@ -262,6 +264,17 @@
             return visitor.VisitIncludeSymbol(this);
         }
     }
+
+    partial class InitNodeAliasSymbol {
+
+        public override void Accept(ISymbolVisitor visitor) {
+            visitor.VisitInitNodeAliasSymbol(this);
+        }
+
+        public override T Accept<T>(ISymbolVisitor<T> visitor) {
+            return visitor.VisitInitNodeAliasSymbol(this);
+        }
+    }
     public abstract class SymbolVisitor: ISymbolVisitor {
 
         public void Visit(ISymbol symbol){
@@ -345,6 +358,10 @@
 
 		public virtual void VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
             DefaultVisit(includeSymbol);
+        }
+
+		public virtual void VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+            DefaultVisit(initNodeAliasSymbol);
         }
 
     }
@@ -433,6 +450,10 @@
 
 		public virtual T VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
             return DefaultVisit(includeSymbol);
+        }
+
+		public virtual T VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+            return DefaultVisit(initNodeAliasSymbol);
         }
 
     }

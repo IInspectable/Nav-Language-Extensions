@@ -1,28 +1,43 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+
 using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Internal;
 
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
     public sealed class SyntaxTokenList: IReadOnlyList<SyntaxToken> {
 
+        static readonly IReadOnlyList<SyntaxToken> EmptyTokens= new List<SyntaxToken>(Enumerable.Empty<SyntaxToken>()).AsReadOnly();
         readonly IReadOnlyList<SyntaxToken> _tokens;
 
-        public SyntaxTokenList(): this(null) {                
+        public SyntaxTokenList(List<SyntaxToken> tokens): this(tokens, attachSorted: false) {
         }
 
-        public SyntaxTokenList(List<SyntaxToken> tokens) {
+        SyntaxTokenList(IReadOnlyList<SyntaxToken> tokens, bool attachSorted) {
 
-            var tokenList = new List<SyntaxToken>(tokens??Enumerable.Empty<SyntaxToken>());
-            tokenList.Sort((x, y) => x.Start - y.Start);
-
-            _tokens = tokenList;
+            if(attachSorted || tokens==null || tokens.Count==0) {
+                // Tokens sind bereits sortiert oder es gibt keine Tokens
+                _tokens = tokens ?? EmptyTokens;
+            } else {
+                var tokenList = new List<SyntaxToken>(tokens);
+                tokenList.Sort(SyntaxTokenComparer.Default);
+                _tokens = tokenList;
+            }            
         }
+
+        internal static SyntaxTokenList AttachSortedTokens(IReadOnlyList<SyntaxToken> tokens) {
+            return new SyntaxTokenList(tokens, attachSorted: true);
+        }
+
+        public static readonly SyntaxTokenList Empty = new SyntaxTokenList(null);
 
         public IEnumerator<SyntaxToken> GetEnumerator() {
             return _tokens.GetEnumerator();
@@ -47,7 +62,7 @@ namespace Pharmatechnik.Nav.Language {
             if(position < 0) {
                 return SyntaxToken.Missing;
             }
-            return _tokens.FindElementAtPosition(position);
+            return _tokens.FindElementAtPosition(position, defaultIfNotFound: true);
         }
 
         internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, SyntaxTokenType type, bool nextToken) {

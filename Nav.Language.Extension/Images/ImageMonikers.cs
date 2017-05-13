@@ -1,8 +1,10 @@
 #region Using Directives
 
 using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Imaging.Interop;
+
+using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
@@ -14,6 +16,23 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         public static ImageMoniker ProjectNode {
             get { return KnownMonikers.CSProjectNode; }
         }
+
+        #region CodeFixImpact
+
+        public static ImageMoniker FromCodeFixImpact(CodeFixImpact impact) {
+            switch (impact) {
+                case CodeFixImpact.None:
+                    return default(ImageMoniker);
+                case CodeFixImpact.Medium:
+                    return KnownMonikers.StatusWarningOutline;
+                case CodeFixImpact.High:
+                    return KnownMonikers.StatusInvalidOutline;
+                default:
+                    return default(ImageMoniker);
+            }
+        }
+
+        #endregion
 
         #region Analysis
 
@@ -71,23 +90,27 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             get { return KnownMonikers.InterfacePublic; }
         }
 
+        public static ImageMoniker CSharpFile {
+            get { return KnownMonikers.CSFileNode; }
+        }
+
         #endregion
 
         #region Symbols
-
-        static IImageHandle _taskDeclarationImageHandle;
+        
+        static IImageHandle TaskDeclarationImageHandle;
 
         public static ImageMoniker TaskDeclaration {
             get {
 
-                if (_taskDeclarationImageHandle == null) {
+                if (TaskDeclarationImageHandle == null) {
 
-                    _taskDeclarationImageHandle = GetCompositedImageHandle(
+                    TaskDeclarationImageHandle = GetCompositedImageHandle(
                         CreateLayer(TaskDefinition),
                         CreateLayer(KnownMonikers.ReferencedElement));
                 }
 
-                return _taskDeclarationImageHandle.Moniker;
+                return TaskDeclarationImageHandle.Moniker;
             }
         }
 
@@ -137,6 +160,134 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         public static ImageMoniker SignalTrigger {
             get { return KnownMonikers.EventTrigger; }
+        }
+
+        public static ImageMoniker FromSymbol(ISymbol symbol) {
+            return SymbolImageMonikerFinder.FindImageMoniker(symbol);
+        }
+
+        sealed class SymbolImageMonikerFinder : SymbolVisitor<ImageMoniker> {
+
+            public static ImageMoniker FindImageMoniker(ISymbol symbol) {
+                var finder = new SymbolImageMonikerFinder();
+                return finder.Visit(symbol);
+            }
+
+            public override ImageMoniker VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
+                return TaskDeclaration;
+            }
+
+            public override ImageMoniker VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
+                return TaskDefinition;
+            }
+            
+            public override ImageMoniker VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
+                return Include;
+            }
+
+            public override ImageMoniker VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
+                return SignalTrigger;
+            }
+            
+            #region ConnectionPoints
+
+            public override ImageMoniker VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
+                if (connectionPointReferenceSymbol.Declaration == null) {
+                    return DefaultVisit(connectionPointReferenceSymbol);
+                }
+
+                return Visit(connectionPointReferenceSymbol.Declaration);
+            }
+
+            public override ImageMoniker VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
+                return InitConnectionPoint;
+            }
+
+            public override ImageMoniker VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol) {
+                return ExitConnectionPoint;
+            }
+
+            public override ImageMoniker VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol) {
+                return EndConnectionPoint;
+            }
+
+            #endregion
+
+            #region Nodes
+
+            public override ImageMoniker VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
+                if (nodeReferenceSymbol.Declaration == null) {
+                    return DefaultVisit(nodeReferenceSymbol);
+                }
+
+                return Visit(nodeReferenceSymbol.Declaration);
+            }
+
+            public override ImageMoniker VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+                return InitNode;
+            }
+           
+            public override ImageMoniker VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+                return Visit(initNodeAliasSymbol.InitNode);
+            }
+
+            public override ImageMoniker VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
+                return ExitNode;
+            }
+
+            public override ImageMoniker VisitEndNodeSymbol(IEndNodeSymbol endNodeSymbol) {
+                return EndNode;
+            }
+
+            public override ImageMoniker VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
+                return TaskNode;
+            }
+
+            public override ImageMoniker VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAlias) {
+                return Visit(taskNodeAlias.TaskNode);
+            }
+
+            public override ImageMoniker VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
+                return ChoiceNode;
+            }
+
+            public override ImageMoniker VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
+                return ViewNode;
+            }
+
+            public override ImageMoniker VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
+                return DialogNode;
+            }
+
+            #endregion
+        }
+
+        #endregion
+
+        #region Actions
+
+        public static ImageMoniker AddEdge {
+            get { return KnownMonikers.AddAssociation; }
+        }
+
+        public static ImageMoniker RenameNode {
+            get { return KnownMonikers.Rename; }
+        }
+
+        public static ImageMoniker InsertNode {
+            get { return KnownMonikers.InsertClause; }
+        }
+
+        public static ImageMoniker DeleteQuotationMarks {
+            get { return KnownMonikers.PendingDeleteNode; }
+        }
+
+        public static ImageMoniker RemoveUnusedSymbol {
+            get { return KnownMonikers.PendingDeleteNode; }
+        }
+
+        public static ImageMoniker AddSemicolon {
+            get { return KnownMonikers.PendingAddNode; }
         }
 
         #endregion

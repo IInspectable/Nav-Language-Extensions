@@ -49,6 +49,10 @@
       <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -62,6 +66,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeGenTests.cs" />
+    <Compile Include="DescendantNodesTests.cs" />
     <Compile Include="ExtentTests.cs" />
     <Compile Include="Generated Tests\TokenPropertyNameTests.cs">
       <DependentUpon>TokenPropertyNameTests.tt</DependentUpon>
@@ -91,12 +97,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SyntaxTest.tt</DependentUpon>
     </Compile>
+    <Compile Include="RenameChoiceCodeFixTests.cs" />
+    <Compile Include="SyntaxFactsTest.cs" />
+    <Compile Include="SyntaxNodeTriviaTests.cs" />
     <Compile Include="SyntaxStressTests.cs" />
     <Compile Include="SyntaxTreeNavigationTests.cs" />
     <Compile Include="SyntaxTreeAllRulesTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="SyntaxTokenTests.cs" />
+    <Compile Include="TextChangeWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

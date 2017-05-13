@@ -16,16 +16,16 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
     sealed class GoToSymbolBuilder : SymbolVisitor<TagSpan<GoToTag>> {
 
-        readonly SemanticModelResult _semanticModelResult;
+        readonly CodeGenerationUnitAndSnapshot _codeGenerationUnitAndSnapshot;
         readonly ITextBuffer _textBuffer;
 
-        GoToSymbolBuilder(SemanticModelResult semanticModelResult, ITextBuffer textBuffer) {
-            _semanticModelResult = semanticModelResult;
+        GoToSymbolBuilder(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextBuffer textBuffer) {
+            _codeGenerationUnitAndSnapshot = codeGenerationUnitAndSnapshot;
             _textBuffer = textBuffer;
         }
 
-        public static TagSpan<GoToTag> Build(SemanticModelResult semanticModelResult, ISymbol source, ITextBuffer textBuffer) {
-            var builder = new GoToSymbolBuilder(semanticModelResult, textBuffer);
+        public static TagSpan<GoToTag> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ISymbol source, ITextBuffer textBuffer) {
+            var builder = new GoToSymbolBuilder(codeGenerationUnitAndSnapshot, textBuffer);
             return builder.Visit(source);
         }
 
@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
 
-            var codeModel = new TaskCodeModel(taskDefinitionSymbol);
+            var codeModel = TaskCodeModel.FromTaskDefinition(taskDefinitionSymbol);
             var provider  = new TaskDeclarationLocationInfoProvider(_textBuffer, codeModel);
             
             return CreateTagSpan(taskDefinitionSymbol.Location, provider);
@@ -71,7 +71,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 LocationInfo.FromLocation(
                     location    : taskNodeSymbol.Declaration.Location, 
                     displayName : $"Task {taskNodeSymbol.Declaration.Name}", 
-                    imageMoniker: ImageMonikers.TaskDefinition));
+                    imageMoniker: ImageMonikers.FromSymbol(taskNodeSymbol)));
         }
 
         public override TagSpan<GoToTag> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
@@ -117,16 +117,26 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
 
         public override TagSpan<GoToTag> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+            if(initNodeSymbol.Alias != null) {
+                return DefaultVisit(initNodeSymbol);
+            }
 
-            var codeModel = new TaskBeginCodeModel(initNodeSymbol);
+            var codeModel = TaskInitCodeModel.FromInitNode(initNodeSymbol);
             var provider  = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(initNodeSymbol.Location, provider);
         }
 
+        public override TagSpan<GoToTag> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+            var codeModel = TaskInitCodeModel.FromInitNode(initNodeAliasSymbol.InitNode);
+            var provider  = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
+
+            return CreateTagSpan(initNodeAliasSymbol.Location, provider);
+        }
+
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
-            var codeModel = new SignalTriggerCodeModel(signalTriggerSymbol);
+            var codeModel = SignalTriggerCodeModel.FromSignalTrigger(signalTriggerSymbol);
             var provider  = new TriggerDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(signalTriggerSymbol.Location, provider);
@@ -140,7 +150,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
         
         TagSpan<GoToTag> CreateTagSpan(Location sourceLocation, ILocationInfoProvider provider) {
-            var tagSpan = new SnapshotSpan(_semanticModelResult.Snapshot, sourceLocation.Start, sourceLocation.Length);
+            var tagSpan = new SnapshotSpan(_codeGenerationUnitAndSnapshot.Snapshot, sourceLocation.Start, sourceLocation.Length);
             var tag     = new GoToTag(provider);
 
             return new TagSpan<GoToTag>(tagSpan, tag);

@@ -1,0 +1,13 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ 
+  <UsingTask TaskName="Nav.Language.BuildTasks.NavCodeGenTask" AssemblyFile="Nav.Language.BuildTasks.dll" />
+
+  <ItemGroup>
+    <AvailableItemName Include="NavFile"/>
+  </ItemGroup>
+
+  <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild" >
+    <NavCodeGenTask Files="@(NavFile)"/>    
+  </Target>
+  
+</Project>

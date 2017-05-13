@@ -73,12 +73,13 @@ namespace Pharmatechnik.Nav.Language {
         public override void VisitInitNodeDeclaration(InitNodeDeclarationSyntax initNodeDeclarationSyntax) {
 
             var identifier = initNodeDeclarationSyntax.InitKeyword;
-            var name       = "Init";
-
-            // TODO: InitNodeAlias einführen => Implizite Großschreibung von init, falls kein Alias angegeben wurde
-            if (!initNodeDeclarationSyntax.Identifier.IsMissing) {
-                identifier = initNodeDeclarationSyntax.Identifier;
-                name       = identifier.ToString();
+            var taskAlias  = initNodeDeclarationSyntax.Identifier;
+           
+            InitNodeAliasSymbol initNodeAlias = null;
+            if (!taskAlias.IsMissing) {
+                var aliasName     = taskAlias.ToString();
+                var aliasLocation = taskAlias.GetLocation();
+                initNodeAlias = new InitNodeAliasSymbol(aliasName, aliasLocation);
             }
             
             var location = identifier.GetLocation();
@@ -86,7 +87,7 @@ namespace Pharmatechnik.Nav.Language {
                 return;
             }
 
-            var decl = new InitNodeSymbol(name, location, initNodeDeclarationSyntax, _taskDefinition);
+            var decl = new InitNodeSymbol("Init", location, initNodeDeclarationSyntax, initNodeAlias, _taskDefinition);
 
             AddNodeDeclaration(decl);
         }
@@ -237,14 +238,13 @@ namespace Pharmatechnik.Nav.Language {
                 var sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(sourceNodeSyntax.Name);
 
                 // Special case "init": Hier ist implizit auch Großschreibung erlaubt
-                // TODO Keyword in eigene Klasse
-                if (sourceNode == null && sourceNodeSyntax.Name=="init") {
-                    sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol("Init");
+                if (sourceNode == null && sourceNodeSyntax.Name== SyntaxFacts.InitKeyword) {
+                    sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(SyntaxFacts.InitKeywordAlt);
                 }
 
                 var location   = sourceNodeSyntax.GetLocation();
                 if(location != null) {
-                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceNode);
+                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceNode, NodeReferenceType.Source);
                 }
             }
 
@@ -256,7 +256,7 @@ namespace Pharmatechnik.Nav.Language {
                 var targetNode = _taskDefinition.NodeDeclarations.TryFindSymbol(targetNodeSyntax.Name);
                 var location = targetNodeSyntax.GetLocation();
                 if (location != null) {
-                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, location, targetNode);                
+                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, location, targetNode, NodeReferenceType.Target);                
                 }
             }
             
@@ -274,7 +274,7 @@ namespace Pharmatechnik.Nav.Language {
             // Triggers
             var triggers = GetTriggers(transitionDefinitionSyntax);
 
-            var transition = new Transition(_taskDefinition, transitionDefinitionSyntax, sourceNodeReference, edgeMode, targetNodeReference, triggers);
+            var transition = new Transition(transitionDefinitionSyntax, _taskDefinition, sourceNodeReference, edgeMode, targetNodeReference, triggers);
             
             AddTransition(transition);
         }
@@ -439,8 +439,7 @@ namespace Pharmatechnik.Nav.Language {
                                 DiagnosticDescriptors.Semantic.Nav0203TriggerNotAllowedAfterChoice));
                     }
 
-                    // TODO Keyword in eigene Klasse
-                    if (trigger.Name == "spontaneous" || trigger.Name == "spont") {
+                    if (trigger.Name == SyntaxFacts.SpontaneousKeyword || trigger.Name == SyntaxFacts.SpontKeyword) {
                         _diagnostics.Add(new Diagnostic(
                             trigger.Location,
                             DiagnosticDescriptors.Semantic.Nav0201SpontaneousNotAllowedInSignalTrigger));
@@ -540,7 +539,7 @@ namespace Pharmatechnik.Nav.Language {
                 var location         = sourceNodeSyntax.GetLocation();
 
                 if (location != null) {
-                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceTaskNodeSymbol);
+                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceTaskNodeSymbol, NodeReferenceType.Source);
                 }
             }
 
@@ -567,7 +566,7 @@ namespace Pharmatechnik.Nav.Language {
                 var location   = targetNodeSyntax.GetLocation();
 
                 if(location != null) {
-                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, location, targetNode);
+                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, location, targetNode, NodeReferenceType.Target);
                 }
             }
 
@@ -830,10 +829,19 @@ namespace Pharmatechnik.Nav.Language {
 
                         if (!actualExits.Exists(cpRef => cpRef.Declaration == expectedExit)) {
 
-                            _diagnostics.Add(new Diagnostic(
-                                taskNode.Location,
-                                DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
-                                expectedExit.Name));
+                            foreach (var targetNode in taskNode.Incomings
+                                                                 .Select(edge => edge.Target)
+                                                                 .Where(nodeReference => nodeReference != null)) {
+                                _diagnostics.Add(new Diagnostic(
+                                    targetNode.Location,
+                                    DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
+                                    expectedExit.Name));
+                            }
+
+                            //_diagnostics.Add(new Diagnostic(
+                            //    taskNode.Location,
+                            //    DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
+                            //    expectedExit.Name));
                         }
                     }
 

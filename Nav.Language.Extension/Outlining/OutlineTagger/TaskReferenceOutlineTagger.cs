@@ -8,10 +8,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
     class TaskReferenceOutlineTagger {
 
-        public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(ParseResult parseResult, IOutliningRegionTagCreator tagCreator) {
+        public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
 
             // Task Declarations
-            foreach (var taskReferenceDefinition in parseResult.SyntaxTree.GetRoot().DescendantNodes().OfType<TaskDeclarationSyntax>()) {
+            foreach (var taskReferenceDefinition in syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<TaskDeclarationSyntax>()) {
                 var extent = taskReferenceDefinition.Extent;
                
                 if (extent.Length <= 0) {
@@ -36,8 +36,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
                     continue;
                 }
 
-                var rgnSpan  = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, start), length);
-                var hintSpan = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, extent.Start), extent.Length);
+                var rgnSpan  = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, start), length);
+                var hintSpan = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extent.Start), extent.Length);
                 var rgnTag   = tagCreator.CreateTag("...", hintSpan);
 
                 yield return new TagSpan<IOutliningRegionTag>(rgnSpan, rgnTag);
@@ -45,10 +45,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
 
             // Zusammenhängende Blöcke von taskref "file" als Region zusammenfassen
-            var allRelevant = parseResult.SyntaxTree.GetRoot().DescendantNodes<TaskDefinitionSyntax>().Concat<SyntaxNode>(
-                parseResult.SyntaxTree.GetRoot().DescendantNodes <TaskDeclarationSyntax>())
+            var allRelevant = syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<TaskDefinitionSyntax>().Concat<SyntaxNode>(
+                syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes <TaskDeclarationSyntax>())
                 .Concat(
-                    parseResult.SyntaxTree.GetRoot().DescendantNodes<IncludeDirectiveSyntax>())
+                    syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<IncludeDirectiveSyntax>())
                 .OrderBy(s => s.Extent.Start);
 
             IncludeDirectiveSyntax firstInclude = null;
@@ -77,8 +77,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
                         int length = extendEnd.End - start;
 
-                        var regionSpan = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, start), length);
-                        var hintSpan   = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, extendStart.Start), extendEnd.End - extendStart.Start);
+                        var regionSpan = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, start), length);
+                        var hintSpan   = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extendStart.Start), extendEnd.End - extendStart.Start);
                         var tag        = tagCreator.CreateTag("...", hintSpan);
 
                         yield return new TagSpan<IOutliningRegionTag>(regionSpan, tag);

@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Keyword)]
         [BaseDefinition(PredefinedClassificationTypeNames.Keyword)]
-        static ClassificationTypeDefinition _keyword;
+        static ClassificationTypeDefinition Keyword;
       
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Keyword)]
@@ -47,7 +47,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Comment)]
         [BaseDefinition(PredefinedClassificationTypeNames.Comment)]
-        static ClassificationTypeDefinition _comment;
+        static ClassificationTypeDefinition Comment;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Comment)]
@@ -67,7 +67,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Identifier)]
         [BaseDefinition(PredefinedClassificationTypeNames.Identifier)]
-        static ClassificationTypeDefinition _identifier;
+        static ClassificationTypeDefinition Identifier;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Identifier)]
@@ -87,7 +87,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.StringLiteral)]
         [BaseDefinition(PredefinedClassificationTypeNames.String)]
-        static ClassificationTypeDefinition _string;
+        static ClassificationTypeDefinition String;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.StringLiteral)]
@@ -107,7 +107,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.FormName)]
         [BaseDefinition("class name")]
-        static ClassificationTypeDefinition _type;
+        static ClassificationTypeDefinition Type;
       
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.FormName)]
@@ -127,7 +127,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.TaskName)]
         [BaseDefinition("class name")]
-        static ClassificationTypeDefinition _taskName;
+        static ClassificationTypeDefinition TaskName;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.TaskName)]
@@ -147,7 +147,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.TypeName)]
         [BaseDefinition("class name")]
-        static ClassificationTypeDefinition _typeName;
+        static ClassificationTypeDefinition TypeName;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.TypeName)]
@@ -167,7 +167,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Punctuation)]
         [BaseDefinition("Punctuation")]
-        static ClassificationTypeDefinition _punctuation;
+        static ClassificationTypeDefinition Punctuation;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Punctuation)]
@@ -187,7 +187,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Unknown)]
         [BaseDefinition("Syntax Error")]
-        static ClassificationTypeDefinition _unknown;
+        static ClassificationTypeDefinition Unknown;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Unknown)]
@@ -207,12 +207,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.DeadCode)]
         [BaseDefinition("formal language")]
-        static ClassificationTypeDefinition _deadCode;
+        static ClassificationTypeDefinition DeadCode;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.DeadCode)]
         [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
+        [Order(Before = Priority.High)]
         internal sealed class DeadCodeClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public DeadCodeClassificationFormatDefinition() {
@@ -223,12 +223,53 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
         #endregion
 
+        #region ChoiceNode
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(ClassificationTypeNames.ChoiceNode)]
+        [BaseDefinition(ClassificationTypeNames.Identifier)]
+        static ClassificationTypeDefinition ChoiceNode;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.ChoiceNode)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Low)]
+        internal sealed class ChoiceNodeClassificationFormatDefinition : ClassificationFormatDefinition {
+
+            public ChoiceNodeClassificationFormatDefinition() {
+                IsItalic=true;
+            }
+        }
+
+        #endregion      
+
+        #region ConnectionPoint
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(ClassificationTypeNames.ConnectionPoint)]
+        [BaseDefinition(ClassificationTypeNames.Identifier)]
+        static ClassificationTypeDefinition ConnectionPoint;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.ConnectionPoint)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Low)]
+        internal sealed class ConnectionPointClassificationFormatDefinition : ClassificationFormatDefinition {
+
+            public ConnectionPointClassificationFormatDefinition() {
+                IsItalic = true;
+                IsBold   = true;
+            }
+        }
+
+        #endregion
+
         #region Underline
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Underline)]
         [BaseDefinition("formal language")]
-        static ClassificationTypeDefinition _underline;
+        static ClassificationTypeDefinition Underline;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Underline)]

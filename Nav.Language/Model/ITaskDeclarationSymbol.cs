@@ -36,8 +36,13 @@ namespace Pharmatechnik.Nav.Language {
         
         [NotNull]
         IReadOnlyList<ITaskNodeSymbol> References { get; }
-
+        /// <summary>
+        /// Gibt an, ob die Deklaration aus eine inkludierten nav-Datei stammt.
+        /// </summary>
         bool IsIncluded { get; }
+        /// <summary>
+        /// Gibt an, ob die Deklaration aus einer reinen Deklaration (taskref ...) oder einer Definition (task ...) entstammt.
+        /// </summary>
         TaskDeclarationOrigin Origin { get; }
     }
 }

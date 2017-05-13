@@ -11,7 +11,7 @@ using System.Windows.Controls.Primitives;
 
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text.Editor;
-
+using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 using Pharmatechnik.Nav.Language.Extension.UI;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
@@ -125,7 +125,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         }
 
         void ShowLocationErrorMessage(LocationInfo locationInfo) {
-            MessageBox.Show(messageBoxText: locationInfo.ErrorMessage, caption: MessageTitle, button: MessageBoxButton.OK, icon: MessageBoxImage.Asterisk);
+            ShellUtil.ShowErrorMessage(locationInfo.ErrorMessage);
         }
     }
 }

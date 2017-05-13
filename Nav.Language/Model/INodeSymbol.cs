@@ -25,6 +25,9 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         new InitNodeDeclarationSyntax Syntax { get; }
 
+        [CanBeNull]
+        IInitNodeAliasSymbol Alias { get; }
+
         [NotNull]
         IReadOnlyList<ITransition> Outgoings { get; }
     }

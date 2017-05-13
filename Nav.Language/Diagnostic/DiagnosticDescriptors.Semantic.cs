@@ -30,9 +30,9 @@
             /// The file '{0}' has some errors
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0005IncludeFile0HasSomeErrors = new DiagnosticDescriptor(
-                id: DiagnosticId.Nav0005,
-                messageFormat: "The file '{0}' has some errors",
-                category: Category,
+                id             : DiagnosticId.Nav0005,
+                messageFormat  : "The file '{0}' has some errors",
+                category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
                 );
 
@@ -131,8 +131,8 @@
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0026TriggerWithName0AlreadyDeclared = new DiagnosticDescriptor(
                 id: DiagnosticId.Nav0026,
-                messageFormat: "Trigger '{0}' is already declared",
-                category: Category,
+                messageFormat  : "Trigger '{0}' is already declared",
+                category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
                 );
 
@@ -242,9 +242,9 @@
             /// '{0}' edge not allowed here because the transition is reachable from an init node
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2 = new DiagnosticDescriptor(
-                id: DiagnosticId.Nav0110,
-                messageFormat: "'{0}' edge not allowed here because '{1}' is reachable from init node '{2}'",
-                category: Category,
+                id             : DiagnosticId.Nav0110,
+                messageFormat  : "'{0}' edge not allowed here because '{1}' is reachable from init node '{2}'",
+                category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
                 );
 
@@ -353,9 +353,9 @@
             /// Trigger not allowed after choice
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0203TriggerNotAllowedAfterChoice = new DiagnosticDescriptor(
-                id: DiagnosticId.Nav0203,
-                messageFormat: "Trigger not allowed after choice",
-                category: Category,
+                id             : DiagnosticId.Nav0203,
+                messageFormat  : "Trigger not allowed after choice",
+                category       : Category,
                 // TODO Error oder Warning - noch klären
                 defaultSeverity: DiagnosticSeverity.Warning
                 );
@@ -364,9 +364,9 @@
             /// Conditions are only supported after Init and Choice nodes
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodes = new DiagnosticDescriptor(
-                id: DiagnosticId.Nav0220,
-                messageFormat: "Conditions are only supported after Init and Choice nodes",
-                category: Category,
+                id             : DiagnosticId.Nav0220,
+                messageFormat  : "Conditions are only supported after Init and Choice nodes",
+                category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
                 );
 
@@ -374,20 +374,20 @@
             /// Only if conditions allowed in exit transitions
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0221OnlyIfConditionsAllowedInExitTransitions = new DiagnosticDescriptor(
-                id: DiagnosticId.Nav0221,
-                messageFormat: "Only if conditions allowed in exit transitions",
-                category: Category,
+                id             : DiagnosticId.Nav0221,
+                messageFormat  : "Only if conditions allowed in exit transitions",
+                category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
                 );
 
             // Code Related
 
             /// <summary>
-            /// identifier expected
+            /// Identifier expected
             /// </summary>
             public static readonly DiagnosticDescriptor Nav2000IdentifierExpected = new DiagnosticDescriptor(
                 id             : DiagnosticId.Nav2000,
-                messageFormat  : "identifier expected",
+                messageFormat  : "Identifier expected",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
                 );

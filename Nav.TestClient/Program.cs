@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Pharmatechnik.Nav.Language;
+using Pharmatechnik.Nav.Language.Dependencies;
 
 #endregion
 
@@ -40,7 +41,7 @@ namespace TestClient
 
         static void PressAnyKeyToContinue() {
             Console.WriteLine("Press any key to continue");
-            Console.ReadKey();
+            //Console.ReadKey();
         }
 
         public void Dispose() {
@@ -49,55 +50,68 @@ namespace TestClient
         
         void Run(string directory) {
 
-            int maxTokens = 0;
-            int sumTokens = 0;
-            int files     = 0;
-            
-            var codeGenerationUnits=Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories)
-                                          .AsParallel().WithMergeOptions(ParallelMergeOptions.NotBuffered) // Sofortige Ausgabe der Ergebnisse
+            var navFiles = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories);
+            var codeGenerationUnits= navFiles
+                                           .AsParallel().WithMergeOptions(ParallelMergeOptions.NotBuffered) // Sofortige Ausgabe der Ergebnisse
                                           .Select(BuildCodeGenerationUnit);
 
-            foreach(var codeGenerationUnit in codeGenerationUnits.Where(cu => cu!=null)) {
+            var codeGens= codeGenerationUnits.Where(cu => cu != null);
 
-                files++;
+            var dependencies = DependencyAnalyzer.CollectTasksDefinitionDependencies(codeGens);
+            var usings = dependencies.CollectIncomingDependencies();
 
-                var syntaxTree = codeGenerationUnit.Syntax.SyntaxTree;
-                var file       = syntaxTree.FileInfo;
-
-                bool writeEndSeparator = false;
-
-                if(syntaxTree.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error) || 
-                   codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
-                    WriteInfo("");
-                    WriteInfo("File:");
-                    WriteInfo("=====");
-                    WriteInfo("{0}", file); 
-                    writeEndSeparator = true;
-                }
-               
-                if (syntaxTree.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
-                    WriteInfo("");
-                    WriteInfo("Syntaxfehler:");
-                    WriteInfo("=============");
-                    WriteErrorDiagnostics(syntaxTree.Diagnostics);
-                }
-
-                if (codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
-                    WriteInfo("");
-                    WriteInfo("Semantikfehler:");
-                    WriteInfo("===============");
-                    WriteErrorDiagnostics(codeGenerationUnit.Diagnostics);
-                }
-
-                if (writeEndSeparator) {
-                    WriteInfo("=============================================================");
-                }
-
-                maxTokens =  Math.Max(maxTokens, syntaxTree.Tokens.Count);
-                sumTokens += syntaxTree.Tokens.Count;
+            foreach (var u in usings.OrderByDescending(u=> u.Value.Count).Take(10)) {
+                Console.WriteLine($"{u.Value.Count,4} ==> {u.Key.TaskName}");
+                //foreach (var dependency in u.Value) {
+                //    //Console.WriteLine($"   {dependency.UsingItem.Location}");
+                //}
             }
 
-            Console.WriteLine("maxTokens: {0}, sumTokens: {1}, Files {2}", maxTokens, sumTokens, files);
+            //int maxTokens = 0;
+            //int sumTokens = 0;
+            //int files = 0;
+
+            //foreach (var codeGenerationUnit in codeGenerationUnits.Where(cu => cu!=null)) {
+
+            //    files++;
+
+            //    var syntaxTree = codeGenerationUnit.Syntax.SyntaxTree;
+            //    var file       = syntaxTree.FileInfo;
+
+            //    bool writeEndSeparator = false;
+
+            //    if(syntaxTree.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error) || 
+            //       codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
+            //        WriteInfo("");
+            //        WriteInfo("File:");
+            //        WriteInfo("=====");
+            //        WriteInfo("{0}", file); 
+            //        writeEndSeparator = true;
+            //    }
+
+            //    if (syntaxTree.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
+            //        WriteInfo("");
+            //        WriteInfo("Syntaxfehler:");
+            //        WriteInfo("=============");
+            //        WriteErrorDiagnostics(syntaxTree.Diagnostics);
+            //    }
+
+            //    if (codeGenerationUnit.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error)) {
+            //        WriteInfo("");
+            //        WriteInfo("Semantikfehler:");
+            //        WriteInfo("===============");
+            //        WriteErrorDiagnostics(codeGenerationUnit.Diagnostics);
+            //    }
+
+            //    if (writeEndSeparator) {
+            //        WriteInfo("=============================================================");
+            //    }
+
+            //    maxTokens =  Math.Max(maxTokens, syntaxTree.Tokens.Count);
+            //    sumTokens += syntaxTree.Tokens.Count;
+            //}
+
+            //Console.WriteLine("maxTokens: {0}, sumTokens: {1}, Files {2}", maxTokens, sumTokens, files);
         }
       
         CodeGenerationUnit BuildCodeGenerationUnit(string filename) {
@@ -122,29 +136,29 @@ namespace TestClient
         }
 
         void WriteInfo(string format, params object[] args) {
-            Console.WriteLine(format, args);
+           // Console.WriteLine(format, args);
             WriteLog(format, args);
         }
 
         // ReSharper disable once UnusedMember.Local
         void WriteWarning(string format, params object[] args) {
-            WriteConsole(ConsoleColor.Yellow, format, args);
+           // WriteConsole(ConsoleColor.Yellow, format, args);
             WriteLog(format, args);
         }
 
         void WriteError(string format, params object[] args) {
-            WriteConsole(ConsoleColor.DarkRed, format, args);
+           // WriteConsole(ConsoleColor.DarkRed, format, args);
             WriteLog(format, args);
         }
 
         void WriteLog(string format, object[] args) {
-            _logger.WriteLine(format, args);
+            //_logger.WriteLine(format, args);
         }
         
         static void WriteConsole(ConsoleColor color, string format, params object[] args) {
             var oldColor = Console.ForegroundColor;
             Console.ForegroundColor = color;
-            Console.WriteLine(format, args);
+          //  Console.WriteLine(format, args);
             Console.ForegroundColor = oldColor;
         }
     }

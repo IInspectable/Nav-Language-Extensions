@@ -1,8 +1,13 @@
+#region Using Directives
+
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+
 using JetBrains.Annotations;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
 
@@ -50,12 +55,7 @@ namespace Pharmatechnik.Nav.Language {
                 EnsureConstructed();
                 return _parent;
             }
-        }
-        
-        [CanBeNull]
-        internal SyntaxNode RawParent {
-            get { return _parent; }
-        }
+        }       
 
         public Location GetLocation() {
             EnsureConstructed();
@@ -77,30 +77,51 @@ namespace Pharmatechnik.Nav.Language {
 
         [NotNull]
         public IEnumerable<SyntaxNode> DescendantNodes() {
-            return DescendantNodesAndSelfImpl(includeSelf: false);
-        }
-
-        [NotNull]
-        public IEnumerable<T> DescendantNodes<T>() where T : SyntaxNode {
-            return DescendantNodes().OfType<T>();
+            return DescendantNodes<SyntaxNode>();
         }
 
         [NotNull]
         public IEnumerable<SyntaxNode> DescendantNodesAndSelf() {
-            return DescendantNodesAndSelfImpl(includeSelf: true);
+            return DescendantNodesAndSelf<SyntaxNode>();
         }
 
         [NotNull]
-        IEnumerable<SyntaxNode> DescendantNodesAndSelfImpl(bool includeSelf) {
+        public IEnumerable<T> DescendantNodes<T>() where T : SyntaxNode {
+            return DescendantNodesAndSelfImpl<T>(includeSelf: false);
+        }
+
+        [NotNull]
+        public IEnumerable<T> DescendantNodesAndSelf<T>() where T : SyntaxNode {
+            return DescendantNodesAndSelfImpl<T>(includeSelf: true);
+        }
+
+        [NotNull]
+        IEnumerable<T> DescendantNodesAndSelfImpl<T>(bool includeSelf) where T : SyntaxNode {
             EnsureConstructed();
-            if (includeSelf) {
-                yield return this;
+            if (includeSelf && this is T) {
+                yield return (T)this;
+
+                if(typeof(T) == GetType() && PromiseNoDescendantNodeOfSameType) {
+                    yield break;
+                }
             }
-            foreach (var node in ChildNodes().SelectMany(child=> child.DescendantNodesAndSelf())) {
+            foreach (var node in ChildNodes().SelectMany(child => child.DescendantNodesAndSelf<T>())) {
                 yield return node;
             }
         }
-        
+
+        /// <summary>
+        /// Für Knoten, die sehr weit "oben" liegen, kann die Implementierung von DescendantNodes&lt;T&gt;
+        /// massiv beschleunigt werden, wenn sichergestellt werden kann, dass ein Knoten keine untergeordnenten 
+        /// Knoten vom selben Typ haben kann, und deshalb die Suche in den Kindknoten vorzeitig abgebrochen
+        /// werden kann.
+        /// Eigentlich müsste diese Eigenschaft systematisch überschrieben werden. Bisweilen werden hiermit nur
+        /// die Hotspots optimiert.
+        /// </summary>
+        protected virtual bool PromiseNoDescendantNodeOfSameType {
+            get { return false; }
+        }
+
         /// <summary>
         /// Gets a list of ancestor nodes
         /// </summary>
@@ -127,6 +148,60 @@ namespace Pharmatechnik.Nav.Language {
             }
             return null;
         }
+
+        public TextExtent GetFullExtent(bool onlyWhiteSpace = false) {
+            return TextExtent.FromBounds(GetLeadingTriviaExtent(onlyWhiteSpace).Start, GetTrailingTriviaExtent(onlyWhiteSpace).End);
+        }
+
+        public TextExtent GetLeadingTriviaExtent(bool onlyWhiteSpace = false) {
+            var isTrivia      = GetIsTriviaFunc(onlyWhiteSpace);
+            var nodeStartLine = SyntaxTree.GetTextLineExtentAtPosition(Start);
+            var leadingExtent = TextExtent.FromBounds(nodeStartLine.Extent.Start, Start);
+
+            var start = Start;
+            // Wenn  bis zum Zeilenanfang nur Trivia Tokens, werden alle vorigen Zeilen, die nur aus Trivias bestehen, auch mit dazu genommen
+            if (SyntaxTree.Tokens[leadingExtent].All(token => isTrivia(token.Classification))) {
+                // Trivia geht mindestens zum Zeilenanfang der Node
+                start = leadingExtent.Start;
+                // Jetzt alle vorigen Zeilen durchlaufen
+                var line = nodeStartLine.Line-1;
+                while (line >= 0) {
+
+                    var lineExtent=SyntaxTree.GetTextLineExtent(line).Extent;
+                    if (!SyntaxTree.Tokens[lineExtent].All(token => isTrivia(token.Classification))) {
+                        // Zeile besteht nicht nur aus Trivias
+                        break;
+                    }
+
+                    start = lineExtent.Start;
+                    line -= 1;
+                }
+            }
+          
+            return TextExtent.FromBounds(start, Start);
+        }
+
+        // Die Trailing Trivias gehen bis zum nächsten Token, respektive zum Ende der Zeile
+        public TextExtent GetTrailingTriviaExtent(bool onlyWhiteSpace=false) {
+
+            var isTrivia       = GetIsTriviaFunc(onlyWhiteSpace);
+            var nodeEndLine    = SyntaxTree.GetTextLineExtentAtPosition(End);            
+            var trailingExtent = TextExtent.FromBounds(End, nodeEndLine.Extent.End);
+
+            var endToken = SyntaxTree.Tokens[trailingExtent]
+                                     .SkipWhile(token => isTrivia(token.Classification))
+                                     .FirstOrDefault();
+
+            var end = endToken.IsMissing? nodeEndLine.Extent.End: endToken.Start;
+
+            return TextExtent.FromBounds(End, end);
+        }
+
+        static Func<SyntaxTokenClassification, bool> GetIsTriviaFunc(bool onlyWhiteSpace = false) {
+            return onlyWhiteSpace ? (c => c == SyntaxTokenClassification.Whitespace) : 
+                                    new Func<SyntaxTokenClassification, bool>(SyntaxFacts.IsTrivia);            
+        }
+
 
         [NotNull]
         public SyntaxTree SyntaxTree {

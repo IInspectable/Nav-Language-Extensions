@@ -44,25 +44,25 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
         }
         
         protected override void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
-            var parseResult = ParserService.ParseResult;
-            if (parseResult == null) {
+            var syntaxTreeAndSnapshot = ParserService.SyntaxTreeAndSnapshot;
+            if (syntaxTreeAndSnapshot == null) {
                 return;
             }
 
-            UpdateRegions(parseResult);
+            UpdateRegions(syntaxTreeAndSnapshot);
             
             TagsChanged?.Invoke(this, e);
         }
 
-        void UpdateRegions(ParseResult parseResult) {
+        void UpdateRegions(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot) {
             _outLineTags.Clear();            
-            //_outLineTags.AddRange(CodeNamespaceDeclarationOutlineTagger.GetTags(parseResult, this));
-            _outLineTags.AddRange(CodeUsingDirectiveOutlineTagger.GetTags(parseResult, this));
-            _outLineTags.AddRange(TaskReferenceOutlineTagger.GetTags(parseResult, this));
-            _outLineTags.AddRange(TaskDefinitionsOutlineTagger.GetTags(parseResult, this));
-            _outLineTags.AddRange(NodeDeclarationBlockOutlineTagger.GetTags(parseResult, this));
-            _outLineTags.AddRange(TransitionDefinitionBlockOutlineTagger.GetTags(parseResult, this));
-            _outLineTags.AddRange(MultilineCommentOutlineTagger.GetTags(parseResult, this));
+            //_outLineTags.AddRange(CodeNamespaceDeclarationOutlineTagger.GetTags(syntaxTreeAndSnapshot, this));
+            _outLineTags.AddRange(CodeUsingDirectiveOutlineTagger.GetTags(syntaxTreeAndSnapshot, this));
+            _outLineTags.AddRange(TaskReferenceOutlineTagger.GetTags(syntaxTreeAndSnapshot, this));
+            _outLineTags.AddRange(TaskDefinitionsOutlineTagger.GetTags(syntaxTreeAndSnapshot, this));
+            _outLineTags.AddRange(NodeDeclarationBlockOutlineTagger.GetTags(syntaxTreeAndSnapshot, this));
+            _outLineTags.AddRange(TransitionDefinitionBlockOutlineTagger.GetTags(syntaxTreeAndSnapshot, this));
+            _outLineTags.AddRange(MultilineCommentOutlineTagger.GetTags(syntaxTreeAndSnapshot, this));
         }        
     }
 }

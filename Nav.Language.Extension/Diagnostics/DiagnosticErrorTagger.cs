@@ -25,23 +25,22 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
 
         public IEnumerable<ITagSpan<DiagnosticErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
 
-            var semanticModelResult = SemanticModelService.SemanticModelResult;
-            if(semanticModelResult == null) {
+            var codeGenerationUnitAndSnapshot = SemanticModelService.CodeGenerationUnitAndSnapshot;
+            if(codeGenerationUnitAndSnapshot == null) {
                 yield break;
             }
 
-            var syntaxTree         = semanticModelResult.CodeGenerationUnit.Syntax.SyntaxTree;
-            var codeGenerationUnit = semanticModelResult.CodeGenerationUnit;
+            var syntaxTree         = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Syntax.SyntaxTree;
+            var codeGenerationUnit = codeGenerationUnitAndSnapshot.CodeGenerationUnit;
 
             foreach (var span in spans) {
 
-                //TODO: könnte evtl effektiver sein, wenn Errors nach Start sortiert sind.
                 //==================
                 // Syntax Fehler
                 foreach (var diagnostic in syntaxTree.Diagnostics) {
                     if (diagnostic.Location.Start <= span.End && diagnostic.Location.End >= span.Start) {
 
-                        var errorSpan = new SnapshotSpan(semanticModelResult.Snapshot, new Span(diagnostic.Location.Start, diagnostic.Location.Length));
+                        var errorSpan = new SnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot, new Span(diagnostic.Location.Start, diagnostic.Location.Length));
 
                         var errorTag = new TagSpan<DiagnosticErrorTag>(
                                 errorSpan.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive),
@@ -55,7 +54,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
                 foreach (var diagnostic in codeGenerationUnit.Diagnostics) {
                     if (diagnostic.Location.Start <= span.End && diagnostic.Location.End >= span.Start) {
                 
-                        var errorSpan = new SnapshotSpan(semanticModelResult.Snapshot, new Span(diagnostic.Location.Start, diagnostic.Location.Length));
+                        var errorSpan = new SnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot, new Span(diagnostic.Location.Start, diagnostic.Location.Length));
                 
                         var errorTag = new TagSpan<DiagnosticErrorTag>(
                                 errorSpan.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive),

@@ -1,15 +1,20 @@
-using System.Collections.Generic;
+#region Using Directives
+
 using System.Linq;
+using System.Collections.Generic;
+
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
     class CodeNamespaceDeclarationOutlineTagger {
 
-        public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(ParseResult parseResult, IOutliningRegionTagCreator tagCreator) {
+        public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
             
-            var nsDecl = parseResult.SyntaxTree.GetRoot().DescendantNodes<CodeNamespaceDeclarationSyntax>().FirstOrDefault();
+            var nsDecl = syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<CodeNamespaceDeclarationSyntax>().FirstOrDefault();
             if (nsDecl == null) {
                 yield break;
             }
@@ -20,13 +25,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
             }
 
             var start  = keywordToken.End + 1;
-            int length = parseResult.Snapshot.Length - start; // Bis zum Ende der Datei
+            int length = syntaxTreeAndSnapshot.Snapshot.Length - start; // Bis zum Ende der Datei
 
             if (length <= 0) {
                 yield break;
             }
 
-            var span = new SnapshotSpan(new SnapshotPoint(parseResult.Snapshot, start), length);
+            var span = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, start), length);
             var tag  = tagCreator.CreateTag("...", span);
 
             yield return new TagSpan<IOutliningRegionTag>(span, tag);

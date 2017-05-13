@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language {
             _fileInfo        = fileInfo;
             _encoding    = encoding;
             _diagnostics = diagnostics ?? Enumerable.Empty<Diagnostic>().ToList();
-            _tokens      = tokens      ?? new SyntaxTokenList();
+            _tokens      = tokens      ?? SyntaxTokenList.Empty;
             _textLines   = textLines   ?? new List<TextLineExtent>();
         }
 
@@ -89,16 +89,34 @@ namespace Pharmatechnik.Nav.Language {
 
         LinePositionExtent GetLinePositionExtent(TextExtent extent) {
 
-            var start = GetLinePosition(extent.Start);
-            var end   = GetLinePosition(extent.End);
+            var start = GetLinePositionAtPosition(extent.Start);
+            var end   = GetLinePositionAtPosition(extent.End);
 
             return new LinePositionExtent(start, end);
         }
 
-        LinePosition GetLinePosition(int position) {
-           var lineInformaton = _textLines.FindElementAtPosition(position);
-           return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
+        LinePosition GetLinePositionAtPosition(int position) {
+            var lineInformaton = GetTextLineExtentAtPositionCore(position);
+            return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
         }
+
+        public TextLineExtent GetTextLineExtent(int line) {
+            return _textLines[line];
+        }
+
+        public TextLineExtent GetTextLineExtentAtPosition(int position) {
+            if (position < 0 || position > SourceText.Length) {
+                throw new ArgumentOutOfRangeException(nameof(position));
+            }
+            return GetTextLineExtentAtPositionCore(position);
+        }
+
+        TextLineExtent GetTextLineExtentAtPositionCore(int position) {
+            var lineInformaton = _textLines.FindElementAtPosition(position);
+            return lineInformaton;
+        }
+
+
 
         #region Parse Methods
 
@@ -171,8 +189,8 @@ namespace Pharmatechnik.Nav.Language {
 
         static SyntaxTokenList PostprocessTokens(List<SyntaxToken> tokens, NavCommonTokenStream cts, SyntaxNode syntax, CancellationToken cancellationToken) {
 
-            var result = new List<SyntaxToken>(cts.AllTokens.Count);
-            tokens.Sort((x, y) => x.Start - y.Start);
+            var finalTokens = new List<SyntaxToken>(cts.AllTokens.Count);
+            tokens.Sort(SyntaxTokenComparer.Default);
 
             // Wir haben bereits die signifikanten Token (T) im GrammarVisitor erstellt.
             // Wir können nicht alle Tokens hier ermitteln, da der Visitor viel mehr Kontextinformationen
@@ -192,7 +210,7 @@ namespace Pharmatechnik.Nav.Language {
                     var existing = tokens[index];
                     // Das Token wurde bereits im Visitor erfasst (T)
                     if (existing.Start == candidate.StartIndex) {
-                        result.Add(existing);
+                        finalTokens.Add(existing);
                         index++;
                         continue;
                     }
@@ -229,14 +247,47 @@ namespace Pharmatechnik.Nav.Language {
                         throw new ArgumentException();
                 }
                 
-                //TODO: hier evtl. den "echten" Parent herausfinden...
+                // TODO: hier evtl. den "echten" Parent herausfinden...
                 SyntaxNode parent = syntax;
-                result.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
-            }
 
-            return new SyntaxTokenList(result);
+                // Fix Für Single Line Comments, da diese leider immer auch das EOL beinhalten
+                if(candidate.Type == NavGrammarLexer.SingleLineComment) {
+                    foreach(var token in SplitSingleLineCommenTokens(candidate, parent)) {
+                        finalTokens.Add(token);
+                    }
+                } else {
+                    finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
+                }                
+            }   
+
+            return SyntaxTokenList.AttachSortedTokens(finalTokens);
         }
 
+        static IEnumerable<SyntaxToken> SplitSingleLineCommenTokens(IToken candidate, SyntaxNode parent) {
+            int newLineIndex = FindNewLineIndexInSingleLineComment(candidate.Text);
+            if(newLineIndex > 0) {
+                var tokenExtent = TextExtent.FromBounds(candidate.StartIndex, candidate.StartIndex + newLineIndex);
+                var newLineExtent = TextExtent.FromBounds(candidate.StartIndex + newLineIndex, candidate.StopIndex + 1);
+
+                yield return SyntaxTokenFactory.CreateToken(tokenExtent, SyntaxTokenType.SingleLineComment, SyntaxTokenClassification.Comment, parent);
+                yield return SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine, SyntaxTokenClassification.Whitespace, parent);
+            } else {
+                yield return SyntaxTokenFactory.CreateToken(candidate, SyntaxTokenClassification.Comment, parent);
+            }
+        }
+
+        static int FindNewLineIndexInSingleLineComment(string text) {
+            char c1 = text[text.Length - 2];
+            char c2 = text[text.Length - 1];
+            if (c2 == '\n' || c2== '\r') {
+                if (c1 == '\n') {
+                    return text.Length - 2;
+                }
+                return text.Length - 1;
+            }
+            return -1;
+        }
+        
         static IReadOnlyList<TextLineExtent> GetTextLines(string text) {
 
             int index;

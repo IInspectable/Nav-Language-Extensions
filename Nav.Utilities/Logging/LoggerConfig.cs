@@ -27,7 +27,8 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
                 ArchiveNumbering = ArchiveNumberingMode.Rolling,
                 MaxArchiveFiles  = 10,
                 ArchiveAboveSize = 10 * MB,
-                Layout           = new Log4JXmlEventLayout()
+                Layout           = new Log4JXmlEventLayout(),
+                ConcurrentWrites = true,
             };
 
             loggingConfiguration.AddTarget("file", fileTarget);

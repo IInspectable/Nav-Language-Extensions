@@ -1,36 +1,42 @@
+#region Using Directives
+
 using System;
 using System.Collections.Generic;
+
 using JetBrains.Annotations;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
 
     sealed class Transition : ITransition {
 
-        internal Transition(ITaskDefinitionSymbol containingTask, 
-                            TransitionDefinitionSyntax syntax, 
+        internal Transition(TransitionDefinitionSyntax syntax, 
+                            ITaskDefinitionSymbol containingTask, 
                             NodeReferenceSymbol source, 
                             EdgeModeSymbol edgeMode, 
                             NodeReferenceSymbol target, 
                             SymbolCollection<TriggerSymbol> triggers)  {
 
-            if (containingTask == null) {
-                throw new ArgumentNullException(nameof(containingTask));
+            ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
+            Syntax         = syntax         ?? throw new ArgumentNullException(nameof(syntax));
+            Source         = source;
+            EdgeMode       = edgeMode;
+            Target         = target;
+            Triggers       = triggers ?? new SymbolCollection<TriggerSymbol>();
+
+            if (source != null) {                
+                source.Edge   = this;
             }
-
-            if (syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
+            if (edgeMode != null) {
+                edgeMode.Edge = this;
             }
-
-            ContainingTask = containingTask;
-            Syntax   = syntax;
-            Source   = source;
-            EdgeMode = edgeMode;
-            Target   = target;
-            Triggers = triggers??new SymbolCollection<TriggerSymbol>();
-
+            if (target != null) {
+                target.Edge = this;
+            }
             foreach (var trigger in Triggers) {
                 trigger.Transition = this;
-            }
+            }            
         }
 
         [NotNull]
