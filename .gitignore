@@ -8,6 +8,9 @@
 /Nav.Language/bin/Debug
 /Nav.Language/obj/Debug
 /Nav.Language/ThisAssembly.generated.cs
+/Nav.Language.BuildTasks/bin/Debug
+/Nav.Language.BuildTasks/obj/Debug
+/Nav.Language.BuildTasks/ThisAssembly.generated.cs
 /Nav.Language.CodeAnalysis/bin/Debug
 /Nav.Language.CodeAnalysis/obj/Debug
 /Nav.Language.CodeAnalysis/ThisAssembly.generated.cs
