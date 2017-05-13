@@ -7,3 +7,5 @@ build:
 artifacts:
 - path: Nav.Language.Extension\bin\Debug\Pharmatechnik.Nav.Language.Extension.2017.vsix
   name: Nav.Language.Extension
+- path: Nav.Language.BuildTasks\bin\Debug
+  name: Nav.Language.BuildTasks
