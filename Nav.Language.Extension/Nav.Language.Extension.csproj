@@ -310,7 +310,6 @@
     <Compile Include="Utilities\VisualStudioWaitIndicator.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <Content Include="Icons.pkgdef">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

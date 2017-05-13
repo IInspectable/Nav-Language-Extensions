@@ -267,7 +267,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagnostic\DiagnosticDescriptors.DeadCode.cs" />
-    <None Include="app.config" />
     <EmbeddedResource Include="CodeGen\Templates\IBeginWFS.stg" />
     <EmbeddedResource Include="CodeGen\Templates\IWFS.stg" />
     <EmbeddedResource Include="CodeGen\Templates\WFSBase.stg" />
