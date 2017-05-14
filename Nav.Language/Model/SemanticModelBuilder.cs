@@ -60,7 +60,6 @@ namespace Pharmatechnik.Nav.Language {
 
             return model;
         }
-        
 
         void Process(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
             ProcessNavLanguage(syntax, cancellationToken);
@@ -159,6 +158,7 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
+        // ReSharper disable once UnusedParameter.Local
         void ProcessFinalSemanticErrors(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
 
             // =====================
@@ -180,14 +180,9 @@ namespace Pharmatechnik.Nav.Language {
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var location = taskDeclarationSymbol.Location;
-
                 // wenn möglich markieren wir die ganze Syntax
-                var taskDeclarationSyntax = syntax.FindNode(taskDeclarationSymbol.Location.Start) as TaskDeclarationSyntax;
-                if (taskDeclarationSyntax != null) {
-                    location = taskDeclarationSyntax.GetLocation();
-                }
-                            
+                var location = taskDeclarationSymbol.Syntax?.GetLocation() ?? taskDeclarationSymbol.Location;
+
                 _diagnostics.Add(new Diagnostic(
                     location, 
                     DiagnosticDescriptors.DeadCode.Nav1005TaskDeclaration0NotRequired,
