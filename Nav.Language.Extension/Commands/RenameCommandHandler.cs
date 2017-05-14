@@ -45,12 +45,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
             if (!codeGenerationUnitAndSnapshot.IsCurrent(args.SubjectBuffer.CurrentSnapshot)) {
+                // TODO Messagebox mit Grund anzeigen?
                 nextHandler();
                 return;
             }
 
             var symbol = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
             if (symbol == null) {
+                // TODO Messagebox mit Grund anzeigen?
                 nextHandler();
                 return;
             }
