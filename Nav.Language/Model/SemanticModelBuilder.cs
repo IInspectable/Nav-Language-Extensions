@@ -182,13 +182,10 @@ namespace Pharmatechnik.Nav.Language {
 
                 var location = taskDeclarationSymbol.Location;
 
-                // wenn möglich markieren wir "taskref Identifier"
+                // wenn möglich markieren wir die ganze Syntax
                 var taskDeclarationSyntax = syntax.FindNode(taskDeclarationSymbol.Location.Start) as TaskDeclarationSyntax;
                 if (taskDeclarationSyntax != null) {
-                    var start  = taskDeclarationSyntax.TaskrefKeyword.Start;
-                    var end    = taskDeclarationSyntax.Identifier.End;
-                    var extent = TextExtent.FromBounds(start, end);
-                    location   = syntax.SyntaxTree.GetLocation(extent);
+                    location = taskDeclarationSyntax.GetLocation();
                 }
                             
                 _diagnostics.Add(new Diagnostic(
