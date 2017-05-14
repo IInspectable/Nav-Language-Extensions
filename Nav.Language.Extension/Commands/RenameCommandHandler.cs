@@ -31,11 +31,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         public CommandState GetCommandState(RenameCommandArgs args, Func<CommandState> nextHandler) {
-
-            var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
-            var symbol = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
-
-            return symbol != null ? CommandState.Available : nextHandler();
+            // Das Ändern der Caret-Position veranlasst kein erneutes Abfragen des Commandstates.
+            // Das hat zur Folge, dass z.B. beim Drücken der Taste F2 auf einem Keyword der Rename
+            // Befehl so lange deaktiviert wird, bis auf einem Symbol das Kontextmenü aufgerufen, und 
+            // dadurch der Commandstate erneut (positiv) abgefragt wird.
+            // Deswegen retunieren wir hier grundsätzlich "Available".
+            // var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
+            // var symbol = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
+            return CommandState.Available;
         }
 
         public void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
