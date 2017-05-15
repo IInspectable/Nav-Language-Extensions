@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="JetBrains.Annotations, Version=7.1.3000.2254, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\ReSharper.Annotations.7.1.3.130415\lib\net\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Build.14.3.0\lib\net45\Microsoft.Build.dll</HintPath>
       <Private>True</Private>
@@ -52,7 +55,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NavCodeGen\ConsoleGeneratorLogger.cs" />
+    <Compile Include="NavCodeGen\IGeneratorLogger.cs" />
+    <Compile Include="NavCodeGen\MyLogger.cs" />
     <Compile Include="NavCodeGen\NavCodeGenerator.cs" />
+    <Compile Include="NavCodeGen\NavCodeGeneratorPipeline.cs" />
+    <Compile Include="NavCodeGen\NavCodeGeneratorPipeline.LoggerWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />

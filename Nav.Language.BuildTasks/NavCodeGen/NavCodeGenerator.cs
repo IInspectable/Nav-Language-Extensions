@@ -1,8 +1,6 @@
 ﻿#region Using Directives
 
 using System.Linq;
-using System.Collections.Generic;
-
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -12,7 +10,7 @@ using Pharmatechnik.Nav.Language.CodeGen;
 
 namespace Pharmatechnik.Nav.Language.BuildTasks {
 
-    public class NavCodeGenerator: Task {
+    public class NavCodeGenerator: Task, IGeneratorLogger {
 
         public bool Force { get; set; }
 
@@ -23,45 +21,19 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             if (Files == null) {
                 return true;
             }
-            
-            var options        = new GenerationOptions(force: Force);
-            var modelGenerator = new CodeModelGenerator(options);
-            var codeGenerator  = new CodeGenerator(options);
-            var fileGenerator  = new FileGenerator(options);
 
-            foreach(var file in Files.Select(item => item.GetMetadata("FullPath"))) {
+            var options  = new GenerationOptions(force: Force);
+            var pipeline = new NavCodeGeneratorPipeline(options, logger: this);
+            var files    = Files.Select(item => item.GetMetadata("FullPath"));
 
-                var syntax = SyntaxTree.FromFile(file);
-                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax((CodeGenerationUnitSyntax)syntax.GetRoot());
-
-                LogWarnings(syntax.Diagnostics);
-                LogWarnings(codeGenerationUnit.Diagnostics);
-
-                if (LogErrors(syntax.Diagnostics) || LogErrors(codeGenerationUnit.Diagnostics)) {
-                    continue;
-                }
-
-                var codeModelResults=modelGenerator.Generate(codeGenerationUnit);
-                foreach (var codeModelResult in codeModelResults) {
-                    var codeGenerationResult = codeGenerator.Generate(codeModelResult);
-
-                    fileGenerator.Generate(codeGenerationResult);
-                }
-            }
-            
-            return !Log.HasLoggedErrors;
+            return pipeline.Run(files);            
         }
 
-        bool LogErrors(IEnumerable<Diagnostic> diagnostics) {
-            bool errorsLogged = false;
-            foreach (var error in diagnostics.Errors()) {
-                errorsLogged = true;
-                LogError(error);
-            }
-            return errorsLogged;
+        void IGeneratorLogger.LogError(string message) {
+            Log.LogError(message);
         }
 
-        void LogError(Diagnostic diag) {
+        void IGeneratorLogger.LogError(Diagnostic diag) {
 
             var location = diag.Location;
             Log.LogError(
@@ -75,14 +47,8 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 endColumnNumber: location.EndCharacter + 1, 
                 message        : diag.Message);
         }
-
-        void LogWarnings(IEnumerable<Diagnostic> diagnostics) {
-            foreach (var warning in diagnostics.Warnings()) {
-                LogWarning(warning);
-            }
-        }
-
-        void LogWarning(Diagnostic diag) {
+        
+        void IGeneratorLogger.LogWarning(Diagnostic diag) {
 
             var location = diag.Location;
             Log.LogWarning(
