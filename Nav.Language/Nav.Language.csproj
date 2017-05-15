@@ -51,7 +51,6 @@
       <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
@@ -272,12 +271,6 @@
     <None Include="Model\ClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="UpdateProductVersion.targets" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj">
-      <Project>{aa0629b3-af39-4049-9723-7989ec93b0a4}</Project>
-      <Name>Nav.Utilities</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Syntax\Generated\_Readme.txt" />

@@ -4,6 +4,7 @@
   &lt;Assembly Path="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.Text.Internal.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\ws\git\Nav.Language.Extensions\packages\Microsoft.VisualStudio.Shell.15.0.15.0.26201\lib\Microsoft.VisualStudio.Shell.15.0.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
+	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndex/@EntryValue">2</s:Int64>
 	
 	
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/@KeyIndexDefined">True</s:Boolean>
