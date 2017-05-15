@@ -56,8 +56,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="NavCodeGen\ConsoleGeneratorLogger.cs" />
+    <Compile Include="NavCodeGen\FileSpec.cs" />
     <Compile Include="NavCodeGen\IGeneratorLogger.cs" />
-    <Compile Include="NavCodeGen\MyLogger.cs" />
     <Compile Include="NavCodeGen\NavCodeGenerator.cs" />
     <Compile Include="NavCodeGen\NavCodeGeneratorPipeline.cs" />
     <Compile Include="NavCodeGen\NavCodeGeneratorPipeline.LoggerWrapper.cs" />

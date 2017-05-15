@@ -25,20 +25,20 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 Logger?.LogError(message);
             }
 
-            public bool LogErrors(IEnumerable<Diagnostic> diagnostics) {
+            public bool LogErrors(FileSpec fileSpec, IEnumerable<Diagnostic> diagnostics) {
 
                 bool errorsLogged = false;
                 foreach (var error in diagnostics.Errors()) {
                     errorsLogged = true;
                     HasLoggedErrors = true;
-                    Logger?.LogError(error);
+                    Logger?.LogError(error, fileSpec);
                 }
                 return errorsLogged;
             }
 
-            public void LogWarnings(IEnumerable<Diagnostic> diagnostics) {
+            public void LogWarnings(FileSpec fileSpec, IEnumerable<Diagnostic> diagnostics) {
                 foreach (var warning in diagnostics.Warnings()) {
-                    Logger?.LogWarning(warning);
+                    Logger?.LogWarning(warning, fileSpec);
                 }
             }
         }

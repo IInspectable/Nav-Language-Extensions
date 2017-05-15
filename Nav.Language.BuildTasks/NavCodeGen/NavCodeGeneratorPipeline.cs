@@ -23,29 +23,29 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         [NotNull]
         public GenerationOptions Options { get; }
 
-        public bool Run(IEnumerable<string> fileNames) {
+        public bool Run(IEnumerable<FileSpec> fileSpecs) {
 
             var logger         = new LoggerWrapper(_logger);
             var modelGenerator = new CodeModelGenerator(Options);
             var codeGenerator  = new CodeGenerator(Options);
             var fileGenerator  = new FileGenerator(Options);
 
-            foreach (var file in fileNames) {
+            foreach (var fileSpec in fileSpecs) {
 
-                if (!File.Exists(file)) {
-                    logger.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, file));
+                if (!File.Exists(fileSpec.FilePath)) {
+                    logger.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, fileSpec));
                     continue;
                 }
 
-                var syntax = SyntaxTree.FromFile(file);
+                var syntax = SyntaxTree.FromFile(fileSpec.FilePath);
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax((CodeGenerationUnitSyntax)syntax.GetRoot());
 
-                if (logger.LogErrors(syntax.Diagnostics) || logger.LogErrors(codeGenerationUnit.Diagnostics)) {
+                if (logger.LogErrors(fileSpec, syntax.Diagnostics) || logger.LogErrors(fileSpec, codeGenerationUnit.Diagnostics)) {
                     continue;
                 }
 
-                logger.LogWarnings(syntax.Diagnostics);
-                logger.LogWarnings(codeGenerationUnit.Diagnostics);
+                logger.LogWarnings(fileSpec, syntax.Diagnostics);
+                logger.LogWarnings(fileSpec, codeGenerationUnit.Diagnostics);
                 
                 var codeModelResults = modelGenerator.Generate(codeGenerationUnit);
                 foreach (var codeModelResult in codeModelResults) {

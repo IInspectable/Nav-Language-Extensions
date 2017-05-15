@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System.Linq;
+using JetBrains.Annotations;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -9,7 +10,6 @@ using Pharmatechnik.Nav.Language.CodeGen;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.BuildTasks {
-
     public class NavCodeGenerator: Task, IGeneratorLogger {
 
         public bool Force { get; set; }
@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
             var options  = new GenerationOptions(force: Force);
             var pipeline = new NavCodeGeneratorPipeline(options, logger: this);
-            var files    = Files.Select(item => item.GetMetadata("FullPath"));
+            var files    = Files.Select(FileSpec.FromTaskItem);
 
             return pipeline.Run(files);            
         }
@@ -33,34 +33,41 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             Log.LogError(message);
         }
 
-        void IGeneratorLogger.LogError(Diagnostic diag) {
+        void IGeneratorLogger.LogError(Diagnostic diag, [CanBeNull] FileSpec fileSpec) {
 
             var location = diag.Location;
             Log.LogError(
                 subcategory    : null, 
                 errorCode      : diag.Descriptor.Id, 
                 helpKeyword    : null, 
-                file           : location.FilePath, 
-                lineNumber     : location.StartLine+1, 
-                columnNumber   : location.StartCharacter+1, 
-                endLineNumber  : location.EndLine + 1, 
-                endColumnNumber: location.EndCharacter + 1, 
+                file           : GetFile(diag, fileSpec),
+                lineNumber     : location.StartLine + 1, 
+                columnNumber   : location.StartCharacter + 1, 
+                endLineNumber  : 0, // Ist das von Interesse?
+                endColumnNumber: 0, // Ist das von Interesse?
                 message        : diag.Message);
         }
         
-        void IGeneratorLogger.LogWarning(Diagnostic diag) {
+        void IGeneratorLogger.LogWarning(Diagnostic diag, [CanBeNull] FileSpec fileSpec) {
 
             var location = diag.Location;
             Log.LogWarning(
                 subcategory    : null,
                 warningCode    : diag.Descriptor.Id,
                 helpKeyword    : null,
-                file           : location.FilePath,
+                file           : GetFile(diag, fileSpec),
                 lineNumber     : location.StartLine + 1,
                 columnNumber   : location.StartCharacter + 1,
-                endLineNumber  : location.EndLine + 1,
-                endColumnNumber: location.EndCharacter + 1,
+                endLineNumber  : 0, // Ist das von Interesse?
+                endColumnNumber: 0, // Ist das von Interesse?
                 message        : diag.Message);
-        }      
+        }
+
+        static string GetFile(Diagnostic diag, [CanBeNull] FileSpec fileSpec) {
+            if (diag?.Location.FilePath?.ToLower() == fileSpec?.FilePath.ToLower()) {
+                return fileSpec?.Identity ?? diag?.Location.FilePath;
+            }
+            return diag?.Location.FilePath;
+        }
     }
 }
