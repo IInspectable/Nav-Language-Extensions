@@ -9,25 +9,26 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public class CodeGenerationResult {
 
-        public CodeGenerationResult(ITaskDefinitionSymbol taskDefinition, string iBeginWfsInterfaceCode, string iWfsInterfaceCode, string wfsBaseCode, string wfsOneShotCode) {
-            TaskDefinition         = taskDefinition         ?? throw new ArgumentNullException(nameof(taskDefinition));
-            IBeginWfsInterfaceCode = iBeginWfsInterfaceCode ?? throw new ArgumentNullException(nameof(iBeginWfsInterfaceCode));
-            IWfsInterfaceCode      = iWfsInterfaceCode      ?? throw new ArgumentNullException(nameof(iWfsInterfaceCode));
-            WfsBaseCode            = wfsBaseCode            ?? throw new ArgumentNullException(nameof(wfsBaseCode));
-            WfsOneShotCode         = wfsOneShotCode         ?? throw new ArgumentNullException(nameof(wfsOneShotCode));
+        public CodeGenerationResult(ITaskDefinitionSymbol taskDefinition, string iBeginWfsCode, string iWfsCode, string wfsBaseCode, string wfsCode) {
+            TaskDefinition = taskDefinition ?? throw new ArgumentNullException(nameof(taskDefinition));
+            IBeginWfsCode  = iBeginWfsCode  ?? throw new ArgumentNullException(nameof(iBeginWfsCode));
+            IWfsCode       = iWfsCode       ?? throw new ArgumentNullException(nameof(iWfsCode));
+            WfsBaseCode    = wfsBaseCode    ?? throw new ArgumentNullException(nameof(wfsBaseCode));
+            WfsCode        = wfsCode        ?? throw new ArgumentNullException(nameof(wfsCode));
         }
 
         [NotNull]
         public ITaskDefinitionSymbol TaskDefinition { get; }
         [NotNull]
-        // ReSharper disable once InconsistentNaming
-        public string IBeginWfsInterfaceCode { get; }
+        // ReSharper disable InconsistentNaming
+        public string IBeginWfsCode { get; }
         [NotNull]
-        // ReSharper disable once InconsistentNaming
-        public string IWfsInterfaceCode { get; }
+        
+        public string IWfsCode { get; }
         [NotNull]
         public string WfsBaseCode { get; }
         [NotNull]
-        public string WfsOneShotCode { get; }        
+        public string WfsCode { get; }
+        // ReSharper restore InconsistentNaming
     }
 }

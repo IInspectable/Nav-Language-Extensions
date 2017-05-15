@@ -89,6 +89,7 @@
     <Compile Include="CodeFixes\Rename\ViewNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\TaskDefinitionSymbolExtensions.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
+    <Compile Include="CodeGen\CodeFileWriter.cs" />
     <Compile Include="CodeGen\CodeGenerationOptions.cs" />
     <Compile Include="CodeGen\CodeGenerationResult.cs" />
     <Compile Include="CodeGen\CodeGenerator.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="CodeGen\CodeModel\TaskCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TaskDeclarationCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TaskExitCodeModel.cs" />
+    <Compile Include="CodeGen\PathProvider.cs" />
     <Compile Include="CodeGen\Templates\Resources.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="Common\StringExtensions.cs" />

@@ -53,10 +53,10 @@ task TaskA [base StandardWFS : ILegacyMessageBoxWFS]
 
             Assert.That(results.Count, Is.EqualTo(1));
 
-            Assert.That(results[0].IBeginWfsInterfaceCode, Is.Not.Empty);
-            Assert.That(results[0].IWfsInterfaceCode, Is.Not.Empty);
-            Assert.That(results[0].WfsBaseCode, Is.Not.Empty);
-            Assert.That(results[0].WfsOneShotCode, Is.Not.Empty);
+            Assert.That(results[0].IBeginWfsCode, Is.Not.Empty);
+            Assert.That(results[0].IWfsCode     , Is.Not.Empty);
+            Assert.That(results[0].WfsBaseCode  , Is.Not.Empty);
+            Assert.That(results[0].WfsCode      , Is.Not.Empty);
         }
     }
 }

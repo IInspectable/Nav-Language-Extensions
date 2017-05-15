@@ -12,6 +12,7 @@ using Pharmatechnik.Nav.Language.CodeGen.Templates;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
+
     public class CodeGenerator {
 
         const string TemplateName         = "Begin";
@@ -52,16 +53,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 );
 
             var codeGenerationResult= new CodeGenerationResult(
-                taskDefinition        : taskDefinition,
-                iBeginWfsInterfaceCode: GenerateIBeginWfsInterface(codeModelResult.IBeginWfsCodeModel, context),
-                iWfsInterfaceCode     : GenerateIWfsInterface(codeModelResult.IWfsCodeModel          , context),
-                wfsBaseCode           : GenerateWfsBase(codeModelResult.WfsBaseCodeModel             , context),
-                wfsOneShotCode        : GenerateWfsOneShot(codeModelResult.WfsBaseCodeModel          , context));
+                taskDefinition   : taskDefinition,
+                iBeginWfsCode    : GenerateIBeginWfsCode(codeModelResult.IBeginWfsCodeModel, context),
+                iWfsCode         : GenerateIWfsCode(codeModelResult.IWfsCodeModel          , context),
+                wfsBaseCode      : GenerateWfsBaseCode(codeModelResult.WfsBaseCodeModel    , context),
+                wfsCode          : GenerateWfsCode(codeModelResult.WfsBaseCodeModel        , context));
 
             return codeGenerationResult;
         }
 
-        static string GenerateIBeginWfsInterface(IBeginWfsCodeModel model, CodeGeneratorContext context) {
+        static string GenerateIBeginWfsCode(IBeginWfsCodeModel model, CodeGeneratorContext context) {
 
             var group = new TemplateGroupString(Resources.IBeginWfsTemplate);            
             var st    = group.GetInstanceOf(TemplateName);
@@ -74,7 +75,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return result;
         }
 
-        static string GenerateIWfsInterface(IWfsCodeModel model, CodeGeneratorContext context) {
+        static string GenerateIWfsCode(IWfsCodeModel model, CodeGeneratorContext context) {
 
             var group = new TemplateGroupString(Resources.IWfsTemplate);
             var st    = group.GetInstanceOf(TemplateName);
@@ -87,7 +88,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return result;
         }
 
-        static string GenerateWfsBase(WfsBaseCodeModel model, CodeGeneratorContext context) {
+        static string GenerateWfsBaseCode(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
             var group = new TemplateGroupString(Resources.WfsBaseTemplate);
             var st    = group.GetInstanceOf(TemplateName);
@@ -100,7 +101,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return result;
         }
 
-        static string GenerateWfsOneShot(WfsBaseCodeModel model, CodeGeneratorContext context) {
+        static string GenerateWfsCode(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
             var group = new TemplateGroupString(Resources.WFSOneShotTemplate);
             var st    = group.GetInstanceOf(TemplateName);
