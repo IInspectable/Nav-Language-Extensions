@@ -1,7 +1,5 @@
 ﻿#region Using Directives
 
-using System.Linq;
-
 using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.CodeGen.Templates;
@@ -47,16 +45,21 @@ task TaskA [base StandardWFS : ILegacyMessageBoxWFS]
 }";
             var codeGenerationUnitSyntax= Syntax.ParseCodeGenerationUnit(navCode, @"c:\TaskA.nav");
             var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
-            var generator = new CodeGenerator(CodeGenerationOptions.Default);
 
-            var results = generator.Generate(codeGenerationUnit).ToList();
+            var options        = GenerationOptions.Default;
+            var modelGenerator = new CodeModelGenerator(options);
+            var codeGenerator  = new CodeGenerator(options);
+
+            var results = modelGenerator.Generate(codeGenerationUnit);
 
             Assert.That(results.Count, Is.EqualTo(1));
 
-            Assert.That(results[0].IBeginWfsCode, Is.Not.Empty);
-            Assert.That(results[0].IWfsCode     , Is.Not.Empty);
-            Assert.That(results[0].WfsBaseCode  , Is.Not.Empty);
-            Assert.That(results[0].WfsCode      , Is.Not.Empty);
+            var codeGenResult = codeGenerator.Generate(results[0]);
+
+            Assert.That(codeGenResult.IBeginWfsCode, Is.Not.Empty);
+            Assert.That(codeGenResult.IWfsCode     , Is.Not.Empty);
+            Assert.That(codeGenResult.WfsBaseCode  , Is.Not.Empty);
+            Assert.That(codeGenResult.WfsCode      , Is.Not.Empty);
         }
     }
 }

@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     // ReSharper disable once InconsistentNaming
-    sealed class IBeginWfsCodeModel : CodeModel {
+    public sealed class IBeginWfsCodeModel : CodeModel {
 
         IBeginWfsCodeModel(ImmutableList<string> usingNamespaces, string wflNamespace, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits) {
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));

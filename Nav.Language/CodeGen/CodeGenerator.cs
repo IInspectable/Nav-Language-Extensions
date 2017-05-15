@@ -1,11 +1,8 @@
 ﻿#region Using Directives
 
 using System;
-using System.Linq;
-using System.Collections.Immutable;
 
 using Antlr4.StringTemplate;
-using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.CodeGen.Templates;
 
@@ -13,55 +10,33 @@ using Pharmatechnik.Nav.Language.CodeGen.Templates;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public class CodeGenerator {
+    public class CodeGenerator: Generator {
 
         const string TemplateName         = "Begin";
         const string ModelAttributeName   = "model";
         const string ContextAttributeName = "context";
 
-        public CodeGenerator(CodeGenerationOptions options) {
-            Options = options ?? throw new ArgumentNullException(nameof(options));
+        public CodeGenerator(GenerationOptions options): base(options) {
         }
 
-        [NotNull]
-        public CodeGenerationOptions Options { get; }
+        public CodeGenerationResult Generate(CodeModelResult codeModelResult) {
 
-        public IImmutableList<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit) {
-
-            if (codeGenerationUnit.Syntax.SyntaxTree.Diagnostics.HasErrors()) {
-                throw new ArgumentException("Syntax errors detected");
+            if (codeModelResult == null) {
+                throw new ArgumentNullException(nameof(codeModelResult));
             }
-
-            if (codeGenerationUnit.Diagnostics.HasErrors()) {
-                throw new ArgumentException("Semantic errors detected");
-            }
-
-            return codeGenerationUnit.TaskDefinitions
-                                     .Select(Generate)
-                                     .ToImmutableList();
-        }
-
-        CodeGenerationResult Generate(ITaskDefinitionSymbol taskDefinition) {
 
             var context = new CodeGeneratorContext(this);
 
-            var codeModelResult = new CodeModelResult(
-                taskDefinition   : taskDefinition,
-                beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition),
-                wfsCodeModel     : IWfsCodeModel.FromTaskDefinition(taskDefinition),
-                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition)
-                );
-
-            var codeGenerationResult= new CodeGenerationResult(
-                taskDefinition   : taskDefinition,
-                iBeginWfsCode    : GenerateIBeginWfsCode(codeModelResult.IBeginWfsCodeModel, context),
-                iWfsCode         : GenerateIWfsCode(codeModelResult.IWfsCodeModel          , context),
-                wfsBaseCode      : GenerateWfsBaseCode(codeModelResult.WfsBaseCodeModel    , context),
-                wfsCode          : GenerateWfsCode(codeModelResult.WfsBaseCodeModel        , context));
+            var codeGenerationResult = new CodeGenerationResult(
+                taskDefinition: codeModelResult.TaskDefinition                          ,
+                iBeginWfsCode : GenerateIBeginWfsCode(codeModelResult.IBeginWfsCodeModel, context),
+                iWfsCode      : GenerateIWfsCode(codeModelResult.IWfsCodeModel          , context),
+                wfsBaseCode   : GenerateWfsBaseCode(codeModelResult.WfsBaseCodeModel    , context),
+                wfsCode       : GenerateWfsCode(codeModelResult.WfsBaseCodeModel        , context));
 
             return codeGenerationResult;
         }
-
+        
         static string GenerateIBeginWfsCode(IBeginWfsCodeModel model, CodeGeneratorContext context) {
 
             var group = new TemplateGroupString(Resources.IBeginWfsTemplate);            

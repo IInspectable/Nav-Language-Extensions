@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    sealed class CodeModelResult {
+    public sealed class CodeModelResult {
 
         public CodeModelResult(ITaskDefinitionSymbol taskDefinition, IBeginWfsCodeModel beginWfsCodeModel, IWfsCodeModel wfsCodeModel, WfsBaseCodeModel wfsBaseCodeModel) {
             TaskDefinition     = taskDefinition    ?? throw new ArgumentNullException(nameof(taskDefinition));

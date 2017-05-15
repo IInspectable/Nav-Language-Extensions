@@ -1,13 +1,14 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
  
-  <UsingTask TaskName="Nav.Language.BuildTasks.NavCodeGenTask" AssemblyFile="Nav.Language.BuildTasks.dll" />
+  <UsingTask TaskName="Pharmatechnik.Nav.Language.BuildTasks.NavCodeGenerator" AssemblyFile="Pharmatechnik.Nav.Language.BuildTasks.dll" />
 
+  <!--Default Parameter für Force etc. einführen -->
   <ItemGroup>
     <AvailableItemName Include="NavFile"/>
   </ItemGroup>
 
   <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild" >
-    <NavCodeGenTask Files="@(NavFile)"/>    
+    <NavCodeGenerator Files="@(NavFile)"/>    
   </Target>
   
 </Project>

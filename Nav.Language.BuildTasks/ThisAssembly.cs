@@ -1,4 +1,4 @@
-﻿namespace Nav.Language.BuildTasks {
+﻿namespace Pharmatechnik.Nav.Language {
 
     static partial class ThisAssembly {
 

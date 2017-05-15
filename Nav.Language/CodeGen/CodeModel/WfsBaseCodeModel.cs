@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    sealed class WfsBaseCodeModel : CodeModel {
+    public sealed class WfsBaseCodeModel : CodeModel {
 
         WfsBaseCodeModel(ImmutableList<string> usingNamespaces, string iwflNamespace, string taskName) {
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException();
