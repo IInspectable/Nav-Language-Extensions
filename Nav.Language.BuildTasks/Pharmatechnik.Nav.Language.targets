@@ -2,13 +2,16 @@
  
   <UsingTask TaskName="Pharmatechnik.Nav.Language.BuildTasks.NavCodeGenerator" AssemblyFile="Pharmatechnik.Nav.Language.BuildTasks.dll" />
 
-  <!--Default Parameter für Force etc. einführen -->
   <ItemGroup>
     <AvailableItemName Include="NavFile"/>
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(ForceGenerateNavCode)' == ''">
+    <ForceGenerateNavCode>false</ForceGenerateNavCode>
+  </PropertyGroup>
+  
   <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild" >
-    <NavCodeGenerator Files="@(NavFile)"/>    
+    <NavCodeGenerator Files="@(NavFile)" Force="$(ForceGenerateNavCode)"/>    
   </Target>
   
 </Project>

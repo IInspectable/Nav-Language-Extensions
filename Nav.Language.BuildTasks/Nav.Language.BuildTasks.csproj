@@ -61,7 +61,7 @@
     <Compile Include="ThisAssembly.generated.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Pharmatechnik.Nav.Language.BuildTasks.targets">
+    <None Include="Pharmatechnik.Nav.Language.targets">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config">
