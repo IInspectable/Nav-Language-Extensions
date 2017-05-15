@@ -34,30 +34,26 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         }
 
         void IGeneratorLogger.LogError(Diagnostic diag, [CanBeNull] FileSpec fileSpec) {
-
-            var location = diag.Location;
             Log.LogError(
                 subcategory    : null, 
                 errorCode      : diag.Descriptor.Id, 
                 helpKeyword    : null, 
                 file           : GetFile(diag, fileSpec),
-                lineNumber     : location.StartLine + 1, 
-                columnNumber   : location.StartCharacter + 1, 
+                lineNumber     : diag.Location.StartLine + 1, 
+                columnNumber   : diag.Location.StartCharacter + 1, 
                 endLineNumber  : 0, // Ist das von Interesse?
                 endColumnNumber: 0, // Ist das von Interesse?
                 message        : diag.Message);
         }
         
         void IGeneratorLogger.LogWarning(Diagnostic diag, [CanBeNull] FileSpec fileSpec) {
-
-            var location = diag.Location;
             Log.LogWarning(
                 subcategory    : null,
                 warningCode    : diag.Descriptor.Id,
                 helpKeyword    : null,
                 file           : GetFile(diag, fileSpec),
-                lineNumber     : location.StartLine + 1,
-                columnNumber   : location.StartCharacter + 1,
+                lineNumber     : diag.Location.StartLine + 1,
+                columnNumber   : diag.Location.StartCharacter + 1,
                 endLineNumber  : 0, // Ist das von Interesse?
                 endColumnNumber: 0, // Ist das von Interesse?
                 message        : diag.Message);
