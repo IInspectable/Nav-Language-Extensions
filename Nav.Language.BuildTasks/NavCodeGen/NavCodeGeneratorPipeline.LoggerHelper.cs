@@ -1,9 +1,10 @@
 ﻿#region Using Directives
 
 using System.Linq;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
+
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Utilities.IO;
@@ -14,7 +15,7 @@ using Pharmatechnik.Nav.Language.CodeGen;
 namespace Pharmatechnik.Nav.Language.BuildTasks {
 
     public sealed partial class NavCodeGeneratorPipeline {
-        public sealed class LoggerHelper {
+        sealed class LoggerHelper {
 
             public LoggerHelper(IGeneratorLogger logger) {
                 Logger               = logger;
@@ -29,12 +30,8 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             [NotNull]
             Stopwatch ProcessFileStopwatch { get; }
 
-            public bool HasLoggedErrors { get; set; }
-
-            public void LogInfo(string message) {
-                Logger?.LogInfo(message);
-            }
-
+            public bool HasLoggedErrors { get; private set; }
+           
             public void LogError(string message) {
                 HasLoggedErrors = true;
                 Logger?.LogError(message);
@@ -65,17 +62,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 ProcessFileStopwatch.Restart();
                 Logger?.LogInfo($"Processing file '{fileSpec.Identity}'");
             }
-
-            public void LogProcessFileEnd(FileSpec fileSpec) {
-                ProcessFileStopwatch.Stop();
-                Logger?.LogInfo($"Completed in {ProcessFileStopwatch.Elapsed}");
-            }
-
-            public void LogProcessEnd(int fileCount) {
-                ProcessStopwatch.Stop();
-                Logger?.LogInfo($"{fileCount} Files completed in {ProcessStopwatch.Elapsed}");
-            }
-
+            
             public void LogFileGeneratorResults(IImmutableList<FileGeneratorResult> fileResults) {
 
                 var longestName = fileResults.Select(r => r.Action.ToString().Length).Max();
@@ -83,7 +70,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 foreach (var fileResult in fileResults) {
 
                     var fileIdentity = fileResult.FileName;
-
+                    
                     var syntaxDirectory = fileResult.TaskDefinition.Syntax.SyntaxTree.FileInfo?.DirectoryName;
                     if (syntaxDirectory != null) {
                         fileIdentity = PathHelper.GetRelativePath(syntaxDirectory, fileResult.FileName);
@@ -95,7 +82,18 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 }
             }
 
-            
+            public void LogProcessFileEnd(FileSpec fileSpec) {
+                ProcessFileStopwatch.Stop();
+                Logger?.LogInfo($"Completed in {ProcessFileStopwatch.Elapsed.TotalSeconds} seconds.");
+            }
+
+            public void LogProcessEnd(Statistic statistic) {
+                ProcessStopwatch.Stop();
+                Logger?.LogInfo($"{statistic.FileCount} files processed.");
+                Logger?.LogInfo($"   Skiped : {statistic.FilesSkiped}");
+                Logger?.LogInfo($"   Updated: {statistic.FilesUpated}");
+                Logger?.LogInfo($"Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds.");
+            }
         }
     }
 }

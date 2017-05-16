@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.BuildTasks {
-    public class ConsoleGeneratorLogger : IGeneratorLogger {
+    public sealed class ConsoleGeneratorLogger : IGeneratorLogger {
 
         public void LogInfo(string message) {
             WriteInfo(message);
@@ -24,25 +24,25 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             WriteWarning(FormatDiagnostic(diag, fileSpec));
         }
 
-        private void WriteInfo(string message) {
+        void WriteInfo(string message) {
             WriteLine(message, ConsoleColor.DarkGray);
         }
 
-        private void WriteError(string message) {
+        void WriteError(string message) {
             WriteLine(message, ConsoleColor.Red);
         }
 
-        private void WriteWarning(string message) {
+        void WriteWarning(string message) {
             WriteLine(message, ConsoleColor.Yellow);
         }
 
-        private void WriteLine(string message, ConsoleColor backgroundColor) {
-            var oldBackground = Console.BackgroundColor;
+        void WriteLine(string message, ConsoleColor backgroundColor) {
+            var oldBackground = Console.ForegroundColor;
             try {
-                Console.BackgroundColor = backgroundColor;
+                Console.ForegroundColor = backgroundColor;
                 Console.WriteLine(message);
             } finally {
-                Console.BackgroundColor = oldBackground;
+                Console.ForegroundColor = oldBackground;
             }
         }
 

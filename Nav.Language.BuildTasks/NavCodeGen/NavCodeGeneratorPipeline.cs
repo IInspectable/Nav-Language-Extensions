@@ -3,7 +3,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-
+using System.Collections.Immutable;
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.CodeGen;
@@ -30,13 +30,12 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             var modelGenerator = new CodeModelGenerator(Options);
             var codeGenerator  = new CodeGenerator(Options);
             var fileGenerator  = new FileGenerator(Options);
-            var fileCount      = 0;
-
+            var statistic      = new Statistic();
             logger.LogProcessBegin();
 
             foreach (var fileSpec in fileSpecs) {
 
-                fileCount++;
+                statistic.IncrementFileCount();
 
                 logger.LogProcessFileBegin(fileSpec);
 
@@ -61,15 +60,40 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                     var codeGenerationResult = codeGenerator.Generate(codeModelResult);
 
                     var fileGeneratorResults = fileGenerator.Generate(codeGenerationResult);
-                    logger.LogFileGeneratorResults(fileGeneratorResults);                    
+                    logger.LogFileGeneratorResults(fileGeneratorResults);
+                    statistic.Update(fileGeneratorResults);
                 }
 
                 logger.LogProcessFileEnd(fileSpec);
             }
 
-            logger.LogProcessEnd(fileCount);
+            logger.LogProcessEnd(statistic);
 
             return !logger.HasLoggedErrors;
-        }       
+        }
+        
+        class Statistic {
+
+            public int FileCount { get; set; }
+            public int FilesUpated { get; set; }
+            public int FilesSkiped { get; set; }
+
+            public void IncrementFileCount() {
+                FileCount++;
+            }
+
+            public void Update(IImmutableList<FileGeneratorResult> fileResults) {
+                foreach (var fileResult in fileResults) {
+                    switch (fileResult.Action) {
+                        case FileGeneratorAction.Skiped:
+                            FilesSkiped++;
+                            break;
+                        case FileGeneratorAction.Updated:
+                            FilesUpated++;
+                            break;
+                    }
+                }
+            }
+        }
     }
 }
