@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -23,24 +24,18 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             results.Add(Write(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode     , OverwriteCondition.ContentChanged, pathProvider.IWfsInterfaceFile));
             results.Add(Write(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCode, OverwriteCondition.ContentChanged, pathProvider.IBeginWfsInterfaceFile));
             results.Add(Write(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCode  , OverwriteCondition.ContentChanged, pathProvider.WfsBaseFile));
-            // Spezial Handling für Wfs File
-            // TODO OldWfsFile berücksichtigen!!!
-            results.Add(Write(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode      , OverwriteCondition.Never         , pathProvider.WfsFile));
+            results.Add(Write(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode      , OverwriteCondition.Never         , pathProvider.WfsFile, alternateFileName: pathProvider.OldWfsFile));
 
             return results.ToImmutableList();
         }
 
         [NotNull]
-        FileGeneratorResult Write(ITaskDefinitionSymbol taskDefinition, string content, OverwriteCondition condition, string fileName) {
-            var dir = Path.GetDirectoryName(fileName);
+        FileGeneratorResult Write(ITaskDefinitionSymbol taskDefinition, string content, OverwriteCondition condition, string fileName, string alternateFileName = null) {
 
-            if (!Directory.Exists(dir)) {
-                // ReSharper disable once AssignNullToNotNullAttribute Lass krachen
-                Directory.CreateDirectory(dir);
-            }
-            
+            EnsureDirectory(fileName);
+
             var action = FileGeneratorAction.Skiped;
-            if (ShouldWrite(content, condition, fileName)) {
+            if (ShouldWrite(content, condition, fileName, alternateFileName)) {
                 File.WriteAllText(fileName, content);
                 action = FileGeneratorAction.Updated;
             }
@@ -48,30 +43,48 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new FileGeneratorResult(taskDefinition, action, fileName);
         }
 
-        enum OverwriteCondition {
-            Never,
-            ContentChanged
+        static void EnsureDirectory(string fileName) {
+            var dir = Path.GetDirectoryName(fileName);
+            // ReSharper disable once AssignNullToNotNullAttribute Lass krachen
+            Directory.CreateDirectory(dir);            
         }
 
-        bool ShouldWrite(string content, OverwriteCondition condition, string fileName) {
+        bool ShouldWrite(string content, OverwriteCondition condition, string fileName, string alternateFileName) {
 
+            // Die alternative Datei wird niemals überschrieben (legacy code!).
+            var alternateFileExists = alternateFileName != null && File.Exists(alternateFileName);
+            if (alternateFileExists) {
+                return false;
+            }
+
+            // Wenn die Datei nicht existiert, wird sie neu geschrieben
             if (!File.Exists(fileName)) {
                 return true;
             }
-            
+
+            // Eine Datei mit der Größe 0 gilt als nicht existent, und wird neu geschrieben 
             if (condition == OverwriteCondition.Never) {
-                // Eine Datei mit der Größe 0 gilt als nicht existent
+                
                 var fileInfo = new FileInfo(fileName);
                 return fileInfo.Length==0;
             }
 
+            // => condition == OverwriteCondition.ContentChanged
+
+            // Das Neuschreiben wurde per Order die Mufti angeordnet
             if (Options.Force) {
                 return true;
             }
 
-            var oldContent = File.ReadAllText(fileName);
+            // Ansonsten wird die Datei nur neu geschrieben, wenn sich deren Inhalt de facto geändert hat.
+            var fileContent = File.ReadAllText(fileName);
 
-            return oldContent != content;
+            return !String.Equals(fileContent, content, StringComparison.Ordinal);
+        }
+
+        enum OverwriteCondition {
+            Never,
+            ContentChanged
         }
     }
 }
