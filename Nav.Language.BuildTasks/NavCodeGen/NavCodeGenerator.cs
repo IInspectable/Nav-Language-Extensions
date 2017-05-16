@@ -29,6 +29,10 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             return pipeline.Run(files);            
         }
 
+        void IGeneratorLogger.LogInfo(string message) {
+            Log.LogMessage(message);
+        }
+
         void IGeneratorLogger.LogError(string message) {
             Log.LogError(message);
         }

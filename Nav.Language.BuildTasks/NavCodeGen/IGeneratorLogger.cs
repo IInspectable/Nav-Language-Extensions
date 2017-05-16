@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.BuildTasks {
     public interface IGeneratorLogger {
+        void LogInfo(string message);
         void LogError(string message);
         void LogError(Diagnostic diag  , [CanBeNull] FileSpec fileSpec = null);
         void LogWarning(Diagnostic diag, [CanBeNull] FileSpec fileSpec = null);

@@ -89,6 +89,8 @@
     <Compile Include="CodeFixes\TaskDefinitionSymbolExtensions.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
     <Compile Include="CodeGen\FileGenerator.cs" />
+    <Compile Include="CodeGen\FileGeneratorAction.cs" />
+    <Compile Include="CodeGen\FileGeneratorResult.cs" />
     <Compile Include="CodeGen\GenerationOptions.cs" />
     <Compile Include="CodeGen\CodeGenerationResult.cs" />
     <Compile Include="CodeGen\CodeGenerator.cs" />
