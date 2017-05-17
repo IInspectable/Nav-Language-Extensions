@@ -65,15 +65,34 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         private static ImmutableList<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
+
             var namespaces = new List<string>();
+
             namespaces.Add(taskCodeModel.IwflNamespace);
             namespaces.Add(NavigationEngineIwflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
+
             return namespaces.ToSortedNamespaces();
         }
 
         private static ParameterCodeModel GetTaskResult(TaskDefinitionSyntax taskDefinitionSyntax) {
-            var taskResult = FromCodeResultDeclarationSyntax(taskDefinitionSyntax.CodeResultDeclaration);
+
+            CodeResultDeclarationSyntax codeResultDeclarationSyntax = taskDefinitionSyntax.CodeResultDeclaration;
+
+            var parameterType = codeResultDeclarationSyntax?.Result?.Type?.ToString();
+            if (String.IsNullOrEmpty(parameterType)) {
+                parameterType = DefaultTaskResultType;
+            }
+
+            var parameterName = codeResultDeclarationSyntax?.Result?.Identifier.ToString();
+            if (String.IsNullOrEmpty(parameterName)) {
+                parameterName = DefaultParamterName;
+            }
+
+            var taskResult = new ParameterCodeModel(
+                parameterType: parameterType,
+                parameterName: parameterName.ToCamelcase());
+
             return taskResult;
         }
 
@@ -114,25 +133,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                                                   .DistinctBy(declaration => declaration?.Name ?? String.Empty);
 
             return relevantTaskNodes.ToImmutableList();
-        } 
-
-        static ParameterCodeModel FromCodeResultDeclarationSyntax(CodeResultDeclarationSyntax codeResultDeclarationSyntax) {
-
-            var parameterType = codeResultDeclarationSyntax?.Result?.Type?.ToString();
-            if (String.IsNullOrEmpty(parameterType)) {
-                parameterType = DefaultTaskResultType;
-            }
-
-            var parameterName = codeResultDeclarationSyntax?.Result?.Identifier.ToString();
-            if (String.IsNullOrEmpty(parameterName)) {
-                parameterName = DefaultParamterName;
-            }
-
-            var taskResult = new ParameterCodeModel(
-                parameterType: parameterType,
-                parameterName: parameterName.ToCamelcase());
-
-            return taskResult;
         }
     }
 }
