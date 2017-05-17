@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-using Pharmatechnik.Nav.Language;
+using Pharmatechnik.Nav.Language.BuildTasks;
 
 // TODO Assembly Infos bereitstellen
 [assembly: AssemblyTitle(ThisAssembly.ProductName)]
