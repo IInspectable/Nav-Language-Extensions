@@ -43,6 +43,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // UsingNamespaces
             var namespaces = new List<string>();
             namespaces.Add(taskCodeModel.IwflNamespace);
+            namespaces.Add(NavigationEngineIwflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
             // Signal Trigger
@@ -52,7 +53,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             return new IWfsCodeModel(
-                usingNamespaces  : namespaces.ToImmutableList(), 
+                usingNamespaces  : namespaces.ToSortedNamespaces(), 
                 iwflNamespace    : taskCodeModel.IwflNamespace, 
                 taskName         : taskDefinition.Name ?? string.Empty,
                 baseInterfaceName: taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? DefaultIwfsBaseType,

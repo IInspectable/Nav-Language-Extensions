@@ -28,17 +28,18 @@ namespace Pharmatechnik.Nav.Language {
     }
 
     sealed class TaskDeclarationSymbolBuilder {
-
+        readonly CodeGenerationUnitSyntax                _codeGenerationUnitSyntax;
         readonly bool                                    _processAsIncludedFile;
         readonly List<Diagnostic>                        _diagnostics;
         readonly SymbolCollection<TaskDeclarationSymbol> _taskDeklarations;
         readonly SymbolCollection<IncludeSymbol>         _includes;
 
-        public TaskDeclarationSymbolBuilder(bool processAsIncludedFile) {
-            _diagnostics           = new List<Diagnostic>();
-            _processAsIncludedFile = processAsIncludedFile;
-            _taskDeklarations      = new SymbolCollection<TaskDeclarationSymbol>();
-            _includes              = new SymbolCollection<IncludeSymbol>();
+        public TaskDeclarationSymbolBuilder(CodeGenerationUnitSyntax codeGenerationUnitSyntax, bool processAsIncludedFile) {
+            _codeGenerationUnitSyntax = codeGenerationUnitSyntax;
+            _diagnostics              = new List<Diagnostic>();
+            _processAsIncludedFile    = processAsIncludedFile;
+            _taskDeklarations         = new SymbolCollection<TaskDeclarationSymbol>();
+            _includes                 = new SymbolCollection<IncludeSymbol>();
         }
       
         public static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
@@ -46,7 +47,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, bool processAsIncludedFile, CancellationToken cancellationToken) {
-            var builder = new TaskDeclarationSymbolBuilder(processAsIncludedFile);
+            var builder = new TaskDeclarationSymbolBuilder(syntax, processAsIncludedFile);
             builder.ProcessCodeGenerationUnitSyntax(syntax, cancellationToken);
 
             return new TaskDeclarationResult(builder._diagnostics, builder._taskDeklarations, builder._includes);
@@ -164,9 +165,16 @@ namespace Pharmatechnik.Nav.Language {
                 if(location != null) {
 
                     var syntax = _processAsIncludedFile ? null : taskDeclarationSyntax;
-
-                    var taskDeclaration = new TaskDeclarationSymbol(identifier.ToString(), location, TaskDeclarationOrigin.TaskDeclaration,  _processAsIncludedFile, syntax);
-
+                    
+                    var taskDeclaration = new TaskDeclarationSymbol(
+                        name               : identifier.ToString(), 
+                        location           : location, 
+                        origin             : TaskDeclarationOrigin.TaskDeclaration,  
+                        isIncluded         : _processAsIncludedFile, 
+                        syntax             : syntax,
+                        codeNamespace      : taskDeclarationSyntax.CodeNamespaceDeclaration?.Namespace?.Text,
+                        codeNotImplemented : taskDeclarationSyntax.CodeNotImplementedDeclaration!=null);
+                    
                     AddConnectionPoints(taskDeclaration, taskDeclarationSyntax.ConnectionPoints);
                     AddTaskDeclaration(taskDeclaration);
                 }                
@@ -183,7 +191,15 @@ namespace Pharmatechnik.Nav.Language {
 
                     var syntax = _processAsIncludedFile ? null : taskDefinitionSyntax;
 
-                    var taskDeclaration = new TaskDeclarationSymbol(identifier.ToString(), location, TaskDeclarationOrigin.TaskDefinition, _processAsIncludedFile, syntax);
+                    var taskDeclaration = new TaskDeclarationSymbol(
+                        name              : identifier.ToString(),
+                        location          : location,
+                        origin            : TaskDeclarationOrigin.TaskDefinition,
+                        isIncluded        : _processAsIncludedFile,
+                        syntax            : syntax,
+                        codeNamespace     : _codeGenerationUnitSyntax?.CodeNamespace?.Namespace?.Text,
+                        codeNotImplemented: false
+                        );
 
                     AddConnectionPoints(taskDeclaration, taskDefinitionSyntax.NodeDeclarationBlock?.ConnectionPoints().ToList());
                     AddTaskDeclaration(taskDeclaration);

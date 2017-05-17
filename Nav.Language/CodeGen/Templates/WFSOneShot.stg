@@ -2,13 +2,7 @@
 
 Begin(model, context) ::=
  <<#region Using Directives
-#pragma warning disable 0105
-
-using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL;
-
 <model.UsingNamespaces:writeUsing(); separator="\r\n">
-
-#pragma warning restore 0105
 #endregion
 
 namespace <model.Namespace> {	

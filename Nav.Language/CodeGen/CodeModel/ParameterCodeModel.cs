@@ -15,7 +15,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         [NotNull]
         public string ParameterType { get; }
+
         [NotNull]
-        public string ParameterName { get; }
+        public string ParameterName { get; }        
     }
 }

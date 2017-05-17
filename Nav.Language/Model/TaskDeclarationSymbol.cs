@@ -13,14 +13,18 @@ namespace Pharmatechnik.Nav.Language {
         public TaskDeclarationSymbol(string name, Location location, 
                                     TaskDeclarationOrigin origin, 
                                     bool isIncluded,
-                                    MemberDeclarationSyntax syntax): base(name, location) {
-            Origin           = origin;
-            Syntax           = syntax;
-            IsIncluded       = isIncluded;
-            References       = new List<ITaskNodeSymbol>();
-            ConnectionPoints = new SymbolCollection<ConnectionPointSymbol>();
+                                    MemberDeclarationSyntax syntax,
+                                    [CanBeNull] string codeNamespace,
+                                    bool codeNotImplemented): base(name, location) {
+            Origin             = origin;
+            Syntax             = syntax;
+            IsIncluded         = isIncluded;
+            References         = new List<ITaskNodeSymbol>();
+            ConnectionPoints   = new SymbolCollection<ConnectionPointSymbol>();
+            CodeNamespace      = codeNamespace ?? string.Empty;
+            CodeNotImplemented = codeNotImplemented;
         }
-
+        
         public CodeGenerationUnit CodeGenerationUnit { get; private set; }
 
         public SymbolCollection<ConnectionPointSymbol> ConnectionPoints { get; }
@@ -50,8 +54,10 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         public MemberDeclarationSyntax Syntax { get; set; }
         public bool IsIncluded { get; }
-
         public TaskDeclarationOrigin Origin { get; }
+        [NotNull]
+        public string CodeNamespace { get; }
+        public bool CodeNotImplemented { get; }
 
         public IEnumerable<ISymbol> SymbolsAndSelf() {
             yield return this;

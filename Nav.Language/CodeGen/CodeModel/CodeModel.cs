@@ -45,5 +45,29 @@
         /// IBegin
         /// </summary>
         protected const string BeginInterfacePrefix = "IBegin";
+        /// <summary>
+        /// Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWF
+        /// </summary>
+        protected const string NavigationEngineIwflNamespace="Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL";
+        /// <summary>
+        /// Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL
+        /// </summary>
+        protected const string NavigationEngineWflNamespace = "Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL";
+        /// <summary>
+        /// __UNKNOWN__NAMESPACE__
+        /// </summary>
+        protected const string UnknownNamespace = "__UNKNOWN__NAMESPACE__";
+        /// <summary>
+        /// par
+        /// </summary>
+        protected const string DefaultParamterName = "par";
+        /// <summary>
+        /// bool
+        /// </summary>
+        protected const string DefaultTaskResultType = "bool";
+        /// <summary>
+        /// BaseWFService
+        /// </summary>
+        protected const string DefaultWfsBaseClass = "BaseWFService";
     }
 }

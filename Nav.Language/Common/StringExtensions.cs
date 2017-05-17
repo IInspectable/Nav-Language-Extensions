@@ -41,6 +41,15 @@ namespace Pharmatechnik.Nav.Language {
             return s.ToPascalcase();
         }
 
+        [NotNull]
+        public static string ToVariableName(this string s) {
+            if (String.IsNullOrEmpty(s)) {
+                return String.Empty;
+            }
+
+            return s[0] == '_' ? s.Substring(1).ToCamelcase() : s.ToCamelcase();
+        }
+
         #region Dokumentation
         /// <summary>
         /// Liefert den Spaltenindex (beginnend bei 0) für den angegebenen Offset vom Start der Zeile. 

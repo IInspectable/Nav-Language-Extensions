@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using JetBrains.Annotations;
@@ -14,20 +15,23 @@ namespace Pharmatechnik.Nav.Language {
             return codeGenerationUnit?.TaskDefinitions.TryFindSymbol(taskName);
         }
 
-        public static ImmutableList<string> GetCodeUsingNamespaces(this CodeGenerationUnit codeGenerationUnit) {
+        public static IEnumerable<string> GetCodeUsingNamespaces(this CodeGenerationUnit codeGenerationUnit) {
 
             if (codeGenerationUnit == null) {
                 return ImmutableList<string>.Empty;
             }
 
-            var namespaces = codeGenerationUnit.Syntax
-                .CodeUsings
-                .Select(cu => cu.Namespace?.Text)
-                .Where(ns => ns != null)
-                .Distinct()
-                .OrderBy(ns => ns.Length);
+            return codeGenerationUnit.Syntax
+                                     .CodeUsings
+                                     .Select(cu => cu.Namespace?.Text)
+                                     .Where(ns => ns != null);
+        }
 
-            return namespaces.ToImmutableList();
+        public static ImmutableList<string> ToSortedNamespaces(this IEnumerable<string> usings) {
+            return usings.Where(ns => ns != null)
+                         .Distinct()
+                         .OrderBy(ns => ns.Length)
+                         .ToImmutableList();
         }
     }
 }

@@ -44,5 +44,9 @@ namespace Pharmatechnik.Nav.Language {
         /// Gibt an, ob die Deklaration aus einer reinen Deklaration (taskref ...) oder einer Definition (task ...) entstammt.
         /// </summary>
         TaskDeclarationOrigin Origin { get; }
+
+        [NotNull]
+        string CodeNamespace { get; }
+        bool CodeNotImplemented { get; }
     }
 }
