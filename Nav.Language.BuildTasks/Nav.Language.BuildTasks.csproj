@@ -52,11 +52,11 @@
   <ItemGroup>
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\LogHelper.cs" />
-    <Compile Include="NavCodeGen\FileSpec.cs" />
+    <Compile Include="CodeGenerator\FileSpec.cs" />
     <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="NavCodeGen\NavCodeGenerator.cs" />
-    <Compile Include="NavCodeGen\NavCodeGeneratorPipeline.cs" />
-    <Compile Include="NavCodeGen\NavCodeGeneratorPipeline.LoggerAdapter.cs" />
+    <Compile Include="CodeGenerator\NavCodeGenerator.cs" />
+    <Compile Include="CodeGenerator\NavCodeGeneratorPipeline.cs" />
+    <Compile Include="CodeGenerator\NavCodeGeneratorPipeline.LoggerAdapter.cs" />
     <Compile Include="Logging\TaskLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThisAssembly.cs" />
