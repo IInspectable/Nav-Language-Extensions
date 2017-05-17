@@ -53,6 +53,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         static string GenerateIWfsCode(IWfsCodeModel model, CodeGeneratorContext context) {
 
             var group = new TemplateGroupString(Resources.IWfsTemplate);
+            
             var st    = group.GetInstanceOf(TemplateName);
 
             st.Add(ModelAttributeName  , model);
@@ -65,7 +66,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         static string GenerateWfsBaseCode(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
+            // TODO In alle Templates das Common Template importieren
             var group = new TemplateGroupString(Resources.WfsBaseTemplate);
+            group.ImportTemplates(new TemplateGroupString(Resources.CommonTemplate));
+
             var st    = group.GetInstanceOf(TemplateName);
 
             st.Add(ModelAttributeName  , model);

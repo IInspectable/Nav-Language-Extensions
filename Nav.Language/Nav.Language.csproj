@@ -266,6 +266,7 @@
     <EmbeddedResource Include="CodeGen\Templates\IWFS.stg" />
     <EmbeddedResource Include="CodeGen\Templates\WFSBase.stg" />
     <EmbeddedResource Include="CodeGen\Templates\WFSOneShot.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\Common.stg" />
     <None Include="Grammar\NavTokens.g4" />
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>

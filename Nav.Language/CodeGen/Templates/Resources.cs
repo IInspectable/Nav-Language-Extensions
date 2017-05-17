@@ -12,6 +12,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen.Templates {
         public static string IWfsTemplate       => LoadText("IWFS.stg");
         public static string WfsBaseTemplate    => LoadText("WFSBase.stg");
         public static string WFSOneShotTemplate => LoadText("WFSOneShot.stg");
+        public static string CommonTemplate     => LoadText("Common.stg");
         // ReSharper restore InconsistentNaming
 
         static string LoadText(string resourceName) {
