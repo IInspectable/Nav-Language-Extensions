@@ -15,16 +15,16 @@ using Pharmatechnik.Nav.Language.CodeGen;
 namespace Pharmatechnik.Nav.Language.BuildTasks {
 
     public sealed partial class NavCodeGeneratorPipeline {
-        sealed class LoggerHelper {
+        sealed class LoggerAdapter {
 
-            public LoggerHelper(IGeneratorLogger logger) {
-                Logger               = logger;
+            [CanBeNull] readonly ILogger _logger;
+
+            public LoggerAdapter(ILogger logger) {
+                _logger              = logger;
                 ProcessStopwatch     = new Stopwatch();
                 ProcessFileStopwatch = new Stopwatch();
             }
-
-            [CanBeNull]
-            IGeneratorLogger Logger { get; }
+            
             [NotNull]
             Stopwatch ProcessStopwatch { get; }
             [NotNull]
@@ -34,7 +34,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
            
             public void LogError(string message) {
                 HasLoggedErrors = true;
-                Logger?.LogError(message);
+                _logger?.LogError(message);
             }
 
             public bool LogErrors(FileSpec fileSpec, IEnumerable<Diagnostic> diagnostics) {
@@ -43,25 +43,25 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 foreach (var error in diagnostics.Errors()) {
                     errorsLogged = true;
                     HasLoggedErrors = true;
-                    Logger?.LogError(error, fileSpec);
+                    _logger?.LogError(error, fileSpec);
                 }
                 return errorsLogged;
             }
 
             public void LogWarnings(FileSpec fileSpec, IEnumerable<Diagnostic> diagnostics) {
                 foreach (var warning in diagnostics.Warnings()) {
-                    Logger?.LogWarning(warning, fileSpec);
+                    _logger?.LogWarning(warning, fileSpec);
                 }
             }
 
             public void LogProcessBegin() {
-                Logger?.LogInfo($"{ThisAssembly.ProductName} v{ThisAssembly.ProductVersion}");
+                _logger?.LogInfo($"{ThisAssembly.ProductName} v{ThisAssembly.ProductVersion}");
                 ProcessStopwatch.Restart();
             }
 
             public void LogProcessFileBegin(FileSpec fileSpec) {
                 ProcessFileStopwatch.Restart();
-                Logger?.LogVerbose($"Processing file '{fileSpec.Identity}'");
+                _logger?.LogVerbose($"Processing file '{fileSpec.Identity}'");
             }
             
             public void LogFileGeneratorResults(IImmutableList<FileGeneratorResult> fileResults) {
@@ -79,21 +79,22 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
                     var action  = fileResult.Action.ToString().PadRight(longestName);
                     var message = $"   {action}: {fileIdentity}";
-                    Logger?.LogVerbose(message);
+                    _logger?.LogVerbose(message);
                 }
             }
 
+            // ReSharper disable once UnusedParameter.Local
             public void LogProcessFileEnd(FileSpec fileSpec) {
                 ProcessFileStopwatch.Stop();
-                Logger?.LogVerbose($"Completed in {ProcessFileStopwatch.Elapsed.TotalSeconds} seconds.");
+                _logger?.LogVerbose($"Completed in {ProcessFileStopwatch.Elapsed.TotalSeconds} seconds.");
             }
 
             public void LogProcessEnd(Statistic statistic) {
                 ProcessStopwatch.Stop();
-                Logger?.LogInfo($"{statistic.FileCount} files processed.");
-                Logger?.LogInfo($"   Skiped : {statistic.FilesSkiped}");
-                Logger?.LogInfo($"   Updated: {statistic.FilesUpated}");
-                Logger?.LogInfo($"Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds.");
+                _logger?.LogInfo($"{statistic.FileCount} files processed.");
+                _logger?.LogInfo($"   Skiped : {statistic.FilesSkiped}");
+                _logger?.LogInfo($"   Updated: {statistic.FilesUpated}");
+                _logger?.LogInfo($"Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds.");
             }
         }
     }

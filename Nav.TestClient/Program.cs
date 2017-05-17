@@ -41,7 +41,7 @@ namespace TestClient {
         void Run(CommandLine cl) {
 
             var options  = new GenerationOptions(force: cl.Force);
-            var logger   = new ConsoleGeneratorLogger();
+            var logger   = new ConsoleLogger();
             var pipeline = new NavCodeGeneratorPipeline(options, logger);
 
             var navFiles  = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);

@@ -6,7 +6,8 @@ using JetBrains.Annotations;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.BuildTasks {
-    public sealed class ConsoleGeneratorLogger : IGeneratorLogger {
+
+    public sealed class ConsoleLogger : ILogger {
 
         public void LogVerbose(string message) {
             WriteVerbose(message);
@@ -56,27 +57,11 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
         string FormatDiagnostic(Diagnostic diag, FileSpec fileSpec) {
             var location = diag.Location;
-            return $"{GetFile(diag, fileSpec)}({location.StartLine+1},{location.StartCharacter+1}): {GetSeverity(diag)} {diag.Descriptor.Id}: {diag.Message}";
+            return $"{LogHelper.GetFileIdentity(diag, fileSpec)}({location.StartLine + 1},{location.StartCharacter + 1}): {GetSeverity(diag)} {diag.Descriptor.Id}: {diag.Message}";
         }
 
         string GetSeverity(Diagnostic diag) {
-            switch (diag.Severity) {
-                case DiagnosticSeverity.Suggestion:
-                    return "Suggestion";
-                case DiagnosticSeverity.Warning:
-                    return "Warning";
-                case DiagnosticSeverity.Error:
-                    return "Error";
-                default:
-                    return String.Empty;
-            }
-        }
-
-        static string GetFile(Diagnostic diag, [CanBeNull] FileSpec fileSpec) {
-            if (diag?.Location.FilePath?.ToLower() == fileSpec?.FilePath.ToLower()) {
-                return fileSpec?.Identity ?? diag?.Location.FilePath;
-            }
-            return diag?.Location.FilePath;
+            return diag.Severity.ToString();
         }
     }
 }

@@ -14,9 +14,10 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
     public sealed partial class NavCodeGeneratorPipeline {
 
-        readonly IGeneratorLogger _logger;
+        [CanBeNull]
+        readonly ILogger _logger;
 
-        public NavCodeGeneratorPipeline(GenerationOptions options, IGeneratorLogger logger) {
+        public NavCodeGeneratorPipeline(GenerationOptions options, ILogger logger) {
             Options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger;
         }
@@ -26,11 +27,12 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
         public bool Run(IEnumerable<FileSpec> fileSpecs) {
 
-            var logger         = new LoggerHelper(_logger);
+            var logger         = new LoggerAdapter(_logger);
             var modelGenerator = new CodeModelGenerator(Options);
             var codeGenerator  = new CodeGenerator(Options);
             var fileGenerator  = new FileGenerator(Options);
             var statistic      = new Statistic();
+
             logger.LogProcessBegin();
 
             foreach (var fileSpec in fileSpecs) {
@@ -72,11 +74,11 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             return !logger.HasLoggedErrors;
         }
         
-        class Statistic {
+        sealed class Statistic {
 
-            public int FileCount { get; set; }
-            public int FilesUpated { get; set; }
-            public int FilesSkiped { get; set; }
+            public int FileCount { get; private set; }
+            public int FilesUpated { get; private set; }
+            public int FilesSkiped { get; private set; }
 
             public void IncrementFileCount() {
                 FileCount++;
