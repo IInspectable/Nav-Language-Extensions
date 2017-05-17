@@ -8,6 +8,10 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language.BuildTasks {
     public sealed class ConsoleGeneratorLogger : IGeneratorLogger {
 
+        public void LogVerbose(string message) {
+            WriteVerbose(message);
+        }
+
         public void LogInfo(string message) {
             WriteInfo(message);
         }
@@ -24,8 +28,12 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             WriteWarning(FormatDiagnostic(diag, fileSpec));
         }
 
-        void WriteInfo(string message) {
+        void WriteVerbose(string message) {
             WriteLine(message, ConsoleColor.DarkGray);
+        }
+
+        void WriteInfo(string message) {
+            WriteLine(message, Console.ForegroundColor);
         }
 
         void WriteError(string message) {

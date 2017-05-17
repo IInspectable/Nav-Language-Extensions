@@ -55,12 +55,13 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             }
 
             public void LogProcessBegin() {
+                Logger?.LogInfo($"{ThisAssembly.ProductName} v{ThisAssembly.ProductVersion}");
                 ProcessStopwatch.Restart();
             }
 
             public void LogProcessFileBegin(FileSpec fileSpec) {
                 ProcessFileStopwatch.Restart();
-                Logger?.LogInfo($"Processing file '{fileSpec.Identity}'");
+                Logger?.LogVerbose($"Processing file '{fileSpec.Identity}'");
             }
             
             public void LogFileGeneratorResults(IImmutableList<FileGeneratorResult> fileResults) {
@@ -78,13 +79,13 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
                     var action  = fileResult.Action.ToString().PadRight(longestName);
                     var message = $"   {action}: {fileIdentity}";
-                    Logger?.LogInfo(message);
+                    Logger?.LogVerbose(message);
                 }
             }
 
             public void LogProcessFileEnd(FileSpec fileSpec) {
                 ProcessFileStopwatch.Stop();
-                Logger?.LogInfo($"Completed in {ProcessFileStopwatch.Elapsed.TotalSeconds} seconds.");
+                Logger?.LogVerbose($"Completed in {ProcessFileStopwatch.Elapsed.TotalSeconds} seconds.");
             }
 
             public void LogProcessEnd(Statistic statistic) {
