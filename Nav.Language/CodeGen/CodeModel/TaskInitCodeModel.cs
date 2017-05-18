@@ -16,8 +16,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             TaskCodeModel        = taskCodeModel ?? throw new ArgumentNullException(nameof(taskCodeModel));
             Parameter            = parameter     ?? throw new ArgumentNullException(nameof(parameter));
-            BeginMethodName      = $"{BeginMethodPrefix}";
-            BeginLogicMethodName = $"{BeginMethodPrefix}{LogicMethodSuffix}";           
+            BeginMethodName      = $"{CodeGenFacts.BeginMethodPrefix}";
+            BeginLogicMethodName = $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.LogicMethodSuffix}";           
             InitName             = initName ?? String.Empty;
         }
         

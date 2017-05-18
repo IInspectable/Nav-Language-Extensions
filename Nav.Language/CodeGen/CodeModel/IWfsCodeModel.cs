@@ -51,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // UsingNamespaces
             var namespaces = new List<string>();
             namespaces.Add(taskCodeModel.IwflNamespace);
-            namespaces.Add(NavigationEngineIwflNamespace);
+            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
             // Signal Trigger
@@ -67,7 +67,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskCodeModel    : taskCodeModel,
                 usingNamespaces  : namespaces.ToSortedNamespaces(), 
                 taskName         : taskDefinition.Name ?? string.Empty,
-                baseInterfaceName: taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? DefaultIwfsBaseType,
+                baseInterfaceName: taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType,
                 signalTriggers   : signalTriggers.OrderBy(st=> st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName).ToImmutableList());
         }
     }

@@ -36,8 +36,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public string NamespacePräfix { get; }
         [NotNull]
-        public string WflNamespace => $"{NamespacePräfix}.{WflNamespaceSuffix}";
+        public string WflNamespace => $"{NamespacePräfix}.{CodeGenFacts.WflNamespaceSuffix}";
         [NotNull]
-        public string FullyQualifiedBeginInterfaceName => $"{WflNamespace}.{BeginInterfacePrefix}{Taskname}{WfsClassSuffix}";
+        public string FullyQualifiedBeginInterfaceName => $"{WflNamespace}.{CodeGenFacts.BeginInterfacePrefix}{Taskname}{CodeGenFacts.WfsClassSuffix}";
     }
 }

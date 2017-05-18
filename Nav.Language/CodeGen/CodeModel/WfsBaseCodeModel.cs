@@ -77,7 +77,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var namespaces = new List<string>();
 
             namespaces.Add(taskCodeModel.IwflNamespace);
-            namespaces.Add(NavigationEngineIwflNamespace);
+            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
             return namespaces.ToSortedNamespaces();
@@ -89,12 +89,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var parameterType = codeResultDeclarationSyntax?.Result?.Type?.ToString();
             if (String.IsNullOrEmpty(parameterType)) {
-                parameterType = DefaultTaskResultType;
+                parameterType = CodeGenFacts.DefaultTaskResultType;
             }
 
             var parameterName = codeResultDeclarationSyntax?.Result?.Identifier.ToString();
             if (String.IsNullOrEmpty(parameterName)) {
-                parameterName = DefaultParamterName;
+                parameterName = CodeGenFacts.DefaultParamterName;
             }
 
             var taskResult = new ParameterCodeModel(
@@ -105,7 +105,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         static string GetBaseClassName(TaskDefinitionSyntax taskDefinitionSyntax) {         
-            var baseClassName = taskDefinitionSyntax.CodeBaseDeclaration?.WfsBaseType?.ToString() ?? DefaultWfsBaseClass;
+            var baseClassName = taskDefinitionSyntax.CodeBaseDeclaration?.WfsBaseType?.ToString() ?? CodeGenFacts.DefaultWfsBaseClass;
             return baseClassName;
         }
 
@@ -119,11 +119,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // code will not compile. Therefore, we generate IWFService instead. When the task IS
             // implemented one day, regeneration (necessary for constructor parameters anyway!)
             // will insert the correct types.
-            var parameterType = DefaultIwfsBaseType;
+            var parameterType = CodeGenFacts.DefaultIwfsBaseType;
 
             if (!taskDeclaration.CodeNotImplemented) {
-                var codeNamespace = String.IsNullOrEmpty(taskDeclaration.CodeNamespace) ? UnknownNamespace : taskDeclaration.CodeNamespace;
-                parameterType = $"{codeNamespace}.{WflNamespaceSuffix}.{BeginInterfacePrefix}{taskDeclaration.Name}{WfsClassSuffix}";
+                var codeNamespace = String.IsNullOrEmpty(taskDeclaration.CodeNamespace) ? CodeGenFacts.UnknownNamespace : taskDeclaration.CodeNamespace;
+                parameterType = $"{codeNamespace}.{CodeGenFacts.WflNamespaceSuffix}.{CodeGenFacts.BeginInterfacePrefix}{taskDeclaration.Name}{CodeGenFacts.WfsClassSuffix}";
             }
            
             var parameterName = taskDeclaration.Name.ToCamelcase();

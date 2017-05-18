@@ -33,8 +33,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new SignalTriggerCodeModel(
                 taskCodeModel         : taskCodeModel ?? TaskCodeModel.FromTaskDefinition(task),
                 triggerMethodName     : $"{signalTriggerSymbol.Name}",
-                triggerLogicMethodName: $"{signalTriggerSymbol.Name}{LogicMethodSuffix}",
-                toClassName           : $"{viewName.ToPascalcase()}{ToClassNameSuffix}"
+                triggerLogicMethodName: $"{signalTriggerSymbol.Name}{CodeGenFacts.LogicMethodSuffix}",
+                toClassName           : $"{viewName.ToPascalcase()}{CodeGenFacts.ToClassNameSuffix}"
             );
         }
 

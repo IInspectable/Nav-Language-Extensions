@@ -40,8 +40,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // UsingNamespaces
             var namespaces = new List<string>();
             namespaces.Add(taskCodeModel.IwflNamespace);
-            namespaces.Add(NavigationEngineIwflNamespace);
-            namespaces.Add(NavigationEngineWflNamespace);
+            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
+            namespaces.Add(CodeGenFacts.NavigationEngineWflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
             var codeDeclarations = new List<string>();
@@ -62,7 +62,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskCodeModel    : taskCodeModel,
                 usingNamespaces  : namespaces.ToSortedNamespaces(),
                 taskName         : taskDefinition.Name ?? string.Empty,
-                baseInterfaceName: taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? DefaultIBeginWfsBaseType,
+                baseInterfaceName: taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
                 taskInits        : taskInits.ToImmutableList(),
                 codeDeclarations : codeDeclarations.ToImmutableList());
         }

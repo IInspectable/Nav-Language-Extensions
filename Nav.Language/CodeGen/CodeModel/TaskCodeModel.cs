@@ -28,10 +28,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             return new TaskCodeModel(
                 taskName       : taskName,
-                wflNamespace   : $"{baseNamespace}.{WflNamespaceSuffix}",
-                iwflNamespace  : $"{baseNamespace}.{IwflNamespaceSuffix}",
-                wfsBaseTypeName: $"{taskName}{WfsBaseClassSuffix}",
-                wfsTypeName    : $"{taskName}{WfsClassSuffix}");
+                wflNamespace   : $"{baseNamespace}.{CodeGenFacts.WflNamespaceSuffix}",
+                iwflNamespace  : $"{baseNamespace}.{CodeGenFacts.IwflNamespaceSuffix}",
+                wfsBaseTypeName: $"{taskName}{CodeGenFacts.WfsBaseClassSuffix}",
+                wfsTypeName    : $"{taskName}{CodeGenFacts.WfsClassSuffix}");
         }
 
         [NotNull]
