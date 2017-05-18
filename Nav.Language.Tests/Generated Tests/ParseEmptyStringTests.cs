@@ -3,6 +3,8 @@
 // HINWEIS: Diese Datei wurde am 14.05.2017 14:17:39
 //			automatisch generiert!
 //==================================================
+
+using System.Linq;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 
@@ -171,17 +173,16 @@ namespace Nav.Language.Tests {
             Assert.That(taskDefinitionSyntax.CloseBrace.Extent.IsMissing, Is.True, "Extent des Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", taskDefinitionSyntax.CloseBrace);
 		}
 
-        // CodeDeclarationSyntax
-		[Test]
-		public void TestCodeDeclarationSyntax() {
+        // EmptyCodeDeclarationSyntax
+        [Test]
+		public void TestEmptyCodeDeclarationSyntax() {
 			
         var codeDeclarationSyntax=Syntax.ParseCodeDeclaration("");
             // CodeKeyword
             Assert.That(codeDeclarationSyntax.CodeKeyword.IsMissing, Is.True, "Das Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", codeDeclarationSyntax.CodeKeyword);
             Assert.That(codeDeclarationSyntax.CodeKeyword.Extent.IsMissing, Is.True, "Extent des Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", codeDeclarationSyntax.CodeKeyword);
             // StringLiteral
-            Assert.That(codeDeclarationSyntax.StringLiteral.IsMissing, Is.True, "Das Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", codeDeclarationSyntax.StringLiteral);
-            Assert.That(codeDeclarationSyntax.StringLiteral.Extent.IsMissing, Is.True, "Extent des Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", codeDeclarationSyntax.StringLiteral);
+            Assert.That(codeDeclarationSyntax.GetGetStringLiterals().Any(), Is.False, "Es sollte kein StringLiteral Token vorhanden sein");            
             // OpenBracket
             Assert.That(codeDeclarationSyntax.OpenBracket.IsMissing, Is.True, "Das Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", codeDeclarationSyntax.OpenBracket);
             Assert.That(codeDeclarationSyntax.OpenBracket.Extent.IsMissing, Is.True, "Extent des Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", codeDeclarationSyntax.OpenBracket);
@@ -193,8 +194,22 @@ namespace Nav.Language.Tests {
             Assert.That(codeDeclarationSyntax.CloseBracket.Extent.IsMissing, Is.True, "Extent des Token '{0}' sollte als 'fehlend' gekennzeichnet sein.", codeDeclarationSyntax.CloseBracket);
 		}
 
+	    // TestCodeDeclarationSyntax
+        [Test]
+	    public void TestCodeDeclarationSyntaxWith2StringLiterals() {
+
+	        var codeDeclarationSyntax = Syntax.ParseCodeDeclaration("[code \"c1\" \"c2\"");
+	       
+	        // StringLiteral
+	        Assert.That(codeDeclarationSyntax.GetGetStringLiterals().Count(), Is.EqualTo(2), "Es sollte 2 StringLiteral Token vorhanden sein");
+
+            Assert.That(codeDeclarationSyntax.GetGetStringLiterals().First().ToString().Trim('"'), Is.EqualTo("c1"));
+            Assert.That(codeDeclarationSyntax.GetGetStringLiterals().Last().ToString().Trim('"'), Is.EqualTo("c2"));
+
+        }
+
         // TaskDeclarationSyntax
-		[Test]
+        [Test]
 		public void TestTaskDeclarationSyntax() {
 			
         var taskDeclarationSyntax=Syntax.ParseTaskDeclaration("");

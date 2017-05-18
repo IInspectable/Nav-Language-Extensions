@@ -15,13 +15,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     public sealed class IBeginWfsCodeModel : CodeModel {
 
-        IBeginWfsCodeModel(string syntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits) {
+        IBeginWfsCodeModel(string syntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits, ImmutableList<string> codeDeclarations) {
             SyntaxFileName    = syntaxFileName    ?? String.Empty;
             Task              = taskCodeModel     ?? throw new ArgumentNullException(nameof(taskCodeModel));
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskName          = taskName          ?? throw new ArgumentNullException(nameof(usingNamespaces));
             BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskInits         = taskInits         ?? throw new ArgumentNullException(nameof(usingNamespaces));
+            CodeDeclarations = codeDeclarations ?? throw new ArgumentNullException(nameof(codeDeclarations));
         }
 
         public static IBeginWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, PathProvider pathProvider) {
@@ -33,6 +34,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(pathProvider));
             }
 
+            var taskDefinitionSyntax = taskDefinition.Syntax;
             var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
 
             // UsingNamespaces
@@ -41,6 +43,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             namespaces.Add(NavigationEngineIwflNamespace);
             namespaces.Add(NavigationEngineWflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
+
+            var codeDeclarations = new List<string>();
+            if (taskDefinitionSyntax.CodeDeclaration != null) {
+                codeDeclarations.AddRange(taskDefinitionSyntax.CodeDeclaration.GetGetStringLiterals().Select(sl => sl.ToString().Trim('"')));
+            }
 
             // Inits
             var taskInits = new List<TaskInitCodeModel>();
@@ -55,8 +62,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskCodeModel    : taskCodeModel,
                 usingNamespaces  : namespaces.ToSortedNamespaces(),
                 taskName         : taskDefinition.Name ?? string.Empty,
-                baseInterfaceName: taskDefinition.Syntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? DefaultIBeginWfsBaseType,
-                taskInits        : taskInits.ToImmutableList());
+                baseInterfaceName: taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? DefaultIBeginWfsBaseType,
+                taskInits        : taskInits.ToImmutableList(),
+                codeDeclarations : codeDeclarations.ToImmutableList());
         }
 
         [NotNull]
@@ -68,12 +76,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         [NotNull]
         public string Namespace => Task.WflNamespace;
-
         [NotNull]
         public string TaskName { get; }
         [NotNull]
         public string BaseInterfaceName { get; }
         [NotNull]
-        public ImmutableList<TaskInitCodeModel> TaskInits { get; }       
+        public ImmutableList<TaskInitCodeModel> TaskInits { get; }
+        [NotNull]
+        public ImmutableList<string> CodeDeclarations { get; }
     }
 }

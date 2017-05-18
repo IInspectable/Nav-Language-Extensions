@@ -8,6 +8,13 @@ namespace <model.Namespace> {
 
     // Redeklarationen von Methoden ohne new sind ok - um in manuell erstellten Oberinterfaces Begins definieren zu können
     #pragma warning disable 0108
+    <if(model.CodeDeclarations)>
+
+    <model.CodeDeclarations; separator="\r\n">
+
+    <else>
+
+    <endif>
     <writeTaskAnnotation(model.SyntaxFileName, model.Task.TaskName)>
     public interface IBegin<model.TaskName>WFS: <model.BaseInterfaceName> {
         <model.TaskInits:writeTaskInit(); separator="\r\n">

@@ -279,8 +279,8 @@ namespace Nav.Language.Tests {
             Assert.That(codeDeclaration.CodeKeyword.ToString(), Is.EqualTo("code"));
             Assert.That(codeDeclaration.CodeKeyword.Type, Is.EqualTo(SyntaxTokenType.CodeKeyword));
 
-            Assert.That(codeDeclaration.StringLiteral.ToString(), Is.EqualTo("\"code1\""));
-            Assert.That(codeDeclaration.StringLiteral.Type, Is.EqualTo(SyntaxTokenType.StringLiteral));
+            Assert.That(codeDeclaration.GetGetStringLiterals().First().ToString(), Is.EqualTo("\"code1\""));
+            Assert.That(codeDeclaration.GetGetStringLiterals().First().Type, Is.EqualTo(SyntaxTokenType.StringLiteral));
 
             // [base B0: B1, B2]
             var baseDeclaration = taskDefinition.CodeBaseDeclaration;
