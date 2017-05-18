@@ -3,7 +3,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Collections.Immutable;
+
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.CodeGen;
@@ -37,7 +37,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
             foreach (var fileSpec in fileSpecs) {
 
-                statistic.IncrementFileCount();
+                statistic.UpdatePerFile();
 
                 logger.LogProcessFileBegin(fileSpec);
 
@@ -46,24 +46,31 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                     continue;
                 }
                 
-                var syntax = SyntaxTree.FromFile(fileSpec.FilePath);
-                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax((CodeGenerationUnitSyntax)syntax.GetRoot());
+                // 1. SyntaxTree
+                var syntaxTree = SyntaxTree.FromFile(fileSpec.FilePath);
+                // 2. Semantic Model
+                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax((CodeGenerationUnitSyntax)syntaxTree.GetRoot());
 
-                if (logger.LogErrors(fileSpec, syntax.Diagnostics) || logger.LogErrors(fileSpec, codeGenerationUnit.Diagnostics)) {
+                if (logger.LogErrors(fileSpec, syntaxTree.Diagnostics) || logger.LogErrors(fileSpec, codeGenerationUnit.Diagnostics)) {
                     continue;
                 }
 
-                logger.LogWarnings(fileSpec, syntax.Diagnostics);
+                logger.LogWarnings(fileSpec, syntaxTree.Diagnostics);
                 logger.LogWarnings(fileSpec, codeGenerationUnit.Diagnostics);
-                
+
+                // 3. Code Models
                 var codeModelResults = modelGenerator.Generate(codeGenerationUnit);
                 foreach (var codeModelResult in codeModelResults) {
-
+                    
+                    // 4. Code Generation
                     var codeGenerationResult = codeGenerator.Generate(codeModelResult);
-
+                    
+                    // 5. Write appropriate files
                     var fileGeneratorResults = fileGenerator.Generate(codeGenerationResult);
+
                     logger.LogFileGeneratorResults(fileGeneratorResults);
-                    statistic.Update(fileGeneratorResults);
+
+                    statistic.UpdatePerTask(fileGeneratorResults);
                 }
 
                 logger.LogProcessFileEnd(fileSpec);
@@ -72,30 +79,6 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             logger.LogProcessEnd(statistic);
 
             return !logger.HasLoggedErrors;
-        }
-        
-        sealed class Statistic {
-
-            public int FileCount { get; private set; }
-            public int FilesUpated { get; private set; }
-            public int FilesSkiped { get; private set; }
-
-            public void IncrementFileCount() {
-                FileCount++;
-            }
-
-            public void Update(IImmutableList<FileGeneratorResult> fileResults) {
-                foreach (var fileResult in fileResults) {
-                    switch (fileResult.Action) {
-                        case FileGeneratorAction.Skiped:
-                            FilesSkiped++;
-                            break;
-                        case FileGeneratorAction.Updated:
-                            FilesUpated++;
-                            break;
-                    }
-                }
-            }
         }
     }
 }

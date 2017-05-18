@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeGenerator\NavCodeGeneratorPipeline.Statistic.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\LogHelper.cs" />
     <Compile Include="CodeGenerator\FileSpec.cs" />

@@ -91,10 +91,18 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
             public void LogProcessEnd(Statistic statistic) {
                 ProcessStopwatch.Stop();
-                _logger?.LogInfo($"{statistic.FileCount} files processed.");
-                _logger?.LogInfo($"   Skiped : {statistic.FilesSkiped}");
-                _logger?.LogInfo($"   Updated: {statistic.FilesUpated}");
+
+                _logger?.LogInfo($"{statistic.FileCount} {Pluralize("file", statistic.FileCount)} with {statistic.TaskCount} {Pluralize("task", statistic.TaskCount)} processed.");
+                _logger?.LogInfo($"   Updated: {statistic.FilesUpated,3} {Pluralize("File", statistic.FilesUpated)}");
+                _logger?.LogInfo($"   Skiped : {statistic.FilesSkiped,3} {Pluralize("File", statistic.FilesSkiped)}");
                 _logger?.LogInfo($"Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds.");
+            }
+
+            string Pluralize(string word, int count) {
+                if (count == 1) {
+                    return word;
+                } 
+                return $"{word}s";
             }
         }
     }
