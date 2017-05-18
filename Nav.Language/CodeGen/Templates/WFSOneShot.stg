@@ -1,15 +1,9 @@
 ﻿delimiters "<", ">"
 
-Begin(model, context) ::=
- <<#region Using Directives
-<model.UsingNamespaces:writeUsing(); separator="\r\n">
-#endregion
+Begin(model, context) ::=<<
+<writeUsingBlock(model.UsingNamespaces)>
 
 namespace <model.Namespace> {	
 	// TODO  WFS OneShot
 }
->>
-
-writeUsing(namespace) ::=<<
-using <namespace>;
 >>

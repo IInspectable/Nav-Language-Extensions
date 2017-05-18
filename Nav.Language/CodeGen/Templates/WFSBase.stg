@@ -1,10 +1,8 @@
 ﻿delimiters "<", ">"
 
-Begin(model, context) ::=
- <<<writeFileHeader()>
-#region Using Directives
-<model.UsingNamespaces:writeUsing(); separator="\r\n">
-#endregion
+Begin(model, context) ::=<<
+<writeFileHeader(context)>
+<writeUsingBlock(model.UsingNamespaces)>
 
 namespace <model.Namespace> {
 
@@ -12,7 +10,7 @@ namespace <model.Namespace> {
         
         <model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
 
-        public <model.ClassName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS ) {}
+        public <model.ClassName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS) {}
 
         public <model.ClassName>(
             <model.TaskBegins:writeParamterDeclaration(); separator=",\r\n">) {
@@ -25,10 +23,6 @@ namespace <model.Namespace> {
         }
     }
 }
->>
-
-writeUsing(namespace) ::=<<
-using <namespace>;
 >>
 
 writeFieldDeclaration(parameter) ::=<<
