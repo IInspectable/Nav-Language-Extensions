@@ -13,18 +13,23 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     public sealed class IWfsCodeModel: CodeModel {
 
-        IWfsCodeModel(ImmutableList<string> usingNamespaces, string iwflNamespace, string taskName, string baseInterfaceName, ImmutableList<SignalTriggerCodeModel> signalTriggers) {
-            UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException();
-            Namespace         = iwflNamespace     ?? throw new ArgumentNullException();
-            TaskName          = taskName          ?? throw new ArgumentNullException();
-            BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException();
-            SignalTriggers    = signalTriggers    ?? throw new ArgumentNullException();
+        IWfsCodeModel(string syntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<SignalTriggerCodeModel> signalTriggers) {
+            SyntaxFileName    = syntaxFileName    ?? String.Empty;
+            Task              = taskCodeModel     ?? throw new ArgumentNullException(nameof(taskCodeModel));
+            UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
+            TaskName          = taskName          ?? throw new ArgumentNullException(nameof(taskName));
+            BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(baseInterfaceName));
+            SignalTriggers    = signalTriggers    ?? throw new ArgumentNullException(nameof(signalTriggers));
         }
 
         [NotNull]
+        public string SyntaxFileName { get; }
+        [NotNull]
+        public TaskCodeModel Task { get; }
+        [NotNull]
         public ImmutableList<string> UsingNamespaces { get; }
         [NotNull]
-        public string Namespace { get; }
+        public string Namespace => Task.IwflNamespace;
         [NotNull]
         public string TaskName { get; }
         [NotNull]
@@ -32,10 +37,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public ImmutableList<SignalTriggerCodeModel> SignalTriggers { get; }
 
-        public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
+        public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, PathProvider pathProvider) {
 
             if (taskDefinition == null) {
                 throw new ArgumentNullException(nameof(taskDefinition));
+            }
+            if (pathProvider == null) {
+                throw new ArgumentNullException(nameof(pathProvider));
             }
 
             var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
@@ -52,12 +60,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 signalTriggers.Add(SignalTriggerCodeModel.FromSignalTrigger(trigger, taskCodeModel));
             }
 
+            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsInterfaceFile, pathProvider.SyntaxFile);
+
             return new IWfsCodeModel(
+                syntaxFileName   : syntaxFileName,
+                taskCodeModel    : taskCodeModel,
                 usingNamespaces  : namespaces.ToSortedNamespaces(), 
-                iwflNamespace    : taskCodeModel.IwflNamespace, 
                 taskName         : taskDefinition.Name ?? string.Empty,
                 baseInterfaceName: taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? DefaultIwfsBaseType,
-                signalTriggers   : signalTriggers.OrderBy(st=> st.TriggerMethodName).ToImmutableList());
+                signalTriggers   : signalTriggers.OrderBy(st=> st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName).ToImmutableList());
         }
     }
 }

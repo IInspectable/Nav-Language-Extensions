@@ -21,3 +21,10 @@ writeUsingBlock(usings) ::=<<
 writeUsing(namespace) ::=<<
 using <namespace>;
 >>
+
+writeTaskAnnotation(syntaxFileName, taskName) ::=<<
+#region Annotations
+/// \<NavFile\><syntaxFileName>\</NavFile\>
+/// \<NavTask\><taskName>\</NavTask\>
+#endregion
+>>

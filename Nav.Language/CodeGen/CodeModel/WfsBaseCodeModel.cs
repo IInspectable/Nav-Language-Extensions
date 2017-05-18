@@ -14,27 +14,33 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     public sealed class WfsBaseCodeModel : CodeModel {
 
         WfsBaseCodeModel(
-            ImmutableList<string> usingNamespaces, 
-            string @namespace, 
-            string className, 
+            TaskCodeModel taskCodeModel,
+            ImmutableList<string> usingNamespaces,
+            string syntaxFileName,
             string baseClassName, 
             ParameterCodeModel taskResult,
             ImmutableList<ParameterCodeModel> taskBegins) {
-
+            Task            = taskCodeModel   ?? throw new ArgumentNullException(nameof(taskCodeModel));
             UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            Namespace       = @namespace      ?? throw new ArgumentNullException(nameof(@namespace));
-            ClassName       = className       ?? throw new ArgumentNullException(nameof(className));
+            SyntaxFileName  = syntaxFileName  ?? String.Empty;
             BaseClassName   = baseClassName   ?? throw new ArgumentNullException(nameof(baseClassName));
             TaskResult      = taskResult      ?? throw new ArgumentNullException(nameof(taskResult));
             TaskBegins      = taskBegins      ?? throw new ArgumentNullException(nameof(taskBegins));
         }
 
         [NotNull]
+        public TaskCodeModel Task { get; }
+        [NotNull]
+        public string SyntaxFileName { get; }
+        [NotNull]
         public ImmutableList<string> UsingNamespaces { get; }
+
         [NotNull]
-        public string Namespace { get; }        
+        public string Namespace => Task.WflNamespace;
+
         [NotNull]
-        public string ClassName { get; }
+        public string ClassName => Task.WfsBaseTypeName;
+
         [NotNull]
         public string BaseClassName { get; }
         [NotNull]
@@ -42,7 +48,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public ImmutableList<ParameterCodeModel> TaskBegins { get; }
 
-        public static WfsBaseCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
+        public static WfsBaseCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, PathProvider pathProvider) {
 
             if (taskDefinition == null) {
                 throw new ArgumentNullException(nameof(taskDefinition));
@@ -55,10 +61,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var usedTaskDeclarations = GetUsedTaskDeclarations(taskDefinition);
             var taskBegins = ToParameter(usedTaskDeclarations);
 
+            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFile, pathProvider.SyntaxFile);
+
             return new WfsBaseCodeModel(
-                usingNamespaces  : GetUsingNamespaces(taskDefinition, taskCodeModel), 
-                @namespace       : taskCodeModel.WflNamespace,
-                className        : taskCodeModel.WfsBaseTypeName,
+                taskCodeModel    : taskCodeModel,
+                usingNamespaces  : GetUsingNamespaces(taskDefinition, taskCodeModel),
+                syntaxFileName   : syntaxFileName,
                 baseClassName    : GetBaseClassName(taskDefinitionSyntax),
                 taskResult       : GetTaskResult(taskDefinitionSyntax),
                 taskBegins       : taskBegins);

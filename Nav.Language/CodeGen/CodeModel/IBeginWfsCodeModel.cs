@@ -11,21 +11,26 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
+    // TODO Gemeinsames TaskBased CodeModel Einführen. Gemeinsame Eigenschaften : TaskName, SyntaxFileName?
     // ReSharper disable once InconsistentNaming
     public sealed class IBeginWfsCodeModel : CodeModel {
 
-        IBeginWfsCodeModel(ImmutableList<string> usingNamespaces, string wflNamespace, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits) {
+        IBeginWfsCodeModel(string syntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits) {
+            SyntaxFileName    = syntaxFileName    ?? String.Empty;
+            Task              = taskCodeModel     ?? throw new ArgumentNullException(nameof(taskCodeModel));
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            Namespace         = wflNamespace      ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskName          = taskName          ?? throw new ArgumentNullException(nameof(usingNamespaces));
             BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskInits         = taskInits         ?? throw new ArgumentNullException(nameof(usingNamespaces));
         }
 
-        public static IBeginWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
+        public static IBeginWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, PathProvider pathProvider) {
 
             if (taskDefinition == null) {
                 throw new ArgumentNullException(nameof(taskDefinition));
+            }
+            if (pathProvider == null) {
+                throw new ArgumentNullException(nameof(pathProvider));
             }
 
             var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
@@ -43,19 +48,27 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 var taskInit = TaskInitCodeModel.FromInitNode(initNode, taskCodeModel);
                 taskInits.Add(taskInit);
             }
-
-            return new IBeginWfsCodeModel (
-             usingNamespaces   : namespaces.ToSortedNamespaces(),
-             wflNamespace      : taskCodeModel.WflNamespace,
-             taskName          : taskDefinition.Name ?? string.Empty,
-             baseInterfaceName : taskDefinition.Syntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString()?? DefaultIBeginWfsBaseType,
-             taskInits         : taskInits.ToImmutableList());
+            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsInterfaceFile, pathProvider.SyntaxFile);
+            
+            return new IBeginWfsCodeModel(
+                syntaxFileName   : syntaxFileName,
+                taskCodeModel    : taskCodeModel,
+                usingNamespaces  : namespaces.ToSortedNamespaces(),
+                taskName         : taskDefinition.Name ?? string.Empty,
+                baseInterfaceName: taskDefinition.Syntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? DefaultIBeginWfsBaseType,
+                taskInits        : taskInits.ToImmutableList());
         }
 
         [NotNull]
-        public ImmutableList<string> UsingNamespaces { get; }
+        public TaskCodeModel Task { get; }
         [NotNull]
-        public string Namespace { get; }
+        public string SyntaxFileName { get; }
+        [NotNull]
+        public ImmutableList<string> UsingNamespaces { get; }
+
+        [NotNull]
+        public string Namespace => Task.WflNamespace;
+
         [NotNull]
         public string TaskName { get; }
         [NotNull]

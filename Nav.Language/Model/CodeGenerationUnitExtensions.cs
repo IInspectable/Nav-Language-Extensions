@@ -31,6 +31,7 @@ namespace Pharmatechnik.Nav.Language {
             return usings.Where(ns => ns != null)
                          .Distinct()
                          .OrderBy(ns => ns.Length)
+                         .ThenBy(ns => ns)
                          .ToImmutableList();
         }
     }

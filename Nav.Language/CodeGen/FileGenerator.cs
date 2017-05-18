@@ -17,13 +17,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         
         public IImmutableList<FileGeneratorResult> Generate(CodeGenerationResult codeGenerationResult) {
 
-            var pathProvider = PathProvider.FromTaskDefinition(codeGenerationResult.TaskDefinition);
+            if (codeGenerationResult == null) {
+                throw new ArgumentNullException(nameof(codeGenerationResult));
+            }
 
             var results = new List<FileGeneratorResult> {
-                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode,      OverwriteCondition.ContentChanged, pathProvider.IWfsInterfaceFile),
-                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCode, OverwriteCondition.ContentChanged, pathProvider.IBeginWfsInterfaceFile),
-                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCode,   OverwriteCondition.ContentChanged, pathProvider.WfsBaseFile),
-                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode,       OverwriteCondition.Never         , pathProvider.WfsFile, alternateFileName: pathProvider.OldWfsFile)
+                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode,      OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.IWfsInterfaceFile),
+                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCode, OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.IBeginWfsInterfaceFile),
+                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCode,   OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.WfsBaseFile),
+                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode,       OverwriteCondition.Never         , codeGenerationResult.PathProvider.WfsFile, alternateFileName: codeGenerationResult.PathProvider.OldWfsFile)
             };
 
             return results.ToImmutableList();

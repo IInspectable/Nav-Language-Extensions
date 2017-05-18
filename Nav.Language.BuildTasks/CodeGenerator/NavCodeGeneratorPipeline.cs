@@ -61,7 +61,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 // 3. Code Models
                 var codeModelResults = modelGenerator.Generate(codeGenerationUnit);
                 foreach (var codeModelResult in codeModelResults) {
-                    
+
                     // 4. Code Generation
                     var codeGenerationResult = codeGenerator.Generate(codeModelResult);
                     

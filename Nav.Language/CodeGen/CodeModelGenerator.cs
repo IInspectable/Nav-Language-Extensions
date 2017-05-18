@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Immutable;
+using JetBrains.Annotations;
 
 #endregion
 
@@ -10,8 +11,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public class CodeModelGenerator : Generator {
 
-        public CodeModelGenerator(GenerationOptions options) : base(options) {
+        public CodeModelGenerator(GenerationOptions options, PathProviderFactory pathProviderFactory=null) : base(options) {
+            PathProviderFactory = pathProviderFactory ?? PathProviderFactory.Default;
         }
+
+        [NotNull]
+        public PathProviderFactory PathProviderFactory { get; }
 
         public IImmutableList<CodeModelResult> Generate(CodeGenerationUnit codeGenerationUnit) {
 
@@ -28,13 +33,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                                      .ToImmutableList();
         }
 
-        CodeModelResult Generate(ITaskDefinitionSymbol taskDefinition) {
-
+        CodeModelResult Generate(ITaskDefinitionSymbol taskDefinition) {            
+            var pathProvider    = PathProviderFactory.CreatePathProvider(taskDefinition);
             var codeModelResult = new CodeModelResult(
                 taskDefinition   : taskDefinition,
-                beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition),
-                wfsCodeModel     : IWfsCodeModel.FromTaskDefinition(taskDefinition),
-                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition)
+                pathProvider     : pathProvider,
+                beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
+                wfsCodeModel     : IWfsCodeModel.FromTaskDefinition(taskDefinition     , pathProvider),
+                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition  , pathProvider)
             );
            
             return codeModelResult;

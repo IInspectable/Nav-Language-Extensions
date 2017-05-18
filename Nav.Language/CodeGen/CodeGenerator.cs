@@ -26,7 +26,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var context = new CodeGeneratorContext(this);
 
             var codeGenerationResult = new CodeGenerationResult(
-                taskDefinition: codeModelResult.TaskDefinition                          ,
+                taskDefinition: codeModelResult.TaskDefinition,
+                pathProvider  : codeModelResult.PathProvider,
                 iBeginWfsCode : GenerateIBeginWfsCode(codeModelResult.IBeginWfsCodeModel, context),
                 iWfsCode      : GenerateIWfsCode(codeModelResult.IWfsCodeModel          , context),
                 wfsBaseCode   : GenerateWfsBaseCode(codeModelResult.WfsBaseCodeModel    , context),

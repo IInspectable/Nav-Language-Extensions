@@ -109,6 +109,7 @@
     <Compile Include="CodeGen\CodeModel\TaskExitCodeModel.cs" />
     <Compile Include="CodeGen\Generator.cs" />
     <Compile Include="CodeGen\PathProvider.cs" />
+    <Compile Include="CodeGen\PathProviderFactory.cs" />
     <Compile Include="CodeGen\Templates\Resources.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="Common\StringExtensions.cs" />
@@ -303,6 +304,12 @@
       <LastGenOutput>SymbolVisitor.Generated.cs</LastGenOutput>
     </Content>
     <None Include="Model\_Missing Diagnostics.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj">
+      <Project>{aa0629b3-af39-4049-9723-7989ec93b0a4}</Project>
+      <Name>Nav.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="UpdateProductVersion.targets" />

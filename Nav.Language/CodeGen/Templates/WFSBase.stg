@@ -5,7 +5,7 @@ Begin(model, context) ::=<<
 <writeUsingBlock(model.UsingNamespaces)>
 
 namespace <model.Namespace> {
-
+    <writeTaskAnnotation(model.SyntaxFileName, model.Task.TaskName)>
     public abstract partial class <model.ClassName>: <model.BaseClassName> {
         
         <model.TaskBegins:writeFieldDeclaration(); separator="\r\n">

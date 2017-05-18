@@ -9,7 +9,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public sealed class TaskCodeModel: CodeModel {
         
-        TaskCodeModel(string wflNamespace, string iwflNamespace, string wfsBaseTypeName, string wfsTypeName) {
+        TaskCodeModel(string taskName, string wflNamespace, string iwflNamespace, string wfsBaseTypeName, string wfsTypeName) {
+            TaskName        = taskName       ?? String.Empty;
             WflNamespace    = wflNamespace    ?? String.Empty;
             IwflNamespace   = iwflNamespace   ?? String.Empty;
             WfsBaseTypeName = wfsBaseTypeName ?? String.Empty;
@@ -26,12 +27,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var baseNamespace = (taskDefinition.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString() ?? String.Empty;
 
             return new TaskCodeModel(
+                taskName       : taskName,
                 wflNamespace   : $"{baseNamespace}.{WflNamespaceSuffix}",
                 iwflNamespace  : $"{baseNamespace}.{IwflNamespaceSuffix}",
                 wfsBaseTypeName: $"{taskName}{WfsBaseClassSuffix}",
                 wfsTypeName    : $"{taskName}{WfsClassSuffix}");
         }
 
+        [NotNull]
+        public string TaskName { get; }
         [NotNull]
         public string WflNamespace { get; }
         [NotNull]
