@@ -2,16 +2,20 @@
 
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
-<writeUsingBlock(model.UsingNamespaces)>
+<writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.Namespace> {
     <writeTaskAnnotation(model.SyntaxFileName, model.Task.TaskName)>
     public interface I<model.TaskName>WFS: <model.BaseInterfaceName> {
-        <model.SignalTriggers:writeSignalTrigger(); separator="\r\n">
+        <writeTriggerMethodDeclarationList(model.SignalTriggers)>
     }
 }
 >>
 
-writeSignalTrigger(signalTrigger) ::=<<
+writeTriggerMethodDeclarationList(signalTriggers) ::=<<
+<signalTriggers:writeTriggerMethodDeclaration(); separator="\r\n">
+>>
+
+writeTriggerMethodDeclaration(signalTrigger) ::=<<
 INavCommand <signalTrigger.TriggerMethodName>(<signalTrigger.TOClassName> to);
 >>

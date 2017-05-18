@@ -1,7 +1,7 @@
 ﻿delimiters "<", ">"
 
 Begin(model, context) ::=<<
-<writeUsingBlock(model.UsingNamespaces)>
+<writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.Namespace> {	
 	// TODO  WFS OneShot

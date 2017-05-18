@@ -12,13 +12,13 @@ writeFileHeader(context) ::=<<
 //------------------------------------------------------------------------------
 >>
 
-writeUsingBlock(usings) ::=<<
+writeUsingDirectives(usings) ::=<<
 #region Using Directives
-<usings:writeUsing(); separator="\r\n">
+<usings:writeUsingDirective(); separator="\r\n">
 #endregion
 >>
 
-writeUsing(namespace) ::=<<
+writeUsingDirective(namespace) ::=<<
 using <namespace>;
 >>
 

@@ -2,7 +2,7 @@
 
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
-<writeUsingBlock(model.UsingNamespaces)>
+<writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.Namespace> {
     <writeTaskAnnotation(model.SyntaxFileName, model.Task.TaskName)>
@@ -13,9 +13,9 @@ namespace <model.Namespace> {
         public <model.ClassName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS) {}
 
         public <model.ClassName>(
-            <model.TaskBegins:writeParamterDeclaration(); separator=",\r\n">) {
+            <writeParameterList(model.TaskBegins)>) {
 
-            <model.TaskBegins:writeFieldInit(); separator="\r\n">
+            <writeFieldInits(model.TaskBegin)>
          }
 
         protected INavCommandBody TaskResult(<model.TaskResult.ParameterType> <model.TaskResult.ParameterName>) {
@@ -29,8 +29,16 @@ writeFieldDeclaration(parameter) ::=<<
 readonly <parameter.ParameterType> _<parameter.ParameterName>;
 >>
 
-writeParamterDeclaration(parameter) ::=<<
+writeParameterList(parameters) ::=<<
+<parameters:writeParameter(); separator=",\r\n">
+>>
+
+writeParameter(parameter) ::=<<
 <parameter.ParameterType> <parameter.ParameterName>
+>>
+
+writeFieldInits(parameters) ::=<<
+<parameters:writeFieldInit(); separator="\r\n">
 >>
 
 writeFieldInit(parameter) ::=<<

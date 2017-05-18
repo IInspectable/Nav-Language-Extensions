@@ -2,7 +2,7 @@
 
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
-<writeUsingBlock(model.UsingNamespaces)>
+<writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.Namespace> {
 
@@ -17,13 +17,21 @@ namespace <model.Namespace> {
     <endif>
     <writeTaskAnnotation(model.SyntaxFileName, model.Task.TaskName)>
     public interface IBegin<model.TaskName>WFS: <model.BaseInterfaceName> {
-        <model.TaskInits:writeTaskInit(); separator="\r\n">
+        <writeBeginMethodDeclarationList(model.TaskInits)>
     }
 }
 >>
 
-writeTaskInit(taskInit) ::=<<
-    IINIT_TASK <taskInit.BeginMethodName>(<taskInit.Parameter:writeParameter(); separator=", ">);
+writeBeginMethodDeclarationList(taskInits) ::=<<
+<taskInits:writeBeginMethodDeclaration(); separator="\r\n">
+>>
+
+writeBeginMethodDeclaration(taskInit) ::=<<
+IINIT_TASK <taskInit.BeginMethodName>(<writeParameterList(taskInit.Parameter)>);
+>>
+
+writeParameterList(parameters) ::=<<
+<parameters:writeParameter(); separator=", ">
 >>
 
 writeParameter(parameter) ::=<<
