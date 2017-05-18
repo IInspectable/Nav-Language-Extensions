@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             TaskName          = taskName          ?? throw new ArgumentNullException(nameof(usingNamespaces));
             BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskInits         = taskInits         ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            CodeDeclarations = codeDeclarations ?? throw new ArgumentNullException(nameof(codeDeclarations));
+            CodeDeclarations  = codeDeclarations  ?? throw new ArgumentNullException(nameof(codeDeclarations));
         }
 
         public static IBeginWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, PathProvider pathProvider) {
@@ -55,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 var taskInit = TaskInitCodeModel.FromInitNode(initNode, taskCodeModel);
                 taskInits.Add(taskInit);
             }
-            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsInterfaceFile, pathProvider.SyntaxFile);
+            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsFileName, pathProvider.SyntaxFileName);
             
             return new IBeginWfsCodeModel(
                 syntaxFileName   : syntaxFileName,

@@ -34,15 +34,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var wflDirectory           = PathCombine(syntaxFile.DirectoryName, "WFL" , generateToInfo);
 
             var taskName = taskDefinition.Name;
-            var concreteClassName = taskName + "WFS";
+            var wfsFileName = taskName + "WFS";
 
             return new PathProvider(
-                syntaxFile            : syntaxFile.FullName,
-                wfsBaseFile           : PathCombine(wflGeneratedDirectory , taskName + "WFSBase.generated.cs"), 
-                iWfsInterfaceFile     : PathCombine(iwflGeneratedDirectory, "I" + taskName + "WFS.generated.cs"), 
-                iBeginWfsInterfaceFile: PathCombine(wflGeneratedDirectory , "IBegin" + taskName + "WFS.generated.cs"), 
-                wfsFile               : PathCombine(wflDirectory          , concreteClassName + ".cs"), 
-                oldWfsFile            : PathCombine(wflDirectory          , "manual", concreteClassName + ".cs")
+                syntaxFileName   : syntaxFile.FullName,
+                wfsBaseFileName  : PathCombine(wflGeneratedDirectory , taskName + "WFSBase.generated.cs"), 
+                iWfsFileName     : PathCombine(iwflGeneratedDirectory, "I" + taskName + "WFS.generated.cs"), 
+                iBeginWfsFileName: PathCombine(wflGeneratedDirectory , "IBegin" + taskName + "WFS.generated.cs"), 
+                wfsFileName      : PathCombine(wflDirectory          , wfsFileName + ".cs"), 
+                oldWfsFileName   : PathCombine(wflDirectory          , "manual", wfsFileName + ".cs")
             );
         }
 

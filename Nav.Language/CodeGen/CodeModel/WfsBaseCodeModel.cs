@@ -61,7 +61,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var usedTaskDeclarations = GetUsedTaskDeclarations(taskDefinition);
             var taskBegins = ToParameter(usedTaskDeclarations);
 
-            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFile, pathProvider.SyntaxFile);
+            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
 
             return new WfsBaseCodeModel(
                 taskCodeModel    : taskCodeModel,

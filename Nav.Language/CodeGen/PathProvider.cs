@@ -9,22 +9,22 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public class PathProvider {
         
-        public PathProvider(string syntaxFile, string wfsBaseFile, string iWfsInterfaceFile, string iBeginWfsInterfaceFile, string wfsFile, string oldWfsFile) {
-            SyntaxFile             = syntaxFile             ?? throw new ArgumentNullException(nameof(syntaxFile));
-            WfsBaseFile            = wfsBaseFile            ?? throw new ArgumentNullException(nameof(wfsBaseFile)); 
-            IWfsInterfaceFile      = iWfsInterfaceFile      ?? throw new ArgumentNullException(nameof(iWfsInterfaceFile));
-            IBeginWfsInterfaceFile = iBeginWfsInterfaceFile ?? throw new ArgumentNullException(nameof(iBeginWfsInterfaceFile));
-            WfsFile                = wfsFile                ?? throw new ArgumentNullException(nameof(wfsFile));
-            OldWfsFile             = oldWfsFile             ?? throw new ArgumentNullException(nameof(oldWfsFile));
+        public PathProvider(string syntaxFileName, string wfsBaseFileName, string iWfsFileName, string iBeginWfsFileName, string wfsFileName, string oldWfsFileName) {
+            SyntaxFileName    = syntaxFileName    ?? throw new ArgumentNullException(nameof(syntaxFileName));
+            WfsBaseFileName   = wfsBaseFileName   ?? throw new ArgumentNullException(nameof(wfsBaseFileName)); 
+            IWfsFileName      = iWfsFileName      ?? throw new ArgumentNullException(nameof(iWfsFileName));
+            IBeginWfsFileName = iBeginWfsFileName ?? throw new ArgumentNullException(nameof(iBeginWfsFileName));
+            WfsFileName       = wfsFileName       ?? throw new ArgumentNullException(nameof(wfsFileName));
+            OldWfsFileName    = oldWfsFileName    ?? throw new ArgumentNullException(nameof(oldWfsFileName));
         }
 
         // ReSharper disable InconsistentNaming
-        public string SyntaxFile { get; }
-        public string WfsBaseFile { get; }
-        public string IWfsInterfaceFile { get; }
-        public string IBeginWfsInterfaceFile { get; }
-        public string WfsFile { get; }
-        public string OldWfsFile { get; }
+        public string SyntaxFileName { get; }
+        public string WfsBaseFileName { get; }
+        public string IWfsFileName { get; }
+        public string IBeginWfsFileName { get; }
+        public string WfsFileName { get; }
+        public string OldWfsFileName { get; }
         // ReSharper restore InconsistentNaming
 
         public string GetRelativePath(string fromPath, string toPath) {

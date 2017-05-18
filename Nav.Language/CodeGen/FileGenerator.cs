@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
+using System.Text;
 using JetBrains.Annotations;
 
 #endregion
@@ -22,23 +22,23 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var results = new List<FileGeneratorResult> {
-                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode,      OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.IWfsInterfaceFile),
-                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCode, OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.IBeginWfsInterfaceFile),
-                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCode,   OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.WfsBaseFile),
-                Write(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode,       OverwriteCondition.Never         , codeGenerationResult.PathProvider.WfsFile, alternateFileName: codeGenerationResult.PathProvider.OldWfsFile)
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode,      OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.IWfsFileName),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCode, OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.IBeginWfsFileName),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCode,   OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.WfsBaseFileName),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode,       OverwriteCondition.Never         , codeGenerationResult.PathProvider.WfsFileName, alternateFileName: codeGenerationResult.PathProvider.OldWfsFileName)
             };
 
             return results.ToImmutableList();
         }
 
         [NotNull]
-        FileGeneratorResult Write(ITaskDefinitionSymbol taskDefinition, string content, OverwriteCondition condition, string fileName, string alternateFileName = null) {
+        FileGeneratorResult WriteFile(ITaskDefinitionSymbol taskDefinition, string content, OverwriteCondition condition, string fileName, string alternateFileName = null) {
 
             EnsureDirectory(fileName);
 
             var action = FileGeneratorAction.Skiped;
             if (ShouldWrite(content, condition, fileName, alternateFileName)) {
-                File.WriteAllText(fileName, content);
+                File.WriteAllText(fileName, content, Encoding.UTF8);
                 action = FileGeneratorAction.Updated;
             }
 

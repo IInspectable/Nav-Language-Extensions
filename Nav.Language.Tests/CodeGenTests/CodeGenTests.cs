@@ -96,7 +96,7 @@ task TaskA [code ""public enum MessageBoxResult{ Ok, Abbrechen}""]
     TestView --> Ok on OnFoo;
 }
 ";
-            var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navCode, @"c:\TaskA.nav");
+            var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navCode, @"c:\UnitTests\TaskA.nav");
             var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
 
             var options = GenerationOptions.Default;
@@ -109,10 +109,10 @@ task TaskA [code ""public enum MessageBoxResult{ Ok, Abbrechen}""]
 
             var codeGenResult = codeGenerator.Generate(results[0]);
             
-            var beginWfsSyntaxTree  = CSharpSyntaxTree.ParseText(codeGenResult.IBeginWfsCode);
-            var iWfsCodeSyntaxTree  = CSharpSyntaxTree.ParseText(codeGenResult.IWfsCode);
-            var wfsBaseSyntaxTree   = CSharpSyntaxTree.ParseText(codeGenResult.WfsBaseCode);
-            var wfsSyntaxTree       = CSharpSyntaxTree.ParseText(codeGenResult.WfsCode);
+            var beginWfsSyntaxTree  = CSharpSyntaxTree.ParseText(codeGenResult.IBeginWfsCode, path: codeGenResult.PathProvider.IBeginWfsFileName);
+            var iWfsCodeSyntaxTree  = CSharpSyntaxTree.ParseText(codeGenResult.IWfsCode     , path: codeGenResult.PathProvider.IWfsFileName);
+            var wfsBaseSyntaxTree   = CSharpSyntaxTree.ParseText(codeGenResult.WfsBaseCode  , path: codeGenResult.PathProvider.WfsBaseFileName);
+            var wfsSyntaxTree       = CSharpSyntaxTree.ParseText(codeGenResult.WfsCode      , path: codeGenResult.PathProvider.WfsFileName);
             var frameworkSyntaxTree = GetFrameworkStubCode();
 
             var syntaxTrees = new[] {
@@ -202,7 +202,7 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL {
 namespace Pharmatechnik.Apotheke.XTplus.Framework.Core.IWFL {
 
 }
-                ");
+                ", path: @"c:\UnitTests\FrameworkStubCode.cs");
         }
 
         void AssertDiagnosticErrors(IEnumerable<Diagnostic> diagnostics) {

@@ -60,7 +60,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 signalTriggers.Add(SignalTriggerCodeModel.FromSignalTrigger(trigger, taskCodeModel));
             }
 
-            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsInterfaceFile, pathProvider.SyntaxFile);
+            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
 
             return new IWfsCodeModel(
                 syntaxFileName   : syntaxFileName,
