@@ -10,7 +10,7 @@ namespace <model.Namespace> {
         <if(model.TaskBegins)>
 
         <model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
-        
+
         <else>
 
         <endif>
