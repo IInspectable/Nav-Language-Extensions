@@ -78,7 +78,7 @@ namespace Nav.Language.Tests {
         };
 
         [Test, TestCaseSource(nameof(CompileTestCases))]
-        public void SimpleCodegenCompileTest(TestCase testCase) {
+        public void CompileTest(TestCase testCase) {
 
             var syntaxTrees = new List<RoslynSyntaxTree>();
 
