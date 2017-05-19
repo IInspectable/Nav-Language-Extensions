@@ -94,17 +94,16 @@ namespace Nav.Language.Tests {
                 var modelGenerator = new CodeModelGenerator(options);
                 var codeGenerator = new CodeGenerator(options);
 
-                var results = modelGenerator.Generate(codeGenerationUnit);
+                var codeModelResults = modelGenerator.Generate(codeGenerationUnit);
+                
+                foreach (var codeModelResult in codeModelResults) {
 
+                    var codeGenerationResult = codeGenerator.Generate(codeModelResult);
 
-                foreach (var codeModelResult in results) {
-
-                    var codeGenResult = codeGenerator.Generate(codeModelResult);
-
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.IBeginWfsCode, path: codeGenResult.PathProvider.IBeginWfsFileName));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.IWfsCode     , path: codeGenResult.PathProvider.IWfsFileName));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.WfsBaseCode  , path: codeGenResult.PathProvider.WfsBaseFileName));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.WfsCode      , path: codeGenResult.PathProvider.WfsFileName));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IBeginWfsCode, path: codeGenerationResult.PathProvider.IBeginWfsFileName));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCode     , path: codeGenerationResult.PathProvider.IWfsFileName));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCode  , path: codeGenerationResult.PathProvider.WfsBaseFileName));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsCode      , path: codeGenerationResult.PathProvider.WfsFileName));
                 }                
             }
 
