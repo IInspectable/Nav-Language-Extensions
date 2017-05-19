@@ -19,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var task = exitTransition.ContainingTask;
 
             TaskCodeModel = TaskCodeModel.FromTaskDefinition(task);
-            AfterLogicMethodName = $"{CodeGenFacts.ExitMethodSuffix}{exitTransition.Source?.Name}{CodeGenFacts.LogicMethodSuffix}";
+            AfterLogicMethodName = $"{CodeGenFacts.ExitMethodPrefix}{exitTransition.Source?.Name}{CodeGenFacts.LogicMethodSuffix}";
         }
 
         [NotNull]

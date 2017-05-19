@@ -41,7 +41,7 @@
         /// <summary>
         /// After
         /// </summary>
-        public const string ExitMethodSuffix = "After";
+        public const string ExitMethodPrefix = "After";
         /// <summary>
         /// IBegin
         /// </summary>
