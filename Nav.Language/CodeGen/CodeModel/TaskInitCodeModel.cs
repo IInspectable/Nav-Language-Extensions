@@ -41,14 +41,19 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(taskCodeModel));
             }
 
+            string GetParameterName(string name, ref int i) {
+                return String.IsNullOrEmpty(name) ? $"p{i++}" : name;
+            }
+
             var parameter = new List<ParameterCodeModel>();
             var paramterList = initNodeSymbol.Syntax.CodeParamsDeclaration?.ParameterList;
             if (paramterList != null) {
                 // TODO parameterName Fallback? p0..pn?
+                int i = 1;
                 foreach (var parameterSyntax in paramterList) {
                     parameter.Add(new ParameterCodeModel(
                         parameterType: parameterSyntax.Type?.ToString(), 
-                        parameterName: parameterSyntax.Identifier.ToString()));
+                        parameterName: GetParameterName(parameterSyntax.Identifier.ToString(), ref i)));
                 }
             }
             

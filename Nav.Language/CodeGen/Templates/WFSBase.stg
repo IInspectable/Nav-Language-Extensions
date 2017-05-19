@@ -7,16 +7,24 @@ Begin(model, context) ::=<<
 namespace <model.Namespace> {
     <writeTaskAnnotation(model.SyntaxFileName, model.Task.TaskName)>
     public abstract partial class <model.ClassName>: <model.BaseClassName> {
-        
-        <model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
+        <if(model.TaskBegins)>
 
+        <model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
+        
+        <else>
+
+        <endif>
         public <model.ClassName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS) {}
 
+        <if(model.TaskBegins)>
         public <model.ClassName>(
             <writeParameterList(model.TaskBegins)>) {
+        <else>
+        public <model.ClassName>() {
+        <endif>
 
-            <writeFieldInits(model.TaskBegin)>
-         }
+            <writeFieldInits(model.TaskBegins)>
+        }
 
         protected INavCommandBody TaskResult(<model.TaskResult.ParameterType> <model.TaskResult.ParameterName>) {
             return InternalTaskResult(<model.TaskResult.ParameterName>);
@@ -25,16 +33,16 @@ namespace <model.Namespace> {
 }
 >>
 
-writeFieldDeclaration(parameter) ::=<<
-readonly <parameter.ParameterType> _<parameter.ParameterName>;
->>
-
 writeParameterList(parameters) ::=<<
 <parameters:writeParameter(); separator=",\r\n">
 >>
 
 writeParameter(parameter) ::=<<
 <parameter.ParameterType> <parameter.ParameterName>
+>>
+
+writeFieldDeclaration(parameter) ::=<<
+readonly <parameter.ParameterType> _<parameter.ParameterName>;
 >>
 
 writeFieldInits(parameters) ::=<<

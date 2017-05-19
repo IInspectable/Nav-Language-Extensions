@@ -9,6 +9,7 @@ namespace Nav.Language.Tests {
         public static readonly string AllRules     = LoadText("AllRules.nav");
         public static readonly string LargeNav     = LoadText("LargeNav.nav");
         public static readonly string NavWithError = LoadText("NavWithError.nav");
+        public static readonly string SingleFileNav= LoadText("SingleFile.nav");
         //NavWithError
         static string LoadText(string resourceName) {
 

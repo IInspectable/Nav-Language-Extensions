@@ -76,8 +76,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var namespaces = new List<string>();
 
+            namespaces.Add(typeof(int).Namespace);
             namespaces.Add(taskCodeModel.IwflNamespace);
             namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
+            namespaces.Add(CodeGenFacts.NavigationEngineWflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
             return namespaces.ToSortedNamespaces();

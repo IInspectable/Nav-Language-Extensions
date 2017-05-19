@@ -75,6 +75,13 @@ namespace Nav.Language.Tests {
             }){
                 TestName = "TaskA and TaskB should be compilable at the same time"
             },
+            new TestCaseData(new TestCase {
+                NavFiles = {
+                    new TestCaseFile {FilePath = MkFilename("SingleFileNav.nav"), Content = Resources.SingleFileNav},
+                }
+            }){
+                TestName = "TestNavGeneratorOnSingleFile"
+            }.Ignore("Enablen sobald TOs optional generiert werden können")
         };
 
         [Test, TestCaseSource(nameof(CompileTestCases))]
