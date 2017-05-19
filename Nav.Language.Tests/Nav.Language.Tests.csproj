@@ -100,7 +100,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeGenTests\CodeGenTests.cs" />
+    <Compile Include="CodeGenTests.cs" />
     <EmbeddedResource Include="Resources\FrameworkStubs.cs" />
     <Compile Include="Resources\Resources.cs" />
     <Compile Include="DescendantNodesTests.cs" />
@@ -140,7 +140,6 @@
     <Compile Include="TextChangeWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -188,7 +187,7 @@
     <EmbeddedResource Include="Resources\TaskA.nav" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="CodeGenTests\Data\" />
+    <EmbeddedResource Include="Resources\TaskB.nav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

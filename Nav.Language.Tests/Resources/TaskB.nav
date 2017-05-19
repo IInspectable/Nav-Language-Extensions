@@ -3,9 +3,7 @@
 [using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
 [using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL]
 
-task TaskA [code "public enum ExitCode{ Ok, Abbrechen}"]
-           [base StandardWFS : IWFService]
-           [result ExitCode]
+task TaskB [result bool]
 {
     init I1 [params string message];
         

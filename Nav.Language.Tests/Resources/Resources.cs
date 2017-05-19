@@ -5,6 +5,7 @@ namespace Nav.Language.Tests {
     static class Resources {
         public static readonly string FrameworkStubsCode = LoadText("FrameworkStubs.cs");
         public static readonly string TaskANav     = LoadText("TaskA.nav");
+        public static readonly string TaskBNav     = LoadText("TaskB.nav");
         public static readonly string AllRules     = LoadText("AllRules.nav");
         public static readonly string LargeNav     = LoadText("LargeNav.nav");
         public static readonly string NavWithError = LoadText("NavWithError.nav");
