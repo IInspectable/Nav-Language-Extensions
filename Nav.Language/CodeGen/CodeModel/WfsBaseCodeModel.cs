@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             string baseClassName, 
             ParameterCodeModel taskResult,
             ImmutableList<ParameterCodeModel> taskBegins, 
-            string filePath) : base(syntaxFilePath, taskCodeModel, filePath) {
+            string filePath) : base(taskCodeModel, syntaxFilePath, filePath) {
             
             UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
             BaseClassName   = baseClassName   ?? throw new ArgumentNullException(nameof(baseClassName));

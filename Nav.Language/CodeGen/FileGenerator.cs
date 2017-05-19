@@ -22,27 +22,27 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var results = new List<FileGeneratorResult> {
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode,      OverwriteCondition.ContentChanged, codeGenerationResult.IWfsCode),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCode, OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.IBeginWfsFileName),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCode,   OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.WfsBaseFileName),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode,       OverwriteCondition.Never         , codeGenerationResult.PathProvider.WfsFileName, alternateFileName: codeGenerationResult.PathProvider.OldWfsFileName)
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode,      OverwriteCondition.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCode, OverwriteCondition.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCode,   OverwriteCondition.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode,       OverwriteCondition.Never, alternateFileName: codeGenerationResult.PathProvider.OldWfsFileName)
             };
 
             return results.ToImmutableList();
         }
 
         [NotNull]
-        FileGeneratorResult WriteFile(ITaskDefinitionSymbol taskDefinition, string content, OverwriteCondition condition, string fileName, string alternateFileName = null) {
+        FileGeneratorResult WriteFile(ITaskDefinitionSymbol taskDefinition, CodeGenerationSpec codeGenerationSpec, OverwriteCondition condition, string alternateFileName = null) {
 
-            EnsureDirectory(fileName);
+            EnsureDirectory(codeGenerationSpec.FilePath);
 
             var action = FileGeneratorAction.Skiped;
-            if (ShouldWrite(content, condition, fileName, alternateFileName)) {
-                File.WriteAllText(fileName, content, Encoding.UTF8);
+            if (ShouldWrite(codeGenerationSpec, condition, alternateFileName)) {
+                File.WriteAllText(codeGenerationSpec.FilePath, codeGenerationSpec.Content, Encoding.UTF8);
                 action = FileGeneratorAction.Updated;
             }
 
-            return new FileGeneratorResult(taskDefinition, action, fileName);
+            return new FileGeneratorResult(taskDefinition, action, codeGenerationSpec.FilePath);
         }
 
         static void EnsureDirectory(string fileName) {
@@ -51,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             Directory.CreateDirectory(dir);            
         }
 
-        bool ShouldWrite(string content, OverwriteCondition condition, string fileName, string alternateFileName) {
+        bool ShouldWrite(CodeGenerationSpec codeGenerationSpec, OverwriteCondition condition, string alternateFileName) {
 
             // Die alternative Datei wird niemals überschrieben (legacy code!).
             var alternateFileExists = alternateFileName != null && File.Exists(alternateFileName);
@@ -60,14 +60,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             // Wenn die Datei nicht existiert, wird sie neu geschrieben
-            if (!File.Exists(fileName)) {
+            if (!File.Exists(codeGenerationSpec.FilePath)) {
                 return true;
             }
 
             // Eine Datei mit der Größe 0 gilt als nicht existent, und wird neu geschrieben 
             if (condition == OverwriteCondition.Never) {
                 
-                var fileInfo = new FileInfo(fileName);
+                var fileInfo = new FileInfo(codeGenerationSpec.FilePath);
                 return fileInfo.Length==0;
             }
 
@@ -79,9 +79,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             // Ansonsten wird die Datei nur neu geschrieben, wenn sich deren Inhalt de facto geändert hat.
-            var fileContent = File.ReadAllText(fileName);
+            var fileContent = File.ReadAllText(codeGenerationSpec.FilePath);
 
-            return !String.Equals(fileContent, content, StringComparison.Ordinal);
+            return !String.Equals(fileContent, codeGenerationSpec.Content, StringComparison.Ordinal);
         }
 
         enum OverwriteCondition {

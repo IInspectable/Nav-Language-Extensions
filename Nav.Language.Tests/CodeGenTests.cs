@@ -43,10 +43,10 @@ namespace Nav.Language.Tests {
 
             var codeGenResult = codeGenerator.Generate(results[0]);
 
-            Assert.That(codeGenResult.IBeginWfsCode, Is.Not.Empty);
-            Assert.That(codeGenResult.IWfsCode     , Is.Not.Empty);
-            Assert.That(codeGenResult.WfsBaseCode  , Is.Not.Empty);
-            Assert.That(codeGenResult.WfsCode      , Is.Not.Empty);
+            Assert.That(codeGenResult.IBeginWfsCode.Content, Is.Not.Empty);
+            Assert.That(codeGenResult.IWfsCode.Content     , Is.Not.Empty);
+            Assert.That(codeGenResult.WfsBaseCode.Content  , Is.Not.Empty);
+            Assert.That(codeGenResult.WfsCode.Content      , Is.Not.Empty);
         }
 
         public static TestCaseData[] CompileTestCases = {
@@ -112,10 +112,10 @@ namespace Nav.Language.Tests {
                     var codeGenerationResult = codeGenerator.Generate(codeModelResult);
 
                     // 5. C#-Syntaxbäume des generierten Codes mittels Roslyn erstellen
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IBeginWfsCode, path: codeGenerationResult.PathProvider.IBeginWfsFileName));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCode     , path: codeGenerationResult.PathProvider.IWfsFileName));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCode  , path: codeGenerationResult.PathProvider.WfsBaseFileName));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsCode      , path: codeGenerationResult.PathProvider.WfsFileName));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IBeginWfsCode.Content, path: codeGenerationResult.IBeginWfsCode.FilePath));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCode.Content     , path: codeGenerationResult.IWfsCode.FilePath));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCode.Content  , path: codeGenerationResult.WfsBaseCode.FilePath));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsCode.Content      , path: codeGenerationResult.WfsCode.FilePath));
                 }                
             }
             // Pseudo Framework Code hinzufügen

@@ -88,6 +88,7 @@
     <Compile Include="CodeFixes\Rename\ViewNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\TaskDefinitionSymbolExtensions.cs" />
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
+    <Compile Include="CodeGen\CodeGenerationSpec.cs" />
     <Compile Include="CodeGen\CodeGenFacts.cs" />
     <Compile Include="CodeGen\FileGenerator.cs" />
     <Compile Include="CodeGen\FileGeneratorAction.cs" />

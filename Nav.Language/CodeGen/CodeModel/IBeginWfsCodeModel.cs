@@ -16,7 +16,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     public sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
 
         IBeginWfsCodeModel(string syntaxFilePath, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits, ImmutableList<string> codeDeclarations, string filePath) 
-            :base(syntaxFilePath, taskCodeModel, filePath) {
+            :base(taskCodeModel, syntaxFilePath, filePath) {
 
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskName          = taskName          ?? throw new ArgumentNullException(nameof(usingNamespaces));

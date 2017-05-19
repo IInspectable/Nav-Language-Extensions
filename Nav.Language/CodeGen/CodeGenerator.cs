@@ -36,36 +36,36 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return codeGenerationResult;
         }
         
-        static string GenerateIBeginWfsCode(IBeginWfsCodeModel model, CodeGeneratorContext context) {
+        static CodeGenerationSpec GenerateIBeginWfsCode(IBeginWfsCodeModel model, CodeGeneratorContext context) {
 
             var template = LoadTemplate(Resources.IBeginWfsTemplate, model, context);                        
-            var result   = template.Render();
+            var content  = template.Render();
 
-            return result;
+            return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static string GenerateIWfsCode(IWfsCodeModel model, CodeGeneratorContext context) {
+        static CodeGenerationSpec GenerateIWfsCode(IWfsCodeModel model, CodeGeneratorContext context) {
 
             var template = LoadTemplate(Resources.IWfsTemplate, model, context);            
-            var result   = template.Render();
+            var content = template.Render();
 
-            return result;
+            return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static string GenerateWfsBaseCode(WfsBaseCodeModel model, CodeGeneratorContext context) {
+        static CodeGenerationSpec GenerateWfsBaseCode(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
             var template = LoadTemplate(Resources.WfsBaseTemplate, model, context);
-            var result  = template.Render();
+            var content = template.Render();
 
-            return result;
+            return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static string GenerateWfsCode(WfsBaseCodeModel model, CodeGeneratorContext context) {
+        static CodeGenerationSpec GenerateWfsCode(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
             var template = LoadTemplate(Resources.WFSOneShotTemplate, model, context);            
-            var result   = template.Render();
+            var content  = template.Render();
 
-            return result;
+            return new CodeGenerationSpec(content, model.FilePath);
         }
 
         static Template LoadTemplate(string resourceName, CodeModel model, CodeGeneratorContext context) {

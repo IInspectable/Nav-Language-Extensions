@@ -9,7 +9,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public abstract class FileGenerationCodeModel : CodeModel {
 
-        protected FileGenerationCodeModel(string syntaxFilePath, TaskCodeModel taskCodeModel, string filePath) {
+        protected FileGenerationCodeModel(TaskCodeModel taskCodeModel, string syntaxFilePath, string filePath) {
             SyntaxFilePath = syntaxFilePath ?? String.Empty;
             Task           = taskCodeModel  ?? throw new ArgumentNullException(nameof(taskCodeModel));
             FilePath       = filePath       ?? String.Empty;
@@ -17,10 +17,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         [NotNull]
-        public string SyntaxFilePath { get; }
-        [NotNull]
         public TaskCodeModel Task { get; }
         [NotNull]
-        public string FilePath { get; }
+        public string SyntaxFilePath { get; }
+        [NotNull]
+        public string FilePath { get; }               
     }
 }

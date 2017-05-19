@@ -7,9 +7,16 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public class CodeGenerationResult {
+    public sealed class CodeGenerationResult {
 
-        public CodeGenerationResult(ITaskDefinitionSymbol taskDefinition, PathProvider pathProvider, string iBeginWfsCode, string iWfsCode, string wfsBaseCode, string wfsCode) {
+        public CodeGenerationResult(
+            ITaskDefinitionSymbol taskDefinition, 
+            PathProvider pathProvider, 
+            CodeGenerationSpec iBeginWfsCode, 
+            CodeGenerationSpec iWfsCode, 
+            CodeGenerationSpec wfsBaseCode, 
+            CodeGenerationSpec wfsCode) {
+
             TaskDefinition = taskDefinition ?? throw new ArgumentNullException(nameof(taskDefinition));
             PathProvider   = pathProvider   ?? throw new ArgumentNullException(nameof(pathProvider));
             IBeginWfsCode  = iBeginWfsCode  ?? throw new ArgumentNullException(nameof(iBeginWfsCode));
@@ -24,14 +31,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public PathProvider PathProvider { get; }
         [NotNull]
-        public string IBeginWfsCode { get; }
+        public CodeGenerationSpec IBeginWfsCode { get; }
+        [NotNull]        
+        public CodeGenerationSpec IWfsCode { get; }
         [NotNull]
-        
-        public string IWfsCode { get; }
+        public CodeGenerationSpec WfsBaseCode { get; }
         [NotNull]
-        public string WfsBaseCode { get; }
-        [NotNull]
-        public string WfsCode { get; }
+        public CodeGenerationSpec WfsCode { get; }
         // ReSharper restore InconsistentNaming
     }
 }
