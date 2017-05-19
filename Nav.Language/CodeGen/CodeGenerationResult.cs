@@ -15,19 +15,19 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public CodeGenerationResult(
             ITaskDefinitionSymbol taskDefinition, 
             PathProvider pathProvider, 
-            CodeGenerationSpec iBeginWfsCode, 
-            CodeGenerationSpec iWfsCode, 
-            CodeGenerationSpec wfsBaseCode, 
-            CodeGenerationSpec wfsCode,
+            CodeGenerationSpec iBeginWfsCodeSpec, 
+            CodeGenerationSpec iWfsCodeSpec, 
+            CodeGenerationSpec wfsBaseCodeSpec, 
+            CodeGenerationSpec wfsCodeSpec,
             [CanBeNull] IEnumerable<CodeGenerationSpec> toCodeSpecs) {
 
-            TaskDefinition = taskDefinition ?? throw new ArgumentNullException(nameof(taskDefinition));
-            PathProvider   = pathProvider   ?? throw new ArgumentNullException(nameof(pathProvider));
-            IBeginWfsCode  = iBeginWfsCode  ?? throw new ArgumentNullException(nameof(iBeginWfsCode));
-            IWfsCode       = iWfsCode       ?? throw new ArgumentNullException(nameof(iWfsCode));
-            WfsBaseCode    = wfsBaseCode    ?? throw new ArgumentNullException(nameof(wfsBaseCode));
-            WfsCode        = wfsCode        ?? throw new ArgumentNullException(nameof(wfsCode));
-            ToCodeSpecs    = (toCodeSpecs ?? Enumerable.Empty<CodeGenerationSpec>()).ToImmutableList();
+            TaskDefinition    = taskDefinition    ?? throw new ArgumentNullException(nameof(taskDefinition));
+            PathProvider      = pathProvider      ?? throw new ArgumentNullException(nameof(pathProvider));
+            IBeginWfsCodeSpec = iBeginWfsCodeSpec ?? throw new ArgumentNullException(nameof(iBeginWfsCodeSpec));
+            IWfsCodeSpec      = iWfsCodeSpec      ?? throw new ArgumentNullException(nameof(iWfsCodeSpec));
+            WfsBaseCodeSpec   = wfsBaseCodeSpec   ?? throw new ArgumentNullException(nameof(wfsBaseCodeSpec));
+            WfsCodeSpec       = wfsCodeSpec       ?? throw new ArgumentNullException(nameof(wfsCodeSpec));
+            ToCodeSpecs       = (toCodeSpecs      ?? Enumerable.Empty<CodeGenerationSpec>()).ToImmutableList();
         }
 
         // ReSharper disable InconsistentNaming
@@ -36,15 +36,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public PathProvider PathProvider { get; }
         [NotNull]
-        public CodeGenerationSpec IBeginWfsCode { get; }
+        public CodeGenerationSpec IBeginWfsCodeSpec { get; }
         [NotNull]        
-        public CodeGenerationSpec IWfsCode { get; }
+        public CodeGenerationSpec IWfsCodeSpec { get; }
         [NotNull]
-        public CodeGenerationSpec WfsBaseCode { get; }
+        public CodeGenerationSpec WfsBaseCodeSpec { get; }
         [NotNull]
-        public CodeGenerationSpec WfsCode { get; }
+        public CodeGenerationSpec WfsCodeSpec { get; }
         [NotNull]
-        public ImmutableList<CodeGenerationSpec> ToCodeSpecs { get; }
+        public ImmutableList<CodeGenerationSpec> ToCodeSpecs { get; }       
         // ReSharper restore InconsistentNaming
     }
 }

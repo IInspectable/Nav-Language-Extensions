@@ -43,10 +43,10 @@ namespace Nav.Language.Tests {
 
             var codeGenResult = codeGenerator.Generate(results[0]);
 
-            Assert.That(codeGenResult.IBeginWfsCode.Content, Is.Not.Empty);
-            Assert.That(codeGenResult.IWfsCode.Content     , Is.Not.Empty);
-            Assert.That(codeGenResult.WfsBaseCode.Content  , Is.Not.Empty);
-            Assert.That(codeGenResult.WfsCode.Content      , Is.Not.Empty);
+            Assert.That(codeGenResult.IBeginWfsCodeSpec.Content, Is.Not.Empty);
+            Assert.That(codeGenResult.IWfsCodeSpec.Content     , Is.Not.Empty);
+            Assert.That(codeGenResult.WfsBaseCodeSpec.Content  , Is.Not.Empty);
+            Assert.That(codeGenResult.WfsCodeSpec.Content      , Is.Not.Empty);
         }
 
         public static TestCaseData[] CompileTestCases = {
@@ -112,10 +112,10 @@ namespace Nav.Language.Tests {
                     var codeGenerationResult = codeGenerator.Generate(codeModelResult);
 
                     // 5. C#-Syntaxbäume des generierten Codes mittels Roslyn erstellen
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IBeginWfsCode.Content, path: codeGenerationResult.IBeginWfsCode.FilePath));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCode.Content     , path: codeGenerationResult.IWfsCode.FilePath));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCode.Content  , path: codeGenerationResult.WfsBaseCode.FilePath));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsCode.Content      , path: codeGenerationResult.WfsCode.FilePath));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IBeginWfsCodeSpec.Content, path: codeGenerationResult.IBeginWfsCodeSpec.FilePath));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCodeSpec.Content     , path: codeGenerationResult.IWfsCodeSpec.FilePath));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCodeSpec.Content  , path: codeGenerationResult.WfsBaseCodeSpec.FilePath));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsCodeSpec.Content      , path: codeGenerationResult.WfsCodeSpec.FilePath));
                     foreach(var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
                         syntaxTrees.Add(CSharpSyntaxTree.ParseText(toCodeSpec.Content, path: toCodeSpec.FilePath));
                     }

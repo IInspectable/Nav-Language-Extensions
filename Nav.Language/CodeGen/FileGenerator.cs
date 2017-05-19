@@ -22,14 +22,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var results = new List<FileGeneratorResult> {
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode,      OverwriteCondition.ContentChanged),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCode, OverwriteCondition.ContentChanged),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCode,   OverwriteCondition.ContentChanged),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode,       OverwriteCondition.Never, alternateFileName: codeGenerationResult.PathProvider.OldWfsFileName)
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCodeSpec,      OverwriteCondition.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCodeSpec, OverwriteCondition.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCodeSpec,   OverwriteCondition.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCodeSpec,       OverwriteCondition.Never, alternateFileName: codeGenerationResult.PathProvider.OldWfsFileName)
             };
 
             foreach(var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
-                WriteFile(codeGenerationResult.TaskDefinition, toCodeSpec, OverwriteCondition.Never);
+                results.Add(WriteFile(codeGenerationResult.TaskDefinition, toCodeSpec, OverwriteCondition.Never));
             }
 
             return results.ToImmutableList();

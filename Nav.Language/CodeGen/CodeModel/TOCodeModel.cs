@@ -3,7 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-
+using System.Collections.Immutable;
 using JetBrains.Annotations;
 
 #endregion
@@ -13,12 +13,21 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     public sealed class TOCodeModel : FileGenerationCodeModel {
         
-        TOCodeModel(string syntaxFilePath, TaskCodeModel taskCodeModel, string className, string filePath) 
+        TOCodeModel(string syntaxFilePath, 
+            TaskCodeModel taskCodeModel, 
+            ImmutableList<string> usingNamespaces,
+            string className, 
+            string filePath) 
             : base(taskCodeModel, syntaxFilePath, filePath) {
-            ClassName = className ?? String.Empty;
+
+            UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
+            ClassName       = className       ?? String.Empty;
         }
 
         public string ClassName { get; }
+
+        [NotNull]
+        public ImmutableList<string> UsingNamespaces { get; }
 
         [NotNull]
         public string Namespace => Task.IwflNamespace;
@@ -42,11 +51,21 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 var syntaxFileName = pathProvider.GetRelativePath(filePath, pathProvider.SyntaxFileName);
 
                 yield return new TOCodeModel(
-                    syntaxFilePath: syntaxFileName,
-                    taskCodeModel : taskCodeModel,
-                    className     : toClassName,
-                    filePath      : pathProvider.IWfsFileName);
+                    syntaxFilePath : syntaxFileName,
+                    taskCodeModel  : taskCodeModel,
+                    usingNamespaces: GetUsingNamespaces(),
+                    className      : toClassName,
+                    filePath       : filePath);
             }           
+        }
+
+        private static ImmutableList<string> GetUsingNamespaces() {
+
+            var namespaces = new List<string>();
+
+            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
+
+            return namespaces.ToSortedNamespaces();
         }
     }
 }

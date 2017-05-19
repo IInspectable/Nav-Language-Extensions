@@ -27,7 +27,7 @@ namespace TestClient {
                 p.Run(cl);
             }
 
-            PressAnyKeyToContinue();
+            //PressAnyKeyToContinue();
         }
 
         static void PressAnyKeyToContinue() {
