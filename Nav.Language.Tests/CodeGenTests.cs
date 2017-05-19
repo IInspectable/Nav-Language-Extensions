@@ -82,9 +82,9 @@ namespace Nav.Language.Tests {
 
             var syntaxTrees = new List<RoslynSyntaxTree>();
 
-            foreach (var file in testCase.NavFiles) {
+            foreach (var navFile in testCase.NavFiles) {
 
-                var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(file.Content, filePath: file.FilePath);
+                var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navFile.Content, filePath: navFile.FilePath);
                 AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics);
 
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
