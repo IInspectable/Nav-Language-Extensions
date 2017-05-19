@@ -8,10 +8,11 @@
 
   <PropertyGroup Condition="'$(ForceGenerateNavCode)' == ''">
     <ForceGenerateNavCode>false</ForceGenerateNavCode>
+    <GenerateToClasses>true</GenerateToClasses>
   </PropertyGroup>
   
   <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild" >
-    <NavCodeGenerator Files="@(NavFile)" Force="$(ForceGenerateNavCode)"/>    
+    <NavCodeGenerator Files="@(NavFile)" Force="$(ForceGenerateNavCode)" GenerateToClasses="$(GenerateToClasses)"/>    
   </Target>
   
 </Project>

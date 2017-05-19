@@ -81,7 +81,7 @@ namespace Nav.Language.Tests {
                 }
             }){
                 TestName = "TestNavGeneratorOnSingleFile"
-            }.Ignore("Enablen sobald TOs optional generiert werden können")
+            }//.Ignore("Enablen sobald TOs optional generiert werden können")
         };
 
         [Test, TestCaseSource(nameof(CompileTestCases))]
@@ -116,6 +116,9 @@ namespace Nav.Language.Tests {
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCode.Content     , path: codeGenerationResult.IWfsCode.FilePath));
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCode.Content  , path: codeGenerationResult.WfsBaseCode.FilePath));
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsCode.Content      , path: codeGenerationResult.WfsCode.FilePath));
+                    foreach(var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
+                        syntaxTrees.Add(CSharpSyntaxTree.ParseText(toCodeSpec.Content, path: toCodeSpec.FilePath));
+                    }
                 }                
             }
             // Pseudo Framework Code hinzufügen

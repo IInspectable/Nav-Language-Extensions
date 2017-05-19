@@ -28,6 +28,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode,       OverwriteCondition.Never, alternateFileName: codeGenerationResult.PathProvider.OldWfsFileName)
             };
 
+            foreach(var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
+                WriteFile(codeGenerationResult.TaskDefinition, toCodeSpec, OverwriteCondition.Never);
+            }
+
             return results.ToImmutableList();
         }
 

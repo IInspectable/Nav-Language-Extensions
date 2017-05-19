@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.IO;
 using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
@@ -29,6 +30,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public string GetRelativePath(string fromPath, string toPath) {
             return PathHelper.GetRelativePath(fromPath, toPath);
-        }        
+        }
+
+        // TODO PathProvider Logik alles hierhin, und Factory "dumm" machen
+        public string GetToFileName(string toClassName) {
+           return Path.Combine(Path.GetDirectoryName(SyntaxFileName), toClassName+ ".cs");
+        }
     }
 }

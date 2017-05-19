@@ -37,8 +37,6 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
     public interface TO : INavCommandBody {
     }
 
-    public class TestViewTO : TO { }
-
     public interface IWFService {
     }
     public interface IClientSideWFS {

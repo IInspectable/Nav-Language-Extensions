@@ -40,7 +40,7 @@ namespace TestClient {
 
         void Run(CommandLine cl) {
 
-            var options  = new GenerationOptions(force: cl.Force);
+            var options  = new GenerationOptions(force: cl.Force, generateToClasses:cl.GenerateToClasses);
             var logger   = new ConsoleLogger();
             var pipeline = new NavCodeGeneratorPipeline(options, logger);
 

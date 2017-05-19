@@ -9,12 +9,12 @@ task TaskA [code "public enum ExitCode{ Ok, Abbrechen}"]
 {
     init I1 [params string message];
         
-    view TestView;
+    view TestView1;
     
     exit Ok;
 
-    I1    --> TestView;  
+    I1    --> TestView1;  
     
-    TestView --> Ok on Ok;
-    TestView --> Ok on OnFoo;
+    TestView1 --> Ok on Ok;
+    TestView1 --> Ok on OnFoo;
 }

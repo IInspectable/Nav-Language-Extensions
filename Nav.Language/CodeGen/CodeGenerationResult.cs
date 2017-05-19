@@ -1,6 +1,9 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using JetBrains.Annotations;
 
 #endregion
@@ -15,7 +18,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             CodeGenerationSpec iBeginWfsCode, 
             CodeGenerationSpec iWfsCode, 
             CodeGenerationSpec wfsBaseCode, 
-            CodeGenerationSpec wfsCode) {
+            CodeGenerationSpec wfsCode,
+            [CanBeNull] IEnumerable<CodeGenerationSpec> toCodeSpecs) {
 
             TaskDefinition = taskDefinition ?? throw new ArgumentNullException(nameof(taskDefinition));
             PathProvider   = pathProvider   ?? throw new ArgumentNullException(nameof(pathProvider));
@@ -23,6 +27,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             IWfsCode       = iWfsCode       ?? throw new ArgumentNullException(nameof(iWfsCode));
             WfsBaseCode    = wfsBaseCode    ?? throw new ArgumentNullException(nameof(wfsBaseCode));
             WfsCode        = wfsCode        ?? throw new ArgumentNullException(nameof(wfsCode));
+            ToCodeSpecs    = (toCodeSpecs ?? Enumerable.Empty<CodeGenerationSpec>()).ToImmutableList();
         }
 
         // ReSharper disable InconsistentNaming
@@ -38,6 +43,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public CodeGenerationSpec WfsBaseCode { get; }
         [NotNull]
         public CodeGenerationSpec WfsCode { get; }
+        [NotNull]
+        public ImmutableList<CodeGenerationSpec> ToCodeSpecs { get; }
         // ReSharper restore InconsistentNaming
     }
 }

@@ -1,6 +1,8 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Antlr4.StringTemplate;
 using Pharmatechnik.Nav.Language.CodeGen.Templates;
 
@@ -28,15 +30,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var codeGenerationResult = new CodeGenerationResult(
                 taskDefinition: codeModelResult.TaskDefinition,
                 pathProvider  : codeModelResult.PathProvider,
-                iBeginWfsCode : GenerateIBeginWfsCode(codeModelResult.IBeginWfsCodeModel, context),
-                iWfsCode      : GenerateIWfsCode(codeModelResult.IWfsCodeModel          , context),
-                wfsBaseCode   : GenerateWfsBaseCode(codeModelResult.WfsBaseCodeModel    , context),
-                wfsCode       : GenerateWfsCode(codeModelResult.WfsBaseCodeModel        , context));
+                iBeginWfsCode : GenerateIBeginWfsCodeSpec(codeModelResult.IBeginWfsCodeModel, context),
+                iWfsCode      : GenerateIWfsCodeSpec(codeModelResult.IWfsCodeModel          , context),
+                wfsBaseCode   : GenerateWfsBaseCodeSpec(codeModelResult.WfsBaseCodeModel    , context),
+                wfsCode       : GenerateWfsCodeSpec(codeModelResult.WfsBaseCodeModel        , context),
+                toCodeSpecs   : GenerateToCodeSpecs(codeModelResult.TOCodeModels            , context));
 
             return codeGenerationResult;
         }
         
-        static CodeGenerationSpec GenerateIBeginWfsCode(IBeginWfsCodeModel model, CodeGeneratorContext context) {
+        static CodeGenerationSpec GenerateIBeginWfsCodeSpec(IBeginWfsCodeModel model, CodeGeneratorContext context) {
 
             var template = LoadTemplate(Resources.IBeginWfsTemplate, model, context);                        
             var content  = template.Render();
@@ -44,7 +47,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static CodeGenerationSpec GenerateIWfsCode(IWfsCodeModel model, CodeGeneratorContext context) {
+        static CodeGenerationSpec GenerateIWfsCodeSpec(IWfsCodeModel model, CodeGeneratorContext context) {
 
             var template = LoadTemplate(Resources.IWfsTemplate, model, context);            
             var content = template.Render();
@@ -52,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static CodeGenerationSpec GenerateWfsBaseCode(WfsBaseCodeModel model, CodeGeneratorContext context) {
+        static CodeGenerationSpec GenerateWfsBaseCodeSpec(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
             var template = LoadTemplate(Resources.WfsBaseTemplate, model, context);
             var content = template.Render();
@@ -60,10 +63,22 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static CodeGenerationSpec GenerateWfsCode(WfsBaseCodeModel model, CodeGeneratorContext context) {
+        static CodeGenerationSpec GenerateWfsCodeSpec(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
             var template = LoadTemplate(Resources.WFSOneShotTemplate, model, context);            
             var content  = template.Render();
+
+            return new CodeGenerationSpec(content, model.FilePath);
+        }
+
+        static IEnumerable<CodeGenerationSpec> GenerateToCodeSpecs(IEnumerable<TOCodeModel> models, CodeGeneratorContext context) {
+            return models.Select(model => GenerateToCodeSpec(model, context));
+        }
+
+        static CodeGenerationSpec GenerateToCodeSpec(TOCodeModel model, CodeGeneratorContext context) {
+
+            var template = LoadTemplate(Resources.TOTemplate, model, context);
+            var content = template.Render();
 
             return new CodeGenerationSpec(content, model.FilePath);
         }

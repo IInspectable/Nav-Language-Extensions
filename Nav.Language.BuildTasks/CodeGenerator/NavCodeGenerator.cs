@@ -13,6 +13,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
     public class NavCodeGenerator: Task {
 
         public bool Force { get; set; }
+        public bool GenerateToClasses { get; set; }
 
         public ITaskItem[] Files { get; set; }
 
@@ -22,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 return true;
             }
 
-            var options  = new GenerationOptions(force: Force);
+            var options  = new GenerationOptions(force: Force, generateToClasses: GenerateToClasses);
             var logger   = new TaskLogger(this);
             var pipeline = new NavCodeGeneratorPipeline(options, logger);
             var files    = Files.Select(FileSpec.FromTaskItem);

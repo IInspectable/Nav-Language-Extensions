@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Collections.Immutable;
 using JetBrains.Annotations;
@@ -35,12 +36,19 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         CodeModelResult Generate(ITaskDefinitionSymbol taskDefinition) {            
             var pathProvider    = PathProviderFactory.CreatePathProvider(taskDefinition);
+
+            IEnumerable<TOCodeModel> toCodeModels = null;
+            if(Options.GenerateTOClasses) {
+                toCodeModels = TOCodeModel.FromTaskDefinition(taskDefinition, pathProvider);
+            }
+            
             var codeModelResult = new CodeModelResult(
                 taskDefinition   : taskDefinition,
                 pathProvider     : pathProvider,
                 beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
                 wfsCodeModel     : IWfsCodeModel.FromTaskDefinition(taskDefinition     , pathProvider),
-                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition  , pathProvider)
+                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition  , pathProvider),
+                toCodeModels     : toCodeModels
             );
            
             return codeModelResult;
