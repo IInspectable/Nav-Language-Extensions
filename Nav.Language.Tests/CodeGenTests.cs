@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System.IO;
+using System.Text;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -13,9 +14,12 @@ using Pharmatechnik.Nav.Language.CodeGen;
 
 using NUnit.Framework;
 
-using Diagnostic         = Microsoft.CodeAnalysis.Diagnostic;
-using SyntaxTree         = Microsoft.CodeAnalysis.SyntaxTree;
-using DiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
+using RoslynDiagnostic         = Microsoft.CodeAnalysis.Diagnostic;
+using RoslynSyntaxTree         = Microsoft.CodeAnalysis.SyntaxTree;
+using RoslynDiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
+
+using Diagnostic               = Pharmatechnik.Nav.Language.Diagnostic;
+using DiagnosticSeverity       = Pharmatechnik.Nav.Language.DiagnosticSeverity;
 
 #endregion
 
@@ -44,39 +48,47 @@ namespace Nav.Language.Tests {
             Assert.That(codeGenResult.WfsBaseCode  , Is.Not.Empty);
             Assert.That(codeGenResult.WfsCode      , Is.Not.Empty);
         }
-        
-        public static TestCase[] CompileTestCases => new[] {
-            
-            new TestCase {
-                Description = "TaskA should be compilable",
-                NavFiles = {
-                    new TestCaseFile {FilePath = MkFilename("TaskA.nav"), Content = Resources.TaskANav}
+
+        public static TestCaseData[] CompileTestCases = {
+
+            new TestCaseData(
+                new TestCase {
+                    NavFiles = {
+                        new TestCaseFile {FilePath = MkFilename("TaskA.nav"), Content = Resources.TaskANav}
+                    }
                 }
+            ) {
+                TestName = "TaskA should be compilable"
             },
-            new TestCase {
-                Description = "TaskB should be compilable",
+            new TestCaseData(new TestCase {
                 NavFiles = {
                     new TestCaseFile {FilePath = MkFilename("TaskB.nav"), Content = Resources.TaskBNav}
                 }
+            }){
+                TestName = "TaskB should be compilable"
             },
-            new TestCase {
-                Description = "TaskA and TaskB should be compilable at the same time",
+            new TestCaseData(new TestCase {
                 NavFiles = {
                     new TestCaseFile {FilePath = MkFilename("TaskA.nav"), Content = Resources.TaskANav},
                     new TestCaseFile {FilePath = MkFilename("TaskB.nav"), Content = Resources.TaskBNav}
                 }
-            }
+            }){
+                TestName = "TaskA and TaskB should be compilable at the same time"
+            },
         };
 
         [Test, TestCaseSource(nameof(CompileTestCases))]
         public void SimpleCodegenCompileTest(TestCase testCase) {
 
-            var syntaxTrees = new List<SyntaxTree>();
+            var syntaxTrees = new List<RoslynSyntaxTree>();
 
             foreach (var file in testCase.NavFiles) {
 
                 var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(file.Content, filePath: file.FilePath);
+                AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics);
+
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
+                AssertNoDiagnosticErrors(codeGenerationUnit.Diagnostics);
 
                 var options = GenerationOptions.Default;
                 var modelGenerator = new CodeModelGenerator(options);
@@ -90,16 +102,16 @@ namespace Nav.Language.Tests {
                     var codeGenResult = codeGenerator.Generate(codeModelResult);
 
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.IBeginWfsCode, path: codeGenResult.PathProvider.IBeginWfsFileName));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.IWfsCode, path: codeGenResult.PathProvider.IWfsFileName));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.WfsBaseCode, path: codeGenResult.PathProvider.WfsBaseFileName));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.WfsCode, path: codeGenResult.PathProvider.WfsFileName));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.IWfsCode     , path: codeGenResult.PathProvider.IWfsFileName));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.WfsBaseCode  , path: codeGenResult.PathProvider.WfsBaseFileName));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenResult.WfsCode      , path: codeGenResult.PathProvider.WfsFileName));
                 }                
             }
 
             syntaxTrees.Add(GetFrameworkStubCode());
 
             foreach (var syntaxTree in syntaxTrees) {
-                AssertDiagnosticErrors(syntaxTree.GetDiagnostics());
+                AssertNoDiagnosticErrors(syntaxTree.GetDiagnostics());
             }     
             
             string assemblyName = Path.GetRandomFileName();
@@ -118,20 +130,39 @@ namespace Nav.Language.Tests {
                 EmitResult result = compilation.Emit(ms);
 
                 if (!result.Success) {
-                    AssertDiagnosticErrors(result.Diagnostics);
+                    AssertNoDiagnosticErrors(result.Diagnostics);
                 }
             }
         }
         
-        SyntaxTree GetFrameworkStubCode() {
+        RoslynSyntaxTree GetFrameworkStubCode() {
             return CSharpSyntaxTree.ParseText(Resources.FrameworkStubsCode, path: MkFilename("FrameworkStubCode.cs"));
         }
 
-        void AssertDiagnosticErrors(IEnumerable<Diagnostic> diagnostics) {
-            var errors = diagnostics.Where(d => d.IsWarningAsError || d.Severity == DiagnosticSeverity.Error).ToList();
-            Assert.That(errors.Any(), Is.False, errors.Aggregate(
-                "", 
-                (s, d)=> s+= $"{d.Id}: {d.Location} {d.GetMessage()}\r\n"));
+        void AssertNoDiagnosticErrors(IEnumerable<RoslynDiagnostic> diagnostics) {
+            var errors = diagnostics.Where(d => d.IsWarningAsError || d.Severity == RoslynDiagnosticSeverity.Error).ToList();
+            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors));
+        }
+
+        string FormatDiagnostics(IEnumerable<RoslynDiagnostic> diagnostics) {
+            return diagnostics.Aggregate(new StringBuilder(), (sb, d) => sb.AppendLine(FormatDiagnostic(d)), sb => sb.ToString());
+        }
+
+        static string FormatDiagnostic(RoslynDiagnostic diagnostic) {
+            return $"{diagnostic.Id}: {diagnostic.Location} {diagnostic.GetMessage()}";
+        }
+
+        void AssertNoDiagnosticErrors(IEnumerable<Diagnostic> diagnostics) {
+            var errors = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
+            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors));
+        }
+
+        string FormatDiagnostics(IEnumerable<Diagnostic> diagnostics) {
+            return diagnostics.Aggregate(new StringBuilder(), (sb, d) => sb.AppendLine(FormatDiagnostic(d)), sb => sb.ToString());
+        }
+
+        static string FormatDiagnostic(Diagnostic diagnostic) {
+            return $"{diagnostic.Descriptor.Id}: {diagnostic.Location} {diagnostic.Message}";
         }
 
         static string MkFilename(string fileName) {
@@ -143,7 +174,6 @@ namespace Nav.Language.Tests {
             public string FilePath { get; set; }
         }
         public class TestCase {
-            public string Description { get; set; }
             public List<TestCaseFile> NavFiles { get; } = new List<TestCaseFile>();
         }
     }  
