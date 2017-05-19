@@ -16,13 +16,7 @@ namespace <model.Namespace> {
         <endif>
         public <model.ClassName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS) {}
 
-        <if(model.TaskBegins)>
-        public <model.ClassName>(
-            <writeParameterList(model.TaskBegins)>) {
-        <else>
-        public <model.ClassName>() {
-        <endif>
-
+        public <model.ClassName>(<writeParameterList(model.TaskBegins)>) {
             <writeFieldInits(model.TaskBegins)>
         }
 
@@ -34,7 +28,7 @@ namespace <model.Namespace> {
 >>
 
 writeParameterList(parameters) ::=<<
-<parameters:writeParameter(); separator=",\r\n">
+<parameters:writeParameter(); anchor, separator=",\r\n">
 >>
 
 writeParameter(parameter) ::=<<
