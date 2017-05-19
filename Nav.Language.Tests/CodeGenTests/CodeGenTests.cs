@@ -16,7 +16,6 @@ using NUnit.Framework;
 using Diagnostic         = Microsoft.CodeAnalysis.Diagnostic;
 using SyntaxTree         = Microsoft.CodeAnalysis.SyntaxTree;
 using DiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
-using Resources          = Nav.Language.Tests.CodeGenTests.Data.Resources;
 
 #endregion
 

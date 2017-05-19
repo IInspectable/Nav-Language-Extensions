@@ -101,8 +101,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeGenTests\CodeGenTests.cs" />
-    <EmbeddedResource Include="CodeGenTests\Data\FrameworkStubs.cs" />
-    <Compile Include="CodeGenTests\Data\Resources.cs" />
+    <EmbeddedResource Include="Resources\FrameworkStubs.cs" />
+    <Compile Include="Resources\Resources.cs" />
     <Compile Include="DescendantNodesTests.cs" />
     <Compile Include="ExtentTests.cs" />
     <Compile Include="Generated Tests\TokenPropertyNameTests.cs">
@@ -112,11 +112,6 @@
     </Compile>
     <Compile Include="LocationTests.cs" />
     <Compile Include="PerformanceTests.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="CodeSanityTests.cs" />
     <Compile Include="Generated Tests\ParseEmptyStringTests.cs">
       <DependentUpon>ParseEmptyStringTests.tt</DependentUpon>
@@ -155,24 +150,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\AllRules.txt" />
+    <EmbeddedResource Include="Resources\AllRules.nav" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\LargeNav.txt" />
+    <EmbeddedResource Include="Resources\LargeNav.nav" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\NavWithError.txt" />
+    <EmbeddedResource Include="Resources\NavWithError.nav" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Generated Tests\TokenPropertyNameTests.tt">
@@ -197,7 +185,10 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CodeGenTests\Data\TaskA.nav" />
+    <EmbeddedResource Include="Resources\TaskA.nav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CodeGenTests\Data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

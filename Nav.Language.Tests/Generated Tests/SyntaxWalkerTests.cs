@@ -6,7 +6,6 @@
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 using System.Collections.Generic;
-using Nav.Language.Tests.Properties;
 
 namespace Nav.Language.Tests {
 

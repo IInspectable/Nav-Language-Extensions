@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using Nav.Language.Tests.Properties;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 

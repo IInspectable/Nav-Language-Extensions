@@ -1,10 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using Nav.Language.Tests.Properties;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
-
 // ReSharper disable PossibleNullReferenceException
 
 namespace Nav.Language.Tests {

@@ -4,11 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Nav.Language.Tests.Properties;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.Generated;
-
 #endregion
 
 // ReSharper disable InconsistentNaming Ist bei den Tests unerheblich

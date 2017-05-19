@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Diagnostics;
 
-using Nav.Language.Tests.Properties;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 
