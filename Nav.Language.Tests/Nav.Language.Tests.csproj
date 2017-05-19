@@ -101,6 +101,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeGenTests\CodeGenTests.cs" />
+    <EmbeddedResource Include="CodeGenTests\Data\FrameworkStubs.cs" />
+    <Compile Include="CodeGenTests\Data\Resources.cs" />
     <Compile Include="DescendantNodesTests.cs" />
     <Compile Include="ExtentTests.cs" />
     <Compile Include="Generated Tests\TokenPropertyNameTests.cs">
@@ -193,6 +195,9 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CodeGenTests\Data\TaskA.nav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
