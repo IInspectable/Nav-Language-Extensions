@@ -84,35 +84,41 @@ namespace Nav.Language.Tests {
 
             foreach (var navFile in testCase.NavFiles) {
 
+                // 1. Syntaxbaum aus Nav-File erstellen
                 var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navFile.Content, filePath: navFile.FilePath);
                 AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics);
-
+                
+                // 2. Semantic Model erstellen aus Syntax erstellen
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
                 AssertNoDiagnosticErrors(codeGenerationUnit.Diagnostics);
 
                 var options = GenerationOptions.Default;
                 var modelGenerator = new CodeModelGenerator(options);
                 var codeGenerator = new CodeGenerator(options);
-
+                
+                // 3. CodeModels aus Semantic Model erstellen
                 var codeModelResults = modelGenerator.Generate(codeGenerationUnit);
                 
                 foreach (var codeModelResult in codeModelResults) {
 
+                    // 4. C# Code aus CodeModels generieren
                     var codeGenerationResult = codeGenerator.Generate(codeModelResult);
 
+                    // 5. C#-Syntaxbäume des generierten Codes mittels Roslyn erstellen
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IBeginWfsCode, path: codeGenerationResult.PathProvider.IBeginWfsFileName));
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCode     , path: codeGenerationResult.PathProvider.IWfsFileName));
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCode  , path: codeGenerationResult.PathProvider.WfsBaseFileName));
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsCode      , path: codeGenerationResult.PathProvider.WfsFileName));
                 }                
             }
-
+            // Pseudo Framework Code hinzufügen
             syntaxTrees.Add(GetFrameworkStubCode());
 
             foreach (var syntaxTree in syntaxTrees) {
                 AssertNoDiagnosticErrors(syntaxTree.GetDiagnostics());
-            }     
-            
+            }
+
+            // 6. C# Compilation In-Memmory erstellen
             string assemblyName = Path.GetRandomFileName();
             MetadataReference[] references = {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
