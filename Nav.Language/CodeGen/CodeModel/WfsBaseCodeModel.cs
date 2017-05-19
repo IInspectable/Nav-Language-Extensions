@@ -11,27 +11,23 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public sealed class WfsBaseCodeModel : CodeModel {
+    public sealed class WfsBaseCodeModel : FileGenerationCodeModel {
 
         WfsBaseCodeModel(
             TaskCodeModel taskCodeModel,
             ImmutableList<string> usingNamespaces,
-            string syntaxFileName,
+            string syntaxFilePath,
             string baseClassName, 
             ParameterCodeModel taskResult,
-            ImmutableList<ParameterCodeModel> taskBegins) {
-            Task            = taskCodeModel   ?? throw new ArgumentNullException(nameof(taskCodeModel));
+            ImmutableList<ParameterCodeModel> taskBegins, 
+            string filePath) : base(syntaxFilePath, taskCodeModel, filePath) {
+            
             UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            SyntaxFileName  = syntaxFileName  ?? String.Empty;
             BaseClassName   = baseClassName   ?? throw new ArgumentNullException(nameof(baseClassName));
             TaskResult      = taskResult      ?? throw new ArgumentNullException(nameof(taskResult));
             TaskBegins      = taskBegins      ?? throw new ArgumentNullException(nameof(taskBegins));
         }
 
-        [NotNull]
-        public TaskCodeModel Task { get; }
-        [NotNull]
-        public string SyntaxFileName { get; }
         [NotNull]
         public ImmutableList<string> UsingNamespaces { get; }
 
@@ -66,10 +62,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new WfsBaseCodeModel(
                 taskCodeModel    : taskCodeModel,
                 usingNamespaces  : GetUsingNamespaces(taskDefinition, taskCodeModel),
-                syntaxFileName   : syntaxFileName,
+                syntaxFilePath   : syntaxFileName,
                 baseClassName    : GetBaseClassName(taskDefinitionSyntax),
                 taskResult       : GetTaskResult(taskDefinitionSyntax),
-                taskBegins       : taskBegins);
+                taskBegins       : taskBegins,
+                filePath         : pathProvider.WfsBaseFileName
+                );
         }
 
         private static ImmutableList<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {

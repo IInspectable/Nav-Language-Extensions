@@ -5,7 +5,7 @@ Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.Namespace> {
-    <writeTaskAnnotation(model.SyntaxFileName, model.Task.TaskName)>
+    <writeTaskAnnotation(model.SyntaxFilePath, model.Task.TaskName)>
     public abstract partial class <model.ClassName>: <model.BaseClassName> {
         <if(model.TaskBegins)>
 

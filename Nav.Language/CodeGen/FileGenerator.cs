@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var results = new List<FileGeneratorResult> {
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode,      OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.IWfsFileName),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCode,      OverwriteCondition.ContentChanged, codeGenerationResult.IWfsCode),
                 WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCode, OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.IBeginWfsFileName),
                 WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCode,   OverwriteCondition.ContentChanged, codeGenerationResult.PathProvider.WfsBaseFileName),
                 WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCode,       OverwriteCondition.Never         , codeGenerationResult.PathProvider.WfsFileName, alternateFileName: codeGenerationResult.PathProvider.OldWfsFileName)

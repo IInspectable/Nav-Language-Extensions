@@ -13,11 +13,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     // TODO Gemeinsames TaskBased CodeModel Einführen. Gemeinsame Eigenschaften : TaskName, SyntaxFileName?
     // ReSharper disable once InconsistentNaming
-    public sealed class IBeginWfsCodeModel : CodeModel {
+    public sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
 
-        IBeginWfsCodeModel(string syntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits, ImmutableList<string> codeDeclarations) {
-            SyntaxFileName    = syntaxFileName    ?? String.Empty;
-            Task              = taskCodeModel     ?? throw new ArgumentNullException(nameof(taskCodeModel));
+        IBeginWfsCodeModel(string syntaxFilePath, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits, ImmutableList<string> codeDeclarations, string filePath) 
+            :base(syntaxFilePath, taskCodeModel, filePath) {
+
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskName          = taskName          ?? throw new ArgumentNullException(nameof(usingNamespaces));
             BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(usingNamespaces));
@@ -58,19 +58,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var syntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsFileName, pathProvider.SyntaxFileName);
             
             return new IBeginWfsCodeModel(
-                syntaxFileName   : syntaxFileName,
+                syntaxFilePath   : syntaxFileName,
                 taskCodeModel    : taskCodeModel,
                 usingNamespaces  : namespaces.ToSortedNamespaces(),
                 taskName         : taskDefinition.Name ?? string.Empty,
                 baseInterfaceName: taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
                 taskInits        : taskInits.ToImmutableList(),
-                codeDeclarations : codeDeclarations.ToImmutableList());
+                codeDeclarations : codeDeclarations.ToImmutableList(),
+                filePath         : pathProvider.IBeginWfsFileName);
         }
-
-        [NotNull]
-        public TaskCodeModel Task { get; }
-        [NotNull]
-        public string SyntaxFileName { get; }
+    
         [NotNull]
         public ImmutableList<string> UsingNamespaces { get; }
 
