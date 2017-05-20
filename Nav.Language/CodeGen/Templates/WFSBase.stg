@@ -4,9 +4,9 @@ Begin(model, context) ::=<<
 <writeFileHeader(context)>
 <writeUsingDirectives(model.UsingNamespaces)>
 
-namespace <model.Namespace> {
+namespace <model.WflNamespace> {
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
-    public abstract partial class <model.ClassName>: <model.BaseClassName> {
+    public abstract partial class <model.WfsBaseTypeName>: <model.WfsBaseBaseTypeName> {
         <if(model.TaskBegins)>
 
         <model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
@@ -14,14 +14,41 @@ namespace <model.Namespace> {
         <else>
 
         <endif>
-        public <model.ClassName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS) {}
+        public <model.WfsBaseTypeName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS) {}
 
-        public <model.ClassName>(<writeParameterList(model.TaskBegins)>) {
+        public <model.WfsBaseTypeName>(<writeParameterList(model.TaskBegins)>) {
             <writeFieldInits(model.TaskBegins)>
         }
 
+        <writeBeginMethodDeclarationList(model.TaskInits)>
+        
+        <writeCallWrapperDeclarationList()>
+        
+        <writeTriggerDeclarationList()>
+
         protected INavCommandBody TaskResult(<model.TaskResult.ParameterType> <model.TaskResult.ParameterName>) {
             return InternalTaskResult(<model.TaskResult.ParameterName>);
+        }
+
+        static string OfTypeText(object value) {
+            return value == null ? "null" : $"of type {value.GetType().FullName}";
+        }
+    }
+
+    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
+    public abstract partial class <model.WfsTypeName>: <model.WfsBaseTypeName> {
+        <if(model.TaskParameter)>
+
+        <model.TaskParameter:writeFieldDeclaration(); separator="\r\n">
+
+        <else>
+
+        <endif>
+        public <model.WfsTypeName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS): base(clientSideWFS) {}
+
+        public <model.WfsTypeName>(<writeParameterList([model.TaskBegins, model.TaskParameter])>)
+            :base(<writeParameterExpressions(model.TaskBegins)>) {
+            <writeFieldInits(model.TaskParameter)>
         }
     }
 }
@@ -45,4 +72,41 @@ writeFieldInits(parameters) ::=<<
 
 writeFieldInit(parameter) ::=<<
 _<parameter.ParameterName> = <parameter.ParameterName>;
+>>
+
+writeParameterExpressions(parameters) ::=<<
+<parameters:writeParameterExpression(); anchor, separator=",\r\n">
+>>
+
+writeParameterExpressionsInline(parameters) ::=<<
+<parameters:writeParameterExpression(); anchor, separator=", ">
+>>
+
+writeParameterExpression(parameter) ::=<<
+<parameter.ParameterName>
+>>
+
+writeBeginMethodDeclarationList(taskInits) ::=<<
+<taskInits:writeBeginMethodDeclaration(); separator="\r\n">
+>>
+
+writeBeginMethodDeclaration(taskInit) ::=<<
+protected abstract INavCommandBody BeginLogic(<writeParameterList(taskInit.Parameter)> /* TODO reachable calls*/);
+
+public virtual IINIT_TASK <taskInit.BeginMethodName>(<writeParameterList(taskInit.Parameter)>) {
+    INavCommandBody body = BeginLogic(<writeParameterExpressions(taskInit.Parameter)> /*TODO reachable calls*/);
+    // TODO Generate Code
+    if(body is CANCEL) {
+        return (CANCEL)body;
+    }
+    throw new System.InvalidOperationException($"BeginLogic(<writeParameterExpressionsInline(taskInit.Parameter)> /* TODO reachable calls*/) returned unexpected result '{OfTypeText(body)}'.");
+}
+>>
+
+writeCallWrapperDeclarationList() ::=<<
+/* TODO writeCallWrapperDeclarationList */
+>>
+
+writeTriggerDeclarationList() ::=<<
+/* TODO writeTriggerDeclarationList */
 >>

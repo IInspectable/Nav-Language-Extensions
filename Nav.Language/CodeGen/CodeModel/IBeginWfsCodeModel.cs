@@ -14,7 +14,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     public sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
 
-        IBeginWfsCodeModel(string relativeSyntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits, ImmutableList<string> codeDeclarations, string filePath) 
+        IBeginWfsCodeModel(TaskCodeModel taskCodeModel, 
+                           string relativeSyntaxFileName, 
+                           string filePath, 
+                           ImmutableList<string> usingNamespaces, 
+                           string taskName, 
+                           string baseInterfaceName, 
+                           ImmutableList<TaskInitCodeModel> taskInits, 
+                           ImmutableList<string> codeDeclarations) 
             :base(taskCodeModel, relativeSyntaxFileName, filePath) {
 
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
@@ -57,14 +64,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsFileName, pathProvider.SyntaxFileName);
             
             return new IBeginWfsCodeModel(
-                relativeSyntaxFileName: relativeSyntaxFileName,
                 taskCodeModel         : taskCodeModel,
+                relativeSyntaxFileName: relativeSyntaxFileName,
+                filePath              : pathProvider.IBeginWfsFileName,
                 usingNamespaces       : namespaces.ToSortedNamespaces(),
                 taskName              : taskDefinition.Name ?? string.Empty,
                 baseInterfaceName     : taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
                 taskInits             : taskInits.ToImmutableList(),
-                codeDeclarations      : codeDeclarations.ToImmutableList(),
-                filePath              : pathProvider.IBeginWfsFileName);
+                codeDeclarations      : codeDeclarations.ToImmutableList());
         }
     
         [NotNull]

@@ -3,7 +3,7 @@
 Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 
-namespace <model.Namespace> {	
+namespace <model.WflNamespace> {	
 	// TODO  WFS OneShot
 }
 >>

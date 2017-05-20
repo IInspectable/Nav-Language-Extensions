@@ -5,44 +5,42 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-using JetBrains.Annotations;
-
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
+    // TODO separates Model für OnShot Datei (Zwecks Dateinamen)
     public sealed class WfsBaseCodeModel : FileGenerationCodeModel {
 
-        WfsBaseCodeModel(
-            TaskCodeModel taskCodeModel,
-            ImmutableList<string> usingNamespaces,
-            string relativeSyntaxFileName,
-            string baseClassName, 
-            ParameterCodeModel taskResult,
-            ImmutableList<ParameterCodeModel> taskBegins, 
-            string filePath) : base(taskCodeModel, relativeSyntaxFileName, filePath) {
+        WfsBaseCodeModel(TaskCodeModel taskCodeModel, 
+                         string relativeSyntaxFileName, 
+                         string filePath, 
+                         ImmutableList<string> usingNamespaces, 
+                         ParameterCodeModel taskResult, 
+                         ImmutableList<ParameterCodeModel> taskBegins, 
+                         ImmutableList<ParameterCodeModel> taskParameter,
+                         ImmutableList<TaskInitCodeModel> taskInits) 
+            : base(taskCodeModel, relativeSyntaxFileName, filePath) {
             
             UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            BaseClassName   = baseClassName   ?? throw new ArgumentNullException(nameof(baseClassName));
             TaskResult      = taskResult      ?? throw new ArgumentNullException(nameof(taskResult));
             TaskBegins      = taskBegins      ?? throw new ArgumentNullException(nameof(taskBegins));
+            TaskParameter   = taskParameter   ?? throw new ArgumentNullException(nameof(taskParameter));
+            TaskInits       = taskInits       ?? throw new ArgumentNullException(nameof(taskInits));
         }
 
-        [NotNull]
-        public ImmutableList<string> UsingNamespaces { get; }
+        
 
-        [NotNull]
-        public string Namespace => Task.WflNamespace;
+        public string WflNamespace         => Task.WflNamespace;
+        public string WfsBaseTypeName      => Task.WfsBaseTypeName;
+        public string WfsTypeName          => Task.WfsTypeName;
+        public string WfsBaseBaseTypeName  => Task.WfsBaseBaseTypeName;
 
-        [NotNull]
-        public string ClassName => Task.WfsBaseTypeName;
-
-        [NotNull]
-        public string BaseClassName { get; }
-        [NotNull]
         public ParameterCodeModel TaskResult { get; }
-        [NotNull]
+        public ImmutableList<string> UsingNamespaces { get; }       
         public ImmutableList<ParameterCodeModel> TaskBegins { get; }
+        public ImmutableList<ParameterCodeModel> TaskParameter { get; }
+        public ImmutableList<TaskInitCodeModel> TaskInits { get; }
 
         public static WfsBaseCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
 
@@ -52,25 +50,35 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var taskDefinitionSyntax = taskDefinition.Syntax;
             var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
+            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
 
             // TaskBegins
             var usedTaskDeclarations = GetUsedTaskDeclarations(taskDefinition);
             var taskBegins = ToParameter(usedTaskDeclarations);
+            
+            // Task Parameter
+            var code = GetTaskParameter(taskDefinition);
+            var taskParameter = ToParameter(code);
 
-            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
+            // Inits
+            var taskInits = new List<TaskInitCodeModel>();
+            foreach (var initNode in taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
+                var taskInit = TaskInitCodeModel.FromInitNode(initNode, taskCodeModel);
+                taskInits.Add(taskInit);
+            }
 
             return new WfsBaseCodeModel(
                 taskCodeModel         : taskCodeModel,
-                usingNamespaces       : GetUsingNamespaces(taskDefinition, taskCodeModel),
                 relativeSyntaxFileName: relativeSyntaxFileName,
-                baseClassName         : GetBaseClassName(taskDefinitionSyntax),
+                filePath              : pathProvider.WfsBaseFileName,
+                usingNamespaces       : GetUsingNamespaces(taskDefinition, taskCodeModel),
                 taskResult            : GetTaskResult(taskDefinitionSyntax),
                 taskBegins            : taskBegins,
-                filePath              : pathProvider.WfsBaseFileName
-                );
+                taskParameter         : taskParameter,
+                taskInits             : taskInits.ToImmutableList());
         }
 
-        private static ImmutableList<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
+        static ImmutableList<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
 
             var namespaces = new List<string>();
 
@@ -83,7 +91,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return namespaces.ToSortedNamespaces();
         }
 
-        private static ParameterCodeModel GetTaskResult(TaskDefinitionSyntax taskDefinitionSyntax) {
+        static ParameterCodeModel GetTaskResult(TaskDefinitionSyntax taskDefinitionSyntax) {
 
             CodeResultDeclarationSyntax codeResultDeclarationSyntax = taskDefinitionSyntax.CodeResultDeclaration;
 
@@ -104,12 +112,28 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return taskResult;
         }
 
-        static string GetBaseClassName(TaskDefinitionSyntax taskDefinitionSyntax) {         
-            var baseClassName = taskDefinitionSyntax.CodeBaseDeclaration?.WfsBaseType?.ToString() ?? CodeGenFacts.DefaultWfsBaseClass;
-            return baseClassName;
+        static IEnumerable<ParameterSyntax> GetTaskParameter(ITaskDefinitionSymbol taskDefinition) {
+            var paramList = taskDefinition.Syntax.CodeParamsDeclaration?.ParameterList;
+            if (paramList == null) {
+                yield break;
+            }
+
+            foreach (var p in paramList) {
+                yield return p;
+            }
+        }
+
+        static ImmutableList<ParameterCodeModel> ToParameter(IEnumerable<ParameterSyntax> parameters) {
+            // TODO Vermutlich muss nach nur nach Name sortiert werden
+            return parameters.Select(ToParameter).OrderBy(p => p.ParameterType.Length + p.ParameterName.Length).ToImmutableList();
+        }
+
+        static ParameterCodeModel ToParameter(ParameterSyntax parameter) {
+            return new ParameterCodeModel(parameterType: parameter.Type?.ToString(), parameterName: parameter.Identifier.ToString());
         }
 
         static ImmutableList<ParameterCodeModel> ToParameter(ImmutableList<ITaskDeclarationSymbol> taskDeclarations) {
+            // TODO Vermutlich muss nach nur nach Name sortiert werden
             return taskDeclarations.Select(ToParameter).OrderBy(p => p.ParameterType.Length+ p.ParameterName.Length).ToImmutableList();            
         }
 

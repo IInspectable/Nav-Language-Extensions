@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
 using System;
-using JetBrains.Annotations;
 
 #endregion
 
@@ -9,12 +8,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public sealed class TaskCodeModel: CodeModel {
         
-        TaskCodeModel(string taskName, string wflNamespace, string iwflNamespace, string wfsBaseTypeName, string wfsTypeName) {
-            TaskName        = taskName        ?? String.Empty;
-            WflNamespace    = wflNamespace    ?? String.Empty;
-            IwflNamespace   = iwflNamespace   ?? String.Empty;
-            WfsBaseTypeName = wfsBaseTypeName ?? String.Empty;
-            WfsTypeName     = wfsTypeName     ?? String.Empty;
+        TaskCodeModel(string taskName, string baseNamespace, string wfsBaseBaseClassName) {
+            TaskName             = taskName             ?? String.Empty;
+            BaseNamespace        = baseNamespace        ?? String.Empty;
+            WfsBaseBaseTypeName = wfsBaseBaseClassName ?? String.Empty;
         }
 
         public static TaskCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
@@ -23,30 +20,25 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(taskDefinition));
             }
 
-            var taskName      = taskDefinition.Name;
+            var taskName = taskDefinition.Name;
             var baseNamespace = (taskDefinition.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString() ?? String.Empty;
+            var wfsBaseBaseClassName = taskDefinition.Syntax.CodeBaseDeclaration?.WfsBaseType?.ToString() ?? CodeGenFacts.DefaultWfsBaseClass;
 
             return new TaskCodeModel(
-                taskName       : taskName,
-                wflNamespace   : $"{baseNamespace}.{CodeGenFacts.WflNamespaceSuffix}",
-                iwflNamespace  : $"{baseNamespace}.{CodeGenFacts.IwflNamespaceSuffix}",
-                wfsBaseTypeName: $"{taskName}{CodeGenFacts.WfsBaseClassSuffix}",
-                wfsTypeName    : $"{taskName}{CodeGenFacts.WfsClassSuffix}");
+                taskName     : taskName,
+                baseNamespace: baseNamespace,
+                wfsBaseBaseClassName: wfsBaseBaseClassName);
         }
 
-        [NotNull]
+        string BaseNamespace { get; }
+
         public string TaskName { get; }
-        [NotNull]
-        public string WflNamespace { get; }
-        [NotNull]
-        public string IwflNamespace { get; }
-        [NotNull]
-        public string WfsBaseTypeName { get; }
-        [NotNull]
-        public string WfsTypeName { get; }
-        [NotNull]
+        public string WfsBaseBaseTypeName { get; }
+        public string WflNamespace              => $"{BaseNamespace}.{CodeGenFacts.WflNamespaceSuffix}";
+        public string IwflNamespace             => $"{BaseNamespace}.{CodeGenFacts.IwflNamespaceSuffix}";        
+        public string WfsBaseTypeName           => $"{TaskName}{CodeGenFacts.WfsBaseClassSuffix}";
+        public string WfsTypeName               => $"{TaskName}{CodeGenFacts.WfsClassSuffix}";
         public string FullyQualifiedWfsName     => $"{WflNamespace}.{WfsTypeName}";
-        [NotNull]
         public string FullyQualifiedWfsBaseName => $"{WflNamespace}.{WfsBaseTypeName}";
     }
 }

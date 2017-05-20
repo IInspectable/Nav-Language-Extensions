@@ -31,6 +31,8 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
     public interface IINIT_TASK : INavCommand {
     }
 
+    public interface CANCEL: IINIT_TASK { }
+
     public interface INavCommandBody {
     }
 
