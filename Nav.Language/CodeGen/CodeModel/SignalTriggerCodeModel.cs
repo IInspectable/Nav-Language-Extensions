@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             TaskCodeModel          = taskCodeModel          ?? throw new ArgumentNullException(nameof(taskCodeModel));
             TriggerMethodName      = triggerMethodName      ?? throw new ArgumentNullException(nameof(triggerMethodName));
             TriggerLogicMethodName = triggerLogicMethodName ?? throw new ArgumentNullException(nameof(triggerLogicMethodName));
-            TOClassName            = toClassName            ?? throw new ArgumentNullException(nameof(triggerLogicMethodName));
+            TOClassName            = toClassName            ?? throw new ArgumentNullException(nameof(toClassName));
         }
 
         public static SignalTriggerCodeModel FromSignalTrigger(ISignalTriggerSymbol signalTriggerSymbol) {
@@ -45,6 +45,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public string TriggerLogicMethodName { get; }
         [NotNull]
+        // ReSharper disable once InconsistentNaming
         public string TOClassName { get; }
     }
 }

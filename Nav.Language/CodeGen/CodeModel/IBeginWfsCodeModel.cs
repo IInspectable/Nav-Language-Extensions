@@ -18,9 +18,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             :base(taskCodeModel, relativeSyntaxFileName, filePath) {
 
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            TaskName          = taskName          ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            TaskInits         = taskInits         ?? throw new ArgumentNullException(nameof(usingNamespaces));
+            TaskName          = taskName          ?? throw new ArgumentNullException(nameof(taskName));
+            BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(baseInterfaceName));
+            TaskInits         = taskInits         ?? throw new ArgumentNullException(nameof(taskInits));
             CodeDeclarations  = codeDeclarations  ?? throw new ArgumentNullException(nameof(codeDeclarations));
         }
 
