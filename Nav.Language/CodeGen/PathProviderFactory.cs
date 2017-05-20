@@ -11,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public static readonly PathProviderFactory Default = new PathProviderFactory();
 
         [NotNull]
-        public virtual PathProvider CreatePathProvider(ITaskDefinitionSymbol taskDefinition) {
+        public virtual IPathProvider CreatePathProvider(ITaskDefinitionSymbol taskDefinition) {
             return new PathProvider(taskDefinition);
         }
     }

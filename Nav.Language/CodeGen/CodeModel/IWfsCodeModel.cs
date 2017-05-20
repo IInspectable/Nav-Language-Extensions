@@ -32,7 +32,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public ImmutableList<SignalTriggerCodeModel> SignalTriggers { get; }
 
-        public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, PathProvider pathProvider) {
+        public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
 
             if (taskDefinition == null) {
                 throw new ArgumentNullException(nameof(taskDefinition));

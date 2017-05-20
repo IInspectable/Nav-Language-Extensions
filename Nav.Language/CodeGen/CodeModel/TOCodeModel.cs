@@ -32,7 +32,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public string Namespace => Task.IwflNamespace;
 
-        public static IEnumerable<TOCodeModel> FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, PathProvider pathProvider) {
+        public static IEnumerable<TOCodeModel> FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
 
             if (taskDefinition == null) {
                 throw new ArgumentNullException(nameof(taskDefinition));

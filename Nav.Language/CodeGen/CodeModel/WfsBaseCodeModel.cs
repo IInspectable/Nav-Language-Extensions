@@ -44,7 +44,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public ImmutableList<ParameterCodeModel> TaskBegins { get; }
 
-        public static WfsBaseCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, PathProvider pathProvider) {
+        public static WfsBaseCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
 
             if (taskDefinition == null) {
                 throw new ArgumentNullException(nameof(taskDefinition));

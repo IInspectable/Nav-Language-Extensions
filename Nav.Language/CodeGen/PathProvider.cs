@@ -9,7 +9,21 @@ using Pharmatechnik.Nav.Utilities.IO;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public class PathProvider {
+    public interface IPathProvider {
+        // ReSharper disable InconsistentNaming
+        string SyntaxFileName { get; }
+        string WfsBaseFileName   {get;}
+        string IWfsFileName      {get;}
+        string IBeginWfsFileName {get;}
+        string WfsFileName       {get;}
+        string OldWfsFileName { get; }
+        // ReSharper restore InconsistentNaming
+        string GetRelativePath(string fromPath, string toPath);
+        string GetToFileName(string toClassName);
+
+    }
+
+    class PathProvider: IPathProvider {
         
         public PathProvider(ITaskDefinitionSymbol taskDefinition) {
 

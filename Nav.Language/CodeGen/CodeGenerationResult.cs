@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public CodeGenerationResult(
             ITaskDefinitionSymbol taskDefinition, 
-            PathProvider pathProvider, 
+            IPathProvider pathProvider, 
             CodeGenerationSpec iBeginWfsCodeSpec, 
             CodeGenerationSpec iWfsCodeSpec, 
             CodeGenerationSpec wfsBaseCodeSpec, 
@@ -34,7 +34,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public ITaskDefinitionSymbol TaskDefinition { get; }
         [NotNull]
-        public PathProvider PathProvider { get; }
+        public IPathProvider PathProvider { get; }
         [NotNull]
         public CodeGenerationSpec IBeginWfsCodeSpec { get; }
         [NotNull]        
