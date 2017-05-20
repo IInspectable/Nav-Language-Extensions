@@ -7,16 +7,16 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <GenerateNavCodeForce Condition="'$(GenerateNavCodeForce)' == ''">false</GenerateNavCodeForce>
-    <GenerateNavCodeGenerateToClasses Condition="'$(GenerateNavCodeGenerateToClasses)' == ''">true</GenerateNavCodeGenerateToClasses>
-    <GenerateNavCodeUseSyntaxCache Condition="'$(GenerateNavCodeUseSyntaxCache)' == ''">false</GenerateNavCodeUseSyntaxCache>
+    <NavForce             Condition="'$(NavForce)'             == ''">false</NavForce>
+    <NavGenerateToClasses Condition="'$(NavGenerateToClasses)' == ''">true</NavGenerateToClasses>
+    <NavUseSyntaxCache    Condition="'$(NavUseSyntaxCache)'    == ''">false</NavUseSyntaxCache>
   </PropertyGroup>
 
   <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild">
-    <NavCodeGenerator Files="@(NavFile)"
-                      Force="$(GenerateNavCodeForce)"
-                      GenerateToClasses="$(GenerateNavCodeGenerateToClasses)"
-                      UseSyntaxCache="$(GenerateNavCodeUseSyntaxCache)" />
+    <NavCodeGenerator Files             = "@(NavFile)"
+                      Force             = "$(NavForce)"
+                      GenerateToClasses = "$(NavGenerateToClasses)"
+                      UseSyntaxCache    = "$(NavUseSyntaxCache)" />
   </Target>
   
 </Project>
