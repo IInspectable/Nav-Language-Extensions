@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
@@ -10,31 +11,53 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public class PathProvider {
         
-        public PathProvider(string syntaxFileName, string wfsBaseFileName, string iWfsFileName, string iBeginWfsFileName, string wfsFileName, string oldWfsFileName) {
-            SyntaxFileName    = syntaxFileName    ?? throw new ArgumentNullException(nameof(syntaxFileName));
-            WfsBaseFileName   = wfsBaseFileName   ?? throw new ArgumentNullException(nameof(wfsBaseFileName)); 
-            IWfsFileName      = iWfsFileName      ?? throw new ArgumentNullException(nameof(iWfsFileName));
-            IBeginWfsFileName = iBeginWfsFileName ?? throw new ArgumentNullException(nameof(iBeginWfsFileName));
-            WfsFileName       = wfsFileName       ?? throw new ArgumentNullException(nameof(wfsFileName));
-            OldWfsFileName    = oldWfsFileName    ?? throw new ArgumentNullException(nameof(oldWfsFileName));
+        public PathProvider(ITaskDefinitionSymbol taskDefinition) {
+
+            TaskDefinitionSyntax syntax = taskDefinition.Syntax;
+            var syntaxFile = syntax.SyntaxTree.FileInfo;
+            if (syntaxFile == null) {
+                throw new ArgumentException("No FileInfo available", nameof(taskDefinition));
+            }
+            
+            string generateToInfo = null;
+            var generateToToken = syntax.CodeGenerateToDeclaration?.StringLiteral ?? SyntaxToken.Missing;
+            if (!generateToToken.IsMissing) {
+                generateToInfo = generateToToken.ToString();
+            }
+
+            TaskName = taskDefinition.Name;
+            SyntaxFileName = syntaxFile.FullName;
+
+            IwflGeneratedDirectory = PathCombine(syntaxFile.DirectoryName, "IWFL", generateToInfo, "generated");
+            WflGeneratedDirectory  = PathCombine(syntaxFile.DirectoryName, "WFL" , generateToInfo, "generated");
+            WflDirectory           = PathCombine(syntaxFile.DirectoryName, "WFL" , generateToInfo);                     
         }
+
+        public string TaskName { get; set; }
+        public string WflDirectory { get; set; }
+        public string WflGeneratedDirectory { get; set; }
+        public string IwflGeneratedDirectory { get; }
 
         // ReSharper disable InconsistentNaming
         public string SyntaxFileName { get; }
-        public string WfsBaseFileName { get; }
-        public string IWfsFileName { get; }
-        public string IBeginWfsFileName { get; }
-        public string WfsFileName { get; }
-        public string OldWfsFileName { get; }
+        public string WfsBaseFileName   => PathCombine(WflGeneratedDirectory , TaskName + "WFSBase.generated.cs");
+        public string IWfsFileName      => PathCombine(IwflGeneratedDirectory, "I" + TaskName + "WFS.generated.cs");
+        public string IBeginWfsFileName => PathCombine(WflGeneratedDirectory , "IBegin" + TaskName + "WFS.generated.cs");
+        public string WfsFileName       => PathCombine(WflDirectory          , TaskName + "WFS" + ".cs");
+        public string OldWfsFileName    => PathCombine(WflDirectory          , "manual", TaskName + "WFS" + ".cs");
         // ReSharper restore InconsistentNaming
 
         public string GetRelativePath(string fromPath, string toPath) {
             return PathHelper.GetRelativePath(fromPath, toPath);
         }
 
-        // TODO PathProvider Logik alles hierhin, und Factory "dumm" machen
+        // TODO GetToFileName überprüfen
         public string GetToFileName(string toClassName) {
-           return Path.Combine(Path.GetDirectoryName(SyntaxFileName), toClassName+ ".cs");
+           return PathCombine(IwflGeneratedDirectory, toClassName + ".cs");
+        }
+
+        static string PathCombine(string first, params string[] parts) {
+            return parts.Where(part => !String.IsNullOrEmpty(part)).Aggregate(first, Path.Combine);
         }
     }
 }
