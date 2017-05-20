@@ -14,12 +14,14 @@ using Pharmatechnik.Nav.Language.CodeGen;
 
 using NUnit.Framework;
 
-using RoslynDiagnostic         = Microsoft.CodeAnalysis.Diagnostic;
-using RoslynSyntaxTree         = Microsoft.CodeAnalysis.SyntaxTree;
+using RoslynDiagnostic = Microsoft.CodeAnalysis.Diagnostic;
+using RoslynSyntaxTree = Microsoft.CodeAnalysis.SyntaxTree;
 using RoslynDiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
 
-using Diagnostic               = Pharmatechnik.Nav.Language.Diagnostic;
-using DiagnosticSeverity       = Pharmatechnik.Nav.Language.DiagnosticSeverity;
+using Diagnostic = Pharmatechnik.Nav.Language.Diagnostic;
+using DiagnosticSeverity = Pharmatechnik.Nav.Language.DiagnosticSeverity;
+using System.Threading;
+using SyntaxTree = Pharmatechnik.Nav.Language.SyntaxTree;
 
 #endregion
 
@@ -97,20 +99,19 @@ namespace Nav.Language.Tests {
         [Test, TestCaseSource(nameof(CompileTestCases))]
         public void CompileTest(TestCase testCase) {
 
-            var syntaxProvider = new CachedSyntaxProvider();
-
-            var syntaxTrees = new List<RoslynSyntaxTree>();
-            // Syntaxbäume cachen, damit Abghängigkeiten aufgelöst werden können - wir haben hier keine echten Dateien zur Hand!
+            var syntaxProvider = new TestSyntaxProvider();
+            // Dateien bekanntgeben - wir haben hier keine echten Dateien zur Hand!
             foreach(var navFile in testCase.NavFiles) {
-                var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navFile.Content, filePath: navFile.FilePath);
-                syntaxProvider.Cache(filePath: navFile.FilePath, syntaxTree: codeGenerationUnitSyntax.SyntaxTree);
-                AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics);
+                syntaxProvider.RegisterFile(navFile);
             }
 
+            var syntaxTrees = new List<RoslynSyntaxTree>();
             foreach (var navFile in testCase.NavFiles) {
 
                 // 1. Syntaxbaum aus Nav-File erstellen
-                var codeGenerationUnitSyntax =syntaxProvider.FromFile(navFile.FilePath)?.GetRoot() as CodeGenerationUnitSyntax;
+                var codeGenerationUnitSyntax = syntaxProvider.FromFile(navFile.FilePath)?.GetRoot() as CodeGenerationUnitSyntax;
+                Assert.That(codeGenerationUnitSyntax, Is.Not.Null, $"File '{navFile.FilePath}' not found");
+                AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics);
 
                 // 2. Semantic Model erstellen aus Syntax erstellen
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, syntaxProvider: syntaxProvider);
@@ -205,8 +206,31 @@ namespace Nav.Language.Tests {
             public string Content { get; set; }
             public string FilePath { get; set; }
         }
+
         public class TestCase {
             public List<TestCaseFile> NavFiles { get; } = new List<TestCaseFile>();
+        }
+
+        class TestSyntaxProvider : SyntaxProvider {
+
+            readonly Dictionary<string, string> _files;
+
+            public TestSyntaxProvider() {
+                _files = new Dictionary<string, string>();
+            }
+
+            public void RegisterFile(TestCaseFile file) {
+                _files[file.FilePath] = file.Content;
+            }
+
+            public override SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = default(CancellationToken)) {
+
+                if (!_files.TryGetValue(filePath, out var content)) {
+                    return null;
+                }
+
+                return SyntaxTree.ParseText(text: content, filePath: filePath);
+            }
         }
     }  
 }
