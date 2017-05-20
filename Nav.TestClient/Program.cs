@@ -3,7 +3,7 @@
 using System;
 using System.IO;
 using System.Linq;
-
+using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Utilities.IO;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.BuildTasks;
@@ -40,9 +40,11 @@ namespace TestClient {
 
         void Run(CommandLine cl) {
 
+            var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
+    
             var options  = new GenerationOptions(force: cl.Force, generateToClasses:cl.GenerateToClasses);
             var logger   = new ConsoleLogger();
-            var pipeline = new NavCodeGeneratorPipeline(options, logger);
+            var pipeline = new NavCodeGeneratorPipeline(options, logger, syntaxProviderFactory);
 
             var navFiles  = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);
             var fileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(cl.Directory, file), fileName: file));

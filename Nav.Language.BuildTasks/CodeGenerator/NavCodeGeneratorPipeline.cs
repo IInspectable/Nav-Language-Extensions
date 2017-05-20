@@ -1,7 +1,6 @@
 #region Using Directives
 
 using System;
-using System.IO;
 using System.Collections.Generic;
 
 using JetBrains.Annotations;
@@ -31,7 +30,6 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         [NotNull]
         public GenerationOptions Options { get; }
         
-
         public bool Run(IEnumerable<FileSpec> fileSpecs) {
 
             using(var logger         = new LoggerAdapter(_logger))
@@ -48,15 +46,14 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
                     statistic.UpdatePerFile();
 
-                    logger.LogProcessFileBegin(fileSpec);
-
-                    if (!File.Exists(fileSpec.FilePath)) {
-                        logger.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, fileSpec));
-                        continue;
-                    }
+                    logger.LogProcessFileBegin(fileSpec);        
                 
                     // 1. SyntaxTree
                     var syntaxTree = syntaxProvider.FromFile(fileSpec.FilePath);
+                    if(syntaxTree == null) {
+                        logger.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, fileSpec));
+                        continue;
+                    }
                     // 2. Semantic Model
                     var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax((CodeGenerationUnitSyntax)syntaxTree.GetRoot(), syntaxProvider: syntaxProvider);
 

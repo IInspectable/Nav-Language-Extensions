@@ -14,6 +14,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
         public bool Force { get; set; }
         public bool GenerateToClasses { get; set; }
+        public bool UseSyntaxCache { get; set; }
 
         public ITaskItem[] Files { get; set; }
 
@@ -22,10 +23,11 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             if (Files == null) {
                 return true;
             }
+            var syntaxProviderFactory = UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
 
             var options  = new GenerationOptions(force: Force, generateToClasses: GenerateToClasses);
             var logger   = new TaskLogger(this);
-            var pipeline = new NavCodeGeneratorPipeline(options, logger);
+            var pipeline = new NavCodeGeneratorPipeline(options, logger, syntaxProviderFactory);
             var files    = Files.Select(FileSpec.FromTaskItem);
 
             return pipeline.Run(files);            

@@ -15,16 +15,8 @@ namespace Pharmatechnik.Nav.Language {
         readonly object[] _messageArgs;
         
         public Diagnostic(Location location, DiagnosticDescriptor descriptor, params object[] messageArgs) {
-
-            if(location == null) {
-                throw new ArgumentNullException(nameof(location));
-            }
-            if(descriptor == null) {
-                throw new ArgumentNullException(nameof(descriptor));
-            }
-
-            Location     = location;
-            Descriptor   = descriptor;
+            Location     = location   ?? throw new ArgumentNullException(nameof(location));
+            Descriptor   = descriptor ?? throw new ArgumentNullException(nameof(descriptor));
             _messageArgs = messageArgs?? EmptyMessageArgs;
         }
 

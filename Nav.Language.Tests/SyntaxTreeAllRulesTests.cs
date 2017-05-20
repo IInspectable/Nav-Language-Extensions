@@ -285,7 +285,7 @@ namespace Nav.Language.Tests {
             var baseDeclaration = taskDefinition.CodeBaseDeclaration;
             Assert.That(baseDeclaration.BaseKeyword.ToString(), Is.EqualTo("base"));
             Assert.That(baseDeclaration.BaseTypes.Count, Is.EqualTo(3));
-            // TODO Base
+
             Assert.That(((SimpleTypeSyntax)baseDeclaration.BaseTypes[0]).Identifier.ToString(), Is.EqualTo("B0"));
             Assert.That(baseDeclaration.WfsBaseType.ToString(), Is.EqualTo("B0"));
             Assert.That(((SimpleTypeSyntax)baseDeclaration.BaseTypes[1]).Identifier.ToString(), Is.EqualTo("B1"));

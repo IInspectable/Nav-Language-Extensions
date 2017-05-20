@@ -41,8 +41,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         const string MsgErrorWhileParsingNavFile0                = "Error while parsing nav file '{0}'";
         const string MsgMissingProjectForAssembly0               = "Missing project for assembly '{0}'.";
 
-        // TODO String als CodeGenInfo o.ä.
-        const string BeginLogicMethodName = "BeginLogic";
+        const string BeginLogicMethodName = CodeGenFacts.BeginMethodPrefix+CodeGenFacts.LogicMethodSuffix;
 
         #region FindNavLocationsAsync
 

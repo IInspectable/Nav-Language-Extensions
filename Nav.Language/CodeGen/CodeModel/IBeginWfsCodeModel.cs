@@ -11,7 +11,6 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    // TODO Gemeinsames TaskBased CodeModel Einführen. Gemeinsame Eigenschaften : TaskName, SyntaxFileName?
     // ReSharper disable once InconsistentNaming
     public sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
 

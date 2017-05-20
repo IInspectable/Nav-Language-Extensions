@@ -6,13 +6,17 @@
     <AvailableItemName Include="NavFile"/>
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(ForceGenerateNavCode)' == ''">
-    <ForceGenerateNavCode>false</ForceGenerateNavCode>
-    <GenerateToClasses>true</GenerateToClasses>
+  <PropertyGroup>
+    <GenerateNavCodeForce Condition="'$(GenerateNavCodeForce)' == ''">false</GenerateNavCodeForce>
+    <GenerateNavCodeGenerateToClasses Condition="'$(GenerateNavCodeGenerateToClasses)' == ''">true</GenerateNavCodeGenerateToClasses>
+    <GenerateNavCodeUseSyntaxCache Condition="'$(GenerateNavCodeUseSyntaxCache)' == ''">false</GenerateNavCodeUseSyntaxCache>
   </PropertyGroup>
-  
-  <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild" >
-    <NavCodeGenerator Files="@(NavFile)" Force="$(ForceGenerateNavCode)" GenerateToClasses="$(GenerateToClasses)"/>    
+
+  <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild">
+    <NavCodeGenerator Files="@(NavFile)"
+                      Force="$(GenerateNavCodeForce)"
+                      GenerateToClasses="$(GenerateNavCodeGenerateToClasses)"
+                      UseSyntaxCache="$(GenerateNavCodeUseSyntaxCache)" />
   </Target>
   
 </Project>
