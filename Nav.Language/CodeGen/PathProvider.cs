@@ -9,20 +9,6 @@ using Pharmatechnik.Nav.Utilities.IO;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public interface IPathProvider {
-        // ReSharper disable InconsistentNaming
-        string SyntaxFileName { get; }
-        string WfsBaseFileName   {get;}
-        string IWfsFileName      {get;}
-        string IBeginWfsFileName {get;}
-        string WfsFileName       {get;}
-        string OldWfsFileName { get; }
-        // ReSharper restore InconsistentNaming
-        string GetRelativePath(string fromPath, string toPath);
-        string GetToFileName(string toClassName);
-
-    }
-
     class PathProvider: IPathProvider {
         
         public PathProvider(ITaskDefinitionSymbol taskDefinition) {
@@ -52,14 +38,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public string WflGeneratedDirectory { get; set; }
         public string IwflGeneratedDirectory { get; }
 
-        // ReSharper disable InconsistentNaming
         public string SyntaxFileName { get; }
         public string WfsBaseFileName   => PathCombine(WflGeneratedDirectory , TaskName + "WFSBase.generated.cs");
         public string IWfsFileName      => PathCombine(IwflGeneratedDirectory, "I" + TaskName + "WFS.generated.cs");
         public string IBeginWfsFileName => PathCombine(WflGeneratedDirectory , "IBegin" + TaskName + "WFS.generated.cs");
         public string WfsFileName       => PathCombine(WflDirectory          , TaskName + "WFS" + ".cs");
         public string OldWfsFileName    => PathCombine(WflDirectory          , "manual", TaskName + "WFS" + ".cs");
-        // ReSharper restore InconsistentNaming
 
         public string GetRelativePath(string fromPath, string toPath) {
             return PathHelper.GetRelativePath(fromPath, toPath);

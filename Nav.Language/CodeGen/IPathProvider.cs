@@ -1,0 +1,16 @@
+// ReSharper disable InconsistentNaming
+namespace Pharmatechnik.Nav.Language.CodeGen {
+
+    public interface IPathProvider {
+       
+        string SyntaxFileName     { get; }
+        string WfsBaseFileName    { get; }
+        string IWfsFileName       { get; }
+        string IBeginWfsFileName  { get; }
+        string WfsFileName        { get; }
+        string OldWfsFileName     { get; }
+        
+        string GetToFileName(string toClassName);
+        string GetRelativePath(string fromPath, string toPath);
+    }
+}

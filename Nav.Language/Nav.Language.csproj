@@ -111,6 +111,8 @@
     <Compile Include="CodeGen\CodeModel\TaskDeclarationCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TaskExitCodeModel.cs" />
     <Compile Include="CodeGen\Generator.cs" />
+    <Compile Include="CodeGen\IPathProvider.cs" />
+    <Compile Include="CodeGen\IPathProviderFactory.cs" />
     <Compile Include="CodeGen\PathProvider.cs" />
     <Compile Include="CodeGen\PathProviderFactory.cs" />
     <Compile Include="CodeGen\Templates\Resources.cs" />
