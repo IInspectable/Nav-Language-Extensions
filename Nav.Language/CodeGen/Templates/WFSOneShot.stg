@@ -4,6 +4,8 @@ Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.WflNamespace> {	
-	// TODO  WFS OneShot
+    public abstract partial class <model.WfsTypeName> {
+        /*  TODO OneShot file */
+    }
 }
 >>

@@ -92,6 +92,7 @@
     <Compile Include="CodeGen\CodeGenFacts.cs" />
     <Compile Include="CodeGen\CodeModel\FileGenerationCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TOCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\WfsCodeModel.cs" />
     <Compile Include="CodeGen\FileGenerator.cs" />
     <Compile Include="CodeGen\FileGeneratorAction.cs" />
     <Compile Include="CodeGen\FileGeneratorResult.cs" />

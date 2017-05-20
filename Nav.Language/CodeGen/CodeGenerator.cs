@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 iBeginWfsCodeSpec : GenerateIBeginWfsCodeSpec(codeModelResult.IBeginWfsCodeModel, context),
                 iWfsCodeSpec      : GenerateIWfsCodeSpec(codeModelResult.IWfsCodeModel          , context),
                 wfsBaseCodeSpec   : GenerateWfsBaseCodeSpec(codeModelResult.WfsBaseCodeModel    , context),
-                wfsCodeSpec       : GenerateWfsCodeSpec(codeModelResult.WfsBaseCodeModel        , context),
+                wfsCodeSpec       : GenerateWfsCodeSpec(codeModelResult.WfsCodeModel            , context),
                 toCodeSpecs       : GenerateToCodeSpecs(codeModelResult.TOCodeModels            , context));
 
             return codeGenerationResult;
@@ -63,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static CodeGenerationSpec GenerateWfsCodeSpec(WfsBaseCodeModel model, CodeGeneratorContext context) {
+        static CodeGenerationSpec GenerateWfsCodeSpec(WfsCodeModel model, CodeGeneratorContext context) {
 
             var template = LoadTemplate(Resources.WFSOneShotTemplate, model, context);            
             var content  = template.Render();

@@ -28,9 +28,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             TaskParameter   = taskParameter   ?? throw new ArgumentNullException(nameof(taskParameter));
             TaskInits       = taskInits       ?? throw new ArgumentNullException(nameof(taskInits));
         }
-
         
-
         public string WflNamespace         => Task.WflNamespace;
         public string WfsBaseTypeName      => Task.WfsBaseTypeName;
         public string WfsTypeName          => Task.WfsTypeName;

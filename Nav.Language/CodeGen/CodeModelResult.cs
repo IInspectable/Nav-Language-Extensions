@@ -16,30 +16,27 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             ITaskDefinitionSymbol taskDefinition, 
             IPathProvider pathProvider, 
             IBeginWfsCodeModel beginWfsCodeModel,
-            IWfsCodeModel wfsCodeModel, 
+            IWfsCodeModel iwfsCodeModel, 
             WfsBaseCodeModel wfsBaseCodeModel,
+            WfsCodeModel wfsCodeModel,
             [CanBeNull]IEnumerable<TOCodeModel> toCodeModels) {
 
             TaskDefinition     = taskDefinition    ?? throw new ArgumentNullException(nameof(taskDefinition));
             PathProvider       = pathProvider      ?? throw new ArgumentNullException(nameof(pathProvider));
             IBeginWfsCodeModel = beginWfsCodeModel ?? throw new ArgumentNullException(nameof(beginWfsCodeModel));
-            IWfsCodeModel      = wfsCodeModel      ?? throw new ArgumentNullException(nameof(wfsCodeModel));
-            WfsBaseCodeModel   = wfsBaseCodeModel  ?? throw new ArgumentNullException(nameof(wfsCodeModel));
+            IWfsCodeModel      = iwfsCodeModel     ?? throw new ArgumentNullException(nameof(iwfsCodeModel));
+            WfsBaseCodeModel   = wfsBaseCodeModel  ?? throw new ArgumentNullException(nameof(wfsBaseCodeModel));
+            WfsCodeModel       = wfsCodeModel      ?? throw new ArgumentNullException(nameof(wfsCodeModel));
             TOCodeModels       = (toCodeModels     ?? Enumerable.Empty<TOCodeModel>()).ToImmutableList();
         }
 
         // ReSharper disable InconsistentNaming
-        [NotNull]
         public ITaskDefinitionSymbol TaskDefinition { get; }
-        [NotNull]
         public IPathProvider PathProvider { get; }
-        [NotNull]
         public IBeginWfsCodeModel IBeginWfsCodeModel { get; }
-        [NotNull]
         public IWfsCodeModel IWfsCodeModel { get; }
-        [NotNull]
         public WfsBaseCodeModel WfsBaseCodeModel { get; }
-        [NotNull]
+        public WfsCodeModel WfsCodeModel { get; }
         public ImmutableList<TOCodeModel> TOCodeModels { get; }
         // ReSharper restore InconsistentNaming
     }

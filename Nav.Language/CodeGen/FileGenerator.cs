@@ -72,7 +72,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             if (condition == OverwriteCondition.Never) {
                 
                 var fileInfo = new FileInfo(codeGenerationSpec.FilePath);
-                return fileInfo.Length==0;
+                // Wenn z.B. in Visual Studio der Inhalt einer Datei gelöscht wird, dann hat die Datei auf Grund der 
+                // trotzdem geschriebenen BOM eine Länge von bis zu 4 Byte.
+                // Es dürfte super unwahrscheinlich sein, dass es eine Datei ohne BOM, dafür aber sinnvollen Inhalt
+                // existiert. Deshalb gehen wir hier davon aus, dass jede Datei mit einer Länge kleiner als 4 Bytes
+                // de facto leer ist.
+                return fileInfo.Length<=4;
             }
 
             // => condition == OverwriteCondition.ContentChanged
