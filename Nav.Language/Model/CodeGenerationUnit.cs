@@ -21,11 +21,7 @@ namespace Pharmatechnik.Nav.Language {
                                     IEnumerable<ISymbol> symbols,
                                     IReadOnlyList<Diagnostic> diagnostics) {
 
-            if(syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }
-
-            Syntax           = syntax;
+            Syntax           = syntax           ?? throw new ArgumentNullException(nameof(syntax));
             CodeUsings       = codeUsings       ?? new List<string>();
             TaskDeclarations = taskDeclarations ?? new SymbolCollection<ITaskDeclarationSymbol>();
             TaskDefinitions  = taskDefinitions  ?? new SymbolCollection<ITaskDefinitionSymbol>();
