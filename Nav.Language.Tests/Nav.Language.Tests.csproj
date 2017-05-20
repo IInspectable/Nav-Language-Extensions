@@ -192,6 +192,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\SingleFile.nav" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\TaskC.nav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

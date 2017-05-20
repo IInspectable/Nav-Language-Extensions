@@ -30,7 +30,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void SimpleCodegenTest() {
 
-            var codeGenerationUnitSyntax= Syntax.ParseCodeGenerationUnit(Resources.TaskANav, filePath: MkFilename("TaskA.nav"));
+            var codeGenerationUnitSyntax= Syntax.ParseCodeGenerationUnit(Resources.TaskA, filePath: MkFilename("TaskA.nav"));
             var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
 
             var options        = GenerationOptions.Default;
@@ -54,7 +54,7 @@ namespace Nav.Language.Tests {
             new TestCaseData(
                 new TestCase {
                     NavFiles = {
-                        new TestCaseFile {FilePath = MkFilename("TaskA.nav"), Content = Resources.TaskANav}
+                        new TestCaseFile {FilePath = MkFilename("TaskA.nav"), Content = Resources.TaskA}
                     }
                 }
             ) {
@@ -62,41 +62,58 @@ namespace Nav.Language.Tests {
             },
             new TestCaseData(new TestCase {
                 NavFiles = {
-                    new TestCaseFile {FilePath = MkFilename("TaskB.nav"), Content = Resources.TaskBNav}
+                    new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskA)}.nav"), Content = Resources.TaskB}
                 }
             }){
                 TestName = "TaskB should be compilable"
             },
             new TestCaseData(new TestCase {
                 NavFiles = {
-                    new TestCaseFile {FilePath = MkFilename("TaskA.nav"), Content = Resources.TaskANav},
-                    new TestCaseFile {FilePath = MkFilename("TaskB.nav"), Content = Resources.TaskBNav}
+                    new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskA)}.nav"), Content = Resources.TaskA},
+                    new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskB)}.nav"), Content = Resources.TaskB}
                 }
             }){
                 TestName = "TaskA and TaskB should be compilable at the same time"
             },
             new TestCaseData(new TestCase {
                 NavFiles = {
-                    new TestCaseFile {FilePath = MkFilename("SingleFileNav.nav"), Content = Resources.SingleFileNav},
+                    new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.SingleFileNav)}.nav"), Content = Resources.SingleFileNav},
                 }
             }){
                 TestName = "TestNavGeneratorOnSingleFile"
-            }//.Ignore("Enablen sobald TOs optional generiert werden können")
+            }
+            ,
+            new TestCaseData(new TestCase {
+                NavFiles = {
+                    new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskA)}.nav"), Content = Resources.TaskA},
+                    new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskB)}.nav"), Content = Resources.TaskB},
+                    new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskC)}.nav"), Content = Resources.TaskC},
+                }
+            }){
+                TestName = "Task C depends on Task A and Task B"
+            }
         };
 
         [Test, TestCaseSource(nameof(CompileTestCases))]
         public void CompileTest(TestCase testCase) {
 
+            var syntaxProvider = new CachedSyntaxProvider();
+
             var syntaxTrees = new List<RoslynSyntaxTree>();
+            // Syntaxbäume cachen, damit Abghängigkeiten aufgelöst werden können - wir haben hier keine echten Dateien zur Hand!
+            foreach(var navFile in testCase.NavFiles) {
+                var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navFile.Content, filePath: navFile.FilePath);
+                syntaxProvider.Cache(filePath: navFile.FilePath, syntaxTree: codeGenerationUnitSyntax.SyntaxTree);
+                AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics);
+            }
 
             foreach (var navFile in testCase.NavFiles) {
 
                 // 1. Syntaxbaum aus Nav-File erstellen
-                var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navFile.Content, filePath: navFile.FilePath);
-                AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics);
-                
+                var codeGenerationUnitSyntax =syntaxProvider.FromFile(navFile.FilePath)?.GetRoot() as CodeGenerationUnitSyntax;
+
                 // 2. Semantic Model erstellen aus Syntax erstellen
-                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
+                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, syntaxProvider: syntaxProvider);
                 AssertNoDiagnosticErrors(codeGenerationUnit.Diagnostics);
 
                 var options = GenerationOptions.Default;

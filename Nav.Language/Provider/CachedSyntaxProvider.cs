@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System;
 using System.Threading;
 using System.Collections.Generic;
 
@@ -12,7 +13,7 @@ namespace Pharmatechnik.Nav.Language {
         readonly Dictionary<string, SyntaxTree> _cache;
 
         public CachedSyntaxProvider() {
-            _cache = new Dictionary<string, SyntaxTree>();
+            _cache = new Dictionary<string, SyntaxTree>(StringComparer.OrdinalIgnoreCase);
         }
 
         public override SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = default(CancellationToken)) {
@@ -38,5 +39,4 @@ namespace Pharmatechnik.Nav.Language {
             ClearCache();
         }
     }
-
 }

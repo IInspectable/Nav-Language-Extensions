@@ -1,0 +1,21 @@
+﻿[namespaceprefix Test]
+
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL]
+
+taskref "TaskA.nav";
+taskref "TaskB.nav";
+
+task TaskC [result bool]
+{
+    init I1 [params string message];
+        
+    task TaskA A;
+    task TaskB B;    
+    exit Ok;
+    
+    I1   --> A;
+
+    A:Ok --> B;
+    B:Ok --> Ok;
+}

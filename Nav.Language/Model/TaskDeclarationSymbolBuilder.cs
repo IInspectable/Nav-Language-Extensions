@@ -85,7 +85,7 @@ namespace Pharmatechnik.Nav.Language {
                 if(!Path.IsPathRooted(filePath)) {
 
                     var directory = includeDirectiveSyntax.SyntaxTree.FileInfo?.Directory;
-                    if (directory == null || !directory.Exists) {
+                    if (directory == null) {
 
                         _diagnostics.Add(new Diagnostic(
                             location,
@@ -97,17 +97,8 @@ namespace Pharmatechnik.Nav.Language {
                     filePath = Path.Combine(directory.FullName, filePath);
                 }
 
-                if(!File.Exists(filePath)) {
-                    _diagnostics.Add(new Diagnostic(
-                        location, 
-                        DiagnosticDescriptors.Semantic.Nav0004File0NotFound, 
-                        filePath) );
-                    return;
-                } else {
-                    // FileInfo löst relative Pfadangaben auf...
-                    var fileInfo = new FileInfo(filePath);
-                    filePath = fileInfo.FullName;
-                }
+                // Löst relative Pfadangaben auf...
+                filePath = Path.GetFullPath(filePath);
 
                 // nav File inkludiert sich selbst
                 if (String.Equals(includeDirectiveSyntax.SyntaxTree.FileInfo?.FullName, filePath, StringComparison.OrdinalIgnoreCase)) {
@@ -120,6 +111,14 @@ namespace Pharmatechnik.Nav.Language {
                 }
                 
                 var includeFileSyntax = _syntaxProvider.FromFile(filePath, cancellationToken);
+                if(includeFileSyntax == null) {
+                    _diagnostics.Add(new Diagnostic(
+                        location,
+                        DiagnosticDescriptors.Semantic.Nav0004File0NotFound,
+                        filePath));
+                    return;
+
+                }
                 var fileLocation      = new Location(filePath);
                 var result            = FromCodeGenerationUnitSyntax(includeFileSyntax.GetRoot() as CodeGenerationUnitSyntax, processAsIncludedFile: true, syntaxProvider: _syntaxProvider, cancellationToken: cancellationToken);
                 var diagnostics       = includeFileSyntax.Diagnostics.Union(result.Diagnostics).ToList();
