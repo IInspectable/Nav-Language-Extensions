@@ -13,72 +13,82 @@ using Pharmatechnik.Nav.Language.CodeGen;
 namespace Pharmatechnik.Nav.Language.BuildTasks {
 
     public sealed partial class NavCodeGeneratorPipeline {
-
+        
         [CanBeNull]
         readonly ILogger _logger;
+        [NotNull]
+        readonly ISyntaxProviderFactory _syntaxProviderFactory;
 
-        public NavCodeGeneratorPipeline(GenerationOptions options, ILogger logger) {
+        public NavCodeGeneratorPipeline(GenerationOptions options, 
+                                        ILogger logger, 
+                                        ISyntaxProviderFactory syntaxProviderFactory = null) {
+            
             Options = options ?? throw new ArgumentNullException(nameof(options));
             _logger = logger;
+            _syntaxProviderFactory = syntaxProviderFactory ?? SyntaxProviderFactory.Default;
         }
 
         [NotNull]
         public GenerationOptions Options { get; }
+        
 
         public bool Run(IEnumerable<FileSpec> fileSpecs) {
 
-            var logger         = new LoggerAdapter(_logger);
-            var modelGenerator = new CodeModelGenerator(Options);
-            var codeGenerator  = new CodeGenerator(Options);
-            var fileGenerator  = new FileGenerator(Options);
-            var statistic      = new Statistic();
+            using(var logger         = new LoggerAdapter(_logger))
+            using(var syntaxProvider = _syntaxProviderFactory.CreateProvider())
+            using(var modelGenerator = new CodeModelGenerator(Options))
+            using(var codeGenerator  = new CodeGenerator(Options))
+            using(var fileGenerator  = new FileGenerator(Options)) {
 
-            logger.LogProcessBegin();
+                var statistic = new Statistic();
 
-            foreach (var fileSpec in fileSpecs) {
+                logger.LogProcessBegin();
 
-                statistic.UpdatePerFile();
+                foreach (var fileSpec in fileSpecs) {
 
-                logger.LogProcessFileBegin(fileSpec);
+                    statistic.UpdatePerFile();
 
-                if (!File.Exists(fileSpec.FilePath)) {
-                    logger.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, fileSpec));
-                    continue;
-                }
+                    logger.LogProcessFileBegin(fileSpec);
+
+                    if (!File.Exists(fileSpec.FilePath)) {
+                        logger.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, fileSpec));
+                        continue;
+                    }
                 
-                // 1. SyntaxTree
-                var syntaxTree = SyntaxTree.FromFile(fileSpec.FilePath);
-                // 2. Semantic Model
-                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax((CodeGenerationUnitSyntax)syntaxTree.GetRoot());
+                    // 1. SyntaxTree
+                    var syntaxTree = syntaxProvider.FromFile(fileSpec.FilePath);
+                    // 2. Semantic Model
+                    var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax((CodeGenerationUnitSyntax)syntaxTree.GetRoot(), syntaxProvider: syntaxProvider);
 
-                if (logger.LogErrors(fileSpec, syntaxTree.Diagnostics) || logger.LogErrors(fileSpec, codeGenerationUnit.Diagnostics)) {
-                    continue;
-                }
+                    if (logger.LogErrors(fileSpec, syntaxTree.Diagnostics) || logger.LogErrors(fileSpec, codeGenerationUnit.Diagnostics)) {
+                        continue;
+                    }
 
-                logger.LogWarnings(fileSpec, syntaxTree.Diagnostics);
-                logger.LogWarnings(fileSpec, codeGenerationUnit.Diagnostics);
+                    logger.LogWarnings(fileSpec, syntaxTree.Diagnostics);
+                    logger.LogWarnings(fileSpec, codeGenerationUnit.Diagnostics);
 
-                // 3. Code Models
-                var codeModelResults = modelGenerator.Generate(codeGenerationUnit);
-                foreach (var codeModelResult in codeModelResults) {
+                    // 3. Code Models
+                    var codeModelResults = modelGenerator.Generate(codeGenerationUnit);
+                    foreach (var codeModelResult in codeModelResults) {
 
-                    // 4. Code Generation
-                    var codeGenerationResult = codeGenerator.Generate(codeModelResult);
+                        // 4. Code Generation
+                        var codeGenerationResult = codeGenerator.Generate(codeModelResult);
                     
-                    // 5. Write appropriate files
-                    var fileGeneratorResults = fileGenerator.Generate(codeGenerationResult);
+                        // 5. Write appropriate files
+                        var fileGeneratorResults = fileGenerator.Generate(codeGenerationResult);
 
-                    logger.LogFileGeneratorResults(fileGeneratorResults);
+                        logger.LogFileGeneratorResults(fileGeneratorResults);
 
-                    statistic.UpdatePerTask(fileGeneratorResults);
+                        statistic.UpdatePerTask(fileGeneratorResults);
+                    }
+
+                    logger.LogProcessFileEnd(fileSpec);
                 }
 
-                logger.LogProcessFileEnd(fileSpec);
+                logger.LogProcessEnd(statistic);
+
+                return !logger.HasLoggedErrors;
             }
-
-            logger.LogProcessEnd(statistic);
-
-            return !logger.HasLoggedErrors;
         }
     }
 }

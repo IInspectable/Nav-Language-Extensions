@@ -112,10 +112,12 @@
     <Compile Include="CodeGen\CodeModel\TaskDeclarationCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TaskExitCodeModel.cs" />
     <Compile Include="CodeGen\Generator.cs" />
-    <Compile Include="CodeGen\IPathProvider.cs" />
-    <Compile Include="CodeGen\IPathProviderFactory.cs" />
-    <Compile Include="CodeGen\PathProvider.cs" />
-    <Compile Include="CodeGen\PathProviderFactory.cs" />
+    <Compile Include="Provider\CachedSyntaxProvider.cs" />
+    <Compile Include="Provider\IPathProvider.cs" />
+    <Compile Include="Provider\IPathProviderFactory.cs" />
+    <Compile Include="Provider\ISyntaxProviderFactory.cs" />
+    <Compile Include="Provider\PathProvider.cs" />
+    <Compile Include="Provider\PathProviderFactory.cs" />
     <Compile Include="CodeGen\Templates\Resources.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="Common\StringExtensions.cs" />
@@ -177,6 +179,8 @@
     <Compile Include="Model\TaskDeclarationSymbolBuilder.cs" />
     <Compile Include="Model\TaskDefinitionSymbol.cs" />
     <Compile Include="Model\TriggerSymbol.cs" />
+    <Compile Include="Provider\SyntaxProvider.cs" />
+    <Compile Include="Provider\SyntaxProviderFactory.cs" />
     <Compile Include="Syntax\CodeSyntax.cs" />
     <Compile Include="Diagnostic\DiagnosticDescriptor.cs" />
     <Compile Include="Syntax\Generated\SyntaxNodeWalker.Generated.cs">
@@ -185,6 +189,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Syntax\IdentifierOrStringListSyntax.cs" />
+    <Compile Include="Provider\ISyntaxProvider.cs" />
     <Compile Include="Syntax\SampleSyntaxAttribute.cs" />
     <Compile Include="Syntax\Generated\Syntax.Generated.cs">
       <AutoGen>True</AutoGen>

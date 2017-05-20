@@ -30,24 +30,28 @@ namespace Pharmatechnik.Nav.Language {
     sealed class TaskDeclarationSymbolBuilder {
         readonly CodeGenerationUnitSyntax                _codeGenerationUnitSyntax;
         readonly bool                                    _processAsIncludedFile;
+        readonly ISyntaxProvider                         _syntaxProvider;
         readonly List<Diagnostic>                        _diagnostics;
         readonly SymbolCollection<TaskDeclarationSymbol> _taskDeklarations;
         readonly SymbolCollection<IncludeSymbol>         _includes;
 
-        public TaskDeclarationSymbolBuilder(CodeGenerationUnitSyntax codeGenerationUnitSyntax, bool processAsIncludedFile) {
+        TaskDeclarationSymbolBuilder(CodeGenerationUnitSyntax codeGenerationUnitSyntax, 
+                                     bool processAsIncludedFile,
+                                     ISyntaxProvider syntaxProvider) {
             _codeGenerationUnitSyntax = codeGenerationUnitSyntax;
             _diagnostics              = new List<Diagnostic>();
             _processAsIncludedFile    = processAsIncludedFile;
+            _syntaxProvider           = syntaxProvider ?? SyntaxProvider.Default;
             _taskDeklarations         = new SymbolCollection<TaskDeclarationSymbol>();
             _includes                 = new SymbolCollection<IncludeSymbol>();
         }
       
-        public static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
-            return FromCodeGenerationUnitSyntax(syntax, false, cancellationToken);
+        public static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, ISyntaxProvider syntaxProvider, CancellationToken cancellationToken) {
+            return FromCodeGenerationUnitSyntax(syntax, false, syntaxProvider, cancellationToken);
         }
 
-        static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, bool processAsIncludedFile, CancellationToken cancellationToken) {
-            var builder = new TaskDeclarationSymbolBuilder(syntax, processAsIncludedFile);
+        static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, bool processAsIncludedFile, ISyntaxProvider syntaxProvider, CancellationToken cancellationToken) {
+            var builder = new TaskDeclarationSymbolBuilder(syntax, processAsIncludedFile, syntaxProvider);
             builder.ProcessCodeGenerationUnitSyntax(syntax, cancellationToken);
 
             return new TaskDeclarationResult(builder._diagnostics, builder._taskDeklarations, builder._includes);
@@ -115,9 +119,9 @@ namespace Pharmatechnik.Nav.Language {
                     return;
                 }
                 
-                var includeFileSyntax = SyntaxTree.FromFile(filePath, cancellationToken);
+                var includeFileSyntax = _syntaxProvider.FromFile(filePath, cancellationToken);
                 var fileLocation      = new Location(filePath);
-                var result            = FromCodeGenerationUnitSyntax(includeFileSyntax.GetRoot() as CodeGenerationUnitSyntax, processAsIncludedFile: true, cancellationToken: cancellationToken);
+                var result            = FromCodeGenerationUnitSyntax(includeFileSyntax.GetRoot() as CodeGenerationUnitSyntax, processAsIncludedFile: true, syntaxProvider: _syntaxProvider, cancellationToken: cancellationToken);
                 var diagnostics       = includeFileSyntax.Diagnostics.Union(result.Diagnostics).ToList();
                 var include           = new IncludeSymbol(filePath, location, fileLocation, includeDirectiveSyntax, diagnostics, result.TaskDeklarations);
 

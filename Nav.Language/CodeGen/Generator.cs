@@ -8,12 +8,15 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public abstract class Generator {
+    public abstract class Generator: IDisposable {
 
         protected Generator(GenerationOptions options) {
             Options = options ?? throw new ArgumentNullException(nameof(options));
         }
         [NotNull]
         public GenerationOptions Options { get; }
+
+        public virtual void Dispose() {
+        }
     }
 }

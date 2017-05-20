@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ using Pharmatechnik.Nav.Language.CodeGen;
 namespace Pharmatechnik.Nav.Language.BuildTasks {
 
     public sealed partial class NavCodeGeneratorPipeline {
-        sealed class LoggerAdapter {
+        sealed class LoggerAdapter: IDisposable {
 
             [CanBeNull] readonly ILogger _logger;
 
@@ -104,6 +105,10 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 } 
                 return $"{word}s";
             }
+
+            public void Dispose() {
+            }
+
         }
     }
 }
