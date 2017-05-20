@@ -43,13 +43,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
             
             var codeModelResult = new CodeModelResult(
-                taskDefinition     : taskDefinition,
-                pathProvider       : pathProvider,
-                beginWfsCodeModel  : IBeginWfsCodeModel.FromTaskDefinition(taskDefinition , pathProvider),
-                iwfsCodeModel       : IWfsCodeModel.FromTaskDefinition(taskDefinition      , pathProvider),
-                wfsBaseCodeModel   : WfsBaseCodeModel.FromTaskDefinition(taskDefinition   , pathProvider),
-                wfsCodeModel: WfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
-                toCodeModels       : toCodeModels
+                taskDefinition   : taskDefinition,
+                pathProvider     : pathProvider,
+                beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition , pathProvider),
+                iwfsCodeModel    : IWfsCodeModel.FromTaskDefinition(taskDefinition      , pathProvider),
+                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition   , pathProvider),
+                wfsCodeModel     : WfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
+                toCodeModels     : toCodeModels
             );
            
             return codeModelResult;

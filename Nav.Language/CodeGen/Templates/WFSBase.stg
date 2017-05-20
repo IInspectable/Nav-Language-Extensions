@@ -7,24 +7,20 @@ Begin(model, context) ::=<<
 namespace <model.WflNamespace> {
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public abstract partial class <model.WfsBaseTypeName>: <model.WfsBaseBaseTypeName> {
-        <if(model.TaskBegins)>
+        
+        <writeFieldDeclarationList(model.TaskBegins)><\\>
 
-        <model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
-
-        <else>
-
-        <endif>
         public <model.WfsBaseTypeName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS) {}
 
         public <model.WfsBaseTypeName>(<writeParameterList(model.TaskBegins)>) {
             <writeFieldInits(model.TaskBegins)>
         }
 
-        <writeBeginMethodDeclarationList(model.TaskInits)>
+        <writeBeginMethodDeclarationList(model.TaskInits)><\\>
         
-        <writeCallWrapperDeclarationList()>
+        <writeCallWrapperDeclarationList()><\\>
         
-        <writeTriggerDeclarationList()>
+        <writeTriggerDeclarationList()><\\>
 
         protected INavCommandBody TaskResult(<model.TaskResult.ParameterType> <model.TaskResult.ParameterName>) {
             return InternalTaskResult(<model.TaskResult.ParameterName>);
@@ -62,6 +58,11 @@ writeParameter(parameter) ::=<<
 <parameter.ParameterType> <parameter.ParameterName>
 >>
 
+writeFieldDeclarationList(parameters) ::=<<
+<model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
+
+>>
+
 writeFieldDeclaration(parameter) ::=<<
 readonly <parameter.ParameterType> _<parameter.ParameterName>;
 >>
@@ -88,6 +89,7 @@ writeParameterExpression(parameter) ::=<<
 
 writeBeginMethodDeclarationList(taskInits) ::=<<
 <taskInits:writeBeginMethodDeclaration(); separator="\r\n">
+
 >>
 
 writeBeginMethodDeclaration(taskInit) ::=<<
@@ -104,9 +106,11 @@ public virtual IINIT_TASK <taskInit.BeginMethodName>(<writeParameterList(taskIni
 >>
 
 writeCallWrapperDeclarationList() ::=<<
-/* TODO writeCallWrapperDeclarationList */
+/* TODO writeCallWrapperDeclarationList */ 
+
 >>
 
 writeTriggerDeclarationList() ::=<<
 /* TODO writeTriggerDeclarationList */
+
 >>
