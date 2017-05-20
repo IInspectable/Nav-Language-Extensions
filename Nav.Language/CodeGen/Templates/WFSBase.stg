@@ -13,7 +13,7 @@ namespace <model.WflNamespace> {
         public <model.WfsBaseTypeName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS) {}
 
         public <model.WfsBaseTypeName>(<writeParameterList(model.TaskBegins)>) {
-            <writeFieldInits(model.TaskBegins)>
+            <writeFieldInitList(model.TaskBegins)>
         }
 
         <writeBeginMethodDeclarationList(model.TaskInits)><\\>
@@ -44,7 +44,7 @@ namespace <model.WflNamespace> {
 
         public <model.WfsTypeName>(<writeParameterList([model.TaskBegins, model.TaskParameter])>)
             :base(<writeParameterExpressions(model.TaskBegins)>) {
-            <writeFieldInits(model.TaskParameter)>
+            <writeFieldInitList(model.TaskParameter)>
         }
     }
 }
@@ -67,7 +67,7 @@ writeFieldDeclaration(parameter) ::=<<
 readonly <parameter.ParameterType> _<parameter.ParameterName>;
 >>
 
-writeFieldInits(parameters) ::=<<
+writeFieldInitList(parameters) ::=<<
 <parameters:writeFieldInit(); separator="\r\n">
 >>
 
