@@ -25,7 +25,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCodeSpec,      OverwriteCondition.ContentChanged),
                 WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCodeSpec, OverwriteCondition.ContentChanged),
                 WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCodeSpec,   OverwriteCondition.ContentChanged),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCodeSpec,       OverwriteCondition.Never, alternateFileName: codeGenerationResult.PathProvider.OldWfsFileName)
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCodeSpec,       OverwriteCondition.Never, legacyFileName: codeGenerationResult.PathProvider.LegacyWfsFileName)
             };
 
             foreach(var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
@@ -36,12 +36,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         [NotNull]
-        FileGeneratorResult WriteFile(ITaskDefinitionSymbol taskDefinition, CodeGenerationSpec codeGenerationSpec, OverwriteCondition condition, string alternateFileName = null) {
+        FileGeneratorResult WriteFile(ITaskDefinitionSymbol taskDefinition, CodeGenerationSpec codeGenerationSpec, OverwriteCondition condition, string legacyFileName = null) {
 
             EnsureDirectory(codeGenerationSpec.FilePath);
 
             var action = FileGeneratorAction.Skiped;
-            if (ShouldWrite(codeGenerationSpec, condition, alternateFileName)) {
+            if (ShouldWrite(codeGenerationSpec, condition, legacyFileName)) {
                 File.WriteAllText(codeGenerationSpec.FilePath, codeGenerationSpec.Content, Encoding.UTF8);
                 action = FileGeneratorAction.Updated;
             }
@@ -55,11 +55,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             Directory.CreateDirectory(dir);            
         }
 
-        bool ShouldWrite(CodeGenerationSpec codeGenerationSpec, OverwriteCondition condition, string alternateFileName) {
+        bool ShouldWrite(CodeGenerationSpec codeGenerationSpec, OverwriteCondition condition, string legacyFileName) {
 
-            // Die alternative Datei wird niemals überschrieben (legacy code!).
-            var alternateFileExists = alternateFileName != null && File.Exists(alternateFileName);
-            if (alternateFileExists) {
+            // Die legacy Datei wird niemals überschrieben/ersetzt.
+            var legacyFileExists = legacyFileName != null && File.Exists(legacyFileName);
+            if (legacyFileExists) {
                 return false;
             }
 

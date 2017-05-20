@@ -3,13 +3,14 @@
 using System;
 using System.IO;
 using System.Linq;
+using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
 
-    class PathProvider: IPathProvider {
+    sealed class PathProvider: IPathProvider {
         
         public PathProvider(ITaskDefinitionSymbol taskDefinition) {
 
@@ -28,22 +29,22 @@ namespace Pharmatechnik.Nav.Language {
             TaskName = taskDefinition.Name;
             SyntaxFileName = syntaxFile.FullName;
 
-            IwflGeneratedDirectory = PathCombine(syntaxFile.DirectoryName, "IWFL", generateToInfo, "generated");
-            WflGeneratedDirectory  = PathCombine(syntaxFile.DirectoryName, "WFL" , generateToInfo, "generated");
-            WflDirectory           = PathCombine(syntaxFile.DirectoryName, "WFL" , generateToInfo);                     
+            IwflGeneratedDirectory = PathCombine(syntaxFile.DirectoryName, CodeGenFacts.IwflNamespaceSuffix, generateToInfo, CodeGenFacts.GeneratedFolderName);
+            WflGeneratedDirectory  = PathCombine(syntaxFile.DirectoryName, CodeGenFacts.WflNamespaceSuffix , generateToInfo, CodeGenFacts.GeneratedFolderName);
+            WflDirectory           = PathCombine(syntaxFile.DirectoryName, CodeGenFacts.WflNamespaceSuffix , generateToInfo);                     
         }
 
-        public string TaskName { get; set; }
-        public string WflDirectory { get; set; }
-        public string WflGeneratedDirectory { get; set; }
+        public string TaskName { get; }
+        public string WflDirectory { get; }
+        public string WflGeneratedDirectory { get; }
         public string IwflGeneratedDirectory { get; }
 
         public string SyntaxFileName { get; }
-        public string WfsBaseFileName   => PathCombine(WflGeneratedDirectory , TaskName + "WFSBase.generated.cs");
-        public string IWfsFileName      => PathCombine(IwflGeneratedDirectory, "I" + TaskName + "WFS.generated.cs");
-        public string IBeginWfsFileName => PathCombine(WflGeneratedDirectory , "IBegin" + TaskName + "WFS.generated.cs");
-        public string WfsFileName       => PathCombine(WflDirectory          , TaskName + "WFS" + ".cs");
-        public string OldWfsFileName    => PathCombine(WflDirectory          , "manual", TaskName + "WFS" + ".cs");
+        public string WfsBaseFileName   => PathCombine(WflGeneratedDirectory , $"{TaskName}{CodeGenFacts.WfsBaseClassSuffix}.{CodeGenFacts.GeneratedFileNameSuffix}.{CodeGenFacts.CSharpFileExtension}");
+        public string IWfsFileName      => PathCombine(IwflGeneratedDirectory, $"I{TaskName}{CodeGenFacts.WfsClassSuffix}.{CodeGenFacts.GeneratedFileNameSuffix}.{CodeGenFacts.CSharpFileExtension}");
+        public string IBeginWfsFileName => PathCombine(WflGeneratedDirectory , $"{CodeGenFacts.BeginInterfacePrefix}{TaskName}{CodeGenFacts.WfsClassSuffix}.{CodeGenFacts.GeneratedFileNameSuffix}.{CodeGenFacts.CSharpFileExtension}");
+        public string WfsFileName       => PathCombine(WflDirectory          , $"{TaskName}{CodeGenFacts.WfsClassSuffix}.cs");
+        public string LegacyWfsFileName => PathCombine(WflDirectory          , CodeGenFacts.LegacyManualFolderName, $"{TaskName}{CodeGenFacts.WfsClassSuffix}.{CodeGenFacts.CSharpFileExtension}");
 
         public string GetRelativePath(string fromPath, string toPath) {
             return PathHelper.GetRelativePath(fromPath, toPath);
@@ -51,7 +52,7 @@ namespace Pharmatechnik.Nav.Language {
 
         // TODO GetToFileName überprüfen
         public string GetToFileName(string toClassName) {
-           return PathCombine(IwflGeneratedDirectory, toClassName + ".cs");
+           return PathCombine(IwflGeneratedDirectory, $"{toClassName}.{CodeGenFacts.CSharpFileExtension}");
         }
 
         static string PathCombine(string first, params string[] parts) {
