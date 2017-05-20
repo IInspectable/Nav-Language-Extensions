@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language {
 
     public class PathProviderFactory: IPathProviderFactory {
 

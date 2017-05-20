@@ -1,5 +1,5 @@
 // ReSharper disable InconsistentNaming
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language {
 
     public interface IPathProvider {
        

@@ -7,7 +7,7 @@ using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language {
 
     class PathProvider: IPathProvider {
         
