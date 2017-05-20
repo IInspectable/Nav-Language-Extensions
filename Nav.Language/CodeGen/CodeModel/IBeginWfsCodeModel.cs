@@ -15,8 +15,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     public sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
 
-        IBeginWfsCodeModel(string syntaxFilePath, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits, ImmutableList<string> codeDeclarations, string filePath) 
-            :base(taskCodeModel, syntaxFilePath, filePath) {
+        IBeginWfsCodeModel(string relativeSyntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<TaskInitCodeModel> taskInits, ImmutableList<string> codeDeclarations, string filePath) 
+            :base(taskCodeModel, relativeSyntaxFileName, filePath) {
 
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskName          = taskName          ?? throw new ArgumentNullException(nameof(usingNamespaces));
@@ -55,17 +55,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 var taskInit = TaskInitCodeModel.FromInitNode(initNode, taskCodeModel);
                 taskInits.Add(taskInit);
             }
-            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsFileName, pathProvider.SyntaxFileName);
+            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsFileName, pathProvider.SyntaxFileName);
             
             return new IBeginWfsCodeModel(
-                syntaxFilePath   : syntaxFileName,
-                taskCodeModel    : taskCodeModel,
-                usingNamespaces  : namespaces.ToSortedNamespaces(),
-                taskName         : taskDefinition.Name ?? string.Empty,
-                baseInterfaceName: taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
-                taskInits        : taskInits.ToImmutableList(),
-                codeDeclarations : codeDeclarations.ToImmutableList(),
-                filePath         : pathProvider.IBeginWfsFileName);
+                relativeSyntaxFileName: relativeSyntaxFileName,
+                taskCodeModel         : taskCodeModel,
+                usingNamespaces       : namespaces.ToSortedNamespaces(),
+                taskName              : taskDefinition.Name ?? string.Empty,
+                baseInterfaceName     : taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
+                taskInits             : taskInits.ToImmutableList(),
+                codeDeclarations      : codeDeclarations.ToImmutableList(),
+                filePath              : pathProvider.IBeginWfsFileName);
         }
     
         [NotNull]

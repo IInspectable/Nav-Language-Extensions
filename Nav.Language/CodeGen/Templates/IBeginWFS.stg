@@ -15,7 +15,7 @@ namespace <model.Namespace> {
     <else>
 
     <endif>
-    <writeTaskAnnotation(model.SyntaxFilePath, model.Task.TaskName)>
+    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public interface IBegin<model.TaskName>WFS: <model.BaseInterfaceName> {
         <writeBeginMethodDeclarationList(model.TaskInits)>
     }

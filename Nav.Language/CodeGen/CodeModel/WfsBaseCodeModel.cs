@@ -16,11 +16,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         WfsBaseCodeModel(
             TaskCodeModel taskCodeModel,
             ImmutableList<string> usingNamespaces,
-            string syntaxFilePath,
+            string relativeSyntaxFileName,
             string baseClassName, 
             ParameterCodeModel taskResult,
             ImmutableList<ParameterCodeModel> taskBegins, 
-            string filePath) : base(taskCodeModel, syntaxFilePath, filePath) {
+            string filePath) : base(taskCodeModel, relativeSyntaxFileName, filePath) {
             
             UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
             BaseClassName   = baseClassName   ?? throw new ArgumentNullException(nameof(baseClassName));
@@ -57,16 +57,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var usedTaskDeclarations = GetUsedTaskDeclarations(taskDefinition);
             var taskBegins = ToParameter(usedTaskDeclarations);
 
-            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
+            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
 
             return new WfsBaseCodeModel(
-                taskCodeModel    : taskCodeModel,
-                usingNamespaces  : GetUsingNamespaces(taskDefinition, taskCodeModel),
-                syntaxFilePath   : syntaxFileName,
-                baseClassName    : GetBaseClassName(taskDefinitionSyntax),
-                taskResult       : GetTaskResult(taskDefinitionSyntax),
-                taskBegins       : taskBegins,
-                filePath         : pathProvider.WfsBaseFileName
+                taskCodeModel         : taskCodeModel,
+                usingNamespaces       : GetUsingNamespaces(taskDefinition, taskCodeModel),
+                relativeSyntaxFileName: relativeSyntaxFileName,
+                baseClassName         : GetBaseClassName(taskDefinitionSyntax),
+                taskResult            : GetTaskResult(taskDefinitionSyntax),
+                taskBegins            : taskBegins,
+                filePath              : pathProvider.WfsBaseFileName
                 );
         }
 

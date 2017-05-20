@@ -90,6 +90,7 @@
     <Compile Include="CodeGen\AnnotationTagNames.cs" />
     <Compile Include="CodeGen\CodeGenerationSpec.cs" />
     <Compile Include="CodeGen\CodeGenFacts.cs" />
+    <Compile Include="CodeGen\CodeModel\FileGenerationCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TOCodeModel.cs" />
     <Compile Include="CodeGen\FileGenerator.cs" />
     <Compile Include="CodeGen\FileGeneratorAction.cs" />

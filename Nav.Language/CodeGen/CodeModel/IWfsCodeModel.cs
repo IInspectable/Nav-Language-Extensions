@@ -13,8 +13,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     public sealed class IWfsCodeModel : FileGenerationCodeModel {
 
-        IWfsCodeModel(string syntaxFilePath, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<SignalTriggerCodeModel> signalTriggers, string filePath) 
-            : base(taskCodeModel, syntaxFilePath, filePath) {
+        IWfsCodeModel(string relativeSyntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<SignalTriggerCodeModel> signalTriggers, string filePath) 
+            : base(taskCodeModel, relativeSyntaxFileName, filePath) {
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskName          = taskName          ?? throw new ArgumentNullException(nameof(taskName));
             BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(baseInterfaceName));
@@ -55,16 +55,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 signalTriggers.Add(SignalTriggerCodeModel.FromSignalTrigger(trigger, taskCodeModel));
             }
 
-            var syntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
+            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
 
             return new IWfsCodeModel(
-                syntaxFilePath   : syntaxFileName,
-                taskCodeModel    : taskCodeModel,
-                usingNamespaces  : namespaces.ToSortedNamespaces(), 
-                taskName         : taskDefinition.Name ?? string.Empty,
-                baseInterfaceName: taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType,
-                signalTriggers   : signalTriggers.OrderBy(st=> st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName).ToImmutableList(),
-                filePath         : pathProvider.IWfsFileName);
+                relativeSyntaxFileName: relativeSyntaxFileName,
+                taskCodeModel         : taskCodeModel,
+                usingNamespaces       : namespaces.ToSortedNamespaces(), 
+                taskName              : taskDefinition.Name ?? string.Empty,
+                baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType,
+                signalTriggers        : signalTriggers.OrderBy(st=> st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName).ToImmutableList(),
+                filePath              : pathProvider.IWfsFileName);
         }
     }
 }

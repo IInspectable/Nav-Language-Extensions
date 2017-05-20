@@ -5,7 +5,7 @@ Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.Namespace> {
-    <writeTaskAnnotation(model.SyntaxFilePath, model.Task.TaskName)>
+    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public interface I<model.TaskName>WFS: <model.BaseInterfaceName> {
         <writeTriggerMethodDeclarationList(model.SignalTriggers)>
     }
