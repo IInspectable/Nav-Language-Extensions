@@ -23,9 +23,7 @@
   <ItemGroup>
     <AvailableItemName Include="ExportStringTemplates" />
   </ItemGroup>
-  <!--AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">-->
-  <!--AssemblyFile="..\packages\Microsoft.Build.Utilities.Core.14.3.0\lib\net45\Microsoft.Build.Utilities.Core.dll">-->
-  <UsingTask TaskName="GenerateStringTemplateExport" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+  <UsingTask TaskName="GenerateStringTemplateExport" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
     <ParameterGroup>
       <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
       <OutputFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
