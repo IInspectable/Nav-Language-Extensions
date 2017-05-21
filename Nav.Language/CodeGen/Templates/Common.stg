@@ -24,7 +24,7 @@ using <namespace>;
 
 writeTaskAnnotation(syntaxFileName, taskName) ::=<<
 #region Annotations
-/// \<NavFile\><syntaxFileName>\</NavFile\>
-/// \<NavTask\><taskName>\</NavTask\>
+/// \<<AnnotationTagNavFile()>\><syntaxFileName>\</<AnnotationTagNavFile()>\>
+/// \<<AnnotationTagNavTask()>\><taskName>\</<AnnotationTagNavTask()>\>
 #endregion
 >>
