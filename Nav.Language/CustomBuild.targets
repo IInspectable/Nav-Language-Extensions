@@ -1,14 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
   <PropertyGroup>
     <ProductName>Nav Language Library</ProductName>
-    <ProductVersion>3.0.74</ProductVersion>
+    <ProductVersion>3.0.77</ProductVersion>
   </PropertyGroup>
- 
   <PropertyGroup>
     <AssemblyInfoFile>$(MSBuildProjectDirectory)\ThisAssembly.generated.cs</AssemblyInfoFile>
   </PropertyGroup>
-  
   <ItemGroup>
     <AssemblyInfoLine Include="// Warning: This is generated code! Don't touch as it will be overwritten by the code generator." />
     <AssemblyInfoLine Include="namespace Pharmatechnik.Nav.Language {" />
@@ -22,26 +20,21 @@
     <Message Text="Updating Assembly Info $(AssemblyInfoFile)" Importance="high" />
     <WriteLinesToFile File="$(AssemblyInfoFile)" Overwrite="true" Lines="@(AssemblyInfoLine)" />
   </Target>
-
   <ItemGroup>
-    <AvailableItemName Include="ExportStringTemplates"/>
+    <AvailableItemName Include="ExportStringTemplates" />
   </ItemGroup>
   <!--AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">-->
   <!--AssemblyFile="..\packages\Microsoft.Build.Utilities.Core.14.3.0\lib\net45\Microsoft.Build.Utilities.Core.dll">-->
-  <UsingTask
-    TaskName     = "GenerateStringTemplateExport"
-    TaskFactory  = "CodeTaskFactory"
-    AssemblyFile = "$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+  <UsingTask TaskName="GenerateStringTemplateExport" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
-      <Files ParameterType       = "Microsoft.Build.Framework.ITaskItem[]" Required = "true" />
-      <OutputFiles ParameterType = "Microsoft.Build.Framework.ITaskItem[]" Output   = "true" />
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <OutputFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
     </ParameterGroup>
     <Task>
-      <Reference Include = "..\packages\StringTemplate4.4.0.8\lib\net35-client\Antlr4.StringTemplate.dll" />
-      <Reference Include = "..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll" />
+      <Reference Include="..\packages\StringTemplate4.4.0.8\lib\net35-client\Antlr4.StringTemplate.dll" />
+      <Reference Include="..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll" />
       <Using Namespace="System" />
-      <Code Type="Fragment" Language="cs">
-        <![CDATA[        
+      <Code Type="Fragment" Language="cs"><![CDATA[        
           var generatedFileNames = new List<string>();
         
           foreach(var file in Files) {
@@ -49,7 +42,7 @@
             var fullName   = file.GetMetadata("FullPath");
             var fileName   = file.GetMetadata("FileName");
             var @namespace = file.GetMetadata("Namespace");
-            var targetPath = Path.ChangeExtension(fullName, "generated.cs");
+            var targetPath = Path.ChangeExtension(fullName,"generated.cs");
             
             generatedFileNames.Add(targetPath);
             
@@ -80,15 +73,13 @@
             File.WriteAllText(targetPath, sb.ToString(), Encoding.UTF8);
           }
           OutputFiles = generatedFileNames.Select(name => new TaskItem(name)).ToArray();
-         ]]>
-      </Code>
+         ]]></Code>
     </Task>
   </UsingTask>
-  
   <Target Name="GenerateStringTemplateExport" BeforeTargets="PrepareForBuild">
-    <GenerateStringTemplateExport Files="@(ExportStringTemplates)"/>
+    <GenerateStringTemplateExport Files="@(ExportStringTemplates)" />
     <ItemGroup>
-      <EmbeddedResource Include="@(ExportStringTemplates)"/>
-    </ItemGroup>    
+      <EmbeddedResource Include="@(ExportStringTemplates)" />
+    </ItemGroup>
   </Target>
 </Project>

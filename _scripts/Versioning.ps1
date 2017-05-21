@@ -70,6 +70,9 @@ function UpdateVersion(){
     $productVersionNode.InnerText=$newVersion.ToString()
 
     Write-Verbose "Saving file '$file'"
-    $xml.Save($file)
+	$utf8WithBom = New-Object System.Text.UTF8Encoding($true)
+	$sw = New-Object System.IO.StreamWriter($file, $false, $utf8WithBom)
+    $xml.Save($sw)
+	$sw.Close()
 }
 
