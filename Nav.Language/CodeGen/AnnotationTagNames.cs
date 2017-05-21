@@ -1,7 +1,7 @@
 ﻿namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public static class AnnotationTagNames {
-
+        // TODO In CodeGenFacts?
         public const string TagPrefix   = "Nav";
         public const string NavFile     = TagPrefix + "File";
         public const string NavTask     = TagPrefix + "Task";

@@ -39,7 +39,7 @@
           
             var fullName   = file.GetMetadata("FullPath");
             var fileName   = file.GetMetadata("FileName");
-            var @namespace = file.GetMetadata("Namespace");
+            var @namespace = file.GetMetadata("CustomToolNamespace");
             var targetPath = Path.ChangeExtension(fullName,"generated.cs");
             
             generatedFileNames.Add(targetPath);

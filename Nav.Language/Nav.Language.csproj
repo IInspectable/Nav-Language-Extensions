@@ -284,9 +284,9 @@
     <EmbeddedResource Include="CodeGen\Templates\WFSOneShot.stg" />
     <EmbeddedResource Include="CodeGen\Templates\Common.stg" />
     <EmbeddedResource Include="CodeGen\Templates\TO.stg" />
-    <ExportStringTemplates Include="CodeGen\Templates\CodeGenFacts.stg" >
-		<Namespace>Pharmatechnik.Nav.Language.CodeGen</Namespace>
-	</ExportStringTemplates>
+    <ExportStringTemplates Include="CodeGen\Templates\CodeGenFacts.stg">
+      <CustomToolNamespace>Pharmatechnik.Nav.Language.CodeGen</CustomToolNamespace>
+    </ExportStringTemplates>
     <None Include="Grammar\NavTokens.g4" />
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
