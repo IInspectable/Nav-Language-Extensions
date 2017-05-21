@@ -103,6 +103,7 @@
     <Compile Include="CodeGenFactsTests.cs" />
     <Compile Include="CodeGenTests.cs" />
     <EmbeddedResource Include="Resources\FrameworkStubs.cs" />
+    <Compile Include="PathProviderTests.cs" />
     <Compile Include="Resources\Resources.cs" />
     <Compile Include="DescendantNodesTests.cs" />
     <Compile Include="ExtentTests.cs" />

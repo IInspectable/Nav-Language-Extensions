@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using NUnit.Framework;
+using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
@@ -8,6 +9,8 @@ using Pharmatechnik.Nav.Language.CodeGen;
 namespace Nav.Language.Tests {
     [TestFixture]
     public class CodeGenFactsTests {
+
+        readonly PathProviderTests _pathProviderTests = new PathProviderTests();
 
         [Test]
         public void TestDefaultIwfsBaseType() {
@@ -76,22 +79,6 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestDefaultWfsBaseClass() {
             Assert.That(CodeGenFacts.DefaultWfsBaseClass, Is.EqualTo("BaseWFService"), "Wrong DefaultWfsBaseClass");
-        }
-        [Test]
-        public void TestGeneratedFolderName() {
-            Assert.That(CodeGenFacts.GeneratedFolderName, Is.EqualTo("generated"), "Wrong GeneratedFolderName");
-        }
-        [Test]
-        public void TestLegacyManualFolderName() {
-            Assert.That(CodeGenFacts.LegacyManualFolderName, Is.EqualTo("manual"), "Wrong LegacyManualFolderName");
-        }
-        [Test]
-        public void TestGeneratedFileNameSuffix() {
-            Assert.That(CodeGenFacts.GeneratedFileNameSuffix, Is.EqualTo("generated"), "Wrong GeneratedFileNameSuffix");
-        }
-        [Test]
-        public void TestCSharpFileExtension() {
-            Assert.That(CodeGenFacts.CSharpFileExtension, Is.EqualTo("cs"), "Wrong CSharpFileExtension");
         }
     }
 }

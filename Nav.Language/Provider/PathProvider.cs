@@ -11,27 +11,41 @@ using Pharmatechnik.Nav.Utilities.IO;
 namespace Pharmatechnik.Nav.Language {
 
     sealed class PathProvider: IPathProvider {
-        
-        public PathProvider(ITaskDefinitionSymbol taskDefinition) {
 
-            TaskDefinitionSyntax syntax = taskDefinition.Syntax;
-            var syntaxFile = syntax.SyntaxTree.FileInfo;
-            if (syntaxFile == null) {
-                throw new ArgumentException("No FileInfo available", nameof(taskDefinition));
+        /// <summary>
+        /// generated
+        /// </summary>
+        public const string GeneratedFolderName = "generated";
+        /// <summary>
+        /// manual
+        /// </summary>
+        public const string LegacyManualFolderName = "manual";
+        /// <summary>
+        /// generated
+        /// </summary>
+        public const string GeneratedFileNameSuffix = "generated";
+        /// <summary>
+        /// cs
+        /// </summary>
+        public const string CSharpFileExtension = "cs";
+
+        public PathProvider(string syntaxFileName, string taskName, string generateTo=null) {
+
+            if(String.IsNullOrEmpty(syntaxFileName)) {
+                throw new ArgumentException("Missing syntax filename", nameof(syntaxFileName));
             }
-            
-            string generateToInfo = null;
-            var generateToToken = syntax.CodeGenerateToDeclaration?.StringLiteral ?? SyntaxToken.Missing;
-            if (!generateToToken.IsMissing) {
-                generateToInfo = generateToToken.ToString();
+            if (String.IsNullOrEmpty(taskName)) {
+                throw new ArgumentException("Missing taskName", nameof(taskName));
             }
 
-            TaskName = taskDefinition.Name;
-            SyntaxFileName = syntaxFile.FullName;
+            var syntaxFileDirectoryName = Path.GetDirectoryName(syntaxFileName);
 
-            IwflGeneratedDirectory = PathCombine(syntaxFile.DirectoryName, CodeGenFacts.IwflNamespaceSuffix, generateToInfo, CodeGenFacts.GeneratedFolderName);
-            WflGeneratedDirectory  = PathCombine(syntaxFile.DirectoryName, CodeGenFacts.WflNamespaceSuffix , generateToInfo, CodeGenFacts.GeneratedFolderName);
-            WflDirectory           = PathCombine(syntaxFile.DirectoryName, CodeGenFacts.WflNamespaceSuffix , generateToInfo);                     
+            TaskName       = taskName;
+            SyntaxFileName = syntaxFileName;
+
+            IwflGeneratedDirectory = PathCombine(syntaxFileDirectoryName, CodeGenFacts.IwflNamespaceSuffix, generateTo, GeneratedFolderName);
+            WflGeneratedDirectory  = PathCombine(syntaxFileDirectoryName, CodeGenFacts.WflNamespaceSuffix , generateTo, GeneratedFolderName);
+            WflDirectory           = PathCombine(syntaxFileDirectoryName, CodeGenFacts.WflNamespaceSuffix , generateTo);                     
         }
 
         public string TaskName { get; }
@@ -40,11 +54,11 @@ namespace Pharmatechnik.Nav.Language {
         public string IwflGeneratedDirectory { get; }
 
         public string SyntaxFileName { get; }
-        public string WfsBaseFileName   => PathCombine(WflGeneratedDirectory , $"{TaskName}{CodeGenFacts.WfsBaseClassSuffix}.{CodeGenFacts.GeneratedFileNameSuffix}.{CodeGenFacts.CSharpFileExtension}");
-        public string IWfsFileName      => PathCombine(IwflGeneratedDirectory, $"I{TaskName}{CodeGenFacts.WfsClassSuffix}.{CodeGenFacts.GeneratedFileNameSuffix}.{CodeGenFacts.CSharpFileExtension}");
-        public string IBeginWfsFileName => PathCombine(WflGeneratedDirectory , $"{CodeGenFacts.BeginInterfacePrefix}{TaskName}{CodeGenFacts.WfsClassSuffix}.{CodeGenFacts.GeneratedFileNameSuffix}.{CodeGenFacts.CSharpFileExtension}");
-        public string WfsFileName       => PathCombine(WflDirectory          , $"{TaskName}{CodeGenFacts.WfsClassSuffix}.cs");
-        public string LegacyWfsFileName => PathCombine(WflDirectory          , CodeGenFacts.LegacyManualFolderName, $"{TaskName}{CodeGenFacts.WfsClassSuffix}.{CodeGenFacts.CSharpFileExtension}");
+        public string WfsBaseFileName   => PathCombine(WflGeneratedDirectory , $"{TaskName}{CodeGenFacts.WfsBaseClassSuffix}.{GeneratedFileNameSuffix}.{CSharpFileExtension}");
+        public string IWfsFileName      => PathCombine(IwflGeneratedDirectory, $"{CodeGenFacts.InterfacePrefix}{TaskName}{CodeGenFacts.WfsClassSuffix}.{GeneratedFileNameSuffix}.{CSharpFileExtension}");
+        public string IBeginWfsFileName => PathCombine(WflGeneratedDirectory , $"{CodeGenFacts.BeginInterfacePrefix}{TaskName}{CodeGenFacts.WfsClassSuffix}.{GeneratedFileNameSuffix}.{CSharpFileExtension}");
+        public string WfsFileName       => PathCombine(WflDirectory          , $"{TaskName}{CodeGenFacts.WfsClassSuffix}.{CSharpFileExtension}");
+        public string LegacyWfsFileName => PathCombine(WflDirectory          , LegacyManualFolderName, $"{TaskName}{CodeGenFacts.WfsClassSuffix}.{CSharpFileExtension}");
 
         public string GetRelativePath(string fromPath, string toPath) {
             return PathHelper.GetRelativePath(fromPath, toPath);
@@ -52,11 +66,12 @@ namespace Pharmatechnik.Nav.Language {
 
         // TODO GetToFileName überprüfen
         public string GetToFileName(string toClassName) {
-           return PathCombine(IwflGeneratedDirectory, $"{toClassName}.{CodeGenFacts.CSharpFileExtension}");
+           return PathCombine(IwflGeneratedDirectory, $"{toClassName}.{CSharpFileExtension}");
         }
 
         static string PathCombine(string first, params string[] parts) {
             return parts.Where(part => !String.IsNullOrEmpty(part)).Aggregate(first, Path.Combine);
         }
+
     }
 }

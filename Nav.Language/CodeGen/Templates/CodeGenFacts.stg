@@ -1,5 +1,6 @@
 ﻿delimiters "<", ">"
 
+InterfacePrefix()              ::= "I"
 DefaultIwfsBaseType()          ::= "IWFService"
 DefaultIBeginWfsBaseType()     ::= "IBeginWFService"
 LogicMethodSuffix()            ::= "Logic"
