@@ -4,7 +4,7 @@ $targetFiles=
     "$PSScriptRoot'\..\Nav.Language.Service\UpdateProductVersion.targets",
     "$PSScriptRoot'\..\Nav.Language.ServiceHost\UpdateProductVersion.targets",
     "$PSScriptRoot'\..\Nav.Language.CodeAnalysis\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language\UpdateProductVersion.targets",
+    "$PSScriptRoot'\..\Nav.Language\CustomBuild.targets",
 	"$PSScriptRoot'\..\Nav.Language.BuildTasks\UpdateProductVersion.targets",
     "$PSScriptRoot'\..\Nav.Utilities\UpdateProductVersion.targets"
 

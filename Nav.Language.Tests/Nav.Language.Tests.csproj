@@ -100,6 +100,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeGenFactsTests.cs" />
     <Compile Include="CodeGenTests.cs" />
     <EmbeddedResource Include="Resources\FrameworkStubs.cs" />
     <Compile Include="Resources\Resources.cs" />
