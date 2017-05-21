@@ -13,6 +13,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen.Templates {
         public static readonly string WfsBaseTemplate    = LoadText("WFSBase.stg");
         public static readonly string WFSOneShotTemplate = LoadText("WFSOneShot.stg");
         public static readonly string CommonTemplate     = LoadText("Common.stg");
+        public static readonly string CodeGenFacts       = LoadText("CodeGenFacts.stg");
         public static readonly string TOTemplate         = LoadText("TO.stg");
         // ReSharper restore InconsistentNaming
 

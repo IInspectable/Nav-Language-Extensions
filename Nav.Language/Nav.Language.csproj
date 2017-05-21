@@ -283,6 +283,7 @@
     <EmbeddedResource Include="CodeGen\Templates\WFSOneShot.stg" />
     <EmbeddedResource Include="CodeGen\Templates\Common.stg" />
     <EmbeddedResource Include="CodeGen\Templates\TO.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\CodeGenFacts.stg" />
     <None Include="Grammar\NavTokens.g4" />
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>

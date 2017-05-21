@@ -85,9 +85,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         static Template LoadTemplate(string resourceName, CodeModel model, CodeGeneratorContext context) {
 
+            var codeGenFacts   = new TemplateGroupString(Resources.CodeGenFacts);
             var commonTemplate = new TemplateGroupString(Resources.CommonTemplate);
             var templateGroup  = new TemplateGroupString(resourceName);
 
+            templateGroup.ImportTemplates(codeGenFacts);
             templateGroup.ImportTemplates(commonTemplate);
 
             var st = templateGroup.GetInstanceOf(TemplateName);
