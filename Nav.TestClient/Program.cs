@@ -3,14 +3,16 @@
 using System;
 using System.IO;
 using System.Linq;
+
 using Pharmatechnik.Nav.Language;
-using Pharmatechnik.Nav.Utilities.IO;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.BuildTasks;
 
+using Pharmatechnik.Nav.Utilities.IO;
+
 #endregion
 
-namespace TestClient {
+namespace Nav.Client {
 
     sealed class Program : IDisposable {
 

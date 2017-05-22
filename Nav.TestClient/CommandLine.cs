@@ -1,12 +1,11 @@
 ﻿#region Using Directives
 
 using System;
-
 using Fclp;
 
 #endregion
 
-namespace TestClient {
+namespace Nav.Client {
 
     sealed class CommandLine {
 
