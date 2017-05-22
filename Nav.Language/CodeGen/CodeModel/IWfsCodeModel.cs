@@ -13,24 +13,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     public sealed class IWfsCodeModel : FileGenerationCodeModel {
 
-        IWfsCodeModel(string relativeSyntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string taskName, string baseInterfaceName, ImmutableList<SignalTriggerCodeModel> signalTriggers, string filePath) 
+        IWfsCodeModel(string relativeSyntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string baseInterfaceName, ImmutableList<SignalTriggerCodeModel> signalTriggers, string filePath) 
             : base(taskCodeModel, relativeSyntaxFileName, filePath) {
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            TaskName          = taskName          ?? throw new ArgumentNullException(nameof(taskName));
             BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(baseInterfaceName));
             SignalTriggers    = signalTriggers    ?? throw new ArgumentNullException(nameof(signalTriggers));
         }
 
-        [NotNull]
-        public ImmutableList<string> UsingNamespaces { get; }
-        [NotNull]
-        public string Namespace => Task.IwflNamespace;
-        [NotNull]
-        public string TaskName { get; }
-        [NotNull]
+        public ImmutableList<string> UsingNamespaces { get; }        
         public string BaseInterfaceName { get; }
-        [NotNull]
         public ImmutableList<SignalTriggerCodeModel> SignalTriggers { get; }
+        public string Namespace => Task.IwflNamespace;
 
         public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
 
@@ -61,7 +54,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 taskCodeModel         : taskCodeModel,
                 usingNamespaces       : namespaces.ToSortedNamespaces(), 
-                taskName              : taskDefinition.Name ?? string.Empty,
                 baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType,
                 signalTriggers        : signalTriggers.OrderBy(st=> st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName).ToImmutableList(),
                 filePath              : pathProvider.IWfsFileName);

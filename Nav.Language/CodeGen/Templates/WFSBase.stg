@@ -5,7 +5,7 @@ Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.WflNamespace> {
-    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
+    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.OriginalTaskName)>
     public abstract partial class <model.WfsBaseTypeName>: <model.WfsBaseBaseTypeName> {
         
         <writeFieldDeclarationCollapsibleList(model.TaskBegins)><\\>

@@ -32,13 +32,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 var parameterCodeModels = ParameterCodeModel.FromParameterSyntax(taskParameter);
 
                 var ctor = new BeginWrapperCtor(
-                    taskNodeName    : taskNode.Name, 
+                    taskNodeName    : taskNode.Name.ToPascalcase(), 
                     taskInitParamter: ParameterCodeModel.FromTaskDeclaration(taskNode.Declaration), 
                     taskParameter   : parameterCodeModels.ToImmutableList());
                 ctors.Add(ctor);
             }
             
-            return new BeginWrapperCodeModel(taskNode.Name, ctors.ToImmutableList());
+            return new BeginWrapperCodeModel(taskNode.Name.ToPascalcase(), ctors.ToImmutableList());
         }
 
         static IEnumerable<ParameterSyntax> GetTaskParameter(IInitConnectionPointSymbol initConnectionPoint) {

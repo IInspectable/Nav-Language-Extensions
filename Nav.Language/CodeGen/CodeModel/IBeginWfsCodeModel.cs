@@ -5,8 +5,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-using JetBrains.Annotations;
-
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
@@ -18,14 +16,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                            string relativeSyntaxFileName, 
                            string filePath, 
                            ImmutableList<string> usingNamespaces, 
-                           string taskName, 
                            string baseInterfaceName, 
                            ImmutableList<TaskInitCodeModel> taskInits, 
                            ImmutableList<string> codeDeclarations) 
             :base(taskCodeModel, relativeSyntaxFileName, filePath) {
 
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            TaskName          = taskName          ?? throw new ArgumentNullException(nameof(taskName));
             BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(baseInterfaceName));
             TaskInits         = taskInits         ?? throw new ArgumentNullException(nameof(taskInits));
             CodeDeclarations  = codeDeclarations  ?? throw new ArgumentNullException(nameof(codeDeclarations));
@@ -68,24 +64,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.IBeginWfsFileName,
                 usingNamespaces       : namespaces.ToSortedNamespaces(),
-                taskName              : taskDefinition.Name ?? string.Empty,
                 baseInterfaceName     : taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
                 taskInits             : taskInits.ToImmutableList(),
                 codeDeclarations      : codeDeclarations.ToImmutableList());
         }
-    
-        [NotNull]
-        public ImmutableList<string> UsingNamespaces { get; }
 
-        [NotNull]
         public string Namespace => Task.WflNamespace;
-        [NotNull]
-        public string TaskName { get; }
-        [NotNull]
         public string BaseInterfaceName { get; }
-        [NotNull]
+
+        public ImmutableList<string> UsingNamespaces { get; }
+        
         public ImmutableList<TaskInitCodeModel> TaskInits { get; }
-        [NotNull]
         public ImmutableList<string> CodeDeclarations { get; }
     }
 }
