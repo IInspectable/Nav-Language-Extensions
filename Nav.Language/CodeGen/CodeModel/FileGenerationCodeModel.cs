@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public abstract class FileGenerationCodeModel : CodeModel {
+    abstract class FileGenerationCodeModel : CodeModel {
 
         protected FileGenerationCodeModel(TaskCodeModel taskCodeModel, string relativeSyntaxFileName, string filePath) {
             RelativeSyntaxFileName = relativeSyntaxFileName ?? String.Empty;

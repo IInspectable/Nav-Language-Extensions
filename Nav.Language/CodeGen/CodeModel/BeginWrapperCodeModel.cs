@@ -9,7 +9,7 @@ using System.Collections.Immutable;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public class BeginWrapperCodeModel: CodeModel {
+    class BeginWrapperCodeModel: CodeModel {
 
         public BeginWrapperCodeModel(string taskNodeName, ImmutableList<BeginWrapperCtor> ctors) {
             TaskNodeName = taskNodeName?? String.Empty;
@@ -26,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var ctors = new List<BeginWrapperCtor>();
-            foreach (var initConnectionPoint in taskNode.Declaration.Inits().OfType< IInitConnectionPointSymbol>()) {
+            foreach (var initConnectionPoint in taskNode.Declaration.Inits().OfType<IInitConnectionPointSymbol>()) {
 
                 var taskParameter       = GetTaskParameter(initConnectionPoint);
                 var parameterCodeModels = ParameterCodeModel.FromParameterSyntax(taskParameter);

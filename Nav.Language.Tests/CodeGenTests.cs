@@ -35,15 +35,14 @@ namespace Nav.Language.Tests {
             var codeGenerationUnitSyntax= Syntax.ParseCodeGenerationUnit(Resources.TaskA, filePath: MkFilename("TaskA.nav"));
             var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
 
-            var options        = GenerationOptions.Default;
-            var modelGenerator = new CodeModelGenerator(options);
-            var codeGenerator  = new CodeGenerator(options);
+            var options       = GenerationOptions.Default;
+            var codeGenerator = new CodeGenerator(options);
 
-            var results = modelGenerator.Generate(codeGenerationUnit);
+            var results = codeGenerator.Generate(codeGenerationUnit);
 
             Assert.That(results.Count, Is.EqualTo(1));
 
-            var codeGenResult = codeGenerator.Generate(results[0]);
+            var codeGenResult = results[0];
 
             Assert.That(codeGenResult.IBeginWfsCodeSpec.Content, Is.Not.Empty);
             Assert.That(codeGenResult.IWfsCodeSpec.Content     , Is.Not.Empty);
@@ -118,18 +117,14 @@ namespace Nav.Language.Tests {
                 AssertNoDiagnosticErrors(codeGenerationUnit.Diagnostics);
 
                 var options = GenerationOptions.Default;
-                var modelGenerator = new CodeModelGenerator(options);
                 var codeGenerator = new CodeGenerator(options);
                 
-                // 3. CodeModels aus Semantic Model erstellen
-                var codeModelResults = modelGenerator.Generate(codeGenerationUnit);
+                // 3. Code aus Semantic Model erstellen
+                var codeGenerationResults = codeGenerator.Generate(codeGenerationUnit);
                 
-                foreach (var codeModelResult in codeModelResults) {
-
-                    // 4. C# Code aus CodeModels generieren
-                    var codeGenerationResult = codeGenerator.Generate(codeModelResult);
-
-                    // 5. C#-Syntaxbäume des generierten Codes mittels Roslyn erstellen
+                foreach (var codeGenerationResult in codeGenerationResults) {
+     
+                    // 4. C#-Syntaxbäume des generierten Codes mittels Roslyn erstellen
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IBeginWfsCodeSpec.Content, path: codeGenerationResult.IBeginWfsCodeSpec.FilePath));
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCodeSpec.Content     , path: codeGenerationResult.IWfsCodeSpec.FilePath));
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCodeSpec.Content  , path: codeGenerationResult.WfsBaseCodeSpec.FilePath));

@@ -1,10 +1,9 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using JetBrains.Annotations;
 
 #endregion
 
@@ -16,13 +15,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             ParameterName = parameterName ?? String.Empty;
         }
 
-        [NotNull]
         public string ParameterType { get; }
-
-        [NotNull]
         public string ParameterName { get; }
-
-
+        
         public static ParameterCodeModel FromTaskDeclaration(ITaskDeclarationSymbol taskDeclaration) {
 
             // If a task is not implemented, there is no IBegin interface for it! - so the generated

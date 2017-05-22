@@ -11,7 +11,7 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     // ReSharper disable once InconsistentNaming
-    public sealed class IWfsCodeModel : FileGenerationCodeModel {
+    sealed class IWfsCodeModel : FileGenerationCodeModel {
 
         IWfsCodeModel(string relativeSyntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string baseInterfaceName, ImmutableList<SignalTriggerCodeModel> signalTriggers, string filePath) 
             : base(taskCodeModel, relativeSyntaxFileName, filePath) {

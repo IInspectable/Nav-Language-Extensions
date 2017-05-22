@@ -103,7 +103,6 @@
     <Compile Include="CodeGen\CodeGenerationResult.cs" />
     <Compile Include="CodeGen\CodeGenerator.cs" />
     <Compile Include="CodeGen\CodeGeneratorContext.cs" />
-    <Compile Include="CodeGen\CodeModelGenerator.cs" />
     <Compile Include="CodeGen\CodeModelResult.cs" />
     <Compile Include="CodeGen\CodeModel\CodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\IBeginWfsCodeModel.cs" />

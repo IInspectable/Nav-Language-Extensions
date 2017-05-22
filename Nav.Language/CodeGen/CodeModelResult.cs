@@ -10,7 +10,7 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public sealed class CodeModelResult {
+    sealed class CodeModelResult {
 
         public CodeModelResult(
             ITaskDefinitionSymbol taskDefinition, 

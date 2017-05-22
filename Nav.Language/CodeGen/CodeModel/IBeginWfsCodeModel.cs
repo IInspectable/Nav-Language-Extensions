@@ -10,7 +10,7 @@ using System.Collections.Immutable;
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     // ReSharper disable once InconsistentNaming
-    public sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
+    sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
 
         IBeginWfsCodeModel(TaskCodeModel taskCodeModel, 
                            string relativeSyntaxFileName, 

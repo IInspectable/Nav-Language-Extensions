@@ -34,7 +34,6 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
             using(var logger         = new LoggerAdapter(_logger))
             using(var syntaxProvider = _syntaxProviderFactory.CreateProvider())
-            using(var modelGenerator = new CodeModelGenerator(Options))
             using(var codeGenerator  = new CodeGenerator(Options))
             using(var fileGenerator  = new FileGenerator(Options)) {
 
@@ -64,14 +63,11 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                     logger.LogWarnings(fileSpec, syntaxTree.Diagnostics);
                     logger.LogWarnings(fileSpec, codeGenerationUnit.Diagnostics);
 
-                    // 3. Code Models
-                    var codeModelResults = modelGenerator.Generate(codeGenerationUnit);
-                    foreach (var codeModelResult in codeModelResults) {
+                    // 3. Generate Code
+                    var codeGenerationResults = codeGenerator.Generate(codeGenerationUnit);
+                    foreach (var codeGenerationResult in codeGenerationResults) {
 
-                        // 4. Code Generation
-                        var codeGenerationResult = codeGenerator.Generate(codeModelResult);
-                    
-                        // 5. Write appropriate files
+                        // 4. Write Code into appropriate files
                         var fileGeneratorResults = fileGenerator.Generate(codeGenerationResult);
 
                         logger.LogFileGeneratorResults(fileGeneratorResults);

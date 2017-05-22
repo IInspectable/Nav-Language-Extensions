@@ -8,7 +8,7 @@ using System.Collections.Immutable;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public sealed class WfsCodeModel : FileGenerationCodeModel {
+    sealed class WfsCodeModel : FileGenerationCodeModel {
 
         public WfsCodeModel(
                TaskCodeModel taskCodeModel, 

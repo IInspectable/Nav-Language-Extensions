@@ -10,7 +10,7 @@ using System.Collections.Immutable;
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     // TODO separates Model für OnShot Datei (Zwecks Dateinamen)
-    public sealed class WfsBaseCodeModel : FileGenerationCodeModel {
+    sealed class WfsBaseCodeModel : FileGenerationCodeModel {
 
         WfsBaseCodeModel(TaskCodeModel taskCodeModel, 
                          string relativeSyntaxFileName, 
