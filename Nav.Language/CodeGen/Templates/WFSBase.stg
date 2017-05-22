@@ -80,6 +80,14 @@ protected class Begin<beginWrapperModel.TaskNodeName>Wrapper: INavCommandBody {
     internal readonly BeginTaskWrapper BeginWrapper;
     <writeBeginWrapperCtorList(beginWrapperModel.Ctors)>
 }
+
+private INavCommand After<beginWrapperModel.TaskNodeName>(<writeParameterList(beginWrapperModel.Call.TaskResult)>) {
+    var body = After<beginWrapperModel.TaskNodeName>Logic(<writeParameterExpressionsInline(beginWrapperModel.Call.TaskResult)>);
+    <writeCommandBodyEvaluation(beginWrapperModel.Call.TargetNodes)>
+    return null;
+}
+
+protected abstract INavCommandBody After<beginWrapperModel.TaskNodeName>Logic(<writeParameterList(beginWrapperModel.Call.TaskResult)>);
 >>
 
 writeWrapperBeginMethodList(ctorModels) ::=<<
@@ -103,8 +111,56 @@ internal Begin<ctorModel.TaskNodeName>Wrapper(<writeParameterList([ctorModel.Tas
 }
 >>
 
-
 writeTriggerDeclarationCollapsibleList() ::=<<
 /* TODO writeTriggerDeclarationCollapsibleList */
 
+>>
+
+writeCommandBodyEvaluation(targetNodes) ::=<<
+<targetNodes:writeCallTarget(); separator="\r\n">
+if(body is CANCEL) {
+    return (CANCEL)body;
+}
+// TODO Throw Exception
+throw new System.InvalidOperationException();
+>>
+
+writeCallTarget(targetNode) ::=<<
+<(targetNode.TemplateName)(targetNode)>
+>>
+
+goToExit(targetNode) ::=<<
+if (body is TASK_RESULT) {
+    return (TASK_RESULT) body;
+}
+>>
+
+goToEnd(targetNode) ::=<<
+if (body is END) {
+    return EndNonModal();
+}
+>>
+
+startModalTask(targetNode) ::=<<
+// startModalTask
+>>
+
+startNonModalTask(targetNode) ::=<<
+// startNonModalTask
+>>
+
+startTask(targetNode) ::=<<
+// startTask
+>>
+
+openModalGUI(targetNode) ::=<<
+// openModalGUI
+>>
+
+openNonModalGUI(targetNode) ::=<<
+// openNonModalGUI
+>>
+
+gotoGUI(targetNode) ::=<<
+// gotoGUI
 >>
