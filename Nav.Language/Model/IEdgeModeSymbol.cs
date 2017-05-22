@@ -10,5 +10,7 @@ namespace Pharmatechnik.Nav.Language {
         EdgeMode EdgeMode { get; }
         [NotNull]
         IEdge Edge { get; }
+
+        string DisplayName { get; }
     }
 }

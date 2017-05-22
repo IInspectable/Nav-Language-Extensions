@@ -98,19 +98,19 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         #region Symbols
         
-        static IImageHandle TaskDeclarationImageHandle;
+        static IImageHandle _taskDeclarationImageHandle;
 
         public static ImageMoniker TaskDeclaration {
             get {
 
-                if (TaskDeclarationImageHandle == null) {
+                if (_taskDeclarationImageHandle == null) {
 
-                    TaskDeclarationImageHandle = GetCompositedImageHandle(
+                    _taskDeclarationImageHandle = GetCompositedImageHandle(
                         CreateLayer(TaskDefinition),
                         CreateLayer(KnownMonikers.ReferencedElement));
                 }
 
-                return TaskDeclarationImageHandle.Moniker;
+                return _taskDeclarationImageHandle.Moniker;
             }
         }
 
@@ -162,6 +162,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             get { return KnownMonikers.EventTrigger; }
         }
 
+        public static ImageMoniker Edge {
+            get { return KnownMonikers.AssociationRelationship; }
+        }
+
         public static ImageMoniker FromSymbol(ISymbol symbol) {
             return SymbolImageMonikerFinder.FindImageMoniker(symbol);
         }
@@ -188,7 +192,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             public override ImageMoniker VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
                 return SignalTrigger;
             }
-            
+
+            public override ImageMoniker VisitEdgeModeSymbol(IEdgeModeSymbol edgeModeSymbol) {
+                return Edge;
+            }
+
             #region ConnectionPoints
 
             public override ImageMoniker VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {

@@ -217,5 +217,14 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
             yield return panel;
         }
+
+        public override IEnumerable<object> VisitEdgeModeSymbol(IEdgeModeSymbol edgeModeSymbol) {
+
+            var control = new SymbolQuickInfoControl();
+            control.CrispImage.Moniker = ImageMonikers.FromSymbol(edgeModeSymbol);
+            control.TextContent.Content = edgeModeSymbol.DisplayName;
+
+            yield return control;
+        }
     }
 }

@@ -987,7 +987,7 @@ namespace Pharmatechnik.Nav.Language {
                         _diagnostics.Add(new Diagnostic(
                                 transition.EdgeMode.Location,
                                 DiagnosticDescriptors.Semantic.Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2,
-                                transition.EdgeMode.Name,
+                                transition.EdgeMode.DisplayName,
                                 transition.Source?.Name,
                                 initNode.Name));
                     }
