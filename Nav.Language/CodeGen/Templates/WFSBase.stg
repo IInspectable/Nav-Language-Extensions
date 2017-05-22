@@ -99,7 +99,7 @@ writeBeginWrapperCtorList(ctorModels) ::=<<
 
 writeBeginWrapperCtor(ctorModel) ::=<<
 internal Begin<ctorModel.TaskNodeName>Wrapper(<writeParameterList([ctorModel.TaskInitParameter, ctorModel.TaskParameter])>) {
-    BeginWrapper = () =>  <ctorModel.TaskInitParameter.ParameterName>.Begin(<writeParameterExpressionsInline(ctorModel.TaskParameter)>);
+    BeginWrapper = () => <ctorModel.TaskInitParameter.ParameterName>.Begin(<writeParameterExpressionsInline(ctorModel.TaskParameter)>);
 }
 >>
 
