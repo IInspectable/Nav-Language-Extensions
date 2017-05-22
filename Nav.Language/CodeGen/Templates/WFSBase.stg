@@ -142,25 +142,25 @@ if (body is END) {
 >>
 
 startModalTask(targetNode) ::=<<
-// startModalTask
+// startModalTask <targetNode.PascalCaseName>
 >>
 
 startNonModalTask(targetNode) ::=<<
-// startNonModalTask
+// startNonModalTask <targetNode.PascalCaseName>
 >>
 
 startTask(targetNode) ::=<<
-// startTask
+// startTask <targetNode.PascalCaseName>
 >>
 
 openModalGUI(targetNode) ::=<<
-// openModalGUI
+// openModalGUI <targetNode.PascalCaseName>
 >>
 
 openNonModalGUI(targetNode) ::=<<
-// openNonModalGUI
+// openNonModalGUI <targetNode.PascalCaseName>
 >>
 
 gotoGUI(targetNode) ::=<<
-// gotoGUI
+// gotoGUI <targetNode.PascalCaseName>
 >>
