@@ -18,7 +18,7 @@ namespace <model.WflNamespace> {
 
         <writeBeginMethodDeclarationList(model.TaskInits)><\\>
         
-        <writeCallWrapperDeclarationList()><\\>
+        <writeBeginWrapperList(model.BeginWrappers)><\\>
         
         <writeTriggerDeclarationList()><\\>
 
@@ -50,43 +50,6 @@ namespace <model.WflNamespace> {
 }
 >>
 
-writeParameterList(parameters) ::=<<
-<parameters:writeParameter(); anchor, separator=",\r\n">
->>
-
-writeParameter(parameter) ::=<<
-<parameter.ParameterType> <parameter.ParameterName>
->>
-
-writeFieldDeclarationList(parameters) ::=<<
-<model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
-
->>
-
-writeFieldDeclaration(parameter) ::=<<
-readonly <parameter.ParameterType> _<parameter.ParameterName>;
->>
-
-writeFieldInitList(parameters) ::=<<
-<parameters:writeFieldInit(); separator="\r\n">
->>
-
-writeFieldInit(parameter) ::=<<
-_<parameter.ParameterName> = <parameter.ParameterName>;
->>
-
-writeParameterExpressions(parameters) ::=<<
-<parameters:writeParameterExpression(); anchor, separator=",\r\n">
->>
-
-writeParameterExpressionsInline(parameters) ::=<<
-<parameters:writeParameterExpression(); anchor, separator=", ">
->>
-
-writeParameterExpression(parameter) ::=<<
-<parameter.ParameterName>
->>
-
 writeBeginMethodDeclarationList(taskInits) ::=<<
 <taskInits:writeBeginMethodDeclaration(); separator="\r\n">
 
@@ -105,8 +68,41 @@ public virtual IINIT_TASK <taskInit.BeginMethodName>(<writeParameterList(taskIni
 }
 >>
 
-writeCallWrapperDeclarationList() ::=<<
-/* TODO writeCallWrapperDeclarationList */ 
+writeBeginWrapperList(beginWrapperModels) ::=<<
+<beginWrapperModels:writeBeginWrapper(); separator="\r\n">
+
+>>
+
+writeBeginWrapper(beginWrapperModel) ::=<<
+protected class Begin<beginWrapperModel.TaskNodeName>Wrapper: INavCommandBody {
+    internal readonly BeginTaskWrapper BeginWrapper;
+    <writeBeginWrapperCtorList(beginWrapperModel.Ctors)>
+}
+
+<writeWrapperBeginMethodList(beginWrapperModel.Ctors)> <\\>
+
+>>
+
+writeBeginWrapperCtorList(ctorModels) ::=<<
+<ctorModels:writeBeginWrapperCtor(); separator="\r\n">
+>>
+
+writeBeginWrapperCtor(ctorModel) ::=<<
+internal Begin<ctorModel.TaskNodeName>Wrapper(<writeParameterList([ctorModel.TaskInitParameter, ctorModel.TaskParameter])>) {
+    BeginWrapper = () =>  <ctorModel.TaskInitParameter.ParameterName>.Begin(<writeParameterExpressionsInline(ctorModel.TaskParameter)>);
+}
+>>
+
+writeWrapperBeginMethodList(ctorModels) ::=<<
+<ctorModels:writeWrapperBeginMethod()>
+
+>>
+
+writeWrapperBeginMethod(ctorModel) ::=<<
+/* TODO INIT CALL Annotation  /// \<NavInitCall\>{beginItfFullyQualifiedName}\</NavInitCall\> */
+protected Begin<beginWrapperModel.TaskNodeName>Wrapper Begin<ctorModel.TaskNodeName>(<writeParameterList([ctorModel.TaskInitParameter, ctorModel.TaskParameter])>) {
+    return new Begin<beginWrapperModel.TaskNodeName>Wrapper(<writeParameterExpressionsInline([ctorModel.TaskInitParameter, ctorModel.TaskParameter])>);
+}
 
 >>
 

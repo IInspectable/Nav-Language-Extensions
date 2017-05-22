@@ -19,7 +19,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                          ParameterCodeModel taskResult, 
                          ImmutableList<ParameterCodeModel> taskBegins, 
                          ImmutableList<ParameterCodeModel> taskParameter,
-                         ImmutableList<TaskInitCodeModel> taskInits) 
+                         ImmutableList<TaskInitCodeModel> taskInits,
+                         ImmutableList<BeginWrapperCodeModel> beginWrappers) 
             : base(taskCodeModel, relativeSyntaxFileName, filePath) {
             
             UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
@@ -27,6 +28,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             TaskBegins      = taskBegins      ?? throw new ArgumentNullException(nameof(taskBegins));
             TaskParameter   = taskParameter   ?? throw new ArgumentNullException(nameof(taskParameter));
             TaskInits       = taskInits       ?? throw new ArgumentNullException(nameof(taskInits));
+            BeginWrappers   = beginWrappers   ?? throw new ArgumentNullException(nameof(beginWrappers));
         }
         
         public string WflNamespace         => Task.WflNamespace;
@@ -39,6 +41,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ImmutableList<ParameterCodeModel> TaskBegins { get; }
         public ImmutableList<ParameterCodeModel> TaskParameter { get; }
         public ImmutableList<TaskInitCodeModel> TaskInits { get; }
+        public ImmutableList<BeginWrapperCodeModel> BeginWrappers { get; }
 
         public static WfsBaseCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
 
@@ -65,6 +68,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskInits.Add(taskInit);
             }
 
+            // BeginWrapper
+            var beginWrappers = GetBeginWrappers(taskDefinition);
+
             return new WfsBaseCodeModel(
                 taskCodeModel         : taskCodeModel,
                 relativeSyntaxFileName: relativeSyntaxFileName,
@@ -73,7 +79,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskResult            : GetTaskResult(taskDefinitionSyntax),
                 taskBegins            : taskBegins,
                 taskParameter         : taskParameter,
-                taskInits             : taskInits.ToImmutableList());
+                taskInits             : taskInits.ToImmutableList(),
+                beginWrappers         : beginWrappers.ToImmutableList());
+        }
+
+        private static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition) {
+
+            foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
+                yield return BeginWrapperCodeModel.FromTaskNode(taskNode);
+            }
         }
 
         static ImmutableList<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
@@ -122,35 +136,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         static ImmutableList<ParameterCodeModel> ToParameter(IEnumerable<ParameterSyntax> parameters) {
-            // TODO Vermutlich muss nach nur nach Name sortiert werden
-            return parameters.Select(ToParameter).OrderBy(p => p.ParameterType.Length + p.ParameterName.Length).ToImmutableList();
-        }
-
-        static ParameterCodeModel ToParameter(ParameterSyntax parameter) {
-            return new ParameterCodeModel(parameterType: parameter.Type?.ToString(), parameterName: parameter.Identifier.ToString());
+            // TODO Vermutlich darf nur nach Name sortiert werden
+            return ParameterCodeModel.FromParameterSyntax(parameters);
         }
 
         static ImmutableList<ParameterCodeModel> ToParameter(ImmutableList<ITaskDeclarationSymbol> taskDeclarations) {
-            // TODO Vermutlich muss nach nur nach Name sortiert werden
+            // TODO Vermutlich darf nur nach Name sortiert werden
             return taskDeclarations.Select(ToParameter).OrderBy(p => p.ParameterType.Length+ p.ParameterName.Length).ToImmutableList();            
         }
 
         static ParameterCodeModel ToParameter(ITaskDeclarationSymbol taskDeclaration) {
-
-            // If a task is not implemented, there is no IBegin interface for it! - so the generated
-            // code will not compile. Therefore, we generate IWFService instead. When the task IS
-            // implemented one day, regeneration (necessary for constructor parameters anyway!)
-            // will insert the correct types.
-            var parameterType = CodeGenFacts.DefaultIwfsBaseType;
-
-            if (!taskDeclaration.CodeNotImplemented) {
-                var codeNamespace = String.IsNullOrEmpty(taskDeclaration.CodeNamespace) ? CodeGenFacts.UnknownNamespace : taskDeclaration.CodeNamespace;
-                parameterType = $"{codeNamespace}.{CodeGenFacts.WflNamespaceSuffix}.{CodeGenFacts.BeginInterfacePrefix}{taskDeclaration.Name}{CodeGenFacts.WfsClassSuffix}";
-            }
-           
-            var parameterName = taskDeclaration.Name.ToCamelcase();
-
-            return new ParameterCodeModel(parameterType: parameterType, parameterName: parameterName);
+            return ParameterCodeModel.FromTaskDeclaration(taskDeclaration);           
         }
         
         static ImmutableList<ITaskDeclarationSymbol> GetUsedTaskDeclarations(ITaskDefinitionSymbol taskDefinition) {

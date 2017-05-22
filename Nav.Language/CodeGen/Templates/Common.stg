@@ -22,6 +22,43 @@ writeUsingDirective(namespace) ::=<<
 using <namespace>;
 >>
 
+writeParameterList(parameters) ::=<<
+<parameters:writeParameter(); anchor, separator=",\r\n">
+>>
+
+writeParameter(parameter) ::=<<
+<parameter.ParameterType> <parameter.ParameterName>
+>>
+
+writeFieldDeclarationList(parameters) ::=<<
+<model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
+
+>>
+
+writeFieldDeclaration(parameter) ::=<<
+readonly <parameter.ParameterType> _<parameter.ParameterName>;
+>>
+
+writeFieldInitList(parameters) ::=<<
+<parameters:writeFieldInit(); separator="\r\n">
+>>
+
+writeFieldInit(parameter) ::=<<
+_<parameter.ParameterName> = <parameter.ParameterName>;
+>>
+
+writeParameterExpressions(parameters) ::=<<
+<parameters:writeParameterExpression(); anchor, separator=",\r\n">
+>>
+
+writeParameterExpression(parameter) ::=<<
+<parameter.ParameterName>
+>>
+
+writeParameterExpressionsInline(parameters) ::=<<
+<parameters:writeParameterExpression(); anchor, separator=", ">
+>>
+
 writeTaskAnnotation(syntaxFileName, taskName) ::=<<
 #region Annotations
 /// \<<AnnotationTagNavFile()>\><syntaxFileName>\</<AnnotationTagNavFile()>\>

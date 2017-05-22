@@ -91,6 +91,8 @@
     <Compile Include="CodeFixes\TaskDefinitionSymbolExtensions.cs" />
     <Compile Include="CodeGen\CodeGenerationSpec.cs" />
     <Compile Include="CodeGen\CodeGenFacts.cs" />
+    <Compile Include="CodeGen\CodeModel\BeginWrapperCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\BeginWrapperCtor.cs" />
     <Compile Include="CodeGen\CodeModel\FileGenerationCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TOCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\WfsCodeModel.cs" />
