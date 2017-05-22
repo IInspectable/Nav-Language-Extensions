@@ -43,7 +43,7 @@ namespace TestClient {
             var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
     
             var options  = new GenerationOptions(force: cl.Force, generateToClasses:cl.GenerateToClasses);
-            var logger   = new ConsoleLogger();
+            var logger   = new ConsoleLogger(cl.Verbose);
             var pipeline = new NavCodeGeneratorPipeline(options, logger, syntaxProviderFactory);
 
             var navFiles  = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);

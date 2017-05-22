@@ -30,7 +30,11 @@ namespace Pharmatechnik.Nav.Language {
         public override SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = default(CancellationToken)) {
 
             if(_cache.TryGetValue(filePath, out var syntaxTree)) {
-                _cacheStatistic[filePath] += 1;
+                if (_cacheStatistic.ContainsKey(filePath)) {
+                    _cacheStatistic[filePath] += 1;
+                } else {                    
+                    _cacheStatistic[filePath] = 1;
+                }
                 return syntaxTree;
             }
 

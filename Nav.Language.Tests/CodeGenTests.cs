@@ -199,7 +199,7 @@ namespace Nav.Language.Tests {
         }
 
         static string MkFilename(string fileName) {
-            return Path.Combine(@"c:\UnitTest", fileName);
+            return Path.Combine(@"n:\av", fileName);
         }
 
         public class TestCaseFile {

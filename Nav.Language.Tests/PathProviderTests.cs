@@ -53,9 +53,7 @@ namespace Nav.Language.Tests {
             Assert.That(pathProvider.IWfsFileName          , Is.EqualTo(@"n:\av\IWFL\generated\ITestWFS.generated.cs"));
 
             Assert.That(pathProvider.LegacyWfsFileName     , Is.EqualTo(@"n:\av\WFL\manual\TestWFS.cs"));
-
-            // TODO liegt das nicht als .generated.cs file vor?
-            Assert.That(pathProvider.GetToFileName("MyTo"), Is.EqualTo(@"n:\av\IWFL\generated\MyTo.cs"));
+            Assert.That(pathProvider.GetToFileName("MyTo") , Is.EqualTo(@"n:\av\IWFL\generated\MyTo.generated.cs"));
         }
 
         // TODO generateToInfo Test unbedingt nochmal verifizieren

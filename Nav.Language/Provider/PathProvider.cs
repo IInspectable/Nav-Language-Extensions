@@ -66,7 +66,7 @@ namespace Pharmatechnik.Nav.Language {
 
         // TODO GetToFileName überprüfen
         public string GetToFileName(string toClassName) {
-           return PathCombine(IwflGeneratedDirectory, $"{toClassName}.{CSharpFileExtension}");
+           return PathCombine(IwflGeneratedDirectory, $"{toClassName}.{GeneratedFileNameSuffix}.{CSharpFileExtension}");
         }
 
         static string PathCombine(string first, params string[] parts) {

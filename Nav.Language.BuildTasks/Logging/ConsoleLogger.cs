@@ -9,7 +9,16 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
     public sealed class ConsoleLogger : ILogger {
 
+        public ConsoleLogger(bool verbose) {
+            Verbose = verbose;
+        }
+
+        public bool Verbose { get; }
+
         public void LogVerbose(string message) {
+            if (!Verbose) {
+                return;
+            }
             WriteVerbose(message);
         }
 
