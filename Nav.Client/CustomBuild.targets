@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Command Line</ProductName>
-    <ProductVersion>3.0.77</ProductVersion>
+    <ProductVersion>3.0.78</ProductVersion>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyInfoFile>$(MSBuildProjectDirectory)\ThisAssembly.generated.cs</AssemblyInfoFile>
@@ -22,5 +22,5 @@
   </Target>
   <ItemGroup>
     <AvailableItemName Include="ExportStringTemplates" />
-  </ItemGroup>  
+  </ItemGroup>
 </Project>
