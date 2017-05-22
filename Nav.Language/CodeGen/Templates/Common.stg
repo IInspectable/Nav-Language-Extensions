@@ -30,7 +30,7 @@ writeParameter(parameter) ::=<<
 <parameter.ParameterType> <parameter.ParameterName>
 >>
 
-writeFieldDeclarationList(parameters) ::=<<
+writeFieldDeclarationCollapsibleList(parameters) ::=<<
 <model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
 
 >>
@@ -63,5 +63,11 @@ writeTaskAnnotation(syntaxFileName, taskName) ::=<<
 #region Annotations
 /// \<<AnnotationTagNavFile()>\><syntaxFileName>\</<AnnotationTagNavFile()>\>
 /// \<<AnnotationTagNavTask()>\><taskName>\</<AnnotationTagNavTask()>\>
+#endregion
+>>
+
+writeInitCallAnnotation(beginItfFullyQualifiedName) ::=<<
+#region Annotations
+/// \<<AnnotationTagNavInitCall()>\><beginItfFullyQualifiedName>\</<AnnotationTagNavInitCall()>\>
 #endregion
 >>
