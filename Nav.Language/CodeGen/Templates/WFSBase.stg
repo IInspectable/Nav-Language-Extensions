@@ -17,10 +17,12 @@ namespace <model.WflNamespace> {
         }
 
         <writeInitTransitionCollapsibleList(model.InitTransitions)><\\>
-        
+
+        <writeExitTransitionCollapsibleList(model.ExitTransitions)><\\>
+
+        <writeTriggerTransitionCollapsibleList(model.TriggerTransitions)><\\>
+
         <writeBeginWrapperCollapsibleList(model.BeginWrappers)><\\>
-        
-        <writeTriggerDeclarationCollapsibleList()><\\>
 
         protected INavCommandBody TaskResult(<model.TaskResult.ParameterType> <model.TaskResult.ParameterName>) {
             return InternalTaskResult(<model.TaskResult.ParameterName>);
@@ -50,8 +52,8 @@ namespace <model.WflNamespace> {
 }
 >>
 
-writeInitTransitionCollapsibleList(InitTransitions) ::=<<
-<InitTransitions:writeInitTransition(); separator="\r\n\r\n">
+writeInitTransitionCollapsibleList(initTransitions) ::=<<
+<initTransitions:writeInitTransition(); separator="\r\n\r\n">
 
 >>
 
@@ -65,6 +67,40 @@ public virtual IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransiti
 }
 >>
 
+writeExitTransitionCollapsibleList(exitTransitions) ::=<<
+<exitTransitions:writeExitTransition(); separator="\r\n\r\n">
+
+>>
+
+writeExitTransition(exitTransition) ::=<<
+private INavCommand After<exitTransition.TaskNamePascalcase>(<writeParameterList(exitTransition.TaskResult)>) {
+    var body = After<exitTransition.TaskNamePascalcase>Logic(<writeParameterExpressionsInline(exitTransition.TaskResult)>);
+    <writeTransitionCallBlock(exitTransition)>
+    // TODO Throw Exception
+    throw new System.InvalidOperationException();
+}
+
+protected abstract INavCommandBody After<exitTransition.TaskNamePascalcase>Logic(<writeParameterList(exitTransition.TaskResult)>);
+>>
+
+writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
+<triggerTransitions:writeTriggerTransition(); separator="\r\n\r\n">
+
+>>
+
+writeTriggerTransition(triggerTransition) ::=<<
+/* TODO writeTriggerTransitionCollapsibleList */
+public virtual INavCommand <triggerTransition.TriggerNamePascalcase>(<triggerTransition.ViewNamePascalcase><ToClassNameSuffix()> to) {
+    var body = <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(to);
+    <writeTransitionCallBlock(triggerTransition)>
+    // TODO Throw Exception
+    throw new System.InvalidOperationException();
+}
+
+protected abstract INavCommandBody <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<triggerTransition.ViewNamePascalcase><ToClassNameSuffix()> to);
+>>
+
+
 writeBeginWrapperCollapsibleList(beginWrapperModels) ::=<<
 <beginWrapperModels:writeBeginWrapper(); separator="\r\n\r\n">
 
@@ -77,15 +113,6 @@ protected class Begin<beginWrapperModel.TaskNodeName>Wrapper: INavCommandBody {
     internal readonly BeginTaskWrapper BeginWrapper;
     <writeBeginWrapperCtorList(beginWrapperModel.Ctors)>
 }
-
-private INavCommand After<beginWrapperModel.TaskNodeName>(<writeParameterList(beginWrapperModel.Call.TaskResult)>) {
-    var body = After<beginWrapperModel.TaskNodeName>Logic(<writeParameterExpressionsInline(beginWrapperModel.Call.TaskResult)>);
-    <writeTransitionCallBlock(beginWrapperModel.ExitTransition)>
-    // TODO Throw Exception
-    throw new System.InvalidOperationException();
-}
-
-protected abstract INavCommandBody After<beginWrapperModel.TaskNodeName>Logic(<writeParameterList(beginWrapperModel.Call.TaskResult)>);
 >>
 
 writeWrapperBeginMethodList(ctorModels) ::=<<
@@ -107,11 +134,6 @@ writeBeginWrapperCtor(ctorModel) ::=<<
 internal Begin<ctorModel.TaskNodeName>Wrapper(<writeParameterList([ctorModel.TaskInitParameter, ctorModel.TaskParameter])>) {
     BeginWrapper = () => <ctorModel.TaskInitParameter.ParameterName>.Begin(<writeParameterExpressionsInline(ctorModel.TaskParameter)>);
 }
->>
-
-writeTriggerDeclarationCollapsibleList() ::=<<
-/* TODO writeTriggerDeclarationCollapsibleList */
-
 >>
 
 writeTransitionCallBlock(transition) ::=<<
@@ -150,13 +172,19 @@ startTask(call) ::=<<
 >>
 
 openModalGUI(call) ::=<<
-// openModalGUI <call.PascalCaseName>
+<openGuiImpl(call, "OpenModalGUI")>
 >>
 
-openNonModalGUI(call) ::=<<
-// openNonModalGUI <call.PascalCaseName>
+startNonModalGUI(call) ::=<<
+<openGuiImpl(call, "StartNonModalGUI")>
 >>
 
-openGUI(call) ::=<<
-// gotoGUI <call.PascalCaseName>
+gotoGUI(call) ::=<<
+<openGuiImpl(call, "GotoGUI")>
+>>
+
+openGuiImpl(call, method) ::=<<
+if(body is <call.PascalCaseName><ToClassNameSuffix()>) {
+    return <method>((<call.PascalCaseName><ToClassNameSuffix()>) body);
+}
 >>

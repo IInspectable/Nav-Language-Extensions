@@ -53,7 +53,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new IWfsCodeModel(
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 taskCodeModel         : taskCodeModel,
-                usingNamespaces       : namespaces.ToSortedNamespaces(), 
+                usingNamespaces       : namespaces.ToSortedNamespaces().ToImmutableList(), 
                 baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType,
                 signalTriggers        : signalTriggers.OrderBy(st=> st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName).ToImmutableList(),
                 filePath              : pathProvider.IWfsFileName);

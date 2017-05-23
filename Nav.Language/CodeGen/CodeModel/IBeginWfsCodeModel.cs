@@ -63,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskCodeModel         : taskCodeModel,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.IBeginWfsFileName,
-                usingNamespaces       : namespaces.ToSortedNamespaces(),
+                usingNamespaces       : namespaces.ToSortedNamespaces().ToImmutableList(),
                 baseInterfaceName     : taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
                 taskInits             : taskInits.ToImmutableList(),
                 codeDeclarations      : codeDeclarations.ToImmutableList());

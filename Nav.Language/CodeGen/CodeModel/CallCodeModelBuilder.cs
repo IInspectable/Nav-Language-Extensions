@@ -12,6 +12,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         public static IEnumerable<CallCodeModel> FromCalls(IEnumerable<Call> calls) {
+            // TODO Doppelte Exit- und EndNodes hier entfernen?
             return calls.Select(call => GetCallCodeModel(call.Node, call.EdgeMode));
         }
 

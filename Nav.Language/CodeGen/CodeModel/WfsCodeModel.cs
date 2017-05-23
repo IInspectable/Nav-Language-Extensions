@@ -38,11 +38,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskCodeModel         : taskCodeModel,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.WfsFileName,
-                usingNamespaces       : GetUsingNamespaces(taskDefinition, taskCodeModel)
+                usingNamespaces       : GetUsingNamespaces(taskDefinition, taskCodeModel).ToImmutableList()
                );
         }
 
-        static ImmutableList<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
+        static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
 
             var namespaces = new List<string>();
 

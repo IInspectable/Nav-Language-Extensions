@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language {
                                      .Where(ns => ns != null);
         }
 
-        public static ImmutableList<string> ToSortedNamespaces(this IEnumerable<string> usings) {
+        public static IEnumerable<string> ToSortedNamespaces(this IEnumerable<string> usings) {
             return usings.Where(ns => ns != null)
                          .Distinct()
                          .OrderBy(ns => ns.Length)

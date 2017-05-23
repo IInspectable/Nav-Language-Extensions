@@ -1,20 +1,22 @@
 ﻿#region Using Directives
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
     class ExitTransitionCodeModel : TransitionCodeModel {
-
-        public ExitTransitionCodeModel(ImmutableList<CallCodeModel> targetNodes, ParameterCodeModel result)
+        
+        public ExitTransitionCodeModel(ImmutableList<CallCodeModel> targetNodes, ParameterCodeModel result, string taskName)
             :base (targetNodes) {
-            TaskResult = result ?? throw new ArgumentNullException(nameof(result));
+            TaskName   = taskName ?? String.Empty;
+            TaskResult = result   ?? throw new ArgumentNullException(nameof(result));
         }
 
         public ParameterCodeModel TaskResult { get; }
+        public string TaskName { get; }
+        public string TaskNamePascalcase => TaskName.ToPascalcase();
 
         public static ExitTransitionCodeModel FromNode(ITaskNodeSymbol node) {
 
@@ -23,7 +25,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // TODO Result
             var taskResult = new ParameterCodeModel("bool", "todo");
             
-            return new ExitTransitionCodeModel(nodes.ToImmutableList(), taskResult);
+            return new ExitTransitionCodeModel(nodes.ToImmutableList(), taskResult, node.Name);
         }
     }
 }

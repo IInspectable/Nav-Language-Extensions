@@ -100,6 +100,7 @@
     <Compile Include="CodeGen\CodeModel\CallCodeModelBuilder.cs" />
     <Compile Include="CodeGen\CodeModel\TOCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TransitionCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\TriggerTransitionCodeMode.cs" />
     <Compile Include="CodeGen\CodeModel\WfsCodeModel.cs" />
     <Compile Include="CodeGen\FileGenerator.cs" />
     <Compile Include="CodeGen\FileGeneratorAction.cs" />

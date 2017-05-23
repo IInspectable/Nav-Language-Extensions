@@ -73,9 +73,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                     case EdgeMode.Modal:
                         return "openModalGUI";
                     case EdgeMode.NonModal:
-                        return "openNonModalGUI"; // TODO 
+                        return "startNonModalGUI";  
                     case EdgeMode.Goto:
-                        return "openGUI";
+                        return "gotoGUI";
                     default:
                         return "";
                 }

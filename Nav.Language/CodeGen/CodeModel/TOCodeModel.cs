@@ -53,13 +53,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 yield return new TOCodeModel(
                     relativeSyntaxFileName: relativeSyntaxFileName,
                     taskCodeModel         : taskCodeModel,
-                    usingNamespaces       : GetUsingNamespaces(),
+                    usingNamespaces       : GetUsingNamespaces().ToImmutableList(),
                     className             : toClassName,
                     filePath              : filePath);
             }           
         }
 
-        private static ImmutableList<string> GetUsingNamespaces() {
+        private static IEnumerable<string> GetUsingNamespaces() {
 
             var namespaces = new List<string>();
 
