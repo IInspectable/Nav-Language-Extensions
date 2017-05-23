@@ -9,27 +9,27 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     sealed class InitTransitionCodeModel : TransitionCodeModel {
 
-        InitTransitionCodeModel(ImmutableList<ParameterCodeModel> parameter, ImmutableList<CallCodeModel> calls) 
-            :base(calls){
+        InitTransitionCodeModel(ImmutableList<ParameterCodeModel> parameter, ImmutableList<Call> reachableCalls) 
+            :base(reachableCalls) {
 
             Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));           
         }
         
-        internal static InitTransitionCodeModel FromInitNode(IInitNodeSymbol initNodeSymbol, TaskCodeModel taskCodeModel) {
+        internal static InitTransitionCodeModel FromInitTransition(ITransition initTransition, TaskCodeModel taskCodeModel) {
 
-            if (initNodeSymbol == null) {
-                throw new ArgumentNullException(nameof(initNodeSymbol));
+            var initNode = initTransition?.Source?.Declaration as IInitNodeSymbol;
+            if (initNode == null) {
+                throw new ArgumentException("Init transition expected");
             }
             if (taskCodeModel == null) {
                 throw new ArgumentNullException(nameof(taskCodeModel));
             }
             
-            var parameter = ParameterCodeModel.FromParameterSyntaxes(initNodeSymbol.Syntax.CodeParamsDeclaration?.ParameterList);
-            var calls     = CallCodeModelBuilder.FromCalls(initNodeSymbol.GetDistinctOutgoingCalls());
+            var parameter = ParameterCodeModel.FromParameterSyntaxes(initNode.Syntax.CodeParamsDeclaration?.ParameterList);
 
             return new InitTransitionCodeModel(
-                parameter  : parameter.ToImmutableList(), 
-                calls      : calls.ToImmutableList());
+                parameter     : parameter.ToImmutableList(),
+                reachableCalls: initTransition.GetReachableCalls().ToImmutableList());
         }
 
         public ImmutableList<ParameterCodeModel> Parameter { get; }

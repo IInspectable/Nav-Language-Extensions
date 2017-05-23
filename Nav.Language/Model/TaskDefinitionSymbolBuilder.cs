@@ -980,16 +980,16 @@ namespace Pharmatechnik.Nav.Language {
             //==============================
             foreach(var initNode in _taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
 
-                foreach(var transition in initNode.GetOutgoingEdges()){
-                    if (transition.EdgeMode != null && 
-                        transition.EdgeMode.EdgeMode != EdgeMode.Goto) {
-
+                // Eigentlich darf eine Init-Node nur genau eine initTransition haben...
+                foreach(var initTransition in initNode.Outgoings) {
+                    foreach(var reachableCalls in initTransition.GetReachableCalls()
+                                                                .Where(c => c.EdgeMode.EdgeMode != EdgeMode.Goto)) {
                         _diagnostics.Add(new Diagnostic(
-                                transition.EdgeMode.Location,
-                                DiagnosticDescriptors.Semantic.Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2,
-                                transition.EdgeMode.DisplayName,
-                                transition.Source?.Name,
-                                initNode.Name));
+                            reachableCalls.EdgeMode.Location,
+                            DiagnosticDescriptors.Semantic.Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2,
+                            reachableCalls.EdgeMode.DisplayName,
+                            initTransition.Source?.Name,
+                            initNode.Name));
                     }
                 }
             }

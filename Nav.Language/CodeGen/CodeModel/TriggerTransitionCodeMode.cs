@@ -10,8 +10,8 @@ using System.Collections.Immutable;
 namespace Pharmatechnik.Nav.Language.CodeGen {
     class TriggerTransitionCodeModel : TransitionCodeModel {
 
-        public TriggerTransitionCodeModel(ImmutableList<CallCodeModel> calls, string viewName, string triggerName)
-            : base(calls) {
+        public TriggerTransitionCodeModel(ImmutableList<Call> reachableCalls, string viewName, string triggerName)
+            : base(reachableCalls) {
             TriggerName = triggerName;
             ViewName    = viewName ?? String.Empty;
         }
@@ -21,17 +21,18 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public string TriggerName { get; }
         public string TriggerNamePascalcase => TriggerName.ToPascalcase();
 
-        public static IEnumerable<TriggerTransitionCodeModel> FromNode(IGuiNodeSymbol node) {
+        public static IEnumerable<TriggerTransitionCodeModel> FromTriggerTransition(ITransition triggerTransition) {
 
-            foreach (var trans in node.Outgoings) {
-                foreach (var signalTrigger in trans.Triggers.OfType<ISignalTriggerSymbol>()) {
+            var guiNode = triggerTransition?.Source?.Declaration as IGuiNodeSymbol;
+            if(guiNode == null) {
+                throw new ArgumentException("Trigger transition expected");
+            }
 
-                    var calls = CallCodeModelBuilder.FromCalls(trans.Target.Declaration.GetDistinctOutgoingCalls());
-                    yield return new TriggerTransitionCodeModel(
-                        calls: calls.ToImmutableList(), 
-                        viewName: node.Name, 
-                        triggerName: signalTrigger.Name);
-                }
+            foreach(var signalTrigger in triggerTransition.Triggers.OfType<ISignalTriggerSymbol>()) {
+                yield return new TriggerTransitionCodeModel(
+                    reachableCalls: triggerTransition.GetReachableCalls().ToImmutableList(),
+                    viewName      : guiNode.Name,
+                    triggerName   : signalTrigger.Name);
             }
         }
     }

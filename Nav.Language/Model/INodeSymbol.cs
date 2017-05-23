@@ -15,9 +15,6 @@ namespace Pharmatechnik.Nav.Language {
         IReadOnlyList<INodeReferenceSymbol> References { get; }
 
         IEnumerable<ISymbol> SymbolsAndSelf();
-
-        IEnumerable<IEdge> GetIncomingEdges();
-        IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> seenEdges=null);
     }
 
     public interface IInitNodeSymbol : INodeSymbol {

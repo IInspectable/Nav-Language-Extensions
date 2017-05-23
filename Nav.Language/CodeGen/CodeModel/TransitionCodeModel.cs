@@ -10,20 +10,35 @@ using System.Collections.Immutable;
 namespace Pharmatechnik.Nav.Language.CodeGen {
     class TransitionCodeModel : CodeModel {
 
-        public TransitionCodeModel(ImmutableList<CallCodeModel> targetNodes) {
-            Calls = targetNodes ?? throw new ArgumentNullException(nameof(targetNodes));
+        public TransitionCodeModel(ImmutableList<Call> reachableCalls) {
+            if(reachableCalls == null) {
+                throw new ArgumentNullException(nameof(reachableCalls));
+            }
+
+            var calls = CallCodeModelBuilder.FromCalls(reachableCalls);
+
+            var reachableNodes = reachableCalls.Select(c => c.Node).ToList();
+
+            var taskBegins      = GetTaskBegins(reachableNodes);
+            var taskBeginFields = GetTaskBeginFields(reachableNodes);
+
+            Calls           = calls.ToImmutableList();
+            TaskBegins      = taskBegins.ToImmutableList();
+            TaskBeginFields = taskBeginFields.ToImmutableList();
         }
 
         public ImmutableList<CallCodeModel> Calls { get; set; }
+        public ImmutableList<ParameterCodeModel> TaskBegins { get; }
+        public ImmutableList<FieldCodeModel> TaskBeginFields { get; }
 
         // TODO Sortierung
-        protected static IEnumerable<ParameterCodeModel> GetTaskBegins(IEnumerable<INodeSymbol> reachableNodes) {
+        static IEnumerable<ParameterCodeModel> GetTaskBegins(IEnumerable<INodeSymbol> reachableNodes) {
             return ParameterCodeModel.GetTaskBeginsAsParameter(GetDistinctTaskDeclarations(reachableNodes))
                                      .OrderBy(p => p.ParameterName).ToImmutableList();
         }
 
         // TODO Sortierung
-        protected static IEnumerable<FieldCodeModel> GetTaskBeginFields(IEnumerable<INodeSymbol> reachableNodes) {
+        static IEnumerable<FieldCodeModel> GetTaskBeginFields(IEnumerable<INodeSymbol> reachableNodes) {
             var taskBegins       = GetTaskBegins(reachableNodes);
             var taskBeginMembers = taskBegins.Select(p => new FieldCodeModel(p.ParameterType, p.ParameterName));
             return taskBeginMembers;

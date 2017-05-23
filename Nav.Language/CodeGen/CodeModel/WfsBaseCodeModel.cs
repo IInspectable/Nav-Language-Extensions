@@ -108,25 +108,31 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
         }
 
-        private static List<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
-            var taskInits = new List<InitTransitionCodeModel>();
-            foreach (var initNode in taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
-                var taskInit = InitTransitionCodeModel.FromInitNode(initNode, taskCodeModel);
-                taskInits.Add(taskInit);
-            }
-            return taskInits;
+        static IEnumerable<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
+            return taskDefinition.NodeDeclarations
+                                 .OfType<IInitNodeSymbol>().SelectMany(n => n.Outgoings)
+                                 .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeModel));
         }
         
-        private static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition) {
-            return taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>().Select(ExitTransitionCodeModel.FromNode);
+        static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition) {
+            // TODO
+            return taskDefinition.NodeDeclarations
+                                 .OfType<ITaskNodeSymbol>()
+                                 .SelectMany(n => n.Outgoings)
+                                 .Select(ExitTransitionCodeModel.FromExitTransition);
         }
 
-        private static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition) {
-            return taskDefinition.NodeDeclarations.OfType<IGuiNodeSymbol>().SelectMany(TriggerTransitionCodeModel.FromNode);            
+        static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition) {
+            return taskDefinition.NodeDeclarations
+                                 .OfType<IGuiNodeSymbol>()
+                                 .SelectMany(n => n.Outgoings)
+                                 .SelectMany(TriggerTransitionCodeModel.FromTriggerTransition);            
         }
 
-        private static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition) {
-            return taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>().Select(BeginWrapperCodeModel.FromTaskNode);
+        static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition) {
+            return taskDefinition.NodeDeclarations
+                                 .OfType<ITaskNodeSymbol>()
+                                 .Select(BeginWrapperCodeModel.FromTaskNode);
         }
 
         static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
@@ -172,7 +178,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                                                   // TODO Klären, ob wir nicht evtl. doch alle Knoten, also auch die nicht referenzierten, für den Compile relevant sind!
                                                   .Where(taskNode => taskNode.References.Any())
                                                   .Select(taskNode => taskNode.Declaration)
-                                                  .DistinctBy(declaration => declaration?.Name ?? String.Empty);
+                                                  .Distinct();
 
             return relevantTaskNodes.ToImmutableList();
         }
