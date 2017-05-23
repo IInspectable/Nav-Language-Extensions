@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Immutable;
 
 #endregion
@@ -20,7 +21,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public static ExitTransitionCodeModel FromNode(ITaskNodeSymbol node) {
 
-            var nodes = CallCodeModelBuilder.FromCalls(node.GetDistinctOutgoingCalls());
+            var reachableCalls = node.GetDistinctOutgoingCalls().ToList();
+            var nodes = CallCodeModelBuilder.FromCalls(reachableCalls);
+            var taskBegins = GetTaskBegins(reachableCalls.Select(c => c.Node));
            
             // TODO Result
             var taskResult = new ParameterCodeModel("bool", "todo");

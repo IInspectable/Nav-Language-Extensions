@@ -22,6 +22,7 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
+        // TODO Ist das nicht per Sematic Model Check sichergestellt?
         public static IEnumerable<Call> GetDistinctOutgoingCalls(this INodeSymbol nodeSynbol) {
 
             var nodes = new Dictionary<string, Call>();
