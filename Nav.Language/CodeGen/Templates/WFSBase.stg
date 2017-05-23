@@ -58,12 +58,12 @@ writeInitTransitionCollapsibleList(initTransitions) ::=<<
 >>
 
 writeInitTransition(initTransition) ::=<<
-protected abstract INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList(initTransition.Parameter)> /* TODO reachable calls*/);
+protected abstract INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>);
 
 public virtual IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>) {
-    INavCommandBody body = <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressions(initTransition.Parameter)> /*TODO reachable calls*/);
+    INavCommandBody body = <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressions([initTransition.Parameter, initTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(initTransition)>
-    throw new InvalidOperationException($"<BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressionsInline(initTransition.Parameter)> /* TODO reachable calls*/) returned unexpected result '{OfTypeText(body)}'.");
+    throw new InvalidOperationException($"<BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressionsInline(initTransition.Parameter)> returned unexpected result '{OfTypeText(body)}'.");
 }
 >>
 
@@ -89,14 +89,14 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
-public virtual INavCommand <triggerTransition.TriggerNamePascalcase>(<triggerTransition.ViewNamePascalcase><ToClassNameSuffix()> to) {
-    var body = <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(to);
+public virtual INavCommand <triggerTransition.TriggerNamePascalcase>(<writeParameterList(triggerTransition.ViewParameter)>) {
+    var body = <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(triggerTransition)>
     // TODO Throw Exception
     throw new InvalidOperationException();
 }
 
-protected abstract INavCommandBody <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<triggerTransition.ViewNamePascalcase><ToClassNameSuffix()> to);
+protected abstract INavCommandBody <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
 >>
 
 
@@ -136,7 +136,7 @@ internal Begin<ctorModel.TaskNodeName>Wrapper(<writeParameterList([ctorModel.Tas
 >>
 
 writeTransitionCallBlock(transition) ::=<<
-<transition.Calls:writeCall(); separator="\r\n">
+<transition.ReachableCalls:writeCall(); separator="\r\n">
 if(body is CANCEL) {
     return (CANCEL)body;
 }

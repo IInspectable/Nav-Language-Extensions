@@ -23,12 +23,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var taskBegins      = GetTaskBegins(reachableNodes);
             var taskBeginFields = GetTaskBeginFields(reachableNodes);
 
-            Calls           = calls.ToImmutableList();
+            ReachableCalls  = calls.ToImmutableList();
             TaskBegins      = taskBegins.ToImmutableList();
             TaskBeginFields = taskBeginFields.ToImmutableList();
-        }
-
-        public ImmutableList<CallCodeModel> Calls { get; set; }
+        }        
+        public ImmutableList<CallCodeModel> ReachableCalls { get; set; }
         public ImmutableList<ParameterCodeModel> TaskBegins { get; }
         public ImmutableList<FieldCodeModel> TaskBeginFields { get; }
         

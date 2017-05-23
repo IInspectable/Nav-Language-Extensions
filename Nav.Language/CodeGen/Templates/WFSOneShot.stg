@@ -20,7 +20,7 @@ writeInitTransitionCollapsibleList(initTransitions) ::=<<
 >>
 
 writeInitTransition(initTransition) ::=<<
-protected override INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList(initTransition.Parameter)> /* TODO reachable calls*/) {
+protected override INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>) {
     throw new NotImplementedException();
 }
 >>
@@ -42,7 +42,7 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
-protected override INavCommandBody <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<triggerTransition.ViewNamePascalcase><ToClassNameSuffix()> to) {
+protected override INavCommandBody <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>) {
     throw new NotImplementedException();
 }
 >>
