@@ -1,35 +1,85 @@
 ﻿#region Using Directives
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    class CallCodeModel : CodeModel {
+    abstract class CallCodeModel: CodeModel {
+        
+        protected CallCodeModel(string name, EdgeMode edgeMode) {
+            Name     = name ?? String.Empty;
+            EdgeMode = edgeMode;
 
-        public CallCodeModel(ImmutableList<NodeCodeModel> targetNodes, ParameterCodeModel result) {
-            TargetNodes = targetNodes  ?? throw new ArgumentNullException(nameof(targetNodes));
-            TaskResult = result ?? throw new ArgumentNullException(nameof(result));
         }
 
-        public ImmutableList<NodeCodeModel> TargetNodes { get; set; }
-        public ParameterCodeModel TaskResult { get; }
+        public EdgeMode EdgeMode { get; }
 
-        public static CallCodeModel FromNode(INodeSymbol node) {
+        public string Name { get; }
+        public string PascalCaseName => Name.ToPascalcase();
 
-            var nodes = new List<NodeCodeModel>();
-            foreach(var edge in node.GetOutgoingEdges()) {
-                var nodeCodeModel = NodeCodeModelBuilder.GetNodeCodeModel(edge.Target?.Declaration, edge.EdgeMode);
-                nodes.Add(nodeCodeModel);
+        public abstract string TemplateName { get; }
+
+    }
+
+    class ExitCallCodeModel : CallCodeModel {
+
+        public ExitCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
+        }
+
+        public override string TemplateName => "goToExit";
+
+    }
+
+    class EndCallCodeModel : CallCodeModel {
+
+        public EndCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
+        }
+
+        public override string TemplateName => "goToEnd";
+
+    }
+
+    class TaskCallCodeModel : CallCodeModel {
+
+        public TaskCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
+        }
+
+        public override string TemplateName {
+            get {
+                switch (EdgeMode) {
+                    case EdgeMode.Modal:
+                        return "startModalTask";
+                    case EdgeMode.NonModal:
+                        return "startNonModalTask";
+                    case EdgeMode.Goto:
+                        return "startTask";
+                    default:
+                        return "";
+                }
             }
+        }
+    }
 
-            // TODO Result
-            var taskResult = new ParameterCodeModel("bool", "todo");
-            
-            return new CallCodeModel(nodes.ToImmutableList(), taskResult);
+    class GuiCallCodeModel : CallCodeModel {
+
+        public GuiCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
+        }
+
+        public override string TemplateName {
+            get {
+                switch (EdgeMode) {
+                    case EdgeMode.Modal:
+                        return "openModalGUI";
+                    case EdgeMode.NonModal:
+                        return "openNonModalGUI"; // TODO 
+                    case EdgeMode.Goto:
+                        return "openGUI";
+                    default:
+                        return "";
+                }
+            }
         }
     }
 }

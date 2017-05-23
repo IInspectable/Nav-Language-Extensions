@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region Using Directives
+
+using System;
 using System.Linq;
+using System.Collections.Generic;
+
 using JetBrains.Annotations;
 
-namespace Pharmatechnik.Nav.Language {
+#endregion
 
+namespace Pharmatechnik.Nav.Language {
     abstract class NodeSymbol<T> : Symbol, INodeSymbol where T: NodeDeclarationSyntax {
 
         protected NodeSymbol(string name, Location location, T syntax, TaskDefinitionSymbol containingTask) : base(name, location) {
-
-            if (syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }
-            if (containingTask == null) {
-                throw new ArgumentNullException(nameof(containingTask));
-            }
-
-            Syntax         = syntax;
-            ContainingTask = containingTask;
+            Syntax         = syntax         ?? throw new ArgumentNullException(nameof(syntax));
+            ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
             References     = new List<INodeReferenceSymbol>();
         }
 
@@ -42,21 +38,21 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public abstract IEnumerable<IEdge> GetIncomingEdges();
-        public abstract IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null);
+        public abstract IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> seenEdges = null);
 
         internal static IEnumerable<IEdge> ResolveChoice<TEdge>(TEdge edge) where TEdge : IEdge {
             return ResolveChoice(edge, null);
         }
 
-        internal static IEnumerable<IEdge> ResolveChoice<TEdge>(TEdge edge, HashSet<IEdge> fetched) where TEdge : IEdge {
+        internal static IEnumerable<IEdge> ResolveChoice<TEdge>(TEdge edge, HashSet<IEdge> seenEdges) where TEdge : IEdge {
 
-            fetched = fetched ?? new HashSet<IEdge>();
+            seenEdges = seenEdges ?? new HashSet<IEdge>();
 
-            if (fetched.Contains(edge)) {
+            if (seenEdges.Contains(edge)) {
                 yield break;
             }
 
-            fetched.Add(edge);
+            seenEdges.Add(edge);
             yield return edge;
 
             var choiceNode = edge.Target?.Declaration as IChoiceNodeSymbol;
@@ -65,7 +61,7 @@ namespace Pharmatechnik.Nav.Language {
 
                 yield return edge;
 
-                foreach (var outgoingEdge in choiceNode.GetOutgoingEdges(fetched)) {
+                foreach (var outgoingEdge in choiceNode.GetOutgoingEdges(seenEdges)) {
                     yield return outgoingEdge;
                 }
             }
@@ -87,7 +83,7 @@ namespace Pharmatechnik.Nav.Language {
             return Incomings.SelectMany(ResolveChoice);
         }
 
-        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null) {
+        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> seenEdges = null) {
             return Enumerable.Empty<IEdge>();
         }
     }
@@ -107,8 +103,8 @@ namespace Pharmatechnik.Nav.Language {
             return Enumerable.Empty<IEdge>();
         }
 
-        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null) {
-            return Outgoings.SelectMany( e=> ResolveChoice(e, fetched));
+        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> seenEdges = null) {
+            return Outgoings.SelectMany( e=> ResolveChoice(e, seenEdges));
         }        
     }
 
@@ -130,8 +126,8 @@ namespace Pharmatechnik.Nav.Language {
             return Incomings.SelectMany(ResolveChoice);
         }
 
-        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null) {
-            return Outgoings.SelectMany(e => ResolveChoice(e, fetched));
+        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> seenEdges = null) {
+            return Outgoings.SelectMany(e => ResolveChoice(e, seenEdges));
         }
     }
 

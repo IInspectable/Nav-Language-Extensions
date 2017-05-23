@@ -16,7 +16,7 @@ namespace <model.WflNamespace> {
             <writeFieldInitList(model.TaskBegins)>
         }
 
-        <writeBeginMethodDeclarationCollapsibleList(model.TaskInits)><\\>
+        <writeInitTransitionCollapsibleList(model.InitTransitions)><\\>
         
         <writeBeginWrapperCollapsibleList(model.BeginWrappers)><\\>
         
@@ -50,21 +50,18 @@ namespace <model.WflNamespace> {
 }
 >>
 
-writeBeginMethodDeclarationCollapsibleList(taskInits) ::=<<
-<taskInits:writeBeginMethodDeclaration(); separator="\r\n\r\n">
+writeInitTransitionCollapsibleList(InitTransitions) ::=<<
+<InitTransitions:writeInitTransition(); separator="\r\n\r\n">
 
 >>
 
-writeBeginMethodDeclaration(taskInit) ::=<<
-protected abstract INavCommandBody BeginLogic(<writeParameterList(taskInit.Parameter)> /* TODO reachable calls*/);
+writeInitTransition(initTransition) ::=<<
+protected abstract INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList(initTransition.Parameter)> /* TODO reachable calls*/);
 
-public virtual IINIT_TASK <taskInit.BeginMethodName>(<writeParameterList(taskInit.Parameter)>) {
-    INavCommandBody body = BeginLogic(<writeParameterExpressions(taskInit.Parameter)> /*TODO reachable calls*/);
-    // TODO Generate Code
-    if(body is CANCEL) {
-        return (CANCEL)body;
-    }
-    throw new System.InvalidOperationException($"BeginLogic(<writeParameterExpressionsInline(taskInit.Parameter)> /* TODO reachable calls*/) returned unexpected result '{OfTypeText(body)}'.");
+public virtual IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>) {
+    INavCommandBody body = <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressions(initTransition.Parameter)> /*TODO reachable calls*/);
+    <writeTransitionCallBlock(initTransition)>
+    throw new System.InvalidOperationException($"<BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressionsInline(initTransition.Parameter)> /* TODO reachable calls*/) returned unexpected result '{OfTypeText(body)}'.");
 }
 >>
 
@@ -83,8 +80,9 @@ protected class Begin<beginWrapperModel.TaskNodeName>Wrapper: INavCommandBody {
 
 private INavCommand After<beginWrapperModel.TaskNodeName>(<writeParameterList(beginWrapperModel.Call.TaskResult)>) {
     var body = After<beginWrapperModel.TaskNodeName>Logic(<writeParameterExpressionsInline(beginWrapperModel.Call.TaskResult)>);
-    <writeCommandBodyEvaluation(beginWrapperModel.Call.TargetNodes)>
-    return null;
+    <writeTransitionCallBlock(beginWrapperModel.ExitTransition)>
+    // TODO Throw Exception
+    throw new System.InvalidOperationException();
 }
 
 protected abstract INavCommandBody After<beginWrapperModel.TaskNodeName>Logic(<writeParameterList(beginWrapperModel.Call.TaskResult)>);
@@ -116,51 +114,49 @@ writeTriggerDeclarationCollapsibleList() ::=<<
 
 >>
 
-writeCommandBodyEvaluation(targetNodes) ::=<<
-<targetNodes:writeCallTarget(); separator="\r\n">
+writeTransitionCallBlock(transition) ::=<<
+<transition.Calls:writeCall(); separator="\r\n">
 if(body is CANCEL) {
     return (CANCEL)body;
 }
-// TODO Throw Exception
-throw new System.InvalidOperationException();
 >>
 
-writeCallTarget(targetNode) ::=<<
-<(targetNode.TemplateName)(targetNode)>
+writeCall(call) ::=<<
+<(call.TemplateName)(call)>
 >>
 
-goToExit(targetNode) ::=<<
+goToExit(call) ::=<<
 if (body is TASK_RESULT) {
     return (TASK_RESULT) body;
 }
 >>
 
-goToEnd(targetNode) ::=<<
+goToEnd(call) ::=<<
 if (body is END) {
     return EndNonModal();
 }
 >>
 
-startModalTask(targetNode) ::=<<
-// startModalTask <targetNode.PascalCaseName>
+startModalTask(call) ::=<<
+// startModalTask <call.PascalCaseName>
 >>
 
-startNonModalTask(targetNode) ::=<<
-// startNonModalTask <targetNode.PascalCaseName>
+startNonModalTask(call) ::=<<
+// startNonModalTask <call.PascalCaseName>
 >>
 
-startTask(targetNode) ::=<<
-// startTask <targetNode.PascalCaseName>
+startTask(call) ::=<<
+// startTask <call.PascalCaseName>
 >>
 
-openModalGUI(targetNode) ::=<<
-// openModalGUI <targetNode.PascalCaseName>
+openModalGUI(call) ::=<<
+// openModalGUI <call.PascalCaseName>
 >>
 
-openNonModalGUI(targetNode) ::=<<
-// openNonModalGUI <targetNode.PascalCaseName>
+openNonModalGUI(call) ::=<<
+// openNonModalGUI <call.PascalCaseName>
 >>
 
-gotoGUI(targetNode) ::=<<
-// gotoGUI <targetNode.PascalCaseName>
+openGUI(call) ::=<<
+// gotoGUI <call.PascalCaseName>
 >>

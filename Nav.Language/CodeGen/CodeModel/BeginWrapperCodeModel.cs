@@ -11,16 +11,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     class BeginWrapperCodeModel: CodeModel {
         
-        public BeginWrapperCodeModel(string taskNodeName, ImmutableList<BeginWrapperCtor> ctors, CallCodeModel call) {
+        public BeginWrapperCodeModel(string taskNodeName, ImmutableList<BeginWrapperCtor> ctors, ExitTransitionCodeModel exitTransition) {
             
-            TaskNodeName = taskNodeName?? String.Empty;
-            Ctors        = ctors       ?? throw new ArgumentNullException(nameof(ctors));
-            Call        = call ?? throw new ArgumentNullException(nameof(ctors));
+            TaskNodeName   = taskNodeName?? String.Empty;
+            Ctors          = ctors       ?? throw new ArgumentNullException(nameof(ctors));
+            ExitTransition = exitTransition ?? throw new ArgumentNullException(nameof(ctors));
         }
 
         public string TaskNodeName { get; }
         public ImmutableList<BeginWrapperCtor> Ctors { get;}
-        public CallCodeModel Call { get; }
+        public ExitTransitionCodeModel ExitTransition { get; }
 
         public static BeginWrapperCodeModel FromTaskNode(ITaskNodeSymbol taskNode) {
 
@@ -41,7 +41,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 ctors.Add(ctor);
             }
 
-            var calls = CallCodeModel.FromNode(taskNode);
+            var calls = ExitTransitionCodeModel.FromNode(taskNode);
 
             return new BeginWrapperCodeModel(taskNode.Name.ToPascalcase(), ctors.ToImmutableList(), calls);
         }

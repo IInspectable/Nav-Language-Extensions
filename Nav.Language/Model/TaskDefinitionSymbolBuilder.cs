@@ -993,6 +993,7 @@ namespace Pharmatechnik.Nav.Language {
                     }
                 }
             }
+            // TODO Nodes reachable by different Edges!
         }
         
         public static TaskDefinitionBuilderResult Build(TaskDefinitionSyntax taskDefinitionSyntax, IReadOnlySymbolCollection<TaskDeclarationSymbol> taskDeklarations) {

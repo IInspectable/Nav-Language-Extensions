@@ -19,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                          ParameterCodeModel taskResult, 
                          ImmutableList<ParameterCodeModel> taskBegins, 
                          ImmutableList<ParameterCodeModel> taskParameter,
-                         ImmutableList<TaskInitCodeModel> taskInits,
+                         ImmutableList<InitTransitionCodeModel> initTransitions,
                          ImmutableList<BeginWrapperCodeModel> beginWrappers) 
             : base(taskCodeModel, relativeSyntaxFileName, filePath) {
             
@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             TaskResult      = taskResult      ?? throw new ArgumentNullException(nameof(taskResult));
             TaskBegins      = taskBegins      ?? throw new ArgumentNullException(nameof(taskBegins));
             TaskParameter   = taskParameter   ?? throw new ArgumentNullException(nameof(taskParameter));
-            TaskInits       = taskInits       ?? throw new ArgumentNullException(nameof(taskInits));
+            InitTransitions = initTransitions ?? throw new ArgumentNullException(nameof(initTransitions));
             BeginWrappers   = beginWrappers   ?? throw new ArgumentNullException(nameof(beginWrappers));
         }
         
@@ -40,7 +40,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ImmutableList<string> UsingNamespaces { get; }       
         public ImmutableList<ParameterCodeModel> TaskBegins { get; }
         public ImmutableList<ParameterCodeModel> TaskParameter { get; }
-        public ImmutableList<TaskInitCodeModel> TaskInits { get; }
+        public ImmutableList<InitTransitionCodeModel> InitTransitions { get; }
         public ImmutableList<BeginWrapperCodeModel> BeginWrappers { get; }
 
         public static WfsBaseCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
@@ -62,9 +62,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var taskParameter = ToParameter(code);
 
             // Inits
-            var taskInits = new List<TaskInitCodeModel>();
+            var taskInits = new List<InitTransitionCodeModel>();
             foreach (var initNode in taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
-                var taskInit = TaskInitCodeModel.FromInitNode(initNode, taskCodeModel);
+                var taskInit = InitTransitionCodeModel.FromInitNode(initNode, taskCodeModel);
                 taskInits.Add(taskInit);
             }
 
@@ -79,7 +79,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskResult            : GetTaskResult(taskDefinitionSyntax),
                 taskBegins            : taskBegins,
                 taskParameter         : taskParameter,
-                taskInits             : taskInits.ToImmutableList(),
+                initTransitions       : taskInits.ToImmutableList(),
                 beginWrappers         : beginWrappers.ToImmutableList());
         }
 

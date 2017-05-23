@@ -93,11 +93,13 @@
     <Compile Include="CodeGen\CodeGenFacts.cs" />
     <Compile Include="CodeGen\CodeModel\BeginWrapperCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\BeginWrapperCtor.cs" />
-    <Compile Include="CodeGen\CodeModel\CallCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\ExitTransitionCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\FileGenerationCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\NodeCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\NodeCodeModelBuilder.cs" />
+    <Compile Include="CodeGen\CodeModel\InitTransitionCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\CallCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\CallCodeModelBuilder.cs" />
     <Compile Include="CodeGen\CodeModel\TOCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\TransitionCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\WfsCodeModel.cs" />
     <Compile Include="CodeGen\FileGenerator.cs" />
     <Compile Include="CodeGen\FileGeneratorAction.cs" />
@@ -119,6 +121,8 @@
     <Compile Include="CodeGen\CodeModel\TaskExitCodeModel.cs" />
     <Compile Include="CodeGen\Generator.cs" />
     <Compile Include="CodeGen\Templates\CodeGenFacts.generated.cs" />
+    <Compile Include="Model\Call.cs" />
+    <Compile Include="Model\NodeSymbolExtensions.cs" />
     <Compile Include="Provider\CachedSyntaxProvider.cs" />
     <Compile Include="Provider\IPathProvider.cs" />
     <Compile Include="Provider\IPathProviderFactory.cs" />
