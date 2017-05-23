@@ -8,16 +8,6 @@ using System.Collections.Immutable;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    class TaskParameterCodeModel : ParameterCodeModel {
-
-        public TaskParameterCodeModel(string parameterType, string parameterName, string taskName) : base(parameterType, parameterName) {
-            TaskName = taskName ?? String.Empty;
-        }
-
-        public string TaskName { get; }
-        public string MemberName => $"_{TaskName.ToCamelcase()}";
-    }
-
     class ExitTransitionCodeModel : TransitionCodeModel {
 
         public ExitTransitionCodeModel(ImmutableList<CallCodeModel> calls, 
