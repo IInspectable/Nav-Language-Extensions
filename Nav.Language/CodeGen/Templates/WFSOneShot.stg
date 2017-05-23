@@ -5,7 +5,44 @@ Begin(model, context) ::=<<
 
 namespace <model.WflNamespace> {	
     public abstract partial class <model.WfsTypeName> {
-        /*  TODO OneShot file */
+        <writeInitTransitionCollapsibleList(model.InitTransitions)><\\>
+
+        <writeExitTransitionCollapsibleList(model.ExitTransitions)><\\>
+
+        <writeTriggerTransitionCollapsibleList(model.TriggerTransitions)><\\>
     }
+}
+>>
+
+writeInitTransitionCollapsibleList(initTransitions) ::=<<
+<initTransitions:writeInitTransition(); separator="\r\n\r\n">
+
+>>
+
+writeInitTransition(initTransition) ::=<<
+protected override INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList(initTransition.Parameter)> /* TODO reachable calls*/) {
+    throw new NotImplementedException();
+}
+>>
+
+writeExitTransitionCollapsibleList(exitTransitions) ::=<<
+<exitTransitions:writeExitTransition(); separator="\r\n\r\n">
+
+>>
+
+writeExitTransition(exitTransition) ::=<<
+protected override INavCommandBody <ExitMethodPrefix()><exitTransition.TaskNamePascalcase><LogicMethodSuffix()>(<writeParameterList(exitTransition.TaskResult)>) {
+     throw new NotImplementedException();
+}
+>>
+
+writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
+<triggerTransitions:writeTriggerTransition(); separator="\r\n\r\n">
+
+>>
+
+writeTriggerTransition(triggerTransition) ::=<<
+protected override INavCommandBody <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<triggerTransition.ViewNamePascalcase><ToClassNameSuffix()> to) {
+    throw new NotImplementedException();
 }
 >>
