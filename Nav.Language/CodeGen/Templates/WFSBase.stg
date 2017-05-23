@@ -5,7 +5,7 @@ Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.WflNamespace> {
-    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.OriginalTaskName)>
+    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public abstract partial class <model.WfsBaseTypeName>: <model.WfsBaseBaseTypeName> {
         
         <writeFieldDeclarationCollapsibleList(model.TaskBegins)><\\>
@@ -34,7 +34,7 @@ namespace <model.WflNamespace> {
     }
 
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
-    public abstract partial class <model.WfsTypeName>: <model.WfsBaseTypeName> {
+    public abstract partial class <model.WfsTypeName>: <model.WfsBaseTypeName>, <InterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>, <BeginInterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()> {
         <if(model.TaskParameter)>
 
         <model.TaskParameter:writeFieldDeclaration(); separator="\r\n">
@@ -63,7 +63,7 @@ protected abstract INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<w
 public virtual IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>) {
     INavCommandBody body = <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressions(initTransition.Parameter)> /*TODO reachable calls*/);
     <writeTransitionCallBlock(initTransition)>
-    throw new System.InvalidOperationException($"<BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressionsInline(initTransition.Parameter)> /* TODO reachable calls*/) returned unexpected result '{OfTypeText(body)}'.");
+    throw new InvalidOperationException($"<BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressionsInline(initTransition.Parameter)> /* TODO reachable calls*/) returned unexpected result '{OfTypeText(body)}'.");
 }
 >>
 
@@ -77,7 +77,7 @@ private INavCommand After<exitTransition.TaskNamePascalcase>(<writeParameterList
     var body = After<exitTransition.TaskNamePascalcase>Logic(<writeParameterExpressionsInline(exitTransition.TaskResult)>);
     <writeTransitionCallBlock(exitTransition)>
     // TODO Throw Exception
-    throw new System.InvalidOperationException();
+    throw new InvalidOperationException();
 }
 
 protected abstract INavCommandBody After<exitTransition.TaskNamePascalcase>Logic(<writeParameterList(exitTransition.TaskResult)>);
@@ -89,12 +89,11 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
-/* TODO writeTriggerTransitionCollapsibleList */
 public virtual INavCommand <triggerTransition.TriggerNamePascalcase>(<triggerTransition.ViewNamePascalcase><ToClassNameSuffix()> to) {
     var body = <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(to);
     <writeTransitionCallBlock(triggerTransition)>
     // TODO Throw Exception
-    throw new System.InvalidOperationException();
+    throw new InvalidOperationException();
 }
 
 protected abstract INavCommandBody <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<triggerTransition.ViewNamePascalcase><ToClassNameSuffix()> to);

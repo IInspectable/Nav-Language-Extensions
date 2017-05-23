@@ -5,8 +5,8 @@ Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.Namespace> {
-    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.OriginalTaskName)>
-    public interface <InterfacePrefix()><model.Task.TaskName><WfsClassSuffix()>: <model.BaseInterfaceName> {
+    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
+    public interface <InterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>: <model.BaseInterfaceName> {
         <writeTriggerMethodDeclarationList(model.SignalTriggers)>
     }
 }
