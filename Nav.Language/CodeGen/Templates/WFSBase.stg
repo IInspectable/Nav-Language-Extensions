@@ -159,17 +159,24 @@ if (body is END) {
 }
 >>
 
-startModalTask(call) ::=<<
-// startModalTask <call.PascalCaseName>
+openModalTask(call) ::=<<
+<startTaskImpl(call, "OpenModalTask")>
 >>
 
 startNonModalTask(call) ::=<<
-// startNonModalTask <call.PascalCaseName>
+<startTaskImpl(call, "StartNonModalTask")>
 >>
 
-startTask(call) ::=<<
-// startTask <call.PascalCaseName>
+gotoTask(call) ::=<<
+<startTaskImpl(call, "GotoTask")>
 >>
+
+startTaskImpl(call, method) ::=<<
+if(body is Begin<call.PascalCaseName>Wrapper) {
+    return <method>\<bool>(((Begin<call.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><call.PascalCaseName>);
+}
+>>
+
 
 openModalGUI(call) ::=<<
 <openGuiImpl(call, "OpenModalGUI")>

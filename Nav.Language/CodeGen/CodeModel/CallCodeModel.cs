@@ -50,11 +50,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             get {
                 switch (EdgeMode) {
                     case EdgeMode.Modal:
-                        return "startModalTask";
+                        return "openModalTask";
                     case EdgeMode.NonModal:
                         return "startNonModalTask";
                     case EdgeMode.Goto:
-                        return "startTask";
+                        return "gotoTask";
                     default:
                         return "";
                 }

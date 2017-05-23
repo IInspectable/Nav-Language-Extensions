@@ -30,6 +30,8 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
 
     public interface IINIT_TASK : INavCommand {
     }
+    public interface IINIT_TASK<T> : INavCommand {
+    }
 
     public interface CANCEL : IINIT_TASK {
     }
@@ -38,6 +40,9 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
     }
 
     public delegate IINIT_TASK BeginTaskWrapper();
+    public delegate IINIT_TASK<TResult> BeginTaskWrapper<TResult>();
+
+    public class GOTO_TASK : IINIT_TASK { }
 
     public class GOTO_GUI : IINIT_TASK {
 
@@ -60,6 +65,8 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
 
     public interface IClientSideWFS {
     }
+
+    public delegate INavCommand AfterDelegate1<ResultType>(ResultType result);
 }
 
 namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL {
@@ -81,6 +88,14 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL {
         }
 
         public START_NONMODAL_TASK StartNonModalGUI(TO to) {
+            return null;
+        }
+
+        public GOTO_TASK GotoTask<TResult>(BeginTaskWrapper wrapped, AfterDelegate1<TResult> after) {
+            return null;
+        }
+
+        public GOTO_TASK GotoTask<TResult>(BeginTaskWrapper<TResult> wrapped, AfterDelegate1<TResult> after) {
             return null;
         }
     }
