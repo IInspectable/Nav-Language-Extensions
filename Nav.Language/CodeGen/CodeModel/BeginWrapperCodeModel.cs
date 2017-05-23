@@ -29,20 +29,20 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var ctors = new List<BeginWrapperCtor>();
             foreach (var initConnectionPoint in taskNode.Declaration.Inits().OfType<IInitConnectionPointSymbol>()) {
 
-                var taskParameter       = GetTaskParameter(initConnectionPoint);
-                var parameterCodeModels = ParameterCodeModel.FromParameterSyntax(taskParameter);
+                var parameterSyntaxes = GetTaskParameterSyntaxes(initConnectionPoint);
+                var taskParameter     = ParameterCodeModel.FromParameterSyntaxes(parameterSyntaxes);
                
                 var ctor = new BeginWrapperCtor(
-                    taskNodeName    : taskNode.Name.ToPascalcase(), 
-                    taskInitParamter: ParameterCodeModel.FromTaskDeclaration(taskNode.Declaration), 
-                    taskParameter   : parameterCodeModels.ToImmutableList());
+                    taskNodeName      : taskNode.Name.ToPascalcase(), 
+                    taskBeginParameter: ParameterCodeModel.GetTaskBeginAsParameter(taskNode.Declaration), 
+                    taskParameter     : taskParameter.ToImmutableList());
                 ctors.Add(ctor);
             }
            
             return new BeginWrapperCodeModel(taskNode.Name.ToPascalcase(), ctors.ToImmutableList());
         }
 
-        static IEnumerable<ParameterSyntax> GetTaskParameter(IInitConnectionPointSymbol initConnectionPoint) {
+        static IEnumerable<ParameterSyntax> GetTaskParameterSyntaxes(IInitConnectionPointSymbol initConnectionPoint) {
             var paramList = initConnectionPoint.Syntax.CodeParamsDeclaration?.ParameterList;
             if (paramList == null) {
                 yield break;

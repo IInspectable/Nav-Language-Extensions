@@ -8,15 +8,15 @@ using System.Collections.Immutable;
 namespace Pharmatechnik.Nav.Language.CodeGen {
     public class BeginWrapperCtor : CodeModel {
        
-        public BeginWrapperCtor(string taskNodeName, ParameterCodeModel taskInitParamter, ImmutableList<ParameterCodeModel> taskParameter) {
+        public BeginWrapperCtor(string taskNodeName, ParameterCodeModel taskBeginParameter, ImmutableList<ParameterCodeModel> taskParameter) {
 
-            TaskNodeName      = taskNodeName     ?? String.Empty;
-            TaskInitParameter = taskInitParamter ?? throw new ArgumentNullException(nameof(taskInitParamter));
-            TaskParameter     = taskParameter    ?? throw new ArgumentNullException(nameof(taskParameter));
+            TaskNodeName       = taskNodeName      ?? String.Empty;
+            TaskBeginParameter = taskBeginParameter ?? throw new ArgumentNullException(nameof(taskBeginParameter));
+            TaskParameter      = taskParameter     ?? throw new ArgumentNullException(nameof(taskParameter));
         }
 
         public string TaskNodeName { get; }
-        public ParameterCodeModel TaskInitParameter { get; }
+        public ParameterCodeModel TaskBeginParameter { get; }
         public ImmutableList<ParameterCodeModel> TaskParameter { get; }
     }
 }

@@ -1,7 +1,6 @@
 #region Using Directives
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 
 using JetBrains.Annotations;
@@ -41,21 +40,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(taskCodeModel));
             }
 
-            string GetParameterName(string name, ref int i) {
-                return String.IsNullOrEmpty(name) ? $"p{i++}" : name;
-            }
-
-            var parameter = new List<ParameterCodeModel>();
-            var paramterList = initNodeSymbol.Syntax.CodeParamsDeclaration?.ParameterList;
-            if (paramterList != null) {
-                // TODO parameterName Fallback überprüfen
-                int i = 1;
-                foreach (var parameterSyntax in paramterList) {
-                    parameter.Add(new ParameterCodeModel(
-                        parameterType: parameterSyntax.Type?.ToString(), 
-                        parameterName: GetParameterName(parameterSyntax.Identifier.ToString(), ref i)));
-                }
-            }
+            var parameter = ParameterCodeModel.FromParameterSyntaxes(initNodeSymbol.Syntax.CodeParamsDeclaration?.ParameterList);
             
             return new TaskInitCodeModel(initName     : initNodeSymbol.Name ?? String.Empty, 
                                          taskCodeModel: taskCodeModel, 

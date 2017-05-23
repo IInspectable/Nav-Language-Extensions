@@ -24,27 +24,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             if (taskCodeModel == null) {
                 throw new ArgumentNullException(nameof(taskCodeModel));
             }
-
-            string GetParameterName(string name, ref int i)
-            {
-                return String.IsNullOrEmpty(name) ? $"p{i++}" : name;
-            }
-
-            var parameter = new List<ParameterCodeModel>();
-            var paramterList = initNodeSymbol.Syntax.CodeParamsDeclaration?.ParameterList;
-            if (paramterList != null) {
-                // TODO parameterName Fallback überprüfen
-                int i = 1;
-                foreach (var parameterSyntax in paramterList) {
-                    parameter.Add(new ParameterCodeModel(
-                        parameterType: parameterSyntax.Type?.ToString(),
-                        parameterName: GetParameterName(parameterSyntax.Identifier.ToString(), ref i)));
-                }
-            }
-
-            // TODO Transitions
-
-            var nodes = CallCodeModelBuilder.FromCalls(initNodeSymbol.GetDistinctOutgoingCalls());
+            
+            var parameter = ParameterCodeModel.FromParameterSyntaxes(initNodeSymbol.Syntax.CodeParamsDeclaration?.ParameterList);
+            var nodes     = CallCodeModelBuilder.FromCalls(initNodeSymbol.GetDistinctOutgoingCalls());
 
             return new InitTransitionCodeModel(
                 parameter  : parameter.ToImmutableList(), 

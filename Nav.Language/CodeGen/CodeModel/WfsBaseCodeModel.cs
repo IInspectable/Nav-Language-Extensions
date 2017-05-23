@@ -54,14 +54,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(taskDefinition));
             }
 
-            var taskDefinitionSyntax = taskDefinition.Syntax;
             var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
 
-            // used Task Declarations
-            var usedTaskDeclarations = GetUsedTaskDeclarations(taskDefinition);
+            var taskResult           = GetTaskResult(taskDefinition);
             var usingNamespaces      = GetUsingNamespaces(taskDefinition, taskCodeModel);
-            var taskBegins           = ToParameter(usedTaskDeclarations);            
+            var taskBegins           = GetTaskBegins(taskDefinition);
             var taskParameter        = GetTaskParameter(taskDefinition);
             var initTransitions      = GetInitTransitions(taskDefinition, taskCodeModel);
             var exitTransitions      = GetExitTransitions(taskDefinition);
@@ -75,7 +73,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.WfsBaseFileName,
                 usingNamespaces       : usingNamespaces.ToImmutableList(),
-                taskResult            : GetTaskResult(taskDefinitionSyntax),
+                taskResult            : taskResult,
                 taskBegins            : taskBegins.ToImmutableList(),
                 taskParameter         : taskParameter.ToImmutableList(),
                 initTransitions       : initTransitions.ToImmutableList(),
@@ -83,7 +81,33 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 triggerTransitions    : triggerTransitions.ToImmutableList(),
                 beginWrappers         : beginWrappers.ToImmutableList());
         }
-        
+
+        private static IEnumerable<ParameterCodeModel> GetTaskBegins(ITaskDefinitionSymbol taskDefinition) {
+            var usedTaskDeclarations = GetUsedTaskDeclarations(taskDefinition);
+            // TODO Sortierung?
+            var taskBegins = ParameterCodeModel.GetTaskBeginsAsParameter(usedTaskDeclarations)
+                                               .OrderBy(p => p.ParameterName).ToImmutableList();
+            return taskBegins;
+        }
+
+        static IEnumerable<ParameterCodeModel> GetTaskParameter(ITaskDefinitionSymbol taskDefinition) {
+            var code = GetTaskParameterSyntaxes(taskDefinition);
+            // TODO Sortierung?
+            var taskParameter = ParameterCodeModel.FromParameterSyntaxes(code);
+            return taskParameter;
+        }
+
+        static IEnumerable<ParameterSyntax> GetTaskParameterSyntaxes(ITaskDefinitionSymbol taskDefinition) {
+            var paramList = taskDefinition.Syntax.CodeParamsDeclaration?.ParameterList;
+            if (paramList == null) {
+                yield break;
+            }
+
+            foreach (var p in paramList) {
+                yield return p;
+            }
+        }
+
         private static List<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
             var taskInits = new List<InitTransitionCodeModel>();
             foreach (var initNode in taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
@@ -94,22 +118,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
         
         private static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition) {
-            foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
-                yield return ExitTransitionCodeModel.FromNode(taskNode);
-            }
+            return taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>().Select(ExitTransitionCodeModel.FromNode);
         }
 
         private static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition) {
-            foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<IGuiNodeSymbol>()) {
-                foreach(var triggerTransitions in TriggerTransitionCodeModel.FromNode(taskNode))
-                yield return triggerTransitions;
-            }
+            return taskDefinition.NodeDeclarations.OfType<IGuiNodeSymbol>().SelectMany(TriggerTransitionCodeModel.FromNode);            
         }
 
         private static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition) {
-            foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
-                yield return BeginWrapperCodeModel.FromTaskNode(taskNode);
-            }
+            return taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>().Select(BeginWrapperCodeModel.FromTaskNode);
         }
 
         static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
@@ -125,7 +142,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return namespaces.ToSortedNamespaces();
         }
 
-        static ParameterCodeModel GetTaskResult(TaskDefinitionSyntax taskDefinitionSyntax) {
+        static ParameterCodeModel GetTaskResult(ITaskDefinitionSymbol taskDefinition) {
+
+            var taskDefinitionSyntax = taskDefinition.Syntax;
 
             CodeResultDeclarationSyntax codeResultDeclarationSyntax = taskDefinitionSyntax.CodeResultDeclaration;
 
@@ -144,37 +163,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 parameterName: parameterName.ToCamelcase());
 
             return taskResult;
-        }
-
-        private static IEnumerable<ParameterCodeModel> GetTaskParameter(ITaskDefinitionSymbol taskDefinition) {
-            var code = GetTaskParameterSyntaxen(taskDefinition);
-            var taskParameter = ToParameter(code);
-            return taskParameter;
-        }
-
-        static IEnumerable<ParameterSyntax> GetTaskParameterSyntaxen(ITaskDefinitionSymbol taskDefinition) {
-            var paramList = taskDefinition.Syntax.CodeParamsDeclaration?.ParameterList;
-            if (paramList == null) {
-                yield break;
-            }
-
-            foreach (var p in paramList) {
-                yield return p;
-            }
-        }
-
-        static IEnumerable<ParameterCodeModel> ToParameter(IEnumerable<ParameterSyntax> parameters) {
-            // TODO Vermutlich darf nur nach Name sortiert werden
-            return ParameterCodeModel.FromParameterSyntax(parameters);
-        }
-
-        static IEnumerable<ParameterCodeModel> ToParameter(ImmutableList<ITaskDeclarationSymbol> taskDeclarations) {
-            // TODO Vermutlich darf nur nach Name sortiert werden
-            return taskDeclarations.Select(ToParameter).OrderBy(p => p.ParameterType.Length+ p.ParameterName.Length).ToImmutableList();            
-        }
-
-        static ParameterCodeModel ToParameter(ITaskDeclarationSymbol taskDeclaration) {
-            return ParameterCodeModel.FromTaskDeclaration(taskDeclaration);           
         }
         
         static ImmutableList<ITaskDeclarationSymbol> GetUsedTaskDeclarations(ITaskDefinitionSymbol taskDefinition) {
