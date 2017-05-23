@@ -8,9 +8,10 @@ using System.Collections.Immutable;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-    class TransitionCodeModel : CodeModel {
+    abstract class TransitionCodeModel : CodeModel {
 
-        public TransitionCodeModel(ImmutableList<Call> reachableCalls) {
+        protected TransitionCodeModel(ImmutableList<Call> reachableCalls) {
+
             if(reachableCalls == null) {
                 throw new ArgumentNullException(nameof(reachableCalls));
             }
@@ -30,28 +31,26 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ImmutableList<CallCodeModel> Calls { get; set; }
         public ImmutableList<ParameterCodeModel> TaskBegins { get; }
         public ImmutableList<FieldCodeModel> TaskBeginFields { get; }
-
-        // TODO Sortierung
+        
         static IEnumerable<ParameterCodeModel> GetTaskBegins(IEnumerable<INodeSymbol> reachableNodes) {
+            // TODO Sortierung?
             return ParameterCodeModel.GetTaskBeginsAsParameter(GetDistinctTaskDeclarations(reachableNodes))
-                                     .OrderBy(p => p.ParameterName).ToImmutableList();
+                                     .OrderBy(p=>p.ParameterName).ToImmutableList();
         }
 
-        // TODO Sortierung
         static IEnumerable<FieldCodeModel> GetTaskBeginFields(IEnumerable<INodeSymbol> reachableNodes) {
             var taskBegins       = GetTaskBegins(reachableNodes);
             var taskBeginMembers = taskBegins.Select(p => new FieldCodeModel(p.ParameterType, p.ParameterName));
+                                             
             return taskBeginMembers;
         }
+     
+        static IEnumerable<ITaskDeclarationSymbol> GetDistinctTaskDeclarations(IEnumerable<INodeSymbol> nodes) {
 
-        protected static IEnumerable<ITaskDeclarationSymbol> GetDistinctTaskDeclarations(IEnumerable<INodeSymbol> nodes) {
-
-            var set = new HashSet<ITaskDeclarationSymbol>();
-
-            foreach (var taskNode in nodes.OfType<ITaskNodeSymbol>()) {
-                set.Add(taskNode.Declaration);
-            }
-            return set;
+            return nodes.OfType<ITaskNodeSymbol>()
+                        .Select(node => node.Declaration)
+                        .Where(taskDeclaration => taskDeclaration != null)
+                        .Distinct();
         }
     }
 }
