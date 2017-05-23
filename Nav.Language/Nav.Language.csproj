@@ -98,6 +98,7 @@
     <Compile Include="CodeGen\CodeModel\InitTransitionCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\CallCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\CallCodeModelBuilder.cs" />
+    <Compile Include="CodeGen\CodeModel\FieldCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TOCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TransitionCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\TriggerTransitionCodeMode.cs" />

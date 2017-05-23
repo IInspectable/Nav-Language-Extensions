@@ -14,8 +14,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             ParameterName = (parameterName ?? String.Empty).ToCamelcase();
         }
 
-        public string ParameterType { get; }
-        public string ParameterName { get; }
+        public virtual string ParameterType { get; }
+        public virtual string ParameterName { get; }
 
         public static IEnumerable<ParameterCodeModel> FromParameterSyntaxes(IEnumerable<ParameterSyntax> parameters) {
             if (parameters == null) {

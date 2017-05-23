@@ -18,6 +18,7 @@ UnknownNamespace()             ::= "__UNKNOWN__NAMESPACE__"
 DefaultParamterName()          ::= "par"
 DefaultTaskResultType()        ::= "bool"
 DefaultWfsBaseClass()          ::= "BaseWFService"
+FieldPrefix()                  ::= "_"
 
 AnnotationTagPrefix()          ::= "Nav"
 AnnotationTagNavFile()         ::= "NavFile"

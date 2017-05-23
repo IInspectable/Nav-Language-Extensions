@@ -23,9 +23,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         // TODO Sortierung
-        protected static IEnumerable<ParameterCodeModel> GetTaskBeginMembers(IEnumerable<INodeSymbol> reachableNodes) {
+        protected static IEnumerable<FieldCodeModel> GetTaskBeginFields(IEnumerable<INodeSymbol> reachableNodes) {
             var taskBegins       = GetTaskBegins(reachableNodes);
-            var taskBeginMembers = taskBegins.Select(p => new ParameterCodeModel(p.ParameterType, $"_{p.ParameterName.ToCamelcase()}"));
+            var taskBeginMembers = taskBegins.Select(p => new FieldCodeModel(p.ParameterType, p.ParameterName));
             return taskBeginMembers;
         }
 

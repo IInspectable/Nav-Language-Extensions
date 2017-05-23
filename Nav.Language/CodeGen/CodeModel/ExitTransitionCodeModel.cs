@@ -13,19 +13,19 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ExitTransitionCodeModel(ImmutableList<CallCodeModel> calls, 
                                        ParameterCodeModel result, string taskName, 
                                        ImmutableList<ParameterCodeModel> taskBegins, 
-                                       ImmutableList<ParameterCodeModel> taskBeginMembers)
+                                       ImmutableList<FieldCodeModel> taskBeginFields)
             :base (calls) {
-            TaskBegins       = taskBegins       ?? throw new ArgumentNullException(nameof(taskBegins));
-            TaskBeginMembers = taskBeginMembers ?? throw new ArgumentNullException(nameof(taskBeginMembers));
-            TaskName         = taskName         ?? String.Empty;
-            TaskResult       = result           ?? throw new ArgumentNullException(nameof(result));
+            TaskBegins      = taskBegins       ?? throw new ArgumentNullException(nameof(taskBegins));
+            TaskBeginFields = taskBeginFields  ?? throw new ArgumentNullException(nameof(taskBeginFields));
+            TaskName        = taskName         ?? String.Empty;
+            TaskResult      = result           ?? throw new ArgumentNullException(nameof(result));
         }
 
         public ParameterCodeModel TaskResult { get; }
         public string TaskName { get; }
         public string TaskNamePascalcase => TaskName.ToPascalcase();
         public ImmutableList<ParameterCodeModel> TaskBegins { get; }
-        public ImmutableList<ParameterCodeModel> TaskBeginMembers { get; }
+        public ImmutableList<FieldCodeModel> TaskBeginFields { get; }
 
         public static ExitTransitionCodeModel FromNode(ITaskNodeSymbol node) {
 
@@ -34,8 +34,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var reachableNodes   = reachableCalls.Select(c => c.Node).ToList();
             
-            var taskBegins       = GetTaskBegins(reachableNodes);
-            var taskBeginMembers = GetTaskBeginMembers(reachableNodes);
+            var taskBegins      = GetTaskBegins(reachableNodes);
+            var taskBeginFields = GetTaskBeginFields(reachableNodes);
 
             // TODO Result
             var taskResult = new ParameterCodeModel("bool", "todo");
@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 result          : taskResult, 
                 taskName        : node.Name, 
                 taskBegins      : taskBegins.ToImmutableList(), 
-                taskBeginMembers: taskBeginMembers.ToImmutableList());
+                taskBeginFields : taskBeginFields.ToImmutableList());
         }
     }
 }

@@ -36,7 +36,7 @@ writeFieldDeclarationCollapsibleList(parameters) ::=<<
 >>
 
 writeFieldDeclaration(parameter) ::=<<
-readonly <parameter.ParameterType> _<parameter.ParameterName>;
+readonly <parameter.ParameterType> <FieldPrefix()><parameter.ParameterName>;
 >>
 
 writeFieldInitList(parameters) ::=<<
@@ -44,7 +44,7 @@ writeFieldInitList(parameters) ::=<<
 >>
 
 writeFieldInit(parameter) ::=<<
-_<parameter.ParameterName> = <parameter.ParameterName>;
+<FieldPrefix()><parameter.ParameterName> = <parameter.ParameterName>;
 >>
 
 writeParameterExpressions(parameters) ::=<<
