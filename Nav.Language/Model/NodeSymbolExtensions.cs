@@ -7,9 +7,9 @@ using System.Collections.Generic;
 namespace Pharmatechnik.Nav.Language {
     public static class NodeSymbolExtensions {
 
-        public static IEnumerable<Call> GetOutgoingCalls(this INodeSymbol nodeSynbol) {
+        public static IEnumerable<Call> GetOutgoingCalls(this INodeSymbol nodeSymbol) {
             
-            foreach (var edge in nodeSynbol.GetOutgoingEdges()) {
+            foreach (var edge in nodeSymbol.GetOutgoingEdges()) {
 
                 var node     = edge.Target?.Declaration;
                 var edgeMode = edge.EdgeMode;
@@ -22,12 +22,12 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
-        // TODO Ist das nicht per Sematic Model Check sichergestellt?
-        public static IEnumerable<Call> GetDistinctOutgoingCalls(this INodeSymbol nodeSynbol) {
+        // TODO Ist das nicht per Semantic Model Check sichergestellt?
+        public static IEnumerable<Call> GetDistinctOutgoingCalls(this INodeSymbol nodeSymbol) {
 
             var nodes = new Dictionary<string, Call>();
 
-            foreach (var call in nodeSynbol.GetOutgoingCalls()) {
+            foreach (var call in nodeSymbol.GetOutgoingCalls()) {
                 nodes[call.Node.Name] = call;
             }
             return nodes.Values;

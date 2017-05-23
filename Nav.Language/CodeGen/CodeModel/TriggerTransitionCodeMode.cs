@@ -10,10 +10,10 @@ using System.Collections.Immutable;
 namespace Pharmatechnik.Nav.Language.CodeGen {
     class TriggerTransitionCodeModel : TransitionCodeModel {
 
-        public TriggerTransitionCodeModel(ImmutableList<CallCodeModel> targetNodes, string viewName, string triggerName)
-            : base(targetNodes) {
+        public TriggerTransitionCodeModel(ImmutableList<CallCodeModel> calls, string viewName, string triggerName)
+            : base(calls) {
             TriggerName = triggerName;
-            ViewName = viewName ?? String.Empty;
+            ViewName    = viewName ?? String.Empty;
         }
 
         public string ViewName { get; }
@@ -26,8 +26,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             foreach (var trans in node.Outgoings) {
                 foreach (var signalTrigger in trans.Triggers.OfType<ISignalTriggerSymbol>()) {
 
-                    var callCodeModels = CallCodeModelBuilder.FromCalls(trans.Target.Declaration.GetDistinctOutgoingCalls());
-                    yield return new TriggerTransitionCodeModel(callCodeModels.ToImmutableList(), node.Name, signalTrigger.Name);
+                    var calls = CallCodeModelBuilder.FromCalls(trans.Target.Declaration.GetDistinctOutgoingCalls());
+                    yield return new TriggerTransitionCodeModel(
+                        calls: calls.ToImmutableList(), 
+                        viewName: node.Name, 
+                        triggerName: signalTrigger.Name);
                 }
             }
         }

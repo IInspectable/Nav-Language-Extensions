@@ -16,10 +16,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public ImmutableList<CallCodeModel> Calls { get; set; }
 
-        protected static IEnumerable<ParameterCodeModel> GetTaskBegins(IEnumerable<INodeSymbol> nodes) {
-            // TODO Ordering
-            return ParameterCodeModel.GetTaskBeginsAsParameter(GetDistinctTaskDeclarations(nodes))
+        // TODO Sortierung
+        protected static IEnumerable<ParameterCodeModel> GetTaskBegins(IEnumerable<INodeSymbol> reachableNodes) {
+            return ParameterCodeModel.GetTaskBeginsAsParameter(GetDistinctTaskDeclarations(reachableNodes))
                                      .OrderBy(p => p.ParameterName).ToImmutableList();
+        }
+
+        // TODO Sortierung
+        protected static IEnumerable<ParameterCodeModel> GetTaskBeginMembers(IEnumerable<INodeSymbol> reachableNodes) {
+            var taskBegins       = GetTaskBegins(reachableNodes);
+            var taskBeginMembers = taskBegins.Select(p => new ParameterCodeModel(p.ParameterType, $"_{p.ParameterName.ToCamelcase()}"));
+            return taskBeginMembers;
         }
 
         protected static IEnumerable<ITaskDeclarationSymbol> GetDistinctTaskDeclarations(IEnumerable<INodeSymbol> nodes) {
