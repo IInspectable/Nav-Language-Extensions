@@ -19,14 +19,23 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public virtual string ParameterName { get; }
 
         [NotNull]
+        public static ParameterCodeModel TaskResult(ITaskDefinitionSymbol taskDefinition) {
+            var codeParameter = taskDefinition.AsTaskDeclaration?.CodeTaskResult;
+            if (codeParameter == null) {
+                return new ParameterCodeModel(CodeGenFacts.DefaultTaskResultType, CodeGenFacts.DefaultParamterName);
+            }
+            return new ParameterCodeModel(codeParameter.ParameterType, codeParameter.ParameterName);
+        }
+
+        [NotNull]
         public static ParameterCodeModel TaskResult([CanBeNull] ITaskDeclarationSymbol taskDeclaration) {
             var codeParameter = taskDeclaration?.CodeTaskResult;
             if (codeParameter == null) {
                 // TODO New Error in Semantic Mocdel: No result type defined with [result] - cannot use this task with exit edges.
                 return new ParameterCodeModel("bool", "result");
             }
-            return new ParameterCodeModel(codeParameter.ParamterType, "result");
-        }
+            return new ParameterCodeModel(codeParameter.ParameterType, "result");
+        }        
 
         public static IEnumerable<ParameterCodeModel> FromParameterSyntaxes(IEnumerable<ParameterSyntax> parameters) {
             if (parameters == null) {

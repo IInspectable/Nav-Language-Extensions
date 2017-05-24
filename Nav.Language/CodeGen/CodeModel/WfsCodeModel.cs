@@ -40,19 +40,21 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(taskDefinition));
             }
 
-            var baseCodeModel=WfsBaseCodeModel.FromTaskDefinition(taskDefinition, pathProvider);
-
             var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsFileName, pathProvider.SyntaxFileName);
-            
+
+            var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeModel);
+            var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskDefinition);
+            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition);
+
             return new WfsCodeModel(
                 taskCodeModel         : taskCodeModel,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.WfsFileName,
                 usingNamespaces       : GetUsingNamespaces(taskDefinition, taskCodeModel).ToImmutableList(),
-                initTransitions       : baseCodeModel.InitTransitions,
-                exitTransitions       : baseCodeModel.ExitTransitions,
-                triggerTransitions    : baseCodeModel.TriggerTransitions
+                initTransitions       : initTransitions.ToImmutableList(),
+                exitTransitions       : exitTransitions.ToImmutableList(),
+                triggerTransitions    : triggerTransitions.ToImmutableList()
                );
         }
 

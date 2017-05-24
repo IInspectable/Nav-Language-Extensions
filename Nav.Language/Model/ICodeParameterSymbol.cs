@@ -4,7 +4,7 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface ICodeParameterSymbol : ICodeSymbol {
         
-        string ParamterName { get; }
-        string ParamterType { get; }
+        string ParameterName { get; }
+        string ParameterType { get; }
     }
 }

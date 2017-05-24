@@ -57,7 +57,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
 
-            var taskResult           = GetTaskResult(taskDefinition);
+            var taskResult           = ParameterCodeModel.TaskResult(taskDefinition);
             var usingNamespaces      = GetUsingNamespaces(taskDefinition, taskCodeModel);
             var taskBegins           = GetTaskBegins(taskDefinition);
             var taskParameter        = GetTaskParameter(taskDefinition);
@@ -119,29 +119,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
             return namespaces.ToSortedNamespaces();
-        }
-
-        static ParameterCodeModel GetTaskResult(ITaskDefinitionSymbol taskDefinition) {
-
-            var taskDefinitionSyntax = taskDefinition.Syntax;
-
-            CodeResultDeclarationSyntax codeResultDeclarationSyntax = taskDefinitionSyntax.CodeResultDeclaration;
-
-            var parameterType = codeResultDeclarationSyntax?.Result?.Type?.ToString();
-            if (String.IsNullOrEmpty(parameterType)) {
-                parameterType = CodeGenFacts.DefaultTaskResultType;
-            }
-
-            var parameterName = codeResultDeclarationSyntax?.Result?.Identifier.ToString();
-            if (String.IsNullOrEmpty(parameterName)) {
-                parameterName = CodeGenFacts.DefaultParamterName;
-            }
-
-            var taskResult = new ParameterCodeModel(
-                parameterType: parameterType,
-                parameterName: parameterName.ToCamelcase());
-
-            return taskResult;
         }
         
         static ImmutableList<ITaskDeclarationSymbol> GetUsedTaskDeclarations(ITaskDefinitionSymbol taskDefinition) {

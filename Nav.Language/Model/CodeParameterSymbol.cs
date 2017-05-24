@@ -9,11 +9,11 @@ namespace Pharmatechnik.Nav.Language {
     sealed partial class CodeParameterSymbol: Symbol, ICodeParameterSymbol {
 
         CodeParameterSymbol(string name, string paramterType, [NotNull] Location location) : base(name, location) {
-            ParamterType = paramterType ?? string.Empty;
+            ParameterType = paramterType ?? string.Empty;
         }
         
-        public string ParamterName => Name.ToCamelcase();
-        public string ParamterType { get; }
+        public string ParameterName => Name.ToCamelcase();
+        public string ParameterType { get; }
 
         [CanBeNull]
         public static ICodeParameterSymbol FromResultDeclaration([CanBeNull]CodeResultDeclarationSyntax codeResult) {

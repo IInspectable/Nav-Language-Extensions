@@ -17,15 +17,15 @@ namespace <model.Namespace> {
     <endif>
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public interface <BeginInterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>: <model.BaseInterfaceName> {
-        <writeBeginMethodDeclarationList(model.TaskInits)>
+        <writeBeginMethodDeclarationList(model.InitTransitions)>
     }
 }
 >>
 
-writeBeginMethodDeclarationList(taskInits) ::=<<
-<taskInits:writeBeginMethodDeclaration(); separator="\r\n">
+writeBeginMethodDeclarationList(initTransitions) ::=<<
+<initTransitions:writeBeginMethodDeclaration(); separator="\r\n">
 >>
 
-writeBeginMethodDeclaration(taskInit) ::=<<
-IINIT_TASK <taskInit.BeginMethodName>(<writeParameterList(taskInit.Parameter)>);
+writeBeginMethodDeclaration(initTransition) ::=<<
+IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>);
 >>
