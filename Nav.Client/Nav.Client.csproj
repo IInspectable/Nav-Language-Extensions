@@ -53,6 +53,7 @@
     <Compile Include="CommandLine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyntaxAnalyzerPipeline.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
   </ItemGroup>
   <ItemGroup>
