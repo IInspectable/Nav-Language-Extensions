@@ -12,7 +12,7 @@ namespace Pharmatechnik.Nav.Language {
         public TaskDeclarationSymbol(string name, Location location, 
                                     TaskDeclarationOrigin origin, 
                                     bool isIncluded,
-                                    ICodeParameterSymbol codeTaskResult,
+                                    ICodeParameter codeTaskResult,
                                     MemberDeclarationSyntax syntax,
                                     [CanBeNull] string codeNamespace,
                                     bool codeNotImplemented): base(name, location) {
@@ -61,7 +61,7 @@ namespace Pharmatechnik.Nav.Language {
         public string CodeNamespace { get; }
         public bool CodeNotImplemented { get; }
         [CanBeNull]
-        public ICodeParameterSymbol CodeTaskResult { get; }
+        public ICodeParameter CodeTaskResult { get; }
 
         public IEnumerable<ISymbol> SymbolsAndSelf() {
             yield return this;
@@ -69,7 +69,6 @@ namespace Pharmatechnik.Nav.Language {
             foreach (var symbol in ConnectionPoints) {
                 yield return symbol;
             }
-            yield return CodeTaskResult;
         }
 
         internal void FinalConstruct(CodeGenerationUnit codeGenerationUnit) {

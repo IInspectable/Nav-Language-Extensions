@@ -174,7 +174,7 @@ namespace Pharmatechnik.Nav.Language {
                         location           : location, 
                         origin             : TaskDeclarationOrigin.TaskDeclaration,  
                         isIncluded         : _processAsIncludedFile, 
-                        codeTaskResult         : CodeParameterSymbol.FromResultDeclaration(taskDeclarationSyntax.CodeResultDeclaration),
+                        codeTaskResult     : CodeParameter.FromResultDeclaration(taskDeclarationSyntax.CodeResultDeclaration),
                         syntax             : syntax,
                         codeNamespace      : taskDeclarationSyntax.CodeNamespaceDeclaration?.Namespace?.Text,
                         codeNotImplemented : taskDeclarationSyntax.CodeNotImplementedDeclaration!=null);
@@ -200,7 +200,7 @@ namespace Pharmatechnik.Nav.Language {
                         location          : location,
                         origin            : TaskDeclarationOrigin.TaskDefinition,
                         isIncluded        : _processAsIncludedFile,
-                        codeTaskResult        : CodeParameterSymbol.FromResultDeclaration(taskDefinitionSyntax.CodeResultDeclaration),
+                        codeTaskResult    : CodeParameter.FromResultDeclaration(taskDefinitionSyntax.CodeResultDeclaration),
                         syntax            : syntax,
                         codeNamespace     : _codeGenerationUnitSyntax?.CodeNamespace?.Namespace?.Text,
                         codeNotImplemented: false

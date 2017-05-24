@@ -50,6 +50,6 @@ namespace Pharmatechnik.Nav.Language {
         string CodeNamespace { get; }
         bool CodeNotImplemented { get; }
         [CanBeNull]
-        ICodeParameterSymbol CodeTaskResult { get; }
+        ICodeParameter CodeTaskResult { get; }
     }
 }

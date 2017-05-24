@@ -1,8 +1,6 @@
 namespace Pharmatechnik.Nav.Language {
-
-    public interface ICodeSymbol : ISymbol { }
-
-    public interface ICodeParameterSymbol : ICodeSymbol {
+    
+    public interface ICodeParameter {
         
         string ParameterName { get; }
         string ParameterType { get; }
