@@ -36,11 +36,13 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
     public interface CANCEL : IINIT_TASK {
     }
 
-    public interface TASK_RESULT : INavCommand {
+    public interface TASK_RESULT : IINIT_TASK, INavCommand {
     }
 
     public delegate IINIT_TASK BeginTaskWrapper();
     public delegate IINIT_TASK<TResult> BeginTaskWrapper<TResult>();
+    public delegate INavCommand AfterDelegate1<ResultType>(ResultType result);
+    public delegate INavCommand AfterDelegate2<ResultType, P1>(ResultType result, P1 p1);
 
     public class GOTO_TASK : IINIT_TASK { }
 
@@ -51,9 +53,12 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
     public class OPEN_MODAL_GUI : IINIT_TASK {
     }
 
-    public class START_NONMODAL_TASK  {
+    public class START_NONMODAL_TASK : INavCommand {
     }
-    
+
+    public class START_MODAL_TASK : INavCommand {
+    }
+
     public interface INavCommandBody {
     }
 
@@ -66,7 +71,6 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
     public interface IClientSideWFS {
     }
 
-    public delegate INavCommand AfterDelegate1<ResultType>(ResultType result);
 }
 
 namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL {
@@ -90,6 +94,11 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL {
         public START_NONMODAL_TASK StartNonModalGUI(TO to) {
             return null;
         }
+
+        public START_MODAL_TASK OpenModalTask<TResult>(BeginTaskWrapper wrapped, AfterDelegate1<TResult> after) {
+            return null;
+        }
+
 
         public GOTO_TASK GotoTask<TResult>(BeginTaskWrapper wrapped, AfterDelegate1<TResult> after) {
             return null;

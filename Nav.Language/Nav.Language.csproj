@@ -125,6 +125,9 @@
     <Compile Include="CodeGen\Templates\CodeGenFacts.generated.cs" />
     <Compile Include="Model\Call.cs" />
     <Compile Include="Model\EdgeExtensions.cs" />
+    <Compile Include="Model\ICodeParameterSymbol.cs" />
+    <Compile Include="Model\NodeExtensions.cs" />
+    <Compile Include="Model\CodeParameterSymbol.cs" />
     <Compile Include="Provider\CachedSyntaxProvider.cs" />
     <Compile Include="Provider\IPathProvider.cs" />
     <Compile Include="Provider\IPathProviderFactory.cs" />

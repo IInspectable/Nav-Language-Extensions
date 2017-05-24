@@ -118,8 +118,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // TODO Exit Transitions müssen pro TaskNode immer zusammengefasst werden
             return taskDefinition.NodeDeclarations
                                  .OfType<ITaskNodeSymbol>()
-                                 .SelectMany(n => n.Outgoings)
-                                 .Select(ExitTransitionCodeModel.FromExitTransition);
+                                 .Select(ExitTransitionCodeModel.FromTaskNode);
         }
 
         static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition) {

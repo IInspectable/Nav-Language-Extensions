@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 #endregion
 
@@ -16,6 +17,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public virtual string ParameterType { get; }
         public virtual string ParameterName { get; }
+
+        [NotNull]
+        public static ParameterCodeModel TaskResult([CanBeNull] ITaskDeclarationSymbol taskDeclaration) {
+            var codeParameter = taskDeclaration?.CodeTaskResult;
+            if (codeParameter == null) {
+                // TODO New Error in Semantic Mocdel: No result type defined with [result] - cannot use this task with exit edges.
+                return new ParameterCodeModel("bool", "result");
+            }
+            return new ParameterCodeModel(codeParameter.ParamterType, "result");
+        }
 
         public static IEnumerable<ParameterCodeModel> FromParameterSyntaxes(IEnumerable<ParameterSyntax> parameters) {
             if (parameters == null) {

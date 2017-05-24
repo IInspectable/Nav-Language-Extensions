@@ -43,8 +43,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     class TaskCallCodeModel : CallCodeModel {
 
-        public TaskCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
+        public TaskCallCodeModel(string name, EdgeMode edgeMode, ParameterCodeModel taskResult) : base(name, edgeMode) {
+            TaskResult = taskResult ?? throw new ArgumentNullException(nameof(taskResult));
         }
+
+        public ParameterCodeModel TaskResult { get; }
 
         public override string TemplateName {
             get {

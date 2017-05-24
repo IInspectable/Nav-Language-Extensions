@@ -92,6 +92,13 @@ namespace Nav.Language.Tests {
                 }
             }){
                 TestName = "Task C depends on Task A and Task B"
+            },
+            new TestCaseData(new TestCase {
+                NavFiles = {
+                    new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.NestedChoices)}.nav"), Content = Resources.NestedChoices},
+                }
+            }){
+                TestName = "Nested choices"
             }
         };
 
@@ -110,11 +117,11 @@ namespace Nav.Language.Tests {
                 // 1. Syntaxbaum aus Nav-File erstellen
                 var codeGenerationUnitSyntax = syntaxProvider.FromFile(navFile.FilePath)?.GetRoot() as CodeGenerationUnitSyntax;
                 Assert.That(codeGenerationUnitSyntax, Is.Not.Null, $"File '{navFile.FilePath}' not found");
-                AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics);
+                AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics, codeGenerationUnitSyntax.SyntaxTree.SourceText);
 
                 // 2. Semantic Model erstellen aus Syntax erstellen
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, syntaxProvider: syntaxProvider);
-                AssertNoDiagnosticErrors(codeGenerationUnit.Diagnostics);
+                AssertNoDiagnosticErrors(codeGenerationUnit.Diagnostics, codeGenerationUnitSyntax.SyntaxTree.SourceText);
 
                 var options = GenerationOptions.Default;
                 var codeGenerator = new CodeGenerator(options);
@@ -169,7 +176,7 @@ namespace Nav.Language.Tests {
 
         void AssertNoDiagnosticErrors(IEnumerable<RoslynDiagnostic> diagnostics) {
             var errors = diagnostics.Where(d => d.IsWarningAsError || d.Severity == RoslynDiagnosticSeverity.Error).ToList();
-            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors));
+            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors) + errors.FirstOrDefault()?.Location.SourceTree);
         }
 
         string FormatDiagnostics(IEnumerable<RoslynDiagnostic> diagnostics) {
@@ -180,9 +187,9 @@ namespace Nav.Language.Tests {
             return $"{diagnostic.Id}: {diagnostic.Location} {diagnostic.GetMessage()}";
         }
 
-        void AssertNoDiagnosticErrors(IEnumerable<Diagnostic> diagnostics) {
+        void AssertNoDiagnosticErrors(IEnumerable<Diagnostic> diagnostics, string sourceText) {
             var errors = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
-            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors));
+            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors) + sourceText);
         }
 
         string FormatDiagnostics(IEnumerable<Diagnostic> diagnostics) {

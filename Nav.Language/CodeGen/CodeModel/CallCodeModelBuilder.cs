@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿#region Using Directives
+
+using System.Linq;
 using System.Collections.Generic;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
@@ -12,7 +16,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         public static IEnumerable<CallCodeModel> FromCalls(IEnumerable<Call> calls) {
-            // TODO Doppelte Exit- und EndNodes hier entfernen?
             return calls.Select(call => GetCallCodeModel(call.Node, call.EdgeMode));
         }
 
@@ -30,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         public override CallCodeModel VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
-            return new TaskCallCodeModel(taskNodeSymbol.Name, EdgeMode);
+            return new TaskCallCodeModel(taskNodeSymbol.Name, EdgeMode, ParameterCodeModel.TaskResult(taskNodeSymbol.Declaration));
         }
 
         public override CallCodeModel VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {

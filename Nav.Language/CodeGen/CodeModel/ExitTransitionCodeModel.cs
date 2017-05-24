@@ -22,18 +22,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public string TaskNamePascalcase => TaskName.ToPascalcase();
         
 
-        public static ExitTransitionCodeModel FromExitTransition(IExitTransition exitTransition) {
-
-            var taskNode = exitTransition?.Source?.Declaration;
+        public static ExitTransitionCodeModel FromTaskNode(ITaskNodeSymbol taskNode) {
             if(taskNode == null) {
-                throw new ArgumentException("Exit transition expected");
+                throw new ArgumentNullException(nameof(taskNode));
             }
 
-            // TODO Result
-            var taskResult = new ParameterCodeModel("bool", "todo");
+            
+            var taskResult = ParameterCodeModel.TaskResult(taskNode.Declaration);
             
             return new ExitTransitionCodeModel(
-                calls           : exitTransition.GetReachableCalls().ToImmutableList(), 
+                calls           : taskNode.GetReachableCalls().ToImmutableList(), 
                 result          : taskResult, 
                 taskName        : taskNode.Name);
         }

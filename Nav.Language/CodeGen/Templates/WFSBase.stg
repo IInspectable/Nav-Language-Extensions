@@ -158,39 +158,39 @@ if (body is END) {
 }
 >>
 
-openModalTask(call) ::=<<
-<startTaskImpl(call, "OpenModalTask")>
+openModalTask(taskCall) ::=<<
+if(body is Begin<taskCall.PascalCaseName>Wrapper) {
+    return OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(((Begin<taskCall.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
+}
 >>
 
-startNonModalTask(call) ::=<<
-<startTaskImpl(call, "StartNonModalTask")>
->>
-
-gotoTask(call) ::=<<
-<startTaskImpl(call, "GotoTask")>
->>
-
-startTaskImpl(call, method) ::=<<
+startNonModalTask(taskCall) ::=<<
 if(body is Begin<call.PascalCaseName>Wrapper) {
-    return <method>\<bool>(((Begin<call.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><call.PascalCaseName>);
+    return StartNonModalTask(((Begin<taskCall.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
+}
+>>
+
+gotoTask(taskCall) ::=<<
+if(body is Begin<taskCall.PascalCaseName>Wrapper) {
+    return GotoTask\<<taskCall.TaskResult.ParameterType>\>(((Begin<taskCall.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
 }
 >>
 
 
 openModalGUI(call) ::=<<
-<openGuiImpl(call, "OpenModalGUI")>
+if(body is <call.PascalCaseName><ToClassNameSuffix()>) {
+    return OpenModalGUI((<call.PascalCaseName><ToClassNameSuffix()>) body);
+}
 >>
 
 startNonModalGUI(call) ::=<<
-<openGuiImpl(call, "StartNonModalGUI")>
+if(body is <call.PascalCaseName><ToClassNameSuffix()>) {
+    return StartNonModalGUI((<call.PascalCaseName><ToClassNameSuffix()>) body);
+}
 >>
 
 gotoGUI(call) ::=<<
-<openGuiImpl(call, "GotoGUI")>
->>
-
-openGuiImpl(call, method) ::=<<
 if(body is <call.PascalCaseName><ToClassNameSuffix()>) {
-    return <method>((<call.PascalCaseName><ToClassNameSuffix()>) body);
+    return GotoGUI((<call.PascalCaseName><ToClassNameSuffix()>) body);
 }
 >>

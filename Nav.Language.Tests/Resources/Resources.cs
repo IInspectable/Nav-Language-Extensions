@@ -11,7 +11,8 @@ namespace Nav.Language.Tests {
         public static readonly string LargeNav     = LoadText("LargeNav.nav");
         public static readonly string NavWithError = LoadText("NavWithError.nav");
         public static readonly string SingleFileNav= LoadText("SingleFile.nav");
-        
+        public static readonly string NestedChoices = LoadText("NestedChoices.nav");
+
         //NavWithError
         static string LoadText(string resourceName) {
 

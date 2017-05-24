@@ -11,6 +11,7 @@ namespace Pharmatechnik.Nav.Language {
         TaskDeclaration,
         TaskDefinition
     }
+
     public interface ITaskDeclarationSymbol : ISymbol {
 
         /// <summary>
@@ -48,5 +49,7 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         string CodeNamespace { get; }
         bool CodeNotImplemented { get; }
+        [CanBeNull]
+        ICodeParameterSymbol CodeTaskResult { get; }
     }
 }

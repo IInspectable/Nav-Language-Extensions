@@ -199,6 +199,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\TaskC.nav" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\NestedChoices.nav" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

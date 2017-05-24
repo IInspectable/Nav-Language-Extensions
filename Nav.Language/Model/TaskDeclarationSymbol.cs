@@ -7,12 +7,12 @@ using JetBrains.Annotations;
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-
     sealed partial class TaskDeclarationSymbol : Symbol, ITaskDeclarationSymbol {
 
         public TaskDeclarationSymbol(string name, Location location, 
                                     TaskDeclarationOrigin origin, 
                                     bool isIncluded,
+                                    ICodeParameterSymbol codeTaskResult,
                                     MemberDeclarationSyntax syntax,
                                     [CanBeNull] string codeNamespace,
                                     bool codeNotImplemented): base(name, location) {
@@ -21,8 +21,10 @@ namespace Pharmatechnik.Nav.Language {
             IsIncluded         = isIncluded;
             References         = new List<ITaskNodeSymbol>();
             ConnectionPoints   = new SymbolCollection<ConnectionPointSymbol>();
+
             CodeNamespace      = codeNamespace ?? string.Empty;
             CodeNotImplemented = codeNotImplemented;
+            CodeTaskResult     = codeTaskResult;
         }
         
         public CodeGenerationUnit CodeGenerationUnit { get; private set; }
@@ -58,6 +60,8 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public string CodeNamespace { get; }
         public bool CodeNotImplemented { get; }
+        [CanBeNull]
+        public ICodeParameterSymbol CodeTaskResult { get; }
 
         public IEnumerable<ISymbol> SymbolsAndSelf() {
             yield return this;
@@ -65,6 +69,7 @@ namespace Pharmatechnik.Nav.Language {
             foreach (var symbol in ConnectionPoints) {
                 yield return symbol;
             }
+            yield return CodeTaskResult;
         }
 
         internal void FinalConstruct(CodeGenerationUnit codeGenerationUnit) {
