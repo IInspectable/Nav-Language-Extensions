@@ -61,12 +61,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var usingNamespaces      = GetUsingNamespaces(taskDefinition, taskCodeModel);
             var taskBegins           = GetTaskBegins(taskDefinition);
             var taskParameter        = GetTaskParameter(taskDefinition);
-            var initTransitions      = GetInitTransitions(taskDefinition, taskCodeModel);
-            var exitTransitions      = GetExitTransitions(taskDefinition);
-            var triggerTransitions   = GetTriggerTransitions(taskDefinition);
+            var initTransitions      = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeModel);
+            var exitTransitions      = CodeModelBuilder.GetExitTransitions(taskDefinition);
+            var triggerTransitions   = CodeModelBuilder.GetTriggerTransitions(taskDefinition);
 
             // BeginWrapper
-            var beginWrappers = GetBeginWrappers(taskDefinition);
+            var beginWrappers = CodeModelBuilder.GetBeginWrappers(taskDefinition);
 
             return new WfsBaseCodeModel(
                 taskCodeModel         : taskCodeModel,
@@ -106,32 +106,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             foreach (var p in paramList) {
                 yield return p;
             }
-        }
-
-        static IEnumerable<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
-            return taskDefinition.NodeDeclarations
-                                 .OfType<IInitNodeSymbol>().SelectMany(n => n.Outgoings)
-                                 .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeModel));
-        }
-        
-        static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition) {
-            // TODO Exit Transitions müssen pro TaskNode immer zusammengefasst werden
-            return taskDefinition.NodeDeclarations
-                                 .OfType<ITaskNodeSymbol>()
-                                 .Select(ExitTransitionCodeModel.FromTaskNode);
-        }
-
-        static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition) {
-            return taskDefinition.NodeDeclarations
-                                 .OfType<IGuiNodeSymbol>()
-                                 .SelectMany(n => n.Outgoings)
-                                 .SelectMany(TriggerTransitionCodeModel.FromTriggerTransition);            
-        }
-
-        static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition) {
-            return taskDefinition.NodeDeclarations
-                                 .OfType<ITaskNodeSymbol>()
-                                 .Select(BeginWrapperCodeModel.FromTaskNode);
         }
 
         static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {

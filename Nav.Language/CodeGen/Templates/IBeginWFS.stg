@@ -29,11 +29,3 @@ writeBeginMethodDeclarationList(taskInits) ::=<<
 writeBeginMethodDeclaration(taskInit) ::=<<
 IINIT_TASK <taskInit.BeginMethodName>(<writeParameterList(taskInit.Parameter)>);
 >>
-
-writeParameterList(parameters) ::=<<
-<parameters:writeParameter(); separator=", ">
->>
-
-writeParameter(parameter) ::=<<
-<parameter.ParameterType> <parameter.ParameterName>
->>

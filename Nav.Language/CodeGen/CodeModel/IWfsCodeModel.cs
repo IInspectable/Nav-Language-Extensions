@@ -13,17 +13,23 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     sealed class IWfsCodeModel : FileGenerationCodeModel {
 
-        IWfsCodeModel(string relativeSyntaxFileName, TaskCodeModel taskCodeModel, ImmutableList<string> usingNamespaces, string baseInterfaceName, ImmutableList<SignalTriggerCodeModel> signalTriggers, string filePath) 
+        IWfsCodeModel(TaskCodeModel taskCodeModel, 
+                      string relativeSyntaxFileName, 
+                      string filePath, 
+                      ImmutableList<string> usingNamespaces, 
+                      string baseInterfaceName, 
+                      ImmutableList<TriggerTransitionCodeModel> triggerTransitions) 
+
             : base(taskCodeModel, relativeSyntaxFileName, filePath) {
-            UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(baseInterfaceName));
-            SignalTriggers    = signalTriggers    ?? throw new ArgumentNullException(nameof(signalTriggers));
+            UsingNamespaces    = usingNamespaces    ?? throw new ArgumentNullException(nameof(usingNamespaces));
+            BaseInterfaceName  = baseInterfaceName  ?? throw new ArgumentNullException(nameof(baseInterfaceName));
+            TriggerTransitions = triggerTransitions ?? throw new ArgumentNullException(nameof(triggerTransitions));
         }
 
         public ImmutableList<string> UsingNamespaces { get; }        
         public string BaseInterfaceName { get; }
-        public ImmutableList<SignalTriggerCodeModel> SignalTriggers { get; }
         public string Namespace => Task.IwflNamespace;
+        public ImmutableList<TriggerTransitionCodeModel> TriggerTransitions { get; }
 
         public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
 
@@ -42,21 +48,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
-            // Signal Trigger
-            var signalTriggers = new List<SignalTriggerCodeModel>();
-            foreach (var trigger in taskDefinition.Transitions.SelectMany(t => t.Triggers).OfType<ISignalTriggerSymbol>()) {
-                signalTriggers.Add(SignalTriggerCodeModel.FromSignalTrigger(trigger, taskCodeModel));
-            }
-
+            // Trigger Transitions
+            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition);
+            
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
 
-            return new IWfsCodeModel(
+            return new IWfsCodeModel(taskCodeModel: taskCodeModel,
                 relativeSyntaxFileName: relativeSyntaxFileName,
-                taskCodeModel         : taskCodeModel,
+                filePath              : pathProvider.IWfsFileName, 
                 usingNamespaces       : namespaces.ToSortedNamespaces().ToImmutableList(), 
-                baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType,
-                signalTriggers        : signalTriggers.OrderBy(st=> st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName).ToImmutableList(),
-                filePath              : pathProvider.IWfsFileName);
+                baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType, 
+                triggerTransitions    : triggerTransitions.ToImmutableList());
         }
     }
 }

@@ -7,15 +7,15 @@ Begin(model, context) ::=<<
 namespace <model.Namespace> {
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public interface <InterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>: <model.BaseInterfaceName> {
-        <writeTriggerMethodDeclarationList(model.SignalTriggers)>
+        <writeTriggerMethodDeclarationList(model.TriggerTransitions)>
     }
 }
 >>
 
-writeTriggerMethodDeclarationList(signalTriggers) ::=<<
-<signalTriggers:writeTriggerMethodDeclaration(); separator="\r\n">
+writeTriggerMethodDeclarationList(triggerTransitions) ::=<<
+<triggerTransitions:writeTriggerMethodDeclaration(); separator="\r\n">
 >>
 
-writeTriggerMethodDeclaration(signalTrigger) ::=<<
-INavCommand <signalTrigger.TriggerMethodName>(<signalTrigger.TOClassName> to);
+writeTriggerMethodDeclaration(triggerTransition) ::=<<
+INavCommand <triggerTransition.TriggerNamePascalcase>(<writeParameterList(triggerTransition.ViewParameter)>);
 >>
