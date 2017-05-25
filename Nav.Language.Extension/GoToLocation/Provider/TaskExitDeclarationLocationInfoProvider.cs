@@ -37,7 +37,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 
                 var locationInfo = LocationInfo.FromLocation(
                     location    : location,
-                    displayName : $"{_taskExitCodeInfo.TaskCodeInfo.WfsTypeName}.{_taskExitCodeInfo.AfterLogicMethodName}",
+                    displayName : $"{_taskExitCodeInfo.ContainingTaskCodeInfo.WfsTypeName}.{_taskExitCodeInfo.AfterLogicMethodName}",
                     imageMoniker: ImageMoniker);
 
                 return ToEnumerable(locationInfo);

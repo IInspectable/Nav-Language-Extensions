@@ -61,8 +61,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var usingNamespaces      = GetUsingNamespaces(taskDefinition, taskCodeInfo);
             var taskBegins           = GetTaskBegins(taskDefinition);
             var taskParameter        = GetTaskParameter(taskDefinition);
-            var initTransitions      = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeInfo);
-            var exitTransitions      = CodeModelBuilder.GetExitTransitions(taskDefinition);
+            var initTransitions      = CodeModelBuilder.GetInitTransitions(taskDefinition   , taskCodeInfo);
+            var exitTransitions      = CodeModelBuilder.GetExitTransitions(taskDefinition   , taskCodeInfo);
             var triggerTransitions   = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
 
             // BeginWrapper

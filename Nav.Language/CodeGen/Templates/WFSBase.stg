@@ -73,14 +73,14 @@ writeExitTransitionCollapsibleList(exitTransitions) ::=<<
 >>
 
 writeExitTransition(exitTransition) ::=<<
-private INavCommand <ExitMethodPrefix()><exitTransition.TaskNamePascalcase>(<writeParameterList(exitTransition.TaskResult)>) {
-    var body = <ExitMethodPrefix()><exitTransition.TaskNamePascalcase><LogicMethodSuffix()>(<writeParameterExpressionsInline([exitTransition.TaskResult, exitTransition.TaskBeginFields])>);
+private INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
+    var body = <exitTransition.AfterLogicMethodName>(<writeParameterExpressionsInline([exitTransition.TaskResult, exitTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(exitTransition)>
     // TODO Throw Exception
     throw new InvalidOperationException();
 }
 
-protected abstract INavCommandBody <ExitMethodPrefix()><exitTransition.TaskNamePascalcase><LogicMethodSuffix()>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>);
+protected abstract INavCommandBody <exitTransition.AfterLogicMethodName>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>);
 >>
 
 writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<

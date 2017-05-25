@@ -101,7 +101,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             }
 
             // GoTo Exit Declaration
-            var codeModel = new TaskExitCodeInfo(connectionPointReferenceSymbol);
+            var codeModel = TaskExitCodeInfo.FromConnectionPointReference(connectionPointReferenceSymbol);
             var provider  = new TaskExitDeclarationLocationInfoProvider(_textBuffer, codeModel);
             var tagSpan   = CreateTagSpan(connectionPointReferenceSymbol.Location, provider);
 

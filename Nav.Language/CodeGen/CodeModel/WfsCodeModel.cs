@@ -43,8 +43,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsFileName, pathProvider.SyntaxFileName);
 
-            var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeInfo);
-            var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskDefinition);
+            var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition   , taskCodeInfo);
+            var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskDefinition   , taskCodeInfo);
             var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
 
             return new WfsCodeModel(

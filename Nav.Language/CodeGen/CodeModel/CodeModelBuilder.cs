@@ -9,11 +9,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeInfo));  
         }
 
-        public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition) {
-            // TODO Exit Transitions müssen pro TaskNode immer zusammengefasst werden
+        public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
             return taskDefinition.NodeDeclarations
                 .OfType<ITaskNodeSymbol>()
-                .Select(ExitTransitionCodeModel.FromTaskNode);
+                .Select(taskNode => ExitTransitionCodeModel.FromTaskNode(taskNode, taskCodeInfo));
         }
 
         public static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
