@@ -8,18 +8,23 @@ namespace <model.Namespace> {
 
     // Redeklarationen von Methoden ohne new sind ok - um in manuell erstellten Oberinterfaces Begins definieren zu können
     #pragma warning disable 0108
-    <if(model.CodeDeclarations)>
 
-    <model.CodeDeclarations; separator="\r\n">
+	<writeCodeDeclarationCollapsibleList(model.CodeDeclarations)><\\>
 
-    <else>
-
-    <endif>
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public interface <BeginInterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>: <model.BaseInterfaceName> {
         <writeBeginMethodDeclarationList(model.InitTransitions)>
     }
 }
+>>
+
+writeCodeDeclarationCollapsibleList(codeDeclarations) ::=<<
+<codeDeclarations:writeCodeDeclaration(); separator="\r\n\r\n">
+
+>>
+
+writeCodeDeclaration(codeDeclaration) ::=<<
+<codeDeclaration>
 >>
 
 writeBeginMethodDeclarationList(initTransitions) ::=<<
