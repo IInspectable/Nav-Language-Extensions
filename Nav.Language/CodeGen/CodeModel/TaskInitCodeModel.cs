@@ -13,6 +13,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         TaskInitCodeModel(string initName, TaskCodeInfo taskCodeInfo, ImmutableList<ParameterCodeModel> parameter) {
 
+            // TODO Info aus TaskDeclarationCodeInfo
             TaskCodeInfo        = taskCodeInfo ?? throw new ArgumentNullException(nameof(taskCodeInfo));
             Parameter            = parameter     ?? throw new ArgumentNullException(nameof(parameter));
             BeginMethodName      = $"{CodeGenFacts.BeginMethodPrefix}";

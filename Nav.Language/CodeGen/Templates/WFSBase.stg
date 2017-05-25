@@ -120,7 +120,7 @@ writeWrapperBeginMethodList(ctorModels) ::=<<
 
 writeWrapperBeginMethod(ctorModel) ::=<<
 <writeInitCallAnnotation(ctorModel.TaskInitParameter.ParameterType)>
-protected Begin<beginWrapperModel.TaskNodeName>Wrapper Begin<ctorModel.TaskNodeName>(<writeParameterList([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>) {
+protected Begin<beginWrapperModel.TaskNodeName>Wrapper <BeginMethodPrefix()><ctorModel.TaskNodeName>(<writeParameterList([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>) {
     return new Begin<beginWrapperModel.TaskNodeName>Wrapper(<writeParameterExpressionsInline([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>);
 }
 >>
@@ -131,7 +131,7 @@ writeBeginWrapperCtorList(ctorModels) ::=<<
 
 writeBeginWrapperCtor(ctorModel) ::=<<
 internal Begin<ctorModel.TaskNodeName>Wrapper(<writeParameterList([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>) {
-    BeginWrapper = () => <ctorModel.TaskBeginParameter.ParameterName>.Begin(<writeParameterExpressionsInline(ctorModel.TaskParameter)>);
+    BeginWrapper = () => <ctorModel.TaskBeginParameter.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(ctorModel.TaskParameter)>);
 }
 >>
 

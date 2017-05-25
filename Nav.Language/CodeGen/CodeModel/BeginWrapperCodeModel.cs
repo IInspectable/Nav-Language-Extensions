@@ -17,6 +17,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             Ctors          = ctors       ?? throw new ArgumentNullException(nameof(ctors));
         }
 
+        // TODO Pascalcase
         public string TaskNodeName { get; }
         public ImmutableList<BeginWrapperCtor> Ctors { get;}
 

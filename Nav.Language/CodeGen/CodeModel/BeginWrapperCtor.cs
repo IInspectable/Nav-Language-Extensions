@@ -16,6 +16,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             TaskParameter      = taskParameter     ?? throw new ArgumentNullException(nameof(taskParameter));
         }
 
+        // TODO BeginMethodName in Model statt TaskNodeName (=> Pascalcse) mit TaskInitCodeModel abgleichen
+        // => TaskDeclarationCodeInfo
         public string TaskNodeName { get; }
         public ParameterCodeModel TaskBeginParameter { get; }
         public ImmutableList<ParameterCodeModel> TaskParameter { get; }
