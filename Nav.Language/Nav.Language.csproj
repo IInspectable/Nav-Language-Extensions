@@ -117,11 +117,11 @@
     <Compile Include="CodeGen\CodeModel\WfsBaseCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\IWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\ParameterCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\SignalTriggerCodeModel.cs" />
+    <Compile Include="CodeGen\SignalTriggerCodeInfo.cs" />
     <Compile Include="CodeGen\CodeModel\TaskInitCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\TaskCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\TaskDeclarationCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\TaskExitCodeModel.cs" />
+    <Compile Include="CodeGen\TaskCodeInfo.cs" />
+    <Compile Include="CodeGen\TaskDeclarationCodeInfo.cs" />
+    <Compile Include="CodeGen\TaskExitCodeInfo.cs" />
     <Compile Include="CodeGen\Generator.cs" />
     <Compile Include="CodeGen\Templates\CodeGenFacts.generated.cs" />
     <Compile Include="Model\Call.cs" />

@@ -26,14 +26,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             if(taskNode == null) {
                 throw new ArgumentNullException(nameof(taskNode));
             }
-
             
             var taskResult = ParameterCodeModel.TaskResult(taskNode.Declaration);
             
             return new ExitTransitionCodeModel(
-                calls           : taskNode.GetReachableCalls().ToImmutableList(), 
-                result          : taskResult, 
-                taskName        : taskNode.Name);
+                calls   : taskNode.GetReachableCalls().ToImmutableList(), 
+                result  : taskResult, 
+                taskName: taskNode.Name);
         }
     }
 }

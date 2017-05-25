@@ -14,11 +14,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     sealed class TOCodeModel : FileGenerationCodeModel {
         
         TOCodeModel(string relativeSyntaxFileName, 
-            TaskCodeModel taskCodeModel, 
+            TaskCodeInfo taskCodeInfo, 
             ImmutableList<string> usingNamespaces,
             string className, 
             string filePath) 
-            : base(taskCodeModel, relativeSyntaxFileName, filePath) {
+            : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
 
             UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
             ClassName       = className       ?? String.Empty;
@@ -41,7 +41,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(pathProvider));
             }
 
-            var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
+            var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
             foreach(var guiNode in taskDefinition.NodeDeclarations.OfType<IGuiNodeSymbol>().Where(n => n.References.Any())) {
 
                 var viewName    = guiNode.Name;
@@ -52,7 +52,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
                 yield return new TOCodeModel(
                     relativeSyntaxFileName: relativeSyntaxFileName,
-                    taskCodeModel         : taskCodeModel,
+                    taskCodeInfo         : taskCodeInfo,
                     usingNamespaces       : GetUsingNamespaces().ToImmutableList(),
                     className             : toClassName,
                     filePath              : filePath);

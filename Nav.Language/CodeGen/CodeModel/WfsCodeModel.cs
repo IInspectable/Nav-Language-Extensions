@@ -11,14 +11,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     sealed class WfsCodeModel : FileGenerationCodeModel {
 
         public WfsCodeModel(
-            TaskCodeModel taskCodeModel, 
+            TaskCodeInfo taskCodeInfo, 
             string relativeSyntaxFileName, 
             string filePath,
             ImmutableList<string> usingNamespaces,
             ImmutableList<InitTransitionCodeModel> initTransitions,
             ImmutableList<ExitTransitionCodeModel> exitTransitions,
             ImmutableList<TriggerTransitionCodeModel> triggerTransitions)
-            : base(taskCodeModel, relativeSyntaxFileName, filePath) {
+            : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
 
             UsingNamespaces    = usingNamespaces    ?? throw new ArgumentNullException(nameof(usingNamespaces));
             InitTransitions    = initTransitions    ?? throw new ArgumentNullException(nameof(initTransitions));
@@ -40,30 +40,30 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(taskDefinition));
             }
 
-            var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
+            var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsFileName, pathProvider.SyntaxFileName);
 
-            var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeModel);
+            var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeInfo);
             var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskDefinition);
             var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition);
 
             return new WfsCodeModel(
-                taskCodeModel         : taskCodeModel,
+                taskCodeInfo          : taskCodeInfo,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.WfsFileName,
-                usingNamespaces       : GetUsingNamespaces(taskDefinition, taskCodeModel).ToImmutableList(),
+                usingNamespaces       : GetUsingNamespaces(taskDefinition, taskCodeInfo).ToImmutableList(),
                 initTransitions       : initTransitions.ToImmutableList(),
                 exitTransitions       : exitTransitions.ToImmutableList(),
                 triggerTransitions    : triggerTransitions.ToImmutableList()
                );
         }
 
-        static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
+        static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
 
             var namespaces = new List<string>();
 
             namespaces.Add(typeof(int).Namespace);
-            namespaces.Add(taskCodeModel.IwflNamespace);
+            namespaces.Add(taskCodeInfo.IwflNamespace);
             namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
             namespaces.Add(CodeGenFacts.NavigationEngineWflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());

@@ -9,11 +9,11 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public sealed class TaskInitCodeModel: CodeModel {
+    public sealed class TaskInitCodeModel {
 
-        TaskInitCodeModel(string initName, TaskCodeModel taskCodeModel, ImmutableList<ParameterCodeModel> parameter) {
+        TaskInitCodeModel(string initName, TaskCodeInfo taskCodeInfo, ImmutableList<ParameterCodeModel> parameter) {
 
-            TaskCodeModel        = taskCodeModel ?? throw new ArgumentNullException(nameof(taskCodeModel));
+            TaskCodeInfo        = taskCodeInfo ?? throw new ArgumentNullException(nameof(taskCodeInfo));
             Parameter            = parameter     ?? throw new ArgumentNullException(nameof(parameter));
             BeginMethodName      = $"{CodeGenFacts.BeginMethodPrefix}";
             BeginLogicMethodName = $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.LogicMethodSuffix}";           
@@ -26,29 +26,29 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(initNodeSymbol));
             }
 
-            var taskCodeModel = TaskCodeModel.FromTaskDefinition(initNodeSymbol.ContainingTask);
+            var taskCodeModel = TaskCodeInfo.FromTaskDefinition(initNodeSymbol.ContainingTask);
 
             return FromInitNode(initNodeSymbol, taskCodeModel);
         }
 
-        internal static TaskInitCodeModel FromInitNode(IInitNodeSymbol initNodeSymbol, TaskCodeModel taskCodeModel) {
+        internal static TaskInitCodeModel FromInitNode(IInitNodeSymbol initNodeSymbol, TaskCodeInfo taskCodeInfo) {
 
             if (initNodeSymbol == null) {
                 throw new ArgumentNullException(nameof(initNodeSymbol));
             }
-            if (taskCodeModel == null) {
-                throw new ArgumentNullException(nameof(taskCodeModel));
+            if (taskCodeInfo == null) {
+                throw new ArgumentNullException(nameof(taskCodeInfo));
             }
 
             var parameter = ParameterCodeModel.FromParameterSyntaxes(initNodeSymbol.Syntax.CodeParamsDeclaration?.ParameterList);
             
             return new TaskInitCodeModel(initName     : initNodeSymbol.Name ?? String.Empty, 
-                                         taskCodeModel: taskCodeModel, 
+                                         taskCodeInfo: taskCodeInfo, 
                                          parameter    : parameter.ToImmutableList());
         }
 
         [NotNull]
-        public TaskCodeModel TaskCodeModel { get; }
+        public TaskCodeInfo TaskCodeInfo { get; }
         [NotNull]
         public string BeginLogicMethodName { get; }
         [NotNull]
@@ -56,6 +56,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public string InitName { get; }
         [NotNull]
-        public ImmutableList<ParameterCodeModel> Parameter { get; }
+        ImmutableList<ParameterCodeModel> Parameter { get; }
     }
 }

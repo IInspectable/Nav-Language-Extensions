@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-    public class ParameterCodeModel : CodeModel {
+    class ParameterCodeModel : CodeModel {
         
         public ParameterCodeModel(string parameterType, string parameterName) {
             ParameterType = parameterType  ?? String.Empty;

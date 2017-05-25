@@ -12,10 +12,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public TriggerTransitionCodeModel(ParameterCodeModel viewParameter, ImmutableList<Call> reachableCalls, string viewName, string triggerName)
             : base(reachableCalls) {
-            TriggerName = triggerName;
-            ViewName    = viewName ?? String.Empty;
+            TriggerName   = triggerName;
+            ViewName      = viewName ?? String.Empty;
             ViewParameter = viewParameter;
-
         }
 
         public string ViewName { get; }

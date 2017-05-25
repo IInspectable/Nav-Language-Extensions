@@ -11,16 +11,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         protected CallCodeModel(string name, EdgeMode edgeMode) {
             Name     = name ?? String.Empty;
             EdgeMode = edgeMode;
-
         }
 
         public EdgeMode EdgeMode { get; }
-
         public string Name { get; }
         public string PascalCaseName => Name.ToPascalcase();
-
         public abstract string TemplateName { get; }
-
     }
 
     class ExitCallCodeModel : CallCodeModel {
@@ -29,7 +25,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         public override string TemplateName => "goToExit";
-
     }
 
     class EndCallCodeModel : CallCodeModel {
@@ -38,7 +33,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         public override string TemplateName => "goToEnd";
-
     }
 
     class TaskCallCodeModel : CallCodeModel {

@@ -18,10 +18,10 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
     class TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider : CodeAnalysisLocationInfoProvider {
 
-        readonly TaskDeclarationCodeModel _taskDeclarationCodeModel;
+        readonly TaskDeclarationCodeInfo _taskDeclarationCodeInfo;
 
-        public TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider(ITextBuffer sourceBuffer, TaskDeclarationCodeModel taskDeclarationCodeModel) : base(sourceBuffer) {
-            _taskDeclarationCodeModel = taskDeclarationCodeModel;
+        public TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider(ITextBuffer sourceBuffer, TaskDeclarationCodeInfo taskDeclarationCodeInfo) : base(sourceBuffer) {
+            _taskDeclarationCodeInfo = taskDeclarationCodeInfo;
         }
 
         static ImageMoniker ImageMoniker {
@@ -34,14 +34,14 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
                 var locations = await LocationFinder.FindTaskIBeginInterfaceDeclarationLocations(
                         project          : project,
-                        codegenInfo      : _taskDeclarationCodeModel,
+                        codegenInfo      : _taskDeclarationCodeInfo,
                         cancellationToken: cancellationToken)
                     .ConfigureAwait(false);
 
                 return locations.Select(location =>
                         LocationInfo.FromLocation(
                             location    : new Location(location.FilePath), // Wir sind nur an dem Dateinamen interessiert
-                            displayName : _taskDeclarationCodeModel.FullyQualifiedBeginInterfaceName,
+                            displayName : _taskDeclarationCodeInfo.FullyQualifiedBeginInterfaceName,
                             imageMoniker: ImageMoniker))
                     .OrderBy(li => li.DisplayName);
 

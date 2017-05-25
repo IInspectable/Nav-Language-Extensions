@@ -3,8 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using JetBrains.Annotations;
 
 #endregion
 
@@ -13,14 +11,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     sealed class IWfsCodeModel : FileGenerationCodeModel {
 
-        IWfsCodeModel(TaskCodeModel taskCodeModel, 
+        IWfsCodeModel(TaskCodeInfo taskCodeInfo, 
                       string relativeSyntaxFileName, 
                       string filePath, 
                       ImmutableList<string> usingNamespaces, 
                       string baseInterfaceName, 
                       ImmutableList<TriggerTransitionCodeModel> triggerTransitions) 
 
-            : base(taskCodeModel, relativeSyntaxFileName, filePath) {
+            : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
             UsingNamespaces    = usingNamespaces    ?? throw new ArgumentNullException(nameof(usingNamespaces));
             BaseInterfaceName  = baseInterfaceName  ?? throw new ArgumentNullException(nameof(baseInterfaceName));
             TriggerTransitions = triggerTransitions ?? throw new ArgumentNullException(nameof(triggerTransitions));
@@ -40,11 +38,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(pathProvider));
             }
 
-            var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
+            var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
 
             // UsingNamespaces
             var namespaces = new List<string>();
-            namespaces.Add(taskCodeModel.IwflNamespace);
+            namespaces.Add(taskCodeInfo.IwflNamespace);
             namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
@@ -53,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
 
-            return new IWfsCodeModel(taskCodeModel: taskCodeModel,
+            return new IWfsCodeModel(taskCodeInfo: taskCodeInfo,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.IWfsFileName, 
                 usingNamespaces       : namespaces.ToSortedNamespaces().ToImmutableList(), 

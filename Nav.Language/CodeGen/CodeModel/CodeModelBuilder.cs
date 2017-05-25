@@ -3,10 +3,10 @@ using System.Linq;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
     sealed class CodeModelBuilder {
-        public static IEnumerable<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
+        public static IEnumerable<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
             return taskDefinition.NodeDeclarations
                 .OfType<IInitNodeSymbol>().SelectMany(n => n.Outgoings)
-                .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeModel));
+                .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeInfo));
         }
 
         public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition) {

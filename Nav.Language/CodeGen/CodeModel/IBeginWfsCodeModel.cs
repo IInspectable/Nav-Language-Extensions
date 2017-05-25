@@ -11,14 +11,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     // ReSharper disable once InconsistentNaming
     sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
 
-        IBeginWfsCodeModel(TaskCodeModel taskCodeModel, 
+        IBeginWfsCodeModel(TaskCodeInfo taskCodeInfo, 
                            string relativeSyntaxFileName, 
                            string filePath, 
                            ImmutableList<string> usingNamespaces, 
                            string baseInterfaceName,
                            ImmutableList<InitTransitionCodeModel> initTransitions,
                            ImmutableList<string> codeDeclarations) 
-            :base(taskCodeModel, relativeSyntaxFileName, filePath) {
+            :base(taskCodeInfo, relativeSyntaxFileName, filePath) {
 
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
             BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(baseInterfaceName));
@@ -43,21 +43,21 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var taskDefinitionSyntax = taskDefinition.Syntax;
-            var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
+            var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
 
             // UsingNamespaces
             var namespaces = new List<string>();
-            namespaces.Add(taskCodeModel.IwflNamespace);
+            namespaces.Add(taskCodeInfo.IwflNamespace);
             namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
             namespaces.Add(CodeGenFacts.NavigationEngineWflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
             var codeDeclarations = CodeModelBuilder.GetCodeDeclarations(taskDefinition);
-            var initTransitions  = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeModel);
+            var initTransitions  = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeInfo);
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsFileName, pathProvider.SyntaxFileName);
             
             return new IBeginWfsCodeModel(
-                taskCodeModel         : taskCodeModel,
+                taskCodeInfo         : taskCodeInfo,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.IBeginWfsFileName,
                 usingNamespaces       : namespaces.ToSortedNamespaces().ToImmutableList(),

@@ -19,10 +19,10 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
     class TaskDeclarationCodeFileLocationInfoProvider : CodeAnalysisLocationInfoProvider {
 
-        readonly TaskCodeModel _taskCodeModel;
+        readonly TaskCodeInfo _taskCodeInfo;
 
-        public TaskDeclarationCodeFileLocationInfoProvider(ITextBuffer sourceBuffer, TaskCodeModel taskCodeModel): base(sourceBuffer) {
-            _taskCodeModel = taskCodeModel;
+        public TaskDeclarationCodeFileLocationInfoProvider(ITextBuffer sourceBuffer, TaskCodeInfo taskCodeInfo): base(sourceBuffer) {
+            _taskCodeInfo = taskCodeInfo;
         }
 
         static ImageMoniker ImageMoniker { get { return ImageMonikers.CSharpFile; } }
@@ -32,7 +32,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
             try {
                 var locations = await LocationFinder.FindTaskDeclarationLocationsAsync(
                     project          : project,
-                    codegenInfo      : _taskCodeModel,
+                    codegenInfo      : _taskCodeInfo,
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 return locations.Select(location =>

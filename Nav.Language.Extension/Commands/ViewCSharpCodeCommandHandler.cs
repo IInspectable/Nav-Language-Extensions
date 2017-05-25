@@ -87,14 +87,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         IEnumerable<TagSpan<GoToTag>> BuildTagSpans(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, ITextBuffer subjectBuffer) {
 
             foreach (var taskDeclaration in codeGenerationUnitAndSnapshot.CodeGenerationUnit.TaskDeclarations.Where(td=>!td.IsIncluded && td.Origin==TaskDeclarationOrigin.TaskDeclaration)) {
-                var codeModel = new TaskDeclarationCodeModel(taskDeclaration);
+                var codeModel = new TaskDeclarationCodeInfo(taskDeclaration);
                 var provider  = new TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider(subjectBuffer, codeModel);
 
                 yield return CreateTagSpan(codeGenerationUnitAndSnapshot, taskDeclaration.Syntax?.GetLocation(), provider);
             }
 
             foreach (var taskDefinition in codeGenerationUnitAndSnapshot.CodeGenerationUnit.TaskDefinitions) {
-                var codeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
+                var codeModel = TaskCodeInfo.FromTaskDefinition(taskDefinition);
                 var provider  = new TaskDeclarationCodeFileLocationInfoProvider(subjectBuffer, codeModel);
 
                 yield return CreateTagSpan(codeGenerationUnitAndSnapshot, taskDefinition.Syntax.GetLocation(), provider);

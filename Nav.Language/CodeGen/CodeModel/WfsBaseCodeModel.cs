@@ -11,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     sealed class WfsBaseCodeModel : FileGenerationCodeModel {
 
-        WfsBaseCodeModel(TaskCodeModel taskCodeModel, 
+        WfsBaseCodeModel(TaskCodeInfo taskCodeInfo, 
                          string relativeSyntaxFileName, 
                          string filePath, 
                          ImmutableList<string> usingNamespaces, 
@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                          ImmutableList<ExitTransitionCodeModel> exitTransitions,
                          ImmutableList<TriggerTransitionCodeModel> triggerTransitions,
                          ImmutableList<BeginWrapperCodeModel> beginWrappers) 
-            : base(taskCodeModel, relativeSyntaxFileName, filePath) {
+            : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
             
             UsingNamespaces    = usingNamespaces    ?? throw new ArgumentNullException(nameof(usingNamespaces));
             TaskResult         = taskResult         ?? throw new ArgumentNullException(nameof(taskResult));
@@ -54,14 +54,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(taskDefinition));
             }
 
-            var taskCodeModel = TaskCodeModel.FromTaskDefinition(taskDefinition);
+            var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
 
             var taskResult           = ParameterCodeModel.TaskResult(taskDefinition);
-            var usingNamespaces      = GetUsingNamespaces(taskDefinition, taskCodeModel);
+            var usingNamespaces      = GetUsingNamespaces(taskDefinition, taskCodeInfo);
             var taskBegins           = GetTaskBegins(taskDefinition);
             var taskParameter        = GetTaskParameter(taskDefinition);
-            var initTransitions      = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeModel);
+            var initTransitions      = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeInfo);
             var exitTransitions      = CodeModelBuilder.GetExitTransitions(taskDefinition);
             var triggerTransitions   = CodeModelBuilder.GetTriggerTransitions(taskDefinition);
 
@@ -69,7 +69,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var beginWrappers = CodeModelBuilder.GetBeginWrappers(taskDefinition);
 
             return new WfsBaseCodeModel(
-                taskCodeModel         : taskCodeModel,
+                taskCodeInfo          : taskCodeInfo,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.WfsBaseFileName,
                 usingNamespaces       : usingNamespaces.ToImmutableList(),
@@ -108,12 +108,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
         }
 
-        static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeModel taskCodeModel) {
+        static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
 
             var namespaces = new List<string>();
 
             namespaces.Add(typeof(int).Namespace);
-            namespaces.Add(taskCodeModel.IwflNamespace);
+            namespaces.Add(taskCodeInfo.IwflNamespace);
             namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
             namespaces.Add(CodeGenFacts.NavigationEngineWflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());

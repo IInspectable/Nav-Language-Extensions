@@ -7,9 +7,9 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public sealed class TaskExitCodeModel: CodeModel {
+    public sealed class TaskExitCodeInfo {
 
-        public TaskExitCodeModel(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
+        public TaskExitCodeInfo(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
 
             if (connectionPointReferenceSymbol == null) {
                 throw new ArgumentNullException(nameof(connectionPointReferenceSymbol));
@@ -18,12 +18,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var exitTransition = connectionPointReferenceSymbol.ExitTransition;
             var task = exitTransition.ContainingTask;
 
-            TaskCodeModel = TaskCodeModel.FromTaskDefinition(task);
+            TaskCodeInfo = TaskCodeInfo.FromTaskDefinition(task);
+            // TODO PascalCase
             AfterLogicMethodName = $"{CodeGenFacts.ExitMethodPrefix}{exitTransition.Source?.Name}{CodeGenFacts.LogicMethodSuffix}";
         }
 
         [NotNull]
-        public TaskCodeModel TaskCodeModel { get; }
+        public TaskCodeInfo TaskCodeInfo { get; }
         [NotNull]
         public string AfterLogicMethodName { get; }
     }

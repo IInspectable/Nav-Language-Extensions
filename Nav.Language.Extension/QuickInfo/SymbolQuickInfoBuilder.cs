@@ -203,7 +203,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         public override IEnumerable<object> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
-            var signalTriggerCodeModel = SignalTriggerCodeModel.FromSignalTrigger(signalTriggerSymbol);
+            var signalTriggerCodeModel = SignalTriggerCodeInfo.FromSignalTrigger(signalTriggerSymbol);
             
             StackPanel panel = new StackPanel {
                 Orientation = Orientation.Vertical

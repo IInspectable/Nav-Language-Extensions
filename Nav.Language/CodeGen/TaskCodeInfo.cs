@@ -6,15 +6,15 @@ using System;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    public sealed class TaskCodeModel: CodeModel {
+    public sealed class TaskCodeInfo {
         
-        TaskCodeModel(string taskName, string baseNamespace, string wfsBaseBaseClassName) {
+        TaskCodeInfo(string taskName, string baseNamespace, string wfsBaseBaseClassName) {
             TaskName            = taskName             ?? String.Empty;
             BaseNamespace       = baseNamespace        ?? String.Empty;
             WfsBaseBaseTypeName = wfsBaseBaseClassName ?? String.Empty;
         }
 
-        public static TaskCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
+        public static TaskCodeInfo FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
 
             if (taskDefinition == null) {
                 throw new ArgumentNullException(nameof(taskDefinition));
@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var baseNamespace = (taskDefinition.Syntax.SyntaxTree.GetRoot() as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString() ?? String.Empty;
             var wfsBaseBaseClassName = taskDefinition.Syntax.CodeBaseDeclaration?.WfsBaseType?.ToString() ?? CodeGenFacts.DefaultWfsBaseClass;
 
-            return new TaskCodeModel(
+            return new TaskCodeInfo(
                 taskName            : taskName,
                 baseNamespace       : baseNamespace,
                 wfsBaseBaseClassName: wfsBaseBaseClassName);

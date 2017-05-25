@@ -8,9 +8,9 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     // TODO FROM Factory-Methode einbauen
-    public sealed class TaskDeclarationCodeModel: CodeModel {
+    public sealed class TaskDeclarationCodeInfo {
 
-        public TaskDeclarationCodeModel(ITaskDeclarationSymbol taskDeclarationSymbol) {
+        public TaskDeclarationCodeInfo(ITaskDeclarationSymbol taskDeclarationSymbol) {
 
             if (taskDeclarationSymbol == null) {
                 throw new ArgumentNullException(nameof(taskDeclarationSymbol));
@@ -19,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             if (taskDeclarationSymbol.IsIncluded) {
                 throw new ArgumentException("Only embedded task declarations supported");
             }
-
+           
             Taskname = taskDeclarationSymbol.Name ?? String.Empty;
 
             if (taskDeclarationSymbol.Origin == TaskDeclarationOrigin.TaskDeclaration) {
@@ -38,6 +38,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public string WflNamespace => $"{NamespacePräfix}.{CodeGenFacts.WflNamespaceSuffix}";
         [NotNull]
+        // TODO TaskName PascalCase?
         public string FullyQualifiedBeginInterfaceName => $"{WflNamespace}.{CodeGenFacts.BeginInterfacePrefix}{Taskname}{CodeGenFacts.WfsClassSuffix}";
     }
 }

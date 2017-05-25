@@ -6,7 +6,8 @@ using System.Collections.Immutable;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-    public class BeginWrapperCtor : CodeModel {
+
+    class BeginWrapperCtor : CodeModel {
        
         public BeginWrapperCtor(string taskNodeName, ParameterCodeModel taskBeginParameter, ImmutableList<ParameterCodeModel> taskParameter) {
 

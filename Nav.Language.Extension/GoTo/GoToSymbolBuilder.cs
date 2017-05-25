@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
 
-            var codeModel = TaskCodeModel.FromTaskDefinition(taskDefinitionSymbol);
+            var codeModel = TaskCodeInfo.FromTaskDefinition(taskDefinitionSymbol);
             var provider  = new TaskDeclarationLocationInfoProvider(_textBuffer, codeModel);
             
             return CreateTagSpan(taskDefinitionSymbol.Location, provider);
@@ -55,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
 
-            var codeModel = new TaskDeclarationCodeModel(taskDeclarationSymbol);
+            var codeModel = new TaskDeclarationCodeInfo(taskDeclarationSymbol);
             var provider  = new TaskIBeginInterfaceDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(taskDeclarationSymbol.Location, provider);
@@ -101,7 +101,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             }
 
             // GoTo Exit Declaration
-            var codeModel = new TaskExitCodeModel(connectionPointReferenceSymbol);
+            var codeModel = new TaskExitCodeInfo(connectionPointReferenceSymbol);
             var provider  = new TaskExitDeclarationLocationInfoProvider(_textBuffer, codeModel);
             var tagSpan   = CreateTagSpan(connectionPointReferenceSymbol.Location, provider);
 
@@ -136,7 +136,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         public override TagSpan<GoToTag> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
-            var codeModel = SignalTriggerCodeModel.FromSignalTrigger(signalTriggerSymbol);
+            var codeModel = SignalTriggerCodeInfo.FromSignalTrigger(signalTriggerSymbol);
             var provider  = new TriggerDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(signalTriggerSymbol.Location, provider);
