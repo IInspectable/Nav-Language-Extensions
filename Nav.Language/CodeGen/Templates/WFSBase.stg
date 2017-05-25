@@ -89,14 +89,14 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
-public virtual INavCommand <triggerTransition.TriggerNamePascalcase>(<writeParameterList(triggerTransition.ViewParameter)>) {
-    var body = <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
+public virtual INavCommand <triggerTransition.TriggerMethodName>(<writeParameterList(triggerTransition.ViewParameter)>) {
+    var body = <triggerTransition.TriggerLogicMethodName>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(triggerTransition)>
     // TODO Throw Exception
     throw new InvalidOperationException();
 }
 
-protected abstract INavCommandBody <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
+protected abstract INavCommandBody <triggerTransition.TriggerLogicMethodName>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
 >>
 
 

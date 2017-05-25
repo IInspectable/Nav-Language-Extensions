@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeInfo);
             var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskDefinition);
-            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition);
+            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
 
             return new WfsCodeModel(
                 taskCodeInfo          : taskCodeInfo,

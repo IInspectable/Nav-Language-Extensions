@@ -47,7 +47,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
             // Trigger Transitions
-            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition);
+            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
             
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
 

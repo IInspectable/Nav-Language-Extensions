@@ -10,20 +10,20 @@ using System.Collections.Immutable;
 namespace Pharmatechnik.Nav.Language.CodeGen {
     class TriggerTransitionCodeModel : TransitionCodeModel {
 
-        public TriggerTransitionCodeModel(ParameterCodeModel viewParameter, ImmutableList<Call> reachableCalls, string viewName, string triggerName)
+        readonly SignalTriggerCodeInfo _triggerCodeInfo;
+
+        public TriggerTransitionCodeModel(SignalTriggerCodeInfo triggerCodeInfo, ImmutableList<Call> reachableCalls)
             : base(reachableCalls) {
-            TriggerName   = triggerName;
-            ViewName      = viewName ?? String.Empty;
-            ViewParameter = viewParameter;
+            _triggerCodeInfo = triggerCodeInfo ?? throw new ArgumentNullException(nameof(triggerCodeInfo));
+            ViewParameter    = new ParameterCodeModel(triggerCodeInfo.TOClassName, "to");
         }
 
-        public string ViewName { get; }
-        public string ViewNamePascalcase => ViewName.ToPascalcase();
-        public string TriggerName { get; }
-        public string TriggerNamePascalcase => TriggerName.ToPascalcase();
+        public string TriggerMethodName      => _triggerCodeInfo.TriggerMethodName;
+        public string TriggerLogicMethodName => _triggerCodeInfo.TriggerLogicMethodName;
+        
         public ParameterCodeModel ViewParameter { get; } 
 
-        public static IEnumerable<TriggerTransitionCodeModel> FromTriggerTransition(ITransition triggerTransition) {
+        public static IEnumerable<TriggerTransitionCodeModel> FromTriggerTransition(TaskCodeInfo taskCodeInfo, ITransition triggerTransition) {
 
             var guiNode = triggerTransition?.Source?.Declaration as IGuiNodeSymbol;
             if(guiNode == null) {
@@ -31,11 +31,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             foreach(var signalTrigger in triggerTransition.Triggers.OfType<ISignalTriggerSymbol>()) {
+
+                var triggerCodeInfo = SignalTriggerCodeInfo.FromSignalTrigger(signalTrigger, taskCodeInfo);
+
                 yield return new TriggerTransitionCodeModel(
-                    reachableCalls: triggerTransition.GetReachableCalls().ToImmutableList(),
-                    viewName      : guiNode.Name,
-                    triggerName   : signalTrigger.Name,
-                    viewParameter : new ParameterCodeModel(guiNode.Name.ToPascalcase()+CodeGenFacts.ToClassNameSuffix, "to"));
+                    triggerCodeInfo: triggerCodeInfo,
+                    reachableCalls : triggerTransition.GetReachableCalls().ToImmutableList());
             }
         }
     }

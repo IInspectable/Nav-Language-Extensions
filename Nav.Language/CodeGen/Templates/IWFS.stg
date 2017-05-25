@@ -17,5 +17,5 @@ writeTriggerMethodDeclarationList(triggerTransitions) ::=<<
 >>
 
 writeTriggerMethodDeclaration(triggerTransition) ::=<<
-INavCommand <triggerTransition.TriggerNamePascalcase>(<writeParameterList(triggerTransition.ViewParameter)>);
+INavCommand <triggerTransition.TriggerMethodName>(<writeParameterList(triggerTransition.ViewParameter)>);
 >>

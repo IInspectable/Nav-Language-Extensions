@@ -42,7 +42,7 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
-protected override INavCommandBody <triggerTransition.TriggerNamePascalcase><LogicMethodSuffix()>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>) {
+protected override INavCommandBody <triggerTransition.TriggerLogicMethodName>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>) {
     throw new NotImplementedException();
 }
 >>

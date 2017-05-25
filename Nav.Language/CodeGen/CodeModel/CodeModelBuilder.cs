@@ -6,7 +6,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public static IEnumerable<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
             return taskDefinition.NodeDeclarations
                 .OfType<IInitNodeSymbol>().SelectMany(n => n.Outgoings)
-                .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeInfo));
+                .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeInfo));  
         }
 
         public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition) {
@@ -16,12 +16,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 .Select(ExitTransitionCodeModel.FromTaskNode);
         }
 
-        public static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition) {
+        public static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
             return taskDefinition.NodeDeclarations
                 .OfType<IGuiNodeSymbol>()
                 .SelectMany(n => n.Outgoings)
-                .SelectMany(TriggerTransitionCodeModel.FromTriggerTransition)
-                .OrderBy(st => st.TriggerName.Length).ThenBy(st => st.TriggerName);            
+                .SelectMany(triggerTransition => TriggerTransitionCodeModel.FromTriggerTransition(taskCodeInfo, triggerTransition))
+                .OrderBy(st => st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName);            
         }
 
         public static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition) {
