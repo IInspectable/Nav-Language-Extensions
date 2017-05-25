@@ -58,12 +58,12 @@ writeInitTransitionCollapsibleList(initTransitions) ::=<<
 >>
 
 writeInitTransition(initTransition) ::=<<
-protected abstract INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>);
+protected abstract INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>);
 
-public virtual IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>) {
-    INavCommandBody body = <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressions([initTransition.Parameter, initTransition.TaskBeginFields])>);
+public virtual IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
+    INavCommandBody body = <initTransition.BeginLogicMethodName>(<writeParameterExpressions([initTransition.Parameter, initTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(initTransition)>
-    throw new InvalidOperationException($"<BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressionsInline(initTransition.Parameter)> returned unexpected result '{OfTypeText(body)}'.");
+    throw new InvalidOperationException($"<initTransition.BeginLogicMethodName>(<writeParameterExpressionsInline(initTransition.Parameter)> returned unexpected result '{OfTypeText(body)}'.");
 }
 >>
 

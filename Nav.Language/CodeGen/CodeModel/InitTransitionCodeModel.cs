@@ -14,7 +14,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));           
         }
-        
+
+        public string BeginMethodName      => CodeGenFacts.BeginMethodPrefix;
+        public string BeginLogicMethodName => $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.LogicMethodSuffix}";
+
+        public ImmutableList<ParameterCodeModel> Parameter { get; }
+
         internal static InitTransitionCodeModel FromInitTransition(ITransition initTransition, TaskCodeInfo taskCodeInfo) {
 
             var initNode = initTransition?.Source?.Declaration as IInitNodeSymbol;
@@ -32,6 +37,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 reachableCalls: initTransition.GetReachableCalls().ToImmutableList());
         }
 
-        public ImmutableList<ParameterCodeModel> Parameter { get; }
+        
     }
 }

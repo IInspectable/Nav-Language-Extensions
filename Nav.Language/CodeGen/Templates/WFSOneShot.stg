@@ -20,7 +20,7 @@ writeInitTransitionCollapsibleList(initTransitions) ::=<<
 >>
 
 writeInitTransition(initTransition) ::=<<
-protected override INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>) {
+protected override INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>) {
     throw new NotImplementedException();
 }
 >>
