@@ -1,12 +1,16 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
+
 using Antlr4.StringTemplate;
 using JetBrains.Annotations;
+
 using Pharmatechnik.Nav.Language.CodeGen.Templates;
+// ReSharper disable InconsistentNaming
 
 #endregion
 
@@ -30,25 +34,18 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             if (codeGenerationUnit == null) {
                 throw new ArgumentNullException(nameof(codeGenerationUnit));
             }
-
-            var codeModelResult = GenerateCodeModels(codeGenerationUnit);
-
-            return codeModelResult.Select(GenerateCode).ToImmutableList();
-        }
-
-        IImmutableList<CodeModelResult> GenerateCodeModels(CodeGenerationUnit codeGenerationUnit) {
-
             if (codeGenerationUnit.Syntax.SyntaxTree.Diagnostics.HasErrors()) {
                 throw new ArgumentException("Syntax errors detected");
             }
-
             if (codeGenerationUnit.Diagnostics.HasErrors()) {
                 throw new ArgumentException("Semantic errors detected");
             }
 
-            return codeGenerationUnit.TaskDefinitions
-                                     .Select(GenerateCodeModel)
-                                     .ToImmutableList();
+            var codeModelResult = codeGenerationUnit.TaskDefinitions
+                                                    .Select(GenerateCodeModel)
+                                                    .ToImmutableList();
+
+            return codeModelResult.Select(GenerateCode).ToImmutableList();
         }
 
         CodeModelResult GenerateCodeModel(ITaskDefinitionSymbol taskDefinition) {
@@ -86,34 +83,42 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             return codeGenerationResult;
         }
+        
+        static readonly ThreadLocal<TemplateGroup> IBeginWfsTemplateGroup= new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.IBeginWfsTemplate));
 
         static CodeGenerationSpec GenerateIBeginWfsCodeSpec(IBeginWfsCodeModel model, CodeGeneratorContext context) {
 
-            var template = LoadTemplate(Resources.IBeginWfsTemplate, model, context);                        
+            var template = GetTemplate(IBeginWfsTemplateGroup.Value, model, context);
             var content  = template.Render();
 
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
+        static readonly ThreadLocal<TemplateGroup> IWfsTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.IWfsTemplate));
+
         static CodeGenerationSpec GenerateIWfsCodeSpec(IWfsCodeModel model, CodeGeneratorContext context) {
 
-            var template = LoadTemplate(Resources.IWfsTemplate, model, context);            
+            var template = GetTemplate(IWfsTemplateGroup.Value, model, context);
             var content = template.Render();
 
             return new CodeGenerationSpec(content, model.FilePath);
         }
+
+        static readonly ThreadLocal<TemplateGroup> WfsBaseTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.WfsBaseTemplate));
 
         static CodeGenerationSpec GenerateWfsBaseCodeSpec(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
-            var template = LoadTemplate(Resources.WfsBaseTemplate, model, context);
+            var template = GetTemplate(WfsBaseTemplateGroup.Value, model, context);
             var content = template.Render();
 
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
+        static readonly ThreadLocal<TemplateGroup> WfsTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.WFSOneShotTemplate));
+        
         static CodeGenerationSpec GenerateWfsCodeSpec(WfsCodeModel model, CodeGeneratorContext context) {
 
-            var template = LoadTemplate(Resources.WFSOneShotTemplate, model, context);            
+            var template = GetTemplate(WfsTemplateGroup.Value, model, context);
             var content  = template.Render();
 
             return new CodeGenerationSpec(content, model.FilePath);
@@ -123,15 +128,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return models.Select(model => GenerateToCodeSpec(model, context));
         }
 
+        static readonly ThreadLocal<TemplateGroup> ToTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.TOTemplate));
+        
         static CodeGenerationSpec GenerateToCodeSpec(TOCodeModel model, CodeGeneratorContext context) {
 
-            var template = LoadTemplate(Resources.TOTemplate, model, context);
+            var template = GetTemplate(ToTemplateGroup.Value, model, context);
             var content  = template.Render();
 
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static Template LoadTemplate(string resourceName, CodeModel model, CodeGeneratorContext context) {
+        static TemplateGroup LoadTemplateGroup(string resourceName) {
 
             var codeGenFacts   = new TemplateGroupString(Resources.CodeGenFacts);
             var commonTemplate = new TemplateGroupString(Resources.CommonTemplate);
@@ -140,9 +147,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             templateGroup.ImportTemplates(codeGenFacts);
             templateGroup.ImportTemplates(commonTemplate);
 
+            return templateGroup;
+        }
+
+        static Template GetTemplate(TemplateGroup templateGroup, CodeModel model, CodeGeneratorContext context) {
             var st = templateGroup.GetInstanceOf(TemplateName);
 
-            st.Add(ModelAttributeName, model);
+            st.Add(ModelAttributeName  , model);
             st.Add(ContextAttributeName, context);
 
             return st;

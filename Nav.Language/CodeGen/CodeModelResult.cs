@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using JetBrains.Annotations;
+// ReSharper disable InconsistentNaming
 
 #endregion
 
@@ -30,7 +31,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             TOCodeModels       = (toCodeModels     ?? Enumerable.Empty<TOCodeModel>()).ToImmutableList();
         }
 
-        // ReSharper disable InconsistentNaming
         public ITaskDefinitionSymbol TaskDefinition { get; }
         public IPathProvider PathProvider { get; }
         public IBeginWfsCodeModel IBeginWfsCodeModel { get; }
@@ -38,6 +38,5 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public WfsBaseCodeModel WfsBaseCodeModel { get; }
         public WfsCodeModel WfsCodeModel { get; }
         public ImmutableList<TOCodeModel> TOCodeModels { get; }
-        // ReSharper restore InconsistentNaming
     }
 }
