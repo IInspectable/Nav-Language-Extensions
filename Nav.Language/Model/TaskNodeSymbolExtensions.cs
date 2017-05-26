@@ -26,5 +26,13 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
         }
+
+        public static bool GenerateAbstractMethod(this IInitNodeSymbol initNode) {
+            return initNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == true;
+        }
+
+        public static bool GenerateAbstractMethod(this ITaskNodeSymbol taskNode) {
+            return taskNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == true;
+        }
     }
 }

@@ -12,14 +12,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         readonly TaskExitCodeInfo _taskExitCodeInfo;
 
         public ExitTransitionCodeModel(TaskExitCodeInfo taskExitCodeInfo, ImmutableList<Call> calls, 
-                                       ParameterCodeModel taskResult)
+                                       ParameterCodeModel taskResult, bool generateAbstractMethod)
             :base (calls) {
-            _taskExitCodeInfo = taskExitCodeInfo ?? throw new ArgumentNullException(nameof(taskExitCodeInfo));
-            TaskResult        = taskResult           ?? throw new ArgumentNullException(nameof(taskResult));
+
+            _taskExitCodeInfo      = taskExitCodeInfo ?? throw new ArgumentNullException(nameof(taskExitCodeInfo));
+            TaskResult             = taskResult       ?? throw new ArgumentNullException(nameof(taskResult));
+            GenerateAbstractMethod = generateAbstractMethod;
         }
 
         public ParameterCodeModel TaskResult { get; }
-
+        public bool GenerateAbstractMethod   { get; }
         public string AfterMethodName      => _taskExitCodeInfo.AfterMethodName;
         public string AfterLogicMethodName => _taskExitCodeInfo.AfterLogicMethodName;
 
@@ -32,11 +34,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var taskExitCodeInfo = TaskExitCodeInfo.FromTaskNode(taskNode, taskCodeInfo);
             var calls            = taskNode.GetReachableCalls();
             var taskResult       = ParameterCodeModel.TaskResult(taskNode.Declaration);
-            
+
             return new ExitTransitionCodeModel(
-                taskExitCodeInfo: taskExitCodeInfo,
-                calls           : calls.ToImmutableList(), 
-                taskResult      : taskResult);
+                taskExitCodeInfo      : taskExitCodeInfo,
+                calls                 : calls.ToImmutableList(), 
+                taskResult            : taskResult,
+                generateAbstractMethod: taskNode.GenerateAbstractMethod());
         }
     }
 }

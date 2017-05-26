@@ -20,9 +20,15 @@ writeInitTransitionCollapsibleList(initTransitions) ::=<<
 >>
 
 writeInitTransition(initTransition) ::=<<
+<if(initTransition.GenerateAbstractMethod)>
+public override IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
+    throw new NotImplementedException();
+}
+<else>
 protected override INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>) {
     throw new NotImplementedException();
 }
+<endif>
 >>
 
 writeExitTransitionCollapsibleList(exitTransitions) ::=<<
@@ -31,9 +37,15 @@ writeExitTransitionCollapsibleList(exitTransitions) ::=<<
 >>
 
 writeExitTransition(exitTransition) ::=<<
+<if(exitTransition.GenerateAbstractMethod)>
+protected override INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
+    throw new NotImplementedException();
+}
+<else>
 protected override INavCommandBody <exitTransition.AfterLogicMethodName>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>) {
      throw new NotImplementedException();
 }
+<endif>
 >>
 
 writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<

@@ -35,13 +35,9 @@ namespace <model.WflNamespace> {
 
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public abstract partial class <model.WfsTypeName>: <model.WfsBaseTypeName>, <InterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>, <BeginInterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()> {
-        <if(model.TaskParameter)>
 
-        <model.TaskParameter:writeFieldDeclaration(); separator="\r\n">
+        <writeFieldDeclarationCollapsibleList(model.TaskParameter)><\\>
 
-        <else>
-
-        <endif>
         public <model.WfsTypeName>(Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL.IClientSideWFS clientSideWFS): base(clientSideWFS) {}
 
         public <model.WfsTypeName>(<writeParameterList([model.TaskBegins, model.TaskParameter])>)
@@ -58,6 +54,9 @@ writeInitTransitionCollapsibleList(initTransitions) ::=<<
 >>
 
 writeInitTransition(initTransition) ::=<<
+<if(initTransition.GenerateAbstractMethod)>
+public abstract IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>);
+<else>
 protected abstract INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>);
 
 public virtual IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
@@ -65,6 +64,7 @@ public virtual IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(i
     <writeTransitionCallBlock(initTransition)>
     throw new InvalidOperationException($"<initTransition.BeginLogicMethodName>(<writeParameterExpressionsInline(initTransition.Parameter)> returned unexpected result '{OfTypeText(body)}'.");
 }
+<endif>
 >>
 
 writeExitTransitionCollapsibleList(exitTransitions) ::=<<
@@ -73,6 +73,9 @@ writeExitTransitionCollapsibleList(exitTransitions) ::=<<
 >>
 
 writeExitTransition(exitTransition) ::=<<
+<if(exitTransition.GenerateAbstractMethod)>
+protected abstract INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>);
+<else>
 private INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
     var body = <exitTransition.AfterLogicMethodName>(<writeParameterExpressionsInline([exitTransition.TaskResult, exitTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(exitTransition)>
@@ -81,6 +84,7 @@ private INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTra
 }
 
 protected abstract INavCommandBody <exitTransition.AfterLogicMethodName>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>);
+<endif>
 >>
 
 writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<

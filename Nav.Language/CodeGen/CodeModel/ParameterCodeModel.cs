@@ -66,12 +66,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // code will not compile. Therefore, we generate IWFService instead. When the task IS
             // implemented one day, regeneration (necessary for constructor parameters anyway!)
             // will insert the correct types.
-            var parameterType = CodeGenFacts.DefaultIwfsBaseType;
+            //var parameterType = CodeGenFacts.DefaultIwfsBaseType;
 
-            if (!taskDeclaration.CodeNotImplemented) {
-                var codeNamespace = String.IsNullOrEmpty(taskDeclaration.CodeNamespace) ? CodeGenFacts.UnknownNamespace : taskDeclaration.CodeNamespace;
-                parameterType = $"{codeNamespace}.{CodeGenFacts.WflNamespaceSuffix}.{CodeGenFacts.BeginInterfacePrefix}{taskDeclaration.Name}{CodeGenFacts.WfsClassSuffix}";
-            }
+            //if (!taskDeclaration.CodeNotImplemented) {
+            // TODO Klären, ob notimplemented weithin unterstützt werden soll
+            var codeNamespace = String.IsNullOrEmpty(taskDeclaration.CodeNamespace) ? CodeGenFacts.UnknownNamespace : taskDeclaration.CodeNamespace;
+            // TODO kann das nicht aus TaskDeclarationCodeInfo kommen?
+            var parameterType = $"{codeNamespace}.{CodeGenFacts.WflNamespaceSuffix}.{CodeGenFacts.BeginInterfacePrefix}{taskDeclaration.Name}{CodeGenFacts.WfsClassSuffix}";
+            //}
 
             var parameterName = taskDeclaration.Name; 
 

@@ -31,7 +31,7 @@ writeParameter(parameter) ::=<<
 >>
 
 writeFieldDeclarationCollapsibleList(parameters) ::=<<
-<model.TaskBegins:writeFieldDeclaration(); separator="\r\n">
+<parameters:writeFieldDeclaration(); separator="\r\n">
 
 >>
 
