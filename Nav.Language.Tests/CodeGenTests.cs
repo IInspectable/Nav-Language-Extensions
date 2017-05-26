@@ -114,6 +114,60 @@ namespace Nav.Language.Tests {
                 }
             }){
                 TestName = "Tasksresult without explizit name"
+            },
+            new TestCaseData(new TestCase {
+                CsFiles = {
+                    new TestCaseFile {
+                    FilePath = MkFilename("FrameworkStubsWithoutNS.cs") ,
+                    Content  = Resources.FrameworkStubsWithoutNS
+                } },
+                NavFiles = {
+                    new TestCaseFile {
+                        FilePath = MkFilename("TaskA.nav"),
+                        Content = @"                           
+                        task A{
+                            init i;
+                            exit e;
+                            i --> e;
+                        }
+                        task B{
+                                init i;
+                                exit e;
+                                exit f;
+                                i --> e;
+                        }
+                        task taskA [code ""public enum MessageBoxResult { Ok, Abbrechen }""]
+                            [base StandardWFS : IWFService]
+                            [params int foo]
+
+                            [result MessageBoxResult f] 
+                            {
+                            init I1[params string message];
+                            task A;
+                            task B;
+                            task B c;
+                            choice Foo;
+                            view TestView;
+
+                            exit Ok;
+
+                            I1    --> TestView;  
+    
+                            TestView --> A on Ok; 
+                            A:e --> Foo;
+                            Foo o-> B;
+                            Foo --> c;
+                            B:e --> Ok;
+                            B:f --> Ok;
+    
+                            c:e --> Ok;
+                            c:f --> A;
+                            TestView --> Ok on OnFoo; 
+                }"
+                    }
+                }
+            }){
+                TestName = "Complex Task w/o namespaceprefix"
             }
         };
 
@@ -158,6 +212,9 @@ namespace Nav.Language.Tests {
             }
             // Pseudo Framework Code hinzufügen
             syntaxTrees.Add(GetFrameworkStubCode());
+            foreach(var csFile in testCase.CsFiles) {
+                syntaxTrees.Add(CSharpSyntaxTree.ParseText(csFile.Content, path: csFile.FilePath));
+            }
 
             foreach (var syntaxTree in syntaxTrees) {
                 AssertNoDiagnosticErrors(syntaxTree.GetDiagnostics());
@@ -226,6 +283,7 @@ namespace Nav.Language.Tests {
 
         public class TestCase {
             public List<TestCaseFile> NavFiles { get; } = new List<TestCaseFile>();
+            public List<TestCaseFile> CsFiles  { get; } = new List<TestCaseFile>();
         }
 
         class TestSyntaxProvider : SyntaxProvider {

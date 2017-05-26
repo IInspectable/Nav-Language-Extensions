@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 wfsBaseBaseClassName: wfsBaseBaseClassName);
         }
 
-        internal static string BuildQualifiedName(params string[] identifier) {
+        static string BuildQualifiedName(params string[] identifier) {
             return CodeGenFacts.BuildQualifiedNameQualifiedName(identifier);
         }
     }

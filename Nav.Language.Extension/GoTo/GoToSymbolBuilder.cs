@@ -55,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return null;
             }
 
-            var codeModel = new TaskDeclarationCodeInfo(taskDeclarationSymbol);
+            var codeModel = TaskDeclarationCodeInfo.FromTaskDeclaration(taskDeclarationSymbol);
             var provider  = new TaskIBeginInterfaceDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(taskDeclarationSymbol.Location, provider);
@@ -121,14 +121,14 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
                 return DefaultVisit(initNodeSymbol);
             }
 
-            var codeModel = TaskInitCodeModel.FromInitNode(initNodeSymbol);
+            var codeModel = TaskInitCodeInfo.FromInitNode(initNodeSymbol);
             var provider  = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(initNodeSymbol.Location, provider);
         }
 
         public override TagSpan<GoToTag> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
-            var codeModel = TaskInitCodeModel.FromInitNode(initNodeAliasSymbol.InitNode);
+            var codeModel = TaskInitCodeInfo.FromInitNode(initNodeAliasSymbol.InitNode);
             var provider  = new TaskBeginDeclarationLocationInfoProvider(_textBuffer, codeModel);
 
             return CreateTagSpan(initNodeAliasSymbol.Location, provider);

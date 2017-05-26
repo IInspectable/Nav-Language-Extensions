@@ -65,22 +65,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public static ParameterCodeModel GetTaskBeginAsParameter(ITaskDeclarationSymbol taskDeclaration) {
 
-            // If a task is not implemented, there is no IBegin interface for it! - so the generated
-            // code will not compile. Therefore, we generate IWFService instead. When the task IS
-            // implemented one day, regeneration (necessary for constructor parameters anyway!)
-            // will insert the correct types.
-            //var parameterType = CodeGenFacts.DefaultIwfsBaseType;
-
-            //if (!taskDeclaration.CodeNotImplemented) {
-            // TODO Klären, ob notimplemented weithin unterstützt werden soll
-            var codeNamespace = String.IsNullOrEmpty(taskDeclaration.CodeNamespace) ? CodeGenFacts.UnknownNamespace : taskDeclaration.CodeNamespace;
-            // TODO kann das nicht aus TaskDeclarationCodeInfo kommen?
-            var parameterType = $"{codeNamespace}.{CodeGenFacts.WflNamespaceSuffix}.{CodeGenFacts.BeginInterfacePrefix}{taskDeclaration.Name}{CodeGenFacts.WfsClassSuffix}";
-            //}
-
-            var parameterName = taskDeclaration.Name; 
-
-            return new ParameterCodeModel(parameterType: parameterType, parameterName: parameterName);
+            var codeInfo = TaskDeclarationCodeInfo.FromTaskDeclaration(taskDeclaration);
+            
+            return new ParameterCodeModel(
+                parameterType: codeInfo.FullyQualifiedBeginInterfaceName, 
+                parameterName: codeInfo.Taskname);
         }       
     }
 }

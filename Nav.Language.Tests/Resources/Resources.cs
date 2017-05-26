@@ -1,4 +1,5 @@
 ﻿using System.IO;
+// ReSharper disable InconsistentNaming
 
 namespace Nav.Language.Tests {
 
@@ -12,7 +13,8 @@ namespace Nav.Language.Tests {
         public static readonly string NavWithError = LoadText("NavWithError.nav");
         public static readonly string SingleFileNav= LoadText("SingleFile.nav");
         public static readonly string NestedChoices = LoadText("NestedChoices.nav");
-
+        public static readonly string FrameworkStubsWithoutNS = LoadText("FrameworkStubsWithoutNS.cs");
+        
         //NavWithError
         static string LoadText(string resourceName) {
 

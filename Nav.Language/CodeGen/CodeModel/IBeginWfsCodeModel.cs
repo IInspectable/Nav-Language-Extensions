@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var initTransitions  = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeInfo);
             
             return new IBeginWfsCodeModel(
-                taskCodeInfo         : taskCodeInfo,
+                taskCodeInfo          : taskCodeInfo,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.IBeginWfsFileName,
                 usingNamespaces       : namespaces.ToImmutableList(),

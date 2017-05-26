@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ImmutableList<string> UsingNamespaces { get; }
 
         [NotNull]
-        public string Namespace => Task.IwflNamespace;
+        public string IwflNamespace => Task.IwflNamespace;
 
         public static IEnumerable<TOCodeModel> FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
 

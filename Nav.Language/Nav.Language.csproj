@@ -118,7 +118,7 @@
     <Compile Include="CodeGen\CodeModel\IWfsCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\ParameterCodeModel.cs" />
     <Compile Include="CodeGen\SignalTriggerCodeInfo.cs" />
-    <Compile Include="CodeGen\CodeModel\TaskInitCodeModel.cs" />
+    <Compile Include="CodeGen\TaskInitCodeInfo.cs" />
     <Compile Include="CodeGen\TaskCodeInfo.cs" />
     <Compile Include="CodeGen\TaskDeclarationCodeInfo.cs" />
     <Compile Include="CodeGen\TaskExitCodeInfo.cs" />
