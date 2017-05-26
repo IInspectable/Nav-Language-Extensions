@@ -2,8 +2,6 @@
 
 using System;
 
-using JetBrains.Annotations;
-
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
@@ -13,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         protected Generator(GenerationOptions options) {
             Options = options ?? throw new ArgumentNullException(nameof(options));
         }
-        [NotNull]
+
         public GenerationOptions Options { get; }
 
         public virtual void Dispose() {

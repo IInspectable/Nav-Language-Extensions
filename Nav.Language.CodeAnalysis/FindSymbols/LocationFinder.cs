@@ -356,9 +356,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             var task = Task.Run(async ()  =>  {
 
                 var compilation   = await project.GetCompilationAsync(cancellationToken);
-                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeInfo.FullyQualifiedWfsBaseName);
+                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.Task.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
-                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.TaskCodeInfo.FullyQualifiedWfsBaseName));
+                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.Task.FullyQualifiedWfsBaseName));
                 }
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem

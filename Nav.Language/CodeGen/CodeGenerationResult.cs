@@ -1,11 +1,12 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using JetBrains.Annotations;
 
+using JetBrains.Annotations;
+// ReSharper disable InconsistentNaming
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
@@ -29,22 +30,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             WfsCodeSpec       = wfsCodeSpec       ?? throw new ArgumentNullException(nameof(wfsCodeSpec));
             ToCodeSpecs       = (toCodeSpecs      ?? Enumerable.Empty<CodeGenerationSpec>()).ToImmutableList();
         }
-
-        // ReSharper disable InconsistentNaming
-        [NotNull]
-        public ITaskDefinitionSymbol TaskDefinition { get; }
-        [NotNull]
-        public IPathProvider PathProvider { get; }
-        [NotNull]
-        public CodeGenerationSpec IBeginWfsCodeSpec { get; }
-        [NotNull]        
-        public CodeGenerationSpec IWfsCodeSpec { get; }
-        [NotNull]
-        public CodeGenerationSpec WfsBaseCodeSpec { get; }
-        [NotNull]
-        public CodeGenerationSpec WfsCodeSpec { get; }
-        [NotNull]
+        
+        public ITaskDefinitionSymbol TaskDefinition          { get; }
+        public IPathProvider PathProvider                    { get; }
+        public CodeGenerationSpec IBeginWfsCodeSpec          { get; }
+        public CodeGenerationSpec IWfsCodeSpec               { get; }
+        public CodeGenerationSpec WfsBaseCodeSpec            { get; }
+        public CodeGenerationSpec WfsCodeSpec                { get; }
         public ImmutableList<CodeGenerationSpec> ToCodeSpecs { get; }       
-        // ReSharper restore InconsistentNaming
     }
 }

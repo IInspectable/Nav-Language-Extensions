@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
 using System;
-using JetBrains.Annotations;
 
 #endregion
 
@@ -17,12 +16,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             AfterLogicMethodName = $"{CodeGenFacts.ExitMethodPrefix}{nodeNamePascalcase}{CodeGenFacts.LogicMethodSuffix}";
         }
 
-        [NotNull]
         public TaskCodeInfo ContainingTaskCodeInfo { get; }
-        [NotNull]
-        public string AfterMethodName { get; }
-        [NotNull]
-        public string AfterLogicMethodName { get; }
+        public string AfterMethodName              { get; }
+        public string AfterLogicMethodName         { get; }
 
         public static TaskExitCodeInfo FromConnectionPointReference(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
 

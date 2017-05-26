@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public static ParameterCodeModel TaskResult([CanBeNull] ITaskDeclarationSymbol taskDeclaration) {
             var codeParameter = taskDeclaration?.CodeTaskResult;
             if (codeParameter == null) {
-                // TODO New Error in Semantic Mocdel: No result type defined with [result] - cannot use this task with exit edges.
+                // TODO New Error in Semantic Model: No result type defined with [result] - cannot use this task with exit edges.
                 return new ParameterCodeModel("bool", "result");
             }
             return new ParameterCodeModel(codeParameter.ParameterType, "result");

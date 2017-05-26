@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+// ReSharper disable InconsistentNaming
 
 #endregion
 
@@ -13,6 +14,19 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             BaseNamespace       = baseNamespace        ?? String.Empty;
             WfsBaseBaseTypeName = wfsBaseBaseClassName ?? String.Empty;
         }
+
+        string BaseNamespace              { get; }
+        public string TaskName            { get; }        
+        public string WfsBaseBaseTypeName { get; }
+
+        public string TaskNamePascalcase        => TaskName.ToPascalcase();
+        public string WflNamespace              => $"{BaseNamespace}.{CodeGenFacts.WflNamespaceSuffix}";
+        public string IwflNamespace             => $"{BaseNamespace}.{CodeGenFacts.IwflNamespaceSuffix}";        
+        public string WfsBaseTypeName           => $"{TaskNamePascalcase}{CodeGenFacts.WfsBaseClassSuffix}";
+        public string WfsTypeName               => $"{TaskNamePascalcase}{CodeGenFacts.WfsClassSuffix}";
+        public string IWfsTypeName              => $"{CodeGenFacts.InterfacePrefix}{TaskNamePascalcase}{CodeGenFacts.WfsClassSuffix}";
+        public string FullyQualifiedWfsName     => $"{WflNamespace}.{WfsTypeName}";
+        public string FullyQualifiedWfsBaseName => $"{WflNamespace}.{WfsBaseTypeName}";
 
         public static TaskCodeInfo FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
 
@@ -29,17 +43,5 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 baseNamespace       : baseNamespace,
                 wfsBaseBaseClassName: wfsBaseBaseClassName);
         }
-
-        string BaseNamespace { get; }
-
-        public string TaskName { get; }        
-        public string WfsBaseBaseTypeName { get; }
-        public string TaskNamePascalcase        => TaskName.ToPascalcase();
-        public string WflNamespace              => $"{BaseNamespace}.{CodeGenFacts.WflNamespaceSuffix}";
-        public string IwflNamespace             => $"{BaseNamespace}.{CodeGenFacts.IwflNamespaceSuffix}";        
-        public string WfsBaseTypeName           => $"{TaskNamePascalcase}{CodeGenFacts.WfsBaseClassSuffix}";
-        public string WfsTypeName               => $"{TaskNamePascalcase}{CodeGenFacts.WfsClassSuffix}";
-        public string FullyQualifiedWfsName     => $"{WflNamespace}.{WfsTypeName}";
-        public string FullyQualifiedWfsBaseName => $"{WflNamespace}.{WfsBaseTypeName}";
     }
 }

@@ -15,9 +15,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public TriggerTransitionCodeModel(SignalTriggerCodeInfo triggerCodeInfo, ImmutableList<Call> reachableCalls)
             : base(reachableCalls) {
             _triggerCodeInfo = triggerCodeInfo ?? throw new ArgumentNullException(nameof(triggerCodeInfo));
-            ViewParameter    = new ParameterCodeModel(triggerCodeInfo.TOClassName, "to");
+            ViewParameter    = new ParameterCodeModel(triggerCodeInfo.TOClassName, CodeGenFacts.ToParamtername);
         }
 
+        public string TriggerName            => _triggerCodeInfo.TriggerName;
         public string TriggerMethodName      => _triggerCodeInfo.TriggerMethodName;
         public string TriggerLogicMethodName => _triggerCodeInfo.TriggerLogicMethodName;
         

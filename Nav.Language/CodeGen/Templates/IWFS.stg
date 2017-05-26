@@ -6,7 +6,7 @@ Begin(model, context) ::=<<
 
 namespace <model.Namespace> {
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
-    public interface <InterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>: <model.BaseInterfaceName> {
+    public interface <model.InterfaceName>: <model.BaseInterfaceName> {
         <writeTriggerMethodDeclarationList(model.TriggerTransitions)>
     }
 }

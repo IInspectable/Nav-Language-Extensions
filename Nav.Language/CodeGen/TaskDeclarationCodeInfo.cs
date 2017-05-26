@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
 using System;
-using JetBrains.Annotations;
 
 #endregion
 
@@ -15,7 +14,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             if (taskDeclarationSymbol == null) {
                 throw new ArgumentNullException(nameof(taskDeclarationSymbol));
             }
-
             if (taskDeclarationSymbol.IsIncluded) {
                 throw new ArgumentException("Only embedded task declarations supported");
             }
@@ -31,13 +29,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }            
         }
 
-        [NotNull]
-        public string Taskname { get; }
-        [NotNull]
+        public string Taskname        { get; }
         public string NamespacePräfix { get; }
-        [NotNull]
         public string WflNamespace => $"{NamespacePräfix}.{CodeGenFacts.WflNamespaceSuffix}";
-        [NotNull]
         // TODO TaskName PascalCase?
         public string FullyQualifiedBeginInterfaceName => $"{WflNamespace}.{CodeGenFacts.BeginInterfacePrefix}{Taskname}{CodeGenFacts.WfsClassSuffix}";
     }

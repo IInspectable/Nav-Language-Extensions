@@ -31,12 +31,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             TOCodeModels       = (toCodeModels     ?? Enumerable.Empty<TOCodeModel>()).ToImmutableList();
         }
 
-        public ITaskDefinitionSymbol TaskDefinition { get; }
-        public IPathProvider PathProvider { get; }
-        public IBeginWfsCodeModel IBeginWfsCodeModel { get; }
-        public IWfsCodeModel IWfsCodeModel { get; }
-        public WfsBaseCodeModel WfsBaseCodeModel { get; }
-        public WfsCodeModel WfsCodeModel { get; }
+        public ITaskDefinitionSymbol TaskDefinition    { get; }
+        public IPathProvider PathProvider              { get; }
+        public IBeginWfsCodeModel IBeginWfsCodeModel   { get; }
+        public IWfsCodeModel IWfsCodeModel             { get; }
+        public WfsBaseCodeModel WfsBaseCodeModel       { get; }
+        public WfsCodeModel WfsCodeModel               { get; }
         public ImmutableList<TOCodeModel> TOCodeModels { get; }
     }
 }

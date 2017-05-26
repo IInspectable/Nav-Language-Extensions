@@ -3,12 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+// ReSharper disable InconsistentNaming
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    // ReSharper disable once InconsistentNaming
     sealed class IWfsCodeModel : FileGenerationCodeModel {
 
         IWfsCodeModel(TaskCodeInfo taskCodeInfo, 
@@ -25,8 +25,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         public ImmutableList<string> UsingNamespaces { get; }        
+        public string Namespace     => Task.IwflNamespace;
+        public string InterfaceName => Task.IWfsTypeName;
         public string BaseInterfaceName { get; }
-        public string Namespace => Task.IwflNamespace;
         public ImmutableList<TriggerTransitionCodeModel> TriggerTransitions { get; }
 
         public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
@@ -39,24 +40,29 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
+            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
 
-            // UsingNamespaces
+            var namespaces         = GetUsingNamespaces(taskDefinition, taskCodeInfo);
+            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
+            
+            return new IWfsCodeModel(
+                taskCodeInfo          : taskCodeInfo,
+                relativeSyntaxFileName: relativeSyntaxFileName,
+                filePath              : pathProvider.IWfsFileName, 
+                usingNamespaces       : namespaces.ToImmutableList(), 
+                baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType, 
+                triggerTransitions    : triggerTransitions.ToImmutableList());
+        }
+
+        private static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
+
             var namespaces = new List<string>();
+
             namespaces.Add(taskCodeInfo.IwflNamespace);
             namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
             namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
-            // Trigger Transitions
-            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
-            
-            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
-
-            return new IWfsCodeModel(taskCodeInfo: taskCodeInfo,
-                relativeSyntaxFileName: relativeSyntaxFileName,
-                filePath              : pathProvider.IWfsFileName, 
-                usingNamespaces       : namespaces.ToSortedNamespaces().ToImmutableList(), 
-                baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType, 
-                triggerTransitions    : triggerTransitions.ToImmutableList());
+            return namespaces.ToSortedNamespaces();
         }
     }
 }

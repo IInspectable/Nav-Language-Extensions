@@ -28,28 +28,6 @@ namespace Pharmatechnik.Nav.Language {
             return s.Substring(0, 1).ToUpperInvariant() + s.Substring(1);
         }
 
-        [NotNull]
-        public static string FieldPräfix => "_";
-
-        [NotNull]
-        public static string ToFieldName(this string s) {
-            return s?.StartsWith(FieldPräfix) == true ? s.ToCamelcase() : $"{FieldPräfix}{s.ToCamelcase()}";
-        }
-
-        [NotNull]
-        public static string ToClassName(this string s) {
-            return s.ToPascalcase();
-        }
-
-        [NotNull]
-        public static string ToVariableName(this string s) {
-            if (String.IsNullOrEmpty(s)) {
-                return String.Empty;
-            }
-
-            return s[0] == '_' ? s.Substring(1).ToCamelcase() : s.ToCamelcase();
-        }
-
         #region Dokumentation
         /// <summary>
         /// Liefert den Spaltenindex (beginnend bei 0) für den angegebenen Offset vom Start der Zeile. 

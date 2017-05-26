@@ -42,9 +42,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
+
             foreach(var guiNode in taskDefinition.NodeDeclarations.OfType<IGuiNodeSymbol>().Where(n => n.References.Any())) {
 
                 var viewName    = guiNode.Name;
+                // TODO PascalCasing
                 var toClassName = $"{viewName.ToPascalcase()}{CodeGenFacts.ToClassNameSuffix}";
                 var filePath    = pathProvider.GetToFileName(guiNode.Name+ CodeGenFacts.ToClassNameSuffix);
 
@@ -52,7 +54,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
                 yield return new TOCodeModel(
                     relativeSyntaxFileName: relativeSyntaxFileName,
-                    taskCodeInfo         : taskCodeInfo,
+                    taskCodeInfo          : taskCodeInfo,
                     usingNamespaces       : GetUsingNamespaces().ToImmutableList(),
                     className             : toClassName,
                     filePath              : filePath);

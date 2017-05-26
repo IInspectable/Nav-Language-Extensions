@@ -60,9 +60,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskDefinition   : taskDefinition,
                 pathProvider     : pathProvider,
                 beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
-                iwfsCodeModel    : IWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
-                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
-                wfsCodeModel     : WfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
+                iwfsCodeModel    : IWfsCodeModel.FromTaskDefinition(taskDefinition     , pathProvider),
+                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition  , pathProvider),
+                wfsCodeModel     : WfsCodeModel.FromTaskDefinition(taskDefinition      , pathProvider),
                 toCodeModels     : toCodeModels
             );
 
@@ -76,10 +76,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskDefinition   : codeModelResult.TaskDefinition,
                 pathProvider     : codeModelResult.PathProvider,
                 iBeginWfsCodeSpec: GenerateIBeginWfsCodeSpec(codeModelResult.IBeginWfsCodeModel, context),
-                iWfsCodeSpec     : GenerateIWfsCodeSpec(codeModelResult.IWfsCodeModel, context),
-                wfsBaseCodeSpec  : GenerateWfsBaseCodeSpec(codeModelResult.WfsBaseCodeModel, context),
-                wfsCodeSpec      : GenerateWfsCodeSpec(codeModelResult.WfsCodeModel, context),
-                toCodeSpecs      : GenerateToCodeSpecs(codeModelResult.TOCodeModels, context));
+                iWfsCodeSpec     : GenerateIWfsCodeSpec(codeModelResult.IWfsCodeModel          , context),
+                wfsBaseCodeSpec  : GenerateWfsBaseCodeSpec(codeModelResult.WfsBaseCodeModel    , context),
+                wfsCodeSpec      : GenerateWfsCodeSpec(codeModelResult.WfsCodeModel            , context),
+                toCodeSpecs      : GenerateToCodeSpecs(codeModelResult.TOCodeModels            , context));
 
             return codeGenerationResult;
         }

@@ -57,16 +57,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
 
-            var taskResult           = ParameterCodeModel.TaskResult(taskDefinition);
-            var usingNamespaces      = GetUsingNamespaces(taskDefinition, taskCodeInfo);
-            var taskBegins           = GetTaskBegins(taskDefinition);
-            var taskParameter        = GetTaskParameter(taskDefinition);
-            var initTransitions      = CodeModelBuilder.GetInitTransitions(taskDefinition   , taskCodeInfo);
-            var exitTransitions      = CodeModelBuilder.GetExitTransitions(taskDefinition   , taskCodeInfo);
-            var triggerTransitions   = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
-
-            // BeginWrapper
-            var beginWrappers = CodeModelBuilder.GetBeginWrappers(taskDefinition);
+            var taskResult         = ParameterCodeModel.TaskResult(taskDefinition);
+            var usingNamespaces    = GetUsingNamespaces(taskDefinition, taskCodeInfo);
+            var taskBegins         = GetTaskBegins(taskDefinition);
+            var taskParameter      = GetTaskParameter(taskDefinition);
+            var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition   , taskCodeInfo);
+            var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskDefinition   , taskCodeInfo);
+            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
+            var beginWrappers      = CodeModelBuilder.GetBeginWrappers(taskDefinition     , taskCodeInfo);
 
             return new WfsBaseCodeModel(
                 taskCodeInfo          : taskCodeInfo,

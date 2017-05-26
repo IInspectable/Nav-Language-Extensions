@@ -23,10 +23,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 .OrderBy(st => st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName);            
         }
 
-        public static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition) {
+        public static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
             return taskDefinition.NodeDeclarations
                 .OfType<ITaskNodeSymbol>()
-                .Select(BeginWrapperCodeModel.FromTaskNode);
+                .Select(taskNode => BeginWrapperCodeModel.FromTaskNode(taskNode, taskCodeInfo));
         }
 
         public static IEnumerable<string> GetCodeDeclarations(ITaskDefinitionSymbol taskDefinition) {

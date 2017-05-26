@@ -2,21 +2,26 @@
 
 using System;
 
-using JetBrains.Annotations;
-
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public sealed class SignalTriggerCodeInfo {
-        
-        SignalTriggerCodeInfo(TaskCodeInfo taskCodeInfo, string triggerMethodName, string triggerLogicMethodName, string toClassName) {
-            TaskCodeInfo           = taskCodeInfo           ?? throw new ArgumentNullException(nameof(taskCodeInfo));
-            TriggerMethodName      = triggerMethodName      ?? throw new ArgumentNullException(nameof(triggerMethodName));
-            TriggerLogicMethodName = triggerLogicMethodName ?? throw new ArgumentNullException(nameof(triggerLogicMethodName));
-            TOClassName            = toClassName            ?? throw new ArgumentNullException(nameof(toClassName));
+
+        SignalTriggerCodeInfo(TaskCodeInfo taskCodeInfo, string triggerName, string viewNodeName) {
+
+            Task         = taskCodeInfo ?? throw new ArgumentNullException(nameof(taskCodeInfo));
+            TriggerName  = triggerName  ?? String.Empty;
+            ViewNodeName = viewNodeName ?? String.Empty;           
         }
 
+        public TaskCodeInfo Task     { get; }
+        public string ViewNodeName { get; }
+        public string TriggerName  { get; }
+        public string TriggerMethodName      => $"{TriggerName.ToPascalcase()}";
+        public string TriggerLogicMethodName => $"{TriggerName.ToPascalcase()}{CodeGenFacts.LogicMethodSuffix}";
+        public string TOClassName            => $"{ViewNodeName.ToPascalcase()}{CodeGenFacts.ToClassNameSuffix}";
+        
         public static SignalTriggerCodeInfo FromSignalTrigger(ISignalTriggerSymbol signalTriggerSymbol) {
             return FromSignalTrigger(signalTriggerSymbol, null);
         }
@@ -27,25 +32,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(signalTriggerSymbol));
             }
 
-            var task     = signalTriggerSymbol.Transition.ContainingTask;
-            var viewName = signalTriggerSymbol.Transition.Source?.Declaration?.Name??String.Empty;
+            var task         = signalTriggerSymbol.Transition.ContainingTask;
+            var viewNodeName = signalTriggerSymbol.Transition.Source?.Declaration?.Name??String.Empty;
+            var triggerName  = signalTriggerSymbol.Name;
 
             return new SignalTriggerCodeInfo(
-                taskCodeInfo          : taskCodeInfo ?? TaskCodeInfo.FromTaskDefinition(task),
-                triggerMethodName     : $"{signalTriggerSymbol.Name}",
-                triggerLogicMethodName: $"{signalTriggerSymbol.Name}{CodeGenFacts.LogicMethodSuffix}",
-                toClassName           : $"{viewName.ToPascalcase()}{CodeGenFacts.ToClassNameSuffix}"
+                taskCodeInfo: taskCodeInfo ?? TaskCodeInfo.FromTaskDefinition(task),
+                triggerName : triggerName,
+                viewNodeName: viewNodeName
             );
-        }
-
-        [NotNull]
-        public TaskCodeInfo TaskCodeInfo { get; }
-        [NotNull]
-        public string TriggerMethodName { get; }
-        [NotNull]
-        public string TriggerLogicMethodName { get; }
-        [NotNull]
-        // ReSharper disable once InconsistentNaming
-        public string TOClassName { get; }
+        }       
     }
 }

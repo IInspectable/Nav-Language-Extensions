@@ -42,28 +42,34 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(pathProvider));
             }
 
-            var taskDefinitionSyntax = taskDefinition.Syntax;
             var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
+            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsFileName, pathProvider.SyntaxFileName);
 
-            // UsingNamespaces
-            var namespaces = new List<string>();
-            namespaces.Add(taskCodeInfo.IwflNamespace);
-            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
-            namespaces.Add(CodeGenFacts.NavigationEngineWflNamespace);
-            namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
-
+            var namespaces       = GetUsingNamespaces(taskDefinition, taskCodeInfo);
             var codeDeclarations = CodeModelBuilder.GetCodeDeclarations(taskDefinition);
             var initTransitions  = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeInfo);
-            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IBeginWfsFileName, pathProvider.SyntaxFileName);
             
             return new IBeginWfsCodeModel(
                 taskCodeInfo         : taskCodeInfo,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.IBeginWfsFileName,
-                usingNamespaces       : namespaces.ToSortedNamespaces().ToImmutableList(),
-                baseInterfaceName     : taskDefinitionSyntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
+                usingNamespaces       : namespaces.ToImmutableList(),
+                // TODO in TaskDefinition
+                baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
                 initTransitions       : initTransitions.ToImmutableList(),
                 codeDeclarations      : codeDeclarations.ToImmutableList());
+        }
+
+        private static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
+
+            var namespaces = new List<string>();
+
+            namespaces.Add(taskCodeInfo.IwflNamespace);
+            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
+            namespaces.Add(CodeGenFacts.NavigationEngineWflNamespace);
+            namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
+
+            return namespaces.ToSortedNamespaces();
         }
     }
 }

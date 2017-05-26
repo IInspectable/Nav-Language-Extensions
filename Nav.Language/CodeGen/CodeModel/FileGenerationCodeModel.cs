@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
 using System;
-using JetBrains.Annotations;
 
 #endregion
 
@@ -15,11 +14,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             FilePath               = filePath               ?? String.Empty;
         }
 
-        [NotNull]
-        public TaskCodeInfo Task { get; }
-        [NotNull]
+        public TaskCodeInfo Task             { get; }
         public string RelativeSyntaxFileName { get; }
-        [NotNull]
-        public string FilePath { get; }               
+        public string FilePath               { get; }               
     }
 }

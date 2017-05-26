@@ -19,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public abstract string TemplateName { get; }
     }
 
-    class ExitCallCodeModel : CallCodeModel {
+    sealed class ExitCallCodeModel : CallCodeModel {
 
         public ExitCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
         }
@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public override string TemplateName => "goToExit";
     }
 
-    class EndCallCodeModel : CallCodeModel {
+    sealed class EndCallCodeModel : CallCodeModel {
 
         public EndCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
         }
@@ -35,7 +35,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public override string TemplateName => "goToEnd";
     }
 
-    class TaskCallCodeModel : CallCodeModel {
+    sealed class TaskCallCodeModel : CallCodeModel {
 
         public TaskCallCodeModel(string name, EdgeMode edgeMode, ParameterCodeModel taskResult) : base(name, edgeMode) {
             TaskResult = taskResult ?? throw new ArgumentNullException(nameof(taskResult));
@@ -59,7 +59,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
     }
 
-    class GuiCallCodeModel : CallCodeModel {
+    sealed class GuiCallCodeModel : CallCodeModel {
 
         public GuiCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
         }
