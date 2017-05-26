@@ -99,6 +99,22 @@ namespace Nav.Language.Tests {
                 }
             }){
                 TestName = "Nested choices"
+            },
+            new TestCaseData(new TestCase {
+                NavFiles = {
+                    new TestCaseFile {
+                        FilePath = MkFilename("TaskA.nav"),
+                        Content = @"
+                            [namespaceprefix N]
+                            task A [result string] {
+                                init i;
+                                exit e;
+                                i--> e;
+                            }"
+                    }
+                }
+            }){
+                TestName = "Tasksresult without explizit name"
             }
         };
 

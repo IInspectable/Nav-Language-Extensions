@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         public static ICodeParameter FromResultDeclaration([CanBeNull]CodeResultDeclarationSyntax codeResult) {
 
-            if (codeResult?.Result == null || codeResult.Result?.Type==null || codeResult.Result.Identifier.IsMissing) {
+            if (codeResult?.Result?.Type == null) {
                 return null;
             }
 

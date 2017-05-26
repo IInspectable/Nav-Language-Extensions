@@ -21,10 +21,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public static ParameterCodeModel TaskResult(ITaskDefinitionSymbol taskDefinition) {
             var codeParameter = taskDefinition.AsTaskDeclaration?.CodeTaskResult;
-            if (codeParameter == null) {
-                return new ParameterCodeModel(CodeGenFacts.DefaultTaskResultType, CodeGenFacts.DefaultParamterName);
-            }
-            return new ParameterCodeModel(codeParameter.ParameterType, codeParameter.ParameterName);
+            var parameterType = CodeGenFacts.DefaultTaskResultType;
+            var parameterName = CodeGenFacts.DefaultParamterName;
+            if (codeParameter != null) {
+                parameterType = codeParameter.ParameterType;
+                parameterName = codeParameter.ParameterName == String.Empty ? CodeGenFacts.DefaultParamterName : codeParameter.ParameterName;
+            }            
+            return new ParameterCodeModel(parameterType, parameterName);
         }
 
         [NotNull]
