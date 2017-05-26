@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+
 // ReSharper disable InconsistentNaming
 
 #endregion
@@ -20,13 +21,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public string WfsBaseBaseTypeName { get; }
 
         public string TaskNamePascalcase        => TaskName.ToPascalcase();
-        public string WflNamespace              => $"{BaseNamespace}.{CodeGenFacts.WflNamespaceSuffix}";
-        public string IwflNamespace             => $"{BaseNamespace}.{CodeGenFacts.IwflNamespaceSuffix}";        
+        public string WflNamespace              => BuildQualifiedName(BaseNamespace, CodeGenFacts.WflNamespaceSuffix);
+        public string IwflNamespace             => BuildQualifiedName(BaseNamespace, CodeGenFacts.IwflNamespaceSuffix);        
         public string WfsBaseTypeName           => $"{TaskNamePascalcase}{CodeGenFacts.WfsBaseClassSuffix}";
         public string WfsTypeName               => $"{TaskNamePascalcase}{CodeGenFacts.WfsClassSuffix}";
         public string IWfsTypeName              => $"{CodeGenFacts.InterfacePrefix}{TaskNamePascalcase}{CodeGenFacts.WfsClassSuffix}";
-        public string FullyQualifiedWfsName     => $"{WflNamespace}.{WfsTypeName}";
-        public string FullyQualifiedWfsBaseName => $"{WflNamespace}.{WfsBaseTypeName}";
+        public string FullyQualifiedWfsName     => BuildQualifiedName(WflNamespace, WfsTypeName);
+        public string FullyQualifiedWfsBaseName => BuildQualifiedName(WflNamespace, WfsBaseTypeName);
 
         public static TaskCodeInfo FromTaskDefinition(ITaskDefinitionSymbol taskDefinition) {
 
@@ -42,6 +43,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskName            : taskName,
                 baseNamespace       : baseNamespace,
                 wfsBaseBaseClassName: wfsBaseBaseClassName);
+        }
+
+        internal static string BuildQualifiedName(params string[] identifier) {
+            return CodeGenFacts.BuildQualifiedNameQualifiedName(identifier);
         }
     }
 }

@@ -104,8 +104,7 @@ namespace Nav.Language.Tests {
                 NavFiles = {
                     new TestCaseFile {
                         FilePath = MkFilename("TaskA.nav"),
-                        Content = @"
-                            [namespaceprefix N]
+                        Content = @"                           
                             task A [result string] {
                                 init i;
                                 exit e;

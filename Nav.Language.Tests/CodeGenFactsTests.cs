@@ -1,16 +1,14 @@
 ﻿#region Using Directives
 
 using NUnit.Framework;
-using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.CodeGen;
+// ReSharper disable InconsistentNaming
 
 #endregion
 
 namespace Nav.Language.Tests {
     [TestFixture]
     public class CodeGenFactsTests {
-
-        readonly PathProviderTests _pathProviderTests = new PathProviderTests();
 
         [Test]
         public void TestDefaultIwfsBaseType() {
@@ -79,6 +77,36 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestDefaultWfsBaseClass() {
             Assert.That(CodeGenFacts.DefaultWfsBaseClass, Is.EqualTo("BaseWFService"), "Wrong DefaultWfsBaseClass");
+        }
+
+        [Test]
+        public void CombineQualifiedNameeA() {
+            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("", "A");
+            Assert.That(actual, Is.EqualTo("A"), "Wrong QualifiedName");
+        }
+
+        [Test]
+        public void CombineQualifiedNameAB() {
+            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("A", "B");
+            Assert.That(actual, Is.EqualTo("A.B"), "Wrong QualifiedName");
+        }
+
+        [Test]
+        public void CombineQualifiedNameABC() {
+            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("A", "B", "C");
+            Assert.That(actual, Is.EqualTo("A.B.C"), "Wrong QualifiedName");
+        }
+
+        [Test]
+        public void CombineQualifiedNameAeC() {
+            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("A", "", "C");
+            Assert.That(actual, Is.EqualTo("A.C"), "Wrong QualifiedName");
+        }
+
+        [Test]
+        public void CombineQualifiedNameA0C() {
+            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("A", null, "C");
+            Assert.That(actual, Is.EqualTo("A.C"), "Wrong QualifiedName");
         }
     }
 }
