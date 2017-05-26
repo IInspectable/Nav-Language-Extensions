@@ -38,7 +38,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new InitTransitionCodeModel(
                 parameter             : parameter.ToImmutableList(),
                 reachableCalls        : initTransition.GetReachableCalls().ToImmutableList(),
-                generateAbstractMethod: initNode.GenerateAbstractMethod());
+                generateAbstractMethod: initNode.CodeGenerateAbstractMethod());
         }        
     }
 }

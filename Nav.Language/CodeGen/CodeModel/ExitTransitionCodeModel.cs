@@ -39,7 +39,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskExitCodeInfo      : taskExitCodeInfo,
                 calls                 : calls.ToImmutableList(), 
                 taskResult            : taskResult,
-                generateAbstractMethod: taskNode.GenerateAbstractMethod());
+                generateAbstractMethod: taskNode.CodeGenerateAbstractMethod());
         }
     }
 }
