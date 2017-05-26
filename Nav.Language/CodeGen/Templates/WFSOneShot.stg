@@ -15,29 +15,35 @@ namespace <model.WflNamespace> {
 >>
 
 writeInitTransitionCollapsibleList(initTransitions) ::=<<
-<initTransitions:writeInitTransition(); separator="\r\n\r\n">
-
+<initTransitions:writeInitTransition(); separator="\r\n">
 >>
 
 writeInitTransition(initTransition) ::=<<
-<if(initTransition.GenerateAbstractMethod)>public override IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
+<if(initTransition.GenerateAbstractMethod)>
+public override IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
     throw new NotImplementedException();
-}<else>protected override INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBegins])>) {
+}
+<else>
+protected override INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBegins])>) {
     throw new NotImplementedException();
-}<endif>
+}
+<endif>
 >>
 
 writeExitTransitionCollapsibleList(exitTransitions) ::=<<
-<exitTransitions:writeExitTransition(); separator="\r\n\r\n">
-
+<exitTransitions:writeExitTransition(); separator="\r\n">
 >>
 
 writeExitTransition(exitTransition) ::=<<
-<if(exitTransition.GenerateAbstractMethod)>protected override INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
+<if(exitTransition.GenerateAbstractMethod)>
+protected override INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
     throw new NotImplementedException();
-}<else>protected override INavCommandBody <exitTransition.AfterLogicMethodName>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>) {
+}
+<else>
+protected override INavCommandBody <exitTransition.AfterLogicMethodName>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>) {
      throw new NotImplementedException();
-}<endif>
+}
+<endif>
 >>
 
 writeTriggerTransitionList(triggerTransitions) ::=<<

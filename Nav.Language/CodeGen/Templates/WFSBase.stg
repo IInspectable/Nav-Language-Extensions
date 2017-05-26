@@ -49,8 +49,7 @@ namespace <model.WflNamespace> {
 >>
 
 writeInitTransitionCollapsibleList(initTransitions) ::=<<
-<initTransitions:writeInitTransition(); separator="\r\n\r\n">
-
+<initTransitions:writeInitTransition(); separator="\r\n">
 >>
 
 writeInitTransition(initTransition) ::=<<
@@ -69,8 +68,7 @@ protected abstract INavCommandBody <initTransition.BeginLogicMethodName>(<writeP
 >>
 
 writeExitTransitionCollapsibleList(exitTransitions) ::=<<
-<exitTransitions:writeExitTransition(); separator="\r\n\r\n">
-
+<exitTransitions:writeExitTransition(); separator="\r\n">
 >>
 
 writeExitTransition(exitTransition) ::=<<
