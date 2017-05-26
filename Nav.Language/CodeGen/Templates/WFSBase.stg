@@ -80,7 +80,6 @@ protected abstract INavCommand <exitTransition.AfterMethodName>(<writeParameterL
 private INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
     var body = <exitTransition.AfterLogicMethodName>(<writeParameterExpressionsInline([exitTransition.TaskResult, exitTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(exitTransition)>
-    // TODO Throw Exception
     throw new InvalidOperationException($"<exitTransition.AfterLogicMethodName>(<writeParameterExpressionsInline(exitTransition.TaskResult)>) returned unexpected result '{OfTypeText(body)}'.");
 }
 
@@ -98,7 +97,6 @@ writeTriggerTransition(triggerTransition) ::=<<
 public virtual INavCommand <triggerTransition.TriggerMethodName>(<writeParameterList(triggerTransition.ViewParameter)>) {
     var body = <triggerTransition.TriggerLogicMethodName>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(triggerTransition)>
-    // TODO Throw Exception
     throw new InvalidOperationException($"<triggerTransition.TriggerLogicMethodName>(<writeParameterExpressionsInline(triggerTransition.ViewParameter)>) returned unexpected result '{OfTypeText(body)}'.");
 }
 
@@ -125,7 +123,7 @@ writeWrapperBeginMethodList(ctorModels) ::=<<
 >>
 
 writeWrapperBeginMethod(ctorModel) ::=<<
-<writeInitCallAnnotation(ctorModel.TaskInitParameter.ParameterType)>
+<writeInitCallAnnotation(ctorModel.TaskBeginParameter.ParameterType)>
 protected Begin<beginWrapperModel.TaskNodeName>Wrapper <BeginMethodPrefix()><ctorModel.TaskNodeName>(<writeParameterList([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>) {
     return new Begin<beginWrapperModel.TaskNodeName>Wrapper(<writeParameterExpressionsInline([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>);
 }

@@ -11,9 +11,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
        
         public BeginWrapperCtor(string taskNodeName, ParameterCodeModel taskBeginParameter, ImmutableList<ParameterCodeModel> taskParameter) {
 
-            TaskNodeName       = taskNodeName      ?? String.Empty;
+            TaskNodeName       = taskNodeName       ?? String.Empty;
             TaskBeginParameter = taskBeginParameter ?? throw new ArgumentNullException(nameof(taskBeginParameter));
-            TaskParameter      = taskParameter     ?? throw new ArgumentNullException(nameof(taskParameter));
+            TaskParameter      = taskParameter      ?? throw new ArgumentNullException(nameof(taskParameter));
         }
 
         // TODO BeginMethodName in Model statt TaskNodeName (=> Pascalcse) mit TaskInitCodeModel abgleichen
