@@ -71,3 +71,21 @@ writeInitCallAnnotation(beginItfFullyQualifiedName) ::=<<
 /// \<<AnnotationTagNavInitCall()>\><beginItfFullyQualifiedName>\</<AnnotationTagNavInitCall()>\>
 #endregion
 >>
+
+writeTriggerAnnotation(triggerName) ::=<<
+#region Annotations
+/// \<<AnnotationTagNavTrigger()>\><triggerName>\</<AnnotationTagNavTrigger()>\>
+#endregion
+>>
+
+writeNavInitAnnotation(initName) ::=<<
+#region Annotations
+/// \<<AnnotationTagNavInit()>\><initName>\</<AnnotationTagNavInit()>\>
+#endregion
+>>
+
+writeNavExitAnnotation(taskName) ::=<<
+#region Annotations
+/// \<<AnnotationTagNavExit()>\><taskName>\</<AnnotationTagNavExit()>\>
+#endregion
+>>

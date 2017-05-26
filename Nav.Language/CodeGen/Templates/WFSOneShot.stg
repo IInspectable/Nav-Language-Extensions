@@ -4,12 +4,12 @@ Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 
 namespace <model.WflNamespace> {	
-    public abstract partial class <model.WfsTypeName> {
+    public partial class <model.WfsTypeName> {
         <writeInitTransitionCollapsibleList(model.InitTransitions)><\\>
 
         <writeExitTransitionCollapsibleList(model.ExitTransitions)><\\>
 
-        <writeTriggerTransitionCollapsibleList(model.TriggerTransitions)><\\>
+        <writeTriggerTransitionList(model.TriggerTransitions)>
     }
 }
 >>
@@ -20,15 +20,11 @@ writeInitTransitionCollapsibleList(initTransitions) ::=<<
 >>
 
 writeInitTransition(initTransition) ::=<<
-<if(initTransition.GenerateAbstractMethod)>
-public override IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
+<if(initTransition.GenerateAbstractMethod)>public override IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
     throw new NotImplementedException();
-}
-<else>
-protected override INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>) {
+}<else>protected override INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBegins])>) {
     throw new NotImplementedException();
-}
-<endif>
+}<endif>
 >>
 
 writeExitTransitionCollapsibleList(exitTransitions) ::=<<
@@ -37,24 +33,19 @@ writeExitTransitionCollapsibleList(exitTransitions) ::=<<
 >>
 
 writeExitTransition(exitTransition) ::=<<
-<if(exitTransition.GenerateAbstractMethod)>
-protected override INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
+<if(exitTransition.GenerateAbstractMethod)>protected override INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
     throw new NotImplementedException();
-}
-<else>
-protected override INavCommandBody <exitTransition.AfterLogicMethodName>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>) {
+}<else>protected override INavCommandBody <exitTransition.AfterLogicMethodName>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>) {
      throw new NotImplementedException();
-}
-<endif>
+}<endif>
 >>
 
-writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
+writeTriggerTransitionList(triggerTransitions) ::=<<
 <triggerTransitions:writeTriggerTransition(); separator="\r\n\r\n">
-
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
-protected override INavCommandBody <triggerTransition.TriggerLogicMethodName>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>) {
+protected override INavCommandBody <triggerTransition.TriggerLogicMethodName>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBegins])>) {
     throw new NotImplementedException();
 }
 >>

@@ -34,7 +34,7 @@ namespace <model.WflNamespace> {
     }
 
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
-    public abstract partial class <model.WfsTypeName>: <model.WfsBaseTypeName>, <InterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>, <BeginInterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()> {
+    public partial class <model.WfsTypeName>: <model.WfsBaseTypeName>, <InterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>, <BeginInterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()> {
 
         <writeFieldDeclarationCollapsibleList(model.TaskParameter)><\\>
 
@@ -57,13 +57,14 @@ writeInitTransition(initTransition) ::=<<
 <if(initTransition.GenerateAbstractMethod)>
 public abstract IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>);
 <else>
-protected abstract INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBeginFields])>);
-
 public virtual IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
     INavCommandBody body = <initTransition.BeginLogicMethodName>(<writeParameterExpressions([initTransition.Parameter, initTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(initTransition)>
-    throw new InvalidOperationException($"<initTransition.BeginLogicMethodName>(<writeParameterExpressionsInline(initTransition.Parameter)> returned unexpected result '{OfTypeText(body)}'.");
+    throw new InvalidOperationException($"<initTransition.BeginLogicMethodName>(<writeParameterExpressionsInline(initTransition.Parameter)>) returned unexpected result '{OfTypeText(body)}'.");
 }
+
+<writeNavInitAnnotation(initTransition.NodeName)>
+protected abstract INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBegins])>);
 <endif>
 >>
 
@@ -80,9 +81,10 @@ private INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTra
     var body = <exitTransition.AfterLogicMethodName>(<writeParameterExpressionsInline([exitTransition.TaskResult, exitTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(exitTransition)>
     // TODO Throw Exception
-    throw new InvalidOperationException();
+    throw new InvalidOperationException($"<exitTransition.AfterLogicMethodName>(<writeParameterExpressionsInline(exitTransition.TaskResult)>) returned unexpected result '{OfTypeText(body)}'.");
 }
 
+<writeNavExitAnnotation(exitTransition.NodeName)>
 protected abstract INavCommandBody <exitTransition.AfterLogicMethodName>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>);
 <endif>
 >>
@@ -97,12 +99,12 @@ public virtual INavCommand <triggerTransition.TriggerMethodName>(<writeParameter
     var body = <triggerTransition.TriggerLogicMethodName>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(triggerTransition)>
     // TODO Throw Exception
-    throw new InvalidOperationException();
+    throw new InvalidOperationException($"<triggerTransition.TriggerLogicMethodName>(<writeParameterExpressionsInline(triggerTransition.ViewParameter)>) returned unexpected result '{OfTypeText(body)}'.");
 }
 
-protected abstract INavCommandBody <triggerTransition.TriggerLogicMethodName>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
+<writeTriggerAnnotation(triggerTransition.TriggerName)>
+protected abstract INavCommandBody <triggerTransition.TriggerLogicMethodName>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBegins])>);
 >>
-
 
 writeBeginWrapperCollapsibleList(beginWrapperModels) ::=<<
 <beginWrapperModels:writeBeginWrapper(); separator="\r\n\r\n">

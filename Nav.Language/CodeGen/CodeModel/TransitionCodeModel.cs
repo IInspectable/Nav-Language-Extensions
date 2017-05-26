@@ -16,9 +16,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(reachableCalls));
             }
 
+            reachableCalls = reachableCalls.Where(c => !c.Node.CodeDoNotInject()).ToImmutableList();
+
             var calls = CallCodeModelBuilder.FromCalls(reachableCalls);
 
-            var reachableNodes = reachableCalls.Select(c => c.Node).Where(node => !node.CodeDoNotInject()).ToList();
+            var reachableNodes = reachableCalls.Select(c => c.Node).ToList();
 
             var taskBegins      = GetTaskBegins(reachableNodes);
             var taskBeginFields = GetTaskBeginFields(reachableNodes);

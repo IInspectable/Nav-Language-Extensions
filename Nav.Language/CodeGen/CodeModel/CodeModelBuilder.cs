@@ -5,13 +5,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     sealed class CodeModelBuilder {
         public static IEnumerable<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
             return taskDefinition.NodeDeclarations
-                .OfType<IInitNodeSymbol>().SelectMany(n => n.Outgoings)
+                .OfType<IInitNodeSymbol>()
+                .SelectMany(n => n.Outgoings)
                 .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeInfo));  
         }
 
         public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
             return taskDefinition.NodeDeclarations
                 .OfType<ITaskNodeSymbol>()
+                .Where(node => !node.CodeDoNotInject())
                 .Select(taskNode => ExitTransitionCodeModel.FromTaskNode(taskNode, taskCodeInfo));
         }
 

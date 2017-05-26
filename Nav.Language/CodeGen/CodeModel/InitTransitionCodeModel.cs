@@ -10,14 +10,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     sealed class InitTransitionCodeModel : TransitionCodeModel {
 
         InitTransitionCodeModel(ImmutableList<ParameterCodeModel> parameter, ImmutableList<Call> reachableCalls,
-                                bool generateAbstractMethod) 
+                                bool generateAbstractMethod, string nodeName) 
             :base(reachableCalls) {
 
             Parameter              = parameter ?? throw new ArgumentNullException(nameof(parameter));
             GenerateAbstractMethod = generateAbstractMethod;
+            NodeName               = nodeName ?? String.Empty;
         }
         
         public bool GenerateAbstractMethod { get; }
+        public string NodeName             { get; }
         public string BeginMethodName      => CodeGenFacts.BeginMethodPrefix;
         public string BeginLogicMethodName => $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.LogicMethodSuffix}";
 
@@ -38,7 +40,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new InitTransitionCodeModel(
                 parameter             : parameter.ToImmutableList(),
                 reachableCalls        : initTransition.GetReachableCalls().ToImmutableList(),
-                generateAbstractMethod: initNode.CodeGenerateAbstractMethod());
+                generateAbstractMethod: initNode.CodeGenerateAbstractMethod(),
+                nodeName              : initNode.Name);
         }        
     }
 }
