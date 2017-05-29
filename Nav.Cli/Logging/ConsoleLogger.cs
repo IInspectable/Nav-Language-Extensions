@@ -2,11 +2,10 @@
 
 using System;
 using JetBrains.Annotations;
-using Pharmatechnik.Nav.Language.Generator;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.BuildTasks {
+namespace Pharmatechnik.Nav.Language.Logging {
 
     public sealed class ConsoleLogger : ILogger {
 
@@ -22,7 +21,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             }
             WriteVerbose(message);
         }
-
+        
         public void LogInfo(string message) {
             WriteInfo(message);
         }
@@ -39,12 +38,14 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             WriteWarning(FormatDiagnostic(diag, fileSpec));
         }
 
+        public const string VerbosePrefix = "Verbose:";
         void WriteVerbose(string message) {
-            WriteLine(message, ConsoleColor.DarkGray);
+            WriteLine($"{VerbosePrefix}{message}", ConsoleColor.DarkGray);
         }
 
+        public const string InfoPrefix = "Info:";
         void WriteInfo(string message) {
-            WriteLine( message, Console.ForegroundColor);
+            WriteLine($"{InfoPrefix}{message}", Console.ForegroundColor);
         }
 
         void WriteError(string message) {

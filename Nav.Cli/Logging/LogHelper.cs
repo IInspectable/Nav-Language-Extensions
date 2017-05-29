@@ -5,7 +5,7 @@ using Pharmatechnik.Nav.Language.Generator;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.BuildTasks {
+namespace Pharmatechnik.Nav.Language.Logging {
 
     static class LogHelper {
 

@@ -1,10 +1,13 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Pharmatechnik.Nav.Language.BuildTasks;
-using Pharmatechnik.Nav.Language.Generator;
+using Pharmatechnik.Nav.Language.Logging;
 
-namespace Pharmatechnik.Nav.Language {
+#endregion
+
+namespace Pharmatechnik.Nav.Language.Analyzer {
 
     class SyntaxAnalyzerPipeline  {
 

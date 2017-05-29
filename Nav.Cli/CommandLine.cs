@@ -9,6 +9,9 @@ using Fclp;
 namespace Pharmatechnik.Nav.Language {
 
     sealed class CommandLine {
+        public CommandLine() {
+            Sources = new List<string>();
+        }
 
         public string Directory { get; set; }
         public List<string> Sources { get; private set; }
@@ -16,20 +19,23 @@ namespace Pharmatechnik.Nav.Language {
         public bool GenerateToClasses { get; set; }
         public bool UseSyntaxCache { get; set; }
         public bool Verbose { get; set; }
+
         public bool Analyze { get; set; }
         public string Pattern { get; set; }
 
         public static CommandLine Parse(string[] commandline) {
 
             var clp = new FluentCommandLineParser<CommandLine>();
-            clp.Setup(i => i.Directory).As('d', nameof(Directory)).WithDescription("Directory to search for nav files");
-            clp.Setup(i => i.Force).As('f', nameof(Force)).SetDefault(false);
+
+            clp.Setup(i => i.Directory)        .As('d', nameof(Directory)).WithDescription("Directory to search for nav files");
+            clp.Setup(i => i.Sources)          .As('s', nameof(Sources));
+            clp.Setup(i => i.Force)            .As('f', nameof(Force)).SetDefault(false);
             clp.Setup(i => i.GenerateToClasses).As('g', nameof(GenerateToClasses)).SetDefault(true);
-            clp.Setup(i => i.UseSyntaxCache).As('c', nameof(UseSyntaxCache)).SetDefault(false);
-            clp.Setup(i => i.Verbose).As('v', nameof(Verbose)).SetDefault(false);
-            clp.Setup(i => i.Analyze).As('a', nameof(Analyze)).SetDefault(false);
-            clp.Setup(i => i.Pattern).As('p', nameof(Pattern)).SetDefault("*");
-            clp.Setup(i => i.Sources).As('s', nameof(Sources));
+            clp.Setup(i => i.UseSyntaxCache)   .As('c', nameof(UseSyntaxCache)).SetDefault(false);
+            clp.Setup(i => i.Verbose)          .As('v', nameof(Verbose)).SetDefault(false);
+            // Analyze parameter
+            clp.Setup(i => i.Analyze)          .As('a', nameof(Analyze)).SetDefault(false);
+            clp.Setup(i => i.Pattern)          .As('p', nameof(Pattern)).SetDefault("*");
 
             clp.SetupHelp("?", "help").Callback(text => Console.WriteLine(text)); 
 

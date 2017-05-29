@@ -5,7 +5,7 @@ using Pharmatechnik.Nav.Language.Generator;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.BuildTasks {
+namespace Pharmatechnik.Nav.Language.Logging {
     public interface ILogger {
         void LogVerbose(string message);
         void LogInfo(string message);

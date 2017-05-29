@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Security;
 
 #endregion
 
@@ -53,5 +54,20 @@ namespace Pharmatechnik.Nav.Utilities.IO {
 
             return path;
         }
+
+        public static string GetFullPathNoThrow(string path) {
+            try {
+                path = Path.GetFullPath(path);
+            } catch (Exception e) when (IsIoRelatedException(e)) {
+            }
+            return path;
+        }
+
+        internal static bool IsIoRelatedException(Exception e) =>
+            e is UnauthorizedAccessException ||
+            e is NotSupportedException ||
+            (e is ArgumentException && !(e is ArgumentNullException)) ||
+            e is SecurityException ||
+            e is IOException;
     }
 }

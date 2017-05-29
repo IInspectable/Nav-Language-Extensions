@@ -4,6 +4,6 @@
     <StartArguments>-d:D:\AllNavs\AllNavs\ -f  -c -a -p:CodeNotImplemented -s:c:\Foo.txt</StartArguments>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectView>ShowAllFiles</ProjectView>
+    <ProjectView>ProjectFiles</ProjectView>
   </PropertyGroup>
 </Project>

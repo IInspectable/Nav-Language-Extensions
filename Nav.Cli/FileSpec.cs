@@ -6,7 +6,7 @@ using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Generator {
+namespace Pharmatechnik.Nav.Language {
 
     public class FileSpec {
         
@@ -15,15 +15,15 @@ namespace Pharmatechnik.Nav.Language.Generator {
             FilePath = fileName ?? throw new ArgumentNullException(nameof(fileName));
         }
 
-        public static FileSpec FromRelativePath(string baseDirectory, string file) {
+        public static FileSpec FromFile(string file) {
+
             if (Path.IsPathRooted(file)) {
-                var identity= PathHelper.GetRelativePath(baseDirectory, file);
+                var identity = PathHelper.GetRelativePath(Environment.CurrentDirectory, file);
                 return new FileSpec(identity, file);
-            }
-
-
-            var path=  Path.GetFullPath(Path.Combine(baseDirectory, file));
-            return new FileSpec(file, path);
+            } else {
+                var path = PathHelper.GetFullPathNoThrow(file);
+                return new FileSpec(file, path);
+            }            
         }
         
         public string Identity { get; }
