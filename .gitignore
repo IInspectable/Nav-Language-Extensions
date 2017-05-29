@@ -26,8 +26,8 @@
 /Nav.Language.ServiceHost/bin/Debug
 /Nav.Language.ServiceHost/obj/Debug
 
-/Nav.Client/bin/Debug
-/Nav.Client/obj/Debug
+/Nav.Cli/bin/Debug
+/Nav.Cli/obj/Debug
 
 /Nav.Language.Tests/bin/Debug
 /Nav.Language.Tests/obj/Debug

@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language", "Nav.Language\Nav.Language.csproj", "{C38F8EE6-5DC6-40F3-8994-A33069B05FD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Cli", "Nav.Client\Nav.Cli.csproj", "{AB2AC2BC-E10D-4BAD-9740-2FB7FF6EACDB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Cli", "Nav.Cli\Nav.Cli.csproj", "{AB2AC2BC-E10D-4BAD-9740-2FB7FF6EACDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.Extension", "Nav.Language.Extension\Nav.Language.Extension.csproj", "{C88AACD6-6973-430B-A94B-4CC45B37F32D}"
 EndProject
