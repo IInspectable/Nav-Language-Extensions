@@ -2,6 +2,8 @@
 
 using System;
 using System.IO;
+using System.Linq;
+using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Pharmatechnik.Nav.Language.Logging;
@@ -22,27 +24,30 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             return Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), ToolName);
         }
 
+        protected override Encoding ResponseFileEncoding => Encoding.UTF8;
+
         protected override string GenerateResponseFileCommands() {
-            var clb = new CommandLineBuilder();
-            clb.AppendFileNamesIfNotNull(Sources, " ");
-            return clb.ToString();
-        }
-
-        protected override string GenerateCommandLineCommands() {
 
             var clb = new CommandLineBuilder();
-            
+
             if (GenerateToClasses) {
                 clb.AppendSwitch("-g");
             }
+
             if (Force) {
                 clb.AppendSwitch("-f");
             }
+
             if (UseSyntaxCache) {
                 clb.AppendSwitch("-c");
             }
-            clb.AppendSwitch("-v");
-         
+            
+            // TODO Verbosity aus Task?
+            clb.AppendSwitch("-v");              
+            
+            clb.AppendSwitch("-s");
+            clb.AppendFileNamesIfNotNull(Sources, " ");
+
             return clb.ToString();
         }
 
