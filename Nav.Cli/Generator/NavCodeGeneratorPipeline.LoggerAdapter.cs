@@ -92,11 +92,11 @@ namespace Pharmatechnik.Nav.Language.Generator {
             public void LogProcessEnd(Statistic statistic) {
                 ProcessStopwatch.Stop();
 
-                _logger?.LogInfo($"{ThisAssembly.ProductName} v{ThisAssembly.ProductVersion}");
+                _logger?.LogInfo($"====== {ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion} =======");
                 _logger?.LogInfo($"{statistic.FileCount} {Pluralize("file", statistic.FileCount)} with {statistic.TaskCount} {Pluralize("task", statistic.TaskCount)} processed.");
                 _logger?.LogInfo($"   Updated: {statistic.FilesUpated,3} {Pluralize("File", statistic.FilesUpated)}");
                 _logger?.LogInfo($"   Skiped : {statistic.FilesSkiped,3} {Pluralize("File", statistic.FilesSkiped)}");
-                _logger?.LogInfo($"Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds.");
+                _logger?.LogInfo($"==== Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds ====");
             }
 
             string Pluralize(string word, int count) {
