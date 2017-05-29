@@ -29,7 +29,6 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         protected override string GenerateCommandLineCommands() {
             var clb = new CommandLineBuilder();
             
-            clb.AppendSwitch("-g");
             if (GenerateToClasses) {
                 clb.AppendSwitch("-g");
             }
