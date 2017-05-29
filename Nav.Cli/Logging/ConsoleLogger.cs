@@ -43,9 +43,8 @@ namespace Pharmatechnik.Nav.Language.Logging {
             WriteLine($"{VerbosePrefix}{message}", ConsoleColor.DarkGray);
         }
 
-        public const string InfoPrefix = "Info:";
         void WriteInfo(string message) {
-            WriteLine($"{InfoPrefix}{message}", Console.ForegroundColor);
+            WriteLine($"{message}", Console.ForegroundColor);
         }
 
         void WriteError(string message) {
