@@ -92,11 +92,23 @@ namespace Pharmatechnik.Nav.Language.Generator {
             public void LogProcessEnd(Statistic statistic) {
                 ProcessStopwatch.Stop();
 
-                _logger?.LogInfo($"====== {ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion} =======");
+                const int width=40;
+
+                _logger?.LogInfo(MkLine($"{ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion}", width));
                 _logger?.LogInfo($"{statistic.FileCount} {Pluralize("file", statistic.FileCount)} with {statistic.TaskCount} {Pluralize("task", statistic.TaskCount)} processed.");
                 _logger?.LogInfo($"   Updated: {statistic.FilesUpated,3} {Pluralize("File", statistic.FilesUpated)}");
                 _logger?.LogInfo($"   Skiped : {statistic.FilesSkiped,3} {Pluralize("File", statistic.FilesSkiped)}");
-                _logger?.LogInfo($"==== Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds ====");
+                _logger?.LogInfo(MkLine($"Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds", width));
+            }
+
+            static string MkLine(string message, int length, char lineChar='-') {
+
+                length -= 2; // Leerzeichen zwischen den Linien
+
+                var padLeft = Math.Max(0, (length - message.Length)/2);
+                var padRight = Math.Max(0, length - message.Length - padLeft);
+
+                return $"{new String(lineChar, padLeft)} {message} {new String(lineChar, padRight)}";
             }
 
             string Pluralize(string word, int count) {
