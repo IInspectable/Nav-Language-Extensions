@@ -1,19 +1,18 @@
 ﻿#region Using Directives
 
 using System;
-using System.Linq;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
+using System.Diagnostics;
+using System.Linq;
 using JetBrains.Annotations;
-
-using Pharmatechnik.Nav.Utilities.IO;
+using Pharmatechnik.Nav.Language.BuildTasks;
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.BuildTasks {
+namespace Pharmatechnik.Nav.Language.Generator {
 
     public sealed partial class NavCodeGeneratorPipeline {
         sealed class LoggerAdapter: IDisposable {

@@ -1,6 +1,7 @@
 #region Using Directives
 
 using JetBrains.Annotations;
+using Pharmatechnik.Nav.Language.Generator;
 
 #endregion
 

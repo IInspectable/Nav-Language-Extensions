@@ -1,12 +1,11 @@
 ﻿#region Using Directives
 
 using System.Collections.Immutable;
-
 using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.BuildTasks {
+namespace Pharmatechnik.Nav.Language.Generator {
 
     public sealed partial class NavCodeGeneratorPipeline {
         sealed class Statistic {

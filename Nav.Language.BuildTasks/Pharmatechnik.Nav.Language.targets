@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
  
-  <UsingTask TaskName="Pharmatechnik.Nav.Language.BuildTasks.NavCodeGenerator" AssemblyFile="Pharmatechnik.Nav.Language.BuildTasks.dll" />
+  <UsingTask TaskName="Pharmatechnik.Nav.Language.BuildTasks.Nav" AssemblyFile="Pharmatechnik.Nav.Language.BuildTasks.dll" />
 
   <ItemGroup>
     <AvailableItemName Include="NavFile"/>
@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild">
-    <NavCodeGenerator Files             = "@(NavFile)"
+    <Nav Files             = "@(NavFile)"
                       Force             = "$(NavForce)"
                       GenerateToClasses = "$(NavGenerateToClasses)"
                       UseSyntaxCache    = "$(NavUseSyntaxCache)" />

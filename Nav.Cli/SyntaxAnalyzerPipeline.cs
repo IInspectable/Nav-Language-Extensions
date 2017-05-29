@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Pharmatechnik.Nav.Language.BuildTasks;
+using Pharmatechnik.Nav.Language.Generator;
 
 namespace Pharmatechnik.Nav.Language {
 

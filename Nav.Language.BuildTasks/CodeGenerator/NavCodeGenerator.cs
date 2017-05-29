@@ -1,6 +1,9 @@
 ﻿#region Using Directives
 
+using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -10,27 +13,39 @@ using Pharmatechnik.Nav.Language.CodeGen;
 
 namespace Pharmatechnik.Nav.Language.BuildTasks {
 
-    public class NavCodeGenerator: Task {
+    public class Nav: ToolTask {
 
         public bool Force { get; set; }
         public bool GenerateToClasses { get; set; }
         public bool UseSyntaxCache { get; set; }
 
+        // TODO To FullPath
         public ITaskItem[] Files { get; set; }
 
-        public override bool Execute() {
 
-            if (Files == null) {
-                return true;
+        protected override string GenerateFullPathToTool() {
+            return Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), ToolName);
+        }
+
+        protected override string GenerateCommandLineCommands() {
+
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("-g ");
+            sb.Append($"-s:");
+            foreach (var file in Files) {
+                sb.Append($"\"{file.GetMetadata("FullPath")}\" ");
             }
-            var syntaxProviderFactory = UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
 
-            var options  = new GenerationOptions(force: Force, generateToClasses: GenerateToClasses);
-            var logger   = new TaskLogger(this);
-            var pipeline = new NavCodeGeneratorPipeline(options, logger, syntaxProviderFactory);
-            var files    = Files.Select(FileSpec.FromTaskItem);
+        //    CommandLineBuilder clb = new CommandLineBuilder();
+        //
+        //    clb.AppendSwitch("-g");
+        //   clb.AppendFileNamesIfNotNull(Files, "-s:");
+            return sb.ToString();
+        }
 
-            return pipeline.Run(files);            
-        }        
+        protected override string ToolName => "nav.exe";
+
     }
 }

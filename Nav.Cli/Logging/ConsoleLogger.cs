@@ -2,6 +2,7 @@
 
 using System;
 using JetBrains.Annotations;
+using Pharmatechnik.Nav.Language.Generator;
 
 #endregion
 
@@ -43,7 +44,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         }
 
         void WriteInfo(string message) {
-            WriteLine(message, Console.ForegroundColor);
+            WriteLine( message, Console.ForegroundColor);
         }
 
         void WriteError(string message) {

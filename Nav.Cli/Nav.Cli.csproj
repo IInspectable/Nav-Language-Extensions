@@ -41,16 +41,26 @@
     <Reference Include="FluentCommandLineParser, Version=1.4.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentCommandLineParser.1.4.3\lib\net35\FluentCommandLineParser.dll</HintPath>
     </Reference>
+    <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Generator\FileSpec.cs" />
+    <Compile Include="Generator\NavCodeGeneratorPipeline.cs" />
+    <Compile Include="Generator\NavCodeGeneratorPipeline.LoggerAdapter.cs" />
+    <Compile Include="Generator\NavCodeGeneratorPipeline.Statistic.cs" />
     <Compile Include="CommandLine.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\LogHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SyntaxAnalyzerPipeline.cs" />
@@ -63,10 +73,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Nav.Language.BuildTasks\Nav.Language.BuildTasks.csproj">
-      <Project>{db6efc93-1185-43b7-a721-8515b59cc3ad}</Project>
-      <Name>Nav.Language.BuildTasks</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Nav.Language\Nav.Language.csproj">
       <Project>{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}</Project>
       <Name>Nav.Language</Name>

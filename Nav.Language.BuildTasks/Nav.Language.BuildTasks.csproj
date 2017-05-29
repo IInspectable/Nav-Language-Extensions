@@ -50,15 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeGenerator\NavCodeGeneratorPipeline.Statistic.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="Logging\LogHelper.cs" />
-    <Compile Include="CodeGenerator\FileSpec.cs" />
-    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="CodeGenerator\NavCodeGenerator.cs" />
-    <Compile Include="CodeGenerator\NavCodeGeneratorPipeline.cs" />
-    <Compile Include="CodeGenerator\NavCodeGeneratorPipeline.LoggerAdapter.cs" />
-    <Compile Include="Logging\TaskLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
@@ -75,6 +67,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Nav.Cli\Nav.Cli.csproj">
+      <Project>{ab2ac2bc-e10d-4bad-9740-2fb7ff6eacdb}</Project>
+      <Name>Nav.Cli</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Nav.Language\Nav.Language.csproj">
       <Project>{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}</Project>
       <Name>Nav.Language</Name>

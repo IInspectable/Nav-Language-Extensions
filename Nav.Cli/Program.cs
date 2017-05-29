@@ -1,10 +1,12 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Pharmatechnik.Nav.Language.BuildTasks;
 using Pharmatechnik.Nav.Language.CodeGen;
+using Pharmatechnik.Nav.Language.Generator;
 using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
@@ -15,8 +17,11 @@ namespace Pharmatechnik.Nav.Language {
 
         static void Main(string[] args) {
 
-            var cl = CommandLine.Parse(args);
+            //Console.WriteLine($"{Environment.CommandLine}");
 
+            var cl = CommandLine.Parse(args);
+            
+         //   Console.WriteLine($"Error:{Environment.CommandLine}");
             if (cl == null) {
                 PressAnyKeyToContinue();
                 return;
@@ -42,15 +47,36 @@ namespace Pharmatechnik.Nav.Language {
 
         public void Run(CommandLine cl) {
 
+            
+
             var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
 
             var options  = new GenerationOptions(force: cl.Force, generateToClasses: cl.GenerateToClasses);
             var logger   = new ConsoleLogger(cl.Verbose);
+
+
+            logger.LogInfo($"{ThisAssembly.ProductName} {ThisAssembly.ProductVersion}");
+
             var pipeline = new NavCodeGeneratorPipeline(options, logger, syntaxProviderFactory);
 
-            var navFiles  = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);
-            var fileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(cl.Directory, file), fileName: file));
+            IEnumerable<FileSpec> fileSpecs=null;
 
+            if (cl.Directory != null) {
+                var navFiles = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);
+                fileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(cl.Directory, file), fileName: file));
+            }
+            if (cl.Sources != null) {
+                // TODO identity
+                fileSpecs = cl.Sources.Select(file => new FileSpec(identity: file, fileName: file));
+            }
+
+            if (fileSpecs == null) {
+               
+
+                // TODO Log Not Files Specified?
+                return;
+            }
+            //Console.WriteLine($"Error: pipeline.Run {fileSpecs.First().FilePath} !");
             pipeline.Run(fileSpecs);
         }
     }
