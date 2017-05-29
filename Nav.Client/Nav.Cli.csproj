@@ -7,7 +7,7 @@
     <ProjectGuid>{AB2AC2BC-E10D-4BAD-9740-2FB7FF6EACDB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nav.Client</RootNamespace>
+    <RootNamespace>Pharmatechnik.Nav.Language</RootNamespace>
     <AssemblyName>nav</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -61,7 +61,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
-    <None Include="Test Files\AuftragUebersicht.nav" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nav.Language.BuildTasks\Nav.Language.BuildTasks.csproj">

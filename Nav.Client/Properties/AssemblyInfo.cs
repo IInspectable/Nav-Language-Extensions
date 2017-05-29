@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using Nav.Client;
+using Pharmatechnik.Nav.Language;
 
 // TODO Assembly Infos bereitstellen
 [assembly: AssemblyTitle(ThisAssembly.ProductName)]

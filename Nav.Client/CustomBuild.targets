@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProductName>Nav Command Line</ProductName>
+    <ProductName>Nav Tools</ProductName>
     <ProductVersion>3.0.84</ProductVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -9,7 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <AssemblyInfoLine Include="// Warning: This is generated code! Don't touch as it will be overwritten by the code generator." />
-    <AssemblyInfoLine Include="namespace Nav.Client {" />
+    <AssemblyInfoLine Include="namespace Pharmatechnik.Nav.Language {" />
     <AssemblyInfoLine Include="%20%20%20%20static partial class ThisAssembly {" />
     <AssemblyInfoLine Include="%20%20%20%20%20%20%20%20public const string ProductVersion = &quot;$(ProductVersion)&quot;%3b" />
     <AssemblyInfoLine Include="%20%20%20%20%20%20%20%20public const string ProductName = &quot;$(ProductName)&quot;%3b" />

@@ -5,7 +5,7 @@ using Fclp;
 
 #endregion
 
-namespace Nav.Client {
+namespace Pharmatechnik.Nav.Language {
 
     sealed class CommandLine {
 

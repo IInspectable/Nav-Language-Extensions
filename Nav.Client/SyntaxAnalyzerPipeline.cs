@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.BuildTasks;
 
-namespace Nav.Client {
+namespace Pharmatechnik.Nav.Language {
 
     class SyntaxAnalyzerPipeline  {
 
