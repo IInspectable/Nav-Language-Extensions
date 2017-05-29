@@ -1,12 +1,9 @@
 ﻿#region Using Directives
 
-using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Pharmatechnik.Nav.Language.Logging;
 
 #endregion
 
@@ -52,15 +49,16 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         }
 
         protected override string ToolName => "nav.exe";
-
+        const string InfoPrefix = "Info:";
+        const string VerbosePrefix = "Verbose:";
         protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance) {
-
-            if (singleLine.StartsWith(ConsoleLogger.InfoPrefix)) {
+            
+            if (singleLine.StartsWith(InfoPrefix)) {
                 messageImportance = MessageImportance.High;
-                singleLine = singleLine.Substring(ConsoleLogger.InfoPrefix.Length);
-            } else if (singleLine.StartsWith(ConsoleLogger.VerbosePrefix)) {
+                singleLine = singleLine.Substring(InfoPrefix.Length);
+            } else if (singleLine.StartsWith(VerbosePrefix)) {
                 messageImportance = MessageImportance.Low;
-                singleLine = singleLine.Substring(ConsoleLogger.VerbosePrefix.Length);
+                singleLine = singleLine.Substring(VerbosePrefix.Length);
             }
 
             base.LogEventsFromTextOutput(singleLine, messageImportance);            

@@ -55,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
             }
 
             public void LogProcessBegin() {
-                _logger?.LogInfo($"{ThisAssembly.ProductName} v{ThisAssembly.ProductVersion}");
+                
                 ProcessStopwatch.Restart();
             }
 
@@ -92,6 +92,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
             public void LogProcessEnd(Statistic statistic) {
                 ProcessStopwatch.Stop();
 
+                _logger?.LogInfo($"{ThisAssembly.ProductName} v{ThisAssembly.ProductVersion}");
                 _logger?.LogInfo($"{statistic.FileCount} {Pluralize("file", statistic.FileCount)} with {statistic.TaskCount} {Pluralize("task", statistic.TaskCount)} processed.");
                 _logger?.LogInfo($"   Updated: {statistic.FilesUpated,3} {Pluralize("File", statistic.FilesUpated)}");
                 _logger?.LogInfo($"   Skiped : {statistic.FilesSkiped,3} {Pluralize("File", statistic.FilesSkiped)}");
