@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System;
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
@@ -14,9 +15,11 @@ namespace Pharmatechnik.Nav.Language {
     static class Program  {
 
         static int Main(string[] args) {
-            
-            var cmdArgs = args;
 
+            Console.OutputEncoding = Encoding.UTF8;
+
+            var cmdArgs = args;
+            
             // Response file
             if (args.Length == 1 && args[0].StartsWith("@")) {
                 var fileName = args[0].Substring(1);

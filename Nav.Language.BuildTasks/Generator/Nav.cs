@@ -22,7 +22,9 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             return Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), ToolName);
         }
 
-        protected override Encoding ResponseFileEncoding => Encoding.UTF8;
+        protected override string ToolName                 => "nav.exe";
+        protected override Encoding ResponseFileEncoding   => Encoding.UTF8;
+        protected override Encoding StandardOutputEncoding => Encoding.UTF8;
 
         protected override string GenerateResponseFileCommands() {
 
@@ -37,8 +39,15 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             return clb.ToString();
         }
 
-        protected override string ToolName => "nav.exe";
+        protected override bool ValidateParameters() {
+            // TODO Muss hier noch was validiert werden?
+            return true;
+        }
 
+        protected override bool SkipTaskExecution() {
+            return (Sources?.Length ?? 0) == 0;
+        }
+        
         const string VerbosePrefix = "Verbose:";
 
         protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance) {
@@ -53,5 +62,4 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
         protected override MessageImportance StandardOutputLoggingImportance => MessageImportance.High;
     }
-
 }
