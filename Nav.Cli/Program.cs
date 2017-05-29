@@ -65,9 +65,8 @@ namespace Pharmatechnik.Nav.Language {
                 var navFiles = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);
                 fileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(cl.Directory, file), fileName: file));
             }
-            if (cl.Sources != null) {
-                // TODO identity
-                fileSpecs = cl.Sources.Select(file => new FileSpec(identity: file, fileName: file));
+            if (cl.Sources != null) {         
+                fileSpecs = cl.Sources.Select(file => FileSpec.FromRelativePath(Environment.CurrentDirectory, file));
             }
 
             if (fileSpecs == null) {

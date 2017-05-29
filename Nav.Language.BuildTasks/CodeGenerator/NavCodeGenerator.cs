@@ -19,33 +19,32 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         public bool GenerateToClasses { get; set; }
         public bool UseSyntaxCache { get; set; }
 
-        // TODO To FullPath
-        public ITaskItem[] Files { get; set; }
-
-
+        // TOO FullPath, wenn von Commandozeile aus gestartet?
+        public ITaskItem[] Sources { get; set; }
+        
         protected override string GenerateFullPathToTool() {
             return Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), ToolName);
         }
 
         protected override string GenerateCommandLineCommands() {
-
-
-            StringBuilder sb = new StringBuilder();
-
-            sb.Append("-g ");
-            sb.Append($"-s:");
-            foreach (var file in Files) {
-                sb.Append($"\"{file.GetMetadata("FullPath")}\" ");
+            var clb = new CommandLineBuilder();
+            
+            clb.AppendSwitch("-g");
+            if (GenerateToClasses) {
+                clb.AppendSwitch("-g");
             }
-
-        //    CommandLineBuilder clb = new CommandLineBuilder();
-        //
-        //    clb.AppendSwitch("-g");
-        //   clb.AppendFileNamesIfNotNull(Files, "-s:");
-            return sb.ToString();
+            if (Force) {
+                clb.AppendSwitch("-f");
+            }
+            if (UseSyntaxCache) {
+                clb.AppendSwitch("-c");
+            }
+            clb.AppendSwitch("-s");
+            clb.AppendFileNamesIfNotNull(Sources, " ");
+         
+            return clb.ToString();
         }
 
         protected override string ToolName => "nav.exe";
-
     }
 }
