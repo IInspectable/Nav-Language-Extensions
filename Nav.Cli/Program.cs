@@ -1,5 +1,13 @@
-﻿using Pharmatechnik.Nav.Language.Analyzer;
+﻿#region Using Directives
+
+using System;
+using System.IO;
+using System.Linq;
+using System.Collections.Generic;
+using Pharmatechnik.Nav.Language.Analyzer;
 using Pharmatechnik.Nav.Language.Generator;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
     
@@ -7,8 +15,27 @@ namespace Pharmatechnik.Nav.Language {
 
         static int Main(string[] args) {
 
-            // TODO Response Files
-            var cl = CommandLine.Parse(args);
+
+            var cmdArgs = new List<string>(args);
+
+            var rspArg = cmdArgs.FirstOrDefault(s => s.StartsWith("@"));
+            if (rspArg != null) {
+
+                cmdArgs.Remove(rspArg);
+
+                var fileName = rspArg.Substring(1);
+
+                var rsp = File.ReadAllText(fileName);
+                
+                cmdArgs.Add($"-s");
+
+                // BUG: Funktiuoniert nicht mit "quoted strings"
+                foreach (var v in rsp.Split(' ')) {
+                    cmdArgs.Add(v);
+                }
+            }
+            
+            var cl = CommandLine.Parse(cmdArgs.ToArray());
             
             if (cl == null) {
                 return -1;

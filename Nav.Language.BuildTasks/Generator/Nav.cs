@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System;
 using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
@@ -20,7 +21,13 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             // ReSharper disable once AssignNullToNotNullAttribute
             return Path.Combine(Path.GetDirectoryName(GetType().Assembly.Location), ToolName);
         }
-        // TODO Response Files
+
+        protected override string GenerateResponseFileCommands() {
+            var clb = new CommandLineBuilder();
+            clb.AppendFileNamesIfNotNull(Sources, " ");
+            return clb.ToString();
+        }
+
         protected override string GenerateCommandLineCommands() {
 
             var clb = new CommandLineBuilder();
@@ -35,8 +42,6 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
                 clb.AppendSwitch("-c");
             }
             clb.AppendSwitch("-v");
-            clb.AppendSwitch("-s");
-            clb.AppendFileNamesIfNotNull(Sources, " ");
          
             return clb.ToString();
         }
