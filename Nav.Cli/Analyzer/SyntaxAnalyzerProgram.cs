@@ -15,12 +15,13 @@ namespace Pharmatechnik.Nav.Language.Analyzer {
 
             var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
 
-            var logger   = new ConsoleLogger(cl.Verbose);
+            var logger   = new ConsoleLogger(fullPaths: cl.FullPaths, verbose: cl.Verbose);
             var pipeline = new SyntaxAnalyzerPipeline(logger, syntaxProviderFactory);
 
             var navFiles  = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);
             var fileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(cl.Directory, file), fileName: file));
-            var analyzer = new CodeNotImplementedAnalyzer(cl.Pattern);
+            var analyzer  = new CodeNotImplementedAnalyzer(cl.Pattern);
+
             pipeline.Run(fileSpecs, analyzer);
 
             Console.WriteLine($"Number of CodeNotImplemented: {analyzer.Result}");

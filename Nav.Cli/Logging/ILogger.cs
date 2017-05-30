@@ -1,16 +1,9 @@
-#region Using Directives
-
-using JetBrains.Annotations;
-using Pharmatechnik.Nav.Language.Generator;
-
-#endregion
-
 namespace Pharmatechnik.Nav.Language.Logging {
     public interface ILogger {
         void LogVerbose(string message);
         void LogInfo(string message);
-        void LogWarning(Diagnostic diag, [CanBeNull] FileSpec fileSpec = null);
+        void LogWarning(Diagnostic diag);
         void LogError(string message);
-        void LogError(Diagnostic diag  , [CanBeNull] FileSpec fileSpec = null);
+        void LogError(Diagnostic diag);
     }
 }

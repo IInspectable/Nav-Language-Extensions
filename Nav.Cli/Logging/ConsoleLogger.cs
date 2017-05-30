@@ -1,19 +1,22 @@
 #region Using Directives
 
 using System;
-using JetBrains.Annotations;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Logging {
 
-    public sealed class ConsoleLogger : ILogger {
+    public class ConsoleLogger : ILogger {
 
-        public ConsoleLogger(bool verbose) {
+        public ConsoleLogger(bool fullPaths, bool verbose, string verbosePrefix = null) {
+            FullPaths = fullPaths;
             Verbose = verbose;
+            VerbosePrefix=verbosePrefix?? "Verbose:";
         }
 
+        public bool FullPaths { get; }
         public bool Verbose { get; }
+        public string VerbosePrefix { get; }
 
         public void LogVerbose(string message) {
             if (!Verbose) {
@@ -30,28 +33,27 @@ namespace Pharmatechnik.Nav.Language.Logging {
             WriteError(message);
         }
 
-        public void LogError(Diagnostic diag, [CanBeNull] FileSpec fileSpec = null) {
-            WriteError(FormatDiagnostic(diag, fileSpec));
+        public void LogError(Diagnostic diag) {
+            WriteError(FormatDiagnostic(diag));
         }
 
-        public void LogWarning(Diagnostic diag, [CanBeNull] FileSpec fileSpec = null) {
-            WriteWarning(FormatDiagnostic(diag, fileSpec));
+        public void LogWarning(Diagnostic diag) {
+            WriteWarning(FormatDiagnostic(diag));
         }
 
-        public const string VerbosePrefix = "Verbose:";
-        void WriteVerbose(string message) {
+        protected virtual void WriteVerbose(string message) {
             WriteLine($"{VerbosePrefix}{message}", ConsoleColor.DarkGray);
         }
 
-        void WriteInfo(string message) {
+        protected virtual void WriteInfo(string message) {
             WriteLine($"{message}", Console.ForegroundColor);
         }
 
-        void WriteError(string message) {
+        protected virtual void WriteError(string message) {
             WriteLine(message, ConsoleColor.Red);
         }
 
-        void WriteWarning(string message) {
+        protected virtual void WriteWarning(string message) {
             WriteLine(message, ConsoleColor.Yellow);
         }
 
@@ -65,13 +67,12 @@ namespace Pharmatechnik.Nav.Language.Logging {
             }
         }
 
-        string FormatDiagnostic(Diagnostic diag, FileSpec fileSpec) {
-            var location = diag.Location;
-            return $"{LogHelper.GetFileIdentity(diag, fileSpec)}({location.StartLine + 1},{location.StartCharacter + 1}): {GetSeverity(diag)} {diag.Descriptor.Id}: {diag.Message}";
-        }
+        protected virtual string FormatDiagnostic(Diagnostic diag) {
+            var formatter = new DiagnosticFormatter(
+                displayEndLocations: FullPaths,
+                workingDirectory   : FullPaths ? null : Environment.CurrentDirectory);
 
-        string GetSeverity(Diagnostic diag) {
-            return diag.Severity.ToString();
-        }
+            return formatter.Format(diag);
+        } 
     }
 }

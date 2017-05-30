@@ -15,6 +15,8 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         public bool Force { get; set; }
         public bool GenerateToClasses { get; set; }
         public bool UseSyntaxCache { get; set; }
+        public bool FullPaths { get; set; }
+
         public ITaskItem[] Sources { get; set; }
         
         protected override string GenerateFullPathToTool() {
@@ -30,31 +32,32 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
             var clb = new CommandLineBuilder();
 
-            clb.AppendSwitchIfPresent(GenerateToClasses, "-g");
+            clb.AppendSwitchIfPresent(GenerateToClasses, "-t");
             clb.AppendSwitchIfPresent(Force, "-f");
             clb.AppendSwitchIfPresent(UseSyntaxCache, "-c");
+            clb.AppendSwitchIfPresent(FullPaths, "--fullpaths");
             clb.AppendSwitch("-v");                          
-            clb.AppendSwitchIfNotNull("--Sources ", Sources, " ");
-
+            clb.AppendSwitchIfNotNull("--sources ", Sources, " ");
+            
             return clb.ToString();
         }
 
-        protected override bool ValidateParameters() {
+        protected override bool ValidateParameters() {            
             // TODO Muss hier noch was validiert werden?
             return true;
         }
-
+        
         protected override bool SkipTaskExecution() {
             return (Sources?.Length ?? 0) == 0;
         }
         
-        const string VerbosePrefix = "Verbose:";
-
         protected override void LogEventsFromTextOutput(string singleLine, MessageImportance messageImportance) {
 
-            if (singleLine.StartsWith(VerbosePrefix)) {
+            const string verbosePrefix = "Verbose:";
+
+            if (singleLine.StartsWith(verbosePrefix)) {
                 messageImportance = MessageImportance.Low;
-                singleLine = singleLine.Substring(VerbosePrefix.Length);
+                singleLine = singleLine.Substring(verbosePrefix.Length);
             }
 
             base.LogEventsFromTextOutput(singleLine, messageImportance);            

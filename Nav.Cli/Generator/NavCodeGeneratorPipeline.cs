@@ -56,12 +56,12 @@ namespace Pharmatechnik.Nav.Language.Generator {
                     // 2. Semantic Model
                     var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax((CodeGenerationUnitSyntax)syntaxTree.GetRoot(), syntaxProvider: syntaxProvider);
 
-                    if (logger.LogErrors(fileSpec, syntaxTree.Diagnostics) || logger.LogErrors(fileSpec, codeGenerationUnit.Diagnostics)) {
+                    if (logger.LogErrors(syntaxTree.Diagnostics) || logger.LogErrors(codeGenerationUnit.Diagnostics)) {
                         continue;
                     }
 
-                    logger.LogWarnings(fileSpec, syntaxTree.Diagnostics);
-                    logger.LogWarnings(fileSpec, codeGenerationUnit.Diagnostics);
+                    logger.LogWarnings(syntaxTree.Diagnostics);
+                    logger.LogWarnings(codeGenerationUnit.Diagnostics);
 
                     // 3. Generate Code
                     var codeGenerationResults = codeGenerator.Generate(codeGenerationUnit);

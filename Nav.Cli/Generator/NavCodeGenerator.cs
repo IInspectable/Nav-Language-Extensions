@@ -19,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
             var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
 
             var options  = new GenerationOptions(force: cl.Force, generateToClasses: cl.GenerateToClasses);
-            var logger   = new ConsoleLogger(cl.Verbose);            
+            var logger   = new ConsoleLogger(fullPaths: cl.FullPaths, verbose: cl.Verbose);            
             var pipeline = new NavCodeGeneratorPipeline(options, logger, syntaxProviderFactory);
 
             var fileSpecs = CollectFiles(cl, logger);

@@ -37,20 +37,20 @@ namespace Pharmatechnik.Nav.Language.Generator {
                 _logger?.LogError(message);
             }
 
-            public bool LogErrors(FileSpec fileSpec, IEnumerable<Diagnostic> diagnostics) {
+            public bool LogErrors(IEnumerable<Diagnostic> diagnostics) {
 
                 bool errorsLogged = false;
                 foreach (var error in diagnostics.Errors()) {
                     errorsLogged = true;
                     HasLoggedErrors = true;
-                    _logger?.LogError(error, fileSpec);
+                    _logger?.LogError(error);
                 }
                 return errorsLogged;
             }
 
-            public void LogWarnings(FileSpec fileSpec, IEnumerable<Diagnostic> diagnostics) {
+            public void LogWarnings(IEnumerable<Diagnostic> diagnostics) {
                 foreach (var warning in diagnostics.Warnings()) {
-                    _logger?.LogWarning(warning, fileSpec);
+                    _logger?.LogWarning(warning);
                 }
             }
 
@@ -120,7 +120,6 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
             public void Dispose() {
             }
-
         }
     }
 }

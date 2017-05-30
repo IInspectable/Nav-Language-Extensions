@@ -10,13 +10,15 @@
     <NavForce             Condition="'$(NavForce)'             == ''">false</NavForce>
     <NavGenerateToClasses Condition="'$(NavGenerateToClasses)' == ''">true</NavGenerateToClasses>
     <NavUseSyntaxCache    Condition="'$(NavUseSyntaxCache)'    == ''">false</NavUseSyntaxCache>
+    <NavFullPaths         Condition="'$(NavFullPaths)'         == ''">$(BuildingInsideVisualStudio)</NavFullPaths>
   </PropertyGroup>
 
   <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild">
     <Nav Sources           = "@(NavFile)"
          Force             = "$(NavForce)"
          GenerateToClasses = "$(NavGenerateToClasses)"
-         UseSyntaxCache    = "$(NavUseSyntaxCache)" />
+         UseSyntaxCache    = "$(NavUseSyntaxCache)" 
+         FullPaths         = "$(NavFullPaths)" />
   </Target>
   
 </Project>

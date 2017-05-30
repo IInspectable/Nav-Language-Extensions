@@ -19,6 +19,7 @@ namespace Pharmatechnik.Nav.Language {
         public bool GenerateToClasses { get; set; }
         public bool UseSyntaxCache { get; set; }
         public bool Verbose { get; set; }
+        public bool FullPaths { get; set; }
 
         public bool Analyze { get; set; }
         public string Pattern { get; set; }
@@ -27,12 +28,13 @@ namespace Pharmatechnik.Nav.Language {
 
             var clp = new FluentCommandLineParser<CommandLine>();
 
-            clp.Setup(i => i.Directory)        .As('d', nameof(Directory)).WithDescription("Directory to search for nav files");
-            clp.Setup(i => i.Sources)          .As('s', nameof(Sources));
-            clp.Setup(i => i.Force)            .As('f', nameof(Force)).SetDefault(false);
-            clp.Setup(i => i.GenerateToClasses).As('g', nameof(GenerateToClasses)).SetDefault(true);
-            clp.Setup(i => i.UseSyntaxCache)   .As('c', nameof(UseSyntaxCache)).SetDefault(false);
-            clp.Setup(i => i.Verbose)          .As('v', nameof(Verbose)).SetDefault(false);
+            clp.Setup(i => i.Directory)        .As('d', "directory")        .WithDescription("Directory to search for nav files");
+            clp.Setup(i => i.Sources)          .As('s', "sources");
+            clp.Setup(i => i.Force)            .As('f', "force")            .SetDefault(false);
+            clp.Setup(i => i.GenerateToClasses).As('t', "generatetoclasses").SetDefault(true);
+            clp.Setup(i => i.UseSyntaxCache)   .As('c', "useSyntaxCache")   .SetDefault(false);
+            clp.Setup(i => i.Verbose)          .As('v', "verbose")          .SetDefault(false);
+            clp.Setup(i => i.FullPaths)        .As(     "fullpaths")        .SetDefault(false);
             // Analyze parameter
             clp.Setup(i => i.Analyze)          .As('a', nameof(Analyze)).SetDefault(false);
             clp.Setup(i => i.Pattern)          .As('p', nameof(Pattern)).SetDefault("*");
