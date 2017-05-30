@@ -14,10 +14,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             : base(choiceNodeSymbol, originatingSymbol, context) {
         }
 
-        public override string Name              => "Rename Choice";
-        public override CodeFixImpact Impact     => CodeFixImpact.None;
-        public override TextExtent? ApplicableTo => throw new NotImplementedException();
-        IChoiceNodeSymbol ChoiceNodeSymbol       => Symbol;
+        public override string Name          => "Rename Choice";
+        public override CodeFixImpact Impact => CodeFixImpact.None;
+        IChoiceNodeSymbol ChoiceNodeSymbol   => Symbol;
         
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
 

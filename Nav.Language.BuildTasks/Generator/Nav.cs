@@ -43,7 +43,6 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         }
 
         protected override bool ValidateParameters() {            
-            // TODO Muss hier noch was validiert werden?
             return true;
         }
         

@@ -56,7 +56,6 @@ namespace Nav.Language.Tests {
             Assert.That(pathProvider.GetToFileName("MyTo") , Is.EqualTo(@"n:\av\IWFL\generated\MyTo.generated.cs"));
         }
 
-        // TODO generateToInfo Test unbedingt nochmal verifizieren
         [Test]
         public void TestGeneratedPathsWithTo() {
 
