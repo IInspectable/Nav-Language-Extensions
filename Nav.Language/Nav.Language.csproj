@@ -301,6 +301,7 @@
     <ExportStringTemplates Include="CodeGen\Templates\CodeGenFacts.stg">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.CodeGen</CustomToolNamespace>
     </ExportStringTemplates>
+    <None Include="CodeGen\ClassDiagram1.cd" />
     <None Include="Grammar\NavTokens.g4" />
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
