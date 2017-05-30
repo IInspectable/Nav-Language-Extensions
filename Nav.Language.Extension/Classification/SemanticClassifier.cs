@@ -48,8 +48,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
             var advancedOptions = NavLanguagePackage.GetAdvancedOptionsDialogPage();
             if (advancedOptions.SemanticHighlighting) {
 
-                    // Init Nodes
-                    result.AddRange(
+                // Init Nodes
+                result.AddRange(
                     BuildClassificationSpan(
                         textExtents                  : GetInitNodeExtents(codeGenerationUnitAndSnapshot.CodeGenerationUnit),
                         classificationType           : ClassificationTypeRegistryService.GetClassificationType(ClassificationTypeNames.ConnectionPoint),
@@ -97,7 +97,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         static IEnumerable<TextExtent> GetDeadCodeExtents(CodeGenerationUnit codeGenerationUnit) {
             var diagnostics = codeGenerationUnit.Diagnostics;
             var candidates  = diagnostics.Where(diagnostic => diagnostic.Category == DiagnosticCategory.DeadCode);
-            return candidates.Select(d => d.Location.Extent);
+            return candidates.SelectMany(diag => diag.GetLocations()).Select(loc => loc.Extent);
         }
 
         static IEnumerable<TextExtent> GetChoiceNodeExtents(CodeGenerationUnit codeGenerationUnit) {

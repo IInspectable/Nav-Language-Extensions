@@ -94,14 +94,14 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
                 const int width=40;
 
-                _logger?.LogInfo(MkLine($"{ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion}", width));
+                _logger?.LogInfo(HorizontalRule($"{ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion}", width));
                 _logger?.LogInfo($"{statistic.FileCount} {Pluralize("file", statistic.FileCount)} with {statistic.TaskCount} {Pluralize("task", statistic.TaskCount)} processed.");
                 _logger?.LogInfo($"   Updated: {statistic.FilesUpated,3} {Pluralize("File", statistic.FilesUpated)}");
                 _logger?.LogInfo($"   Skiped : {statistic.FilesSkiped,3} {Pluralize("File", statistic.FilesSkiped)}");
-                _logger?.LogInfo(MkLine($"Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds", width));
+                _logger?.LogInfo(HorizontalRule($"Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds", width));
             }
 
-            static string MkLine(string message, int length, char lineChar='-') {
+            static string HorizontalRule(string message, int length, char lineChar='-') {
 
                 length -= 2; // Leerzeichen zwischen den Linien
 

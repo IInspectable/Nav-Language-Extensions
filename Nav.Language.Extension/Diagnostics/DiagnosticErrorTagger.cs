@@ -1,10 +1,12 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
@@ -37,7 +39,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
 
                 //==================
                 // Syntax Fehler
-                foreach (var diagnostic in syntaxTree.Diagnostics) {
+                foreach (var diagnostic in syntaxTree.Diagnostics.SelectMany(diag=> diag.ExpandLocations())) {
                     if (diagnostic.Location.Start <= span.End && diagnostic.Location.End >= span.Start) {
 
                         var errorSpan = new SnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot, new Span(diagnostic.Location.Start, diagnostic.Location.Length));
@@ -51,7 +53,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
                 }
                 //==================
                 // Semantic Fehler
-                foreach (var diagnostic in codeGenerationUnit.Diagnostics) {
+                foreach (var diagnostic in codeGenerationUnit.Diagnostics.SelectMany(diag => diag.ExpandLocations())) {
                     if (diagnostic.Location.Start <= span.End && diagnostic.Location.End >= span.Start) {
                 
                         var errorSpan = new SnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot, new Span(diagnostic.Location.Start, diagnostic.Location.Length));

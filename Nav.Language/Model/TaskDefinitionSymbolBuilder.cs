@@ -758,7 +758,7 @@ namespace Pharmatechnik.Nav.Language {
                         choiceNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0111ChoiceNode0HasNoIncomingEdges,
                         choiceNode.Name));
-
+                    // TODO Additional Locations
                     foreach (var edge in choiceNode.Outgoings) {
                         _diagnostics.Add(new Diagnostic(
                             edge.Location,
@@ -772,7 +772,7 @@ namespace Pharmatechnik.Nav.Language {
                         choiceNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges,
                         choiceNode.Name));
-
+                    // TODO Additional Locations
                     foreach (var edge in choiceNode.Incomings) {
                         _diagnostics.Add(new Diagnostic(
                             edge.Location,
@@ -802,8 +802,8 @@ namespace Pharmatechnik.Nav.Language {
                             taskNode.Location,
                             DiagnosticDescriptors.Semantic.Nav0113TaskNode0HasNoIncomingEdges,
                             taskNode.Name));
-
-                        foreach(var edge in taskNode.Outgoings) {
+                        // TODO Additional Locations
+                        foreach (var edge in taskNode.Outgoings) {
                             _diagnostics.Add(new Diagnostic(
                                 edge.Location,
                                 DiagnosticDescriptors.DeadCode.Nav1010TaskNode0HasNoIncomingEdges,
@@ -846,7 +846,7 @@ namespace Pharmatechnik.Nav.Language {
                     }
 
                     foreach (var duplicate in actualExits.GroupBy(e => e.Name).Where(g => g.Count() > 1)) {
-
+                        // TODO Additional Locations
                         foreach (var exit in duplicate) {
                             _diagnostics.Add(new Diagnostic(
                                 exit.Location,
@@ -875,7 +875,7 @@ namespace Pharmatechnik.Nav.Language {
                         dialogNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0114DialogNode0HasNoIncomingEdges,
                         dialogNode.Name));
-
+                    // TODO Additional Locations
                     foreach (var edge in dialogNode.Outgoings) {
                         _diagnostics.Add(new Diagnostic(
                             edge.Location,
@@ -887,9 +887,10 @@ namespace Pharmatechnik.Nav.Language {
 
                     _diagnostics.Add(new Diagnostic(
                         dialogNode.Location,
+                        //dialogNode.Incomings.Select(edge=>edge.Target?.Location).Where(l=>l!=null),
                         DiagnosticDescriptors.Semantic.Nav0115DialogNode0HasNoOutgoingEdges,
                         dialogNode.Name));
-
+                    // TODO Additional Locations
                     foreach (var edge in dialogNode.Incomings) {
                         _diagnostics.Add(new Diagnostic(
                             edge.Location,
@@ -917,7 +918,7 @@ namespace Pharmatechnik.Nav.Language {
                         viewNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0116ViewNode0HasNoIncomingEdges,
                         viewNode.Name));
-
+                    // TODO Additional Locations
                     foreach (var edge in viewNode.Outgoings) {
                         _diagnostics.Add(new Diagnostic(
                             edge.Location,
@@ -931,7 +932,7 @@ namespace Pharmatechnik.Nav.Language {
                         viewNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0117ViewNode0HasNoOutgoingEdges,
                         viewNode.Name));
-
+                    // TODO Additional Locations
                     foreach (var edge in viewNode.Incomings) {
                         _diagnostics.Add(new Diagnostic(
                             edge.Location,
@@ -964,7 +965,7 @@ namespace Pharmatechnik.Nav.Language {
                             existing.Location,
                             DiagnosticDescriptors.Semantic.Nav0023AnOutgoingEdgeForTriggeroIsAlreadyDeclared,
                             existing.Name));
-
+                        // TODO Additional Locations
                         _diagnostics.Add(new Diagnostic(
                             trigger.Location,
                             DiagnosticDescriptors.Semantic.Nav0023AnOutgoingEdgeForTriggeroIsAlreadyDeclared,
