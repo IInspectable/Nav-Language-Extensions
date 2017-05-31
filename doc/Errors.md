@@ -1,42 +1,59 @@
 **Nav Language diagnostic errors**
 
 |  Id    | Category | Severity |  Message |
-|--------|----------|----------|----------| 
-|Nav0003 | Semantic| Error| Source file needs to be saved before include directives can be processed|
-|Nav0221 | Semantic| Error| Only if conditions allowed in exit transitions|
-|Nav0220 | Semantic| Error| Conditions are only supported after Init and Choice nodes|
-|Nav0202 | Semantic| Error| 'spontaneous' only allowed after view and init nodes|
-|Nav0201 | Semantic| Error| Spontaneous not allowed in signal trigger|
-|Nav0200 | Semantic| Error| Trigger not allowed after init|
-|Nav0110 | Semantic| Error| '{0}' edge not allowed here because '{1}' is reachable from init node '{2}'|
-|Nav2000 | Semantic| Error| Identifier expected|
-|Nav0105 | Semantic| Error| Exit node '{0}' must only be reached by -->|
-|Nav0104 | Semantic| Error| Choice node '{0}' must only be reached by -->|
-|Nav0103 | Semantic| Error| An init node must not contain incoming edges|
-|Nav0102 | Semantic| Error| An end node must not contain leaving edges|
-|Nav0101 | Semantic| Error| An exit node must not contain leaving edges|
-|Nav0106 | Semantic| Error| End node '{0}' must only be reached by -->|
-|Nav0026 | Semantic| Error| Trigger '{0}' is already declared|
-|Nav0025 | Semantic| Error| No outgoing edge for exit '{0}' declared|
-|Nav0024 | Semantic| Error| An outgoing edge for exit '{0}' is already declared|
-|Nav0023 | Semantic| Error| An outgoing edge for Trigger '{0}' is already declared|
-|Nav0022 | Semantic| Error| A node with the name '{0}' is already declared|
-|Nav0021 | Semantic| Error| A connection point with the name '{0}' is already declared|
-|Nav0004 | Semantic| Error| File '{0}' not found|
-|Nav0020 | Semantic| Error| A task with the name '{0}' is already declared|
-|Nav0010 | Semantic| Error| Cannot resolve task '{0}'|
-|Nav0011 | Semantic| Error| Cannot resolve node '{0}'|
-|Nav0100 | Semantic| Error| The task '{0}' must not contain leaving edges|
-|Nav0012 | Semantic| Error| Cannot resolve exit '{0}'|
-|Nav0005 | Semantic| Warning| The file '{0}' has some errors|
-|Nav0203 | Semantic| Warning| Trigger not allowed after choice|
-|Nav0117 | Semantic| Warning| The view node '{0}' has no outgoing edges|
-|Nav0113 | Semantic| Warning| The task node '{0}' has no incoming edges|
-|Nav0115 | Semantic| Warning| The dialog node '{0}' has no outgoing edges|
-|Nav0114 | Semantic| Warning| The dialog node '{0}' has no incoming edges|
-|Nav0112 | Semantic| Warning| The choice node '{0}' has no outgoing edges|
-|Nav0111 | Semantic| Warning| The choice node '{0}' has no incoming edges|
-|Nav0109 | Semantic| Warning| The init node '{0}' has no outgoing edges|
-|Nav0108 | Semantic| Warning| The end node has no incoming edges|
-|Nav0107 | Semantic| Warning| The exit node '{0}' has no incoming edges|
-|Nav0116 | Semantic| Warning| The view node '{0}' has no incoming edges|
+|--------|----------|----------|----------|
+|<a name="Nav0003">Nav0003</a> | Semantic| Error| Source file needs to be saved before include directives can be processed|
+|<a name="Nav0004">Nav0004</a> | Semantic| Error| File '{0}' not found|
+|<a name="Nav0005">Nav0005</a> | Semantic| Warning| The file '{0}' has some errors|
+|<a name="Nav0010">Nav0010</a> | Semantic| Error| Cannot resolve task '{0}'|
+|<a name="Nav0011">Nav0011</a> | Semantic| Error| Cannot resolve node '{0}'|
+|<a name="Nav0012">Nav0012</a> | Semantic| Error| Cannot resolve exit '{0}'|
+|<a name="Nav0020">Nav0020</a> | Semantic| Error| A task with the name '{0}' is already declared|
+|<a name="Nav0021">Nav0021</a> | Semantic| Error| A connection point with the name '{0}' is already declared|
+|<a name="Nav0022">Nav0022</a> | Semantic| Error| A node with the name '{0}' is already declared|
+|<a name="Nav0023">Nav0023</a> | Semantic| Error| An outgoing edge for Trigger '{0}' is already declared|
+|<a name="Nav0024">Nav0024</a> | Semantic| Error| An outgoing edge for exit '{0}' is already declared|
+|<a name="Nav0025">Nav0025</a> | Semantic| Error| No outgoing edge for exit '{0}' declared|
+|<a name="Nav0026">Nav0026</a> | Semantic| Error| Trigger '{0}' is already declared|
+|<a name="Nav0100">Nav0100</a> | Semantic| Error| The task '{0}' must not contain leaving edges|
+|<a name="Nav0101">Nav0101</a> | Semantic| Error| An exit node must not contain leaving edges|
+|<a name="Nav0102">Nav0102</a> | Semantic| Error| An end node must not contain leaving edges|
+|<a name="Nav0103">Nav0103</a> | Semantic| Error| An init node must not contain incoming edges|
+|<a name="Nav0104">Nav0104</a> | Semantic| Error| Choice node '{0}' must only be reached by -->|
+|<a name="Nav0105">Nav0105</a> | Semantic| Error| Exit node '{0}' must only be reached by -->|
+|<a name="Nav0106">Nav0106</a> | Semantic| Error| End node '{0}' must only be reached by -->|
+|<a name="Nav0107">Nav0107</a> | Semantic| Warning| The exit node '{0}' has no incoming edges|
+|<a name="Nav0108">Nav0108</a> | Semantic| Warning| The end node has no incoming edges|
+|<a name="Nav0109">Nav0109</a> | Semantic| Warning| The init node '{0}' has no outgoing edges|
+|<a name="Nav0110">Nav0110</a> | Semantic| Error| '{0}' edge not allowed here because '{1}' is reachable from init node '{2}'|
+|<a name="Nav0111">Nav0111</a> | Semantic| Warning| The choice node '{0}' has no incoming edges|
+|<a name="Nav0112">Nav0112</a> | Semantic| Warning| The choice node '{0}' has no outgoing edges|
+|<a name="Nav0113">Nav0113</a> | Semantic| Warning| The task node '{0}' has no incoming edges|
+|<a name="Nav0114">Nav0114</a> | Semantic| Warning| The dialog node '{0}' has no incoming edges|
+|<a name="Nav0115">Nav0115</a> | Semantic| Warning| The dialog node '{0}' has no outgoing edges|
+|<a name="Nav0116">Nav0116</a> | Semantic| Warning| The view node '{0}' has no incoming edges|
+|<a name="Nav0117">Nav0117</a> | Semantic| Warning| The view node '{0}' has no outgoing edges|
+|<a name="Nav0200">Nav0200</a> | Semantic| Error| Trigger not allowed after init|
+|<a name="Nav0201">Nav0201</a> | Semantic| Error| Spontaneous not allowed in signal trigger|
+|<a name="Nav0202">Nav0202</a> | Semantic| Error| 'spontaneous' only allowed after view and init nodes|
+|<a name="Nav0203">Nav0203</a> | Semantic| Warning| Trigger not allowed after choice|
+|<a name="Nav0220">Nav0220</a> | Semantic| Error| Conditions are only supported after Init and Choice nodes|
+|<a name="Nav0221">Nav0221</a> | Semantic| Error| Only if conditions allowed in exit transitions|
+|<a name="Nav1001">Nav1001</a> | DeadCode| Warning| The include directive for the file '{0}' appeared previously in this file|
+|<a name="Nav1002">Nav1002</a> | DeadCode| Warning| The using directive for '{0}' appeared previously in this file and can be safely removed|
+|<a name="Nav1003">Nav1003</a> | DeadCode| Warning| Taskref directive is not required by the code and can be safely removed|
+|<a name="Nav1005">Nav1005</a> | DeadCode| Warning| Taskref '{0}' is not required by the code and can be safely removed|
+|<a name="Nav1006">Nav1006</a> | DeadCode| Warning| The self referencing taskref directive is not required by the code and can be safely removed|
+|<a name="Nav1007">Nav1007</a> | DeadCode| Warning| The choice node '{0}' has no incoming edges|
+|<a name="Nav1008">Nav1008</a> | DeadCode| Warning| The choice node '{0}' has no outgoing edges|
+|<a name="Nav1009">Nav1009</a> | DeadCode| Warning| The choice node '{0}' is not required by the code and can be safely removed|
+|<a name="Nav1010">Nav1010</a> | DeadCode| Warning| The task node '{0}' has no incoming edges|
+|<a name="Nav1012">Nav1012</a> | DeadCode| Warning| The task node '{0}' is not required by the code and can be safely removed|
+|<a name="Nav1014">Nav1014</a> | DeadCode| Warning| The dialog node '{0}' is not required by the code and can be safely removed|
+|<a name="Nav1015">Nav1015</a> | DeadCode| Warning| The dialog node '{0}' has no incoming edges|
+|<a name="Nav1016">Nav1016</a> | DeadCode| Warning| The dialog node '{0}' has no outgoing edges|
+|<a name="Nav1017">Nav1017</a> | DeadCode| Warning| The view node '{0}' is not required by the code and can be safely removed|
+|<a name="Nav1018">Nav1018</a> | DeadCode| Warning| The view node '{0}' has no incoming edges|
+|<a name="Nav1019">Nav1019</a> | DeadCode| Warning| The view node '{0}' has no outgoing edges|
+|<a name="Nav2000">Nav2000</a> | Semantic| Error| Identifier expected|
+
