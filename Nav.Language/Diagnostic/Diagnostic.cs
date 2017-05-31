@@ -25,10 +25,14 @@ namespace Pharmatechnik.Nav.Language {
             _messageArgs        = messageArgs?? EmptyMessageArgs;            
         }
 
+        public Diagnostic(Location location, Location additionalLocation, DiagnosticDescriptor descriptor, params object[] messageArgs) 
+            : this(location, new []{ additionalLocation }, descriptor, messageArgs) {         
+        }
+
         public Diagnostic(Location location, IEnumerable<Location> additionalLocations, DiagnosticDescriptor descriptor, params object[] messageArgs) {
             Location            = location   ?? throw new ArgumentNullException(nameof(location));
             Descriptor          = descriptor ?? throw new ArgumentNullException(nameof(descriptor));
-            AdditionalLocations = additionalLocations?.ToImmutableArray() ?? EmptyAdditionalLocations;
+            AdditionalLocations = additionalLocations?.Where(loc=> loc != null).ToImmutableArray() ?? EmptyAdditionalLocations;
             _messageArgs        = messageArgs ?? EmptyMessageArgs;            
         }
 

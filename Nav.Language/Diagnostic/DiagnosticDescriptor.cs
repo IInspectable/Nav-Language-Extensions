@@ -15,12 +15,8 @@ namespace Pharmatechnik.Nav.Language {
                 throw new ArgumentException("Diagnostic id can't be null or whitespace", nameof(id));
             }
 
-            if (messageFormat==null) {
-                throw new ArgumentNullException(nameof(messageFormat));
-            }
-            
             Id              = id;
-            MessageFormat   = messageFormat;
+            MessageFormat   = messageFormat ?? throw new ArgumentNullException(nameof(messageFormat));
             Category        = category;
             DefaultSeverity = defaultSeverity;
         }
@@ -77,6 +73,10 @@ namespace Pharmatechnik.Nav.Language {
 
         public static bool operator !=(DiagnosticDescriptor left, DiagnosticDescriptor right) {
             return !Equals(left, right);
+        }
+
+        public override string ToString() {
+            return $"{Category} {DefaultSeverity} {Id} : {MessageFormat}";
         }
     }
 }

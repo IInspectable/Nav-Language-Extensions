@@ -208,15 +208,12 @@ namespace Pharmatechnik.Nav.Language {
         void AddNodeDeclaration(INodeSymbol nodeSymbol) {
 
             if (_taskDefinition.NodeDeclarations.Contains(nodeSymbol.Name)) {
+
                 var existing = _taskDefinition.NodeDeclarations[nodeSymbol.Name];
 
                 _diagnostics.Add(new Diagnostic(
-                    existing.Location,
-                    DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared,
-                    existing.Name));
-
-                _diagnostics.Add(new Diagnostic(
                     nodeSymbol.Location,
+                    existing.Location,
                     DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared,
                     nodeSymbol.Name));
             } else {
@@ -487,7 +484,7 @@ namespace Pharmatechnik.Nav.Language {
                         existing.Location, 
                         DiagnosticDescriptors.Semantic.Nav0026TriggerWithName0AlreadyDeclared, 
                         existing.Name));
-
+                    // TODO Additional Locations
                     _diagnostics.Add(new Diagnostic(trigger.Location,
                         DiagnosticDescriptors.Semantic.Nav0026TriggerWithName0AlreadyDeclared,
                         trigger.Name));

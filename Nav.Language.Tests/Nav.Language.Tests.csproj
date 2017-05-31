@@ -132,6 +132,7 @@
       <DependentUpon>SyntaxTest.tt</DependentUpon>
     </Compile>
     <Compile Include="RenameChoiceCodeFixTests.cs" />
+    <Compile Include="SemanticErrorTests.cs" />
     <Compile Include="SemanticTests.cs" />
     <Compile Include="SyntaxFactsTest.cs" />
     <Compile Include="SyntaxNodeTriviaTests.cs" />

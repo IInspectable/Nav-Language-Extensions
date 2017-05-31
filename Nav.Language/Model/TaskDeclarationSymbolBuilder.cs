@@ -252,14 +252,12 @@ namespace Pharmatechnik.Nav.Language {
 
         void AddTaskDeclaration(TaskDeclarationSymbol taskDeclaration) {
             if (_taskDeklarations.Contains(taskDeclaration.Name)) {
+
                 var existing = _taskDeklarations[taskDeclaration.Name];
-                _diagnostics.Add(new Diagnostic(
-                    existing.Location, 
-                    DiagnosticDescriptors.Semantic.Nav0020TaskWithName0AlreadyDeclared,
-                    existing.Name));
 
                 _diagnostics.Add(new Diagnostic(
                     taskDeclaration.Location,
+                    existing.Location,
                     DiagnosticDescriptors.Semantic.Nav0020TaskWithName0AlreadyDeclared,
                     taskDeclaration.Name));
 
@@ -276,14 +274,12 @@ namespace Pharmatechnik.Nav.Language {
         void AddConnectionPoint(TaskDeclarationSymbol taskDeclaration, ConnectionPointSymbol connectionPoint) {
 
             if (taskDeclaration.ConnectionPoints.Contains(connectionPoint.Name)) {
-                var existing = taskDeclaration.ConnectionPoints[connectionPoint.Name];
-                _diagnostics.Add(new Diagnostic(
-                    existing.Location,
-                    DiagnosticDescriptors.Semantic.Nav0021ConnectionPointWithName0AlreadyDeclared,
-                    existing.Name));
 
+                var existing = taskDeclaration.ConnectionPoints[connectionPoint.Name];
+     
                 _diagnostics.Add(new Diagnostic(
                     connectionPoint.Location,
+                    existing.Location,
                     DiagnosticDescriptors.Semantic.Nav0021ConnectionPointWithName0AlreadyDeclared,
                     connectionPoint.Name));
 
