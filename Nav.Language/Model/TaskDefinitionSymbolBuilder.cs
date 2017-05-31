@@ -481,13 +481,10 @@ namespace Pharmatechnik.Nav.Language {
                 if(existing != null) {
 
                     _diagnostics.Add(new Diagnostic(
+                        trigger.Location,
                         existing.Location, 
                         DiagnosticDescriptors.Semantic.Nav0026TriggerWithName0AlreadyDeclared, 
-                        existing.Name));
-                    // TODO Additional Locations
-                    _diagnostics.Add(new Diagnostic(trigger.Location,
-                        DiagnosticDescriptors.Semantic.Nav0026TriggerWithName0AlreadyDeclared,
-                        trigger.Name));
+                        existing.Name));                    
 
                 } else {
                     result.Add(trigger);
@@ -705,7 +702,7 @@ namespace Pharmatechnik.Nav.Language {
                 if (!initNode.Outgoings.Any()) {
 
                     _diagnostics.Add(new Diagnostic(
-                        initNode.Location,
+                        initNode.Alias?.Location ??  initNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0109InitNode0HasNoOutgoingEdges,
                         initNode.Name));
                 }
@@ -955,18 +952,14 @@ namespace Pharmatechnik.Nav.Language {
 
                 foreach(var trigger in trans.Triggers) {
 
-                    if(existing!=null && 
-                       trigger.Name== existing.Name) {
+                    if(existing!=null && trigger.Name== existing.Name) {
 
                         _diagnostics.Add(new Diagnostic(
-                            existing.Location,
-                            DiagnosticDescriptors.Semantic.Nav0023AnOutgoingEdgeForTriggeroIsAlreadyDeclared,
-                            existing.Name));
-                        // TODO Additional Locations
-                        _diagnostics.Add(new Diagnostic(
                             trigger.Location,
-                            DiagnosticDescriptors.Semantic.Nav0023AnOutgoingEdgeForTriggeroIsAlreadyDeclared,
-                            trigger.Name));
+                            existing.Location,
+                            DiagnosticDescriptors.Semantic.Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared,
+                            existing.Name));
+                       
                     } else {
                         triggerMap[nodeSymbol] = trigger;                       
                     }
@@ -980,13 +973,13 @@ namespace Pharmatechnik.Nav.Language {
 
                 // Eigentlich darf eine Init-Node nur genau eine initTransition haben...
                 foreach(var initTransition in initNode.Outgoings) {
-                    foreach(var reachableCalls in initTransition.GetReachableCalls()
-                                                                .Where(c => c.EdgeMode.EdgeMode != EdgeMode.Goto)) {
+                    foreach(var reachableCall in initTransition.GetReachableCalls()
+                                                               .Where(c => c.EdgeMode.EdgeMode != EdgeMode.Goto)) {
                         _diagnostics.Add(new Diagnostic(
-                            reachableCalls.EdgeMode.Location,
+                            reachableCall.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2,
-                            reachableCalls.EdgeMode.DisplayName,
-                            initTransition.Source?.Name,
+                            reachableCall.EdgeMode.DisplayName,
+                            reachableCall.Node.Name,
                             initNode.Name));
                     }
                 }

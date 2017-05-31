@@ -99,7 +99,7 @@
             /// <summary>
             /// An outgoing edge for Trigger '{0}' is already declared
             /// </summary>
-            public static readonly DiagnosticDescriptor Nav0023AnOutgoingEdgeForTriggeroIsAlreadyDeclared = new DiagnosticDescriptor(
+            public static readonly DiagnosticDescriptor Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared = new DiagnosticDescriptor(
                 id             : DiagnosticId.Nav0023,
                 messageFormat  : "An outgoing edge for Trigger '{0}' is already declared",
                 category       : Category,

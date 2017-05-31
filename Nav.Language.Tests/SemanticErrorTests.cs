@@ -178,9 +178,370 @@ namespace Nav.Language.Tests {
             ";
 
             var unit = ParseModel(nav);
-            // TODO ist das wirklcih schön, wenn wir zwei Fehlemeldungen für die selbe Ursache bekommen?
+            // TODO ist das wirklich schön, wenn wir zwei Fehlemeldungen für die selbe Ursache bekommen?
             ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0021ConnectionPointWithName0AlreadyDeclared, 2), 
                                 This(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared, 2));
+        }
+
+        [Test]
+        public void Nav0022NodeWithName0AlreadyDeclared() {
+
+            var nav = @"
+          
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+                task A;
+                
+                I1   --> e1;    
+                I1   --> A;
+                A:e1 --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared, 2));
+        }
+
+        [Test]
+        public void Nav0022NodeWithName0AlreadyDeclared_3Nodes() {
+
+            var nav = @"
+          
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+                task A;
+                task A;
+                
+                I1   --> e1;    
+                I1   --> A;
+                A:e1 --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared, 2), 
+                                This(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared, 2));
+        }
+
+        [Test]
+        public void Nav0026TriggerWithName0AlreadyDeclared() {
+
+            var nav = @"
+          
+            task A
+            {
+                init I1;            
+                exit e1;
+                view A;
+                
+                I1 --> A;
+                A  --> e1 on Foo, Foo;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0026TriggerWithName0AlreadyDeclared, 2));
+        }
+
+        [Test]
+        public void Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared() {
+
+            var nav = @"
+          
+            task A
+            {
+                init I1;            
+                exit e1;
+                view A;
+                
+                I1 --> A;
+                A  --> e1 on Foo;
+                A  --> e1 on Foo;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared, 2));
+        }
+
+        [Test]
+        public void Nav0100TaskNode0MustNotContainLeavingEdges() {
+
+            var nav = @"
+          
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+                
+                I1 --> A;
+                A --> e1;
+                A:e1 --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0100TaskNode0MustNotContainLeavingEdges));
+        }
+
+        [Test]
+        public void Nav0101ExitNodeMustNotContainLeavingEdges() {
+
+            var nav = @"
+          
+            task A
+            {
+                init I1;            
+                exit e1;
+                
+                I1 --> e1;
+                e1 --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0101ExitNodeMustNotContainLeavingEdges));
+        }
+
+        [Test]
+        [Ignore("Dieser Test funktioniert in der Praxis nicht, da er bereits zu einem Syntaxfehler führt.")]
+        public void Nav0102EndNodeMustNotContainLeavingEdges() {
+
+            var nav = @"
+          
+            task A
+            {
+                init I1;            
+                exit e1;
+                end;
+                
+                I1 --> e1;
+                end --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0102EndNodeMustNotContainLeavingEdges));
+        }
+
+        [Test]
+        public void Nav0103InitNodeMustNotContainIncomingEdges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+
+                I1   --> e1;
+                I1   --> A;
+                A:e1 --> I1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0103InitNodeMustNotContainIncomingEdges));
+        }
+
+        [Test]
+        public void Nav0104ChoiceNode0MustOnlyReachedByGoTo_OnModalEdge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                choice Choice_e1;
+
+                I1   o-> Choice_e1;
+                Choice_e1 --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0104ChoiceNode0MustOnlyReachedByGoTo));
+        }
+
+        [Test]
+        public void Nav0104ChoiceNode0MustOnlyReachedByGoTo_OnNonModalEdge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                choice Choice_e1;
+
+                I1   ==> Choice_e1;
+                Choice_e1 --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0104ChoiceNode0MustOnlyReachedByGoTo));
+        }
+
+        [Test]
+        public void Nav0105ExitNode0MustOnlyReachedByGoTo_OnModalEdge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                view V;
+
+                I1   --> V;
+                V o-> e1 on Trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo));
+        }
+
+        [Test]
+        public void Nav0105ExitNode0MustOnlyReachedByGoTo_OnNonModalEdge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                view V;
+
+                I1   --> V;
+                V ==> e1 on Trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo));
+        }
+
+        [Test]
+        public void Nav0106EndNode0MustOnlyReachedByGoTo_OnModalEdge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                end;
+                view V;
+
+                I1   --> V;
+                V o-> end on Trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0106EndNode0MustOnlyReachedByGoTo));
+        }
+
+        [Test]
+        public void Nav0106EndNode0MustOnlyReachedByGoTo_OnNonModalEdge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                end;
+                view V;
+
+                I1   --> V;
+                V ==> end on Trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0106EndNode0MustOnlyReachedByGoTo));
+        }
+
+        [Test]
+        public void Nav0107ExitNode0HasNoIncomingEdges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                view V;
+
+                I1  --> V;
+                V   --> V on Trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0107ExitNode0HasNoIncomingEdges));
+        }
+
+        [Test]
+        public void Nav0108EndNodeHasNoIncomingEdges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                end;
+                view V;
+
+                I1  --> V;
+                V   --> V on Trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0108EndNodeHasNoIncomingEdges));
+        }
+
+        [Test]
+        public void Nav0109InitNode0HasNoOutgoingEdges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                init I2;
+//              ^---- Nav0109InitNode0HasNoOutgoingEdges
+                exit e1;
+
+                I1  --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0109InitNode0HasNoOutgoingEdges));
+        }
+
+        [Test]
+        public void Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                choice Choice_e1;
+                view v1;
+
+                I1  --> Choice_e1;
+                Choice_e1 o-> v1;
+//                        ^-- Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2
+                v1 --> e1 on trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2));
         }
 
         #region Infrastructure
