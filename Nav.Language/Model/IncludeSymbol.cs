@@ -17,17 +17,9 @@ namespace Pharmatechnik.Nav.Language {
                              SymbolCollection<TaskDeclarationSymbol> taskDeklarations) 
             :base(fileName.ToLowerInvariant(), location) {
 
-            if (fileLocation == null) {
-                throw new ArgumentNullException(nameof(fileLocation));
-            }
-
-            if(syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }
-
             FileName         = fileName;
-            FileLocation     = fileLocation;
-            Syntax = syntax;
+            FileLocation     = fileLocation     ?? throw new ArgumentNullException(nameof(fileLocation));
+            Syntax           = syntax           ?? throw new ArgumentNullException(nameof(syntax));
             Diagnostics      = diagnostics      ?? new List<Diagnostic>();
             TaskDeklarations = taskDeklarations ?? new SymbolCollection<TaskDeclarationSymbol>();
         }
@@ -38,8 +30,6 @@ namespace Pharmatechnik.Nav.Language {
         public IReadOnlyList<Diagnostic> Diagnostics { get; }
         public SymbolCollection<TaskDeclarationSymbol> TaskDeklarations { get; }
         
-        IReadOnlySymbolCollection<ITaskDeclarationSymbol> IIncludeSymbol.TaskDeklarations {
-            get { return TaskDeklarations; }
-        }
+        IReadOnlySymbolCollection<ITaskDeclarationSymbol> IIncludeSymbol.TaskDeklarations => TaskDeklarations;
     }
 }
