@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Language {
                 builder._taskDefinitions,
                 builder._includes,
                 builder._symbols,
-                builder._diagnostics.ToUnique());
+                builder._diagnostics);
 
             foreach(var taskDefinition in builder._taskDefinitions) {
                 taskDefinition.FinalConstruct(model);

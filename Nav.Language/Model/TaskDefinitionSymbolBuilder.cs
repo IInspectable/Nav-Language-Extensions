@@ -86,8 +86,8 @@ namespace Pharmatechnik.Nav.Language {
             if (location == null) {
                 return;
             }
-
-            var decl = new InitNodeSymbol("Init", location, initNodeDeclarationSyntax, initNodeAlias, _taskDefinition);
+            
+            var decl = new InitNodeSymbol(SyntaxFacts.InitKeywordAlt, location, initNodeDeclarationSyntax, initNodeAlias, _taskDefinition);
 
             AddNodeDeclaration(decl);
         }
@@ -800,7 +800,7 @@ namespace Pharmatechnik.Nav.Language {
                             DiagnosticDescriptors.Semantic.Nav0113TaskNode0HasNoIncomingEdges,
                             taskNode.Name));
 
-                        if(taskNode.Outgoings.Any()) {
+                        if (taskNode.Outgoings.Any()) {
                             _diagnostics.Add(new Diagnostic(
                                 taskNode.Outgoings.First().Location,
                                 taskNode.Outgoings.Select(edge => edge.Location).Skip(1),
@@ -816,8 +816,8 @@ namespace Pharmatechnik.Nav.Language {
                         continue;
                     }
 
-                    var expectedExits = taskNode.Declaration.Exits();
-                    var actualExits = taskNode.Outgoings
+                    var expectedExits = taskNode.Declaration.Exits().OrderBy(cp => cp.Name);
+                    var actualExits   = taskNode.Outgoings
                                                 .Select(et => et.ConnectionPoint)
                                                 .Where(cp => cp != null)
                                                 .ToList();
@@ -826,20 +826,14 @@ namespace Pharmatechnik.Nav.Language {
 
                         if (!actualExits.Exists(cpRef => cpRef.Declaration == expectedExit)) {
 
-                            //_diagnostics.Add(new Diagnostic(
-                            //    taskNode.Location,
-                            //    DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
-                            //    expectedExit.Name));
-
-                            // TODO Additional Locations
-                            foreach (var targetNode in taskNode.Incomings
-                                                                 .Select(edge => edge.Target)
-                                                                 .Where(nodeReference => nodeReference != null)) {
-                                _diagnostics.Add(new Diagnostic(
-                                    targetNode.Location,
-                                    DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
-                                    expectedExit.Name));
-                            }                            
+                            _diagnostics.Add(new Diagnostic(
+                                taskNode.Location,
+                                taskNode.Incomings
+                                        .Select(edge => edge.Target)
+                                        .Where(nodeReference  => nodeReference != null)
+                                        .Select(nodeReference => nodeReference.Location),
+                                DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
+                                expectedExit.Name));                  
                         }
                     }
 
@@ -874,7 +868,7 @@ namespace Pharmatechnik.Nav.Language {
                         DiagnosticDescriptors.Semantic.Nav0114DialogNode0HasNoIncomingEdges,
                         dialogNode.Name));
 
-                    if(dialogNode.Outgoings.Any()) {
+                    if (dialogNode.Outgoings.Any()) {
                         _diagnostics.Add(new Diagnostic(
                             dialogNode.Outgoings.First().Location,
                             dialogNode.Outgoings.Select(edge => edge.Location).Skip(1),
@@ -885,11 +879,10 @@ namespace Pharmatechnik.Nav.Language {
 
                     _diagnostics.Add(new Diagnostic(
                         dialogNode.Location,
-                        //dialogNode.Incomings.Select(edge=>edge.Target?.Location).Where(l=>l!=null),
                         DiagnosticDescriptors.Semantic.Nav0115DialogNode0HasNoOutgoingEdges,
                         dialogNode.Name));
 
-                    if(dialogNode.Incomings.Any()) {
+                    if (dialogNode.Incomings.Any()) {
                         _diagnostics.Add(new Diagnostic(
                             dialogNode.Incomings.First().Location,
                             dialogNode.Incomings.Select(edge => edge.Location).Skip(1),
@@ -918,7 +911,7 @@ namespace Pharmatechnik.Nav.Language {
                         DiagnosticDescriptors.Semantic.Nav0116ViewNode0HasNoIncomingEdges,
                         viewNode.Name));
 
-                    if(viewNode.Outgoings.Any()) {
+                    if (viewNode.Outgoings.Any()) {
                         _diagnostics.Add(new Diagnostic(
                             viewNode.Outgoings.First().Location,
                             viewNode.Outgoings.Select(edge => edge.Location).Skip(1),
@@ -932,7 +925,7 @@ namespace Pharmatechnik.Nav.Language {
                         DiagnosticDescriptors.Semantic.Nav0117ViewNode0HasNoOutgoingEdges,
                         viewNode.Name));
 
-                    if(viewNode.Incomings.Any()) {
+                    if (viewNode.Incomings.Any()) {
                         _diagnostics.Add(new Diagnostic(
                             viewNode.Incomings.First().Location,
                             viewNode.Incomings.Select(edge => edge.Location).Skip(1),

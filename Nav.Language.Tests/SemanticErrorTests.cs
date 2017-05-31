@@ -700,6 +700,66 @@ namespace Nav.Language.Tests {
         }
 
         [Test]
+        public void Nav0025NoOutgoingEdgeForExit0Declared_1Edges() {
+
+            var nav = @"
+            task C {
+                init I1;
+                init I2;
+                exit e1;
+                exit e2;
+                I1 --> e1;
+                I2 --> e2;
+            }
+            task A
+            {
+                init I1; 
+                init I2;
+                exit e1;
+                task C;
+//                   ^--- Nav0113TaskNode0HasNoIncomingEdges
+                I1  --> e1;
+                I2 --> C;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared, 2),
+                                This(DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared, 2));
+        }
+
+        [Test]
+        public void Nav0025NoOutgoingEdgeForExit0Declared_2Edges() {
+
+            var nav = @"
+            task C {
+                init I1;
+                init I2;
+                exit e1;
+                exit e2;
+                I1 --> e1;
+                I2 --> e2;
+            }
+            task A
+            {
+                init I1; 
+                init I2;
+                init I3;
+                exit e1;
+                task C;
+//                   ^--- Nav0113TaskNode0HasNoIncomingEdges
+                I1  --> e1;
+                I2 --> C;
+                I3 --> C;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared, 3),
+                                This(DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared, 3));
+        }
+
+        [Test]
         public void Nav0116ViewNode0HasNoIncomingEdges_1Edge() {
 
             var nav = @"
@@ -873,7 +933,7 @@ namespace Nav.Language.Tests {
                                 This(DiagnosticDescriptors.DeadCode.Nav1016DialogNode0HasNoOutgoingEdges, 2));
         }
 
-        // TODO Nav0025NoOutgoingEdgeForExit0Declared
+        // TODO Nav0024OutgoingEdgeForExit0AlreadyDeclared
         // TODO Nav0200SignalTriggerNotAllowedAfterInit
         // TODO Nav0201SpontaneousNotAllowedInSignalTrigger
         // TODO Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
