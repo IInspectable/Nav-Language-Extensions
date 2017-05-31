@@ -1,7 +1,13 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
-using Pharmatechnik.Nav.Language;
+﻿#region Using Directives
+
 using System.Linq;
+using System.Collections.Generic;
+
+using NUnit.Framework;
+
+using Pharmatechnik.Nav.Language;
+
+#endregion
 
 namespace Nav.Language.Tests {
     [TestFixture]
@@ -543,6 +549,339 @@ namespace Nav.Language.Tests {
             var unit = ParseModel(nav);
             ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2));
         }
+
+        [Test]
+        public void Nav0111ChoiceNode0HasNoIncomingEdges_1Edge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                choice Choice_e1;
+//                     ^-- Nav0111ChoiceNode0HasNoIncomingEdges
+                view v1;
+
+                I1  --> e1;
+                Choice_e1 o-> v1;
+
+                v1 --> e1 on trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0111ChoiceNode0HasNoIncomingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1007ChoiceNode0HasNoIncomingEdges));
+        }
+
+        [Test]
+        public void Nav0111ChoiceNode0HasNoIncomingEdges_2Edges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                choice Choice_e1;
+//                     ^-- Nav0111ChoiceNode0HasNoIncomingEdges
+                view v1;
+
+                I1  --> e1;
+                Choice_e1 o-> v1;
+                Choice_e1 o-> v1;
+
+                v1 --> e1 on trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0111ChoiceNode0HasNoIncomingEdges),
+                This(DiagnosticDescriptors.DeadCode.Nav1007ChoiceNode0HasNoIncomingEdges, 2));
+        }
+
+        [Test]
+        public void Nav0112ChoiceNode0HasNoOutgoingEdges_1Edge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                choice Choice_e1;
+//                     ^-- Nav0112ChoiceNode0HasNoOutgoingEdges
+                view v1;
+
+                I1  --> Choice_e1;
+                I1  --> v1;
+                    
+                v1 --> e1 on trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1008ChoiceNode0HasNoOutgoingEdges));
+        }
+
+        [Test]
+        public void Nav0112ChoiceNode0HasNoOutgoingEdges_2Edges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                choice Choice_e1;
+//                     ^-- Nav0112ChoiceNode0HasNoOutgoingEdges
+                view v1;
+
+                I1  --> Choice_e1;
+                I1  --> Choice_e1;
+                I1  --> v1;
+                    
+                v1 --> e1 on trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges),
+                This(DiagnosticDescriptors.DeadCode.Nav1008ChoiceNode0HasNoOutgoingEdges, 2));
+        }
+
+        [Test]
+        public void Nav0113TaskNode0HasNoIncomingEdges_1Edge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                task A;
+//                   ^--- Nav0113TaskNode0HasNoIncomingEdges
+                I1  --> e1;
+                    
+                A:e1 --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0113TaskNode0HasNoIncomingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1010TaskNode0HasNoIncomingEdges));
+        }
+
+        [Test]
+        public void Nav0113TaskNode0HasNoIncomingEdges_2Edges() {
+
+            var nav = @"
+            task C {
+                init I1;
+                init I2;
+                exit e1;
+                exit e2;
+                I1 --> e1;
+                I2 --> e2;
+            }
+            task A
+            {
+                init I1;    
+                exit e1;
+                task C;
+//                   ^--- Nav0113TaskNode0HasNoIncomingEdges
+                I1  --> e1;
+                    
+                C:e1 --> e1;
+                C:e2 --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0113TaskNode0HasNoIncomingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1010TaskNode0HasNoIncomingEdges, 2));
+        }
+
+        [Test]
+        public void Nav0116ViewNode0HasNoIncomingEdges_1Edge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                view C;
+//                   ^---
+                I1  --> e1;
+                    
+                C --> e1 on t1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0116ViewNode0HasNoIncomingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1018ViewNode0HasNoIncomingEdges));
+        }
+
+        [Test]
+        public void Nav0116ViewNode0HasNoIncomingEdges_2Edges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                view C;
+//                   ^---
+                I1  --> e1;
+                    
+                C --> e1 on t1;
+                C --> e1 on t2;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0116ViewNode0HasNoIncomingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1018ViewNode0HasNoIncomingEdges, 2));
+        }
+
+        [Test]
+        public void Nav1019ViewNode0HasNoOutgoingEdges_1Edge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                init I2;
+                exit e1;
+                view C;
+//                     ^---
+                I1  --> e1;
+                I2  --> C;                    
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0117ViewNode0HasNoOutgoingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1019ViewNode0HasNoOutgoingEdges));
+        }
+
+        [Test]
+        public void Nav0117ViewNode0HasNoOutgoingEdges_2Edges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                init I2;
+                init I3;
+                exit e1;
+                view C;
+//                     ^---
+                I1  --> e1;
+                I2  --> C;             
+                I3  --> C;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0117ViewNode0HasNoOutgoingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1019ViewNode0HasNoOutgoingEdges, 2));
+        }
+        ///
+        [Test]
+        public void Nav0114DialogNode0HasNoIncomingEdges_1Edge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                dialog C;
+//                   ^---
+                I1  --> e1;
+                    
+                C --> e1 on t1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0114DialogNode0HasNoIncomingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1015DialogNode0HasNoIncomingEdges));
+        }
+
+        [Test]
+        public void Nav0114DialogNode0HasNoIncomingEdges_2Edges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;    
+                exit e1;
+                dialog C;
+//                   ^---
+                I1  --> e1;
+                    
+                C --> e1 on t1;
+                C --> e1 on t2;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0114DialogNode0HasNoIncomingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1015DialogNode0HasNoIncomingEdges, 2));
+        }
+
+        [Test]
+        public void Nav1016DialogNode0HasNoOutgoingEdges_1Edge() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                init I2;
+                exit e1;
+                dialog C;
+//                     ^---
+                I1  --> e1;
+                I2  --> C;                    
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0115DialogNode0HasNoOutgoingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1016DialogNode0HasNoOutgoingEdges));
+        }
+
+        [Test]
+        public void Nav1016DialogNode0HasNoOutgoingEdges_2Edges() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                init I2;
+                init I3;
+                exit e1;
+                dialog C;
+//                     ^---
+                I1  --> e1;
+                I2  --> C;             
+                I3  --> C;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0115DialogNode0HasNoOutgoingEdges),
+                                This(DiagnosticDescriptors.DeadCode.Nav1016DialogNode0HasNoOutgoingEdges, 2));
+        }
+
+        // TODO Nav0025NoOutgoingEdgeForExit0Declared
+        // TODO Nav0200SignalTriggerNotAllowedAfterInit
+        // TODO Nav0201SpontaneousNotAllowedInSignalTrigger
+        // TODO Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
+        // TODO Nav0203TriggerNotAllowedAfterChoice
+        // TODO Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodes
+        // TODO Nav0221OnlyIfConditionsAllowedInExitTransitions
+        // TODO Nav2000IdentifierExpected
+        // TODO Node reachable by different edges
 
         #region Infrastructure
 

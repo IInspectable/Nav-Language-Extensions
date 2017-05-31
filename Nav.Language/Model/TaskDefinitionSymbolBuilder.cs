@@ -752,10 +752,12 @@ namespace Pharmatechnik.Nav.Language {
                         choiceNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0111ChoiceNode0HasNoIncomingEdges,
                         choiceNode.Name));
-                    // TODO Additional Locations
-                    foreach (var edge in choiceNode.Outgoings) {
+
+                    if(choiceNode.Outgoings.Any()) {
+
                         _diagnostics.Add(new Diagnostic(
-                            edge.Location,
+                            choiceNode.Outgoings.First().Location,
+                            choiceNode.Outgoings.Select(edge => edge.Location).Skip(1),
                             DiagnosticDescriptors.DeadCode.Nav1007ChoiceNode0HasNoIncomingEdges,
                             choiceNode.Name));
                     }
@@ -766,13 +768,14 @@ namespace Pharmatechnik.Nav.Language {
                         choiceNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges,
                         choiceNode.Name));
-                    // TODO Additional Locations
-                    foreach (var edge in choiceNode.Incomings) {
+
+                    if(choiceNode.Incomings.Any()) {
                         _diagnostics.Add(new Diagnostic(
-                            edge.Location,
+                            choiceNode.Incomings.First().Location,
+                            choiceNode.Incomings.Select(edge => edge.Location).Skip(1),
                             DiagnosticDescriptors.DeadCode.Nav1008ChoiceNode0HasNoOutgoingEdges,
                             choiceNode.Name));
-                    }
+                    }  
                 }
             }
 
@@ -796,14 +799,14 @@ namespace Pharmatechnik.Nav.Language {
                             taskNode.Location,
                             DiagnosticDescriptors.Semantic.Nav0113TaskNode0HasNoIncomingEdges,
                             taskNode.Name));
-                        // TODO Additional Locations
-                        foreach (var edge in taskNode.Outgoings) {
+
+                        if(taskNode.Outgoings.Any()) {
                             _diagnostics.Add(new Diagnostic(
-                                edge.Location,
+                                taskNode.Outgoings.First().Location,
+                                taskNode.Outgoings.Select(edge => edge.Location).Skip(1),
                                 DiagnosticDescriptors.DeadCode.Nav1010TaskNode0HasNoIncomingEdges,
                                 taskNode.Name));
-                        }
-
+                        }                        
                     }
 
                     //==============================
@@ -823,6 +826,12 @@ namespace Pharmatechnik.Nav.Language {
 
                         if (!actualExits.Exists(cpRef => cpRef.Declaration == expectedExit)) {
 
+                            //_diagnostics.Add(new Diagnostic(
+                            //    taskNode.Location,
+                            //    DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
+                            //    expectedExit.Name));
+
+                            // TODO Additional Locations
                             foreach (var targetNode in taskNode.Incomings
                                                                  .Select(edge => edge.Target)
                                                                  .Where(nodeReference => nodeReference != null)) {
@@ -830,12 +839,7 @@ namespace Pharmatechnik.Nav.Language {
                                     targetNode.Location,
                                     DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
                                     expectedExit.Name));
-                            }
-
-                            //_diagnostics.Add(new Diagnostic(
-                            //    taskNode.Location,
-                            //    DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
-                            //    expectedExit.Name));
+                            }                            
                         }
                     }
 
@@ -869,14 +873,14 @@ namespace Pharmatechnik.Nav.Language {
                         dialogNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0114DialogNode0HasNoIncomingEdges,
                         dialogNode.Name));
-                    // TODO Additional Locations
-                    foreach (var edge in dialogNode.Outgoings) {
+
+                    if(dialogNode.Outgoings.Any()) {
                         _diagnostics.Add(new Diagnostic(
-                            edge.Location,
+                            dialogNode.Outgoings.First().Location,
+                            dialogNode.Outgoings.Select(edge => edge.Location).Skip(1),
                             DiagnosticDescriptors.DeadCode.Nav1015DialogNode0HasNoIncomingEdges,
                             dialogNode.Name));
-                    }
-
+                    }                    
                 } else if (!dialogNode.Outgoings.Any()) {
 
                     _diagnostics.Add(new Diagnostic(
@@ -884,13 +888,14 @@ namespace Pharmatechnik.Nav.Language {
                         //dialogNode.Incomings.Select(edge=>edge.Target?.Location).Where(l=>l!=null),
                         DiagnosticDescriptors.Semantic.Nav0115DialogNode0HasNoOutgoingEdges,
                         dialogNode.Name));
-                    // TODO Additional Locations
-                    foreach (var edge in dialogNode.Incomings) {
+
+                    if(dialogNode.Incomings.Any()) {
                         _diagnostics.Add(new Diagnostic(
-                            edge.Location,
+                            dialogNode.Incomings.First().Location,
+                            dialogNode.Incomings.Select(edge => edge.Location).Skip(1),
                             DiagnosticDescriptors.DeadCode.Nav1016DialogNode0HasNoOutgoingEdges,
                             dialogNode.Name));
-                    }
+                    }                    
                 }
             }
 
@@ -912,27 +917,28 @@ namespace Pharmatechnik.Nav.Language {
                         viewNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0116ViewNode0HasNoIncomingEdges,
                         viewNode.Name));
-                    // TODO Additional Locations
-                    foreach (var edge in viewNode.Outgoings) {
+
+                    if(viewNode.Outgoings.Any()) {
                         _diagnostics.Add(new Diagnostic(
-                            edge.Location,
+                            viewNode.Outgoings.First().Location,
+                            viewNode.Outgoings.Select(edge => edge.Location).Skip(1),
                             DiagnosticDescriptors.DeadCode.Nav1018ViewNode0HasNoIncomingEdges,
                             viewNode.Name));
-                    }
-
+                    }                    
                 } else if (!viewNode.Outgoings.Any()) {
 
                     _diagnostics.Add(new Diagnostic(
                         viewNode.Location,
                         DiagnosticDescriptors.Semantic.Nav0117ViewNode0HasNoOutgoingEdges,
                         viewNode.Name));
-                    // TODO Additional Locations
-                    foreach (var edge in viewNode.Incomings) {
+
+                    if(viewNode.Incomings.Any()) {
                         _diagnostics.Add(new Diagnostic(
-                            edge.Location,
+                            viewNode.Incomings.First().Location,
+                            viewNode.Incomings.Select(edge => edge.Location).Skip(1),
                             DiagnosticDescriptors.DeadCode.Nav1019ViewNode0HasNoOutgoingEdges,
                             viewNode.Name));
-                    }
+                    }                    
                 }
             }
 
