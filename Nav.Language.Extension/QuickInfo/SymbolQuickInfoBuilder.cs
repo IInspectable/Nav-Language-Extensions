@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 
 using Microsoft.VisualStudio.Imaging.Interop;
@@ -220,11 +221,21 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         public override IEnumerable<object> VisitEdgeModeSymbol(IEdgeModeSymbol edgeModeSymbol) {
 
+            // TODO Nach Edge ausrichten?
+            var lines = edgeModeSymbol.Edge
+                                      .GetReachableCalls()
+                                      .Distinct(Call.EquivalenceComparer)
+                                      .OrderBy(call => call.Node.Name)
+                                      .Select( call => $"{call.EdgeMode.Name} {call.Node.Name}")
+                                      .ToList();
+
+            var content=String.Join("\n", lines);
+
             var control = new SymbolQuickInfoControl();
             control.CrispImage.Moniker = ImageMonikers.FromSymbol(edgeModeSymbol);
-            control.TextContent.Content = edgeModeSymbol.DisplayName;
+            control.TextContent.Content = content;
 
             yield return control;
-        }
+        }        
     }
 }
