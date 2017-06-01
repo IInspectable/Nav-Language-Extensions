@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using Fclp;
+using NDesk.Options;
 
 #endregion
 
@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public string Directory { get; set; }
-        public List<string> Sources { get; private set; }
+        public List<string> Sources { get; }
         public bool Force { get; set; }
         public bool GenerateToClasses { get; set; }
         public bool UseSyntaxCache { get; set; }
@@ -26,34 +26,41 @@ namespace Pharmatechnik.Nav.Language {
 
         public static CommandLine Parse(string[] commandline) {
 
-            var clp = new FluentCommandLineParser<CommandLine>();
+            bool showHelp = false;
+            CommandLine cla = new CommandLine();
+            var p = new OptionSet {
+                { "d=|directory="       , "Help for dir", v => cla.Directory = v  },
+                { "s=|sources="         , v => cla.Sources.Add(v)  },
+                { "f|force"             , v => cla.Force   = v != null  },
+                { "t|generatetoclasses" , v => cla.GenerateToClasses   = v != null },
+                { "c|useSyntaxCache"    , v => cla.UseSyntaxCache   = v != null },
+                { "v|verbose"           , v => cla.Verbose = v != null },
+                { "fullpaths"           , v => cla.FullPaths = v != null },
+                { "h|?|help"            , v => showHelp = v != null },
+            };
 
-            clp.Setup(i => i.Directory)        .As('d', "directory")        .WithDescription("Directory to search for nav files");
-            clp.Setup(i => i.Sources)          .As('s', "sources");
-            clp.Setup(i => i.Force)            .As('f', "force")            .SetDefault(false);
-            clp.Setup(i => i.GenerateToClasses).As('t', "generatetoclasses").SetDefault(true);
-            clp.Setup(i => i.UseSyntaxCache)   .As('c', "useSyntaxCache")   .SetDefault(false);
-            clp.Setup(i => i.Verbose)          .As('v', "verbose")          .SetDefault(false);
-            clp.Setup(i => i.FullPaths)        .As(     "fullpaths")        .SetDefault(false);
-            // Analyze parameter
-            clp.Setup(i => i.Analyze)          .As('a', nameof(Analyze)).SetDefault(false);
-            clp.Setup(i => i.Pattern)          .As('p', nameof(Pattern)).SetDefault("*");
-
-            clp.SetupHelp("?", "help").Callback(text => Console.WriteLine(text)); 
-
-            var result = clp.Parse(commandline);
-            if (result.HasErrors) {
-                Console.Error.WriteLine($"Unable to parse command line:\n{result.ErrorText}");
+            try {
+                p.Parse(commandline);
+            } catch (OptionException e) {
+                Console.Error.WriteLine("nav.exe: ");
+                Console.Error.WriteLine(e.Message);
+                Console.Error.WriteLine("Try 'nav.exe --help' for more information.");
                 return null;
             }
 
-            if (result.HelpCalled) {
+            if (showHelp) {
+                ShowHelp(p);
                 return null;
             }
 
-            CommandLine cla = clp.Object;
-
-            return cla;
+            return cla;          
+        }
+        // TODO Helptext
+        static void ShowHelp(OptionSet p) {
+            Console.WriteLine("Usage: nav.exe [OPTIONS]+");            
+            Console.WriteLine();
+            Console.WriteLine("Options:");
+            p.WriteOptionDescriptions(Console.Out);
         }
     }
 }

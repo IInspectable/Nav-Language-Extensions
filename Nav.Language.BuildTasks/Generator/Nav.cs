@@ -32,12 +32,12 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
             var clb = new CommandLineBuilder();
 
-            clb.AppendSwitchIfPresent(GenerateToClasses, "-t");
-            clb.AppendSwitchIfPresent(Force, "-f");
-            clb.AppendSwitchIfPresent(UseSyntaxCache, "-c");
-            clb.AppendSwitchIfPresent(FullPaths, "--fullpaths");
-            clb.AppendSwitch("-v");                          
-            clb.AppendSwitchIfNotNull("--sources ", Sources, " ");
+            clb.AppendSwitchIfPresent(GenerateToClasses, "/t");
+            clb.AppendSwitchIfPresent(Force, "/f");
+            clb.AppendSwitchIfPresent(UseSyntaxCache, "/c");
+            clb.AppendSwitchIfPresent(FullPaths, "/fullpaths");
+            clb.AppendSwitch("/v");                          
+            clb.AppendSwitchIfNotNull("/s:", Sources, " /s:");
             
             return clb.ToString();
         }
