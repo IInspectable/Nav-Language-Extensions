@@ -396,6 +396,27 @@ namespace Nav.Language.Tests {
         }
 
         [Test]
+        public void Nav0104ChoiceNode0MustOnlyReachedByGoTo_OnExitTransition() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+                choice Choice_e1;
+
+                I1   --> A;
+                A:e1 o-> Choice_e1;
+                Choice_e1 --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0104ChoiceNode0MustOnlyReachedByGoTo));
+        }
+
+        [Test]
         public void Nav0105ExitNode0MustOnlyReachedByGoTo_OnModalEdge() {
 
             var nav = @"
@@ -407,6 +428,25 @@ namespace Nav.Language.Tests {
 
                 I1   --> V;
                 V o-> e1 on Trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo));
+        }
+
+        [Test]
+        public void Nav0105ExitNode0MustOnlyReachedByGoTo_OnExitTransition() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+
+                I1   --> A;
+                A:e1 o-> e1;
             }
             ";
 
@@ -464,6 +504,30 @@ namespace Nav.Language.Tests {
 
                 I1   --> V;
                 V ==> end on Trigger;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0106EndNode0MustOnlyReachedByGoTo));
+        }
+
+        [Test]
+        public void Nav0106EndNode0MustOnlyReachedByGoTo_OnExitTransition() {
+
+            var nav = @"
+            task C{
+                init I1;            
+                exit e1;
+                I1 --> e1;
+            }
+            task A
+            {
+                init I1;            
+                end;
+                task C;
+
+                I1   --> C;
+                C:e1 o-> end;
             }
             ";
 

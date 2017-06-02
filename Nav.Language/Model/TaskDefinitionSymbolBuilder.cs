@@ -671,7 +671,36 @@ namespace Pharmatechnik.Nav.Language {
             //==============================
             // Edge Errors
             //==============================
-            if(exitTransition.EdgeMode != null) {
+            if (exitTransition.EdgeMode != null)
+            {
+
+                if (exitTransition.EdgeMode.EdgeMode != EdgeMode.Goto)
+                {
+
+                    if (exitTransition.Target?.Declaration is ChoiceNodeSymbol)
+                    {
+                        _diagnostics.Add(new Diagnostic(
+                            exitTransition.EdgeMode.Location,
+                            DiagnosticDescriptors.Semantic.Nav0104ChoiceNode0MustOnlyReachedByGoTo,
+                            exitTransition.Target.Name));
+                    }
+
+                    if (exitTransition.Target?.Declaration is ExitNodeSymbol)
+                    {
+                        _diagnostics.Add(new Diagnostic(
+                            exitTransition.EdgeMode.Location,
+                            DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo,
+                            exitTransition.Target.Name));
+                    }
+
+                    if (exitTransition.Target?.Declaration is EndNodeSymbol)
+                    {
+                        _diagnostics.Add(new Diagnostic(
+                            exitTransition.EdgeMode.Location,
+                            DiagnosticDescriptors.Semantic.Nav0106EndNode0MustOnlyReachedByGoTo,
+                            exitTransition.Target.Name));
+                    }
+                }
             }
 
             //==============================
