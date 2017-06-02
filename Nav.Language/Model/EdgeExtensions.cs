@@ -7,7 +7,11 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language {
     public static class EdgeExtensions {
-        
+
+        public static IEnumerable<Call> GetDistinctReachableCalls(this IEdge edge) {
+            return edge.GetReachableCalls().Distinct(Call.EquivalenceComparer);
+        }
+
         public static IEnumerable<Call> GetReachableCalls(this IEdge edge, HashSet<IEdge> seenEdges = null) {
 
             seenEdges = seenEdges ?? new HashSet<IEdge>();

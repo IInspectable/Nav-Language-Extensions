@@ -7,9 +7,13 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language {
     public static class NodeExtensions {
-        public static IEnumerable<Call> GetReachableCalls(this ITaskNodeSymbol node, HashSet<IEdge> seenEdges = null) {
-            seenEdges = seenEdges ?? new HashSet<IEdge>();
-            return node.Outgoings.SelectMany(edge => edge.GetReachableCalls(seenEdges));
+
+        public static IEnumerable<Call> GetDistinctReachableCalls(this ITaskNodeSymbol node) {
+            return node.Outgoings.SelectMany(edge => edge.GetDistinctReachableCalls());
+        }
+
+        public static IEnumerable<Call> GetReachableCalls(this ITaskNodeSymbol node) {
+            return node.Outgoings.SelectMany(edge => edge.GetReachableCalls());
         }
     }
 }

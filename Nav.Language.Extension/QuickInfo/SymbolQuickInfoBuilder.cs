@@ -221,21 +221,47 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         public override IEnumerable<object> VisitEdgeModeSymbol(IEdgeModeSymbol edgeModeSymbol) {
 
-            // TODO Nach Edge ausrichten?
-            var lines = edgeModeSymbol.Edge
-                                      .GetReachableCalls()
-                                      .Distinct(Call.EquivalenceComparer)
-                                      .OrderBy(call => call.Node.Name)
-                                      .Select( call => $"{call.EdgeMode.Name} {call.Node.Name}")
-                                      .ToList();
+            var edgeViewModel = new EdgeViewModel(
+                moniker: ImageMonikers.Edge,
+                calls  : edgeModeSymbol.Edge
+                                       .GetDistinctReachableCalls()
+                                       .OrderBy(call => call.Node.Name)
+                                       .Select(call => new CallViewModel(
+                                           edgeModeMoniker: ImageMonikers.FromSymbol(call.EdgeMode),
+                                           nodeMoniker    : ImageMonikers.FromSymbol(call.Node),
+                                           content        : SyntaxQuickinfoBuilderService.ToTextBlock(call.Node.Name, SyntaxTokenClassification.Identifier
+            ))));
 
-            var content=String.Join("\n", lines);
-
-            var control = new SymbolQuickInfoControl();
-            control.CrispImage.Moniker = ImageMonikers.FromSymbol(edgeModeSymbol);
-            control.TextContent.Content = content;
+            var control = new EdgeQuickInfoControl {
+                DataContext = edgeViewModel
+            };
 
             yield return control;
         }        
+    }
+    
+    class CallViewModel {
+
+        public CallViewModel(ImageMoniker edgeModeMoniker, ImageMoniker nodeMoniker, object content) {
+            EdgeModeMoniker = edgeModeMoniker;
+            NodeMoniker = nodeMoniker;
+            Content = content;
+        }
+
+        public ImageMoniker EdgeModeMoniker { get; }
+        public ImageMoniker NodeMoniker { get; }
+        public object Content { get; }
+
+    }
+
+    class EdgeViewModel {
+
+        public EdgeViewModel(ImageMoniker moniker, IEnumerable<CallViewModel> calls) {
+            Moniker = moniker;
+            Calls   = new List<CallViewModel>(calls);
+        }
+
+        public ImageMoniker Moniker { get; }
+        public IReadOnlyList<CallViewModel> Calls { get; }
     }
 }

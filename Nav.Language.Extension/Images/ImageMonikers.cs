@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Imaging.Interop;
@@ -13,9 +14,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
     public static class ImageMonikers {
 
-        public static ImageMoniker ProjectNode {
-            get { return KnownMonikers.CSProjectNode; }
-        }
+        public static ImageMoniker ProjectNode => KnownMonikers.CSProjectNode;
+
+        static readonly Guid CustomMonikerGuid = new Guid("{11e9628b-b9e6-45d6-ae8d-b4440be46fa6}");
 
         #region CodeFixImpact
 
@@ -36,21 +37,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         #region Analysis
 
-        public static ImageMoniker WaitingForAnalysis {
-            get { return KnownMonikers.Loading; }
-        }
-
-        public static ImageMoniker AnalysisOK {
-            get { return KnownMonikers.StatusOK; }
-        }
-
-        public static ImageMoniker AnalysisWarning {
-            get { return KnownMonikers.StatusWarning; }
-        }
-
-        public static ImageMoniker AnalysisError {
-            get { return KnownMonikers.StatusError; }
-        }
+        public static ImageMoniker WaitingForAnalysis => KnownMonikers.Loading;
+        public static ImageMoniker AnalysisOK         => KnownMonikers.StatusOK;
+        public static ImageMoniker AnalysisWarning    => KnownMonikers.StatusWarning;
+        public static ImageMoniker AnalysisError      => KnownMonikers.StatusError;
 
         #endregion
 
@@ -59,112 +49,55 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         /// <summary>
         /// Nav file --> C# file
         /// </summary>
-        public static ImageMoniker GoToDeclaration {
-            get { return KnownMonikers.GoToDefinition; }
-        }
+        public static ImageMoniker GoToDeclaration     => KnownMonikers.GoToDefinition;
 
         /// <summary>
         /// C# file --> Nav file
         /// </summary>
-        public static ImageMoniker GoToDefinition {
-            get { return KnownMonikers.GoToDeclaration; }
-        }
-
-        public static ImageMoniker Include {
-            get { return KnownMonikers.ClassFile; }
-        }
-
-        public static ImageMoniker GoToNodeDeclaration {
-            get { return KnownMonikers.GoToReference; }
-        }
-
-        public static ImageMoniker GoToMethodPublic {
-            get { return KnownMonikers.MethodPublic; }
-        }
-
-        public static ImageMoniker GoToClassPublic {
-            get { return KnownMonikers.ClassPublic; }
-        }
-
-        public static ImageMoniker GoToInterfacePublic {
-            get { return KnownMonikers.InterfacePublic; }
-        }
-
-        public static ImageMoniker CSharpFile {
-            get { return KnownMonikers.CSFileNode; }
-        }
+        public static ImageMoniker GoToDefinition      => KnownMonikers.GoToDeclaration;
+        public static ImageMoniker Include             => KnownMonikers.ClassFile;
+        public static ImageMoniker GoToNodeDeclaration => KnownMonikers.GoToReference;
+        public static ImageMoniker GoToMethodPublic    => KnownMonikers.MethodPublic;
+        public static ImageMoniker GoToClassPublic     => KnownMonikers.ClassPublic;
+        public static ImageMoniker GoToInterfacePublic => KnownMonikers.InterfacePublic;
+        public static ImageMoniker CSharpFile          => KnownMonikers.CSFileNode;
 
         #endregion
 
         #region Symbols
         
-        static IImageHandle _taskDeclarationImageHandle;
+        static IImageHandle TaskDeclarationImageHandle;
 
         public static ImageMoniker TaskDeclaration {
             get {
 
-                if (_taskDeclarationImageHandle == null) {
+                if (TaskDeclarationImageHandle == null) {
 
-                    _taskDeclarationImageHandle = GetCompositedImageHandle(
+                    TaskDeclarationImageHandle = GetCompositedImageHandle(
                         CreateLayer(TaskDefinition),
                         CreateLayer(KnownMonikers.ReferencedElement));
                 }
 
-                return _taskDeclarationImageHandle.Moniker;
+                return TaskDeclarationImageHandle.Moniker;
             }
         }
 
-        public static ImageMoniker InitConnectionPoint {
-            get { return KnownMonikers.InputPin; }
-        }
-
-        public static ImageMoniker ExitConnectionPoint {
-            get { return KnownMonikers.OutputPin; }
-        }
-
-        public static ImageMoniker EndConnectionPoint {
-            get { return KnownMonikers.ActivityFinalNode; }
-        }
-
-        public static ImageMoniker TaskDefinition {
-            get { return KnownMonikers.ActivityDiagram; }
-        }
-
-        public static ImageMoniker InitNode {
-            get { return KnownMonikers.InputPin; }
-        }
-
-        public static ImageMoniker ExitNode {
-            get { return KnownMonikers.OutputPin; }
-        }
-
-        public static ImageMoniker EndNode {
-            get { return KnownMonikers.ActivityFinalNode; }
-        }
-
-        public static ImageMoniker TaskNode {
-            get { return KnownMonikers.ActivityDiagram; }
-        }
-
-        public static ImageMoniker ChoiceNode {
-            get { return KnownMonikers.DecisionNode; }
-        }
-
-        public static ImageMoniker ViewNode {
-            get { return KnownMonikers.WindowsForm; }
-        }
-
-        public static ImageMoniker DialogNode {
-            get { return KnownMonikers.Dialog; }
-        }
-
-        public static ImageMoniker SignalTrigger {
-            get { return KnownMonikers.EventTrigger; }
-        }
-
-        public static ImageMoniker Edge {
-            get { return KnownMonikers.AssociationRelationship; }
-        }
+        public static ImageMoniker InitConnectionPoint => KnownMonikers.InputPin;
+        public static ImageMoniker ExitConnectionPoint => KnownMonikers.OutputPin;
+        public static ImageMoniker EndConnectionPoint  => KnownMonikers.ActivityFinalNode;
+        public static ImageMoniker TaskDefinition      => KnownMonikers.ActivityDiagram;
+        public static ImageMoniker InitNode            => KnownMonikers.InputPin;
+        public static ImageMoniker ExitNode            => KnownMonikers.OutputPin;
+        public static ImageMoniker EndNode             => KnownMonikers.ActivityFinalNode;
+        public static ImageMoniker TaskNode            => KnownMonikers.ActivityDiagram;
+        public static ImageMoniker ChoiceNode          => KnownMonikers.DecisionNode;
+        public static ImageMoniker ViewNode            => KnownMonikers.WindowsForm;
+        public static ImageMoniker DialogNode          => KnownMonikers.Dialog;
+        public static ImageMoniker SignalTrigger       => KnownMonikers.EventTrigger;
+        public static ImageMoniker Edge                => KnownMonikers.AssociationRelationship;        
+        public static ImageMoniker ModalEdge           => new ImageMoniker { Guid = CustomMonikerGuid, Id = 1 };
+        public static ImageMoniker NonModalEdge        => new ImageMoniker { Guid = CustomMonikerGuid, Id = 2 };
+        public static ImageMoniker GoToEdge            => new ImageMoniker { Guid = CustomMonikerGuid, Id = 3 };
 
         public static ImageMoniker FromSymbol(ISymbol symbol) {
             return SymbolImageMonikerFinder.FindImageMoniker(symbol);
@@ -194,7 +127,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             }
 
             public override ImageMoniker VisitEdgeModeSymbol(IEdgeModeSymbol edgeModeSymbol) {
-                return Edge;
+                switch(edgeModeSymbol.EdgeMode) {
+
+                    case EdgeMode.Modal:
+                        return ModalEdge;
+                    case EdgeMode.NonModal:
+                        return NonModalEdge;
+                    case EdgeMode.Goto:
+                        return GoToEdge;
+                    default:
+                        return Edge;
+                }                
             }
 
             #region ConnectionPoints
@@ -274,29 +217,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         #region Actions
 
-        public static ImageMoniker AddEdge {
-            get { return KnownMonikers.AddAssociation; }
-        }
+        public static ImageMoniker AddEdge => KnownMonikers.AddAssociation;
 
-        public static ImageMoniker RenameNode {
-            get { return KnownMonikers.Rename; }
-        }
+        public static ImageMoniker RenameNode => KnownMonikers.Rename;
 
-        public static ImageMoniker InsertNode {
-            get { return KnownMonikers.InsertClause; }
-        }
+        public static ImageMoniker InsertNode => KnownMonikers.InsertClause;
 
-        public static ImageMoniker DeleteQuotationMarks {
-            get { return KnownMonikers.PendingDeleteNode; }
-        }
+        public static ImageMoniker DeleteQuotationMarks => KnownMonikers.PendingDeleteNode;
 
-        public static ImageMoniker RemoveUnusedSymbol {
-            get { return KnownMonikers.PendingDeleteNode; }
-        }
+        public static ImageMoniker RemoveUnusedSymbol => KnownMonikers.PendingDeleteNode;
 
-        public static ImageMoniker AddSemicolon {
-            get { return KnownMonikers.PendingAddNode; }
-        }
+        public static ImageMoniker AddSemicolon => KnownMonikers.PendingAddNode;
 
         #endregion
 

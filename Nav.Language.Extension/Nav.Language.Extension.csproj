@@ -196,6 +196,9 @@
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\WeakListenerManager.cs" />
     <Compile Include="Images\ImageMonikers.cs" />
+    <Compile Include="QuickInfo\EdgeQuickInfoControl.xaml.cs">
+      <DependentUpon>EdgeQuickInfoControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StatementCompletion\CompletionCommandHandler.cs" />
     <Compile Include="StatementCompletion\CompletionCommandHandlerProvider.cs" />
     <Compile Include="StatementCompletion\CompletionSource.cs" />
@@ -315,6 +318,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="app.config" />
+    <Content Include="Icons.imagemanifest">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -326,6 +332,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\Icons\GoTo.16.16.png" />
     <Content Include="Resources\Icons\Scratch.txt" />
     <Content Include="Resources\Preview.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -612,9 +619,25 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="QuickInfo\EdgeQuickInfoControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="QuickInfo\SymbolQuickInfoControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Icons\ModalEdge.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Icons\NonModalEdge.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Resources\Icons\GoToEdge.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
