@@ -228,7 +228,8 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
                                        .OrderBy(call => call.Node.Name)
                                        .Select(call => new CallViewModel(
                                            edgeModeMoniker: ImageMonikers.FromSymbol(call.EdgeMode),
-                                           nodeMoniker    : ImageMonikers.FromSymbol(call.Node),
+                                           verb           : GetVerb(call.EdgeMode),
+                                           nodeMoniker    : ImageMonikers.FromSymbol(call.Node),                                           
                                            content        : SyntaxQuickinfoBuilderService.ToTextBlock(call.Node.Name, SyntaxTokenClassification.Identifier
             ))));
 
@@ -237,18 +238,34 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             };
 
             yield return control;
-        }        
+        }
+
+        string GetVerb(IEdgeModeSymbol callEdgeMode) {
+            switch(callEdgeMode.EdgeMode) {
+
+                case EdgeMode.Modal:
+                    return "modal";
+                case EdgeMode.NonModal:
+                    return "non-modal";
+                case EdgeMode.Goto:
+                    return "go to";
+                default:
+                    return "";
+            }
+        }
     }
     
     class CallViewModel {
 
-        public CallViewModel(ImageMoniker edgeModeMoniker, ImageMoniker nodeMoniker, object content) {
+        public CallViewModel(ImageMoniker edgeModeMoniker, string verb, ImageMoniker nodeMoniker, object content) {
             EdgeModeMoniker = edgeModeMoniker;
+            Verb = verb;
             NodeMoniker = nodeMoniker;
             Content = content;
         }
 
         public ImageMoniker EdgeModeMoniker { get; }
+        public string Verb { get; }
         public ImageMoniker NodeMoniker { get; }
         public object Content { get; }
 
