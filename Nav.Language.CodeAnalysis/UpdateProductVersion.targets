@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Code Analysis</ProductName>
-    <ProductVersion>3.0.94</ProductVersion>
+    <ProductVersion>3.0.95</ProductVersion>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyInfoFile>$(MSBuildProjectDirectory)\ThisAssembly.generated.cs</AssemblyInfoFile>
