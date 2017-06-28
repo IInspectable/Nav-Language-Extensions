@@ -39,9 +39,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return NodeReference.Type == NodeReferenceType.Target &&
                    NodeReference.Declaration   != null &&
                    NodeReference.Edge.Source   != null &&
-                   NodeReference.Edge.EdgeMode != null &&
-                 !(NodeReference.Declaration is IChoiceNodeSymbol) &&
-                 !(NodeReference.Edge.Source.Declaration is IChoiceNodeSymbol);
+                   NodeReference.Edge.EdgeMode != null;
         }
 
         public string ValidateChoiceName(string choiceName) {     
