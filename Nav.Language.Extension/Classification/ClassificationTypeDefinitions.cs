@@ -257,7 +257,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         internal sealed class ConnectionPointClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public ConnectionPointClassificationFormatDefinition() {
-                IsItalic = true;
+                // IsItalic = true;
                 IsBold   = true;
             }
         }
