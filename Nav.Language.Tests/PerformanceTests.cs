@@ -1,9 +1,13 @@
+#region Using Directives
+
 using System;
-using System.Diagnostics;
 using System.Linq;
-using Nav.Language.Tests.Properties;
+using System.Diagnostics;
+
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
+
+#endregion
 
 namespace Nav.Language.Tests {
 
@@ -11,7 +15,7 @@ namespace Nav.Language.Tests {
     public class PerformanceTests {
 
         [Test]
-        [Ignore("Schlägt auf lahmen Buildserven zu oft fehl.")]
+        //[Ignore("Schlägt auf lahmen Buildserven zu oft fehl.")]
         public void TestPerformance() {
             
             string s = Resources.LargeNav;

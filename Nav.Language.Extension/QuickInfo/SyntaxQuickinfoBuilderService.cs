@@ -62,7 +62,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             return textBlock;
         }
 
-        public TextBlock ToTextBlock(SignalTriggerCodeModel codeModel) {
+        public TextBlock ToTextBlock(SignalTriggerCodeInfo codeInfo) {
 
             var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
             var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
@@ -72,10 +72,10 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             //var nsRun = ToRun(codeModel.WflNamespace+".", SyntaxTokenClassification.Identifier, formatMap);
             //textBlock.Inlines.Add(nsRun);
 
-            var typeRun = ToRun(codeModel.TaskCodeModel.WfsTypeName, SyntaxTokenClassification.TaskName, formatMap);
+            var typeRun = ToRun(codeInfo.Task.WfsTypeName, SyntaxTokenClassification.TaskName, formatMap);
             textBlock.Inlines.Add(typeRun);
 
-            var methodRun = ToRun("."+ codeModel.TriggerLogicMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
+            var methodRun = ToRun("."+ codeInfo.TriggerLogicMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
             textBlock.Inlines.Add(methodRun);
 
             return textBlock;

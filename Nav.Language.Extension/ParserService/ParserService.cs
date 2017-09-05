@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
         static readonly object ParseMethodKey = new Object();
         readonly IDisposable _parserObs;
-        ParseResult _parseResult;
+        SyntaxTreeAndSnapshot _syntaxTreeAndSnapshot;
         bool _waitingForAnalysis;
 
         ParserService(ITextBuffer textBuffer) {
@@ -39,7 +39,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
                                    .Throttle(ServiceProperties.ParserServiceThrottleTime)
                                    .Select( args => Observable.DeferAsync(async token => 
                                        {
-                                           var parseResult = await BuildResultAsync(args, token).ConfigureAwait(false);
+                                           var parseResult = await BuildAsync(args, token).ConfigureAwait(false);
 
                                            return Observable.Return(parseResult);
                                        }))
@@ -69,8 +69,8 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
         [CanBeNull]
-        public ParseResult ParseResult {
-            get { return _parseResult; }           
+        public SyntaxTreeAndSnapshot SyntaxTreeAndSnapshot {
+            get { return _syntaxTreeAndSnapshot; }           
         }
         
         public static ParseMethod GetParseMethod(ITextBuffer textBuffer) {
@@ -79,15 +79,15 @@ namespace Pharmatechnik.Nav.Language.Extension {
             return parseMethod ?? Syntax.ParseCodeGenerationUnit;
         }
 
-        public static TextBufferScopedValue<ParserService> GetOrCreateSingelton(ITextBuffer textBuffer) {
-            return TextBufferScopedValue<ParserService>.GetOrCreate(
-                textBuffer, 
+        public static ParserService GetOrCreateSingelton(ITextBuffer textBuffer) {
+            return textBuffer.Properties.GetOrCreateSingletonProperty(
                 typeof(ParserService), 
                 () => new ParserService(textBuffer));
         }
 
         public static ParserService TryGet(ITextBuffer textBuffer) {
-            return TextBufferScopedValue<ParserService>.TryGet(textBuffer, typeof(ParserService));
+            textBuffer.Properties.TryGetProperty< ParserService>(typeof(ParserService), out var parserService);
+            return parserService;
         }
         
         public static void SetParseMethod(ITextBuffer textBuffer, ParseMethod parseMethod) {
@@ -97,6 +97,18 @@ namespace Pharmatechnik.Nav.Language.Extension {
         public void Invalidate() {
             OnParseResultChanging(EventArgs.Empty);
             OnRebuildTriggered(EventArgs.Empty);
+        }
+
+        public SyntaxTreeAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default(CancellationToken)) {
+            var syntaxTreeAndSnapshot = SyntaxTreeAndSnapshot;
+            if (syntaxTreeAndSnapshot!=null && syntaxTreeAndSnapshot.IsCurrent(TextBuffer)) {
+                return syntaxTreeAndSnapshot;
+            }
+
+            syntaxTreeAndSnapshot = BuildSynchronously(CreateBuildResultArgs(), cancellationToken);
+            TrySetResult(syntaxTreeAndSnapshot);
+
+            return syntaxTreeAndSnapshot;
         }
 
         void OnRebuildTriggered(EventArgs e) {
@@ -138,35 +150,35 @@ namespace Pharmatechnik.Nav.Language.Extension {
         /// Achtung: Diese Methode wird bereits in einem Background Thread aufgerufen. Also vorischt bzgl. thread safety!
         /// Deshalb werden die BuildResultArgs bereits vorab im GUI Thread erstellt.
         /// </summary>
-        static async Task<ParseResult> BuildResultAsync(BuildResultArgs args, CancellationToken cancellationToken) {
+        static async Task<SyntaxTreeAndSnapshot> BuildAsync(BuildResultArgs args, CancellationToken cancellationToken) {
             
             return await Task.Run(() => {
 
-                using(Logger.LogBlock(nameof(BuildResultAsync))) {
-
-                    var syntaxTree = args.ParseMethod(args.Text, args.FilePath, cancellationToken).SyntaxTree;
-
-                    return new ParseResult(syntaxTree, args.Snapshot);
+                using(Logger.LogBlock(nameof(BuildAsync))) {
+                    return BuildSynchronously(args, cancellationToken);
                 }
 
             }, cancellationToken).ConfigureAwait(false);            
         }
-        
-        void TrySetResult(ParseResult parseResult) {
+
+        static SyntaxTreeAndSnapshot BuildSynchronously(BuildResultArgs args, CancellationToken cancellationToken) {
+
+            var syntaxTree = args.ParseMethod(args.Text, args.FilePath, cancellationToken).SyntaxTree;
+
+            return new SyntaxTreeAndSnapshot(syntaxTree, args.Snapshot);
+        }
+
+        void TrySetResult(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot) {
 
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
             // da bereits ein neues berechnet wird.
-            if (TextBuffer.CurrentSnapshot != parseResult.Snapshot) {
-                if (!WaitingForAnalysis) {
-                    // Dieser Fall sollte eigentlich nicht eintreten, denn es muss bereits eine neue Berechnung angetriggert worden sein
-                    Invalidate();
-                }
+            if (!syntaxTreeAndSnapshot.IsCurrent(TextBuffer)) {
                 return;
             }
 
-            _parseResult = parseResult;
+            _syntaxTreeAndSnapshot = syntaxTreeAndSnapshot;
 
-            var snapshotSpan = parseResult.Snapshot.GetFullSpan();
+            var snapshotSpan = syntaxTreeAndSnapshot.Snapshot.GetFullSpan();
             OnParseResultChanged(new SnapshotSpanEventArgs(snapshotSpan));
         }
         

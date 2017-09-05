@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.BeginWrapperCodeModel" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAQAAAAQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\BeginWrapperCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.BeginWrapperCtor" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>CodeGen\CodeModel\BeginWrapperCtor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.CallCodeModel" Collapsed="true">
+    <Position X="10.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQQAAAAAAAABAAAAAAAABAA=</HashCode>
+      <FileName>CodeGen\CodeModel\CallCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.ExitCallCodeModel" Collapsed="true">
+    <Position X="11.75" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\CallCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.EndCallCodeModel" Collapsed="true">
+    <Position X="14" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\CallCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.TaskCallCodeModel" Collapsed="true">
+    <Position X="7" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\CallCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.GuiCallCodeModel" Collapsed="true">
+    <Position X="9.25" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\CallCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.CallCodeModelBuilder" Collapsed="true">
+    <Position X="8.75" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAUAAAAgAAAAAAgAABAU=</HashCode>
+      <FileName>CodeGen\CodeModel\CallCodeModelBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.CodeModel" Collapsed="true">
+    <Position X="16.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\CodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.CodeModelBuilder" Collapsed="true">
+    <Position X="36.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAIAAAAAAAAAAAABAAABAACAA=</HashCode>
+      <FileName>CodeGen\CodeModel\CodeModelBuilder.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.ExitTransitionCodeModel" Collapsed="true">
+    <Position X="20.5" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAEAAIAAAAAAYAAEAAAAAAAAAAAAAAAAAAAAAAAQAAE=</HashCode>
+      <FileName>CodeGen\CodeModel\ExitTransitionCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.FieldCodeModel" Collapsed="true">
+    <Position X="5" Y="3.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\FieldCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.FileGenerationCodeModel" Collapsed="true">
+    <Position X="16" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAEBAAAAAAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\FileGenerationCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.IBeginWfsCodeModel" Collapsed="true">
+    <Position X="20.75" Y="6" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAhAAAAAAAAAAAIAAAAAAAAAAAABA=</HashCode>
+      <FileName>CodeGen\CodeModel\IBeginWfsCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.InitTransitionCodeModel" Collapsed="true">
+    <Position X="18.25" Y="3.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAEIAAAAAAAAAAAAABAAAAAAAUAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>CodeGen\CodeModel\InitTransitionCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.IWfsCodeModel" Collapsed="true">
+    <Position X="11.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAAAhAAIAAAAAAAAIAAAAAAAAAAAABA=</HashCode>
+      <FileName>CodeGen\CodeModel\IWfsCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.ParameterCodeModel" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEBAAAAAAAAAAAAgAAAAABAAAABAAAAQAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\ParameterCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.TOCodeModel" Collapsed="true">
+    <Position X="18.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAACAAAAAgAAAAAAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>CodeGen\CodeModel\TOCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.TransitionCodeModel" Collapsed="true">
+    <Position X="20.5" Y="1.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAgAAAAAAAAAAAAgAAAAAIAAAAAAAAAACAgAAA=</HashCode>
+      <FileName>CodeGen\CodeModel\TransitionCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.TriggerTransitionCodeModel" Collapsed="true">
+    <Position X="22.75" Y="3.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAIAACAAAAAAAAAAACCAAQA=</HashCode>
+      <FileName>CodeGen\CodeModel\TriggerTransitionCodeMode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.WfsBaseCodeModel" Collapsed="true">
+    <Position X="14" Y="6" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AABQAhgQAAAAAAAAgAAIBAAAAgACAAAAAAAEASAQABA=</HashCode>
+      <FileName>CodeGen\CodeModel\WfsBaseCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Pharmatechnik.Nav.Language.CodeGen.WfsCodeModel" Collapsed="true">
+    <Position X="16.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAABgAAAAAAAAAgAAIAAAAAAAAAAAAAAAEAAAAABA=</HashCode>
+      <FileName>CodeGen\CodeModel\WfsCodeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

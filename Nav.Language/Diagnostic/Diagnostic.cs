@@ -1,93 +1,71 @@
 ﻿#region Using Directives
 
 using System;
-using System.Text;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
 using JetBrains.Annotations;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-    
+
+    // TODO IEquatable?
     [Serializable]
     public sealed class Diagnostic {
         
         [NotNull]
         readonly object[] _messageArgs;
-        
+
         public Diagnostic(Location location, DiagnosticDescriptor descriptor, params object[] messageArgs) {
+            Location            = location   ?? throw new ArgumentNullException(nameof(location));
+            Descriptor          = descriptor ?? throw new ArgumentNullException(nameof(descriptor));
+            AdditionalLocations = EmptyAdditionalLocations;
+            _messageArgs        = messageArgs?? EmptyMessageArgs;            
+        }
 
-            if(location == null) {
-                throw new ArgumentNullException(nameof(location));
-            }
-            if(descriptor == null) {
-                throw new ArgumentNullException(nameof(descriptor));
-            }
+        public Diagnostic(Location location, Location additionalLocation, DiagnosticDescriptor descriptor, params object[] messageArgs) 
+            : this(location, new []{ additionalLocation }, descriptor, messageArgs) {         
+        }
 
-            Location     = location;
-            Descriptor   = descriptor;
-            _messageArgs = messageArgs?? EmptyMessageArgs;
+        public Diagnostic(Location location, IEnumerable<Location> additionalLocations, DiagnosticDescriptor descriptor, params object[] messageArgs) {
+            Location            = location   ?? throw new ArgumentNullException(nameof(location));
+            Descriptor          = descriptor ?? throw new ArgumentNullException(nameof(descriptor));
+            AdditionalLocations = additionalLocations?.Where(loc=> loc != null).ToImmutableArray() ?? EmptyAdditionalLocations;
+            _messageArgs        = messageArgs ?? EmptyMessageArgs;            
+        }
+
+        public Diagnostic WithLocation(Location location) {
+            return new Diagnostic(location, Descriptor, _messageArgs);
         }
 
         static readonly object [] EmptyMessageArgs={};
+        static readonly IReadOnlyList<Location> EmptyAdditionalLocations = Enumerable.Empty<Location>().ToImmutableList();
 
         [NotNull]
         public Location Location { get; }
-
         [NotNull]
-        public DiagnosticDescriptor Descriptor { get; }
+        public IReadOnlyList<Location> AdditionalLocations { get; }
 
-        public DiagnosticSeverity Severity {
-            get { return Descriptor.DefaultSeverity; }
-        }
-
-        public DiagnosticCategory Category {
-            get { return Descriptor.Category; }
-        }
-
-        [NotNull]
-        public String Message {
-            get { return FormatMessage(); }
-        }
-        
-        public override string ToString() {
-
-            StringBuilder sb = new StringBuilder();
-           
-            sb.Append($"{FormatFilePath()}");
-            sb.Append($"({FormatLocation()})");
-
-            sb.Append($": {FormatSeverity()} {FormatId()}");
-
-            sb.Append($": {Message}");
-
-            return sb.ToString();
-        }
-
-        string FormatFilePath() {
-            return Location.FilePath ??String.Empty;
-        }
-
-        string FormatLocation() {
-
-            StringBuilder sb=new StringBuilder();
-
-            sb.Append($"{Location.StartLine + 1},{Location.StartCharacter + 1}");
-
-            if (Location.StartLine      != Location.EndLine ||
-                Location.StartCharacter != Location.EndCharacter) {
-
-                sb.Append($",{Location.EndLine + 1},{Location.EndCharacter + 1}");
+        public IEnumerable<Location> GetLocations() {
+            yield return Location;
+            foreach(var location in AdditionalLocations) {
+                yield return location;
             }
-
-            return sb.ToString();
         }
 
-        string FormatSeverity() {
-            return Severity.ToString().ToLower();
-        }
+        public IEnumerable<Diagnostic> ExpandLocations() {
+            return GetLocations().Select(WithLocation);            
+        }       
+        
+        public DiagnosticDescriptor Descriptor { get; }
+        public DiagnosticSeverity Severity => Descriptor.DefaultSeverity;
+        public DiagnosticCategory Category => Descriptor.Category;
+        public String Message              => FormatMessage();
 
-        string FormatId() {
-            return Descriptor.Id;
+        public override string ToString() {
+            return DiagnosticFormatter.Default.Format(this);
         }
 
         string FormatMessage() {

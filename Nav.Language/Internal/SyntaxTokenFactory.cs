@@ -18,13 +18,18 @@ namespace Pharmatechnik.Nav.Language.Internal {
             SyntaxTokenType type = (SyntaxTokenType)t.Type;
             
             var extend=TextExtentFactory.CreateExtent(t);
+            return CreateToken(extend, type, classification, parent);
+        }
+
+        public static SyntaxToken CreateToken(TextExtent extend, SyntaxTokenType type, SyntaxTokenClassification classification, SyntaxNode parent) {
+
             if (extend.IsMissing) {
                 return SyntaxToken.Missing;
             }
-            
+
             var token = new SyntaxToken(parent, type, classification, extend);
 
             return token;
-        }       
+        }
     }
 }

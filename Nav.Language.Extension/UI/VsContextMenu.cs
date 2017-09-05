@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.Extension.UI {
         /// </summary>
         /// <value>The Header.</value>
         public object Header {
-            get { return (object) GetValue(HeaderProperty); }
+            get { return GetValue(HeaderProperty); }
             set { SetValue(HeaderProperty, value); }
         }
 

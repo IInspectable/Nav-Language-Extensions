@@ -1,39 +1,46 @@
+#region Using Directives
+
 using System;
 using System.Collections.Generic;
+
 using JetBrains.Annotations;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
 
     sealed class ExitTransition : IExitTransition {
         
         internal ExitTransition(ExitTransitionDefinitionSyntax syntax,
-                                TaskDefinitionSymbol taskDefinition,
+                                TaskDefinitionSymbol containingTask,
                                 [CanBeNull] NodeReferenceSymbol source,
                                 [CanBeNull] ConnectionPointReferenceSymbol connectionPoint,
                                 [CanBeNull] EdgeModeSymbol edgeMode,
                                 [CanBeNull] NodeReferenceSymbol target) {
 
-            if (syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }
-            if (taskDefinition == null) {
-                throw new ArgumentNullException(nameof(taskDefinition));
-            }
-
-            Syntax          = syntax;
-            TaskDefinition = taskDefinition;
+            Syntax          = syntax         ?? throw new ArgumentNullException(nameof(syntax));
+            ContainingTask  = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
             Source          = source;
             ConnectionPoint = connectionPoint;
             EdgeMode        = edgeMode;
             Target          = target;
 
-            if(connectionPoint != null) {                
+            if (source != null) {
+                source.Edge = this;
+            }
+            if (edgeMode != null) {
+                edgeMode.Edge = this;
+            }
+            if (target != null) {
+                target.Edge = this;
+            }
+            if (connectionPoint != null) {                
                 connectionPoint.ExitTransition = this;
             }
         }
 
         [NotNull]
-        public ITaskDefinitionSymbol TaskDefinition { get; }
+        public ITaskDefinitionSymbol ContainingTask { get; }
 
         [NotNull]
         public Location Location {

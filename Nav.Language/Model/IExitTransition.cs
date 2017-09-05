@@ -6,9 +6,7 @@ namespace Pharmatechnik.Nav.Language {
 
         [NotNull]
         ExitTransitionDefinitionSyntax Syntax { get; }
-
-        ITaskDefinitionSymbol TaskDefinition { get; }
-
+        
         [CanBeNull]
         IConnectionPointReferenceSymbol ConnectionPoint { get; }
     }

@@ -16,7 +16,7 @@ using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
-    sealed class ReferenceHighlightTagger : SemanticModelServiceDependent, ITagger<TextMarkerTag> {
+    sealed class ReferenceHighlightTagger : SemanticModelServiceDependent, ITagger<ReferenceHighlightTag> {
 
         [NotNull]
         readonly IDisposable _observable;
@@ -40,6 +40,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
             View.Caret.PositionChanged += OnCaretPositionChanged;
             View.LayoutChanged         += OnViewLayoutChanged;
+            RebuildReferences();
         }
         
         public override void Dispose() {
@@ -74,7 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
         void Invalidate(bool clearImmediately=false) {
 
-            var point = GetCaretSnapshotPoint();
+            var point = View.GetCaretPoint();
 
             // Wenn das Caret nur innerhalb der Referenzen positioniert wurde, und kein Neubau erforderlich ist
             // dann bleibt alles wie es ist.
@@ -106,7 +107,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
         
-        public IEnumerable<ITagSpan<TextMarkerTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
+        public IEnumerable<ITagSpan<ReferenceHighlightTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
 
             if(spans.Count == 0 || _referenceSpans.Count == 0) {
                 yield break;
@@ -127,11 +128,11 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             }
 
             // Die "Definition"
-            yield return new TagSpan<TextMarkerTag>(definitionSpan, new DefinitionHighlightTag());
+            yield return new TagSpan<ReferenceHighlightTag>(definitionSpan, new DefinitionHighlightTag());
 
             // Und die zugehörigen Referenzen
-            foreach (SnapshotSpan span in NormalizedSnapshotSpanCollection.Overlap(spans, referenceSpans)) {
-                yield return new TagSpan<TextMarkerTag>(span, new ReferenceHighlightTag());
+            foreach (SnapshotSpan referenceSpan in referenceSpans.Where(spans.IntersectsWith)) {
+                yield return new TagSpan<ReferenceHighlightTag>(referenceSpan, new ReferenceHighlightTag());
             }           
         }
 
@@ -139,7 +140,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
             _referenceSpans.Clear();
 
-            var newReferences = BuildReferences(SemanticModelService.SemanticModelResult).ToList();
+            var newReferences = BuildReferences(SemanticModelService.CodeGenerationUnitAndSnapshot).ToList();
             if (newReferences.Count > 1) {
                 _referenceSpans.AddRange(newReferences);
             }
@@ -147,28 +148,9 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             return _referenceSpans;
         }
 
-        IEnumerable<SnapshotSpan> BuildReferences(SemanticModelResult semanticModelResult) {
+        IEnumerable<SnapshotSpan> BuildReferences(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
-            if(semanticModelResult == null) {
-                yield break;
-            }
-
-            var point = GetCaretSnapshotPoint();
-                     
-            if(point == null) {
-                yield break;
-            }
-
-            if(!semanticModelResult.IsCurrent(point.Value.Snapshot)) {
-                yield break;
-            }
-
-            var symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position);
-
-            if (symbol == null && point.Value!= point.Value.GetContainingLine().Start) {
-                symbol = semanticModelResult.CodeGenerationUnit.Symbols.FindAtPosition(point.Value.Position-1);
-            }
-
+            var symbol = View.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
             if (symbol == null) {
                 yield break;
             }
@@ -178,7 +160,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             foreach (var reference in ReferenceFinder.FindReferences(symbol, advancedOptions)) {
 
                 yield return new SnapshotSpan(
-                    new SnapshotPoint(semanticModelResult.Snapshot, reference.Start), 
+                    new SnapshotPoint(codeGenerationUnitAndSnapshot.Snapshot, reference.Start), 
                     reference.Location.Length);
             }
         }
@@ -199,11 +181,5 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
             return referenceSpans.Any(r => r.Span.Start <= point.Value.Position && r.Span.End >= point.Value.Position);
         }
-
-        SnapshotPoint? GetCaretSnapshotPoint() {
-
-            var point = View.Caret.Position.Point.GetPoint(TextBuffer, View.Caret.Position.Affinity);
-            return point;
-        }        
     }
 }

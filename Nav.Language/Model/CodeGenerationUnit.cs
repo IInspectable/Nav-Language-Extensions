@@ -21,11 +21,7 @@ namespace Pharmatechnik.Nav.Language {
                                     IEnumerable<ISymbol> symbols,
                                     IReadOnlyList<Diagnostic> diagnostics) {
 
-            if(syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }
-
-            Syntax           = syntax;
+            Syntax           = syntax           ?? throw new ArgumentNullException(nameof(syntax));
             CodeUsings       = codeUsings       ?? new List<string>();
             TaskDeclarations = taskDeclarations ?? new SymbolCollection<ITaskDeclarationSymbol>();
             TaskDefinitions  = taskDefinitions  ?? new SymbolCollection<ITaskDefinitionSymbol>();
@@ -61,8 +57,8 @@ namespace Pharmatechnik.Nav.Language {
         public IReadOnlyList<Diagnostic> Diagnostics { get; }
 
         [NotNull]
-        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default(CancellationToken)) {
-            return CodeGenerationUnitBuilder.FromCodeGenerationUnitSyntax(syntax, cancellationToken);
+        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default(CancellationToken), ISyntaxProvider syntaxProvider=null) {
+            return CodeGenerationUnitBuilder.FromCodeGenerationUnitSyntax(syntax, cancellationToken, syntaxProvider);
         }       
     }
 }

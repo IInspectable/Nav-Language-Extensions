@@ -6,9 +6,9 @@
             mc:Ignorable          ="d" 
             xmlns:imaging         = "clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
             xmlns:theming         = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
-            xmlns:platformUi      ="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
-            xmlns:imaging1        ="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
-            
+            xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+            xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+
             RenderOptions.EdgeMode="Aliased"
             d:DesignHeight        ="300" 
             d:DesignWidth         ="300"
@@ -21,7 +21,7 @@
                             VerticalAlignment   = "Center"
                             HorizontalAlignment = "Center"                            
                             Margin="2"
-                            Moniker="{x:Static imaging1:KnownMonikers.StatusWarning}"                           
+                            Moniker="{x:Static catalog:KnownMonikers.StatusWarning}"                           
                             />
 
     </Grid>

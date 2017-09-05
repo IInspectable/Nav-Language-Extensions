@@ -13,7 +13,8 @@ using Pharmatechnik.Nav.Language.CodeGen;
 namespace Pharmatechnik.Nav.Language {
     
     sealed class CodeGenerationUnitBuilder {
-        
+
+        readonly ISyntaxProvider _syntaxProvider;
         readonly List<Diagnostic> _diagnostics;
         readonly SymbolCollection<TaskDeclarationSymbol> _taskDeclarations;
         readonly SymbolCollection<TaskDefinitionSymbol> _taskDefinitions;
@@ -21,7 +22,8 @@ namespace Pharmatechnik.Nav.Language {
         readonly List<string>  _codeUsings;
         readonly List<ISymbol> _symbols;
 
-        public CodeGenerationUnitBuilder() {
+        CodeGenerationUnitBuilder(ISyntaxProvider syntaxProvider) {
+            _syntaxProvider   = syntaxProvider ?? SyntaxProvider.Default;
             _diagnostics      = new List<Diagnostic>();
             _taskDeclarations = new SymbolCollection<TaskDeclarationSymbol>();
             _taskDefinitions  = new SymbolCollection<TaskDefinitionSymbol>();
@@ -31,13 +33,13 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [NotNull]
-        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
+        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken, ISyntaxProvider syntaxProvider) {
 
             if (syntax == null) {
                 throw new ArgumentNullException(nameof(syntax));
             }
 
-            var builder = new CodeGenerationUnitBuilder();
+            var builder = new CodeGenerationUnitBuilder(syntaxProvider);
 
             builder.Process(syntax, cancellationToken);
 
@@ -48,7 +50,7 @@ namespace Pharmatechnik.Nav.Language {
                 builder._taskDefinitions,
                 builder._includes,
                 builder._symbols,
-                builder._diagnostics.ToUnique());
+                builder._diagnostics);
 
             foreach(var taskDefinition in builder._taskDefinitions) {
                 taskDefinition.FinalConstruct(model);
@@ -60,7 +62,6 @@ namespace Pharmatechnik.Nav.Language {
 
             return model;
         }
-        
 
         void Process(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
             ProcessNavLanguage(syntax, cancellationToken);
@@ -75,7 +76,7 @@ namespace Pharmatechnik.Nav.Language {
             //====================
             // 1. TaskDeclarations 
             //====================
-            var taskDeclarationResult = TaskDeclarationSymbolBuilder.FromCodeGenerationUnitSyntax(syntax, cancellationToken);
+            var taskDeclarationResult = TaskDeclarationSymbolBuilder.FromCodeGenerationUnitSyntax(syntax, _syntaxProvider, cancellationToken);
 
             _diagnostics.AddRange(taskDeclarationResult.Diagnostics);
             _taskDeclarations.AddRange(taskDeclarationResult.TaskDeklarations);
@@ -86,7 +87,7 @@ namespace Pharmatechnik.Nav.Language {
             //====================
             // 2. TaskDefinitions
             //====================
-            foreach (var taskDefinitionSyntax in syntax.DescendantNodes().OfType<TaskDefinitionSyntax>()) {
+            foreach (var taskDefinitionSyntax in syntax.DescendantNodes<TaskDefinitionSyntax>()) {
                 ProcessTaskDefinitionSyntax(taskDefinitionSyntax, cancellationToken);
             }
 
@@ -131,7 +132,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         void ProcessCodeLanguage(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
-            foreach (var codeUsingDeclarationSyntax in syntax.DescendantNodes().OfType<CodeUsingDeclarationSyntax>()) {
+            foreach (var codeUsingDeclarationSyntax in syntax.DescendantNodes<CodeUsingDeclarationSyntax>()) {
 
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -159,6 +160,7 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
+        // ReSharper disable once UnusedParameter.Local
         void ProcessFinalSemanticErrors(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
 
             // =====================
@@ -180,17 +182,9 @@ namespace Pharmatechnik.Nav.Language {
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var location = taskDeclarationSymbol.Location;
+                // wenn möglich markieren wir die ganze Syntax
+                var location = taskDeclarationSymbol.Syntax?.GetLocation() ?? taskDeclarationSymbol.Location;
 
-                // wenn möglich markieren wir "taskref Identifier"
-                var taskDeclarationSyntax = syntax.FindNode(taskDeclarationSymbol.Location.Start) as TaskDeclarationSyntax;
-                if (taskDeclarationSyntax != null) {
-                    var start  = taskDeclarationSyntax.TaskrefKeyword.Start;
-                    var end    = taskDeclarationSyntax.Identifier.End;
-                    var extent = TextExtent.FromBounds(start, end);
-                    location   = syntax.SyntaxTree.GetLocation(extent);
-                }
-                            
                 _diagnostics.Add(new Diagnostic(
                     location, 
                     DiagnosticDescriptors.DeadCode.Nav1005TaskDeclaration0NotRequired,

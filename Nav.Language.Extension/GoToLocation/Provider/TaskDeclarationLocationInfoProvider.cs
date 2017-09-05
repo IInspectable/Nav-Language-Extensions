@@ -20,10 +20,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
     class TaskDeclarationLocationInfoProvider: CodeAnalysisLocationInfoProvider {
 
-        readonly TaskCodeModel _taskCodeModel;
+        readonly TaskCodeInfo _taskCodeInfo;
 
-        public TaskDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskCodeModel taskCodeModel): base(sourceBuffer) {
-            _taskCodeModel  = taskCodeModel;
+        public TaskDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskCodeInfo taskCodeInfo): base(sourceBuffer) {
+            _taskCodeInfo  = taskCodeInfo;
         }
 
         static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToClassPublic; } }
@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
             try {
                 var locations = await LocationFinder.FindTaskDeclarationLocationsAsync(
                     project          : project, 
-                    codegenInfo      : _taskCodeModel, 
+                    codegenInfo      : _taskCodeInfo, 
                     cancellationToken: cancellationToken).ConfigureAwait(false);
 
                 return locations.Select(location =>

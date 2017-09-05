@@ -1,0 +1,18 @@
+﻿[namespaceprefix Test]
+
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL]
+
+task TaskB [result bool]
+{
+    init I1 [params string message];
+        
+    view TestView;
+    
+    exit Ok;
+
+    I1    --> TestView;  
+    
+    TestView --> Ok on Ok;
+    TestView --> Ok on OnFoo;
+}

@@ -115,10 +115,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
 
             var tags = ReadNavTags(declaringClassDeclaration).ToList();
 
-            var navFileTag  = tags.FirstOrDefault(t => t.TagName == AnnotationTagNames.NavFile);
+            var navFileTag  = tags.FirstOrDefault(t => t.TagName == CodeGenFacts.AnnotationTagNavFile);
             var navFileName = navFileTag?.Content;
 
-            var navTaskTag  = tags.FirstOrDefault(t => t.TagName == AnnotationTagNames.NavTask);
+            var navTaskTag  = tags.FirstOrDefault(t => t.TagName == CodeGenFacts.AnnotationTagNavTask);
             var navTaskName = navTaskTag?.Content;
 
             // Dateiname und Taskname müssen immer paarweise vorhanden sein
@@ -234,7 +234,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                         [NotNull] MethodDeclarationSyntax declaringMethod) {
 
             var tags        = ReadNavTags(declaringMethod);
-            var navInitTag  = tags.FirstOrDefault(t => t.TagName == AnnotationTagNames.NavInit);
+            var navInitTag  = tags.FirstOrDefault(t => t.TagName == CodeGenFacts.AnnotationTagNavInit);
             var navInitName = navInitTag?.Content;
 
             if (String.IsNullOrEmpty(navInitName)) {
@@ -292,7 +292,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                         [NotNull] MethodDeclarationSyntax declaringMethod) {
 
             var tags        = ReadNavTags(declaringMethod);
-            var navExitTag  = tags.FirstOrDefault(t => t.TagName == AnnotationTagNames.NavExit);
+            var navExitTag  = tags.FirstOrDefault(t => t.TagName == CodeGenFacts.AnnotationTagNavExit);
             var navExitName = navExitTag?.Content;
 
             if (String.IsNullOrEmpty(navExitName)) {
@@ -349,7 +349,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
             [NotNull] MethodDeclarationSyntax declaringMethodDeclaration) {
 
             var tags           = ReadNavTags(declaringMethodDeclaration);
-            var navTriggerTag  = tags.FirstOrDefault(t => t.TagName == AnnotationTagNames.NavTrigger);
+            var navTriggerTag  = tags.FirstOrDefault(t => t.TagName == CodeGenFacts.AnnotationTagNavTrigger);
             var navTriggerName = navTriggerTag?.Content;
 
             if (String.IsNullOrEmpty(navTriggerName)) {
@@ -385,7 +385,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                 }
 
                 var declaringMethodNode = methodSymbol.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax();
-                var navInitCallTag = ReadNavTags(declaringMethodNode).FirstOrDefault(tag => tag.TagName == AnnotationTagNames.NavInitCall);
+                var navInitCallTag = ReadNavTags(declaringMethodNode).FirstOrDefault(tag => tag.TagName == CodeGenFacts.AnnotationTagNavInitCall);
                 if (navInitCallTag == null) {
                     continue;
                 }
@@ -433,7 +433,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                 // Wir suchen alle Tags, deren Namen mit Nav beginnen
                 foreach (var xmlElementSyntax in xmlElementSyntaxes) {
                     var startTagName = xmlElementSyntax.StartTag?.Name?.ToString();
-                    if (startTagName?.StartsWith(AnnotationTagNames.TagPrefix) == true) {
+                    if (startTagName?.StartsWith(CodeGenFacts.AnnotationTagPrefix) == true) {
                         yield return new NavTag {
                             TagName = startTagName,
                             Content = xmlElementSyntax.Content.ToString()

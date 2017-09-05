@@ -1,8 +1,12 @@
 ﻿
 $targetFiles=
     "$PSScriptRoot'\..\Nav.Language.Extension\UpdateProductVersion.targets",
+    "$PSScriptRoot'\..\Nav.Language.Service\UpdateProductVersion.targets",
+    "$PSScriptRoot'\..\Nav.Language.ServiceHost\UpdateProductVersion.targets",
     "$PSScriptRoot'\..\Nav.Language.CodeAnalysis\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language\UpdateProductVersion.targets",
+    "$PSScriptRoot'\..\Nav.Language\CustomBuild.targets",
+	"$PSScriptRoot'\..\Nav.Cli\CustomBuild.targets",
+	"$PSScriptRoot'\..\Nav.Language.BuildTasks\UpdateProductVersion.targets",
     "$PSScriptRoot'\..\Nav.Utilities\UpdateProductVersion.targets"
 
 function IncreaseMajor(){
@@ -67,6 +71,9 @@ function UpdateVersion(){
     $productVersionNode.InnerText=$newVersion.ToString()
 
     Write-Verbose "Saving file '$file'"
-    $xml.Save($file)
+	$utf8WithBom = New-Object System.Text.UTF8Encoding($true)
+	$sw = New-Object System.IO.StreamWriter($file, $false, $utf8WithBom)
+    $xml.Save($sw)
+	$sw.Close()
 }
 

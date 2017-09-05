@@ -1,4 +1,5 @@
 ﻿using System;
+using JetBrains.Annotations;
 using Microsoft.VisualStudio.Text;
 
 namespace Pharmatechnik.Nav.Language.Extension.Common {
@@ -32,6 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             return new TextBufferScopedValue<T>(value);
         }
 
+        [CanBeNull]
         internal static T TryGet(ITextBuffer textBuffer, object key) {
             T value = null;
             WeakReference weakValue;

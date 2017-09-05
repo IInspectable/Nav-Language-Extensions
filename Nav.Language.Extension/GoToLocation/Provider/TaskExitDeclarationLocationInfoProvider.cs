@@ -18,10 +18,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
     class TaskExitDeclarationLocationInfoProvider : CodeAnalysisLocationInfoProvider {
 
-        readonly TaskExitCodeModel _taskExitCodeModel;
+        readonly TaskExitCodeInfo _taskExitCodeInfo;
 
-        public TaskExitDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskExitCodeModel taskExitCodeModel): base(sourceBuffer) {
-            _taskExitCodeModel  = taskExitCodeModel;
+        public TaskExitDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskExitCodeInfo taskExitCodeInfo): base(sourceBuffer) {
+            _taskExitCodeInfo  = taskExitCodeInfo;
         }
 
         static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToMethodPublic; } }
@@ -32,12 +32,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
                 var location = await LocationFinder.FindTaskExitDeclarationLocationAsync(
                     project          : project, 
-                    codegenInfo      : _taskExitCodeModel, 
+                    codegenInfo      : _taskExitCodeInfo, 
                     cancellationToken: cancellationToken).ConfigureAwait(false);
                 
                 var locationInfo = LocationInfo.FromLocation(
                     location    : location,
-                    displayName : $"{_taskExitCodeModel.TaskCodeModel.WfsTypeName}.{_taskExitCodeModel.AfterLogicMethodName}",
+                    displayName : $"{_taskExitCodeInfo.ContainingTaskCodeInfo.WfsTypeName}.{_taskExitCodeInfo.AfterLogicMethodName}",
                     imageMoniker: ImageMoniker);
 
                 return ToEnumerable(locationInfo);

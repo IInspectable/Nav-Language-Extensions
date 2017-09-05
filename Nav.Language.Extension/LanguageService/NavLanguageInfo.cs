@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         readonly IServiceContainer _serviceContainer;
 
-        public NavLanguageInfo(IServiceContainer serviceContainer) {
+        public NavLanguageInfo(NavLanguagePackage serviceContainer) {
             _serviceContainer = serviceContainer;
         }
         

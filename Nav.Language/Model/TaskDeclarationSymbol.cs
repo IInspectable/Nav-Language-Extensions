@@ -7,20 +7,26 @@ using JetBrains.Annotations;
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-
     sealed partial class TaskDeclarationSymbol : Symbol, ITaskDeclarationSymbol {
 
         public TaskDeclarationSymbol(string name, Location location, 
                                     TaskDeclarationOrigin origin, 
                                     bool isIncluded,
-                                    MemberDeclarationSyntax syntax): base(name, location) {
-            Origin           = origin;
-            Syntax           = syntax;
-            IsIncluded       = isIncluded;
-            References       = new List<ITaskNodeSymbol>();
-            ConnectionPoints = new SymbolCollection<ConnectionPointSymbol>();
-        }
+                                    ICodeParameter codeTaskResult,
+                                    MemberDeclarationSyntax syntax,
+                                    [CanBeNull] string codeNamespace,
+                                    bool codeNotImplemented): base(name, location) {
+            Origin             = origin;
+            Syntax             = syntax;
+            IsIncluded         = isIncluded;
+            References         = new List<ITaskNodeSymbol>();
+            ConnectionPoints   = new SymbolCollection<ConnectionPointSymbol>();
 
+            CodeNamespace      = codeNamespace ?? string.Empty;
+            CodeNotImplemented = codeNotImplemented;
+            CodeTaskResult     = codeTaskResult;
+        }
+        
         public CodeGenerationUnit CodeGenerationUnit { get; private set; }
 
         public SymbolCollection<ConnectionPointSymbol> ConnectionPoints { get; }
@@ -50,8 +56,12 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         public MemberDeclarationSyntax Syntax { get; set; }
         public bool IsIncluded { get; }
-
         public TaskDeclarationOrigin Origin { get; }
+        [NotNull]
+        public string CodeNamespace { get; }
+        public bool CodeNotImplemented { get; }
+        [CanBeNull]
+        public ICodeParameter CodeTaskResult { get; }
 
         public IEnumerable<ISymbol> SymbolsAndSelf() {
             yield return this;

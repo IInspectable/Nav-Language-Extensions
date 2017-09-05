@@ -15,15 +15,15 @@ namespace Pharmatechnik.Nav.Language {
         IReadOnlyList<INodeReferenceSymbol> References { get; }
 
         IEnumerable<ISymbol> SymbolsAndSelf();
-
-        IEnumerable<IEdge> GetIncomingEdges();
-        IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched=null);
     }
 
     public interface IInitNodeSymbol : INodeSymbol {
 
         [NotNull]
         new InitNodeDeclarationSyntax Syntax { get; }
+
+        [CanBeNull]
+        IInitNodeAliasSymbol Alias { get; }
 
         [NotNull]
         IReadOnlyList<ITransition> Outgoings { get; }

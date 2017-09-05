@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using Nav.Language.Tests.Properties;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 
@@ -35,8 +34,8 @@ namespace Nav.Language.Tests {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
 
             Assert.That(syntaxTree.Tokens.Count(token => token.Parent == null), Is.EqualTo(0));
-            Assert.That(syntaxTree.GetRoot().DescendantNodes().Count(node => node.RawParent == null), Is.EqualTo(0));
-            Assert.That(syntaxTree.GetRoot().RawParent, Is.Null);
+            Assert.That(syntaxTree.GetRoot().DescendantNodes().Count(node => node.Parent == null), Is.EqualTo(0));
+            Assert.That(syntaxTree.GetRoot().Parent, Is.Null);
         }
 
         [Test]
@@ -77,6 +76,7 @@ namespace Nav.Language.Tests {
         }
 
         void Write(IEnumerable<SyntaxToken> list) {
+            // ReSharper disable once UnusedVariable
             foreach (var value in list) {
                 //Console.WriteLine(value.ToDebuggerDisplayString());
             }
@@ -265,9 +265,7 @@ namespace Nav.Language.Tests {
         public void TestTaskDefinition() {
             var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
 
-            var taskDefinition = syntaxRoot.DescendantNodes()
-                    .OfType<TaskDefinitionSyntax>()
-                    .First();
+            var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
             Assert.That(taskDefinition.TaskKeyword.ToString(), Is.EqualTo("task"));
             Assert.That(taskDefinition.TaskKeyword.Type, Is.EqualTo(SyntaxTokenType.TaskKeyword));
@@ -280,17 +278,20 @@ namespace Nav.Language.Tests {
             Assert.That(codeDeclaration.CodeKeyword.ToString(), Is.EqualTo("code"));
             Assert.That(codeDeclaration.CodeKeyword.Type, Is.EqualTo(SyntaxTokenType.CodeKeyword));
 
-            Assert.That(codeDeclaration.StringLiteral.ToString(), Is.EqualTo("\"code1\""));
-            Assert.That(codeDeclaration.StringLiteral.Type, Is.EqualTo(SyntaxTokenType.StringLiteral));
+            Assert.That(codeDeclaration.GetGetStringLiterals().First().ToString(), Is.EqualTo("\"code1\""));
+            Assert.That(codeDeclaration.GetGetStringLiterals().First().Type, Is.EqualTo(SyntaxTokenType.StringLiteral));
 
             // [base B0: B1, B2]
             var baseDeclaration = taskDefinition.CodeBaseDeclaration;
             Assert.That(baseDeclaration.BaseKeyword.ToString(), Is.EqualTo("base"));
             Assert.That(baseDeclaration.BaseTypes.Count, Is.EqualTo(3));
-            // TODO Base
+
             Assert.That(((SimpleTypeSyntax)baseDeclaration.BaseTypes[0]).Identifier.ToString(), Is.EqualTo("B0"));
+            Assert.That(baseDeclaration.WfsBaseType.ToString(), Is.EqualTo("B0"));
             Assert.That(((SimpleTypeSyntax)baseDeclaration.BaseTypes[1]).Identifier.ToString(), Is.EqualTo("B1"));
+            Assert.That(baseDeclaration.IwfsBaseType.ToString(), Is.EqualTo("B1"));
             Assert.That(((SimpleTypeSyntax)baseDeclaration.BaseTypes[2]).Identifier.ToString(), Is.EqualTo("B2"));
+            Assert.That(baseDeclaration.IBeginWfsBaseType.ToString(), Is.EqualTo("B2"));
 
             // [generateto "g1"]
             var generateToDeclaration = taskDefinition.CodeGenerateToDeclaration;
@@ -329,9 +330,7 @@ namespace Nav.Language.Tests {
 
             var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
 
-            var taskDefinition = syntaxRoot.DescendantNodes()
-                    .OfType<TaskDefinitionSyntax>()
-                    .First();
+            var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
             var nodeDeclarationBlock = taskDefinition.NodeDeclarationBlock;
 
@@ -404,9 +403,7 @@ namespace Nav.Language.Tests {
         public  void TestTransitionDefinitionBlock() {
             var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
 
-            var taskDefinition = syntaxRoot.DescendantNodes()
-                    .OfType<TaskDefinitionSyntax>()
-                    .First();
+            var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
             var transitionDefinitionBlockSyntax = taskDefinition.TransitionDefinitionBlock;
             // init --> Tx on "Something"  if "Condition" do "Action1";

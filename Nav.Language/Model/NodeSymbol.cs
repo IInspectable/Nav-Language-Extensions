@@ -1,23 +1,18 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using JetBrains.Annotations;
 
-namespace Pharmatechnik.Nav.Language {
+#endregion
 
+namespace Pharmatechnik.Nav.Language {
     abstract class NodeSymbol<T> : Symbol, INodeSymbol where T: NodeDeclarationSyntax {
 
         protected NodeSymbol(string name, Location location, T syntax, TaskDefinitionSymbol containingTask) : base(name, location) {
-
-            if (syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }
-            if (containingTask == null) {
-                throw new ArgumentNullException(nameof(containingTask));
-            }
-
-            Syntax         = syntax;
-            ContainingTask = containingTask;
+            Syntax         = syntax         ?? throw new ArgumentNullException(nameof(syntax));
+            ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
             References     = new List<INodeReferenceSymbol>();
         }
 
@@ -29,47 +24,12 @@ namespace Pharmatechnik.Nav.Language {
 
         public List<INodeReferenceSymbol> References { get; }
 
-        IReadOnlyList<INodeReferenceSymbol> INodeSymbol.References {
-            get { return References; }
-        }
-
-        NodeDeclarationSyntax INodeSymbol.Syntax {
-            get { return Syntax; }
-        }
+        IReadOnlyList<INodeReferenceSymbol> INodeSymbol.References => References;
+        NodeDeclarationSyntax INodeSymbol.Syntax => Syntax;
 
         public virtual IEnumerable<ISymbol> SymbolsAndSelf() {
             yield return this;
-        }
-
-        public abstract IEnumerable<IEdge> GetIncomingEdges();
-        public abstract IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null);
-
-        internal static IEnumerable<IEdge> ResolveChoice<TEdge>(TEdge edge) where TEdge : IEdge {
-            return ResolveChoice(edge, null);
-        }
-
-        internal static IEnumerable<IEdge> ResolveChoice<TEdge>(TEdge edge, HashSet<IEdge> fetched) where TEdge : IEdge {
-
-            fetched = fetched ?? new HashSet<IEdge>();
-
-            if (fetched.Contains(edge)) {
-                yield break;
-            }
-
-            fetched.Add(edge);
-            yield return edge;
-
-            var choiceNode = edge.Target?.Declaration as IChoiceNodeSymbol;
-
-            if (choiceNode != null) {
-
-                yield return edge;
-
-                foreach (var outgoingEdge in choiceNode.GetOutgoingEdges(fetched)) {
-                    yield return outgoingEdge;
-                }
-            }
-        }
+        }        
     }
 
     abstract class NodeSymbolWithIncomings<TSyntax, TIncomings> : NodeSymbol<TSyntax>
@@ -81,15 +41,7 @@ namespace Pharmatechnik.Nav.Language {
             Incomings = new List<TIncomings>();
         }
 
-        public List<TIncomings> Incomings { get; }
-
-        public override IEnumerable<IEdge> GetIncomingEdges() {
-            return Incomings.SelectMany(ResolveChoice);
-        }
-
-        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null) {
-            return Enumerable.Empty<IEdge>();
-        }
+        public List<TIncomings> Incomings { get; }     
     }
 
     abstract class NodeSymbolWithOutgoings<TSyntax, TOutgoings> : NodeSymbol<TSyntax>
@@ -101,15 +53,7 @@ namespace Pharmatechnik.Nav.Language {
             Outgoings = new List<TOutgoings>();
         }
 
-        public List<TOutgoings> Outgoings { get; }
-
-        public override IEnumerable<IEdge> GetIncomingEdges() {
-            return Enumerable.Empty<IEdge>();
-        }
-
-        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null) {
-            return Outgoings.SelectMany( e=> ResolveChoice(e, fetched));
-        }        
+        public List<TOutgoings> Outgoings { get; }        
     }
 
     abstract class NodeSymbolWithIncomingsAndOutgoings<TSyntax, TIncomings, TOutgoings> : NodeSymbol<TSyntax>
@@ -125,23 +69,35 @@ namespace Pharmatechnik.Nav.Language {
 
         public List<TIncomings> Incomings { get; }
         public List<TOutgoings> Outgoings { get; }
-
-        public override IEnumerable<IEdge> GetIncomingEdges() {
-            return Incomings.SelectMany(ResolveChoice);
-        }
-
-        public override IEnumerable<IEdge> GetOutgoingEdges(HashSet<IEdge> fetched = null) {
-            return Outgoings.SelectMany(e => ResolveChoice(e, fetched));
-        }
     }
 
     sealed partial class InitNodeSymbol : NodeSymbolWithOutgoings<InitNodeDeclarationSyntax, ITransition>, IInitNodeSymbol {
 
-        public InitNodeSymbol(string name, Location location, InitNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
+        public InitNodeSymbol(string name, Location location, InitNodeDeclarationSyntax syntax, InitNodeAliasSymbol alias, TaskDefinitionSymbol containingTask) 
             : base(name, location, syntax, containingTask) {
+
+            if (alias != null) {
+                alias.InitNode = this;
+                Alias = alias;
+            }
+        }
+
+        [CanBeNull]
+        public IInitNodeAliasSymbol Alias { get; }
+
+        public override string Name {
+            get { return Alias?.Name ?? base.Name; }
         }
 
         IReadOnlyList<ITransition> IInitNodeSymbol.Outgoings { get { return Outgoings; } }
+
+        public override IEnumerable<ISymbol> SymbolsAndSelf() {
+            yield return this;
+
+            if (Alias != null) {
+                yield return Alias;
+            }
+        }
     }
 
     sealed partial class ExitNodeSymbol : NodeSymbolWithIncomings<ExitNodeDeclarationSyntax, IEdge>, IExitNodeSymbol {

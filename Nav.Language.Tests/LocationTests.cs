@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Nav.Language.Tests.Properties;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 
@@ -31,16 +30,16 @@ namespace Nav.Language.Tests {
                     "task T4 {}\r\n"            // 6
                     );
 
-            var t1 = syntax.DescendantNodes().OfType<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T1");
+            var t1 = syntax.DescendantNodes<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T1");
             Assert.That(t1.GetLocation().LineExtent.Start.Line, Is.EqualTo(0));
 
-            var t2 = syntax.DescendantNodes().OfType<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T2");
+            var t2 = syntax.DescendantNodes<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T2");
             Assert.That(t2.GetLocation().LineExtent.Start.Line, Is.EqualTo(3));
 
-            var t3 = syntax.DescendantNodes().OfType<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T3");
+            var t3 = syntax.DescendantNodes<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T3");
             Assert.That(t3.GetLocation().LineExtent.Start.Line, Is.EqualTo(4));
 
-            var t4 = syntax.DescendantNodes().OfType<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T4");
+            var t4 = syntax.DescendantNodes<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T4");
             Assert.That(t4.GetLocation().LineExtent.Start.Line, Is.EqualTo(6));            
         }
 
@@ -51,7 +50,7 @@ namespace Nav.Language.Tests {
                     "task T1 {}\r\n" // 0
                     );
 
-            var t1 = syntax.DescendantNodes().OfType<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T1");
+            var t1 = syntax.DescendantNodes<TaskDefinitionSyntax>().First(td => td.Identifier.ToString() == "T1");
             Assert.That(t1.GetLocation().LineExtent.Start.Line, Is.EqualTo(0));          
         }
 

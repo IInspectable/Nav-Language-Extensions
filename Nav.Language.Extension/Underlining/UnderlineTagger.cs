@@ -63,17 +63,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Underlining {
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         public IEnumerable<ITagSpan<UnderlineTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
+            yield break;
+            //foreach (var span in spans) {
+            //    foreach (var underlineSpan in _underlineSpans) {
 
-            foreach (var span in spans) {
-                foreach (var underlineSpan in _underlineSpans) {
-
-                    var tagSpan = underlineSpan.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive);
-                    if (span.IntersectsWith(tagSpan)) {                        
-                        var tag     = new UnderlineTag();
-                        yield return new TagSpan<UnderlineTag>(tagSpan, tag);
-                    }
-                }
-            }
+            //        var tagSpan = underlineSpan.TranslateTo(span.Snapshot, SpanTrackingMode.EdgeExclusive);
+            //        if (span.IntersectsWith(tagSpan)) {                        
+            //            var tag     = new UnderlineTag();
+            //            yield return new TagSpan<UnderlineTag>(tagSpan, tag);
+            //        }
+            //    }
+            //}
         }
 
         public void Dispose() {

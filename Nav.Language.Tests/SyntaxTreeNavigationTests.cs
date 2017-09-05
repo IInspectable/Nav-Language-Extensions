@@ -1,10 +1,8 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using Nav.Language.Tests.Properties;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
-
 // ReSharper disable PossibleNullReferenceException
 
 namespace Nav.Language.Tests {
@@ -111,7 +109,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = SyntaxTree.ParseText(nav);
             Assert.That(syntaxTree.Diagnostics.Any(), Is.True);
-            Assert.That(syntaxTree.GetRoot().DescendantNodes<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
+            Assert.That(syntaxTree.GetRoot().DescendantNodes().OfType<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
         }
 
         [Test]
@@ -122,7 +120,7 @@ namespace Nav.Language.Tests {
             Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count(t=>t.Parent== null), Is.EqualTo(0));
 
-            var task = syntaxTree.GetRoot().DescendantNodes().OfType<TaskDefinitionSyntax>().First();
+            var task = syntaxTree.GetRoot().DescendantNodes<TaskDefinitionSyntax>().First();
 
             Assert.That(task.ChildTokens().Count(), Is.EqualTo(4));
 

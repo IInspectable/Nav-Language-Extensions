@@ -1,4 +1,4 @@
-#region 
+#region Using Directives
 
 using System.Linq;
 using System.Threading;
@@ -19,10 +19,10 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
     class TaskIBeginInterfaceDeclarationLocationInfoProvider : CodeAnalysisLocationInfoProvider {
 
-        readonly TaskDeclarationCodeModel _taskDeclarationCodeModel;
+        readonly TaskDeclarationCodeInfo _taskDeclarationCodeInfo;
 
-        public TaskIBeginInterfaceDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskDeclarationCodeModel taskDeclarationCodeModel) : base(sourceBuffer) {
-            _taskDeclarationCodeModel = taskDeclarationCodeModel;
+        public TaskIBeginInterfaceDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskDeclarationCodeInfo taskDeclarationCodeInfo) : base(sourceBuffer) {
+            _taskDeclarationCodeInfo = taskDeclarationCodeInfo;
         }
 
         static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToInterfacePublic; } }
@@ -33,13 +33,13 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
                 var locations = await LocationFinder.FindTaskIBeginInterfaceDeclarationLocations(
                    project          : project,
-                   codegenInfo      : _taskDeclarationCodeModel,
+                   codegenInfo      : _taskDeclarationCodeInfo,
                    cancellationToken: cancellationToken).ConfigureAwait(false);
                 
                 return locations.Select(location =>
                     LocationInfo.FromLocation(
                         location    : location,
-                        displayName : _taskDeclarationCodeModel.FullyQualifiedBeginInterfaceName,
+                        displayName : _taskDeclarationCodeInfo.FullyQualifiedBeginInterfaceName,
                         imageMoniker: ImageMoniker))
                     .OrderBy(li => li.DisplayName);
 

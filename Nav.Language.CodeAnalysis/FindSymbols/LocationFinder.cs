@@ -41,8 +41,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         const string MsgErrorWhileParsingNavFile0                = "Error while parsing nav file '{0}'";
         const string MsgMissingProjectForAssembly0               = "Missing project for assembly '{0}'.";
 
-        // TODO String als CodeGenInfo o.ä.
-        const string BeginLogicMethodName = "BeginLogic";
+        const string BeginLogicMethodName = CodeGenFacts.BeginMethodPrefix+CodeGenFacts.LogicMethodSuffix;
 
         #region FindNavLocationsAsync
 
@@ -249,7 +248,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         #region FindTaskIBeginInterfaceDeclarationLocations
 
         /// <exception cref="LocationNotFoundException"/>
-        public static Task<IList<Location>> FindTaskIBeginInterfaceDeclarationLocations(Project project, TaskDeclarationCodeModel codegenInfo, CancellationToken cancellationToken) {
+        public static Task<IList<Location>> FindTaskIBeginInterfaceDeclarationLocations(Project project, TaskDeclarationCodeInfo codegenInfo, CancellationToken cancellationToken) {
             var task = Task.Run(async () => {
 
                 var compilation = await project.GetCompilationAsync(cancellationToken);
@@ -296,7 +295,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         #region FindTaskDeclarationLocationsAsync
 
         /// <exception cref="LocationNotFoundException"/>
-        public static Task<IList<Location>> FindTaskDeclarationLocationsAsync(Project project, TaskCodeModel codegenInfo, CancellationToken cancellationToken) {
+        public static Task<IList<Location>> FindTaskDeclarationLocationsAsync(Project project, TaskCodeInfo codegenInfo, CancellationToken cancellationToken) {
 
             var task = Task.Run(async () => {
 
@@ -352,14 +351,14 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         #region FindTriggerDeclarationLocationsAsync
 
         /// <exception cref="LocationNotFoundException"/>
-        public static Task<Location> FindTriggerDeclarationLocationsAsync(Project project, SignalTriggerCodeModel codegenInfo, CancellationToken cancellationToken) {
+        public static Task<Location> FindTriggerDeclarationLocationsAsync(Project project, SignalTriggerCodeInfo codegenInfo, CancellationToken cancellationToken) {
 
             var task = Task.Run(async ()  =>  {
 
                 var compilation   = await project.GetCompilationAsync(cancellationToken);
-                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeModel.FullyQualifiedWfsBaseName);
+                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.Task.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
-                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.TaskCodeModel.FullyQualifiedWfsBaseName));
+                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.Task.FullyQualifiedWfsBaseName));
                 }
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
@@ -385,13 +384,13 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         #region FindTaskBeginDeclarationLocationAsync
 
         /// <exception cref="LocationNotFoundException"/>
-        public static Task<Location> FindTaskBeginDeclarationLocationAsync(Project project, TaskBeginCodeModel codegenInfo, CancellationToken cancellationToken) {
+        public static Task<Location> FindTaskBeginDeclarationLocationAsync(Project project, TaskInitCodeInfo codegenInfo, CancellationToken cancellationToken) {
             var task = Task.Run(async () => {
 
                 var compilation = await project.GetCompilationAsync(cancellationToken);
-                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeModel.FullyQualifiedWfsBaseName);
+                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeInfo.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
-                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.TaskCodeModel.FullyQualifiedWfsBaseName));
+                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.TaskCodeInfo.FullyQualifiedWfsBaseName));
                 }
 
                 var taskAnnotation = wfsBaseSymbol.DeclaringSyntaxReferences
@@ -444,14 +443,14 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         #region FindTaskExitDeclarationLocationAsync
 
         /// <exception cref="LocationNotFoundException"/>
-        public static Task<Location> FindTaskExitDeclarationLocationAsync(Project project, TaskExitCodeModel codegenInfo, CancellationToken cancellationToken) {
+        public static Task<Location> FindTaskExitDeclarationLocationAsync(Project project, TaskExitCodeInfo codegenInfo, CancellationToken cancellationToken) {
 
             var task = Task.Run(async () => {
 
                 var compilation   = await project.GetCompilationAsync(cancellationToken);
-                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.TaskCodeModel.FullyQualifiedWfsBaseName);
+                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.ContainingTaskCodeInfo.FullyQualifiedWfsBaseName);
                 if (wfsBaseSymbol == null) {
-                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.TaskCodeModel.FullyQualifiedWfsBaseName));
+                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.ContainingTaskCodeInfo.FullyQualifiedWfsBaseName));
                 }
 
                 // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem

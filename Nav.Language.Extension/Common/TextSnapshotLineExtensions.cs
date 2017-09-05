@@ -8,7 +8,45 @@ using Microsoft.VisualStudio.Text;
 namespace Pharmatechnik.Nav.Language.Extension.Common {
 
     static class TextSnapshotLineExtensions {
+
+        #region Dokumentation
+        /// <summary>
+        /// Returns the first non-whitespace position on the given line, or null if 
+        /// the line is empty or contains only whitespace.
+        /// </summary>
+        #endregion
+        public static int? GetFirstNonWhitespacePosition(this ITextSnapshotLine line) {
+
+            var text = line.GetText();
+
+            for(int i = 0; i < text.Length; i++) {
+                if(!char.IsWhiteSpace(text[i])) {
+                    return line.Start + i;
+                }
+            }
+
+            return null;
+        }
         
+        #region Dokumentation
+        /// <summary>
+        /// Returns the last non-whitespace position on the given line, or null if 
+        /// the line is empty or contains only whitespace.
+        /// </summary>
+        #endregion
+        public static int? GetLastNonWhitespacePosition(this ITextSnapshotLine line) {
+
+            var text = line.GetText();
+
+            for (int i = text.Length - 1; i >= 0; i--) {
+                if (!char.IsWhiteSpace(text[i])) {
+                    return line.Start + i;
+                }
+            }
+
+            return null;
+        }
+
         #region Dokumentation
         /// <summary>
         /// Liefert den Spaltenindex (beginnend bei 0) für den angegebenen Offset vom Start der Zeile. 
@@ -24,16 +62,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         #endregion
         public static int GetColumnForOffset(this ITextSnapshotLine line, int tabSize, int offset) {
             var text = line.GetText();
-            var column = 0;
-            for (int index = 0; index < offset; index++) {
-                var c = text[index];
-                if (c == '\t') {
-                    column += tabSize - column % tabSize;
-                } else {
-                    column++;
-                }
-            }
-            return column;
+            return text.GetColumnForOffset(tabSize, offset);         
         }
 
         #region Dokumentation
@@ -50,22 +79,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         /// </example>
         #endregion
         public static int GetSignificantColumn(this ITextSnapshotLine line, int tabSize) {
-            bool hasSignificantContent = false;
-            int column = 0;
             var text = line.GetText();
-            for (int index = 0; index < text.Length; index++) {
-                var c = text[index];
-
-                if (c == '\t') {
-                    column += tabSize - column % tabSize;
-                } else if (Char.IsWhiteSpace(c)) {
-                    column++;
-                } else {
-                    hasSignificantContent = true;
-                    break;
-                }
-            }
-            return hasSignificantContent ? column : Int32.MaxValue;
+            return text.GetSignificantColumn(tabSize);
         }
 
         #region Using Directives
@@ -87,7 +102,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             int currentColumn = 0;
             for (int index = 0; index < text.Length; index++) {
                 var c = text[index];
-                if (currentColumn == column) {
+                if (currentColumn >= column) {
                     break;
                 }
                 if (c == '\t') {
@@ -99,5 +114,41 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             }
             return offset;
         }
+
+        /// <summary>
+        /// Determines whether the specified line is empty or contains whitespace only.
+        /// </summary>
+        public static bool IsEmptyOrWhitespace(this ITextSnapshotLine line) {
+
+            var text = line.GetText();
+
+            for(int i = 0; i < text.Length; i++) {
+                if(!char.IsWhiteSpace(text[i])) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static ITextSnapshotLine GetPreviousMatchingLine(this ITextSnapshotLine line, Func<ITextSnapshotLine, bool> predicate) {
+            
+            if(line.LineNumber <= 0) {
+                return null;
+            }
+
+            var snapshot = line.Snapshot;
+            for(int lineNumber = line.LineNumber - 1; lineNumber >= 0; lineNumber--) {
+                var currentLine = snapshot.GetLineFromLineNumber(lineNumber);
+                if(!predicate(currentLine)) {
+                    continue;
+                }
+
+                return currentLine;
+            }
+
+            return null;
+        }
+
     }
 }

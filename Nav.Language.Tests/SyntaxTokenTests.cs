@@ -12,9 +12,10 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count,     Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count % 2, Is.EqualTo(1));
 
+            Assert.That(syntaxTree.Tokens.FindAtPosition(-1).IsMissing, Is.True);
             Assert.That(syntaxTree.Tokens.FindAtPosition(0).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
             Assert.That(syntaxTree.Tokens.FindAtPosition(1).Type, Is.EqualTo(SyntaxTokenType.OpenBracket));
             Assert.That(syntaxTree.Tokens.FindAtPosition(2).Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
@@ -25,6 +26,7 @@ namespace Nav.Language.Tests {
             Assert.That(syntaxTree.Tokens.FindAtPosition(7).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
             Assert.That(syntaxTree.Tokens.FindAtPosition(8).Type, Is.EqualTo(SyntaxTokenType.Identifier));
             Assert.That(syntaxTree.Tokens.FindAtPosition(9).Type, Is.EqualTo(SyntaxTokenType.CloseBracket));
+            Assert.That(syntaxTree.Tokens.FindAtPosition(10).IsMissing, Is.True);
         }
 
         [Test]
@@ -107,7 +109,52 @@ namespace Nav.Language.Tests {
             }
         }
 
-        
+        [Test]
+        public void TestNewLineAfterSingleLineComments() {
+            string source =
+@"//Comment
+task B;
+";
+            var ndb = Syntax.ParseNodeDeclarationBlock(source);
+            var tokens = ndb.SyntaxTree.Tokens;
+
+            Assert.That(tokens[0].Type, Is.EqualTo(SyntaxTokenType.SingleLineComment));
+            Assert.That(tokens[1].Type, Is.EqualTo(SyntaxTokenType.NewLine));
+            Assert.That(tokens[2].Type, Is.EqualTo(SyntaxTokenType.TaskKeyword));
+        }
+
+        [Test]
+        public void TestNewLineAfterSingleLineComments2() {
+            string source =
+@"task A;
+                 //Comment
+task B;
+";
+            var ndb = Syntax.ParseNodeDeclarationBlock(source);
+            var tokens = ndb.SyntaxTree.Tokens;
+            Assert.That(tokens[0].Type, Is.EqualTo(SyntaxTokenType.TaskKeyword));
+            Assert.That(tokens[1].Type, Is.EqualTo(SyntaxTokenType.Whitespace));
+            Assert.That(tokens[2].Type, Is.EqualTo(SyntaxTokenType.Identifier));
+            Assert.That(tokens[3].Type, Is.EqualTo(SyntaxTokenType.Semicolon));
+            Assert.That(tokens[4].Type, Is.EqualTo(SyntaxTokenType.NewLine));
+            Assert.That(tokens[5].Type, Is.EqualTo(SyntaxTokenType.Whitespace));
+            Assert.That(tokens[6].Type, Is.EqualTo(SyntaxTokenType.SingleLineComment));
+            Assert.That(tokens[7].Type, Is.EqualTo(SyntaxTokenType.NewLine));
+        }
+
+        [Test]
+        public void TestNewLineAfterMultiLineComments() {
+            string source =
+@"/*Comment*/
+task B;
+";
+            var ndb = Syntax.ParseNodeDeclarationBlock(source);
+            var tokens = ndb.SyntaxTree.Tokens;
+
+            Assert.That(tokens[0].Type, Is.EqualTo(SyntaxTokenType.MultiLineComment));
+            Assert.That(tokens[1].Type, Is.EqualTo(SyntaxTokenType.NewLine));
+            Assert.That(tokens[2].Type, Is.EqualTo(SyntaxTokenType.TaskKeyword));
+        }
 
         [Test]
         public void TestEmptyToken() {
@@ -153,6 +200,44 @@ namespace Nav.Language.Tests {
             var next = missing.PreviousToken();
 
             Assert.That(next.IsMissing, Is.True);
+        }
+
+        [Test]
+        public void TestCommentAtEndOfFile() {
+            string usingText = " [using U]" +
+                               "//Comment";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+            var tokens = syntaxTree.Tokens;
+            Assert.That(tokens[tokens.Count - 1].Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
+        }
+
+        [Test]
+        public void TestEndOfFile() {
+            string usingText = " [using U]";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+            var tokens = syntaxTree.Tokens;
+            Assert.That(tokens[tokens.Count - 1].Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
+        }
+
+        [Test]
+        public void TestEndOfFileOnEmptyString() {
+            string usingText = "";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+            var tokens = syntaxTree.Tokens;
+            Assert.That(tokens.Count, Is.EqualTo(1));
+            Assert.That(tokens[tokens.Count - 1].Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
+        }
+
+        [Test]
+        public void TestEndOfFileOnSpace() {
+            string usingText = " ";
+
+            var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
+            var tokens = syntaxTree.Tokens;
+            Assert.That(tokens[tokens.Count - 1].Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
         }
     }
 }

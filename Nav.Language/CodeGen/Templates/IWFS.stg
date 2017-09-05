@@ -1,0 +1,21 @@
+﻿delimiters "<", ">"
+
+Begin(model, context) ::=<<
+<writeFileHeader(context)>
+<writeUsingDirectives(model.UsingNamespaces)>
+
+namespace <model.Namespace> {
+    <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
+    public interface <model.InterfaceName>: <model.BaseInterfaceName> {
+        <writeTriggerMethodDeclarationList(model.TriggerTransitions)>
+    }
+}
+>>
+
+writeTriggerMethodDeclarationList(triggerTransitions) ::=<<
+<triggerTransitions:writeTriggerMethodDeclaration(); separator="\r\n">
+>>
+
+writeTriggerMethodDeclaration(triggerTransition) ::=<<
+INavCommand <triggerTransition.TriggerMethodName>(<writeParameterList(triggerTransition.ViewParameter)>);
+>>

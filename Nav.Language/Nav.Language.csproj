@@ -40,12 +40,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="Antlr4.Runtime, Version=4.5.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
       <HintPath>..\packages\Antlr4.Runtime.4.5.3\lib\net45\Antlr4.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Antlr4.StringTemplate, Version=4.0.6.9004, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Antlr4.StringTemplate.4.0.6.9004\lib\net35\Antlr4.StringTemplate.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Antlr4.StringTemplate, Version=4.0.7.0, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <HintPath>..\packages\StringTemplate4.4.0.8\lib\net35-client\Antlr4.StringTemplate.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
@@ -55,36 +57,103 @@
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeGen\AnnotationTagNames.cs" />
-    <Compile Include="CodeGen\BeginWfsCodeModel.cs" />
-    <Compile Include="CodeGen\CodeGenerationOptions.cs" />
+    <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
+    <Compile Include="CodeFixes\AddMissingExitTransitionCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesCodeFix.cs" />
+    <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\CodeFix.cs" />
+    <Compile Include="CodeFixes\CodeFixContext.cs" />
+    <Compile Include="CodeFixes\CodeFixImpact.cs" />
+    <Compile Include="CodeFixes\CodeFixPrio.cs" />
+    <Compile Include="CodeFixes\EditorSettings.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedIncludeDirectiveCodeFix.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedTaskDeclarationCodeFix.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedNodesCodeFix.cs" />
+    <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksCodeFix.cs" />
+    <Compile Include="CodeFixes\IntroduceChoiceCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
+    <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedNodesCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedIncludeDirectiveCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\RemoveUnusedTaskDeclarationCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\Rename\DialogNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\ExitNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\RenameCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\Rename\RenameNodeCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\TaskDeclarationRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\TaskNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\InitNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\ChoiceRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\RenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Rename\ViewNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\TaskDefinitionSymbolExtensions.cs" />
+    <Compile Include="CodeGen\CodeGenerationSpec.cs" />
+    <Compile Include="CodeGen\CodeGenFacts.cs" />
+    <Compile Include="CodeGen\CodeModel\BeginWrapperCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\BeginWrapperCtor.cs" />
+    <Compile Include="CodeGen\CodeModel\CodeModelBuilder.cs" />
+    <Compile Include="CodeGen\CodeModel\ExitTransitionCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\FileGenerationCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\InitTransitionCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\CallCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\CallCodeModelBuilder.cs" />
+    <Compile Include="CodeGen\CodeModel\FieldCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\TOCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\TransitionCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\TriggerTransitionCodeMode.cs" />
+    <Compile Include="CodeGen\CodeModel\WfsCodeModel.cs" />
+    <Compile Include="CodeGen\FileGenerator.cs" />
+    <Compile Include="CodeGen\FileGeneratorAction.cs" />
+    <Compile Include="CodeGen\FileGeneratorResult.cs" />
+    <Compile Include="CodeGen\GenerationOptions.cs" />
     <Compile Include="CodeGen\CodeGenerationResult.cs" />
     <Compile Include="CodeGen\CodeGenerator.cs" />
-    <Compile Include="CodeGen\CodeModel.cs" />
-    <Compile Include="CodeGen\SignalTriggerCodeModel.cs" />
-    <Compile Include="CodeGen\TaskBeginCodeModel.cs" />
-    <Compile Include="CodeGen\TaskCodeModel.cs" />
-    <Compile Include="CodeGen\TaskDeclarationCodeModel.cs" />
-    <Compile Include="CodeGen\TaskExitCodeModel.cs" />
+    <Compile Include="CodeGen\CodeGeneratorContext.cs" />
+    <Compile Include="CodeGen\CodeModelResult.cs" />
+    <Compile Include="CodeGen\CodeModel\CodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\IBeginWfsCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\WfsBaseCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\IWfsCodeModel.cs" />
+    <Compile Include="CodeGen\CodeModel\ParameterCodeModel.cs" />
+    <Compile Include="CodeGen\SignalTriggerCodeInfo.cs" />
+    <Compile Include="CodeGen\TaskInitCodeInfo.cs" />
+    <Compile Include="CodeGen\TaskCodeInfo.cs" />
+    <Compile Include="CodeGen\TaskDeclarationCodeInfo.cs" />
+    <Compile Include="CodeGen\TaskExitCodeInfo.cs" />
+    <Compile Include="CodeGen\Generator.cs" />
+    <Compile Include="CodeGen\Templates\CodeGenFacts.generated.cs" />
+    <Compile Include="Diagnostic\DiagnosticFormatter.cs" />
+    <Compile Include="Model\Call.cs" />
+    <Compile Include="Model\EdgeExtensions.cs" />
+    <Compile Include="Model\ICodeParameter.cs" />
+    <Compile Include="Model\NodeExtensions.cs" />
+    <Compile Include="Model\CodeParameter.cs" />
+    <Compile Include="Provider\CachedSyntaxProvider.cs" />
+    <Compile Include="Provider\IPathProvider.cs" />
+    <Compile Include="Provider\IPathProviderFactory.cs" />
+    <Compile Include="Provider\ISyntaxProviderFactory.cs" />
+    <Compile Include="Provider\PathProvider.cs" />
+    <Compile Include="Provider\PathProviderFactory.cs" />
+    <Compile Include="CodeGen\Templates\Resources.cs" />
+    <Compile Include="Common\EnumerableExtensions.cs" />
+    <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TextLineExtent.cs" />
     <Compile Include="Common\LinePosition.cs" />
     <Compile Include="Common\LinePositionExtent.cs" />
     <Compile Include="Common\Location.cs" />
+    <Compile Include="Dependencies\DependencyAnalyzer.cs" />
+    <Compile Include="Dependencies\DependencyExtensions.cs" />
+    <Compile Include="Dependencies\Dependency.cs" />
+    <Compile Include="Dependencies\DependencyItem.cs" />
     <Compile Include="Diagnostic\DiagnosticCategory.cs" />
     <Compile Include="Diagnostic\DiagnosticDescriptors.cs" />
     <Compile Include="Diagnostic\DiagnosticDescriptors.Semantic.cs" />
     <Compile Include="Diagnostic\DiagnosticExtensions.cs" />
     <Compile Include="Diagnostic\DiagnosticId.cs" />
     <Compile Include="Diagnostic\DiagnosticSeverity.cs" />
+    <Compile Include="Model\CodeGenerationUnitExtensions.cs" />
     <Compile Include="Model\ConnectionPointReferenceSymbol.cs" />
     <Compile Include="Model\ConnectionPointSymbol.cs" />
     <Compile Include="CodeGen\CSharp.cs" />
@@ -100,7 +169,9 @@
     <Compile Include="Model\IEdgeModeSymbol.cs" />
     <Compile Include="Model\IExitTransition.cs" />
     <Compile Include="Model\IIncludeSymbol.cs" />
+    <Compile Include="Model\IInitNodeAliasSymbol.cs" />
     <Compile Include="Model\IncludeSymbol.cs" />
+    <Compile Include="Model\InitNodeAliasSymbol.cs" />
     <Compile Include="Model\ISymbol.cs" />
     <Compile Include="Model\ITaskDefinitionSymbol.cs" />
     <Compile Include="Model\ITaskNodeAlias.cs" />
@@ -108,7 +179,9 @@
     <Compile Include="Model\NodeReferenceSymbol.cs" />
     <Compile Include="Model\SymbolList.cs" />
     <Compile Include="Model\TaskDeclarationSymbol.cs" />
+    <Compile Include="Model\TaskDefinitionSymbolExtensions.cs" />
     <Compile Include="Model\TaskNodeAliasSymbol.cs" />
+    <Compile Include="Model\TaskNodeSymbolExtensions.cs" />
     <Compile Include="Model\Transition.cs" />
     <Compile Include="Model\IConnectionPointSymbol.cs" />
     <Compile Include="Model\ITransition.cs" />
@@ -124,11 +197,8 @@
     <Compile Include="Model\TaskDeclarationSymbolBuilder.cs" />
     <Compile Include="Model\TaskDefinitionSymbol.cs" />
     <Compile Include="Model\TriggerSymbol.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <Compile Include="Provider\SyntaxProvider.cs" />
+    <Compile Include="Provider\SyntaxProviderFactory.cs" />
     <Compile Include="Syntax\CodeSyntax.cs" />
     <Compile Include="Diagnostic\DiagnosticDescriptor.cs" />
     <Compile Include="Syntax\Generated\SyntaxNodeWalker.Generated.cs">
@@ -137,6 +207,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Syntax\IdentifierOrStringListSyntax.cs" />
+    <Compile Include="Provider\ISyntaxProvider.cs" />
     <Compile Include="Syntax\SampleSyntaxAttribute.cs" />
     <Compile Include="Syntax\Generated\Syntax.Generated.cs">
       <AutoGen>True</AutoGen>
@@ -164,6 +235,9 @@
     <Compile Include="Syntax\GenericTypeSyntax.cs" />
     <Compile Include="Syntax\IdentifierOrStringSyntax.cs" />
     <Compile Include="Common\IExtent.cs" />
+    <Compile Include="Syntax\SyntaxFacts.cs" />
+    <Compile Include="Syntax\SyntaxTokenComparer.cs" />
+    <Compile Include="CodeFixes\SyntaxTreeExtensions.cs" />
     <Compile Include="Syntax\TriggerSyntax.cs" />
     <Compile Include="Syntax\ParameterListSyntax.cs" />
     <Compile Include="Syntax\SimpleTypeSyntax.cs" />
@@ -211,25 +285,32 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Syntax\SyntaxTokenClassification.cs" />
     <Compile Include="Internal\NavErrorListener.cs" />
+    <Compile Include="Text\TextChange.cs" />
+    <Compile Include="Text\TextChangeWriter.cs" />
     <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagnostic\DiagnosticDescriptors.DeadCode.cs" />
-    <None Include="CodeGen\Templates\IBeginWFS.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\IBeginWFS.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\IWFS.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\WFSBase.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\WFSOneShot.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\Common.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\TO.stg" />
+    <ExportStringTemplates Include="CodeGen\Templates\CodeGenFacts.stg">
+      <CustomToolNamespace>Pharmatechnik.Nav.Language.CodeGen</CustomToolNamespace>
+    </ExportStringTemplates>
+    <None Include="CodeGen\ClassDiagram1.cd" />
     <None Include="Grammar\NavTokens.g4" />
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
     </Antlr4>
     <None Include="Model\ClassDiagram.cd" />
     <None Include="packages.config" />
-    <None Include="UpdateProductVersion.targets" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj">
-      <Project>{aa0629b3-af39-4049-9723-7989ec93b0a4}</Project>
-      <Name>Nav.Utilities</Name>
-    </ProjectReference>
+    <None Include="CustomBuild.targets">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Syntax\Generated\_Readme.txt" />
@@ -261,13 +342,13 @@
     <None Include="Model\_Missing Diagnostics.txt" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj">
+      <Project>{aa0629b3-af39-4049-9723-7989ec93b0a4}</Project>
+      <Name>Nav.Utilities</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="UpdateProductVersion.targets" />
+  <Import Project="CustomBuild.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>

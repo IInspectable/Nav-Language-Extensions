@@ -1,0 +1,30 @@
+ [namespaceprefix a.b.c]
+
+task MessageBox 					[code "public enum MessageBoxResult { Ok };"]
+								    [base BaseWFService]
+                                    [result MessageBoxResult]
+{
+    init in							[params string];
+    init in2							[params string, int];
+    view MessageBox;
+    exit   Ok;
+
+    in --> MessageBox;
+    in2 --> MessageBox;
+    MessageBox --> Ok on Ok_Clicked;
+}
+
+task ConfirmDialog 					[code "public enum ConfirmDialogResult { Yes, No };"]
+								    [base BaseWFService]
+                                    [result ConfirmDialogResult]
+{
+    init								[params string];
+    view ConfirmDialog;
+    exit   Yes;
+    exit   No;
+
+    init --> ConfirmDialog;
+
+    ConfirmDialog --> Yes on Yes_Clicked;
+    ConfirmDialog --> No  on No_Clicked, Close;
+}

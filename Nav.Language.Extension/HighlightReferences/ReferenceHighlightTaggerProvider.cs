@@ -12,7 +12,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
     [Export(typeof(IViewTaggerProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [TagType(typeof(TextMarkerTag))]
+    [TagType(typeof(ReferenceHighlightTag))]
     class ReferenceHighlightTaggerProvider : IViewTaggerProvider {
 
         public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag {

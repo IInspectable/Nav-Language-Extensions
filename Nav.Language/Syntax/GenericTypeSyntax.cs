@@ -8,7 +8,7 @@ namespace Pharmatechnik.Nav.Language {
     public partial class GenericTypeSyntax : CodeTypeSyntax {
         readonly IReadOnlyList<CodeTypeSyntax> _genericArguments;
 
-        internal GenericTypeSyntax(TextExtent extent, List<CodeTypeSyntax> genericArguments) : base(extent) {
+        internal GenericTypeSyntax(TextExtent extent, IReadOnlyList<CodeTypeSyntax> genericArguments) : base(extent) {
             AddChildNodes(_genericArguments = genericArguments);
         }
 

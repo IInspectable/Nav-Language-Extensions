@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language {
     [Serializable]
@@ -11,8 +12,8 @@ namespace Pharmatechnik.Nav.Language {
             get { return ChildTokens().FirstOrMissing(SyntaxTokenType.CodeKeyword); }
         }
 
-        public SyntaxToken StringLiteral {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral); }
+        public IEnumerable<SyntaxToken> GetGetStringLiterals() {
+            return ChildTokens().OfType(SyntaxTokenType.StringLiteral);
         }
     }
 }

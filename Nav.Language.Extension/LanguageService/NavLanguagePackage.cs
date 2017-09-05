@@ -21,8 +21,9 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Text.Outlining;
 using Microsoft.VisualStudio.TextManager.Interop;
-
+using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 
 using Control = System.Windows.Controls.Control;
@@ -149,9 +150,20 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                     wpfTextView = OpenFileInPreviewTab(location.FilePath);
                 }
 
-                var selection = DTE?.ActiveDocument.Selection as TextSelection;
-                selection?.MoveToLineAndOffset(Line: location.StartLine + 1, Offset: location.StartCharacter + 1);
-                selection?.MoveToLineAndOffset(Line: location.EndLine + 1, Offset: location.EndCharacter + 1, Extend: true);
+                if(wpfTextView == null) {
+                    return null;
+                }
+
+                if(location.Start == 0 && location.Length == 0) {
+                    return wpfTextView;
+                }
+
+                var outliningManagerService = GetServiceProvider().GetMefService< IOutliningManagerService>();
+
+                var snapshotSpan = location.ToSnapshotSpan(wpfTextView.TextSnapshot);
+                if (wpfTextView.TryMoveCaretToAndEnsureVisible(snapshotSpan.Start, outliningManagerService)) {
+                    wpfTextView.SetSelection(snapshotSpan);
+                }
 
                 return wpfTextView;
             }

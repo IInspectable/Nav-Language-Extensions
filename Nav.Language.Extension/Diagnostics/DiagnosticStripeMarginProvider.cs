@@ -42,6 +42,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
         #endregion
         public IWpfTextViewMargin CreateMargin(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin marginContainer) {
 
+            // ReSharper disable once SuspiciousTypeConversion.Global
             var scrollBar = marginContainer.GetTextViewMargin(PredefinedMarginNames.VerticalScrollBar) as IVerticalScrollBar;
             if (scrollBar == null) {
                 return null;

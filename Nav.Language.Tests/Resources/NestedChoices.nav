@@ -1,0 +1,41 @@
+[namespaceprefix Test]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.WFL]
+
+task A{
+    init i;
+    exit e;
+    i --> e;
+}
+
+task B {
+    init i;
+    exit e;
+    exit f;
+    i --> e;
+}
+
+task taskA [code "public enum MessageBoxResult{ Ok, Abbrechen}"]
+           [base StandardWFS : IWFService]
+           [params int foo]
+           [result MessageBoxResult]
+
+{
+    init I1 [params string message];
+    task A;
+    task B;
+    task B c;
+    choice Foo;
+    view TestView; 
+    exit Ok;
+    I1          --> TestView; 
+    TestView    --> A on Ok;
+    A:e         --> Foo;
+    Foo         o-> B;
+    Foo         --> c;
+    B:e         --> Ok;
+    B:f         --> Ok;
+    c:e         --> Ok;
+    c:f         --> A;
+    TestView    --> Ok on OnFoo;
+}

@@ -22,5 +22,9 @@ namespace Pharmatechnik.Nav.Language {
         public IdentifierOrStringSyntax Namespace {
             get { return _namespace; }
         }
+
+        protected override bool PromiseNoDescendantNodeOfSameType {
+            get { return true; }
+        }
     }
 }
