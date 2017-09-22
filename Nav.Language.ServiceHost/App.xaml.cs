@@ -23,13 +23,13 @@ namespace Nav.Language.ServiceHost {
 
             var scp = ServiceConnectionParams.FromCommandLine(e.Args);
             if(scp == null) {
-                Logger.Error($"Missing service connection parameter. Terminating Service Host.");
+                Logger.Error("Missing service connection parameter. Terminating Service Host.");
                 Terminate(1);
                 return;
             }
 
             // Step 1
-            Logger.Debug($"Create the NetNamedPipeBinding.");
+            Logger.Debug("Create the NetNamedPipeBinding.");
             
             var binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
             binding.ReceiveTimeout                     = TimeSpan.MaxValue;
@@ -38,10 +38,10 @@ namespace Nav.Language.ServiceHost {
             binding.MaxReceivedMessageSize             = scp.BindingMaxReceivedMessageSize;
 
             // Step 3
-            Logger.Debug($"Create the service hosts.");
+            Logger.Debug("Create the service hosts.");
 
             // Step 4
-            Logger.Debug($"Signal parent process that host is ready so that it can proceed.");
+            Logger.Debug("Signal parent process that host is ready so that it can proceed.");
 
             var readyEvent = new EventWaitHandle(false, EventResetMode.ManualReset, scp.ReadyEventName);
             readyEvent.Set();
