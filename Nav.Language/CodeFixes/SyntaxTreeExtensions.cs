@@ -135,7 +135,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 return 0;
             }
    
-            int spaceCount = 1;
+            int spaceCount;
             if (location1.EndLine != location2.StartLine) {
                 // Locations in unterschiedliche Zeilen
                 var column = syntaxTree.GetStartColumn(location2, editorSettings);

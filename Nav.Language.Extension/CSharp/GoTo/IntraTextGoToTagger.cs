@@ -126,11 +126,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _workspace = workspace;
 
             if(_workspace != null) {
+                // ReSharper disable PossibleNullReferenceException
                 // TODO Fehlt uns irgendein Event? Es scheint manchmal vorzukommen, dass die Tags nach dem Starten von VS nicht verfügbar sind...
                 _workspace.WorkspaceChanged += OnWorkspaceChanged;
                 _workspace.DocumentOpened   += OnDocumentOpened;
+                // ReSharper restore PossibleNullReferenceException
             }
-            
+
             Invalidate();
         }
 
@@ -141,9 +143,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             if (_workspace != null) {
                 Logger.Trace($"{nameof(DisconnectFromWorkspace)}: {_textBuffer.GetTextDocument()?.FilePath}");
 
+                // ReSharper disable PossibleNullReferenceException
                 _workspace.WorkspaceChanged -= OnWorkspaceChanged;
                 _workspace.DocumentOpened   -= OnDocumentOpened;
-
+                // ReSharper restore PossibleNullReferenceException
                 _workspace = null;                
             }
         }

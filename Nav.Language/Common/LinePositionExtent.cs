@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language {
         /// </summary>
         /// <param name="obj">The object to compare.</param>
         public override bool Equals(object obj) {
-            return obj is LinePositionExtent && Equals((LinePositionExtent)obj);
+            return obj is LinePositionExtent extent && Equals(extent);
         }
 
         /// <summary>

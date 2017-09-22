@@ -66,19 +66,19 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         #region Symbols
         
-        static IImageHandle TaskDeclarationImageHandle;
+        static IImageHandle _taskDeclarationImageHandle;
 
         public static ImageMoniker TaskDeclaration {
             get {
 
-                if (TaskDeclarationImageHandle == null) {
+                if (_taskDeclarationImageHandle == null) {
 
-                    TaskDeclarationImageHandle = GetCompositedImageHandle(
+                    _taskDeclarationImageHandle = GetCompositedImageHandle(
                         CreateLayer(TaskDefinition),
                         CreateLayer(KnownMonikers.ReferencedElement));
                 }
 
-                return TaskDeclarationImageHandle.Moniker;
+                return _taskDeclarationImageHandle.Moniker;
             }
         }
 

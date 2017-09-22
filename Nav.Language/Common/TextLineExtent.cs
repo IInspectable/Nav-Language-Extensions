@@ -80,7 +80,7 @@ namespace Pharmatechnik.Nav.Language {
         /// </summary>
         /// <param name="obj">The object to compare.</param>
         public override bool Equals(object obj) {
-            return obj is TextLineExtent && Equals((TextLineExtent)obj);
+            return obj is TextLineExtent extent && Equals(extent);
         }
 
         /// <summary>

@@ -38,9 +38,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         void AddOrRemoveDropdown(bool enabled) {
 
             // ReSharper disable once SuspiciousTypeConversion.Global
-            var dropdownManager = _codeWindow as IVsDropdownBarManager;
-
-            if (dropdownManager == null) {
+            if (!(_codeWindow is IVsDropdownBarManager dropdownManager)) {
                 return;
             }
 
@@ -66,8 +64,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         void AddDropdownBar(IVsDropdownBarManager dropdownManager) {
 
-            IVsTextView textView;
-            _codeWindow.GetPrimaryView(out textView);
+            _codeWindow.GetPrimaryView(out var textView);
 
             if(textView == null) {
                 Logger.Warn($"{nameof(AddDropdownBar)}: Unable to get primary view");
@@ -116,14 +113,12 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         }
 
         static IVsDropdownBar GetDropdownBar(IVsDropdownBarManager dropdownManager) {
-            IVsDropdownBar existingDropdownBar;
-            ErrorHandler.ThrowOnFailure(dropdownManager.GetDropdownBar(out existingDropdownBar));
+            ErrorHandler.ThrowOnFailure(dropdownManager.GetDropdownBar(out var existingDropdownBar));
             return existingDropdownBar;
         }
 
         static IVsDropdownBarClient GetDropdownBarClient(IVsDropdownBar dropdownBar) {
-            IVsDropdownBarClient dropdownBarClient;
-            ErrorHandler.ThrowOnFailure(dropdownBar.GetClient(out dropdownBarClient));
+            ErrorHandler.ThrowOnFailure(dropdownBar.GetClient(out var dropdownBarClient));
             return dropdownBarClient;
         }
     }

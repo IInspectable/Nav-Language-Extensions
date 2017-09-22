@@ -84,8 +84,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         Run ToRun(string text, SyntaxTokenClassification classification, IClassificationFormatMap formatMap) {
             var run = new Run(text);
 
-            IClassificationType ct;
-            _classificationMap.TryGetValue(classification, out ct);
+            _classificationMap.TryGetValue(classification, out var ct);
             if (ct != null) {
                 var props = formatMap.GetTextProperties(ct);
                 run.SetTextProperties(props);

@@ -25,9 +25,8 @@ namespace Pharmatechnik.Nav.Language {
             if(targetNode == null) {
                 yield break;
             }
-            
-            var choiceNode = targetNode as IChoiceNodeSymbol;
-            if(choiceNode != null) {
+
+            if(targetNode is IChoiceNodeSymbol choiceNode) {
                 foreach(var call in choiceNode.Outgoings.SelectMany(e => GetReachableCalls(e, seenEdges))) {
                     yield return call;
                 }

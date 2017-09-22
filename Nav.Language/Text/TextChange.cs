@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is TextChange && Equals((TextChange) obj);
+            return obj is TextChange change && Equals(change);
         }
 
         public override int GetHashCode() {

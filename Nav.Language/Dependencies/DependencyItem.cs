@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.Dependencies {
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj is DependencyItem && Equals((DependencyItem) obj);
+            return obj is DependencyItem item && Equals(item);
         }
 
         public override int GetHashCode() {

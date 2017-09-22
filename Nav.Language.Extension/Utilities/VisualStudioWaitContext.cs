@@ -31,8 +31,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         IVsThreadedWaitDialog3 CreateDialog(IVsThreadedWaitDialogFactory dialogFactory) {
-            IVsThreadedWaitDialog2 dialog2;
-            Marshal.ThrowExceptionForHR(dialogFactory.CreateInstance(out dialog2));
+            Marshal.ThrowExceptionForHR(dialogFactory.CreateInstance(out var dialog2));
 
             var dialog3 = (IVsThreadedWaitDialog3) dialog2;
 
@@ -79,7 +78,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         void UpdateDialog() {
-            bool hasCancelled;
             _dialog.UpdateProgress(
                 szUpdatedWaitMessage: _message,
                 szProgressText      : null,
@@ -87,15 +85,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
                 iCurrentStep        : 0,
                 iTotalSteps         : 0,
                 fDisableCancel      : !_allowCancel,
-                pfCanceled          : out hasCancelled);
+                pfCanceled          : out bool _);
         }
 
         public void UpdateProgress() {
         }
 
         public void Dispose() {
-            int canceled;
-            _dialog.EndWaitDialog(out canceled);
+            _dialog.EndWaitDialog(out int _);
         }
 
         void OnCanceled() {

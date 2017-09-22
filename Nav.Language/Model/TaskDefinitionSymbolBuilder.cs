@@ -975,8 +975,7 @@ namespace Pharmatechnik.Nav.Language {
                     continue;
                 }
 
-                ITriggerSymbol existing;
-                triggerMap.TryGetValue(nodeSymbol, out existing);
+                triggerMap.TryGetValue(nodeSymbol, out var existing);
 
                 foreach(var trigger in trans.Triggers) {
 

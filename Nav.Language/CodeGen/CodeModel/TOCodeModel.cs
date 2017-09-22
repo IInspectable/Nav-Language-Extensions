@@ -63,10 +63,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         private static IEnumerable<string> GetUsingNamespaces() {
 
-            var namespaces = new List<string>();
-
-            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
-
+            var namespaces = new List<string> {
+                CodeGenFacts.NavigationEngineIwflNamespace
+            };
+            
             return namespaces.ToSortedNamespaces();
         }
     }

@@ -82,8 +82,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             _comEventSink = ComEventSink.Advise<IVsCodeWindowEvents>(codeWindow, this);
 
-            IVsTextView pTextView;
-            codeWindow.GetPrimaryView(out pTextView);            
+            codeWindow.GetPrimaryView(out var pTextView);            
             ConnectView(pTextView);
 
             codeWindow.GetSecondaryView(out pTextView);
@@ -410,9 +409,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         int GetActiveSelection(int comboBoxId) {
-
-            int selection;
-            if (_activeSelections.TryGetValue(comboBoxId, out selection)) {
+            if (_activeSelections.TryGetValue(comboBoxId, out var selection)) {
                 return selection;
             }
             return -1;
@@ -470,8 +467,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
         
         IWpfTextView GetCurrentView() {
-            IVsTextView lastActiveView;
-            _codeWindow.GetLastActiveView(out lastActiveView);
+            _codeWindow.GetLastActiveView(out var lastActiveView);
             lastActiveView = lastActiveView ?? _trackedViews.Keys.FirstOrDefault();
             return _editorAdaptersFactoryService.GetWpfTextView(lastActiveView);
         }

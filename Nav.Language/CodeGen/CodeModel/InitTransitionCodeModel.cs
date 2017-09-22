@@ -26,9 +26,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ImmutableList<ParameterCodeModel> Parameter { get; }
 
         internal static InitTransitionCodeModel FromInitTransition(ITransition initTransition, TaskCodeInfo taskCodeInfo) {
-
-            var initNode = initTransition?.Source?.Declaration as IInitNodeSymbol;
-            if (initNode == null) {
+            if (!(initTransition?.Source?.Declaration is IInitNodeSymbol initNode)) {
                 throw new ArgumentException("Init transition expected");
             }
             if (taskCodeInfo == null) {

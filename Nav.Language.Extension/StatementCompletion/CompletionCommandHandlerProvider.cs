@@ -6,7 +6,6 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 
@@ -35,8 +34,7 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
 
             CompletionCommandHandler filter = new CompletionCommandHandler(view, _completionBroker);
 
-            IOleCommandTarget next;
-            textViewAdapter.AddCommandFilter(filter, out next);
+            textViewAdapter.AddCommandFilter(filter, out var next);
             filter.Next = next;
         }
     }

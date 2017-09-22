@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
-    [DebuggerDisplay("{ToDebuggerDisplayString(), nq}")]
+    [DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
     public struct SyntaxToken: IExtent {
 
         const int BitMask                = 0xFF;

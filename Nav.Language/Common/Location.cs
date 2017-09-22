@@ -121,7 +121,7 @@ namespace Pharmatechnik.Nav.Language {
             if (ReferenceEquals(this, obj)) {
                 return true;
             }
-            return obj is Location && Equals((Location)obj);
+            return obj is Location location && Equals(location);
         }
 
         public override int GetHashCode() {

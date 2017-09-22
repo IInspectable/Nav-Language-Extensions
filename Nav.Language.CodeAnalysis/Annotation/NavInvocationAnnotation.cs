@@ -12,10 +12,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
 
         protected NavInvocationAnnotation(NavTaskAnnotation taskAnnotation, 
                                           IdentifierNameSyntax identifier): base(taskAnnotation) {
-            if(identifier == null) {
-                throw new ArgumentNullException(nameof(identifier));
-            }
-            Identifier = identifier;
+
+            Identifier = identifier ?? throw new ArgumentNullException(nameof(identifier));
         }
 
         [NotNull]

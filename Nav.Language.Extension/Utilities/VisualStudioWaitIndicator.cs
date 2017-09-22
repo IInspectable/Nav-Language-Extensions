@@ -29,8 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
                 } catch(OperationCanceledException) {
                     return WaitIndicatorResult.Canceled;
                 } catch(AggregateException e) {
-                    var operationCanceledException = e.InnerExceptions[0] as OperationCanceledException;
-                    if(operationCanceledException != null) {
+                    if(e.InnerExceptions[0] is OperationCanceledException) {
                         return WaitIndicatorResult.Canceled;
                     } else {
                         throw;

@@ -133,8 +133,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             var syntaxTree = syntaxTreeAndSnapshot.SyntaxTree;
             var snapshot   = syntaxTreeAndSnapshot.Snapshot;
 
-            var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
-            if(codeGenerationUnitSyntax == null) {
+            if(!(syntaxTree.GetRoot() is CodeGenerationUnitSyntax codeGenerationUnitSyntax)) {
                 Logger.Debug($"Der SyntaxRoot ist nicht vom Typ {typeof(CodeGenerationUnitSyntax)}. Der Vorgang wird abgebrochen.");
                 return null;
             }

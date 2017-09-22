@@ -43,8 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
             var extent = TextExtent.FromBounds(span.Start.Position, span.End.Position);
             foreach(var token in syntaxTreeAndSnapshot.SyntaxTree.Tokens[extent, includeOverlapping: true]) {
 
-                IClassificationType ct;
-                _classificationMap.TryGetValue(token.Classification, out ct);
+                _classificationMap.TryGetValue(token.Classification, out var ct);
                 if (ct == null) {
                     continue;
                 }

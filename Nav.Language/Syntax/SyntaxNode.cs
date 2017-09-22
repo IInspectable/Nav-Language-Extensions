@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
-    [DebuggerDisplay("{ToDebuggerDisplayString(), nq}")]
+    [DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
     public abstract partial class SyntaxNode: IExtent {
 
         readonly TextExtent _extent;

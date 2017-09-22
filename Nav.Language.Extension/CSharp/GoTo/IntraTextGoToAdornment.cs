@@ -72,9 +72,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         void UpdateColor() {
-
-            var backgroundBrush = _textView.Background as SolidColorBrush;
-            if (backgroundBrush != null) {
+            if (_textView.Background is SolidColorBrush backgroundBrush) {
                 ImageThemingUtilities.SetImageBackgroundColor(_crispImage, backgroundBrush.Color);
             }
         }
