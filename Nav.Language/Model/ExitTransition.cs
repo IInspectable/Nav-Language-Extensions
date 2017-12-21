@@ -43,9 +43,7 @@ namespace Pharmatechnik.Nav.Language {
         public ITaskDefinitionSymbol ContainingTask { get; }
 
         [NotNull]
-        public Location Location {
-            get { return Syntax.GetLocation(); }
-        }
+        public Location Location => Syntax.GetLocation();
 
         [NotNull]
         public ExitTransitionDefinitionSyntax Syntax { get; }

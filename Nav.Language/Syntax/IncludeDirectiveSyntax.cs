@@ -9,20 +9,10 @@ namespace Pharmatechnik.Nav.Language {
         internal IncludeDirectiveSyntax(TextExtent extent) : base(extent) {
         }
 
-        public SyntaxToken TaskrefKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.TaskrefKeyword); }
-        }
+        public SyntaxToken TaskrefKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.TaskrefKeyword);
+        public SyntaxToken StringLiteral  => ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral);
+        public SyntaxToken Semicolon      => ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon);
 
-        public SyntaxToken StringLiteral {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral); }
-        }
-
-        public SyntaxToken Semicolon {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon); }
-        }
-
-        protected override bool PromiseNoDescendantNodeOfSameType {
-            get { return true; }
-        }
+        private protected override bool PromiseNoDescendantNodeOfSameType => true;
     }
 }

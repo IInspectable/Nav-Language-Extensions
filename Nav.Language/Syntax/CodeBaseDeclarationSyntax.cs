@@ -14,9 +14,7 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNodes(_baseTypes = baseTypes);
         }
 
-        public SyntaxToken BaseKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.BaseKeyword); }
-        }
+        public SyntaxToken BaseKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.BaseKeyword);
 
         // TODO WfsBaseType dürfte eigentlich nie null sein?
         [CanBeNull]
@@ -51,8 +49,6 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [NotNull]
-        public IReadOnlyList<CodeTypeSyntax> BaseTypes {
-            get { return _baseTypes; }
-        }
+        public IReadOnlyList<CodeTypeSyntax> BaseTypes => _baseTypes;
     }
 }

@@ -47,16 +47,12 @@ namespace Pharmatechnik.Nav.Language {
             return GetEnumerator();
         }
 
-        public int Count { get { return _tokens.Count; } }
+        public int Count => _tokens.Count;
 
-        public SyntaxToken this[int index] {
-            get { return _tokens[index]; }
-        }
+        public SyntaxToken this[int index] => _tokens[index];
 
         [NotNull]
-        public IEnumerable<SyntaxToken> this[TextExtent extent, bool includeOverlapping = false] {
-            get { return _tokens.GetElements(extent, includeOverlapping); }
-        }
+        public IEnumerable<SyntaxToken> this[TextExtent extent, bool includeOverlapping = false] => _tokens.GetElements(extent, includeOverlapping);
 
         public SyntaxToken FindAtPosition(int position) {
             if(position < 0) {

@@ -23,17 +23,11 @@ namespace Pharmatechnik.Nav.Language {
         public List<ExitTransition> ExitTransitions { get; }
         public CodeGenerationUnit CodeGenerationUnit { get; private set; }
 
-        IReadOnlySymbolCollection<INodeSymbol> ITaskDefinitionSymbol.NodeDeclarations {
-            get { return NodeDeclarations; }
-        }
+        IReadOnlySymbolCollection<INodeSymbol> ITaskDefinitionSymbol.NodeDeclarations => NodeDeclarations;
 
-        IReadOnlyList<ITransition> ITaskDefinitionSymbol.Transitions {
-            get { return Transitions; }
-        }
+        IReadOnlyList<ITransition> ITaskDefinitionSymbol.Transitions => Transitions;
 
-        IReadOnlyList<IExitTransition> ITaskDefinitionSymbol.ExitTransitions {
-            get { return ExitTransitions; }
-        }
+        IReadOnlyList<IExitTransition> ITaskDefinitionSymbol.ExitTransitions => ExitTransitions;
 
         public IEnumerable<ISymbol> SymbolsAndSelf() {
 

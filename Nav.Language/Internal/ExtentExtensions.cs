@@ -97,7 +97,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             int index = tokens.FindIndexAtPosition(position);
             if (index < 0) {
                 if(defaultIfNotFound) {
-                    return default(T);
+                    return default;
                 }
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
@@ -108,7 +108,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             }
 
             if (defaultIfNotFound) {
-                return default(T);
+                return default;
             }
             throw new ArgumentOutOfRangeException(nameof(index));
         }

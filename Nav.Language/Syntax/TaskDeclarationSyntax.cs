@@ -27,47 +27,28 @@ namespace Pharmatechnik.Nav.Language {
                                        IReadOnlyList<ConnectionPointNodeSyntax> connectionPointNodeDeclarations) 
             : base(extent) {
 
-            AddChildNode(_codeNamespaceDeclaration  = codeNamespaceDeclaration);
+            AddChildNode(_codeNamespaceDeclaration      = codeNamespaceDeclaration);
             AddChildNode(_codeNotImplementedDeclaration = codeNotImplementedDeclaration);
             AddChildNode(_codeResultDeclaration         = codeResultDeclaration);
-            AddChildNodes(_connectionPointNodes     = connectionPointNodeDeclarations);
+            AddChildNodes(_connectionPointNodes         = connectionPointNodeDeclarations);
         }
 
-        public SyntaxToken TaskrefKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.TaskrefKeyword); }
-        }
-
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
-
-        public SyntaxToken OpenBrace {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBrace); }
-        }
-
-        public SyntaxToken CloseBrace {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBrace); }
-        }        
+        public SyntaxToken TaskrefKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.TaskrefKeyword);
+        public SyntaxToken Identifier     => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+        public SyntaxToken OpenBrace      => ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBrace);
+        public SyntaxToken CloseBrace     => ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBrace);
 
         [CanBeNull]
-        public CodeNamespaceDeclarationSyntax CodeNamespaceDeclaration {
-            get { return _codeNamespaceDeclaration; }
-        }
+        public CodeNamespaceDeclarationSyntax CodeNamespaceDeclaration => _codeNamespaceDeclaration;
 
         [CanBeNull]
-        public CodeNotImplementedDeclarationSyntax CodeNotImplementedDeclaration {
-            get { return _codeNotImplementedDeclaration; }
-        }
+        public CodeNotImplementedDeclarationSyntax CodeNotImplementedDeclaration => _codeNotImplementedDeclaration;
 
         [CanBeNull]
-        public CodeResultDeclarationSyntax CodeResultDeclaration {
-            get { return _codeResultDeclaration; }
-        }
+        public CodeResultDeclarationSyntax CodeResultDeclaration => _codeResultDeclaration;
 
         [NotNull]
-        public IReadOnlyList<ConnectionPointNodeSyntax> ConnectionPoints {
-            get { return _connectionPointNodes; }
-        }
+        public IReadOnlyList<ConnectionPointNodeSyntax> ConnectionPoints => _connectionPointNodes;
 
         [NotNull]
         public IEnumerable<InitNodeDeclarationSyntax> InitNodes() {
@@ -84,8 +65,6 @@ namespace Pharmatechnik.Nav.Language {
             return ConnectionPoints.OfType<EndNodeDeclarationSyntax>();
         }
 
-        protected override bool PromiseNoDescendantNodeOfSameType {
-            get { return true; }
-        }
+        private protected override bool PromiseNoDescendantNodeOfSameType => true;
     }
 }

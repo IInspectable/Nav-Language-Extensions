@@ -18,17 +18,11 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [CanBeNull]
-        public CodeTypeSyntax Type {
-            get { return _type; }
-        }
+        public CodeTypeSyntax Type => _type;
 
-        public int Rank {
-            get { return RankSpecifiers.Count; }
-        }
+        public int Rank => RankSpecifiers.Count;
 
         [NotNull]
-        public IReadOnlyList<ArrayRankSpecifierSyntax> RankSpecifiers {
-            get { return _rankSpecifiers; }
-        }
+        public IReadOnlyList<ArrayRankSpecifierSyntax> RankSpecifiers => _rankSpecifiers;
     }
 }

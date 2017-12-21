@@ -21,27 +21,17 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNode(_doClause                      = doClause);
         }
 
-        public SyntaxToken InitKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.InitKeyword); }
-        }
+        public SyntaxToken InitKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.InitKeyword);
 
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
+        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
 
         [CanBeNull]
-        public CodeParamsDeclarationSyntax CodeParamsDeclaration {
-            get { return _codeParamsDeclaration; }
-        }
+        public CodeParamsDeclarationSyntax CodeParamsDeclaration => _codeParamsDeclaration;
 
         [CanBeNull]
-        public CodeAbstractMethodDeclarationSyntax CodeAbstractMethodDeclaration {
-            get { return _codeAbstractMethodDeclaration; }
-        }
+        public CodeAbstractMethodDeclarationSyntax CodeAbstractMethodDeclaration => _codeAbstractMethodDeclaration;
 
         [CanBeNull]
-        public DoClauseSyntax DoClause {
-            get { return _doClause; }
-        }
+        public DoClauseSyntax DoClause => _doClause;
     }
 }

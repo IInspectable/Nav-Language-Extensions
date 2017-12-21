@@ -19,8 +19,8 @@ namespace Pharmatechnik.Nav.Language {
         }
         
         public IdentifierOrStringSyntax Syntax { get; }
-        public override bool IsSignalTrigger { get { return true; } }
-        public override bool IsSpontaneousTrigger { get { return false; } }
+        public override bool IsSignalTrigger      => true;
+        public override bool IsSpontaneousTrigger => false;
     }
 
     sealed partial class SpontaneousTriggerSymbol : TriggerSymbol, ISpontaneousTriggerSymbol {
@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public SpontaneousTriggerSyntax Syntax { get; }
-        public override bool IsSignalTrigger { get { return false; } }
-        public override bool IsSpontaneousTrigger { get { return true; } }
+        public override bool IsSignalTrigger      => false;
+        public override bool IsSpontaneousTrigger => true;
     }
 }

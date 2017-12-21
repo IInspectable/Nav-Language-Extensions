@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language {
             _cacheStatistic = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public override SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = default(CancellationToken)) {
+        public override SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = default) {
 
             if(_cache.TryGetValue(filePath, out var syntaxTree)) {
                 if (_cacheStatistic.ContainsKey(filePath)) {

@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         readonly NLog.Logger _loggerImpl;
 
         [ThreadStatic]
-        static int IndentLevel;   
+        static int _indentLevel;   
         const int IndentSize = 3;
 
         protected Logger(NLog.Logger loggerImpl) {
@@ -83,7 +83,7 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
         }
 
         string IndentMessage(string message) {
-            return new string(' ', IndentLevel * IndentSize) + message;
+            return new string(' ', _indentLevel * IndentSize) + message;
         }
 
         sealed class BlockLogger : IDisposable {
@@ -100,12 +100,12 @@ namespace Pharmatechnik.Nav.Utilities.Logging {
                 
                 _logger.Trace($"Begin {_blockName}");
 
-                IndentLevel++;
+                _indentLevel++;
             }
 
             public void Dispose() {
 
-                IndentLevel = Math.Max(0, IndentLevel - 1);
+                _indentLevel = Math.Max(0, _indentLevel - 1);
 
                 _logger.Trace($"End {_blockName} elapsed time: {_stopwatch.Elapsed}");
             }

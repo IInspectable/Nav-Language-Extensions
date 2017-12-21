@@ -41,13 +41,11 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
-        public int Start { get { return Extent.Start; } }
-        public int End { get { return Extent.End; } }
-        public int Length { get { return Extent.Length; } }
+        public int Start  => Extent.Start;
+        public int End    => Extent.End;
+        public int Length => Extent.Length;
 
-        public TextExtent Extent {
-            get { return _extent; }
-        }
+        public TextExtent Extent => _extent;
 
         [CanBeNull]
         public SyntaxNode Parent {
@@ -118,9 +116,7 @@ namespace Pharmatechnik.Nav.Language {
         /// Eigentlich müsste diese Eigenschaft systematisch überschrieben werden. Bisweilen werden hiermit nur
         /// die Hotspots optimiert.
         /// </summary>
-        protected virtual bool PromiseNoDescendantNodeOfSameType {
-            get { return false; }
-        }
+        private protected virtual bool PromiseNoDescendantNodeOfSameType => false;
 
         /// <summary>
         /// Gets a list of ancestor nodes

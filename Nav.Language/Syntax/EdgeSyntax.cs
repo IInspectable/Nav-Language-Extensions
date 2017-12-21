@@ -24,17 +24,9 @@ namespace Pharmatechnik.Nav.Language {
         internal ModalEdgeSyntax(TextExtent extent) : base(extent) {}
 
         [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
-        public override SyntaxToken Keyword {
-            get { return ModalEdgeKeyword; }
-        }
-
-        public SyntaxToken ModalEdgeKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.ModalEdgeKeyword); }
-        }
-
-        public override EdgeMode Mode {
-            get { return EdgeMode.Modal; }
-        }
+        public override SyntaxToken Keyword => ModalEdgeKeyword;
+        public SyntaxToken ModalEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ModalEdgeKeyword);
+        public override EdgeMode Mode       => EdgeMode.Modal;
     }
 
     [Serializable]
@@ -43,17 +35,9 @@ namespace Pharmatechnik.Nav.Language {
         internal NonModalEdgeSyntax(TextExtent extent) : base(extent) {}
 
         [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
-        public override SyntaxToken Keyword {
-            get { return NonModalEdgeKeyword; }
-        }
-
-        public SyntaxToken NonModalEdgeKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.NonModalEdgeKeyword); }
-        }
-
-        public override EdgeMode Mode {
-            get { return EdgeMode.NonModal; }
-        }
+        public override SyntaxToken Keyword    => NonModalEdgeKeyword;
+        public SyntaxToken NonModalEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.NonModalEdgeKeyword);
+        public override EdgeMode Mode          => EdgeMode.NonModal;
     }
 
     [Serializable]
@@ -63,16 +47,8 @@ namespace Pharmatechnik.Nav.Language {
         internal GoToEdgeSyntax(TextExtent extent) : base(extent) {}
 
         [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
-        public override SyntaxToken Keyword {
-            get { return GoToEdgeKeyword; }
-        }
-
-        public SyntaxToken GoToEdgeKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.GoToEdgeKeyword); }
-        }
-
-        public override EdgeMode Mode {
-            get { return EdgeMode.Goto; }
-        }
+        public override SyntaxToken Keyword => GoToEdgeKeyword;
+        public SyntaxToken GoToEdgeKeyword  => ChildTokens().FirstOrMissing(SyntaxTokenType.GoToEdgeKeyword);
+        public override EdgeMode Mode       => EdgeMode.Goto;
     }
 }

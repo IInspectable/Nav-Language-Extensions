@@ -34,9 +34,7 @@ namespace Pharmatechnik.Nav.Language {
         public CodeGenerationUnitSyntax Syntax { get; }
 
         [NotNull]
-        public string CodeNamespace {
-            get { return Syntax.CodeNamespace?.ToString() ?? String.Empty; }
-        }
+        public string CodeNamespace => Syntax.CodeNamespace?.ToString() ?? String.Empty;
 
         [NotNull]
         public IReadOnlyList<string> CodeUsings { get; }
@@ -57,7 +55,7 @@ namespace Pharmatechnik.Nav.Language {
         public IReadOnlyList<Diagnostic> Diagnostics { get; }
 
         [NotNull]
-        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default(CancellationToken), ISyntaxProvider syntaxProvider=null) {
+        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default, ISyntaxProvider syntaxProvider=null) {
             return CodeGenerationUnitBuilder.FromCodeGenerationUnitSyntax(syntax, cancellationToken, syntaxProvider);
         }       
     }

@@ -43,9 +43,7 @@ namespace Pharmatechnik.Nav.Language {
         public ITaskDefinitionSymbol ContainingTask { get; }
 
         [NotNull]
-        public Location Location {
-            get { return Syntax.GetLocation(); }
-        }
+        public Location Location => Syntax.GetLocation();
 
         [NotNull]
         public TransitionDefinitionSyntax Syntax { get; }
@@ -62,9 +60,7 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public SymbolCollection<TriggerSymbol> Triggers { get; }
 
-        IReadOnlySymbolCollection<ITriggerSymbol> ITransition.Triggers {
-            get { return Triggers; }
-        }
+        IReadOnlySymbolCollection<ITriggerSymbol> ITransition.Triggers => Triggers;
 
         [NotNull]
         public IEnumerable<ISymbol> Symbols() {

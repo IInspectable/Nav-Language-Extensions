@@ -31,37 +31,23 @@ namespace Pharmatechnik.Nav.Language {
         }
         
         [CanBeNull]
-        public SourceNodeSyntax SourceNode {
-            get { return _sourceNode; }
-        }
+        public SourceNodeSyntax SourceNode => _sourceNode;
 
         [CanBeNull]
-        public EdgeSyntax Edge {
-            get { return _edge; }
-        }
+        public EdgeSyntax Edge => _edge;
 
         [CanBeNull]
-        public TargetNodeSyntax TargetNode {
-            get { return _targetNode; }
-        }
+        public TargetNodeSyntax TargetNode => _targetNode;
 
         [CanBeNull]
-        public TriggerSyntax Trigger {
-            get { return _trigger; }
-        }
+        public TriggerSyntax Trigger => _trigger;
 
         [CanBeNull]
-        public ConditionClauseSyntax ConditionClause {
-            get { return _conditionClause; }
-        }
+        public ConditionClauseSyntax ConditionClause => _conditionClause;
 
         [CanBeNull]
-        public DoClauseSyntax DoClause {
-            get { return _doClause; }
-        }
+        public DoClauseSyntax DoClause => _doClause;
 
-        public SyntaxToken Semicolon {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon); }
-        }
+        public SyntaxToken Semicolon => ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon);
     }
 }

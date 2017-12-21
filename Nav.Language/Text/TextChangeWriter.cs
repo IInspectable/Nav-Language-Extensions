@@ -49,7 +49,6 @@ namespace Pharmatechnik.Nav.Language.Text {
 
                 currentEnd = change.Extent.End;
             }
-
         }
     }
 }

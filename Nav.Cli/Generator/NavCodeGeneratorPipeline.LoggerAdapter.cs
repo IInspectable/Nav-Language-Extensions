@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Logging;
@@ -66,8 +65,6 @@ namespace Pharmatechnik.Nav.Language.Generator {
             
             public void LogFileGeneratorResults(IImmutableList<FileGeneratorResult> fileResults) {
 
-                var longestName = fileResults.Select(r => r.Action.ToString().Length).Max();
-
                 foreach (var fileResult in fileResults) {
 
                     var fileIdentity = fileResult.FileName;
@@ -77,9 +74,13 @@ namespace Pharmatechnik.Nav.Language.Generator {
                         fileIdentity = PathHelper.GetRelativePath(syntaxDirectory, fileResult.FileName);
                     }
 
-                    var action  = fileResult.Action.ToString().PadRight(longestName);
-                    var message = $"   {action}: {fileIdentity}";
-                    _logger?.LogVerbose(message);
+                    if (fileResult.Action == FileGeneratorAction.Updated) {
+                        var message = $"   + {fileIdentity}";
+                        _logger?.LogInfo(message);
+                    } else {
+                        var message = $"   ~ {fileIdentity}";
+                        _logger?.LogVerbose(message);
+                    }                    
                 }
             }
 

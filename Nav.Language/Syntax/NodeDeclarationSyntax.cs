@@ -7,8 +7,6 @@ namespace Pharmatechnik.Nav.Language {
         protected NodeDeclarationSyntax(TextExtent extent) : base(extent) {
         }
 
-        public SyntaxToken Semicolon {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon); }
-        }
+        public SyntaxToken Semicolon => ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon);
     }
 }

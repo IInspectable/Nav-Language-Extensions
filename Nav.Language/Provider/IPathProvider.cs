@@ -8,7 +8,7 @@ namespace Pharmatechnik.Nav.Language {
         string IWfsFileName       { get; }
         string IBeginWfsFileName  { get; }
         string WfsFileName        { get; }
-        string LegacyWfsFileName     { get; }
+        string LegacyWfsFileName  { get; }
         
         string GetToFileName(string toClassName);
         string GetRelativePath(string fromPath, string toPath);

@@ -33,9 +33,7 @@ namespace Pharmatechnik.Nav.Language {
         public List<ITaskNodeSymbol> References { get; }
 
 
-        IReadOnlySymbolCollection<IConnectionPointSymbol> ITaskDeclarationSymbol.ConnectionPoints {
-            get { return ConnectionPoints; }
-        }        
+        IReadOnlySymbolCollection<IConnectionPointSymbol> ITaskDeclarationSymbol.ConnectionPoints => ConnectionPoints;
 
         IReadOnlySymbolCollection<IConnectionPointSymbol> ITaskDeclarationSymbol.Inits() {
             return new SymbolCollection<IConnectionPointSymbol>(ConnectionPoints.Where(cp => cp.Kind == ConnectionPointKind.Init));
@@ -49,9 +47,7 @@ namespace Pharmatechnik.Nav.Language {
             return new SymbolCollection<IConnectionPointSymbol>(ConnectionPoints.Where(cp => cp.Kind == ConnectionPointKind.End));
         }
 
-        IReadOnlyList<ITaskNodeSymbol> ITaskDeclarationSymbol.References {
-            get { return References; }
-        }
+        IReadOnlyList<ITaskNodeSymbol> ITaskDeclarationSymbol.References => References;
 
         [CanBeNull]
         public MemberDeclarationSyntax Syntax { get; set; }

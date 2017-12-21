@@ -1,8 +1,4 @@
-﻿#region Using Directives
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace Pharmatechnik.Nav.Language.Dependencies {
 

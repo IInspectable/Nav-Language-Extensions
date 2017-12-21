@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language {
             if(!string.IsNullOrEmpty(key) && Contains(key)) {
                 return this[key];
             }
-            return default(T);
+            return default;
         }
 
         [CanBeNull]

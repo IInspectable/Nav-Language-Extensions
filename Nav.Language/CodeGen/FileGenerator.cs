@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Text;
 using JetBrains.Annotations;
 
 #endregion
@@ -42,7 +41,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var action = FileGeneratorAction.Skiped;
             if (ShouldWrite(codeGenerationSpec, condition, legacyFileName)) {
-                File.WriteAllText(codeGenerationSpec.FilePath, codeGenerationSpec.Content, Encoding.UTF8);
+                File.WriteAllText(codeGenerationSpec.FilePath, codeGenerationSpec.Content, Options.Encoding);
                 action = FileGeneratorAction.Updated;
             }
 
@@ -60,6 +59,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // Die legacy Datei wird niemals überschrieben/ersetzt.
             var legacyFileExists = legacyFileName != null && File.Exists(legacyFileName);
             if (legacyFileExists) {
+                // TODO Gibt es überhaupt noch legacy files?
                 return false;
             }
 

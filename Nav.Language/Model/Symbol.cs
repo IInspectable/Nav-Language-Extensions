@@ -15,7 +15,7 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public Location Location { get; }
         
-        int IExtent.Start { get { return Location.Start; } }
-        int IExtent.End { get { return Location.End; } }
+        int IExtent.Start => Location.Start;
+        int IExtent.End   => Location.End;
     }
 }

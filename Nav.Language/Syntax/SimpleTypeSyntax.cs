@@ -8,8 +8,6 @@ namespace Pharmatechnik.Nav.Language {
         internal SimpleTypeSyntax(TextExtent extent) : base(extent) {
         }
 
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);}
-        }
+        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
     }
 }

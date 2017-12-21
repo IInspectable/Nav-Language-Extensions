@@ -83,11 +83,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                 return null;
             }
 
-            var navTaskInfo = ReadNavTaskAnnotationInternal(classDeclaration, declaringClass: classSymbol);
-            // Nicht gefunden? Dann in der Basisklasse nachsehen...
-            if (navTaskInfo == null) {
-                navTaskInfo = ReadNavTaskAnnotationInternal(classDeclaration, declaringClass: classSymbol.BaseType);
-            }
+            var navTaskInfo = ReadNavTaskAnnotationInternal(classDeclaration, declaringClass: classSymbol) ??                               
+                              ReadNavTaskAnnotationInternal(classDeclaration, declaringClass: classSymbol.BaseType); // Nicht gefunden? Dann in der Basisklasse nachsehen...
 
             return navTaskInfo;
         }
@@ -201,11 +198,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                 throw new ArgumentNullException(nameof(navTaskAnnotation));
             }
 
-            var initAnnotation = ReadNavInitAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol);
-            // In der überschriebenen Methode nachsehen
-            if (initAnnotation == null) {
-                initAnnotation = ReadNavInitAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol?.OverriddenMethod);
-            }
+            var initAnnotation = ReadNavInitAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol) ?? 
+                                 ReadNavInitAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol?.OverriddenMethod); // In der überschriebenen Methode nachsehen
+            
             return initAnnotation;
         }
 
@@ -258,11 +253,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                 throw new ArgumentNullException(nameof(navTaskAnnotation));
             }
             
-            var navExitAnnotation = ReadNavExitAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol);
-            // In der überschriebenen Methode nachsehen
-            if (navExitAnnotation == null) {
-                navExitAnnotation = ReadNavExitAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol?.OverriddenMethod);
-            }
+            var navExitAnnotation = ReadNavExitAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol) ?? 
+                                    ReadNavExitAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol?.OverriddenMethod); // In der überschriebenen Methode nachsehen            
 
             return navExitAnnotation;
         }
@@ -316,11 +308,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
                 throw new ArgumentNullException(nameof(navTaskAnnotation));
             }
 
-            var triggerAnnotation = ReadNavTriggerAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol);
-            // In der überschriebenen Methode nachsehen
-            if (triggerAnnotation == null) {
-                triggerAnnotation = ReadNavTriggerAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol?.OverriddenMethod);
-            }
+            var triggerAnnotation = ReadNavTriggerAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol) ?? 
+                                    ReadNavTriggerAnnotationInternal(navTaskAnnotation, methodDeclaration, methodSymbol?.OverriddenMethod); // In der überschriebenen Methode nachsehen
+            
             return triggerAnnotation;
         }
 
@@ -374,13 +364,11 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
 
             foreach (var invocationExpression in invocationExpressions) {
 
-                var identifier = invocationExpression.Expression as IdentifierNameSyntax;
-                if (identifier == null) {
+                if (!(invocationExpression.Expression is IdentifierNameSyntax identifier)) {
                     continue;
                 }
 
-                var methodSymbol = semanticModel.GetSymbolInfo(identifier).Symbol as IMethodSymbol;
-                if (methodSymbol == null) {
+                if (!(semanticModel.GetSymbolInfo(identifier).Symbol is IMethodSymbol methodSymbol)) {
                     continue;
                 }
 

@@ -22,12 +22,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         const string ModelAttributeName   = "model";
         const string ContextAttributeName = "context";
 
-        public CodeGenerator(GenerationOptions options, PathProviderFactory pathProviderFactory = null) : base(options) {
-            PathProviderFactory = pathProviderFactory ?? PathProviderFactory.Default;
+        public CodeGenerator(GenerationOptions options, IPathProviderFactory pathProviderFactory = null) : base(options) {
+            PathProviderFactory = pathProviderFactory ?? Language.PathProviderFactory.Default;
         }
 
         [NotNull]
-        public PathProviderFactory PathProviderFactory { get; }
+        public IPathProviderFactory PathProviderFactory { get; }
 
         public IImmutableList<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit) {
 
@@ -49,6 +49,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         CodeModelResult GenerateCodeModel(ITaskDefinitionSymbol taskDefinition) {
+
             var pathProvider = PathProviderFactory.CreatePathProvider(taskDefinition);
 
             IEnumerable<TOCodeModel> toCodeModels = null;
@@ -84,7 +85,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return codeGenerationResult;
         }
         
-        static readonly ThreadLocal<TemplateGroup> IBeginWfsTemplateGroup= new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.IBeginWfsTemplate));
+        static readonly ThreadLocal<TemplateGroup> IBeginWfsTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.IBeginWfsTemplate));
 
         static CodeGenerationSpec GenerateIBeginWfsCodeSpec(IBeginWfsCodeModel model, CodeGeneratorContext context) {
 

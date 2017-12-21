@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language {
         public static readonly TextLineExtent Missing = new TextLineExtent(-1, TextExtent.Missing);
         public static readonly TextLineExtent Empty   = new TextLineExtent(0, TextExtent.Empty);
 
-        public bool IsMissing { get { return Line < 0; } }
+        public bool IsMissing => Line < 0;
 
         /// <summary>
         /// The line number. The first line in a file is defined as line 0 (zero based line numbering).
@@ -45,14 +45,9 @@ namespace Pharmatechnik.Nav.Language {
         /// </summary>
         public TextExtent Extent { get; }
         
-        int IExtent.Start {
-            get { return Extent.Start; }
-        }
+        int IExtent.Start => Extent.Start;
+        int IExtent.End   => Extent.End;
 
-        int IExtent.End {
-            get { return Extent.End; }
-        }
-        
         /// <summary>
         /// Determines whether two <see cref="TextLineExtent"/> are the same.
         /// </summary>

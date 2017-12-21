@@ -7,10 +7,10 @@ namespace Pharmatechnik.Nav.Language {
     public partial class TaskDefinitionSyntax : MemberDeclarationSyntax {
 
         readonly CodeDeclarationSyntax           _codeDeclaration;
-        readonly CodeBaseDeclarationSyntax           _codeBaseDeclaration;
-        readonly CodeGenerateToDeclarationSyntax     _codeGenerateToDeclaration;
-        readonly CodeParamsDeclarationSyntax         _codeParamsDeclaration;
-        readonly CodeResultDeclarationSyntax         _codeResultDeclaration;
+        readonly CodeBaseDeclarationSyntax       _codeBaseDeclaration;
+        readonly CodeGenerateToDeclarationSyntax _codeGenerateToDeclaration;
+        readonly CodeParamsDeclarationSyntax     _codeParamsDeclaration;
+        readonly CodeResultDeclarationSyntax     _codeResultDeclaration;
         readonly NodeDeclarationBlockSyntax      _nodeDeclarationBlock;
         readonly TransitionDefinitionBlockSyntax _transitionDefinitionBlock;
 
@@ -33,59 +33,32 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNode(_transitionDefinitionBlock = transitionDefinitionBlock);
         }
 
-        public SyntaxToken TaskKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.TaskKeyword); }
-        }
-
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
-
-        public SyntaxToken OpenBrace {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBrace); }
-        }
-
-        public SyntaxToken CloseBrace {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBrace); }
-        }
+        public SyntaxToken TaskKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.TaskKeyword);
+        public SyntaxToken Identifier  => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+        public SyntaxToken OpenBrace   => ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBrace);
+        public SyntaxToken CloseBrace  => ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBrace);
 
         [CanBeNull]
-        public CodeDeclarationSyntax CodeDeclaration {
-            get { return _codeDeclaration; }
-        }
+        public CodeDeclarationSyntax CodeDeclaration => _codeDeclaration;
 
         [CanBeNull]
-        public CodeBaseDeclarationSyntax CodeBaseDeclaration {
-            get { return _codeBaseDeclaration; }
-        }
+        public CodeBaseDeclarationSyntax CodeBaseDeclaration => _codeBaseDeclaration;
 
         [CanBeNull]
-        public CodeGenerateToDeclarationSyntax CodeGenerateToDeclaration {
-            get { return _codeGenerateToDeclaration; }
-        }
+        public CodeGenerateToDeclarationSyntax CodeGenerateToDeclaration => _codeGenerateToDeclaration;
 
         [CanBeNull]
-        public CodeParamsDeclarationSyntax CodeParamsDeclaration {
-            get { return _codeParamsDeclaration; }
-        }
+        public CodeParamsDeclarationSyntax CodeParamsDeclaration => _codeParamsDeclaration;
 
         [CanBeNull]
-        public CodeResultDeclarationSyntax CodeResultDeclaration {
-            get { return _codeResultDeclaration; }
-        }
+        public CodeResultDeclarationSyntax CodeResultDeclaration => _codeResultDeclaration;
 
         [CanBeNull]
-        public NodeDeclarationBlockSyntax NodeDeclarationBlock {
-            get { return _nodeDeclarationBlock; }
-        }
+        public NodeDeclarationBlockSyntax NodeDeclarationBlock => _nodeDeclarationBlock;
 
         [CanBeNull]
-        public TransitionDefinitionBlockSyntax TransitionDefinitionBlock {
-            get { return _transitionDefinitionBlock; }
-        }
+        public TransitionDefinitionBlockSyntax TransitionDefinitionBlock => _transitionDefinitionBlock;
 
-        protected override bool PromiseNoDescendantNodeOfSameType {
-            get { return true; }
-        }
+        private protected override bool PromiseNoDescendantNodeOfSameType => true;
     }
 }

@@ -20,9 +20,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             _tokens = new List<SyntaxToken>(capacity: expectedTokenCount);
         }
         
-        public List<SyntaxToken> Tokens {
-            get { return _tokens; }
-        }
+        public List<SyntaxToken> Tokens => _tokens;
 
         #region CodeGenerationUnit
 

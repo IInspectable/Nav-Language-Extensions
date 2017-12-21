@@ -12,12 +12,8 @@ namespace Pharmatechnik.Nav.Language {
         }
         
         [CanBeNull]
-        public CodeTypeSyntax Type {
-            get { return _type; }
-        }
+        public CodeTypeSyntax Type => _type;
 
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
+        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
     }
 }

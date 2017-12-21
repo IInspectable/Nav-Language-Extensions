@@ -8,12 +8,7 @@ namespace Pharmatechnik.Nav.Language {
         internal DialogNodeDeclarationSyntax(TextExtent extent): base(extent) {
         }
 
-        public SyntaxToken DialogKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.DialogKeyword); }
-        }
-
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
+        public SyntaxToken DialogKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.DialogKeyword);
+        public SyntaxToken Identifier    => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
     }
 }

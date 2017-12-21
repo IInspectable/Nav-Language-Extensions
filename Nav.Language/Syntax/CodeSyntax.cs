@@ -7,17 +7,10 @@ namespace Pharmatechnik.Nav.Language {
         protected CodeSyntax(TextExtent extent) : base(extent) {            
         }
 
-        public SyntaxToken OpenBracket {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBracket); }
-        }
+        public SyntaxToken OpenBracket => ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBracket);
 
         [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
-        public SyntaxToken Keyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenClassification.Keyword); }
-        }
-
-        public SyntaxToken CloseBracket {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBracket); }
-        }
+        public SyntaxToken Keyword      => ChildTokens().FirstOrMissing(SyntaxTokenClassification.Keyword);
+        public SyntaxToken CloseBracket => ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBracket);
     }
 }

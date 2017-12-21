@@ -37,16 +37,12 @@ namespace Pharmatechnik.Nav.Language {
             return GetEnumerator();
         }
 
-        public int Count { get { return _symbols.Count; } }
+        public int Count => _symbols.Count;
 
-        public ISymbol this[int index] {
-            get { return _symbols[index]; }
-        }
+        public ISymbol this[int index] => _symbols[index];
 
         [NotNull]
-        public IEnumerable<ISymbol> this[TextExtent extent, bool includeOverlapping = false] {
-            get { return _symbols.GetElements(extent, includeOverlapping); }
-        }
+        public IEnumerable<ISymbol> this[TextExtent extent, bool includeOverlapping = false] => _symbols.GetElements(extent, includeOverlapping);
 
         [CanBeNull]
         public ISymbol FindAtPosition(int position) {

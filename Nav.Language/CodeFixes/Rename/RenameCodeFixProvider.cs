@@ -10,7 +10,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     public static class RenameCodeFixProvider {
 
-        public static IEnumerable<RenameCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken= default(CancellationToken)) {
+        public static IEnumerable<RenameCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken= default) {
             return context.FindSymbols()
                           .Select(symbol => new Visitor(symbol, context).Visit(symbol))
                           .Where(codeFix => codeFix != null);

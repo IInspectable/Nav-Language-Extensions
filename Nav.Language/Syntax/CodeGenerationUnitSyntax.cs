@@ -32,33 +32,21 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [CanBeNull]
-        public CodeNamespaceDeclarationSyntax CodeNamespace {
-            get { return _codeNamespace; }
-        }
+        public CodeNamespaceDeclarationSyntax CodeNamespace => _codeNamespace;
 
         [NotNull]
-        public IReadOnlyList<CodeUsingDeclarationSyntax> CodeUsings {
-            get { return _codeUsings; }
-        }
+        public IReadOnlyList<CodeUsingDeclarationSyntax> CodeUsings => _codeUsings;
 
         [NotNull]
-        public IReadOnlyList<MemberDeclarationSyntax> Members {
-            get { return _members; }
-        }
+        public IReadOnlyList<MemberDeclarationSyntax> Members => _members;
 
         [NotNull]
-        public IReadOnlyList<IncludeDirectiveSyntax> Includes {
-            get { return Members.OfType<IncludeDirectiveSyntax>().ToList(); }
-        }
+        public IReadOnlyList<IncludeDirectiveSyntax> Includes => Members.OfType<IncludeDirectiveSyntax>().ToList();
 
         [NotNull]
-        public IReadOnlyList<TaskDeclarationSyntax> TaskDeclarations {
-            get { return Members.OfType<TaskDeclarationSyntax>().ToList(); }
-        }
+        public IReadOnlyList<TaskDeclarationSyntax> TaskDeclarations => Members.OfType<TaskDeclarationSyntax>().ToList();
 
         [NotNull]
-        public IReadOnlyList<TaskDefinitionSyntax> TaskDefinitions {
-            get { return Members.OfType<TaskDefinitionSyntax>().ToList(); }
-        }        
+        public IReadOnlyList<TaskDefinitionSyntax> TaskDefinitions => Members.OfType<TaskDefinitionSyntax>().ToList();
     }
 }

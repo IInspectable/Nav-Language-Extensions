@@ -81,31 +81,31 @@ namespace Nav.Language.Tests {
 
         [Test]
         public void CombineQualifiedNameeA() {
-            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("", "A");
+            var actual = CodeGenFacts.BuildQualifiedName("", "A");
             Assert.That(actual, Is.EqualTo("A"), "Wrong QualifiedName");
         }
 
         [Test]
         public void CombineQualifiedNameAB() {
-            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("A", "B");
+            var actual = CodeGenFacts.BuildQualifiedName("A", "B");
             Assert.That(actual, Is.EqualTo("A.B"), "Wrong QualifiedName");
         }
 
         [Test]
         public void CombineQualifiedNameABC() {
-            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("A", "B", "C");
+            var actual = CodeGenFacts.BuildQualifiedName("A", "B", "C");
             Assert.That(actual, Is.EqualTo("A.B.C"), "Wrong QualifiedName");
         }
 
         [Test]
         public void CombineQualifiedNameAeC() {
-            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("A", "", "C");
+            var actual = CodeGenFacts.BuildQualifiedName("A", "", "C");
             Assert.That(actual, Is.EqualTo("A.C"), "Wrong QualifiedName");
         }
 
         [Test]
         public void CombineQualifiedNameA0C() {
-            var actual = CodeGenFacts.BuildQualifiedNameQualifiedName("A", null, "C");
+            var actual = CodeGenFacts.BuildQualifiedName("A", null, "C");
             Assert.That(actual, Is.EqualTo("A.C"), "Wrong QualifiedName");
         }
     }

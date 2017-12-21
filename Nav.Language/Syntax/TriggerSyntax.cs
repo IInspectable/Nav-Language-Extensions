@@ -11,11 +11,10 @@ namespace Pharmatechnik.Nav.Language {
     [Serializable]
     [SampleSyntax("spontaneous")]
     public partial class SpontaneousTriggerSyntax : TriggerSyntax {
+
         internal SpontaneousTriggerSyntax(TextExtent extent) : base(extent) {}
         
-        public SyntaxToken SpontaneousKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.SpontaneousKeyword); }
-        }
+        public SyntaxToken SpontaneousKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.SpontaneousKeyword);
 
         public const string Keyword = "spontaneous";
     }
@@ -23,6 +22,7 @@ namespace Pharmatechnik.Nav.Language {
     [Serializable]
     [SampleSyntax("on Trigger")]
     public partial class SignalTriggerSyntax : TriggerSyntax {
+
         readonly IdentifierOrStringListSyntax _identifierOrStringList;
 
         internal SignalTriggerSyntax(TextExtent extent, IdentifierOrStringListSyntax identifierOrStringList) 
@@ -30,13 +30,9 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNode(_identifierOrStringList = identifierOrStringList);
         }
 
-        public SyntaxToken OnKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.OnKeyword); }
-        }
+        public SyntaxToken OnKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.OnKeyword);
 
         [CanBeNull]
-        public IdentifierOrStringListSyntax IdentifierOrStringList {
-            get { return _identifierOrStringList; }
-        }
+        public IdentifierOrStringListSyntax IdentifierOrStringList => _identifierOrStringList;
     }
 }

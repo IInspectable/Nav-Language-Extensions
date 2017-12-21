@@ -13,13 +13,9 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNode(_parameterList = parameterList);
         }
 
-        public SyntaxToken ParamsKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.ParamsKeyword); }
-        }
+        public SyntaxToken ParamsKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ParamsKeyword);
 
         [CanBeNull]
-        public ParameterListSyntax ParameterList {
-            get { return _parameterList; }
-        }
+        public ParameterListSyntax ParameterList => _parameterList;
     }
 }

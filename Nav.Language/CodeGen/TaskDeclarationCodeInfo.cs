@@ -28,7 +28,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         static string BuildQualifiedName(params string[] identifier) {
-            return CodeGenFacts.BuildQualifiedNameQualifiedName(identifier);
+            return CodeGenFacts.BuildQualifiedName(identifier);
         }
     }
 }

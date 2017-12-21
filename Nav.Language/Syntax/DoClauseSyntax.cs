@@ -11,13 +11,9 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNode(_identifierOrString = identifierOrString);
         }
 
-        public SyntaxToken DoKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.DoKeyword); }
-        }
+        public SyntaxToken DoKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.DoKeyword);
 
         [CanBeNull]
-        public IdentifierOrStringSyntax IdentifierOrString {
-            get { return _identifierOrString; }
-        }
+        public IdentifierOrStringSyntax IdentifierOrString => _identifierOrString;
     }
 }

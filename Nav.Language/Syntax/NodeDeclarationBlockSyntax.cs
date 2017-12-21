@@ -17,10 +17,8 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [NotNull]
-        public IReadOnlyList<NodeDeclarationSyntax> NodeDeclarations {
-            get { return _nodeDeclarations; }
-        }
-    
+        public IReadOnlyList<NodeDeclarationSyntax> NodeDeclarations => _nodeDeclarations;
+
         [NotNull]
         public IEnumerable<ConnectionPointNodeSyntax> ConnectionPoints() {
             return NodeDeclarations.OfType<ConnectionPointNodeSyntax>();
@@ -61,8 +59,6 @@ namespace Pharmatechnik.Nav.Language {
             return NodeDeclarations.OfType<ViewNodeDeclarationSyntax>();
         }
 
-        protected override bool PromiseNoDescendantNodeOfSameType {
-            get { return true; }
-        }
+        private protected override bool PromiseNoDescendantNodeOfSameType => true;
     }
 }

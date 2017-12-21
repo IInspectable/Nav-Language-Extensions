@@ -28,16 +28,12 @@ namespace Pharmatechnik.Nav.Language {
         /// <summary>
         /// The line number. The first line in a file is defined as line 0 (zero based line numbering).
         /// </summary>
-        public int Line {
-            get { return _line; }
-        }
+        public int Line => _line;
 
         /// <summary>
         /// The character position within the line (zero based).
         /// </summary>
-        public int Character {
-            get { return _character; }
-        }
+        public int Character => _character;
 
         /// <summary>
         /// Determines whether two <see cref="LinePosition"/> are the same.

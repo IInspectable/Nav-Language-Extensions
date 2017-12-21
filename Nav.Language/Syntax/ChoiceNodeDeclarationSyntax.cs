@@ -9,12 +9,7 @@ namespace Pharmatechnik.Nav.Language {
             : base(extent) {
         }
 
-        public SyntaxToken ChoiceKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.ChoiceKeyword); }
-        }
-
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
+        public SyntaxToken ChoiceKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ChoiceKeyword);
+        public SyntaxToken Identifier    => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
     }
 }

@@ -31,41 +31,27 @@ namespace Pharmatechnik.Nav.Language {
             return new TextExtent(start: start, length: end - start);
         }
 
-        public bool IsMissing {
-            get { return _start<0; }
-        }
-
-        public bool IsEmpty {
-            get { return Length==0; }
-        }
-
-        public bool IsEmptyOrMissing {
-            get { return IsEmpty || IsMissing; }
-        }
+        public bool IsMissing        => _start<0;
+        public bool IsEmpty          => Length == 0;
+        public bool IsEmptyOrMissing => IsEmpty || IsMissing;
 
         /// <summary>
         /// Gets the starting index of the extent [0..n].
         /// -1 if the is unknown/missing
         /// </summary>
-        public int Start {
-            get { return _start; }
-        }
+        public int Start => _start;
 
         /// <summary>
         /// Gets the length of the extent. Length is guaranteed to be great or equal to 0.
         /// </summary>
-        public int Length {
-            get { return _length; }
-        }
+        public int Length => _length;
 
         /// <summary>
         /// Gets the end index of the extent, starting with 0;
         /// This index is actually one character past the end of the extent.
         /// </summary>
-        public int End {
-            get { return _start+_length; }
-        }
-        
+        public int End => _start+_length;
+
         public bool Contains(TextExtent other) {
             return other.Start >= Start && other.End <= End;
         }
