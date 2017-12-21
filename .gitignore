@@ -34,3 +34,4 @@
 
 /.vs
 /**/*.generated.cs
+TestResult.xml
