@@ -11,6 +11,6 @@ namespace Pharmatechnik.Nav.Language {
             : base(syntax, containingTask, initNodeReference, edgeMode, targetReference, triggers) {
         }
 
-        public IInitNodeReferenceSymbol InitNodeReference => SourceReference as IInitNodeReferenceSymbol;
+        public IInitNodeReferenceSymbol InitNodeReference => (IInitNodeReferenceSymbol)SourceReference;
     }
 }

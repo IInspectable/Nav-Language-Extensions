@@ -12,8 +12,8 @@ namespace Pharmatechnik.Nav.Language {
             Syntax            = syntax;
             AsTaskDeclaration = taskDeclaration;
             NodeDeclarations  = new SymbolCollection<INodeSymbol>();
-            Transitions       = new List<Transition>();
             InitTransitions   = new List<InitTransition>();
+            ChoiceTransitions = new List<ChoiceTransition>();
             TriggerTransitions= new List<TriggerTransition>();
             ExitTransitions   = new List<ExitTransition>();
         }
@@ -21,16 +21,17 @@ namespace Pharmatechnik.Nav.Language {
         public TaskDefinitionSyntax Syntax { get; }
         public ITaskDeclarationSymbol AsTaskDeclaration { get; }
         public SymbolCollection<INodeSymbol> NodeDeclarations { get; }
-        public List<Transition> Transitions { get; }
 
         public List<InitTransition> InitTransitions { get; }
+        public List<ChoiceTransition> ChoiceTransitions { get; }
         public List<TriggerTransition> TriggerTransitions { get; }
-
         public List<ExitTransition> ExitTransitions { get; }
+
         public CodeGenerationUnit CodeGenerationUnit { get; private set; }
 
         IReadOnlySymbolCollection<INodeSymbol> ITaskDefinitionSymbol.NodeDeclarations => NodeDeclarations;
         IReadOnlyList<IInitTransition> ITaskDefinitionSymbol.InitTransitions          => InitTransitions;
+        IReadOnlyList<IChoiceTransition> ITaskDefinitionSymbol.ChoiceTransitions      => ChoiceTransitions;
         IReadOnlyList<ITriggerTransition> ITaskDefinitionSymbol.TriggerTransitions    => TriggerTransitions;
         IReadOnlyList<IExitTransition> ITaskDefinitionSymbol.ExitTransitions          => ExitTransitions;
 

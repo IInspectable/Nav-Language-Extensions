@@ -17,8 +17,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
             return taskDefinition.TriggerTransitions
-                // TODO Choice Transitions einführen und aus den Trigger Transitions rausnehmen
-                .Where(t=> t.SourceReference?.Declaration is IGuiNodeSymbol)
                 .SelectMany(triggerTransition => TriggerTransitionCodeModel.FromTriggerTransition(taskCodeInfo, triggerTransition))
                 .OrderBy(st => st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName);            
         }

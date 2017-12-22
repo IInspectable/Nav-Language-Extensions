@@ -19,6 +19,7 @@ namespace Pharmatechnik.Nav.Language {
         }
         
         public IdentifierOrStringSyntax Syntax { get; }
+        public new ITriggerTransition Transition  => (ITriggerTransition) base.Transition;
         public override bool IsSignalTrigger      => true;
         public override bool IsSpontaneousTrigger => false;
     }

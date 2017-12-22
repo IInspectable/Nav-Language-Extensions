@@ -14,6 +14,9 @@ namespace Pharmatechnik.Nav.Language {
     public interface ISignalTriggerSymbol : ITriggerSymbol {
         [NotNull]
         IdentifierOrStringSyntax Syntax { get; }
+
+        [NotNull]
+        new ITriggerTransition Transition { get; }
     }
 
     public interface ISpontaneousTriggerSymbol : ITriggerSymbol {

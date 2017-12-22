@@ -4,13 +4,14 @@ namespace Pharmatechnik.Nav.Language {
 
         public TriggerTransition(TransitionDefinitionSyntax syntax, 
             ITaskDefinitionSymbol containingTask, 
-            NodeReferenceSymbol sourceReference, 
+            GuiNodeReferenceSymbol sourceReference, 
             EdgeModeSymbol edgeMode, 
             NodeReferenceSymbol targetReference, 
             SymbolCollection<TriggerSymbol> triggers) 
-            : base(syntax, containingTask, sourceReference, edgeMode, targetReference, triggers) {
+            : base(syntax, containingTask, sourceReference, edgeMode, targetReference, triggers) {             
         }
 
+        public IGuiNodeReferenceSymbol GuiNodeReference => (IGuiNodeReferenceSymbol)SourceReference;
         IReadOnlySymbolCollection<ITriggerSymbol> ITriggerTransition.Triggers => Triggers;
     }
 }

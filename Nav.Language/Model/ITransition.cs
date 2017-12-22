@@ -14,8 +14,14 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface ITriggerTransition: ITransition {
 
-        // TODO GuiNodeReference einführen
+        IGuiNodeReferenceSymbol GuiNodeReference {get;}
+
         [NotNull]
         IReadOnlySymbolCollection<ITriggerSymbol> Triggers { get; }
+    }
+
+    public interface IChoiceTransition: ITransition {
+
+        IChoiceNodeReferenceSymbol ChoiceNodeReference {get;}
     }
 }

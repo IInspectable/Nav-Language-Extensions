@@ -6,4 +6,13 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         new T Declaration { get; }
     }
+
+    public interface IInitNodeReferenceSymbol : INodeReferenceSymbol<IInitNodeSymbol> {
+    }    
+
+    public interface IChoiceNodeReferenceSymbol : INodeReferenceSymbol<IChoiceNodeSymbol> {
+    } 
+
+    public interface IGuiNodeReferenceSymbol : INodeReferenceSymbol<IGuiNodeSymbol> {
+    }
 }

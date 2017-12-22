@@ -25,12 +25,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ParameterCodeModel ViewParameter { get; } 
 
         public static IEnumerable<TriggerTransitionCodeModel> FromTriggerTransition(TaskCodeInfo taskCodeInfo, ITriggerTransition triggerTransition) {
-
-            // TODO Das muss weg, wenn die TriggerTransision nur noch GuiNodes akzeptiert
-            if (!(triggerTransition?.SourceReference?.Declaration is IGuiNodeSymbol)) {
-                throw new ArgumentException("Trigger transition expected");
-            }
-
+            
             foreach(var signalTrigger in triggerTransition.Triggers.OfType<ISignalTriggerSymbol>()) {
 
                 var triggerCodeInfo = SignalTriggerCodeInfo.FromSignalTrigger(signalTrigger, taskCodeInfo);

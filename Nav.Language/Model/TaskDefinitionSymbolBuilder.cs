@@ -227,38 +227,30 @@ namespace Pharmatechnik.Nav.Language {
         
         public override void VisitTransitionDefinition(TransitionDefinitionSyntax transitionDefinitionSyntax) {
             
-            // Source
-            NodeReferenceSymbol sourceNodeReference = null;
-            var sourceNodeSyntax = transitionDefinitionSyntax.SourceNode;
-            if (sourceNodeSyntax != null) {
-
-                var sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(sourceNodeSyntax.Name);
-
-                // Special case "init": Hier ist implizit auch Großschreibung erlaubt
-                if (sourceNode == null && sourceNodeSyntax.Name== SyntaxFacts.InitKeyword) {
-                    sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(SyntaxFacts.InitKeywordAlt);
-                }
-
-                var location   = sourceNodeSyntax.GetLocation();
-                if(location != null) {
-
-                    if (sourceNode is IInitNodeSymbol initNode) {
-                        sourceNodeReference = new InitNodeReferenceSymbol(sourceNodeSyntax.Name, location, initNode, NodeReferenceType.Source);
-                    } else {
-                        sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceNode, NodeReferenceType.Source);
-                    }
-                }
-            }
-
             // Target
             NodeReferenceSymbol targetNodeReference = null;
             var targetNodeSyntax = transitionDefinitionSyntax.TargetNode;
             if (targetNodeSyntax != null) {
 
                 var targetNode = _taskDefinition.NodeDeclarations.TryFindSymbol(targetNodeSyntax.Name);
-                var location = targetNodeSyntax.GetLocation();
-                if (location != null) {
-                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, location, targetNode, NodeReferenceType.Target);                
+                var modeLocation = targetNodeSyntax.GetLocation();
+                if (modeLocation != null) {
+
+                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, modeLocation, targetNode, NodeReferenceType.Target);
+
+                    switch (targetNodeReference.Declaration) {
+                        case null:
+                            _diagnostics.Add(new Diagnostic(
+                                targetNodeReference.Location, 
+                                DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0, 
+                                targetNodeReference.Name));
+                            break;
+                        case InitNodeSymbol _:
+                            _diagnostics.Add(new Diagnostic(
+                                targetNodeReference.Location,
+                                DiagnosticDescriptors.Semantic.Nav0103InitNodeMustNotContainIncomingEdges));
+                            break;
+                    }
                 }
             }
             
@@ -267,149 +259,156 @@ namespace Pharmatechnik.Nav.Language {
             var edgeSyntax = transitionDefinitionSyntax.Edge;
             if (edgeSyntax != null) {
 
-                var location = edgeSyntax.GetLocation();
-                if(location != null) {
-                    edgeMode = new EdgeModeSymbol(edgeSyntax.ToString(), location, edgeSyntax.Mode);
+                var edgeLocation = edgeSyntax.GetLocation();
+                if(edgeLocation != null) {
+                    edgeMode = new EdgeModeSymbol(edgeSyntax.ToString(), edgeLocation, edgeSyntax.Mode);
                 }
             }
 
             // Triggers
             var triggers = GetTriggers(transitionDefinitionSyntax);
 
-            if (sourceNodeReference is InitNodeReferenceSymbol initNodeReference) {
-                var transition = new InitTransition(transitionDefinitionSyntax, _taskDefinition, initNodeReference, edgeMode, targetNodeReference, triggers);
-                AddTransition(transition);
-            } else {
-                var transition = new TriggerTransition(transitionDefinitionSyntax, _taskDefinition, sourceNodeReference, edgeMode, targetNodeReference, triggers);
-                AddTransition(transition);
+            // Source: Ohne Source Node können wir keine Transitions hinzufügen, da dieser Knoten relevant ist für die Bestimmung
+            // der Transition (Init, Choice, Trigger)
+
+            var sourceNodeSyntax = transitionDefinitionSyntax.SourceNode;
+            if (sourceNodeSyntax == null) {
+                return;
+            }
+
+            var sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(sourceNodeSyntax.Name);
+
+            // Special case "init": Hier ist implizit auch Großschreibung erlaubt
+            if (sourceNode == null && sourceNodeSyntax.Name== SyntaxFacts.InitKeyword) {
+                sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(SyntaxFacts.InitKeywordAlt);
+            }
+
+            var location = sourceNodeSyntax.GetLocation();
+            if (location == null) {
+                return;
+            }
+
+            switch (sourceNode) {
+                case null:
+                    _diagnostics.Add(new Diagnostic(
+                        location, 
+                        DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0, 
+                        sourceNodeSyntax.Name));
+                    break;
+                case TaskNodeSymbol _:
+                    _diagnostics.Add(new Diagnostic(
+                        location, 
+                        DiagnosticDescriptors.Semantic.Nav0100TaskNode0MustNotContainLeavingEdges, 
+                        sourceNodeSyntax.Name));
+                    break;
+                case ExitNodeSymbol _:
+                    _diagnostics.Add(new Diagnostic(
+                        location, 
+                        DiagnosticDescriptors.Semantic.Nav0101ExitNodeMustNotContainLeavingEdges));
+                    break;
+                case EndNodeSymbol _:
+                    _diagnostics.Add(new Diagnostic(
+                        location, 
+                        DiagnosticDescriptors.Semantic.Nav0102EndNodeMustNotContainLeavingEdges) );
+                    break;
+                case IInitNodeSymbol initNode:
+                    AddInitTransition(
+                        transitionDefinitionSyntax: transitionDefinitionSyntax, 
+                        targetNodeReference       : targetNodeReference, 
+                        edgeMode                  : edgeMode, 
+                        triggers                  : triggers, 
+                        sourceNodeSyntax          : sourceNodeSyntax, 
+                        location                  : location, 
+                        initNode                  : initNode);
+                    break;
+                case IChoiceNodeSymbol choiceNode:
+                    AddChoiceTransition(
+                        transitionDefinitionSyntax: transitionDefinitionSyntax, 
+                        targetNodeReference       : targetNodeReference, 
+                        edgeMode                  : edgeMode, 
+                        triggers                  : triggers, 
+                        sourceNodeSyntax          : sourceNodeSyntax, 
+                        location                  : location, 
+                        choiceNode                : choiceNode);
+                    break;
+                case IGuiNodeSymbol guiNode:
+                    AddTriggerTransition(
+                        transitionDefinitionSyntax: transitionDefinitionSyntax, 
+                        targetNodeReference       : targetNodeReference, 
+                        edgeMode                  : edgeMode, 
+                        triggers                  : triggers, 
+                        sourceNodeSyntax          : sourceNodeSyntax, 
+                        location                  : location, 
+                        guiNode                   : guiNode);
+                    break;
             }
         }
-        
-        void AddTransition(Transition transition) {
 
-            //==============================
-            // Source Errors
-            //==============================
-            if(transition.SourceReference != null) {
+        private void AddInitTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SymbolCollection<TriggerSymbol> triggers, SourceNodeSyntax sourceNodeSyntax, Location location, IInitNodeSymbol initNode) {
+           
+            var initNodeReference = new InitNodeReferenceSymbol(sourceNodeSyntax.Name, location, initNode, NodeReferenceType.Source);
+            var initTransition = new InitTransition(transitionDefinitionSyntax, _taskDefinition, initNodeReference, edgeMode, targetNodeReference, triggers);
+            
+            WireNodeReferences(initTransition);
 
-                if(transition.SourceReference.Declaration == null) {
-                    _diagnostics.Add(new Diagnostic(
-                        transition.SourceReference.Location, 
-                        DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0, 
-                        transition.SourceReference.Name));
+            VerifyTransition(initTransition);
 
-                } else if(transition.SourceReference.Declaration is TaskNodeSymbol) {
-                    _diagnostics.Add(new Diagnostic(
-                        transition.SourceReference.Location, 
-                        DiagnosticDescriptors.Semantic.Nav0100TaskNode0MustNotContainLeavingEdges, 
-                        transition.SourceReference.Name));
+            _taskDefinition.InitTransitions.Add(initTransition);
+        }
 
-                } else if(transition.SourceReference.Declaration is ExitNodeSymbol) {
-                    _diagnostics.Add(new Diagnostic(
-                        transition.SourceReference.Location, 
-                        DiagnosticDescriptors.Semantic.Nav0101ExitNodeMustNotContainLeavingEdges));
+        private void AddChoiceTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SymbolCollection<TriggerSymbol> triggers, SourceNodeSyntax sourceNodeSyntax, Location location, IChoiceNodeSymbol choiceNode) {
+            
+            var choiceNodeReference = new ChoiceNodeReferenceSymbol(sourceNodeSyntax.Name, location, choiceNode, NodeReferenceType.Source);
+            var choiceTransition = new ChoiceTransition(transitionDefinitionSyntax, _taskDefinition, choiceNodeReference, edgeMode, targetNodeReference, triggers);
 
-                } else if(transition.SourceReference.Declaration is EndNodeSymbol) {
-                    _diagnostics.Add(new Diagnostic(
-                        transition.SourceReference.Location, 
-                        DiagnosticDescriptors.Semantic.Nav0102EndNodeMustNotContainLeavingEdges) );
+            WireNodeReferences(choiceTransition);
 
-                } else if(transition.SourceReference.Declaration is InitNodeSymbol) {
-                    var node = (InitNodeSymbol) transition.SourceReference.Declaration;
-                    node.Outgoings.Add(transition);
-                    node.References.Add(transition.SourceReference);
+            VerifyTransition(choiceTransition);
 
-                } else if(transition.SourceReference.Declaration is DialogNodeSymbol) {
-                    var node = (DialogNodeSymbol) transition.SourceReference.Declaration;
-                    node.Outgoings.Add(transition);
-                    node.References.Add(transition.SourceReference);
+            _taskDefinition.ChoiceTransitions.Add(choiceTransition);
+        }
 
-                } else if(transition.SourceReference.Declaration is ViewNodeSymbol) {
-                    var node = (ViewNodeSymbol) transition.SourceReference.Declaration;
-                    node.Outgoings.Add(transition);
-                    node.References.Add(transition.SourceReference);
+        private void AddTriggerTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SymbolCollection<TriggerSymbol> triggers, SourceNodeSyntax sourceNodeSyntax, Location location, IGuiNodeSymbol guiNode) {
+            
+            var guiNodeReference = new GuiNodeReferenceSymbol(sourceNodeSyntax.Name, location, guiNode, NodeReferenceType.Source);
+            var triggerTransition = new TriggerTransition(transitionDefinitionSyntax, _taskDefinition, guiNodeReference, edgeMode, targetNodeReference, triggers);
+            
+            WireNodeReferences(triggerTransition);
 
-                } else if(transition.SourceReference.Declaration is ChoiceNodeSymbol) {                   
-                    var node = (ChoiceNodeSymbol) transition.SourceReference.Declaration;
-                    node.Outgoings.Add(transition);
-                    node.References.Add(transition.SourceReference);
-                }
-            }
+            VerifyTransition(triggerTransition);
 
-            //==============================
-            // Target Errors
-            //==============================
-            if (transition.TargetReference != null) {
-
-                if (transition.TargetReference.Declaration == null) {
-                    _diagnostics.Add(new Diagnostic(
-                        transition.TargetReference.Location, 
-                        DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0, 
-                        transition.TargetReference.Name));
-
-                } else if (transition.TargetReference.Declaration is InitNodeSymbol) {
-                    _diagnostics.Add(new Diagnostic(
-                        transition.TargetReference.Location,
-                        DiagnosticDescriptors.Semantic.Nav0103InitNodeMustNotContainIncomingEdges));
-
-                } else if (transition.TargetReference.Declaration is EndNodeSymbol) {
-                    var node = (EndNodeSymbol)transition.TargetReference.Declaration;
-                    node.Incomings.Add(transition);
-                    node.References.Add(transition.TargetReference);
-
-                } else if (transition.TargetReference.Declaration is ExitNodeSymbol) {
-                    var node = (ExitNodeSymbol)transition.TargetReference.Declaration;
-                    node.Incomings.Add(transition);
-                    node.References.Add(transition.TargetReference);
-
-                } else if (transition.TargetReference.Declaration is DialogNodeSymbol) {
-                    var node = (DialogNodeSymbol)transition.TargetReference.Declaration;
-                    node.Incomings.Add(transition);
-                    node.References.Add(transition.TargetReference);
-
-                } else if (transition.TargetReference.Declaration is ViewNodeSymbol) {
-                    var node = (ViewNodeSymbol)transition.TargetReference.Declaration;
-                    node.Incomings.Add(transition);
-                    node.References.Add(transition.TargetReference);
-
-                } else if (transition.TargetReference.Declaration is ChoiceNodeSymbol) {
-                    var node = (ChoiceNodeSymbol)transition.TargetReference.Declaration;
-                    node.Incomings.Add(transition);
-                    node.References.Add(transition.TargetReference);
-
-                } else if (transition.TargetReference.Declaration is TaskNodeSymbol) {
-                    var node = (TaskNodeSymbol)transition.TargetReference.Declaration;
-                    node.Incomings.Add(transition);
-                    node.References.Add(transition.TargetReference);
-                }
-            }
-
+            _taskDefinition.TriggerTransitions.Add(triggerTransition);
+        }
+      
+       
+        void VerifyTransition(Transition transition) {
+            
             //==============================
             // Edge Errors
             //==============================
-            if (transition.EdgeMode !=null) {
+            if (transition.EdgeMode != null) {
 
-                if(transition.EdgeMode.EdgeMode != EdgeMode.Goto) {
+                if (transition.EdgeMode.EdgeMode != EdgeMode.Goto) {
 
-                    if(transition.TargetReference?.Declaration is ChoiceNodeSymbol) {
+                    if (transition.TargetReference?.Declaration is ChoiceNodeSymbol) {
                         _diagnostics.Add(new Diagnostic(
                             transition.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0104ChoiceNode0MustOnlyReachedByGoTo,
                             transition.TargetReference.Name));
                     }
 
-                    if(transition.TargetReference?.Declaration is ExitNodeSymbol) {
+                    if (transition.TargetReference?.Declaration is ExitNodeSymbol) {
                         _diagnostics.Add(new Diagnostic(
                             transition.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo,
-                            transition.TargetReference.Name) );
+                            transition.TargetReference.Name));
                     }
 
-                    if(transition.TargetReference?.Declaration is EndNodeSymbol) {
+                    if (transition.TargetReference?.Declaration is EndNodeSymbol) {
                         _diagnostics.Add(new Diagnostic(
                             transition.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0106EndNode0MustOnlyReachedByGoTo,
-                            transition.TargetReference.Name) );
+                            transition.TargetReference.Name));
                     }
                 }
             }
@@ -419,11 +418,11 @@ namespace Pharmatechnik.Nav.Language {
             //==============================
             if (transition.Triggers.Any()) {
 
-                foreach(var trigger in transition.Triggers.Where(t=>t.IsSpontaneousTrigger)) {
+                foreach (var trigger in transition.Triggers.Where(t => t.IsSpontaneousTrigger)) {
 
-                    if(!(transition.SourceReference?.Declaration is DialogNodeSymbol ||
-                         transition.SourceReference?.Declaration is ViewNodeSymbol ||
-                         transition.SourceReference?.Declaration is InitNodeSymbol)) {
+                    if (!(transition.SourceReference?.Declaration is DialogNodeSymbol ||
+                          transition.SourceReference?.Declaration is ViewNodeSymbol ||
+                          transition.SourceReference?.Declaration is InitNodeSymbol)) {
 
                         _diagnostics.Add(new Diagnostic(
                             trigger.Location,
@@ -435,7 +434,7 @@ namespace Pharmatechnik.Nav.Language {
 
                     if (transition.SourceReference?.Declaration is InitNodeSymbol) {
                         _diagnostics.Add(new Diagnostic(
-                            trigger.Location, 
+                            trigger.Location,
                             DiagnosticDescriptors.Semantic.Nav0200SignalTriggerNotAllowedAfterInit));
                     }
 
@@ -458,23 +457,74 @@ namespace Pharmatechnik.Nav.Language {
             //==============================
             if (transition.Syntax.ConditionClause != null) {
 
-                if(transition.SourceReference != null && ! (
+                if (transition.SourceReference != null && !(
                     transition.SourceReference?.Declaration is InitNodeSymbol ||
-                    transition.SourceReference?.Declaration is ChoiceNodeSymbol)){
+                    transition.SourceReference?.Declaration is ChoiceNodeSymbol)) {
 
                     _diagnostics.Add(new Diagnostic(
                             transition.Syntax.ConditionClause.GetLocation(),
                             DiagnosticDescriptors.Semantic.Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodes));
 
                 }
+            }            
+        }
+
+        private static void WireNodeReferences(Transition transition) {
+
+            //==============================
+            // Source Errors
+            //==============================
+            if (transition.SourceReference != null) {
+                switch (transition.SourceReference.Declaration) {
+                    case InitNodeSymbol initNode:
+                        initNode.Outgoings.Add(transition);
+                        initNode.References.Add(transition.SourceReference);
+                        break;
+                    case DialogNodeSymbol dialogNode:
+                        dialogNode.Outgoings.Add(transition);
+                        dialogNode.References.Add(transition.SourceReference);
+                        break;
+                    case ViewNodeSymbol viewNode:
+                        viewNode.Outgoings.Add(transition);
+                        viewNode.References.Add(transition.SourceReference);
+                        break;
+                    case ChoiceNodeSymbol choiceNode:
+                        choiceNode.Outgoings.Add(transition);
+                        choiceNode.References.Add(transition.SourceReference);
+                        break;
+                }
             }
 
-            if (transition is InitTransition initTrans) {
-                _taskDefinition.InitTransitions.Add(initTrans);
-            }
-
-            if (transition is TriggerTransition triggerTrans) {
-                _taskDefinition.TriggerTransitions.Add(triggerTrans);
+            //==============================
+            // Target Errors
+            //==============================
+            if (transition.TargetReference != null) {
+                switch (transition.TargetReference.Declaration) {
+                    case EndNodeSymbol endNode:
+                        endNode.Incomings.Add(transition);
+                        endNode.References.Add(transition.TargetReference);
+                        break;
+                    case ExitNodeSymbol exitNode:
+                        exitNode.Incomings.Add(transition);
+                        exitNode.References.Add(transition.TargetReference);
+                        break;
+                    case DialogNodeSymbol dialogNode:
+                        dialogNode.Incomings.Add(transition);
+                        dialogNode.References.Add(transition.TargetReference);
+                        break;
+                    case ViewNodeSymbol viewNode:
+                        viewNode.Incomings.Add(transition);
+                        viewNode.References.Add(transition.TargetReference);
+                        break;
+                    case ChoiceNodeSymbol choiceNode:
+                        choiceNode.Incomings.Add(transition);
+                        choiceNode.References.Add(transition.TargetReference);
+                        break;
+                    case TaskNodeSymbol taskNode:
+                        taskNode.Incomings.Add(transition);
+                        taskNode.References.Add(transition.TargetReference);
+                        break;
+                }
             }
         }
 

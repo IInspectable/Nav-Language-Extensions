@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var task         = signalTriggerSymbol.Transition.ContainingTask;
-            var viewNodeName = signalTriggerSymbol.Transition.SourceReference?.Declaration?.Name??String.Empty;
+            var viewNodeName = signalTriggerSymbol.Transition.GuiNodeReference?.Declaration?.Name??String.Empty;
             var triggerName  = signalTriggerSymbol.Name;
 
             return new SignalTriggerCodeInfo(
