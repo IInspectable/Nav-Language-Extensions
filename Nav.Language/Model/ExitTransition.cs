@@ -13,29 +13,29 @@ namespace Pharmatechnik.Nav.Language {
         
         internal ExitTransition(ExitTransitionDefinitionSyntax syntax,
                                 TaskDefinitionSymbol containingTask,
-                                [CanBeNull] NodeReferenceSymbol source,
-                                [CanBeNull] ConnectionPointReferenceSymbol connectionPoint,
+                                [CanBeNull] NodeReferenceSymbol sourceReference,
+                                [CanBeNull] ConnectionPointReferenceSymbol connectionPointReference,
                                 [CanBeNull] EdgeModeSymbol edgeMode,
-                                [CanBeNull] NodeReferenceSymbol target) {
+                                [CanBeNull] NodeReferenceSymbol targetReference) {
 
             Syntax          = syntax         ?? throw new ArgumentNullException(nameof(syntax));
             ContainingTask  = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
-            Source          = source;
-            ConnectionPoint = connectionPoint;
+            SourceReference = sourceReference;
+            ConnectionPointReference = connectionPointReference;
             EdgeMode        = edgeMode;
-            Target          = target;
+            TargetReference = targetReference;
 
-            if (source != null) {
-                source.Edge = this;
+            if (sourceReference != null) {
+                sourceReference.Edge = this;
             }
             if (edgeMode != null) {
                 edgeMode.Edge = this;
             }
-            if (target != null) {
-                target.Edge = this;
+            if (targetReference != null) {
+                targetReference.Edge = this;
             }
-            if (connectionPoint != null) {                
-                connectionPoint.ExitTransition = this;
+            if (connectionPointReference != null) {                
+                connectionPointReference.ExitTransition = this;
             }
         }
 
@@ -49,34 +49,34 @@ namespace Pharmatechnik.Nav.Language {
         public ExitTransitionDefinitionSyntax Syntax { get; }
         
         [CanBeNull]
-        public INodeReferenceSymbol Source { get; }
+        public INodeReferenceSymbol SourceReference { get; }
 
         [CanBeNull]
-        public IConnectionPointReferenceSymbol ConnectionPoint { get; }
+        public IConnectionPointReferenceSymbol ConnectionPointReference { get; }
 
         [CanBeNull]
         public IEdgeModeSymbol EdgeMode { get; }
 
         [CanBeNull]
-        public INodeReferenceSymbol Target { get; }
+        public INodeReferenceSymbol TargetReference { get; }
 
         [NotNull]
         public IEnumerable<ISymbol> Symbols() {
 
-            if (Source != null) {
-                yield return Source;
+            if (SourceReference != null) {
+                yield return SourceReference;
             }
 
-            if (ConnectionPoint != null) {
-                yield return ConnectionPoint;
+            if (ConnectionPointReference != null) {
+                yield return ConnectionPointReference;
             }
 
             if (EdgeMode != null) {
                 yield return EdgeMode;
             }
 
-            if (Target != null) {
-                yield return Target;
+            if (TargetReference != null) {
+                yield return TargetReference;
             }
         }
     }

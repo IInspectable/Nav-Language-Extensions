@@ -136,9 +136,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         static IEnumerable<AmbiguousLocation> GetExitLocations(ITaskDefinitionSymbol task, NavExitAnnotation exitAnnotation) {
 
             var exitTransitions = task.ExitTransitions
-                .Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
-                .Where(et => et.ConnectionPoint != null)
-                .Select(et => new AmbiguousLocation(et.ConnectionPoint?.Location, et.ConnectionPoint.Name))
+                .Where(et => et.SourceReference?.Name == exitAnnotation.ExitTaskName)
+                .Where(et => et.ConnectionPointReference != null)
+                .Select(et => new AmbiguousLocation(et.ConnectionPointReference?.Location, et.ConnectionPointReference.Name))
                 .ToList();
 
             if (!exitTransitions.Any()) {

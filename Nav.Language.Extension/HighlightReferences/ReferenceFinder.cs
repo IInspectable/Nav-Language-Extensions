@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             }
 
             foreach (var transition in initNodeSymbol.Outgoings) {
-                yield return transition.Source;
+                yield return transition.SourceReference;
             }
         }
 
@@ -60,11 +60,11 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             }
 
             foreach(var exitTransition in taskNodeSymbol.Outgoings) {
-                yield return exitTransition.Source;
+                yield return exitTransition.SourceReference;
             }
 
             foreach (var edge in taskNodeSymbol.Incomings) {
-                yield return edge.Target;
+                yield return edge.TargetReference;
             }
         }
 
@@ -73,7 +73,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             yield return exitNodeSymbol;
 
             foreach (var edge in exitNodeSymbol.Incomings) {
-                yield return edge.Target;
+                yield return edge.TargetReference;
             }
         }
 
@@ -82,7 +82,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             yield return endNodeSymbol;
 
             foreach (var edge in endNodeSymbol.Incomings) {
-                yield return edge.Target;
+                yield return edge.TargetReference;
             }
         }
 
@@ -91,11 +91,11 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             yield return dialogNodeSymbol;
 
             foreach (var transition in dialogNodeSymbol.Outgoings) {
-                yield return transition.Source;
+                yield return transition.SourceReference;
             }
 
             foreach (var edge in dialogNodeSymbol.Incomings) {
-                yield return edge.Target;
+                yield return edge.TargetReference;
             }
         }
 
@@ -104,11 +104,11 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             yield return viewNodeSymbol;
 
             foreach (var transition in viewNodeSymbol.Outgoings) {
-                yield return transition.Source;
+                yield return transition.SourceReference;
             }
 
             foreach (var edge in viewNodeSymbol.Incomings) {
-                yield return edge.Target;
+                yield return edge.TargetReference;
             }
         }
 
@@ -117,11 +117,11 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             yield return choiceNodeSymbol;
 
             foreach (var transition in choiceNodeSymbol.Outgoings) {
-                yield return transition.Source;
+                yield return transition.SourceReference;
             }
 
             foreach (var edge in choiceNodeSymbol.Incomings) {
-                yield return edge.Target;
+                yield return edge.TargetReference;
             }
         }
 

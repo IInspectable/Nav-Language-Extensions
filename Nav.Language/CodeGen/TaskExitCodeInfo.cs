@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var containingTaskCodeInfo = TaskCodeInfo.FromTaskDefinition(exitTransition.ContainingTask);
 
-            return new TaskExitCodeInfo(containingTaskCodeInfo, exitTransition.Source?.Name);
+            return new TaskExitCodeInfo(containingTaskCodeInfo, exitTransition.SourceReference?.Name);
         }
 
         internal static TaskExitCodeInfo FromTaskNode(ITaskNodeSymbol taskNode, 

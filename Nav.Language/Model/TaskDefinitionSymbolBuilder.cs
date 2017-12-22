@@ -281,97 +281,97 @@ namespace Pharmatechnik.Nav.Language {
             //==============================
             // Source Errors
             //==============================
-            if(transition.Source != null) {
+            if(transition.SourceReference != null) {
 
-                if(transition.Source.Declaration == null) {
+                if(transition.SourceReference.Declaration == null) {
                     _diagnostics.Add(new Diagnostic(
-                        transition.Source.Location, 
+                        transition.SourceReference.Location, 
                         DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0, 
-                        transition.Source.Name));
+                        transition.SourceReference.Name));
 
-                } else if(transition.Source.Declaration is TaskNodeSymbol) {
+                } else if(transition.SourceReference.Declaration is TaskNodeSymbol) {
                     _diagnostics.Add(new Diagnostic(
-                        transition.Source.Location, 
+                        transition.SourceReference.Location, 
                         DiagnosticDescriptors.Semantic.Nav0100TaskNode0MustNotContainLeavingEdges, 
-                        transition.Source.Name));
+                        transition.SourceReference.Name));
 
-                } else if(transition.Source.Declaration is ExitNodeSymbol) {
+                } else if(transition.SourceReference.Declaration is ExitNodeSymbol) {
                     _diagnostics.Add(new Diagnostic(
-                        transition.Source.Location, 
+                        transition.SourceReference.Location, 
                         DiagnosticDescriptors.Semantic.Nav0101ExitNodeMustNotContainLeavingEdges));
 
-                } else if(transition.Source.Declaration is EndNodeSymbol) {
+                } else if(transition.SourceReference.Declaration is EndNodeSymbol) {
                     _diagnostics.Add(new Diagnostic(
-                        transition.Source.Location, 
+                        transition.SourceReference.Location, 
                         DiagnosticDescriptors.Semantic.Nav0102EndNodeMustNotContainLeavingEdges) );
 
-                } else if(transition.Source.Declaration is InitNodeSymbol) {
-                    var node = (InitNodeSymbol) transition.Source.Declaration;
+                } else if(transition.SourceReference.Declaration is InitNodeSymbol) {
+                    var node = (InitNodeSymbol) transition.SourceReference.Declaration;
                     node.Outgoings.Add(transition);
-                    node.References.Add(transition.Source);
+                    node.References.Add(transition.SourceReference);
 
-                } else if(transition.Source.Declaration is DialogNodeSymbol) {
-                    var node = (DialogNodeSymbol) transition.Source.Declaration;
+                } else if(transition.SourceReference.Declaration is DialogNodeSymbol) {
+                    var node = (DialogNodeSymbol) transition.SourceReference.Declaration;
                     node.Outgoings.Add(transition);
-                    node.References.Add(transition.Source);
+                    node.References.Add(transition.SourceReference);
 
-                } else if(transition.Source.Declaration is ViewNodeSymbol) {
-                    var node = (ViewNodeSymbol) transition.Source.Declaration;
+                } else if(transition.SourceReference.Declaration is ViewNodeSymbol) {
+                    var node = (ViewNodeSymbol) transition.SourceReference.Declaration;
                     node.Outgoings.Add(transition);
-                    node.References.Add(transition.Source);
+                    node.References.Add(transition.SourceReference);
 
-                } else if(transition.Source.Declaration is ChoiceNodeSymbol) {                   
-                    var node = (ChoiceNodeSymbol) transition.Source.Declaration;
+                } else if(transition.SourceReference.Declaration is ChoiceNodeSymbol) {                   
+                    var node = (ChoiceNodeSymbol) transition.SourceReference.Declaration;
                     node.Outgoings.Add(transition);
-                    node.References.Add(transition.Source);
+                    node.References.Add(transition.SourceReference);
                 }
             }
 
             //==============================
             // Target Errors
             //==============================
-            if (transition.Target != null) {
+            if (transition.TargetReference != null) {
 
-                if (transition.Target.Declaration == null) {
+                if (transition.TargetReference.Declaration == null) {
                     _diagnostics.Add(new Diagnostic(
-                        transition.Target.Location, 
+                        transition.TargetReference.Location, 
                         DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0, 
-                        transition.Target.Name));
+                        transition.TargetReference.Name));
 
-                } else if (transition.Target.Declaration is InitNodeSymbol) {
+                } else if (transition.TargetReference.Declaration is InitNodeSymbol) {
                     _diagnostics.Add(new Diagnostic(
-                        transition.Target.Location,
+                        transition.TargetReference.Location,
                         DiagnosticDescriptors.Semantic.Nav0103InitNodeMustNotContainIncomingEdges));
 
-                } else if (transition.Target.Declaration is EndNodeSymbol) {
-                    var node = (EndNodeSymbol)transition.Target.Declaration;
+                } else if (transition.TargetReference.Declaration is EndNodeSymbol) {
+                    var node = (EndNodeSymbol)transition.TargetReference.Declaration;
                     node.Incomings.Add(transition);
-                    node.References.Add(transition.Target);
+                    node.References.Add(transition.TargetReference);
 
-                } else if (transition.Target.Declaration is ExitNodeSymbol) {
-                    var node = (ExitNodeSymbol)transition.Target.Declaration;
+                } else if (transition.TargetReference.Declaration is ExitNodeSymbol) {
+                    var node = (ExitNodeSymbol)transition.TargetReference.Declaration;
                     node.Incomings.Add(transition);
-                    node.References.Add(transition.Target);
+                    node.References.Add(transition.TargetReference);
 
-                } else if (transition.Target.Declaration is DialogNodeSymbol) {
-                    var node = (DialogNodeSymbol)transition.Target.Declaration;
+                } else if (transition.TargetReference.Declaration is DialogNodeSymbol) {
+                    var node = (DialogNodeSymbol)transition.TargetReference.Declaration;
                     node.Incomings.Add(transition);
-                    node.References.Add(transition.Target);
+                    node.References.Add(transition.TargetReference);
 
-                } else if (transition.Target.Declaration is ViewNodeSymbol) {
-                    var node = (ViewNodeSymbol)transition.Target.Declaration;
+                } else if (transition.TargetReference.Declaration is ViewNodeSymbol) {
+                    var node = (ViewNodeSymbol)transition.TargetReference.Declaration;
                     node.Incomings.Add(transition);
-                    node.References.Add(transition.Target);
+                    node.References.Add(transition.TargetReference);
 
-                } else if (transition.Target.Declaration is ChoiceNodeSymbol) {
-                    var node = (ChoiceNodeSymbol)transition.Target.Declaration;
+                } else if (transition.TargetReference.Declaration is ChoiceNodeSymbol) {
+                    var node = (ChoiceNodeSymbol)transition.TargetReference.Declaration;
                     node.Incomings.Add(transition);
-                    node.References.Add(transition.Target);
+                    node.References.Add(transition.TargetReference);
 
-                } else if (transition.Target.Declaration is TaskNodeSymbol) {
-                    var node = (TaskNodeSymbol)transition.Target.Declaration;
+                } else if (transition.TargetReference.Declaration is TaskNodeSymbol) {
+                    var node = (TaskNodeSymbol)transition.TargetReference.Declaration;
                     node.Incomings.Add(transition);
-                    node.References.Add(transition.Target);
+                    node.References.Add(transition.TargetReference);
                 }
             }
 
@@ -382,25 +382,25 @@ namespace Pharmatechnik.Nav.Language {
 
                 if(transition.EdgeMode.EdgeMode != EdgeMode.Goto) {
 
-                    if(transition.Target?.Declaration is ChoiceNodeSymbol) {
+                    if(transition.TargetReference?.Declaration is ChoiceNodeSymbol) {
                         _diagnostics.Add(new Diagnostic(
                             transition.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0104ChoiceNode0MustOnlyReachedByGoTo,
-                            transition.Target.Name));
+                            transition.TargetReference.Name));
                     }
 
-                    if(transition.Target?.Declaration is ExitNodeSymbol) {
+                    if(transition.TargetReference?.Declaration is ExitNodeSymbol) {
                         _diagnostics.Add(new Diagnostic(
                             transition.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo,
-                            transition.Target.Name) );
+                            transition.TargetReference.Name) );
                     }
 
-                    if(transition.Target?.Declaration is EndNodeSymbol) {
+                    if(transition.TargetReference?.Declaration is EndNodeSymbol) {
                         _diagnostics.Add(new Diagnostic(
                             transition.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0106EndNode0MustOnlyReachedByGoTo,
-                            transition.Target.Name) );
+                            transition.TargetReference.Name) );
                     }
                 }
             }
@@ -412,9 +412,9 @@ namespace Pharmatechnik.Nav.Language {
 
                 foreach(var trigger in transition.Triggers.Where(t=>t.IsSpontaneousTrigger)) {
 
-                    if(!(transition.Source?.Declaration is DialogNodeSymbol ||
-                         transition.Source?.Declaration is ViewNodeSymbol ||
-                         transition.Source?.Declaration is InitNodeSymbol)) {
+                    if(!(transition.SourceReference?.Declaration is DialogNodeSymbol ||
+                         transition.SourceReference?.Declaration is ViewNodeSymbol ||
+                         transition.SourceReference?.Declaration is InitNodeSymbol)) {
 
                         _diagnostics.Add(new Diagnostic(
                             trigger.Location,
@@ -424,13 +424,13 @@ namespace Pharmatechnik.Nav.Language {
 
                 foreach (var trigger in transition.Triggers.Where(t => t.IsSignalTrigger)) {
 
-                    if (transition.Source?.Declaration is InitNodeSymbol) {
+                    if (transition.SourceReference?.Declaration is InitNodeSymbol) {
                         _diagnostics.Add(new Diagnostic(
                             trigger.Location, 
                             DiagnosticDescriptors.Semantic.Nav0200SignalTriggerNotAllowedAfterInit));
                     }
 
-                    if (transition.Source?.Declaration is ChoiceNodeSymbol) {
+                    if (transition.SourceReference?.Declaration is ChoiceNodeSymbol) {
                         _diagnostics.Add(new Diagnostic(
                                 trigger.Location,
                                 DiagnosticDescriptors.Semantic.Nav0203TriggerNotAllowedAfterChoice));
@@ -449,9 +449,9 @@ namespace Pharmatechnik.Nav.Language {
             //==============================
             if (transition.Syntax.ConditionClause != null) {
 
-                if(transition.Source != null && ! (
-                    transition.Source?.Declaration is InitNodeSymbol ||
-                    transition.Source?.Declaration is ChoiceNodeSymbol)){
+                if(transition.SourceReference != null && ! (
+                    transition.SourceReference?.Declaration is InitNodeSymbol ||
+                    transition.SourceReference?.Declaration is ChoiceNodeSymbol)){
 
                     _diagnostics.Add(new Diagnostic(
                             transition.Syntax.ConditionClause.GetLocation(),
@@ -586,85 +586,85 @@ namespace Pharmatechnik.Nav.Language {
             //==============================
             // Source Errors
             //==============================
-            if(exitTransition.Source != null) {
+            if(exitTransition.SourceReference != null) {
                 // Source in Exit Transition muss immer ein Task sein
-                if (exitTransition.Source.Declaration == null) {
+                if (exitTransition.SourceReference.Declaration == null) {
                     _diagnostics.Add(new Diagnostic(
-                        exitTransition.Source.Location, 
+                        exitTransition.SourceReference.Location, 
                         DiagnosticDescriptors.Semantic.Nav0010CannotResolveTask0, 
-                        exitTransition.Source.Name));
+                        exitTransition.SourceReference.Name));
 
                 } else {
-                    var sourceNode = (TaskNodeSymbol) exitTransition.Source.Declaration;
+                    var sourceNode = (TaskNodeSymbol) exitTransition.SourceReference.Declaration;
                     sourceNode.Outgoings.Add(exitTransition);
-                    sourceNode.References.Add(exitTransition.Source);
+                    sourceNode.References.Add(exitTransition.SourceReference);
                 }
             }
 
             //==============================
             // ConnectionPoint Errors
             //==============================
-            if (exitTransition.ConnectionPoint != null) {
+            if (exitTransition.ConnectionPointReference != null) {
 
-                if (exitTransition.ConnectionPoint.Declaration == null) {
+                if (exitTransition.ConnectionPointReference.Declaration == null) {
                     _diagnostics.Add(new Diagnostic(
-                        exitTransition.ConnectionPoint.Location,
+                        exitTransition.ConnectionPointReference.Location,
                         DiagnosticDescriptors.Semantic.Nav0012CannotResolveExit0,
-                        exitTransition.ConnectionPoint.Name));
+                        exitTransition.ConnectionPointReference.Name));
 
-                } else if(exitTransition.ConnectionPoint.Declaration.Kind !=ConnectionPointKind.Exit) {
+                } else if(exitTransition.ConnectionPointReference.Declaration.Kind !=ConnectionPointKind.Exit) {
                     _diagnostics.Add(new Diagnostic(
-                        exitTransition.ConnectionPoint.Location,
+                        exitTransition.ConnectionPointReference.Location,
                         DiagnosticDescriptors.Semantic.Nav0012CannotResolveExit0,
-                        exitTransition.ConnectionPoint.Name));
+                        exitTransition.ConnectionPointReference.Name));
                 }
             }
 
             //==============================
             // Target Errors
             //==============================
-            if (exitTransition.Target != null) {
+            if (exitTransition.TargetReference != null) {
 
-                if (exitTransition.Target.Declaration == null) {
+                if (exitTransition.TargetReference.Declaration == null) {
                     _diagnostics.Add(new Diagnostic(
-                        exitTransition.Target.Location, 
+                        exitTransition.TargetReference.Location, 
                         DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0, 
-                        exitTransition.Target.Name));
+                        exitTransition.TargetReference.Name));
 
-                } else if (exitTransition.Target.Declaration is InitNodeSymbol) {
+                } else if (exitTransition.TargetReference.Declaration is InitNodeSymbol) {
                     _diagnostics.Add(new Diagnostic(
-                        exitTransition.Target.Location,
+                        exitTransition.TargetReference.Location,
                         DiagnosticDescriptors.Semantic.Nav0103InitNodeMustNotContainIncomingEdges));
 
-                } else if (exitTransition.Target.Declaration is EndNodeSymbol) {
-                    var node = (EndNodeSymbol)exitTransition.Target.Declaration;
+                } else if (exitTransition.TargetReference.Declaration is EndNodeSymbol) {
+                    var node = (EndNodeSymbol)exitTransition.TargetReference.Declaration;
                     node.Incomings.Add(exitTransition);
-                    node.References.Add(exitTransition.Target);
+                    node.References.Add(exitTransition.TargetReference);
 
-                } else if (exitTransition.Target.Declaration is ExitNodeSymbol) {
-                    var node = (ExitNodeSymbol)exitTransition.Target.Declaration;
+                } else if (exitTransition.TargetReference.Declaration is ExitNodeSymbol) {
+                    var node = (ExitNodeSymbol)exitTransition.TargetReference.Declaration;
                     node.Incomings.Add(exitTransition);
-                    node.References.Add(exitTransition.Target);
+                    node.References.Add(exitTransition.TargetReference);
 
-                } else if (exitTransition.Target.Declaration is DialogNodeSymbol) {
-                    var node = (DialogNodeSymbol)exitTransition.Target.Declaration;
+                } else if (exitTransition.TargetReference.Declaration is DialogNodeSymbol) {
+                    var node = (DialogNodeSymbol)exitTransition.TargetReference.Declaration;
                     node.Incomings.Add(exitTransition);
-                    node.References.Add(exitTransition.Target);
+                    node.References.Add(exitTransition.TargetReference);
 
-                } else if (exitTransition.Target.Declaration is ViewNodeSymbol) {
-                    var node = (ViewNodeSymbol)exitTransition.Target.Declaration;
+                } else if (exitTransition.TargetReference.Declaration is ViewNodeSymbol) {
+                    var node = (ViewNodeSymbol)exitTransition.TargetReference.Declaration;
                     node.Incomings.Add(exitTransition);
-                    node.References.Add(exitTransition.Target);
+                    node.References.Add(exitTransition.TargetReference);
 
-                } else if (exitTransition.Target.Declaration is ChoiceNodeSymbol) {
-                    var node = (ChoiceNodeSymbol)exitTransition.Target.Declaration;
+                } else if (exitTransition.TargetReference.Declaration is ChoiceNodeSymbol) {
+                    var node = (ChoiceNodeSymbol)exitTransition.TargetReference.Declaration;
                     node.Incomings.Add(exitTransition);
-                    node.References.Add(exitTransition.Target);
+                    node.References.Add(exitTransition.TargetReference);
 
-                } else if (exitTransition.Target.Declaration is TaskNodeSymbol) {
-                    var node = (TaskNodeSymbol)exitTransition.Target.Declaration;
+                } else if (exitTransition.TargetReference.Declaration is TaskNodeSymbol) {
+                    var node = (TaskNodeSymbol)exitTransition.TargetReference.Declaration;
                     node.Incomings.Add(exitTransition);
-                    node.References.Add(exitTransition.Target);
+                    node.References.Add(exitTransition.TargetReference);
                 }
             }
 
@@ -677,28 +677,28 @@ namespace Pharmatechnik.Nav.Language {
                 if (exitTransition.EdgeMode.EdgeMode != EdgeMode.Goto)
                 {
 
-                    if (exitTransition.Target?.Declaration is ChoiceNodeSymbol)
+                    if (exitTransition.TargetReference?.Declaration is ChoiceNodeSymbol)
                     {
                         _diagnostics.Add(new Diagnostic(
                             exitTransition.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0104ChoiceNode0MustOnlyReachedByGoTo,
-                            exitTransition.Target.Name));
+                            exitTransition.TargetReference.Name));
                     }
 
-                    if (exitTransition.Target?.Declaration is ExitNodeSymbol)
+                    if (exitTransition.TargetReference?.Declaration is ExitNodeSymbol)
                     {
                         _diagnostics.Add(new Diagnostic(
                             exitTransition.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo,
-                            exitTransition.Target.Name));
+                            exitTransition.TargetReference.Name));
                     }
 
-                    if (exitTransition.Target?.Declaration is EndNodeSymbol)
+                    if (exitTransition.TargetReference?.Declaration is EndNodeSymbol)
                     {
                         _diagnostics.Add(new Diagnostic(
                             exitTransition.EdgeMode.Location,
                             DiagnosticDescriptors.Semantic.Nav0106EndNode0MustOnlyReachedByGoTo,
-                            exitTransition.Target.Name));
+                            exitTransition.TargetReference.Name));
                     }
                 }
             }
@@ -847,7 +847,7 @@ namespace Pharmatechnik.Nav.Language {
 
                     var expectedExits = taskNode.Declaration.Exits().OrderBy(cp => cp.Name);
                     var actualExits   = taskNode.Outgoings
-                                                .Select(et => et.ConnectionPoint)
+                                                .Select(et => et.ConnectionPointReference)
                                                 .Where(cp => cp != null)
                                                 .ToList();
 
@@ -858,7 +858,7 @@ namespace Pharmatechnik.Nav.Language {
                             _diagnostics.Add(new Diagnostic(
                                 taskNode.Location,
                                 taskNode.Incomings
-                                        .Select(edge => edge.Target)
+                                        .Select(edge => edge.TargetReference)
                                         .Where(nodeReference  => nodeReference != null)
                                         .Select(nodeReference => nodeReference.Location),
                                 DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
@@ -970,7 +970,7 @@ namespace Pharmatechnik.Nav.Language {
             var triggerMap = new Dictionary<INodeSymbol, ITriggerSymbol>();
             foreach(var trans in _taskDefinition.Transitions) {
                 // Nicht deklarierte Sourcenodes interessieren uns nicht
-                var nodeSymbol = trans.Source?.Declaration;
+                var nodeSymbol = trans.SourceReference?.Declaration;
                 if (nodeSymbol == null) {
                     continue;
                 }

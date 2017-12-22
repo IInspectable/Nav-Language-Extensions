@@ -26,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public static IEnumerable<TriggerTransitionCodeModel> FromTriggerTransition(TaskCodeInfo taskCodeInfo, ITransition triggerTransition) {
 
-            if (!(triggerTransition?.Source?.Declaration is IGuiNodeSymbol)) {
+            if (!(triggerTransition?.SourceReference?.Declaration is IGuiNodeSymbol)) {
                 throw new ArgumentException("Trigger transition expected");
             }
 

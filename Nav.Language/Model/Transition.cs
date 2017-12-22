@@ -20,9 +20,9 @@ namespace Pharmatechnik.Nav.Language {
 
             ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
             Syntax         = syntax         ?? throw new ArgumentNullException(nameof(syntax));
-            Source         = source;
+            SourceReference         = source;
             EdgeMode       = edgeMode;
-            Target         = target;
+            TargetReference         = target;
             Triggers       = triggers ?? new SymbolCollection<TriggerSymbol>();
 
             if (source != null) {                
@@ -49,13 +49,13 @@ namespace Pharmatechnik.Nav.Language {
         public TransitionDefinitionSyntax Syntax { get; }
         
         [CanBeNull]
-        public INodeReferenceSymbol Source { get; }
+        public INodeReferenceSymbol SourceReference { get; }
 
         [CanBeNull]
         public IEdgeModeSymbol EdgeMode { get; }
 
         [CanBeNull]
-        public INodeReferenceSymbol Target { get; }
+        public INodeReferenceSymbol TargetReference { get; }
         
         [NotNull]
         public SymbolCollection<TriggerSymbol> Triggers { get; }
@@ -65,16 +65,16 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public IEnumerable<ISymbol> Symbols() {
 
-            if(Source != null) {
-                yield return Source;
+            if(SourceReference != null) {
+                yield return SourceReference;
             }
 
             if (EdgeMode != null) {
                 yield return EdgeMode;
             }
 
-            if (Target != null) {
-                yield return Target;
+            if (TargetReference != null) {
+                yield return TargetReference;
             }
 
             foreach(var trigger in Triggers) {

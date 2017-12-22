@@ -8,6 +8,6 @@ namespace Pharmatechnik.Nav.Language {
         ExitTransitionDefinitionSyntax Syntax { get; }
         
         [CanBeNull]
-        IConnectionPointReferenceSymbol ConnectionPoint { get; }
+        IConnectionPointReferenceSymbol ConnectionPointReference { get; }
     }
 }

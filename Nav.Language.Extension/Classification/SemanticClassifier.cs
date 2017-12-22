@@ -105,10 +105,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
             foreach(var choiceNode in choiceNodes) {
                 yield return choiceNode.Syntax.Identifier.Extent;
 
-                foreach(var sourceNode in choiceNode.Outgoings.Select(trans => trans.Source).Where(source => source != null)) {
+                foreach(var sourceNode in choiceNode.Outgoings.Select(trans => trans.SourceReference).Where(source => source != null)) {
                     yield return sourceNode.Location.Extent;
                 }
-                foreach(var targetNode in choiceNode.Incomings.Select(trans => trans.Target).Where(target => target != null)) {
+                foreach(var targetNode in choiceNode.Incomings.Select(trans => trans.TargetReference).Where(target => target != null)) {
                     yield return targetNode.Location.Extent;
                 }
             }
@@ -120,7 +120,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                 if(initNode.Alias != null) {
                     yield return initNode.Alias.Location.Extent;
                 }                
-                foreach (var sourceNode in initNode.Outgoings.Select(trans => trans.Source).Where(source => source != null)) {
+                foreach (var sourceNode in initNode.Outgoings.Select(trans => trans.SourceReference).Where(source => source != null)) {
                     yield return sourceNode.Location.Extent;
                 }               
             }
@@ -131,7 +131,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
             foreach (var exitNode in exitNodes) {
                 yield return exitNode.Syntax.Identifier.Extent;
                
-                foreach (var targetNode in exitNode.Incomings.Select(trans => trans.Target).Where(target => target != null)) {
+                foreach (var targetNode in exitNode.Incomings.Select(trans => trans.TargetReference).Where(target => target != null)) {
                     yield return targetNode.Location.Extent;
                 }
             }

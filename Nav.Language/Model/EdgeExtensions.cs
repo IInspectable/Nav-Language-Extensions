@@ -21,7 +21,7 @@ namespace Pharmatechnik.Nav.Language {
             }
             seenEdges.Add(edge);
 
-            var targetNode = edge?.Target?.Declaration;
+            var targetNode = edge?.TargetReference?.Declaration;
             if(targetNode == null) {
                 yield break;
             }

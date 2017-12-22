@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language {
     public interface INodeReferenceSymbol: ISymbol {
         [CanBeNull]
         INodeSymbol Declaration { get;}
-        NodeReferenceType Type { get; }
+        NodeReferenceType NodeReferenceType { get; }
         [NotNull]
         IEdge Edge { get; }
     }

@@ -12,13 +12,13 @@ namespace Pharmatechnik.Nav.Language {
         Location Location { get; }
 
         [CanBeNull]
-        INodeReferenceSymbol Source { get; }
+        INodeReferenceSymbol SourceReference { get; }
 
         [CanBeNull]
         IEdgeModeSymbol EdgeMode { get; }
 
         [CanBeNull]
-        INodeReferenceSymbol Target { get; }
+        INodeReferenceSymbol TargetReference { get; }
 
         IEnumerable<ISymbol> Symbols();   
     }
