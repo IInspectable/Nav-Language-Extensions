@@ -13,6 +13,8 @@ namespace Pharmatechnik.Nav.Language {
             AsTaskDeclaration = taskDeclaration;
             NodeDeclarations  = new SymbolCollection<INodeSymbol>();
             Transitions       = new List<Transition>();
+            InitTransitions   = new List<InitTransition>();
+            TriggerTransitions= new List<TriggerTransition>();
             ExitTransitions   = new List<ExitTransition>();
         }
 
@@ -20,14 +22,17 @@ namespace Pharmatechnik.Nav.Language {
         public ITaskDeclarationSymbol AsTaskDeclaration { get; }
         public SymbolCollection<INodeSymbol> NodeDeclarations { get; }
         public List<Transition> Transitions { get; }
+
+        public List<InitTransition> InitTransitions { get; }
+        public List<TriggerTransition> TriggerTransitions { get; }
+
         public List<ExitTransition> ExitTransitions { get; }
         public CodeGenerationUnit CodeGenerationUnit { get; private set; }
 
         IReadOnlySymbolCollection<INodeSymbol> ITaskDefinitionSymbol.NodeDeclarations => NodeDeclarations;
-
-        IReadOnlyList<ITransition> ITaskDefinitionSymbol.Transitions => Transitions;
-
-        IReadOnlyList<IExitTransition> ITaskDefinitionSymbol.ExitTransitions => ExitTransitions;
+        IReadOnlyList<IInitTransition> ITaskDefinitionSymbol.InitTransitions          => InitTransitions;
+        IReadOnlyList<ITriggerTransition> ITaskDefinitionSymbol.TriggerTransitions    => TriggerTransitions;
+        IReadOnlyList<IExitTransition> ITaskDefinitionSymbol.ExitTransitions          => ExitTransitions;
 
         public IEnumerable<ISymbol> SymbolsAndSelf() {
 
@@ -37,7 +42,11 @@ namespace Pharmatechnik.Nav.Language {
                 yield return symbol;
             }
 
-            foreach (var symbol in Transitions.SelectMany(t=>t.Symbols())) {
+            foreach (var symbol in InitTransitions.SelectMany(t=>t.Symbols())) {
+                yield return symbol;
+            }
+
+            foreach (var symbol in TriggerTransitions.SelectMany(t=>t.Symbols())) {
                 yield return symbol;
             }
 

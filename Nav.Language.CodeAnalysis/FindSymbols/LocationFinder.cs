@@ -105,9 +105,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         static IEnumerable<Location> GetTriggerLocations(ITaskDefinitionSymbol task, NavTriggerAnnotation triggerAnnotation) {
 
-            var trigger = task.Transitions
-                .SelectMany(t => t.Triggers)
-                .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
+            var trigger = task.TriggerTransitions
+                              .SelectMany(t => t.Triggers)
+                              .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
 
             if (trigger == null) {
                 // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,

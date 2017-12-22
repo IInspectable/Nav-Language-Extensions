@@ -9,30 +9,30 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language {
 
-    sealed class Transition : ITransition {
+    abstract class Transition : ITransition {
 
         internal Transition(TransitionDefinitionSyntax syntax, 
                             ITaskDefinitionSymbol containingTask, 
-                            NodeReferenceSymbol source, 
+                            NodeReferenceSymbol sourceReference, 
                             EdgeModeSymbol edgeMode, 
-                            NodeReferenceSymbol target, 
+                            NodeReferenceSymbol targetReference, 
                             SymbolCollection<TriggerSymbol> triggers)  {
 
-            ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
-            Syntax         = syntax         ?? throw new ArgumentNullException(nameof(syntax));
-            SourceReference         = source;
-            EdgeMode       = edgeMode;
-            TargetReference         = target;
-            Triggers       = triggers ?? new SymbolCollection<TriggerSymbol>();
+            ContainingTask  = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
+            Syntax          = syntax         ?? throw new ArgumentNullException(nameof(syntax));
+            SourceReference = sourceReference;
+            EdgeMode        = edgeMode;
+            TargetReference = targetReference;
+            Triggers        = triggers ?? new SymbolCollection<TriggerSymbol>();
 
-            if (source != null) {                
-                source.Edge   = this;
+            if (sourceReference != null) {                
+                sourceReference.Edge   = this;
             }
             if (edgeMode != null) {
                 edgeMode.Edge = this;
             }
-            if (target != null) {
-                target.Edge = this;
+            if (targetReference != null) {
+                targetReference.Edge = this;
             }
             foreach (var trigger in Triggers) {
                 trigger.Transition = this;
@@ -60,7 +60,7 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public SymbolCollection<TriggerSymbol> Triggers { get; }
 
-        IReadOnlySymbolCollection<ITriggerSymbol> ITransition.Triggers => Triggers;
+       
 
         [NotNull]
         public IEnumerable<ISymbol> Symbols() {

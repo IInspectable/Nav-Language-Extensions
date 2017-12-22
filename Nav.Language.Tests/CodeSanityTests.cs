@@ -7,6 +7,8 @@ using System.Reflection;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.Generated;
+using Pharmatechnik.Nav.Language.Internal;
+
 #endregion
 
 // ReSharper disable InconsistentNaming Ist bei den Tests unerheblich
@@ -238,7 +240,12 @@ namespace Nav.Language.Tests {
 
             foreach (var candidate in symbolInterfaces) {
 
-               Assert.That(candidate.Name.EndsWith("Symbol"), Is.True, "Der name der Schnittstelle {0} sollte auf 'Symbol' enden", candidate.FullName);
+                // Der Name von Generischen Klassen endet mit ` + Anzahl an generischen Paramtern
+                var name = candidate.Name;
+                if (candidate.IsGenericType) {
+                    name = candidate.Name.Substring(0, candidate.Name.IndexOf('`'));
+                }
+               Assert.That(name.EndsWith("Symbol"), Is.True, "Der name der Schnittstelle {0} sollte auf 'Symbol' enden", candidate.FullName);
             }
         }
 
@@ -248,7 +255,7 @@ namespace Nav.Language.Tests {
 
             var symbolTypes = FindAllDerivedTypesAndSelf<ISymbol>().Where(n => !n.IsInterface && !n.IsAbstract);
 
-            foreach (var candidate in symbolTypes) {
+            foreach (var candidate in symbolTypes.Where(c=> !Attribute.IsDefined(c, typeof(SuppressCodeSanityCheckAttribute)))) {
 
                 Assert.That(candidate.IsSealed, Is.True, "Die Klasse {0} sollte versiegelt sein", candidate.FullName);
             }

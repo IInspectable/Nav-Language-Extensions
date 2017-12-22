@@ -155,7 +155,7 @@ namespace Pharmatechnik.Nav.Language {
 					}
 
 					var itf=ImplementedInterface(codeClass, symbolInterfaces);
-					if(itf!=null && !classMap.Keys.Any(c=>c.FullName==codeClass.FullName)) {
+					if(itf!=null && !classMap.Keys.Any(c=>c.Name==codeClass.Name)) {
 						classMap.Add(codeClass, itf);					
 					}								
 				}

@@ -241,7 +241,12 @@ namespace Pharmatechnik.Nav.Language {
 
                 var location   = sourceNodeSyntax.GetLocation();
                 if(location != null) {
-                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceNode, NodeReferenceType.Source);
+
+                    if (sourceNode is IInitNodeSymbol initNode) {
+                        sourceNodeReference = new InitNodeReferenceSymbol(sourceNodeSyntax.Name, location, initNode, NodeReferenceType.Source);
+                    } else {
+                        sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceNode, NodeReferenceType.Source);
+                    }
                 }
             }
 
@@ -271,9 +276,13 @@ namespace Pharmatechnik.Nav.Language {
             // Triggers
             var triggers = GetTriggers(transitionDefinitionSyntax);
 
-            var transition = new Transition(transitionDefinitionSyntax, _taskDefinition, sourceNodeReference, edgeMode, targetNodeReference, triggers);
-            
-            AddTransition(transition);
+            if (sourceNodeReference is InitNodeReferenceSymbol initNodeReference) {
+                var transition = new InitTransition(transitionDefinitionSyntax, _taskDefinition, initNodeReference, edgeMode, targetNodeReference, triggers);
+                AddTransition(transition);
+            } else {
+                var transition = new TriggerTransition(transitionDefinitionSyntax, _taskDefinition, sourceNodeReference, edgeMode, targetNodeReference, triggers);
+                AddTransition(transition);
+            }
         }
         
         void AddTransition(Transition transition) {
@@ -460,7 +469,13 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
 
-            _taskDefinition.Transitions.Add(transition);
+            if (transition is InitTransition initTrans) {
+                _taskDefinition.InitTransitions.Add(initTrans);
+            }
+
+            if (transition is TriggerTransition triggerTrans) {
+                _taskDefinition.TriggerTransitions.Add(triggerTrans);
+            }
         }
 
         List<TriggerSymbol> _triggers;
@@ -968,7 +983,7 @@ namespace Pharmatechnik.Nav.Language {
             // Trigger Errors
             //==============================
             var triggerMap = new Dictionary<INodeSymbol, ITriggerSymbol>();
-            foreach(var trans in _taskDefinition.Transitions) {
+            foreach(var trans in _taskDefinition.TriggerTransitions) {
                 // Nicht deklarierte Sourcenodes interessieren uns nicht
                 var nodeSymbol = trans.SourceReference?.Declaration;
                 if (nodeSymbol == null) {

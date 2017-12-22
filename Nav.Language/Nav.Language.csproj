@@ -129,8 +129,14 @@
     <Compile Include="Model\Call.cs" />
     <Compile Include="Model\EdgeExtensions.cs" />
     <Compile Include="Model\ICodeParameter.cs" />
+    <Compile Include="Model\IInitNodeReferenceSymbol.cs" />
+    <Compile Include="Model\InitNodeReferenceSymbol.cs" />
+    <Compile Include="Model\InitTransition.cs" />
+    <Compile Include="Model\INodeReferenceSymbolOfT.cs" />
     <Compile Include="Model\NodeExtensions.cs" />
     <Compile Include="Model\CodeParameter.cs" />
+    <Compile Include="Model\NodeReferenceSymbolOfT.cs" />
+    <Compile Include="Model\TriggerTransition.cs" />
     <Compile Include="Provider\CachedSyntaxProvider.cs" />
     <Compile Include="Provider\IPathProvider.cs" />
     <Compile Include="Provider\IPathProviderFactory.cs" />

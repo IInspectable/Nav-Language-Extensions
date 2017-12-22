@@ -1,8 +1,10 @@
 using JetBrains.Annotations;
+using Pharmatechnik.Nav.Language.Internal;
 
 namespace Pharmatechnik.Nav.Language {
 
-    sealed partial class NodeReferenceSymbol : Symbol, INodeReferenceSymbol {
+    [SuppressCodeSanityCheck("NodeReferenceSymbol darf hier unversiegelt bestehen.")]
+    partial class NodeReferenceSymbol : Symbol, INodeReferenceSymbol {
 
         // ReSharper disable once NotNullMemberIsNotInitialized Transition wird im Ctor der Transition während der Initialisierung gesetzt 
         // In der "freien" Wildbahn" darf hingegen der Null Fall nicht auftreten
@@ -15,5 +17,5 @@ namespace Pharmatechnik.Nav.Language {
         public INodeSymbol Declaration { get; }
         public NodeReferenceType NodeReferenceType { get; }
         public IEdge Edge { get; set; }
-    }
+    }        
 }

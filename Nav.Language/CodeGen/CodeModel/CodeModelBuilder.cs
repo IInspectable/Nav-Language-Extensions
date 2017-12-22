@@ -4,9 +4,7 @@ using System.Linq;
 namespace Pharmatechnik.Nav.Language.CodeGen {
     sealed class CodeModelBuilder {
         public static IEnumerable<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
-            return taskDefinition.NodeDeclarations
-                .OfType<IInitNodeSymbol>()
-                .SelectMany(n => n.Outgoings)
+            return taskDefinition.InitTransitions
                 .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeInfo));  
         }
 
@@ -18,9 +16,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         public static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
-            return taskDefinition.NodeDeclarations
-                .OfType<IGuiNodeSymbol>()
-                .SelectMany(n => n.Outgoings)
+            return taskDefinition.TriggerTransitions
+                // TODO Choice Transitions einführen und aus den Trigger Transitions rausnehmen
+                .Where(t=> t.SourceReference?.Declaration is IGuiNodeSymbol)
                 .SelectMany(triggerTransition => TriggerTransitionCodeModel.FromTriggerTransition(taskCodeInfo, triggerTransition))
                 .OrderBy(st => st.TriggerMethodName.Length).ThenBy(st => st.TriggerMethodName);            
         }

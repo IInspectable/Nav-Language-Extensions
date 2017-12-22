@@ -25,7 +25,12 @@ namespace Pharmatechnik.Nav.Language {
         IReadOnlySymbolCollection<INodeSymbol> NodeDeclarations { get; }
 
         [NotNull]
-        IReadOnlyList<ITransition> Transitions { get; }
+        IReadOnlyList<IInitTransition> InitTransitions { get; }
+
+        [NotNull]
+        IReadOnlyList<ITriggerTransition> TriggerTransitions { get; }
+
+        // TODO IChoiceTransition einführen
 
         [NotNull]
         IReadOnlyList<IExitTransition> ExitTransitions { get; }
