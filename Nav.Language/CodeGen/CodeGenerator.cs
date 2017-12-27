@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-
+using System.Text;
 using Antlr4.StringTemplate;
 using JetBrains.Annotations;
 
@@ -35,10 +35,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(codeGenerationUnit));
             }
             if (codeGenerationUnit.Syntax.SyntaxTree.Diagnostics.HasErrors()) {
-                throw new ArgumentException("Syntax errors detected");
+                throw new ArgumentException($"The CodeGenerationUnit has syntax errors:\r\n{FormatDiagnostics(codeGenerationUnit.Syntax.SyntaxTree.Diagnostics.Errors())}");
             }
             if (codeGenerationUnit.Diagnostics.HasErrors()) {
-                throw new ArgumentException("Semantic errors detected");
+                throw new ArgumentException($"The CodeGenerationUnit has semantic errors:\r\n{FormatDiagnostics(codeGenerationUnit.Diagnostics.Errors())}");
+            }
+            if (codeGenerationUnit.Includes.Any(i=> i.Diagnostics.HasErrors())) {
+                throw new ArgumentException($"An included file has syntax or semantic errors:\r\n{FormatDiagnostics(codeGenerationUnit.Includes.SelectMany(i => i.Diagnostics).Errors())}");
             }
 
             var codeModelResult = codeGenerationUnit.TaskDefinitions
@@ -46,8 +49,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                                                     .ToImmutableList();
 
             return codeModelResult.Select(GenerateCode).ToImmutableList();
-        }
+            
+            string FormatDiagnostics(IEnumerable<Diagnostic> diagnostics) {
+                return diagnostics.Aggregate(new StringBuilder(), (sb, d) => sb.AppendLine(FormatDiagnostic(d)), sb => sb.ToString());
+            }
 
+            string FormatDiagnostic(Diagnostic diagnostic) {
+                return $"{diagnostic.Descriptor.Id}: {diagnostic.Location} {diagnostic.Message}";
+            }
+        }
+        
         CodeModelResult GenerateCodeModel(ITaskDefinitionSymbol taskDefinition) {
 
             var pathProvider = PathProviderFactory.CreatePathProvider(taskDefinition);
@@ -158,6 +169,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             st.Add(ContextAttributeName, context);
 
             return st;
-        }
+        }        
     }
 }
