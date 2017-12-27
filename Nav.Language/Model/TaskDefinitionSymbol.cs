@@ -47,6 +47,10 @@ namespace Pharmatechnik.Nav.Language {
                 yield return symbol;
             }
 
+            foreach (var symbol in ChoiceTransitions.SelectMany(t=>t.Symbols())) {
+                yield return symbol;
+            }
+
             foreach (var symbol in TriggerTransitions.SelectMany(t=>t.Symbols())) {
                 yield return symbol;
             }

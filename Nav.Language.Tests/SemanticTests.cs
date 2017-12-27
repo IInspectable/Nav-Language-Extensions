@@ -167,6 +167,50 @@ task C
             Assert.That(callNodeNames, Is.EquivalentTo(new[] { "A","e1" }));
         }
 
+        [Test]
+        public void TestTransitionSymbolsPresent() {
+
+            var nav = @"
+            task A {
+                init i;
+                exit e;
+                i --> e;
+            }
+
+            task B
+            {
+                init i;
+                task A a;               
+                choice c;
+                view v;
+                exit e;
+
+                i      --> c;  
+
+                c      --> a;
+                c      --> e;
+                c      --> v;
+
+                v --> e on trigger;
+
+                a:e --> e;
+            }
+            ";
+
+            var model = ParseModel(nav);
+            var taskB = model.TryFindTaskDefinition("B");
+
+            Assert.That(model.Diagnostics.HasErrors()                  , Is.False, "Semantic Fehler");
+            Assert.That(model.Syntax.SyntaxTree.Diagnostics.HasErrors(), Is.False, "Syntax Fehler");
+            Assert.That(taskB                                          , Is.Not.Null);
+            
+            // Sicherstellen, dass die 4 Arten von Übergängen im Sematic Model wiedergegeben werden
+            Assert.That(taskB.InitTransitions.Count   , Is.EqualTo(1));
+            Assert.That(taskB.ChoiceTransitions.Count , Is.EqualTo(3));
+            Assert.That(taskB.TriggerTransitions.Count, Is.EqualTo(1));
+            Assert.That(taskB.ExitTransitions.Count   , Is.EqualTo(1));
+        }
+
         CodeGenerationUnit ParseModel(string source) {
             var syntax=Syntax.ParseCodeGenerationUnit(source);
             var model= CodeGenerationUnit.FromCodeGenerationUnitSyntax(syntax);
