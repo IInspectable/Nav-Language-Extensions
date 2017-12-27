@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
-using System.Linq;
+// ReSharper disable PossibleNullReferenceException
 
 namespace Nav.Language.Tests {
     [TestFixture]
@@ -143,28 +144,76 @@ task C
     A:e1    --> V1;
 }
         ";
-
+            
             var model = ParseModel(nav);
             var taskC = model.TryFindTaskDefinition("C");
+
+            // I1      -->     V1; 
             var initTransition = taskC.TryFindNode<IInitNodeSymbol>("I1")?.Outgoings.Single();          
             var calls = initTransition.GetReachableCalls(); 
             var callNodeNames = calls.Select(call => call.Node.Name).ToList();
             Assert.That(callNodeNames, Is.EquivalentTo(new[] { "V1" }));
+            Assert.That(taskC.InitTransitions
+                    .First(t => t.SourceReference.Name == "I1" && t.TargetReference.Name == "V1")
+                    .GetReachableCalls()
+                    .Select(call => call.Node.Name).ToList(), 
+                Is.EquivalentTo(new[] {"V1"}));
 
+
+            // V1      --> V1 on s1;
             var triggerTrans1 = taskC.TryFindNode<IViewNodeSymbol>("V1")?.Outgoings.First();
             calls = triggerTrans1.GetReachableCalls();
             callNodeNames = calls.Select(call => call.Node.Name).ToList();
             Assert.That(callNodeNames, Is.EquivalentTo(new[] { "V1" }));
+            Assert.That(taskC.TriggerTransitions
+                    .First(t => t.SourceReference.Name == "V1" && t.TargetReference.Name == "V1")
+                    .GetReachableCalls()
+                    .Select(call => call.Node.Name).ToList(), 
+                Is.EquivalentTo(new[] {"V1"}));
 
+            // V1      --> A  on s2;   
             var triggerTrans2 = taskC.TryFindNode<IViewNodeSymbol>("V1")?.Outgoings.Skip(1).First();
             calls = triggerTrans2.GetReachableCalls();
             callNodeNames = calls.Select(call => call.Node.Name).ToList();
-            Assert.That(callNodeNames, Is.EquivalentTo(new[] { "A" }));
+            Assert.That(callNodeNames, Is.EquivalentTo(new[] { "A" }));            
+            Assert.That(taskC.TriggerTransitions
+                             .First(t => t.SourceReference.Name == "V1" && t.TargetReference.Name == "A")
+                             .GetReachableCalls()
+                             .Select(call => call.Node.Name).ToList(), 
+                        Is.EquivalentTo(new[] {"A"}));
+            
 
+            // V1      --> C1 on s3;
             var triggerTrans3 = taskC.TryFindNode<IViewNodeSymbol>("V1")?.Outgoings.Skip(2).First();
             calls = triggerTrans3.GetReachableCalls();
             callNodeNames = calls.Select(call => call.Node.Name).ToList();
             Assert.That(callNodeNames, Is.EquivalentTo(new[] { "A","e1" }));
+            Assert.That(taskC.TriggerTransitions
+                    .First(t => t.SourceReference.Name == "V1" && t.TargetReference.Name == "C1")
+                    .GetReachableCalls()
+                    .Select(call => call.Node.Name).ToList(), 
+                Is.EquivalentTo(new[] {"A","e1"}));
+
+            // C1      --> A;
+            Assert.That(taskC.ChoiceTransitions
+                    .First(t => t.SourceReference.Name == "C1" && t.TargetReference.Name == "A")
+                    .GetReachableCalls()
+                    .Select(call => call.Node.Name).ToList(), 
+                Is.EquivalentTo(new[] {"A"}));
+
+            // C1      --> C2;
+            Assert.That(taskC.ChoiceTransitions
+                    .First(t => t.SourceReference.Name == "C1" && t.TargetReference.Name == "C2")
+                    .GetReachableCalls()
+                    .Select(call => call.Node.Name).ToList(), 
+                Is.EquivalentTo(new[] {"e1"}));
+
+            // C2      --> e1;
+            Assert.That(taskC.ChoiceTransitions
+                    .First(t => t.SourceReference.Name == "C2" && t.TargetReference.Name == "e1")
+                    .GetReachableCalls()
+                    .Select(call => call.Node.Name).ToList(), 
+                Is.EquivalentTo(new[] {"e1"}));
         }
 
         [Test]
