@@ -1,5 +1,7 @@
 ﻿delimiters "<", ">"
 
+// Common.stg und CodeGenFacts.stg werden immer importiert
+
 Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 

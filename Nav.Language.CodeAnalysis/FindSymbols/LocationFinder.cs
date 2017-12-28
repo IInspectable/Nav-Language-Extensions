@@ -38,8 +38,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         const string MsgUnableToFindTheTaskAnnotation            = "Unable to find the task annotation";
         const string MsgUnableToGetMemberLoation                 = "Unable to get the member location";
 
-        const string MsgErrorWhileParsingNavFile0                = "Error while parsing nav file '{0}'";
-        const string MsgMissingProjectForAssembly0               = "Missing project for assembly '{0}'.";
+        const string MsgErrorWhileParsingNavFile0  = "Error while parsing nav file '{0}'";
+        const string MsgMissingProjectForAssembly0 = "Missing project for assembly '{0}'.";
 
         const string BeginLogicMethodName = CodeGenFacts.BeginMethodPrefix+CodeGenFacts.LogicMethodSuffix;
 
@@ -488,7 +488,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             var textExtent = memberLocation.SourceSpan.ToTextExtent();
             var lineExtent = lineSpan.ToLinePositionExtent();
-            var filePath = memberLocation.SourceTree?.FilePath;
+            var filePath   = memberLocation.SourceTree?.FilePath;
 
             var loc = new Location(textExtent, lineExtent, filePath);
 
@@ -501,9 +501,6 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         static IImmutableSet<T> ToImmutableSet<T>(T item) {
             return new[] { item }.ToImmutableHashSet();
-        }        
-
-        
-
+        }       
     }
 }

@@ -8,12 +8,12 @@ using System.Collections.Generic;
 namespace Pharmatechnik.Nav.Language.CodeGen {
     //TODO NodeSymbolCodeInfo eingführen: Name, NamePascalCase
     sealed class CallCodeModelBuilder: SymbolVisitor<CallCodeModel> {
-
-        public EdgeMode EdgeMode { get; }
-
+        
         public CallCodeModelBuilder(EdgeMode edgeMode) {
             EdgeMode = edgeMode;
         }
+
+        public EdgeMode EdgeMode { get; }
 
         public static IEnumerable<CallCodeModel> FromCalls(IEnumerable<Call> calls) {
             return calls.Select(call => GetCallCodeModel(call.Node, call.EdgeMode));
