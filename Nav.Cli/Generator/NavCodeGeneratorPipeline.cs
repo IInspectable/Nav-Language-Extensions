@@ -48,19 +48,19 @@ namespace Pharmatechnik.Nav.Language.Generator {
                     logger.LogProcessFileBegin(fileSpec);        
                 
                     // 1. SyntaxTree
-                    var syntaxTree = syntaxProvider.FromFile(fileSpec.FilePath);
-                    if(syntaxTree == null) {
+                    var syntax = syntaxProvider.FromFile(fileSpec.FilePath);
+                    if(syntax == null) {
                         logger.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, fileSpec));
                         continue;
                     }
                     // 2. Semantic Model
-                    var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax((CodeGenerationUnitSyntax)syntaxTree.GetRoot(), syntaxProvider: syntaxProvider);
+                    var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(syntax, syntaxProvider: syntaxProvider);
 
-                    if (logger.LogErrors(syntaxTree.Diagnostics) || logger.LogErrors(codeGenerationUnit.Diagnostics)) {
+                    if (logger.LogErrors(syntax.SyntaxTree.Diagnostics) || logger.LogErrors(codeGenerationUnit.Diagnostics)) {
                         continue;
                     }
 
-                    logger.LogWarnings(syntaxTree.Diagnostics);
+                    logger.LogWarnings(syntax.SyntaxTree.Diagnostics);
                     logger.LogWarnings(codeGenerationUnit.Diagnostics);
 
                     // 3. Generate Code

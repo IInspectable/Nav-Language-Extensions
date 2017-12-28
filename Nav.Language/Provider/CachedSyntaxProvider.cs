@@ -14,34 +14,37 @@ namespace Pharmatechnik.Nav.Language {
         public CachedSyntaxProviderStatistic(int cacheHits) {
             CacheHits = cacheHits;
         }
-        public int CacheHits { get; }        
+
+        public int CacheHits { get; }
+
     }
 
-    public class CachedSyntaxProvider : SyntaxProvider {
+    public class CachedSyntaxProvider: SyntaxProvider {
 
-        readonly Dictionary<string, SyntaxTree> _cache;
-        readonly Dictionary<string, int> _cacheStatistic;
+        readonly Dictionary<string, CodeGenerationUnitSyntax> _cache;
+        readonly Dictionary<string, int>                      _cacheStatistic;
 
         public CachedSyntaxProvider() {
-            _cache = new Dictionary<string, SyntaxTree>(StringComparer.OrdinalIgnoreCase);
+            _cache          = new Dictionary<string, CodeGenerationUnitSyntax>(StringComparer.OrdinalIgnoreCase);
             _cacheStatistic = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public override SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = default) {
+        public override CodeGenerationUnitSyntax FromFile(string filePath, CancellationToken cancellationToken = default) {
 
-            if(_cache.TryGetValue(filePath, out var syntaxTree)) {
+            if (_cache.TryGetValue(filePath, out var syntax)) {
                 if (_cacheStatistic.ContainsKey(filePath)) {
                     _cacheStatistic[filePath] += 1;
-                } else {                    
+                } else {
                     _cacheStatistic[filePath] = 1;
                 }
-                return syntaxTree;
+
+                return syntax;
             }
 
-            syntaxTree = base.FromFile(filePath, cancellationToken);
-            Cache(filePath, syntaxTree);
+            syntax = base.FromFile(filePath, cancellationToken);
+            Cache(filePath, syntax);
 
-            return syntaxTree;
+            return syntax;
         }
 
         public CachedSyntaxProviderStatistic GetStatistic() {
@@ -53,13 +56,15 @@ namespace Pharmatechnik.Nav.Language {
             ClearCache();
         }
 
-        void Cache(string filePath, SyntaxTree syntaxTree) {
-            _cache[filePath] = syntaxTree;
+        void Cache(string filePath, CodeGenerationUnitSyntax syntax) {
+            _cache[filePath] = syntax;
         }
 
         void ClearCache() {
             _cache.Clear();
             _cacheStatistic.Clear();
-        }                    
+        }
+
     }
+
 }

@@ -21,7 +21,6 @@ using RoslynDiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
 using Diagnostic = Pharmatechnik.Nav.Language.Diagnostic;
 using DiagnosticSeverity = Pharmatechnik.Nav.Language.DiagnosticSeverity;
 using System.Threading;
-using SyntaxTree = Pharmatechnik.Nav.Language.SyntaxTree;
 
 #endregion
 
@@ -184,7 +183,7 @@ namespace Nav.Language.Tests {
             foreach (var navFile in testCase.NavFiles) {
 
                 // 1. Syntaxbaum aus Nav-File erstellen
-                var codeGenerationUnitSyntax = syntaxProvider.FromFile(navFile.FilePath)?.GetRoot() as CodeGenerationUnitSyntax;
+                var codeGenerationUnitSyntax = syntaxProvider.FromFile(navFile.FilePath);
                 Assert.That(codeGenerationUnitSyntax, Is.Not.Null, $"File '{navFile.FilePath}' not found");
                 AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics, codeGenerationUnitSyntax.SyntaxTree.SourceText);
 
@@ -298,13 +297,13 @@ namespace Nav.Language.Tests {
                 _files[file.FilePath] = file.Content;
             }
 
-            public override SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = default(CancellationToken)) {
+            public override CodeGenerationUnitSyntax FromFile(string filePath, CancellationToken cancellationToken = default(CancellationToken)) {
 
                 if (!_files.TryGetValue(filePath, out var content)) {
                     return null;
                 }
 
-                return SyntaxTree.ParseText(text: content, filePath: filePath);
+                return Syntax.ParseCodeGenerationUnit(text: content, filePath: filePath);
             }
         }
     }  

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using JetBrains.Annotations;
 
 #endregion
@@ -11,24 +12,25 @@ namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
     [SampleSyntax("")]
-    public partial class CodeGenerationUnitSyntax : SyntaxNode {
+    public partial class CodeGenerationUnitSyntax: SyntaxNode {
 
         readonly CodeNamespaceDeclarationSyntax            _codeNamespace;
         readonly IReadOnlyList<CodeUsingDeclarationSyntax> _codeUsings;
         readonly IReadOnlyList<MemberDeclarationSyntax>    _members;
 
         internal CodeGenerationUnitSyntax(
-                TextExtent extent,
-                CodeNamespaceDeclarationSyntax            codeNamespaceDeclaration,
-                IReadOnlyList<CodeUsingDeclarationSyntax> codeUsingDeclarations,
-                IReadOnlyList<MemberDeclarationSyntax>    memberDeclarations
-                ) 
+            TextExtent extent,
+            CodeNamespaceDeclarationSyntax codeNamespaceDeclaration,
+            IReadOnlyList<CodeUsingDeclarationSyntax> codeUsingDeclarations,
+            IReadOnlyList<MemberDeclarationSyntax> memberDeclarations
+        )
             : base(extent) {
+
             _members = memberDeclarations;
 
-            AddChildNode( _codeNamespace = codeNamespaceDeclaration);
-            AddChildNodes(_codeUsings    = codeUsingDeclarations   );
-            AddChildNodes(_members       = memberDeclarations      );
+            AddChildNode(_codeNamespace = codeNamespaceDeclaration);
+            AddChildNodes(_codeUsings   = codeUsingDeclarations);
+            AddChildNodes(_members      = memberDeclarations);
         }
 
         [CanBeNull]
@@ -48,5 +50,7 @@ namespace Pharmatechnik.Nav.Language {
 
         [NotNull]
         public IReadOnlyList<TaskDefinitionSyntax> TaskDefinitions => Members.OfType<TaskDefinitionSyntax>().ToList();
+
     }
+
 }
