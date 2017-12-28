@@ -7,37 +7,41 @@ using System;
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     abstract class CallCodeModel: CodeModel {
-        
+
         protected CallCodeModel(string name, EdgeMode edgeMode) {
             Name     = name ?? String.Empty;
             EdgeMode = edgeMode;
         }
 
-        public EdgeMode EdgeMode { get; }
-        public string Name { get; }
-        public string PascalCaseName => Name.ToPascalcase();
+        public EdgeMode EdgeMode       { get; }
+        public string   Name           { get; }
+        public string   PascalCaseName => Name.ToPascalcase();
+
         public abstract string TemplateName { get; }
+
     }
 
-    sealed class ExitCallCodeModel : CallCodeModel {
+    sealed class ExitCallCodeModel: CallCodeModel {
 
-        public ExitCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
+        public ExitCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
         }
 
         public override string TemplateName => "goToExit";
+
     }
 
-    sealed class EndCallCodeModel : CallCodeModel {
+    sealed class EndCallCodeModel: CallCodeModel {
 
-        public EndCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
+        public EndCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
         }
 
         public override string TemplateName => "goToEnd";
+
     }
 
-    sealed class TaskCallCodeModel : CallCodeModel {
+    sealed class TaskCallCodeModel: CallCodeModel {
 
-        public TaskCallCodeModel(string name, EdgeMode edgeMode, ParameterCodeModel taskResult) : base(name, edgeMode) {
+        public TaskCallCodeModel(string name, EdgeMode edgeMode, ParameterCodeModel taskResult): base(name, edgeMode) {
             TaskResult = taskResult ?? throw new ArgumentNullException(nameof(taskResult));
         }
 
@@ -57,11 +61,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 }
             }
         }
+
     }
 
-    sealed class GuiCallCodeModel : CallCodeModel {
+    sealed class GuiCallCodeModel: CallCodeModel {
 
-        public GuiCallCodeModel(string name, EdgeMode edgeMode) : base(name, edgeMode) {
+        public GuiCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
         }
 
         public override string TemplateName {
@@ -70,7 +75,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                     case EdgeMode.Modal:
                         return "openModalGUI";
                     case EdgeMode.NonModal:
-                        return "startNonModalGUI";  
+                        return "startNonModalGUI";
                     case EdgeMode.Goto:
                         return "gotoGUI";
                     default:
@@ -78,5 +83,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 }
             }
         }
+
     }
+
 }

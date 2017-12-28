@@ -84,7 +84,7 @@ namespace Pharmatechnik.Nav.Language {
             return CodeKeywords.Contains(value);
         }
 
-        public static readonly ImmutableHashSet<string> Keywords = Enumerable.Concat(NavKeywords, CodeKeywords).ToImmutableHashSet();
+        public static readonly ImmutableHashSet<string> Keywords = NavKeywords.Concat(CodeKeywords).ToImmutableHashSet();
 
         public static bool IsKeyword(string value) {
             return Keywords.Contains(value);
