@@ -93,16 +93,6 @@ namespace Pharmatechnik.Nav.Language {
             var lineInformaton = _textLines.FindElementAtPosition(position);
             return lineInformaton;
         }
-        
-        public static SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = default) {
-
-            var content = File.ReadAllText(filePath);
-
-            return ParseTextCore(sourceText       : content, 
-                                 treeCreator      : parser => parser.codeGenerationUnit(), 
-                                 filePath         : filePath, 
-                                 cancellationToken: cancellationToken);
-        }
 
         public static SyntaxTree ParseText(string text, string filePath=null, CancellationToken cancellationToken = default) {
 

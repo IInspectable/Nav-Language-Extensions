@@ -1,6 +1,7 @@
 #region Using Directives
 
 using System.IO;
+using System.Text;
 using System.Threading;
 
 #endregion
@@ -17,13 +18,22 @@ namespace Pharmatechnik.Nav.Language {
                 return null;
             }
 
-            var content    = File.ReadAllText(filePath);
+            var content    = ReadAllText(filePath);
             var syntaxTree = Syntax.ParseCodeGenerationUnit(text: content, filePath: filePath, cancellationToken: cancellationToken);
 
             return syntaxTree;
         }
 
         public virtual void Dispose() {
+        }
+
+        static string ReadAllText(string filePath) {
+
+            using (var sr = new StreamReader(path: filePath,
+                                             encoding: Encoding.Default,
+                                             detectEncodingFromByteOrderMarks: true)) {
+                return sr.ReadToEnd();
+            }
         }
 
     }
