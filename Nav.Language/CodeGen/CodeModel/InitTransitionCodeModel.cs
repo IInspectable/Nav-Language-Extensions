@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 
 #endregion
 
@@ -25,9 +26,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public ImmutableList<ParameterCodeModel> Parameter { get; }
 
-        internal static InitTransitionCodeModel FromInitTransition(IInitTransition initTransition, TaskCodeInfo taskCodeInfo) {
-            if (!(initTransition?.InitNodeReference?.Declaration is IInitNodeSymbol initNode)) {
-                throw new ArgumentException("Init transition expected");
+        internal static InitTransitionCodeModel FromInitTransition(IInitNodeSymbol initNode, TaskCodeInfo taskCodeInfo) {
+            if (initNode==null) {
+                throw new ArgumentNullException(nameof(initNode));
             }
             if (taskCodeInfo == null) {
                 throw new ArgumentNullException(nameof(taskCodeInfo));
@@ -37,7 +38,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             return new InitTransitionCodeModel(
                 parameter             : parameter.ToImmutableList(),
-                reachableCalls        : initTransition.GetReachableCalls().ToImmutableList(),
+                reachableCalls        : initNode.Outgoings.SelectMany(e => e.GetReachableCalls()).ToImmutableList(),
                 generateAbstractMethod: initNode.CodeGenerateAbstractMethod(),
                 nodeName              : initNode.Name);
         }        

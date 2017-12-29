@@ -13,6 +13,7 @@ namespace Pharmatechnik.Nav.Language {
             return edge.GetReachableCalls().Distinct(Call.EquivalenceComparer);
         }
 
+        // TODO Unterscheiden zwischen ReachableCalls und ReachableImplemented Tasks
         public static IEnumerable<Call> GetReachableCalls(this IEdge edge, HashSet<IEdge> seenEdges = null) {
 
             seenEdges = seenEdges ?? new HashSet<IEdge>();

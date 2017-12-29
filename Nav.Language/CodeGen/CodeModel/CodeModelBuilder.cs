@@ -6,8 +6,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     sealed class CodeModelBuilder {
 
         public static IEnumerable<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
-            return taskDefinition.InitTransitions
-                                 .Select(trans => InitTransitionCodeModel.FromInitTransition(trans, taskCodeInfo));
+            return taskDefinition.NodeDeclarations
+                                 .OfType<IInitNodeSymbol>()
+                                  // TODO Was ist mit Inits, die keine Outgoings haben, also eigentlich unbenutzt sind?
+                                 .Select(initNode => InitTransitionCodeModel.FromInitTransition(initNode, taskCodeInfo));
         }
 
         public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
