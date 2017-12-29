@@ -27,12 +27,20 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
+        public static bool IsReachable(this ITaskNodeSymbol taskNode) {
+            return taskNode.Incomings.Any(e => e.IsReachable());
+        }
+
         public static bool CodeGenerateAbstractMethod(this IInitNodeSymbol initNode) {
             return initNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
         }
 
         public static bool CodeGenerateAbstractMethod(this ITaskNodeSymbol taskNode) {
             return taskNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
+        }
+
+        public static bool CodeNotImplemented(this ITaskNodeSymbol taskNode) {
+            return taskNode?.Declaration?.CodeNotImplemented == true;
         }
 
         public static bool CodeDoNotInject(this INodeSymbol node) {

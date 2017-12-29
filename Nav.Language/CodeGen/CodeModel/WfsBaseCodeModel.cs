@@ -123,9 +123,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var relevantTaskNodes = taskDefinition.NodeDeclarations
                                                   .OfType<ITaskNodeSymbol>()
-                                                  // TODO Klären, ob wir nicht evtl. doch alle Knoten, also auch die nicht referenzierten, für den Compile relevant sind!
                                                   .Where(taskNode => taskNode.References.Any())
                                                   .Where(taskNode => !taskNode.CodeDoNotInject())
+                                                  .Where(taskNode => !taskNode.CodeNotImplemented())
                                                   .Select(taskNode => taskNode.Declaration)
                                                   .Distinct();
 

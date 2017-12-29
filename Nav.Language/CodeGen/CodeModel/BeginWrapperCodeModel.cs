@@ -30,6 +30,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var taskNodeName = taskNode.Name.ToPascalcase();
 
             var ctors = new List<BeginWrapperCtor>();
+
             foreach (var initConnectionPoint in taskNode.Declaration.Inits().OfType<IInitConnectionPointSymbol>()) {
 
                 var parameterSyntaxes = GetTaskParameterSyntaxes(initConnectionPoint);
@@ -37,8 +38,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                
                 var ctor = new BeginWrapperCtor(
                     taskNodeName      : taskNodeName, 
-                    taskBeginParameter: ParameterCodeModel.GetTaskBeginAsParameter(taskNode.Declaration), 
+                    taskBeginParameter: ParameterCodeModel.GetTaskBeginAsParameter(taskNode.Declaration)
+                                                          .WithParameterName(CodeGenFacts.TaskBeginParameterName), 
                     taskParameter     : taskParameter.ToImmutableList());
+
                 ctors.Add(ctor);
             }
            

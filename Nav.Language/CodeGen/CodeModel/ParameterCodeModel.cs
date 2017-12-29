@@ -12,11 +12,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         
         public ParameterCodeModel(string parameterType, string parameterName) {
             ParameterType = parameterType  ?? String.Empty;
-            ParameterName = (parameterName ?? String.Empty).ToCamelcase();
+            ParameterName = (parameterName ?? String.Empty); // TODO .ToCamelcase();  Camelcase scheint derzeit nicht der Fall zu sein.
         }
 
         public virtual string ParameterType { get; }
         public virtual string ParameterName { get; }
+
+        public ParameterCodeModel WithParameterName(string parameterName) {
+            return new ParameterCodeModel(parameterType: ParameterType, parameterName: parameterName);
+        }
 
         [NotNull]
         public static ParameterCodeModel TaskResult(ITaskDefinitionSymbol taskDefinition) {
