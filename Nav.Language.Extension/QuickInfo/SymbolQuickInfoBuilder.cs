@@ -224,7 +224,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var edgeViewModel = new EdgeViewModel(
                 moniker: ImageMonikers.Edge,
                 calls  : edgeModeSymbol.Edge
-                                       .GetDistinctReachableCalls()
+                                       .GetReachableCalls()
                                        .OrderBy(call => call.Node.Name)
                                        .Select(call => new CallViewModel(
                                            edgeModeMoniker: ImageMonikers.FromSymbol(call.EdgeMode),

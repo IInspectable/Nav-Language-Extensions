@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Immutable;
-using System.Linq;
 
 #endregion
 
@@ -38,7 +37,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             return new InitTransitionCodeModel(
                 parameter             : parameter.ToImmutableList(),
-                reachableCalls        : initNode.Outgoings.SelectMany(e => e.GetReachableCalls()).ToImmutableList(),
+                reachableCalls        : initNode.GetReachableImplementedCalls().ToImmutableList(),
                 generateAbstractMethod: initNode.CodeGenerateAbstractMethod(),
                 nodeName              : initNode.Name);
         }        

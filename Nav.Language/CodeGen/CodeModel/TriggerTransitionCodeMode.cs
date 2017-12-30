@@ -32,7 +32,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
                 yield return new TriggerTransitionCodeModel(
                     triggerCodeInfo: triggerCodeInfo,
-                    reachableCalls : triggerTransition.GetReachableCalls().ToImmutableList());
+                    reachableCalls : triggerTransition.GetReachableImplementedCalls().ToImmutableList());
             }
         }
     }

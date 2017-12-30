@@ -43,6 +43,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
             var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsFileName, pathProvider.SyntaxFileName);
 
+            var usingNamespaces    = GetUsingNamespaces(taskDefinition, taskCodeInfo).ToImmutableList();
             var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition   , taskCodeInfo);
             var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskDefinition   , taskCodeInfo);
             var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
@@ -51,7 +52,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 taskCodeInfo          : taskCodeInfo,
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.WfsFileName,
-                usingNamespaces       : GetUsingNamespaces(taskDefinition, taskCodeInfo).ToImmutableList(),
+                usingNamespaces       : usingNamespaces.ToImmutableList(),
                 initTransitions       : initTransitions.ToImmutableList(),
                 exitTransitions       : exitTransitions.ToImmutableList(),
                 triggerTransitions    : triggerTransitions.ToImmutableList()
@@ -70,5 +71,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             return namespaces.ToSortedNamespaces();
         }
+
     }
 }

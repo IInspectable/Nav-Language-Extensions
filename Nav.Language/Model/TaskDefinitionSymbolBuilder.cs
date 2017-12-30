@@ -1063,7 +1063,8 @@ namespace Pharmatechnik.Nav.Language {
             //==============================
             foreach(var initNode in _taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
 
-                // Eigentlich darf eine Init-Node nur genau eine initTransition haben...
+                // Interessanterweise darf eine Init-Transition merhr als einen Ausgang haben, und hat somit
+                // eine "eingebaute choice".
                 foreach(var initTransition in initNode.Outgoings) {
                     foreach(var reachableCall in initTransition.GetReachableCalls()
                                                                .Where(c => c.EdgeMode.EdgeMode != EdgeMode.Goto)) {

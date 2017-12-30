@@ -14,16 +14,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             if(reachableCalls == null) {
                 throw new ArgumentNullException(nameof(reachableCalls));
-            }
+            }            
 
-            reachableCalls = reachableCalls.Distinct(Call.EquivalenceComparer).Where(c => !c.Node.CodeDoNotInject()).ToImmutableList();
-
-            var calls = CallCodeModelBuilder.FromCalls(reachableCalls);
-
-            var reachableNodes = reachableCalls.Select(c => c.Node).ToList();
-
-            var taskBegins      = GetTaskBegins(reachableNodes);
-            var taskBeginFields = GetTaskBeginFields(reachableNodes);
+            var calls           = CallCodeModelBuilder.FromCalls(reachableCalls);            
+            var taskBegins      = GetTaskBegins(reachableCalls);
+            var taskBeginFields = GetTaskBeginFields(reachableCalls);
 
             ReachableCalls  = calls.ToImmutableList();
             TaskBegins      = taskBegins.ToImmutableList();
@@ -34,25 +29,27 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ImmutableList<ParameterCodeModel> TaskBegins { get; }
         public ImmutableList<FieldCodeModel> TaskBeginFields { get; }
         
-        static IEnumerable<ParameterCodeModel> GetTaskBegins(IEnumerable<INodeSymbol> reachableNodes) {
+        static IEnumerable<ParameterCodeModel> GetTaskBegins(ImmutableList<Call> reachableCalls) {
             // TODO Sortierung?
-            return ParameterCodeModel.GetTaskBeginsAsParameter(GetDistinctTaskDeclarations(reachableNodes))
+            var taskDeclarations = GetTaskDeclarations(reachableCalls);
+            return ParameterCodeModel.GetTaskBeginsAsParameter(taskDeclarations)
                                      .OrderBy(p=>p.ParameterName).ToImmutableList();
         }
 
-        static IEnumerable<FieldCodeModel> GetTaskBeginFields(IEnumerable<INodeSymbol> reachableNodes) {
-            var taskBegins       = GetTaskBegins(reachableNodes);
+        static IEnumerable<FieldCodeModel> GetTaskBeginFields(ImmutableList<Call> reachableCalls) {
+            var taskBegins       = GetTaskBegins(reachableCalls);
             var taskBeginMembers = taskBegins.Select(p => new FieldCodeModel(p.ParameterType, p.ParameterName));
                                              
             return taskBeginMembers;
         }
      
-        static IEnumerable<ITaskDeclarationSymbol> GetDistinctTaskDeclarations(IEnumerable<INodeSymbol> nodes) {
+        static IEnumerable<ITaskDeclarationSymbol> GetTaskDeclarations(ImmutableList<Call> reachableCalls) {
 
-            return nodes.OfType<ITaskNodeSymbol>()
-                        .Select(node => node.Declaration)
-                        .Where(taskDeclaration => taskDeclaration != null)
-                        .Distinct();
+            return reachableCalls.Select(call=>call.Node)
+                                 .OfType<ITaskNodeSymbol>()
+                                 .Select(node => node.Declaration)
+                                 .Where(taskDeclaration => taskDeclaration != null)
+                                 .Distinct();
         }
     }
 }

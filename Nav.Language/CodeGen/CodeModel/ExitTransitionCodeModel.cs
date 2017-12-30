@@ -34,7 +34,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var taskExitCodeInfo = TaskExitCodeInfo.FromTaskNode(taskNode, taskCodeInfo);
-            var calls            = taskNode.GetReachableCalls();
+            var calls            = taskNode.GetReachableImplementedCalls();
             var taskResult       = ParameterCodeModel.TaskResult(taskNode.Declaration);
 
             return new ExitTransitionCodeModel(
