@@ -56,8 +56,10 @@ writeInitTransitionCollapsibleList(initTransitions) ::=<<
 
 writeInitTransition(initTransition) ::=<<
 <if(initTransition.GenerateAbstractMethod)>
+<writeNavInitAnnotation(initTransition.NodeName)>
 public abstract IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>);
 <else>
+<writeNavInitAnnotation(initTransition.NodeName)>
 public virtual IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
     INavCommandBody body = <initTransition.BeginLogicMethodName>(<writeParameterExpressions([initTransition.Parameter, initTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(initTransition)>
@@ -75,8 +77,10 @@ writeExitTransitionCollapsibleList(exitTransitions) ::=<<
 
 writeExitTransition(exitTransition) ::=<<
 <if(exitTransition.GenerateAbstractMethod)>
+<writeNavExitAnnotation(exitTransition.NodeName)>
 protected abstract INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>);
 <else>
+<writeNavExitAnnotation(exitTransition.NodeName)>
 private INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
     var body = <exitTransition.AfterLogicMethodName>(<writeParameterExpressionsInline([exitTransition.TaskResult, exitTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(exitTransition)>
@@ -94,6 +98,7 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
+<writeTriggerAnnotation(triggerTransition.TriggerName)>
 public virtual INavCommand <triggerTransition.TriggerMethodName>(<writeParameterList(triggerTransition.ViewParameter)>) {
     var body = <triggerTransition.TriggerLogicMethodName>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(triggerTransition)>

@@ -59,33 +59,35 @@ writeParameterExpressionsInline(parameters) ::=<<
 <parameters:writeParameterExpression(); anchor, separator=", ">
 >>
 
+AnnotationRegionName() ::= "Nav Annotations"
+
 writeTaskAnnotation(syntaxFileName, taskName) ::=<<
-#region Annotations
+#region <AnnotationRegionName()>
 /// \<<AnnotationTagNavFile()>\><syntaxFileName>\</<AnnotationTagNavFile()>\>
 /// \<<AnnotationTagNavTask()>\><taskName>\</<AnnotationTagNavTask()>\>
 #endregion
 >>
 
 writeInitCallAnnotation(beginItfFullyQualifiedName) ::=<<
-#region Annotations
+#region <AnnotationRegionName()>
 /// \<<AnnotationTagNavInitCall()>\><beginItfFullyQualifiedName>\</<AnnotationTagNavInitCall()>\>
 #endregion
 >>
 
 writeTriggerAnnotation(triggerName) ::=<<
-#region Annotations
+#region <AnnotationRegionName()>
 /// \<<AnnotationTagNavTrigger()>\><triggerName>\</<AnnotationTagNavTrigger()>\>
 #endregion
 >>
 
 writeNavInitAnnotation(initName) ::=<<
-#region Annotations
+#region <AnnotationRegionName()>
 /// \<<AnnotationTagNavInit()>\><initName>\</<AnnotationTagNavInit()>\>
 #endregion
 >>
 
 writeNavExitAnnotation(taskName) ::=<<
-#region Annotations
+#region <AnnotationRegionName()>
 /// \<<AnnotationTagNavExit()>\><taskName>\</<AnnotationTagNavExit()>\>
 #endregion
 >>
