@@ -12,7 +12,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         
         public ParameterCodeModel(string parameterType, string parameterName) {
             ParameterType = parameterType  ?? String.Empty;
-            ParameterName = (parameterName ?? String.Empty); // TODO .ToCamelcase();  Camelcase scheint derzeit nicht der Fall zu sein.
+            ParameterName = (parameterName ?? String.Empty); //TODO .ToCamelcase();  //Camelcase scheint derzeit nicht der Fall zu sein.
         }
 
         public virtual string ParameterType { get; }
@@ -70,10 +70,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public static ParameterCodeModel GetTaskBeginAsParameter(ITaskDeclarationSymbol taskDeclaration) {
 
             var codeInfo = TaskDeclarationCodeInfo.FromTaskDeclaration(taskDeclaration);
+
+            if (taskDeclaration.CodeNotImplemented) {
+                return new ParameterCodeModel(
+                    parameterType: CodeGenFacts.DefaultIwfsBaseType, 
+                    parameterName: CodeGenFacts.TaskBeginParameterName);
+            }
             
             return new ParameterCodeModel(
                 parameterType: codeInfo.FullyQualifiedBeginInterfaceName, 
-                parameterName: codeInfo.Taskname);
+                parameterName: codeInfo.Taskname.ToCamelcase());
         }       
     }
 }

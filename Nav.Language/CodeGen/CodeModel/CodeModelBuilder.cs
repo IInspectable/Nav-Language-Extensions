@@ -15,12 +15,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         
         public static IEnumerable<ParameterCodeModel> GetTaskBeginParameter(ITaskDefinitionSymbol taskDefinition) {
 
-            var usedTaskDeclarations = GetReachableImplementedTaskNodes(taskDefinition)
+            var usedTaskDeclarations = GetImplementedTaskNodes(taskDefinition)
                 .Select(taskNode => taskNode.Declaration)
                 .Distinct()
                 .ToImmutableList();
             
-            // TODO Sortierung?
             var taskBegins = ParameterCodeModel.GetTaskBeginsAsParameter(usedTaskDeclarations)
                                                .OrderBy(p => p.ParameterName)
                                                .ToImmutableList();
@@ -28,22 +27,32 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         public static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
-            return GetReachableImplementedTaskNodes(taskDefinition)
+            return GetReachableTaskNodes(taskDefinition)
                 .Select(taskNode => BeginWrapperCodeModel.FromTaskNode(taskNode, taskCodeInfo));
         }
 
         public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
-            return GetReachableImplementedTaskNodes(taskDefinition)
-                .Select(taskNode => ExitTransitionCodeModel.FromTaskNode(taskNode, taskCodeInfo));
+            return GetReachableTaskNodes(taskDefinition)
+                  .Where(taskNode => !taskNode.CodeNotImplemented())
+                  .Select(taskNode => ExitTransitionCodeModel.FromTaskNode(taskNode, taskCodeInfo));
         }
 
-        static ImmutableList<ITaskNodeSymbol> GetReachableImplementedTaskNodes(ITaskDefinitionSymbol taskDefinition) {
+        static ImmutableList<ITaskNodeSymbol> GetImplementedTaskNodes(ITaskDefinitionSymbol taskDefinition) {
+
+            var relevantTaskNodes = taskDefinition.NodeDeclarations
+                                                  .OfType<ITaskNodeSymbol>()
+                                                  .Where(taskNode => !taskNode.CodeDoNotInject())
+                                                  .Where(taskNode => !taskNode.CodeNotImplemented())
+                                                  .Distinct();
+
+            return relevantTaskNodes.ToImmutableList();
+        }
+
+        static ImmutableList<ITaskNodeSymbol> GetReachableTaskNodes(ITaskDefinitionSymbol taskDefinition) {
 
             var relevantTaskNodes = taskDefinition.NodeDeclarations
                                                   .OfType<ITaskNodeSymbol>()
                                                   .Where(taskNode => taskNode.IsReachable())
-                                                  .Where(taskNode => !taskNode.CodeDoNotInject())
-                                                  .Where(taskNode => !taskNode.CodeNotImplemented())
                                                   .Distinct();
 
             return relevantTaskNodes.ToImmutableList();

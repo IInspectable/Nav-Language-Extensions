@@ -39,8 +39,8 @@ namespace Pharmatechnik.Nav.Language {
             return taskNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
         }
 
-        public static bool CodeNotImplemented(this ITaskNodeSymbol taskNode) {
-            return taskNode?.Declaration?.CodeNotImplemented == true;
+        public static bool CodeNotImplemented(this INodeSymbol taskNode) {
+            return (taskNode as ITaskNodeSymbol)?.Declaration?.CodeNotImplemented == true;
         }
 
         public static bool CodeDoNotInject(this INodeSymbol node) {

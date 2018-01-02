@@ -135,7 +135,11 @@ writeBeginWrapperCtorList(ctorModels) ::=<<
 
 writeBeginWrapperCtor(ctorModel) ::=<<
 internal Begin<ctorModel.TaskNodeName>Wrapper(<writeParameterList([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>) {
+    <if(ctorModel.NotImplemented)>
+    BeginWrapper = null;
+    <else>
     BeginWrapper = () => <ctorModel.TaskBeginParameter.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(ctorModel.TaskParameter)>);
+    <endif>
 }
 >>
 
@@ -164,19 +168,32 @@ if (body is END) {
 
 openModalTask(taskCall) ::=<<
 if(body is Begin<taskCall.PascalCaseName>Wrapper) {
+    <if(taskCall.NotImplemented)>
+    throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
+    <else>
     return OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(((Begin<taskCall.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
+    <endif>
 }
 >>
 
 startNonModalTask(taskCall) ::=<<
 if(body is Begin<call.PascalCaseName>Wrapper) {
+    <if(taskCall.NotImplemented)>
+    throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
+    <else>
     return StartNonModalTask(((Begin<taskCall.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
+    <endif>
 }
 >>
 
 gotoTask(taskCall) ::=<<
+
 if(body is Begin<taskCall.PascalCaseName>Wrapper) {
+    <if(taskCall.NotImplemented)>
+    throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
+    <else>
     return GotoTask\<<taskCall.TaskResult.ParameterType>\>(((Begin<taskCall.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
+    <endif>
 }
 >>
 

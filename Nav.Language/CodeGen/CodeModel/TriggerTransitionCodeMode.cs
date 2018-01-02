@@ -8,7 +8,8 @@ using System.Collections.Immutable;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-    class TriggerTransitionCodeModel : TransitionCodeModel {
+
+    class TriggerTransitionCodeModel: TransitionCodeModel {
 
         readonly SignalTriggerCodeInfo _triggerCodeInfo;
 
@@ -21,19 +22,21 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public string TriggerName            => _triggerCodeInfo.TriggerName;
         public string TriggerMethodName      => _triggerCodeInfo.TriggerMethodName;
         public string TriggerLogicMethodName => _triggerCodeInfo.TriggerLogicMethodName;
-        
-        public ParameterCodeModel ViewParameter { get; } 
+
+        public ParameterCodeModel ViewParameter { get; }
 
         public static IEnumerable<TriggerTransitionCodeModel> FromTriggerTransition(TaskCodeInfo taskCodeInfo, ITriggerTransition triggerTransition) {
-            
-            foreach(var signalTrigger in triggerTransition.Triggers.OfType<ISignalTriggerSymbol>()) {
+
+            foreach (var signalTrigger in triggerTransition.Triggers.OfType<ISignalTriggerSymbol>()) {
 
                 var triggerCodeInfo = SignalTriggerCodeInfo.FromSignalTrigger(signalTrigger, taskCodeInfo);
 
                 yield return new TriggerTransitionCodeModel(
                     triggerCodeInfo: triggerCodeInfo,
-                    reachableCalls : triggerTransition.GetReachableImplementedCalls().ToImmutableList());
+                    reachableCalls : triggerTransition.GetReachableCalls().ToImmutableList());
             }
         }
+
     }
+
 }

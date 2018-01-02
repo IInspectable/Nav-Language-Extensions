@@ -34,12 +34,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var taskExitCodeInfo = TaskExitCodeInfo.FromTaskNode(taskNode, taskCodeInfo);
-            var calls            = taskNode.GetReachableImplementedCalls();
+            var reachableCalls   = taskNode.GetReachableCalls();
             var taskResult       = ParameterCodeModel.TaskResult(taskNode.Declaration);
 
             return new ExitTransitionCodeModel(
                 taskExitCodeInfo      : taskExitCodeInfo,
-                calls                 : calls.ToImmutableList(), 
+                calls                 : reachableCalls.ToImmutableList(), 
                 taskResult            : taskResult,
                 generateAbstractMethod: taskNode.CodeGenerateAbstractMethod(),
                 nodeName              : taskNode.Name);

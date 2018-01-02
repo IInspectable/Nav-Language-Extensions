@@ -33,7 +33,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         public override CallCodeModel VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
-            return new TaskCallCodeModel(taskNodeSymbol.Name, EdgeMode, ParameterCodeModel.TaskResult(taskNodeSymbol.Declaration));
+            return new TaskCallCodeModel(taskNodeSymbol.Name,
+                                         EdgeMode,
+                                         ParameterCodeModel.TaskResult(taskNodeSymbol.Declaration),
+                                         taskNodeSymbol.Declaration?.CodeNotImplemented ?? false);
         }
 
         public override CallCodeModel VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {

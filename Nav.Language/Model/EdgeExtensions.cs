@@ -10,19 +10,12 @@ namespace Pharmatechnik.Nav.Language {
     public static class EdgeExtensions {
 
         public static IEnumerable<Call> GetReachableCalls(this IEdge edge) {
-            return edge.GetReachableCallsImpl<INodeSymbol>(onlyImplemented:false)
+            return edge.GetReachableCallsImpl<INodeSymbol>()
                        .Select(c => new Call(c.Node, c.EdgeMode))
                        .Distinct(Call.EquivalenceComparer);
         }
-
-        public static IEnumerable<Call> GetReachableImplementedCalls(this IEdge edge)
-        {
-            return edge.GetReachableCallsImpl<INodeSymbol>(onlyImplemented: true)
-                .Select(c => new Call(c.Node, c.EdgeMode))
-                .Distinct(Call.EquivalenceComparer);
-        }
-
-        static IEnumerable<Call> GetReachableCallsImpl<T>(this IEdge edge, bool onlyImplemented, HashSet<IEdge> seenEdges = null) where T : class, INodeSymbol {
+      
+        static IEnumerable<Call> GetReachableCallsImpl<T>(this IEdge edge, HashSet<IEdge> seenEdges = null) where T : class, INodeSymbol {
 
             seenEdges = seenEdges ?? new HashSet<IEdge>();
 
@@ -37,11 +30,9 @@ namespace Pharmatechnik.Nav.Language {
             }
 
             if(targetNode is IChoiceNodeSymbol choiceNode) {
-                foreach(var call in choiceNode.Outgoings.SelectMany(e => GetReachableCallsImpl<T>(e, onlyImplemented, seenEdges))) {
+                foreach(var call in choiceNode.Outgoings.SelectMany(e => GetReachableCallsImpl<T>(e, seenEdges))) {
                     yield return call;
                 }
-            } else if(onlyImplemented && targetNode is ITaskNodeSymbol taskNode && (taskNode.CodeNotImplemented() || taskNode.CodeDoNotInject())) {
-                // Skip Not Implemented tasks
             } else {
                 yield return new Call(targetNode, edge.EdgeMode);
             }

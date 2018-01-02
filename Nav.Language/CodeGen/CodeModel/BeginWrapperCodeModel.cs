@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public BeginWrapperCodeModel(string taskNodeName, ImmutableList<BeginWrapperCtor> ctors) {
 
             TaskNodeName = taskNodeName;
-            Ctors              = ctors ?? throw new ArgumentNullException(nameof(ctors));
+            Ctors        = ctors ?? throw new ArgumentNullException(nameof(ctors));
         }
 
         public string TaskNodeName { get; }
@@ -26,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new InvalidOperationException();
             }
 
-            // TODO Review bzgl. Pascalcasing
+            // TODO Review bzgl. Pascalcasing => aus taskCodeInfo
             var taskNodeName = taskNode.Name.ToPascalcase();
 
             var ctors = new List<BeginWrapperCtor>();
@@ -36,13 +36,27 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 var parameterSyntaxes = GetTaskParameterSyntaxes(initConnectionPoint);
                 var taskParameter     = ParameterCodeModel.FromParameterSyntaxes(parameterSyntaxes);
                
-                var ctor = new BeginWrapperCtor(
-                    taskNodeName      : taskNodeName, 
-                    taskBeginParameter: ParameterCodeModel.GetTaskBeginAsParameter(taskNode.Declaration)
-                                                          .WithParameterName(CodeGenFacts.TaskBeginParameterName), 
-                    taskParameter     : taskParameter.ToImmutableList());
+                if (taskNode.Declaration.CodeNotImplemented) {
 
-                ctors.Add(ctor);
+                    var ctor = new BeginWrapperCtor(
+                        taskNodeName: taskNodeName,
+                        taskBeginParameter: new ParameterCodeModel(
+                            parameterType : CodeGenFacts.DefaultIwfsBaseType,
+                            parameterName : CodeGenFacts.TaskBeginParameterName),
+                        taskParameter: taskParameter.ToImmutableList(),
+                        notImplemented: true);
+
+                    ctors.Add(ctor);
+
+                } else {
+                    var ctor = new BeginWrapperCtor(
+                        taskNodeName      : taskNodeName, 
+                        taskBeginParameter: ParameterCodeModel.GetTaskBeginAsParameter(taskNode.Declaration)
+                                                              .WithParameterName(CodeGenFacts.TaskBeginParameterName), 
+                        taskParameter     : taskParameter.ToImmutableList());
+
+                    ctors.Add(ctor);
+                }                
             }
            
             return new BeginWrapperCodeModel(taskNodeName, ctors.ToImmutableList());

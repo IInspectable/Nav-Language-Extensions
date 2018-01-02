@@ -15,7 +15,7 @@ namespace Pharmatechnik.Nav.Language {
         
         public INodeSymbol Node { get; }
         public IEdgeModeSymbol EdgeMode { get; }
-
+  
         public static readonly IEqualityComparer<Call> EquivalenceComparer = new EquivalenceComparerImpl();
 
         sealed class EquivalenceComparerImpl : IEqualityComparer<Call>{
