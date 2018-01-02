@@ -117,7 +117,7 @@ writeBeginWrapperCollapsibleList(beginWrapperModels) ::=<<
 writeBeginWrapper(beginWrapperModel) ::=<<
 <writeWrapperBeginMethodList(beginWrapperModel.Ctors)>
 
-protected class Begin<beginWrapperModel.TaskNodeName>Wrapper: INavCommandBody {
+sealed class Begin<beginWrapperModel.TaskNodeName>Wrapper: INavCommandBody {
     internal readonly BeginTaskWrapper BeginWrapper;
     <writeBeginWrapperCtorList(beginWrapperModel.Ctors)>
 }
@@ -129,7 +129,7 @@ writeWrapperBeginMethodList(ctorModels) ::=<<
 
 writeWrapperBeginMethod(ctorModel) ::=<<
 <writeInitCallAnnotation(ctorModel.TaskBeginParameter.ParameterType)>
-protected Begin<beginWrapperModel.TaskNodeName>Wrapper <BeginMethodPrefix()><ctorModel.TaskNodeName>(<writeParameterList([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>) {
+protected INavCommandBody <BeginMethodPrefix()><ctorModel.TaskNodeName>(<writeParameterList([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>) {
     return new Begin<beginWrapperModel.TaskNodeName>Wrapper(<writeParameterExpressionsInline([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>);
 }
 >>
