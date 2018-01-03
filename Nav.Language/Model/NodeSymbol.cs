@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -29,31 +30,37 @@ namespace Pharmatechnik.Nav.Language {
 
         public virtual IEnumerable<ISymbol> SymbolsAndSelf() {
             yield return this;
-        }        
+        }
+
+        public abstract bool IsReachable();
+
     }
 
-    abstract class NodeSymbolWithIncomings<TSyntax, TIncomings> : NodeSymbol<TSyntax>
+    abstract class NodeSymbolWithOnlyIncomings<TSyntax, TIncomings> : NodeSymbol<TSyntax>
             where TSyntax : NodeDeclarationSyntax
             where TIncomings : IEdge {
 
-        protected NodeSymbolWithIncomings(string name, Location location, TSyntax syntax, TaskDefinitionSymbol containingTask)
+        protected NodeSymbolWithOnlyIncomings(string name, Location location, TSyntax syntax, TaskDefinitionSymbol containingTask)
             : base(name, location, syntax, containingTask) {
             Incomings = new List<TIncomings>();
         }
 
-        public List<TIncomings> Incomings { get; }     
+        public List<TIncomings> Incomings { get; }  
+        public override bool IsReachable() => Incomings.Any(e => e.IsReachable());
     }
 
-    abstract class NodeSymbolWithOutgoings<TSyntax, TOutgoings> : NodeSymbol<TSyntax>
+    abstract class NodeSymbolWithOnlyOutgoings<TSyntax, TOutgoings> : NodeSymbol<TSyntax>
             where TSyntax : NodeDeclarationSyntax
             where TOutgoings : IEdge {
 
-        protected NodeSymbolWithOutgoings(string name, Location location, TSyntax syntax, TaskDefinitionSymbol containingTask)
+        protected NodeSymbolWithOnlyOutgoings(string name, Location location, TSyntax syntax, TaskDefinitionSymbol containingTask)
             : base(name, location, syntax, containingTask) {
             Outgoings = new List<TOutgoings>();
         }
 
-        public List<TOutgoings> Outgoings { get; }        
+        public List<TOutgoings> Outgoings { get; }
+        public override bool IsReachable() => true;
+
     }
 
     abstract class NodeSymbolWithIncomingsAndOutgoings<TSyntax, TIncomings, TOutgoings> : NodeSymbol<TSyntax>
@@ -69,9 +76,12 @@ namespace Pharmatechnik.Nav.Language {
 
         public List<TIncomings> Incomings { get; }
         public List<TOutgoings> Outgoings { get; }
+
+        public override bool IsReachable() => Incomings.Any(e => e.IsReachable());
     }
 
-    sealed partial class InitNodeSymbol : NodeSymbolWithOutgoings<InitNodeDeclarationSyntax, ITransition>, IInitNodeSymbol {
+    sealed partial class InitNodeSymbol : NodeSymbolWithOnlyOutgoings<InitNodeDeclarationSyntax, ITransition>, 
+                                          IInitNodeSymbol {
 
         public InitNodeSymbol(string name, Location location, InitNodeDeclarationSyntax syntax, InitNodeAliasSymbol alias, TaskDefinitionSymbol containingTask) 
             : base(name, location, syntax, containingTask) {
@@ -88,6 +98,7 @@ namespace Pharmatechnik.Nav.Language {
         public override string Name => Alias?.Name ?? base.Name;
 
         IReadOnlyList<ITransition> IInitNodeSymbol.Outgoings => Outgoings;
+        IReadOnlyList<IEdge> ISourceNode.Outgoings           => Outgoings;
 
         public override IEnumerable<ISymbol> SymbolsAndSelf() {
             yield return this;
@@ -98,25 +109,28 @@ namespace Pharmatechnik.Nav.Language {
         }
     }
 
-    sealed partial class ExitNodeSymbol : NodeSymbolWithIncomings<ExitNodeDeclarationSyntax, IEdge>, IExitNodeSymbol {
+    sealed partial class ExitNodeSymbol : NodeSymbolWithOnlyIncomings<ExitNodeDeclarationSyntax, IEdge>, 
+                                          IExitNodeSymbol {
 
         public ExitNodeSymbol(string name, Location location, ExitNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
             : base(name, location, syntax, containingTask) {
         }
 
-        IReadOnlyList<IEdge> IExitNodeSymbol.Incomings => Incomings;
+        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
     }
 
-    sealed partial class EndNodeSymbol : NodeSymbolWithIncomings<EndNodeDeclarationSyntax, IEdge>, IEndNodeSymbol {
+    sealed partial class EndNodeSymbol : NodeSymbolWithOnlyIncomings<EndNodeDeclarationSyntax, IEdge>, 
+                                         IEndNodeSymbol {
 
         public EndNodeSymbol(string name, Location location, EndNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
             : base(name, location, syntax, containingTask) {
         }
 
-        IReadOnlyList<IEdge> IEndNodeSymbol.Incomings => Incomings;
+        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
     }
 
-    sealed partial class TaskNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<TaskNodeDeclarationSyntax, IEdge, IExitTransition>, ITaskNodeSymbol {
+    sealed partial class TaskNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<TaskNodeDeclarationSyntax, IEdge, IExitTransition>, 
+                                          ITaskNodeSymbol {
 
         public TaskNodeSymbol(string name, Location location, TaskNodeDeclarationSyntax syntax, TaskNodeAliasSymbol alias, 
                              TaskDeclarationSymbol declaration, TaskDefinitionSymbol containingTask) 
@@ -140,7 +154,8 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         public ITaskNodeAliasSymbol Alias { get; }
 
-        IReadOnlyList<IEdge> ITaskNodeSymbol.Incomings           => Incomings;
+        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
+        IReadOnlyList<IEdge> ISourceNode.Outgoings => Outgoings;
         IReadOnlyList<IExitTransition> ITaskNodeSymbol.Outgoings => Outgoings;
 
         public override IEnumerable<ISymbol> SymbolsAndSelf() {
@@ -150,35 +165,41 @@ namespace Pharmatechnik.Nav.Language {
                 yield return Alias;
             }
         }
-    }
+    }   
 
-    sealed partial class DialogNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<DialogNodeDeclarationSyntax, IEdge, ITransition>, IDialogNodeSymbol {
+    sealed partial class DialogNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<DialogNodeDeclarationSyntax, IEdge, ITransition>,
+                                            IDialogNodeSymbol {
 
         public DialogNodeSymbol(string name, Location location, DialogNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
             : base(name, location, syntax, containingTask) {
         }
 
-        IReadOnlyList<IEdge> IGuiNodeSymbol.Incomings       => Incomings;
+        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
+        IReadOnlyList<IEdge> ISourceNode.Outgoings => Outgoings;
         IReadOnlyList<ITransition> IGuiNodeSymbol.Outgoings => Outgoings;
     }
 
-    sealed partial class ViewNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<ViewNodeDeclarationSyntax, IEdge, ITransition>, IViewNodeSymbol {
+    sealed partial class ViewNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<ViewNodeDeclarationSyntax, IEdge, ITransition>, 
+                                          IViewNodeSymbol {
 
         public ViewNodeSymbol(string name, Location location, ViewNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
             : base(name, location, syntax, containingTask) {          
         }
 
-        IReadOnlyList<IEdge> IGuiNodeSymbol.Incomings       => Incomings;
+        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
+        IReadOnlyList<IEdge> ISourceNode.Outgoings => Outgoings;
         IReadOnlyList<ITransition> IGuiNodeSymbol.Outgoings => Outgoings;
     }
 
-    sealed partial class ChoiceNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<ChoiceNodeDeclarationSyntax, IEdge, ITransition>, IChoiceNodeSymbol {
+    sealed partial class ChoiceNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<ChoiceNodeDeclarationSyntax, IEdge, ITransition>, 
+                                            IChoiceNodeSymbol {
 
         public ChoiceNodeSymbol(string name, Location location, ChoiceNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask) 
             : base(name, location, syntax, containingTask) {
         }
 
-        IReadOnlyList<IEdge> IChoiceNodeSymbol.Incomings       => Incomings;
+        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
+        IReadOnlyList<IEdge> ISourceNode.Outgoings => Outgoings;
         IReadOnlyList<ITransition> IChoiceNodeSymbol.Outgoings => Outgoings;
     }
 }

@@ -26,11 +26,7 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
         }
-
-        public static bool IsReachable(this ITaskNodeSymbol taskNode) {
-            return taskNode.Incomings.Any(e => e.IsReachable());
-        }
-
+        
         public static bool CodeGenerateAbstractMethod(this IInitNodeSymbol initNode) {
             return initNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
         }

@@ -260,6 +260,65 @@ task C
             Assert.That(taskB.ExitTransitions.Count   , Is.EqualTo(1));
         }
 
+        [Test]
+        public void ReachableTest() {
+            var nav = @"
+            task A {
+                init i;
+                exit e;
+                i --> e;
+            }
+
+            task B
+            {
+                init i;
+                task A a1;  
+                task A a2;  
+                task A a3;  
+                choice c1;
+                choice c2;
+                exit e;
+                view v1;
+                view v2;
+
+                i   --> c1;  
+
+                c1  --> c2;
+
+                c2  --> a1;
+                a1:e --> e;
+                c2  --> v1;
+
+                v2 --> v2 on t1;
+                v2 --> a2 on t3;
+
+                v1 --> a2 on t2;
+
+                a2:e --> e;
+                
+                a3:e --> e;
+            }
+            ";
+
+            var model = ParseModel(nav);
+            var taskB = model.TryFindTaskDefinition("B");
+
+            var a = taskB.TryFindNode("a1");
+            Assert.That(a.IsReachable(), Is.True);
+
+            var v1 = taskB.TryFindNode("v1");
+            Assert.That(v1.IsReachable(), Is.True);
+
+            var a2 = taskB.TryFindNode("a2");
+            Assert.That(a2.IsReachable(), Is.True);
+
+            var v2 = taskB.TryFindNode("v2");
+            Assert.That(v2.IsReachable(), Is.False);    
+            
+            var a3 = taskB.TryFindNode("a3");
+            Assert.That(a3.IsReachable(), Is.False);
+        }
+
         CodeGenerationUnit ParseModel(string source) {
             var syntax=Syntax.ParseCodeGenerationUnit(source);
             var model= CodeGenerationUnit.FromCodeGenerationUnitSyntax(syntax);

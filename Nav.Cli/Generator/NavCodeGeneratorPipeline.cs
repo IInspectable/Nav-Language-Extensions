@@ -12,28 +12,29 @@ using Pharmatechnik.Nav.Language.Logging;
 namespace Pharmatechnik.Nav.Language.Generator {
 
     public sealed partial class NavCodeGeneratorPipeline {
-        
-        [CanBeNull]
-        readonly ILogger _logger;
-        [NotNull]
-        readonly ISyntaxProviderFactory _syntaxProviderFactory;
 
-        public NavCodeGeneratorPipeline(GenerationOptions options, 
-                                        ILogger logger, 
+        public NavCodeGeneratorPipeline(GenerationOptions options,
+                                        ILogger logger = null,
                                         ISyntaxProviderFactory syntaxProviderFactory = null) {
-            
-            Options = options ?? throw new ArgumentNullException(nameof(options));
-            _logger = logger;
-            _syntaxProviderFactory = syntaxProviderFactory ?? SyntaxProviderFactory.Default;
+
+            Options         = options ?? throw new ArgumentNullException(nameof(options));
+            Logger          = logger;
+            ProviderFactory = syntaxProviderFactory ?? SyntaxProviderFactory.Default;
         }
 
         [NotNull]
         public GenerationOptions Options { get; }
         
+        [NotNull]
+        public ISyntaxProviderFactory ProviderFactory { get; }
+
+        [CanBeNull]
+        public ILogger Logger { get; }
+
         public bool Run(IEnumerable<FileSpec> fileSpecs) {
 
-            using(var logger         = new LoggerAdapter(_logger))
-            using(var syntaxProvider = _syntaxProviderFactory.CreateProvider())
+            using(var logger         = new LoggerAdapter(Logger))
+            using(var syntaxProvider = ProviderFactory.CreateProvider())
             using(var codeGenerator  = new CodeGenerator(Options))
             using(var fileGenerator  = new FileGenerator(Options)) {
 
@@ -53,6 +54,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
                         logger.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, fileSpec));
                         continue;
                     }
+
                     // 2. Semantic Model
                     var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(syntax, syntaxProvider: syntaxProvider);
 

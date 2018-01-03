@@ -9,14 +9,14 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language {
 
-    abstract class Transition : ITransition {
+    abstract class Transition: ITransition {
 
-        internal Transition(TransitionDefinitionSyntax syntax, 
-                            ITaskDefinitionSymbol containingTask, 
-                            NodeReferenceSymbol sourceReference, 
-                            EdgeModeSymbol edgeMode, 
-                            NodeReferenceSymbol targetReference, 
-                            SymbolCollection<TriggerSymbol> triggers)  {
+        internal Transition(TransitionDefinitionSyntax syntax,
+                            ITaskDefinitionSymbol containingTask,
+                            NodeReferenceSymbol sourceReference,
+                            EdgeModeSymbol edgeMode,
+                            NodeReferenceSymbol targetReference,
+                            SymbolCollection<TriggerSymbol> triggers) {
 
             ContainingTask  = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
             Syntax          = syntax         ?? throw new ArgumentNullException(nameof(syntax));
@@ -25,18 +25,21 @@ namespace Pharmatechnik.Nav.Language {
             TargetReference = targetReference;
             Triggers        = triggers ?? new SymbolCollection<TriggerSymbol>();
 
-            if (sourceReference != null) {                
-                sourceReference.Edge   = this;
+            if (sourceReference != null) {
+                sourceReference.Edge = this;
             }
+
             if (edgeMode != null) {
                 edgeMode.Edge = this;
             }
+
             if (targetReference != null) {
                 targetReference.Edge = this;
             }
+
             foreach (var trigger in Triggers) {
                 trigger.Transition = this;
-            }            
+            }
         }
 
         [NotNull]
@@ -47,7 +50,7 @@ namespace Pharmatechnik.Nav.Language {
 
         [NotNull]
         public TransitionDefinitionSyntax Syntax { get; }
-        
+
         [CanBeNull]
         public INodeReferenceSymbol SourceReference { get; }
 
@@ -56,16 +59,14 @@ namespace Pharmatechnik.Nav.Language {
 
         [CanBeNull]
         public INodeReferenceSymbol TargetReference { get; }
-        
+
         [NotNull]
         public SymbolCollection<TriggerSymbol> Triggers { get; }
-
-       
 
         [NotNull]
         public IEnumerable<ISymbol> Symbols() {
 
-            if(SourceReference != null) {
+            if (SourceReference != null) {
                 yield return SourceReference;
             }
 
@@ -77,9 +78,11 @@ namespace Pharmatechnik.Nav.Language {
                 yield return TargetReference;
             }
 
-            foreach(var trigger in Triggers) {
+            foreach (var trigger in Triggers) {
                 yield return trigger;
             }
         }
+
     }
+
 }

@@ -311,7 +311,7 @@ namespace Pharmatechnik.Nav.Language {
                         location, 
                         DiagnosticDescriptors.Semantic.Nav0102EndNodeMustNotContainLeavingEdges) );
                     break;
-                case IInitNodeSymbol initNode:
+                case InitNodeSymbol initNode:
                     AddInitTransition(
                         transitionDefinitionSyntax: transitionDefinitionSyntax, 
                         targetNodeReference       : targetNodeReference, 
@@ -321,7 +321,7 @@ namespace Pharmatechnik.Nav.Language {
                         location                  : location, 
                         initNode                  : initNode);
                     break;
-                case IChoiceNodeSymbol choiceNode:
+                case ChoiceNodeSymbol choiceNode:
                     AddChoiceTransition(
                         transitionDefinitionSyntax: transitionDefinitionSyntax, 
                         targetNodeReference       : targetNodeReference, 
@@ -331,7 +331,7 @@ namespace Pharmatechnik.Nav.Language {
                         location                  : location, 
                         choiceNode                : choiceNode);
                     break;
-                case IGuiNodeSymbol guiNode:
+                case DialogNodeSymbol dialogNode:
                     AddTriggerTransition(
                         transitionDefinitionSyntax: transitionDefinitionSyntax, 
                         targetNodeReference       : targetNodeReference, 
@@ -339,45 +339,55 @@ namespace Pharmatechnik.Nav.Language {
                         triggers                  : triggers, 
                         sourceNodeSyntax          : sourceNodeSyntax, 
                         location                  : location, 
-                        guiNode                   : guiNode);
+                        guiNode                   : dialogNode);
+                    break;
+                case ViewNodeSymbol viewNodeNode:
+                    AddTriggerTransition(
+                        transitionDefinitionSyntax: transitionDefinitionSyntax, 
+                        targetNodeReference       : targetNodeReference, 
+                        edgeMode                  : edgeMode, 
+                        triggers                  : triggers, 
+                        sourceNodeSyntax          : sourceNodeSyntax, 
+                        location                  : location, 
+                        guiNode                   : viewNodeNode);
                     break;
             }
         }
 
-        private void AddInitTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SymbolCollection<TriggerSymbol> triggers, SourceNodeSyntax sourceNodeSyntax, Location location, IInitNodeSymbol initNode) {
-           
+        private void AddInitTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SymbolCollection<TriggerSymbol> triggers, SourceNodeSyntax sourceNodeSyntax, Location location, InitNodeSymbol initNode) {
+
             var initNodeReference = new InitNodeReferenceSymbol(sourceNodeSyntax.Name, location, initNode, NodeReferenceType.Source);
-            var initTransition = new InitTransition(transitionDefinitionSyntax, _taskDefinition, initNodeReference, edgeMode, targetNodeReference, triggers);
+            var initTransition    = new InitTransition(transitionDefinitionSyntax, _taskDefinition, initNodeReference, edgeMode, targetNodeReference, triggers);
+
+            _taskDefinition.InitTransitions.Add(initTransition);
             
             WireNodeReferences(initTransition);
 
             VerifyTransition(initTransition);
-
-            _taskDefinition.InitTransitions.Add(initTransition);
         }
 
-        private void AddChoiceTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SymbolCollection<TriggerSymbol> triggers, SourceNodeSyntax sourceNodeSyntax, Location location, IChoiceNodeSymbol choiceNode) {
-            
+        private void AddChoiceTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SymbolCollection<TriggerSymbol> triggers, SourceNodeSyntax sourceNodeSyntax, Location location, ChoiceNodeSymbol choiceNode) {
+
             var choiceNodeReference = new ChoiceNodeReferenceSymbol(sourceNodeSyntax.Name, location, choiceNode, NodeReferenceType.Source);
-            var choiceTransition = new ChoiceTransition(transitionDefinitionSyntax, _taskDefinition, choiceNodeReference, edgeMode, targetNodeReference, triggers);
+            var choiceTransition    = new ChoiceTransition(transitionDefinitionSyntax, _taskDefinition, choiceNodeReference, edgeMode, targetNodeReference, triggers);
+
+            _taskDefinition.ChoiceTransitions.Add(choiceTransition);
 
             WireNodeReferences(choiceTransition);
 
             VerifyTransition(choiceTransition);
-
-            _taskDefinition.ChoiceTransitions.Add(choiceTransition);
         }
 
         private void AddTriggerTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SymbolCollection<TriggerSymbol> triggers, SourceNodeSyntax sourceNodeSyntax, Location location, IGuiNodeSymbol guiNode) {
-            
-            var guiNodeReference = new GuiNodeReferenceSymbol(sourceNodeSyntax.Name, location, guiNode, NodeReferenceType.Source);
+
+            var guiNodeReference  = new GuiNodeReferenceSymbol(sourceNodeSyntax.Name, location, guiNode, NodeReferenceType.Source);
             var triggerTransition = new TriggerTransition(transitionDefinitionSyntax, _taskDefinition, guiNodeReference, edgeMode, targetNodeReference, triggers);
             
-            WireNodeReferences(triggerTransition);
-
-            VerifyTransition(triggerTransition);
-
             _taskDefinition.TriggerTransitions.Add(triggerTransition);
+
+            WireNodeReferences(triggerTransition);
+            
+            VerifyTransition(triggerTransition);
         }
       
        

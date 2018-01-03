@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public class CodeGenerator: Generator {
 
-        const string TemplateName         = "Begin";
+        const string TemplateBeginName    = "Begin";
         const string ModelAttributeName   = "model";
         const string ContextAttributeName = "context";
 
@@ -44,11 +44,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentException($"An included file has syntax or semantic errors:\r\n{FormatDiagnostics(codeGenerationUnit.Includes.SelectMany(i => i.Diagnostics).Errors())}");
             }
 
-            var codeModelResult = codeGenerationUnit.TaskDefinitions
-                                                    .Select(GenerateCodeModel)
-                                                    .ToImmutableList();
-
-            return codeModelResult.Select(GenerateCode).ToImmutableList();
+            return codeGenerationUnit.TaskDefinitions
+                                     .Select(GenerateCodeModel)
+                                     .Select(GenerateCode)
+                                     .ToImmutableList();
             
             string FormatDiagnostics(IEnumerable<Diagnostic> diagnostics) {
                 return diagnostics.Aggregate(new StringBuilder(), (sb, d) => sb.AppendLine(FormatDiagnostic(d)), sb => sb.ToString());
@@ -62,12 +61,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         CodeModelResult GenerateCodeModel(ITaskDefinitionSymbol taskDefinition) {
 
             var pathProvider = PathProviderFactory.CreatePathProvider(taskDefinition);
-
-            IEnumerable<TOCodeModel> toCodeModels = null;
-            if (Options.GenerateTOClasses) {
-                toCodeModels = TOCodeModel.FromTaskDefinition(taskDefinition, pathProvider);
-            }
-
+            
             var codeModelResult = new CodeModelResult(
                 taskDefinition   : taskDefinition,
                 pathProvider     : pathProvider,
@@ -75,13 +69,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 iwfsCodeModel    : IWfsCodeModel.FromTaskDefinition(taskDefinition     , pathProvider),
                 wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition  , pathProvider),
                 wfsCodeModel     : WfsCodeModel.FromTaskDefinition(taskDefinition      , pathProvider),
-                toCodeModels     : toCodeModels
+                toCodeModels     : Options.GenerateTOClasses ? TOCodeModel.FromTaskDefinition(taskDefinition, pathProvider) : null
             );
 
             return codeModelResult;
         }
 
         CodeGenerationResult GenerateCode(CodeModelResult codeModelResult) {
+
             var context = new CodeGeneratorContext(this);
 
             var codeGenerationResult = new CodeGenerationResult(
@@ -163,7 +158,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         static Template GetTemplate(TemplateGroup templateGroup, CodeModel model, CodeGeneratorContext context) {
-            var st = templateGroup.GetInstanceOf(TemplateName);
+            
+            var st = templateGroup.GetInstanceOf(TemplateBeginName);
 
             st.Add(ModelAttributeName  , model);
             st.Add(ContextAttributeName, context);
