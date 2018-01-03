@@ -20,6 +20,27 @@ public abstract class StandardWFS<TState> : BaseWFService<TState>, IWFServiceBas
     }
 }
 
+public class TaskNode {
+        
+    TaskNode(string nodeName) {
+        NodeName = nodeName;
+    }
+    public string NodeName { get; }
+    public static TaskNode Create(string nodeName)=> new TaskNode(nodeName);
+
+}
+
+public sealed class TaskCall: INavCommandBody {
+
+    public TaskCall(TaskNode node, BeginTaskWrapper beginWrapper) {
+        BeginWrapper = beginWrapper;
+        Node         = node;
+    }
+    public TaskNode         Node { get; }
+    public BeginTaskWrapper BeginWrapper;
+
+}
+
 public interface INavCommand {
 }
 

@@ -30,8 +30,14 @@ namespace <model.WflNamespace> {
             return InternalTaskResult(<model.TaskResult.ParameterName>);
         }
 
-        static string OfTypeText(object value) {
-            return value == null ? "null" : $"of type {value.GetType().FullName}";
+        static string OfTypeText(INavCommandBody body) {
+            if (body == null) {
+                return "null";
+            }
+            if (body is TaskCall) {
+                return $"of task node {((TaskCall) body).Node.NodeName}";
+            }
+            return $"of type {body.GetType().FullName}";
         }
     }
 
@@ -61,7 +67,7 @@ public abstract IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(
 <else>
 <writeNavInitAnnotation(initTransition.NodeName)>
 public virtual IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
-    INavCommandBody body = <initTransition.BeginLogicMethodName>(<writeParameterExpressions([initTransition.Parameter, initTransition.TaskBeginFields])>);
+    var body = <initTransition.BeginLogicMethodName>(<writeParameterExpressions([initTransition.Parameter, initTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(initTransition)>
     throw new InvalidOperationException($"<initTransition.BeginLogicMethodName>(<writeParameterExpressionsInline(initTransition.Parameter)>) returned unexpected result '{OfTypeText(body)}'.");
 }
@@ -100,7 +106,7 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 writeTriggerTransition(triggerTransition) ::=<<
 <writeTriggerAnnotation(triggerTransition.TriggerName)>
 public virtual INavCommand <triggerTransition.TriggerMethodName>(<writeParameterList(triggerTransition.ViewParameter)>) {
-    var body = <triggerTransition.TriggerLogicMethodName>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);
+    var body = <triggerTransition.TriggerLogicMethodName>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);    
     <writeTransitionCallBlock(triggerTransition)>
     throw new InvalidOperationException($"<triggerTransition.TriggerLogicMethodName>(<writeParameterExpressionsInline(triggerTransition.ViewParameter)>) returned unexpected result '{OfTypeText(body)}'.");
 }
@@ -115,40 +121,28 @@ writeBeginWrapperCollapsibleList(beginWrapperModels) ::=<<
 >>
 
 writeBeginWrapper(beginWrapperModel) ::=<<
-<writeWrapperBeginMethodList(beginWrapperModel.Ctors)>
+static readonly TaskNode <beginWrapperModel.TaskNodeName>Node = TaskNode.Create("<beginWrapperModel.TaskNodeName>");
 
-sealed class Begin<beginWrapperModel.TaskNodeName>Wrapper: INavCommandBody {
-    internal readonly BeginTaskWrapper BeginWrapper;
-    <writeBeginWrapperCtorList(beginWrapperModel.Ctors)>
-}
+<writeWrapperBeginMethodList(beginWrapperModel.TaskBegins)>
 >>
 
-writeWrapperBeginMethodList(ctorModels) ::=<<
-<ctorModels:writeWrapperBeginMethod(); separator="\r\n\r\n">
+writeWrapperBeginMethodList(taskBegins) ::=<<
+<taskBegins:writeWrapperBeginMethod(); separator="\r\n\r\n">
 >>
 
 writeWrapperBeginMethod(ctorModel) ::=<<
 <writeInitCallAnnotation(ctorModel.TaskBeginParameter.ParameterType)>
 protected INavCommandBody <BeginMethodPrefix()><ctorModel.TaskNodeName>(<writeParameterList([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>) {
-    return new Begin<beginWrapperModel.TaskNodeName>Wrapper(<writeParameterExpressionsInline([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>);
-}
->>
-
-writeBeginWrapperCtorList(ctorModels) ::=<<
-<ctorModels:writeBeginWrapperCtor(); separator="\r\n">
->>
-
-writeBeginWrapperCtor(ctorModel) ::=<<
-internal Begin<ctorModel.TaskNodeName>Wrapper(<writeParameterList([ctorModel.TaskBeginParameter, ctorModel.TaskParameter])>) {
     <if(ctorModel.NotImplemented)>
-    BeginWrapper = null;
+    return new TaskCall(<ctorModel.TaskNodeName>Node, null);
     <else>
-    BeginWrapper = () => <ctorModel.TaskBeginParameter.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(ctorModel.TaskParameter)>);
+    return new TaskCall(<ctorModel.TaskNodeName>Node, () => <ctorModel.TaskBeginParameter.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(ctorModel.TaskParameter)>));
     <endif>
 }
 >>
 
 writeTransitionCallBlock(transition) ::=<<
+var taskCall = body as TaskCall;
 <transition.ReachableCalls:writeCall(); separator="\r\n">
 if(body is CANCEL) {
     return (CANCEL)body;
@@ -172,36 +166,34 @@ if (body is END) {
 >>
 
 openModalTask(taskCall) ::=<<
-if(body is Begin<taskCall.PascalCaseName>Wrapper) {
+if(taskCall?.Node == <taskCall.PascalCaseName>Node ) {
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
-    return OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(((Begin<taskCall.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
+    return OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
     <endif>
 }
 >>
 
 startNonModalTask(taskCall) ::=<<
-if(body is Begin<call.PascalCaseName>Wrapper) {
+if(taskCall?.Node == <taskCall.PascalCaseName>Node ) {
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
-    return StartNonModalTask(((Begin<taskCall.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
+    return StartNonModalTask(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
     <endif>
 }
 >>
 
 gotoTask(taskCall) ::=<<
-
-if(body is Begin<taskCall.PascalCaseName>Wrapper) {
+if(taskCall?.Node == <taskCall.PascalCaseName>Node ) {
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
-    return GotoTask\<<taskCall.TaskResult.ParameterType>\>(((Begin<taskCall.PascalCaseName>Wrapper) body).BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
+    return GotoTask\<<taskCall.TaskResult.ParameterType>\>(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);
     <endif>
 }
 >>
-
 
 openModalGUI(call) ::=<<
 if(body is <call.PascalCaseName><ToClassNameSuffix()>) {

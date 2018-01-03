@@ -7,9 +7,9 @@ using System.Collections.Immutable;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    class BeginWrapperCtor : CodeModel {
+    class TaskBeginCodeModel : CodeModel {
 
-        public BeginWrapperCtor(string taskNodeName,
+        public TaskBeginCodeModel(string taskNodeName,
                                 ParameterCodeModel taskBeginParameter,
                                 ImmutableList<ParameterCodeModel> taskParameter,
                                 bool notImplemented = false) {
@@ -23,8 +23,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         // TODO BeginMethodName in Model statt TaskNodeName (=> Pascalcse) mit TaskInitCodeModel abgleichen
         // => TaskDeclarationCodeInfo
         public string TaskNodeName { get; }
+        /// <summary>
+        /// Parameter, der das IBegin...WFS interface des Tasks darstellt.
+        /// </summary>
         public ParameterCodeModel TaskBeginParameter { get; }
+        /// <summary>
+        /// Die Parameter, die zum Aufrufen des Tasks nötig sind.
+        /// </summary>
         public ImmutableList<ParameterCodeModel> TaskParameter { get; }
+        /// <summary>
+        /// Gibt an, ob der Task nicht implementiert ist.
+        /// </summary>
         public bool NotImplemented { get; }
 
     }

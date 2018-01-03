@@ -93,7 +93,7 @@
     <Compile Include="CodeGen\CodeGenerationSpec.cs" />
     <Compile Include="CodeGen\CodeGenFacts.cs" />
     <Compile Include="CodeGen\CodeModel\BeginWrapperCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\BeginWrapperCtor.cs" />
+    <Compile Include="CodeGen\CodeModel\TaskBeginCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\CodeModelBuilder.cs" />
     <Compile Include="CodeGen\CodeModel\ExitTransitionCodeModel.cs" />
     <Compile Include="CodeGen\CodeModel\FileGenerationCodeModel.cs" />
