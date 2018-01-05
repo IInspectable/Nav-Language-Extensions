@@ -3,7 +3,7 @@
   <UsingTask TaskName="Pharmatechnik.Nav.Language.BuildTasks.Nav" AssemblyFile="Pharmatechnik.Nav.Language.BuildTasks.dll" />
 
   <ItemGroup>
-    <AvailableItemName Include="NavFile"/>
+    <AvailableItemName Include="GenerateNavCode"/>
   </ItemGroup>
 
   <PropertyGroup>
@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild">
-    <Nav Sources           = "@(NavFile)"
+    <Nav Sources           = "@(GenerateNavCode)"
          Force             = "$(NavForce)"
          GenerateToClasses = "$(NavGenerateToClasses)"
          UseSyntaxCache    = "$(NavUseSyntaxCache)" 

@@ -11,8 +11,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     class ParameterCodeModel : CodeModel {
         
         public ParameterCodeModel(string parameterType, string parameterName) {
-            ParameterType = parameterType  ?? String.Empty;
-            ParameterName = (parameterName ?? String.Empty); //TODO .ToCamelcase();  //Camelcase scheint derzeit nicht der Fall zu sein.
+            ParameterType = parameterType ?? String.Empty;
+            ParameterName = parameterName ?? String.Empty;
         }
 
         public virtual string ParameterType { get; }
@@ -54,7 +54,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 return String.IsNullOrEmpty(name) ? $"p{index++}" : name;
             }
 
-            // TODO parameterName Fallback überprüfen
             int i = 1;
             foreach (var parameterSyntax in parameters) {
                yield return new ParameterCodeModel(

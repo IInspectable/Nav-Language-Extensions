@@ -20,8 +20,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public bool   GenerateAbstractMethod { get; }
         public string NodeName               { get; }
-        public string BeginMethodName        => CodeGenFacts.BeginMethodPrefix;
-        public string BeginLogicMethodName   => $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.LogicMethodSuffix}";
 
         public ImmutableList<ParameterCodeModel> Parameter { get; }
 

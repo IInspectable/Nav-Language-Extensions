@@ -18,8 +18,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public TaskCodeInfo Task     { get; }
         public string ViewNodeName { get; }
         public string TriggerName  { get; }
-        public string TriggerMethodName      => $"{TriggerName.ToPascalcase()}";
-        public string TriggerLogicMethodName => $"{TriggerName.ToPascalcase()}{CodeGenFacts.LogicMethodSuffix}";
+        public string TriggerMethodName      => $"{TriggerName}";
+        public string TriggerLogicMethodName => $"{TriggerName}{CodeGenFacts.LogicMethodSuffix}";
         public string TOClassName            => $"{ViewNodeName.ToPascalcase()}{CodeGenFacts.ToClassNameSuffix}";
         
         public static SignalTriggerCodeInfo FromSignalTrigger(ISignalTriggerSymbol signalTriggerSymbol) {

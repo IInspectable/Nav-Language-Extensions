@@ -6,7 +6,7 @@ using System.Collections.Generic;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-    //TODO NodeSymbolCodeInfo eingführen: Name, NamePascalCase
+
     sealed class CallCodeModelBuilder: SymbolVisitor<CallCodeModel> {
         
         public CallCodeModelBuilder(EdgeMode edgeMode) {

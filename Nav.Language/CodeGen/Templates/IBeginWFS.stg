@@ -35,5 +35,5 @@ writeBeginMethodDeclarationList(initTransitions) ::=<<
 
 writeBeginMethodDeclaration(initTransition) ::=<<
 <writeNavInitAnnotation(initTransition.NodeName)>
-IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>);
+IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>);
 >>

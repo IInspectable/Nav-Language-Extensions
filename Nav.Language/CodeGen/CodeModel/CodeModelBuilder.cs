@@ -62,8 +62,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             // Trigger Transitions sind per Defininition "used"
             return taskDefinition.TriggerTransitions
                                  .SelectMany(triggerTransition => TriggerTransitionCodeModel.FromTriggerTransition(taskCodeInfo, triggerTransition))
-                                 .OrderBy(st => st.TriggerMethodName.Length)
-                                 .ThenBy(st => st.TriggerMethodName);
+                                 .OrderBy(st => st.TriggerName.Length)
+                                 .ThenBy(st => st.TriggerName);
         }
         
         public static IEnumerable<string> GetCodeDeclarations(ITaskDefinitionSymbol taskDefinition) {
@@ -79,7 +79,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public static IEnumerable<ParameterCodeModel> GetTaskParameter(ITaskDefinitionSymbol taskDefinition) {
             var code = GetTaskParameterSyntaxes();
-            // TODO Sortierung?
             var taskParameter = ParameterCodeModel.FromParameterSyntaxes(code);
             return taskParameter;
 

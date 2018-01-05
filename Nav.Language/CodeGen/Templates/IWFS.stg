@@ -20,5 +20,5 @@ writeTriggerMethodDeclarationList(triggerTransitions) ::=<<
 
 writeTriggerMethodDeclaration(triggerTransition) ::=<<
 <writeTriggerAnnotation(triggerTransition.TriggerName)>
-INavCommand <triggerTransition.TriggerMethodName>(<writeParameterList(triggerTransition.ViewParameter)>);
+INavCommand <triggerTransition.TriggerName>(<writeParameterList(triggerTransition.ViewParameter)>);
 >>

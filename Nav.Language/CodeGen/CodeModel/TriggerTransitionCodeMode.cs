@@ -19,9 +19,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             ViewParameter    = new ParameterCodeModel(triggerCodeInfo.TOClassName, CodeGenFacts.ToParamtername);
         }
 
-        public string TriggerName            => _triggerCodeInfo.TriggerName;
-        public string TriggerMethodName      => _triggerCodeInfo.TriggerMethodName;
-        public string TriggerLogicMethodName => _triggerCodeInfo.TriggerLogicMethodName;
+        public string TriggerName => _triggerCodeInfo.TriggerName;
 
         public ParameterCodeModel ViewParameter { get; }
 

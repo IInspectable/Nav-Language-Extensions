@@ -12,7 +12,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         TaskInitCodeInfo(string initName, TaskCodeInfo taskCodeInfo) {
 
-            // TODO Info aus TaskDeclarationCodeInfo
             TaskCodeInfo         = taskCodeInfo ?? throw new ArgumentNullException(nameof(taskCodeInfo));
             BeginMethodName      = $"{CodeGenFacts.BeginMethodPrefix}";
             BeginLogicMethodName = $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.LogicMethodSuffix}";

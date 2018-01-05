@@ -20,9 +20,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             NotImplemented     = notImplemented;
         }
 
-        // TODO BeginMethodName in Model statt TaskNodeName (=> Pascalcse) mit TaskInitCodeModel abgleichen
-        // => TaskDeclarationCodeInfo
         public string TaskNodeName { get; }
+        public string TaskNodeNamePascalcase => TaskNodeName.ToPascalcase();
         /// <summary>
         /// Parameter, der das IBegin...WFS interface des Tasks darstellt.
         /// </summary>

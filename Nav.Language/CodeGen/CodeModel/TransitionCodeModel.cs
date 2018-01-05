@@ -34,12 +34,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ImmutableList<FieldCodeModel>     TaskBeginFields { get; }
 
         static IEnumerable<ParameterCodeModel> GetTaskBegins(IEnumerable<Call> reachableCalls) {
+            
             var taskDeclarations = GetTaskDeclarations(reachableCalls);
             return ParameterCodeModel.GetTaskBeginsAsParameter(taskDeclarations)
-                                     .OrderBy(p => p.ParameterName).ToImmutableList();
+                                     .OrderBy(p => p.ParameterName)
+                                     .ToImmutableList();
         }
 
         static IEnumerable<FieldCodeModel> GetTaskBeginFields(IEnumerable<Call> reachableCalls) {
+            
             var taskBegins       = GetTaskBegins(reachableCalls);
             var taskBeginMembers = taskBegins.Select(p => new FieldCodeModel(p.ParameterType, p.ParameterName));
 
