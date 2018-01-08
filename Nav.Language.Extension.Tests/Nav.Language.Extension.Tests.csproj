@@ -54,5 +54,6 @@
       <Name>Nav.Language.Extension</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
