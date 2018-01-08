@@ -29,7 +29,6 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{0e07ed6f-4fc9-47da-96c3-bcd06d583bc9}*SharedItemsImports = 4
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{32af2e02-a21a-4d1f-9927-09931715d057}*SharedItemsImports = 4
-		JetBrains.Annotations\JetBrains.Annotations.projitems*{6f82f651-4d21-467d-bd83-68c743bc8df4}*SharedItemsImports = 4
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{a40d87e9-c07e-432c-9271-058599f0dbb9}*SharedItemsImports = 4
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{a535b35c-5d62-46d8-9ee7-055597f2817a}*SharedItemsImports = 13
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{aa0629b3-af39-4049-9723-7989ec93b0a4}*SharedItemsImports = 4
@@ -37,7 +36,6 @@ Global
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}*SharedItemsImports = 4
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{c88aacd6-6973-430b-a94b-4cc45b37f32d}*SharedItemsImports = 4
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{db6efc93-1185-43b7-a721-8515b59cc3ad}*SharedItemsImports = 4
-		JetBrains.Annotations\JetBrains.Annotations.projitems*{f0e023f3-fa98-4a8c-b68f-81c8554f4b5f}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -204,7 +204,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\NestedChoices.nav" />
   </ItemGroup>
-  <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
