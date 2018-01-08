@@ -8,4 +8,4 @@ artifacts:
 - path: deploy\Vsix
   name: Nav.Language.Extension
 - path: deploy\Build Tools
-  name: Nav.Language.BuildTasks
+  name: Nav.Language.BuildTools
