@@ -2,6 +2,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
   <PropertyGroup>
+    <ProductName>Nav Language MSBuild Tasks</ProductName>
+    <ProductVersion>3.0.119</ProductVersion>
+  </PropertyGroup>
+
+  <Import Project="..\_shared\UpdateProductVersion.targets"/>
+
+  <PropertyGroup>
     <DeployDirectory>$(OutputPath)\..\..\..\deploy\Build Tools</DeployDirectory>
   </PropertyGroup>
 

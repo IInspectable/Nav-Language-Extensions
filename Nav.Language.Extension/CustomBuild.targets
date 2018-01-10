@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+ 
+  <PropertyGroup>
+    <ProductName>Nav Language Extensions</ProductName>
+    <ProductVersion>3.0.119</ProductVersion>
+  </PropertyGroup>
+  
+  <Import Project="..\_shared\UpdateProductVersion.targets"/>
+
+  <PropertyGroup>
+    <VsixmanifestFile>$(MSBuildProjectDirectory)\source.extension.vsixmanifest</VsixmanifestFile>    
+  </PropertyGroup>
+  <ItemGroup>
+    <XmlConfigUpdates Include="$(VsixmanifestFile)">
+      <Namespaces>"&lt;Namespace Prefix='a' Uri='http://schemas.microsoft.com/developer/vsx-schema/2011' /&gt;"</Namespaces>
+      <XPath>/a:PackageManifest/a:Metadata/a:Identity/@Version</XPath>
+      <NewValue>$(ProductVersion)</NewValue>
+    </XmlConfigUpdates>
+    <XmlConfigUpdates Include="$(VsixmanifestFile)">
+      <Namespaces>"&lt;Namespace Prefix='a' Uri='http://schemas.microsoft.com/developer/vsx-schema/2011' /&gt;"</Namespaces>
+      <XPath>/a:PackageManifest/a:Metadata/a:DisplayName</XPath>
+      <NewValue>$(ProductName)</NewValue>
+    </XmlConfigUpdates>
+  </ItemGroup>
+ 
+  
+  <PropertyGroup>
+    <DeployDirectory>$(OutputPath)\..\..\..\deploy\Vsix</DeployDirectory>
+  </PropertyGroup>
+
+  <Target Name="DeployFiles" AfterTargets="CreateVsixContainer">
+
+    <ItemGroup>
+      <_FilesToDelete Include="$(DeployDirectory)\**\*"/>
+      <_itemsToDeploy Include="$(OutputPath)\**\*.vsix"/>
+    </ItemGroup>   
+    
+    <Message Text="Copy files to directory '$([System.IO.Path]::GetFullPath('$(DeployDirectory)'))'" Importance="high" />
+   
+    <Delete Files="@(_FilesToDelete)" />
+    <Copy SourceFiles="@(_itemsToDeploy)" DestinationFolder="$(DeployDirectory)"/>
+  </Target>
+
+</Project>

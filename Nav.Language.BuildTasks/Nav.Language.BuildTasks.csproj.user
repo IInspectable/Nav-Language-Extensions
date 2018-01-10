@@ -5,4 +5,7 @@
     <StartProgram>C:\Program Files %28x86%29\MSBuild\14.0\bin\MSBuild.exe</StartProgram>
     <StartArguments>"C:\Users\mnhaenel\Documents\Visual Studio 2015\Projects\NavCodeGenDemo\NavCodeGenDemo\NavCodeGenDemo.csproj"</StartArguments>
   </PropertyGroup>
+  <PropertyGroup>
+    <ProjectView>ProjectFiles</ProjectView>
+  </PropertyGroup>
 </Project>

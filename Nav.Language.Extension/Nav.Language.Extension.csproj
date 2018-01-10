@@ -83,6 +83,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\_shared\GobalAssemblyInfo.cs">
+      <Link>Properties\GobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedAction.cs" />
     <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.SuggestedActionSetComparer.cs" />
@@ -299,7 +302,6 @@
     <Compile Include="SemanticModelService\SemanticModelService.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.cs" />
     <Compile Include="CodeFixes\Infrastructure\CodeFixSuggestedActionsSourceProvider.cs" />
-    <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
     <Compile Include="UI\VsContextMenu.cs" />
     <Compile Include="UI\VsMenuItem.cs" />
@@ -321,7 +323,6 @@
     <Content Include="Icons.imagemanifest">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="Custom.targets" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
@@ -338,7 +339,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="UpdateProductVersion.targets" />
+    <None Include="CustomBuild.targets">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -669,8 +672,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="Additional.VsixSuppression.targets" />
-  <Import Project="UpdateProductVersion.targets" />
-  <Import Project="Custom.targets"/>
+  <Import Project="CustomBuild.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
@@ -683,11 +685,4 @@
   <Import Project="..\packages\Microsoft.VisualStudio.SDK.VsixSuppression.14.1.32\build\Microsoft.VisualStudio.SDK.VsixSuppression.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SDK.VsixSuppression.14.1.32\build\Microsoft.VisualStudio.SDK.VsixSuppression.targets')" />
   <Import Project="..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets" Condition="Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" />
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.15.1.192\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.15.1.192\build\Microsoft.VSSDK.BuildTools.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

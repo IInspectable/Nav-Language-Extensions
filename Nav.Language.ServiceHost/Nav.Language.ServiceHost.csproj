@@ -53,7 +53,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ThisAssembly.cs" />
+    <Compile Include="..\_shared\GobalAssemblyInfo.cs">
+      <Link>Properties\GobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ThisAssembly.generated.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -69,10 +71,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <None Include="UpdateProductVersion.targets">
+    <None Include="CustomBuild.targets">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
@@ -92,5 +91,5 @@
   </ItemGroup>
   <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="UpdateProductVersion.targets" />
+  <Import Project="CustomBuild.targets" />
 </Project>

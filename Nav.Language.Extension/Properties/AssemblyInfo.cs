@@ -1,32 +1,5 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
 using System.Windows;
-using Pharmatechnik.Nav.Language.Extension;
-
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-
-// TODO Assembly Infos bereitstellen
-[assembly: AssemblyTitle(ThisAssembly.ProductName)]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct(ThisAssembly.ProductName)]
-[assembly: AssemblyCopyright("")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-[assembly: InternalsVisibleTo("Nav.Language.Extension.Tests")]
-
-[assembly: AssemblyVersion(ThisAssembly.ProductVersion)]
-[assembly: AssemblyFileVersion(ThisAssembly.ProductVersion)]
 
 [assembly: ThemeInfo(
     ResourceDictionaryLocation.None, //where theme specific resource dictionaries are located
@@ -36,3 +9,5 @@ using Pharmatechnik.Nav.Language.Extension;
                                               //(used if a resource is not found in the page, 
                                               // app, or any theme specific resource dictionaries)
 )]
+
+[assembly: InternalsVisibleTo("Nav.Language.Extension.Tests")]

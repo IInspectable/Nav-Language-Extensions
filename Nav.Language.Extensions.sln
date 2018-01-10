@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2010
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language", "Nav.Language\Nav.Language.csproj", "{C38F8EE6-5DC6-40F3-8994-A33069B05FD8}"
 EndProject
@@ -24,6 +24,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.BuildTasks", "Nav.Language.BuildTasks\Nav.Language.BuildTasks.csproj", "{DB6EFC93-1185-43B7-A721-8515B59CC3AD}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JetBrains.Annotations", "JetBrains.Annotations\JetBrains.Annotations.shproj", "{A535B35C-5D62-46D8-9EE7-055597F2817A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B752DDF-06C7-4B83-A8EC-43029F20825E}"
+	ProjectSection(SolutionItems) = preProject
+		_shared\GobalAssemblyInfo.cs = _shared\GobalAssemblyInfo.cs
+		_shared\UpdateProductVersion.targets = _shared\UpdateProductVersion.targets
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

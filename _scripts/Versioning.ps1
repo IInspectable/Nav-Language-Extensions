@@ -1,13 +1,13 @@
 ﻿
 $targetFiles=
-    "$PSScriptRoot'\..\Nav.Language.Extension\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language.Service\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language.ServiceHost\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language.CodeAnalysis\UpdateProductVersion.targets",
+    "$PSScriptRoot'\..\Nav.Language.Extension\CustomBuild.targets",
+    "$PSScriptRoot'\..\Nav.Language.Service\CustomBuild.targets",
+    "$PSScriptRoot'\..\Nav.Language.ServiceHost\CustomBuild.targets",
+    "$PSScriptRoot'\..\Nav.Language.CodeAnalysis\CustomBuild.targets",
     "$PSScriptRoot'\..\Nav.Language\CustomBuild.targets",
 	"$PSScriptRoot'\..\Nav.Cli\CustomBuild.targets",
-	"$PSScriptRoot'\..\Nav.Language.BuildTasks\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Utilities\UpdateProductVersion.targets"
+	"$PSScriptRoot'\..\Nav.Language.BuildTasks\CustomBuild.targets",
+    "$PSScriptRoot'\..\Nav.Utilities\CustomBuild.targets"
 
 function IncreaseMajor(){
     [CmdletBinding()]

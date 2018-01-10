@@ -57,6 +57,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\_shared\GobalAssemblyInfo.cs">
+      <Link>Properties\GobalAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFixProvider.cs" />
     <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesCodeFix.cs" />
@@ -133,6 +136,7 @@
     <Compile Include="Model\NodeReferenceSymbolOfT.cs" />
     <Compile Include="Model\ChoiceTransition.cs" />
     <Compile Include="Model\TriggerTransition.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\CachedSyntaxProvider.cs" />
     <Compile Include="Provider\IPathProvider.cs" />
     <Compile Include="Provider\IPathProviderFactory.cs" />
@@ -285,12 +289,10 @@
     <Compile Include="Syntax\SyntaxToken.cs" />
     <Compile Include="Syntax\SyntaxTokenExtensions.cs" />
     <Compile Include="Internal\SyntaxTokenFactory.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Syntax\SyntaxTokenClassification.cs" />
     <Compile Include="Internal\NavErrorListener.cs" />
     <Compile Include="Text\TextChange.cs" />
     <Compile Include="Text\TextChangeWriter.cs" />
-    <Compile Include="ThisAssembly.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
   </ItemGroup>
   <ItemGroup>
