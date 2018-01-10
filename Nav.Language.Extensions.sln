@@ -28,7 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B752DDF-06C7-4B83-A8EC-43029F20825E}"
 	ProjectSection(SolutionItems) = preProject
 		_shared\GobalAssemblyInfo.cs = _shared\GobalAssemblyInfo.cs
-		_shared\UpdateProductVersion.targets = _shared\UpdateProductVersion.targets
+		_shared\WriteThisAssemblyFile.targets = _shared\WriteThisAssemblyFile.targets
 	EndProjectSection
 EndProject
 Global

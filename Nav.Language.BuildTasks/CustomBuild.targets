@@ -4,7 +4,7 @@
     <ProductName>Nav Language MSBuild Tasks</ProductName>
     <ProductVersion>3.0.120</ProductVersion>
   </PropertyGroup>
-  <Import Project="..\_shared\UpdateProductVersion.targets" />
+  <Import Project="..\_shared\WriteThisAssemblyFile.targets" />
   <PropertyGroup>
     <DeployDirectory>$(OutputPath)\..\..\..\deploy\Build Tools</DeployDirectory>
   </PropertyGroup>

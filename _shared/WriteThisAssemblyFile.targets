@@ -13,7 +13,7 @@
     <AssemblyInfoLine Include="}" />
     <!--<AssemblyInfoLine Include="}" />-->
   </ItemGroup>
-  <Target Name="UpdateProductVersion" BeforeTargets="PrepareForBuild">
+  <Target Name="WriteThisAssemblyFile" BeforeTargets="PrepareForBuild">
     <Message Text="Updating Assembly Info $(AssemblyInfoFile)" Importance="high" />
     <WriteLinesToFile File="$(AssemblyInfoFile)" Overwrite="true" Lines="@(AssemblyInfoLine)" />
   </Target>

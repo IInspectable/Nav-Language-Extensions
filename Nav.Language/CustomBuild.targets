@@ -4,7 +4,8 @@
     <ProductName>Nav Language Library</ProductName>
     <ProductVersion>3.0.120</ProductVersion>
   </PropertyGroup>
-  <Import Project="..\_shared\UpdateProductVersion.targets" />
+  <Import Project="..\_shared\WriteThisAssemblyFile.targets" />
+
   <ItemGroup>
     <AvailableItemName Include="ExportStringTemplates" />
   </ItemGroup>
