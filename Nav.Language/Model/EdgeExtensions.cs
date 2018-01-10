@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language {
 
             return GetReachableCallsImpl<INodeSymbol>(source, new HashSet<IEdge>())
                   .Select(c => new Call(c.Node, c.EdgeMode))
-                  .Distinct(Call.EquivalenceComparer);
+                  .Distinct(CallComparer.Default);
 
             IEnumerable<Call> GetReachableCallsImpl<T>(IEdge edge, HashSet<IEdge> seenEdges) where T : class, INodeSymbol {
 

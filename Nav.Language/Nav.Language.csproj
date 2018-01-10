@@ -309,7 +309,6 @@
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
     </Antlr4>
-    <None Include="Model\ClassDiagram.cd" />
     <None Include="packages.config" />
     <None Include="CustomBuild.targets">
       <SubType>Designer</SubType>
