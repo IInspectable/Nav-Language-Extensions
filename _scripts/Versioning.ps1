@@ -1,13 +1,7 @@
 ﻿
-$targetFiles=
-    "$PSScriptRoot'\..\Nav.Language.Extension\CustomBuild.targets",
-    "$PSScriptRoot'\..\Nav.Language.Service\CustomBuild.targets",
-    "$PSScriptRoot'\..\Nav.Language.ServiceHost\CustomBuild.targets",
-    "$PSScriptRoot'\..\Nav.Language.CodeAnalysis\CustomBuild.targets",
-    "$PSScriptRoot'\..\Nav.Language\CustomBuild.targets",
-	"$PSScriptRoot'\..\Nav.Cli\CustomBuild.targets",
-	"$PSScriptRoot'\..\Nav.Language.BuildTasks\CustomBuild.targets",
-    "$PSScriptRoot'\..\Nav.Utilities\CustomBuild.targets"
+function GetTargetFile(){
+    Get-ChildItem "$PSScriptRoot\..\CustomBuild.targets" -Recurse
+}
 
 function IncreaseMajor(){
     [CmdletBinding()]
