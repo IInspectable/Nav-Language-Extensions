@@ -319,6 +319,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Additional.VsixSuppression.targets" />
     <None Include="app.config" />
     <Content Include="Icons.imagemanifest">
       <IncludeInVSIX>true</IncludeInVSIX>

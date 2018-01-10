@@ -1,11 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
   <PropertyGroup>
     <ProductName>Nav Language Service</ProductName>
-    <ProductVersion>3.0.119</ProductVersion>
+    <ProductVersion>3.0.120</ProductVersion>
   </PropertyGroup>
-
-  <Import Project="..\_shared\UpdateProductVersion.targets"/>
-  
+  <Import Project="..\_shared\UpdateProductVersion.targets" />
 </Project>

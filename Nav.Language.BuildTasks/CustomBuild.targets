@@ -1,28 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
   <PropertyGroup>
     <ProductName>Nav Language MSBuild Tasks</ProductName>
-    <ProductVersion>3.0.119</ProductVersion>
+    <ProductVersion>3.0.120</ProductVersion>
   </PropertyGroup>
-
-  <Import Project="..\_shared\UpdateProductVersion.targets"/>
-
+  <Import Project="..\_shared\UpdateProductVersion.targets" />
   <PropertyGroup>
     <DeployDirectory>$(OutputPath)\..\..\..\deploy\Build Tools</DeployDirectory>
   </PropertyGroup>
-
   <Target Name="DeployFiles" AfterTargets="CopyFilesToOutputDirectory">
-
     <ItemGroup>
-      <_FilesToDelete Include="$(DeployDirectory)\**\*"/>
-      <_itemsToDeploy Include="$(OutputPath)\**\*" Exclude="$(OutputPath)\**\*.xml;$(OutputPath)\**\*.pdb"/>
-    </ItemGroup>   
-    
+      <_FilesToDelete Include="$(DeployDirectory)\**\*" />
+      <_itemsToDeploy Include="$(OutputPath)\**\*" Exclude="$(OutputPath)\**\*.xml;$(OutputPath)\**\*.pdb" />
+    </ItemGroup>
     <Message Text="Copy files to directory '$([System.IO.Path]::GetFullPath('$(DeployDirectory)'))'" Importance="high" />
-   
     <Delete Files="@(_FilesToDelete)" />
-    <Copy SourceFiles="@(_itemsToDeploy)" DestinationFolder="$(DeployDirectory)"/>
+    <Copy SourceFiles="@(_itemsToDeploy)" DestinationFolder="$(DeployDirectory)" />
   </Target>
-
 </Project>
