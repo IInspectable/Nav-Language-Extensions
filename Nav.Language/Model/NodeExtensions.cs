@@ -10,11 +10,11 @@ namespace Pharmatechnik.Nav.Language {
     public static class NodeExtensions {
 
         public static IEnumerable<Call> GetReachableCalls(this ITaskNodeSymbol node) {
-            return node.Outgoings.SelectMany(edge => edge.GetReachableCalls());
+            return node.Outgoings.SelectMany(edge => edge.GetReachableCalls()).Distinct(Call.EquivalenceComparer);
         }
 
         public static IEnumerable<Call> GetReachableCalls(this IInitNodeSymbol node) {
-            return node.Outgoings.SelectMany(edge => edge.GetReachableCalls());
+            return node.Outgoings.SelectMany(edge => edge.GetReachableCalls()).Distinct(Call.EquivalenceComparer);
         }
     }
 

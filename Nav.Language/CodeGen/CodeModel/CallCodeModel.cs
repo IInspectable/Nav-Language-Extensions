@@ -18,36 +18,19 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public string   PascalCaseName => Name.ToPascalcase();
 
         public abstract string TemplateName { get; }
-
-    }
-
-    sealed class ExitCallCodeModel: CallCodeModel {
-
-        public ExitCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
-        }
-
-        public override string TemplateName => "goToExit";
-
-    }
-
-    sealed class EndCallCodeModel: CallCodeModel {
-
-        public EndCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
-        }
-
-        public override string TemplateName => "goToEnd";
+        public abstract int    SortOrder    { get; }
 
     }
 
     sealed class TaskCallCodeModel: CallCodeModel {
 
         public TaskCallCodeModel(string name, EdgeMode edgeMode, ParameterCodeModel taskResult, bool notImplemented): base(name, edgeMode) {
-            TaskResult = taskResult ?? throw new ArgumentNullException(nameof(taskResult));
+            TaskResult     = taskResult ?? throw new ArgumentNullException(nameof(taskResult));
             NotImplemented = notImplemented;
         }
 
-        public ParameterCodeModel TaskResult { get; }
-        public bool NotImplemented { get; }
+        public ParameterCodeModel TaskResult     { get; }
+        public bool               NotImplemented { get; }
 
         public override string TemplateName {
             get {
@@ -63,6 +46,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 }
             }
         }
+
+        public override int SortOrder => 1;
 
     }
 
@@ -85,6 +70,28 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 }
             }
         }
+
+        public override int SortOrder => 2;
+
+    }
+
+    sealed class ExitCallCodeModel: CallCodeModel {
+
+        public ExitCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
+        }
+
+        public override string TemplateName => "goToExit";
+        public override int    SortOrder    => 3;
+
+    }
+
+    sealed class EndCallCodeModel: CallCodeModel {
+
+        public EndCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
+        }
+
+        public override string TemplateName => "goToEnd";
+        public override int    SortOrder    => 4;
 
     }
 

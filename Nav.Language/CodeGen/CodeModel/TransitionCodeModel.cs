@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var implementedCalls = reachableCalls.Where(c => !c.Node.CodeNotImplemented()).ToList();
             var injectedCalls    = implementedCalls.Where(c => !c.Node.CodeDoNotInject()).ToList();
 
-            var reachableCallsModels = CallCodeModelBuilder.FromCalls(reachableCalls).ToList();
+            var reachableCallsModels = CallCodeModelBuilder.FromCalls(reachableCalls).ToList().OrderBy(c => c.SortOrder);
             var taskBeginModels      = GetTaskBegins(injectedCalls);
             var taskBeginFieldModels = GetTaskBeginFields(injectedCalls);
 
