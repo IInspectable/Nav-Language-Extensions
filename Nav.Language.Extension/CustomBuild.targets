@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Extensions</ProductName>
-    <ProductVersion>3.0.120</ProductVersion>
+    <ProductVersion>3.0.121</ProductVersion>
   </PropertyGroup>
   <Import Project="..\_shared\WriteThisAssemblyFile.targets" />
   <PropertyGroup>
@@ -32,10 +32,8 @@
     <Delete Files="@(_FilesToDelete)" />
     <Copy SourceFiles="@(_itemsToDeploy)" DestinationFolder="$(DeployDirectory)" />
   </Target>
-  
   <Target Name="UpdateProductVersion" BeforeTargets="PrepareForBuild">
     <Message Text="Updating XML $(VsixVersionNumber) files %(XmlConfigUpdates.FullPath)" Importance="high" />
     <XmlPoke Namespaces="%(XmlConfigUpdates.Namespaces)" XmlInputPath="%(XmlConfigUpdates.FullPath)" Query="%(XmlConfigUpdates.XPath)" Value="%(XmlConfigUpdates.NewValue)" />
   </Target>
-
 </Project>

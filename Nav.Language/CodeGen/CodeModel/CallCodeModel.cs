@@ -22,6 +22,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     }
 
+    sealed class CanceCallCodeModel: CallCodeModel {
+
+        public CanceCallCodeModel(): base(String.Empty, EdgeMode.Goto) {
+        }
+
+        public override string TemplateName => "cancel";
+        public override int    SortOrder    => Int32.MaxValue;
+
+    }
+
     sealed class TaskCallCodeModel: CallCodeModel {
 
         public TaskCallCodeModel(string name, EdgeMode edgeMode, ParameterCodeModel taskResult, bool notImplemented): base(name, edgeMode) {
