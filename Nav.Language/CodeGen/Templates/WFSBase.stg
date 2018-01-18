@@ -34,8 +34,8 @@ namespace <model.WflNamespace> {
             if (body == null) {
                 return "null";
             }
-            if (body is TaskCall) {
-                return $"of task node {((TaskCall) body).Node.NodeName}";
+            if (body is TaskCall taskCall) {
+                return $"of task node {taskCall.NodeName}";
             }
             return $"of type {body.GetType().FullName}";
         }
@@ -121,7 +121,7 @@ writeBeginWrapperCollapsibleList(beginWrapperModels) ::=<<
 >>
 
 writeBeginWrapper(beginWrapperModel) ::=<<
-static readonly TaskNode <beginWrapperModel.TaskNodeNamePascalcase>Node = TaskNode.Create("<beginWrapperModel.TaskNodeName>");
+static readonly string <beginWrapperModel.TaskNodeNamePascalcase>NodeName = "<beginWrapperModel.TaskNodeName>";
 
 <writeWrapperBeginMethodList(beginWrapperModel.TaskBegins)>
 >>
@@ -134,9 +134,9 @@ writeWrapperBeginMethod(taskBegin) ::=<<
 <writeInitCallAnnotation(taskBegin.TaskBeginParameter.ParameterType)>
 protected INavCommandBody <BeginMethodPrefix()><taskBegin.TaskNodeNamePascalcase>(<writeParameterList([taskBegin.TaskBeginParameter, taskBegin.TaskParameter])>) {
     <if(taskBegin.NotImplemented)>
-    return new TaskCall(<taskBegin.TaskNodeNamePascalcase>Node, null);
+    return new TaskCall(<taskBegin.TaskNodeNamePascalcase>NodeName, null);
     <else>
-    return new TaskCall(<taskBegin.TaskNodeNamePascalcase>Node, () => <taskBegin.TaskBeginParameter.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(taskBegin.TaskParameter)>));
+    return new TaskCall(<taskBegin.TaskNodeNamePascalcase>NodeName, () => <taskBegin.TaskBeginParameter.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(taskBegin.TaskParameter)>));
     <endif>
 }
 >>
@@ -167,7 +167,7 @@ case END _:
 >>
 
 openModalTask(taskCall) ::=<<
-case TaskCall taskCall when taskCall.Node == <taskCall.PascalCaseName>Node:
+case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalCaseName>NodeName:
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
@@ -176,7 +176,7 @@ case TaskCall taskCall when taskCall.Node == <taskCall.PascalCaseName>Node:
 >>
 
 startNonModalTask(taskCall) ::=<<
-case TaskCall taskCall when taskCall.Node == <taskCall.PascalCaseName>Node:
+case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalCaseName>NodeName:
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
@@ -185,7 +185,7 @@ case TaskCall taskCall when taskCall.Node == <taskCall.PascalCaseName>Node:
 >>
 
 gotoTask(taskCall) ::=<<
-case TaskCall taskCall when taskCall.Node == <taskCall.PascalCaseName>Node:
+case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalCaseName>NodeName:
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>

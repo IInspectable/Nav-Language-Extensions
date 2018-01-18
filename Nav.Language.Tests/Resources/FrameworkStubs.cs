@@ -26,23 +26,13 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL {
 
 namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
 
-    public class TaskNode {
-        
-        TaskNode(string nodeName) {
-            NodeName = nodeName;
-        }
-        public string NodeName { get; }
-        public static TaskNode Create(string nodeName)=> new TaskNode(nodeName);
-
-    }
-
     public sealed class TaskCall: INavCommandBody {
 
-        public TaskCall(TaskNode node, BeginTaskWrapper beginWrapper) {
+        public TaskCall(string nodeName, BeginTaskWrapper beginWrapper) {
             BeginWrapper = beginWrapper;
-            Node         = node;
+            NodeName     = nodeName;
         }
-        public TaskNode Node { get; }
+        public string NodeName { get; }
         public BeginTaskWrapper BeginWrapper;
 
     }
