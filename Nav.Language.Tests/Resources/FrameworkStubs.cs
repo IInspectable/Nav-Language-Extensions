@@ -37,6 +37,25 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
 
     }
 
+    public static class NavCommandBody {
+
+        public static string ComposeUnexpectedTransitionMessage(string logicMethodName, INavCommandBody body) {
+
+            return $"{logicMethodName} returned unexpected result '{OfTypeText(body)}'.";
+        }
+
+        static string OfTypeText(INavCommandBody body) {
+            if (body == null) {
+                return "null";
+            }
+            if (body is TaskCall taskCall) {
+                return $"of task node {taskCall.NodeName}";
+            }
+            return $"of type {body.GetType().Name}";
+        }
+
+    }
+
     public interface INavCommand {
     }
 

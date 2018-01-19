@@ -29,16 +29,7 @@ namespace <model.WflNamespace> {
         protected INavCommandBody TaskResult(<model.TaskResult.ParameterType> <model.TaskResult.ParameterName>) {
             return InternalTaskResult(<model.TaskResult.ParameterName>);
         }
-
-        static string OfTypeText(INavCommandBody body) {
-            if (body == null) {
-                return "null";
-            }
-            if (body is TaskCall taskCall) {
-                return $"of task node {taskCall.NodeName}";
-            }
-            return $"of type {body.GetType().FullName}";
-        }
+       
     }
 
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
@@ -68,8 +59,7 @@ public abstract IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransit
 <writeNavInitAnnotation(initTransition.NodeName)>
 public virtual IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>) {
     var body = <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressionsInline([initTransition.Parameter, initTransition.TaskBeginFields])>);
-    <writeTransitionCallBlock(initTransition)>
-    throw new InvalidOperationException($"{nameof(<BeginMethodPrefix()><LogicMethodSuffix()>)}(...) returned unexpected result '{OfTypeText(body)}'.");
+    <writeTransitionCallBlock(initTransition, ([ BeginMethodPrefix(), LogicMethodSuffix() ]) )>
 }
 
 <writeNavInitAnnotation(initTransition.NodeName)>
@@ -89,8 +79,7 @@ protected abstract INavCommand <ExitMethodPrefix()><exitTransition.NodeNamePasca
 <writeNavExitAnnotation(exitTransition.NodeName)>
 private INavCommand <ExitMethodPrefix()><exitTransition.NodeNamePascalcase>(<writeParameterList(exitTransition.TaskResult)>) {
     var body = <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterExpressionsInline([exitTransition.TaskResult, exitTransition.TaskBeginFields])>);
-    <writeTransitionCallBlock(exitTransition)>
-    throw new InvalidOperationException($"{nameof(<ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>)}(...) returned unexpected result '{OfTypeText(body)}'.");
+    <writeTransitionCallBlock(exitTransition, ([ ExitMethodPrefix(), (exitTransition.NodeNamePascalcase), LogicMethodSuffix() ]) )>
 }
 
 <writeNavExitAnnotation(exitTransition.NodeName)>
@@ -107,8 +96,7 @@ writeTriggerTransition(triggerTransition) ::=<<
 <writeTriggerAnnotation(triggerTransition.TriggerName)>
 public virtual INavCommand <triggerTransition.TriggerName>(<writeParameterList(triggerTransition.ViewParameter)>) {
     var body = <triggerTransition.TriggerName><LogicMethodSuffix()>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);    
-    <writeTransitionCallBlock(triggerTransition)>
-    throw new InvalidOperationException($"{nameof(<triggerTransition.TriggerName><LogicMethodSuffix()>)}(...) returned unexpected result '{OfTypeText(body)}'.");
+    <writeTransitionCallBlock(triggerTransition, ([ (triggerTransition.TriggerName), LogicMethodSuffix() ]) )>
 }
 
 <writeTriggerAnnotation(triggerTransition.TriggerName)>
@@ -141,9 +129,11 @@ protected INavCommandBody <BeginMethodPrefix()><taskBegin.TaskNodeNamePascalcase
 }
 >>
 
-writeTransitionCallBlock(transition) ::=<<
+writeTransitionCallBlock(transition, logicMethodName) ::=<<
 switch(body) {
     <transition.ReachableCalls:writeCall(); separator="\r\n">
+    default:
+        throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(<logicMethodName>), body) );
 }
 >>
 
