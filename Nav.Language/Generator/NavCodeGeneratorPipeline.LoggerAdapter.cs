@@ -18,24 +18,21 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
         sealed class LoggerAdapter: IDisposable {
 
+            [CanBeNull]
+            readonly ILogger _logger;
+
             readonly HashSet<Diagnostic> _loggedErrors;
             readonly HashSet<Diagnostic> _loggedWarnings;
-
-            [CanBeNull] readonly ILogger _logger;
+            readonly Stopwatch           _processStopwatch;
+            readonly Stopwatch           _processFileStopwatch;
 
             public LoggerAdapter(ILogger logger) {
-                _logger              = logger;
-                _loggedErrors        = new HashSet<Diagnostic>();
-                _loggedWarnings      = new HashSet<Diagnostic>();
-                ProcessStopwatch     = new Stopwatch();
-                ProcessFileStopwatch = new Stopwatch();
+                _logger               = logger;
+                _loggedErrors         = new HashSet<Diagnostic>();
+                _loggedWarnings       = new HashSet<Diagnostic>();
+                _processStopwatch     = new Stopwatch();
+                _processFileStopwatch = new Stopwatch();
             }
-
-            [NotNull]
-            Stopwatch ProcessStopwatch { get; }
-
-            [NotNull]
-            Stopwatch ProcessFileStopwatch { get; }
 
             public bool HasLoggedErrors { get; private set; }
 
@@ -70,11 +67,11 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
             public void LogProcessBegin() {
 
-                ProcessStopwatch.Restart();
+                _processStopwatch.Restart();
             }
 
             public void LogProcessFileBegin(FileSpec fileSpec) {
-                ProcessFileStopwatch.Restart();
+                _processFileStopwatch.Restart();
                 _logger?.LogVerbose($"Processing file '{fileSpec.Identity}'");
             }
 
@@ -101,12 +98,12 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
             // ReSharper disable once UnusedParameter.Local
             public void LogProcessFileEnd(FileSpec fileSpec) {
-                ProcessFileStopwatch.Stop();
-                _logger?.LogVerbose($"Completed in {ProcessFileStopwatch.Elapsed.TotalSeconds} seconds.");
+                _processFileStopwatch.Stop();
+                _logger?.LogVerbose($"Completed in {_processFileStopwatch.Elapsed.TotalSeconds} seconds.");
             }
 
             public void LogProcessEnd(Statistic statistic) {
-                ProcessStopwatch.Stop();
+                _processStopwatch.Stop();
 
                 const int width = 40;
 
@@ -114,7 +111,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
                 _logger?.LogInfo($"{statistic.FileCount} {Pluralize("file",                 statistic.FileCount)} with {statistic.TaskCount} {Pluralize("task", statistic.TaskCount)} processed.");
                 _logger?.LogInfo($"   Updated: {statistic.FilesUpated,3} {Pluralize("File", statistic.FilesUpated)}");
                 _logger?.LogInfo($"   Skiped : {statistic.FilesSkiped,3} {Pluralize("File", statistic.FilesSkiped)}");
-                _logger?.LogInfo(HorizontalRule($"Completed in {ProcessStopwatch.Elapsed.TotalSeconds} seconds", width));
+                _logger?.LogInfo(HorizontalRule($"Completed in {_processStopwatch.Elapsed.TotalSeconds} seconds", width));
             }
 
             static string HorizontalRule(string message, int length, char lineChar = '-') {
