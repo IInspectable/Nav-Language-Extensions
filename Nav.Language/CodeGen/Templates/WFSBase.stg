@@ -166,43 +166,43 @@ case END _:
 >>
 
 openModalTask(taskCall) ::=<<
-case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalCaseName>NodeName:
+case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalcaseName>NodeName:
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
-    return OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);<\\>
+    return OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalcaseName>);<\\>
     <endif>
 >>
 
 startNonModalTask(taskCall) ::=<<
-case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalCaseName>NodeName:
+case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalcaseName>NodeName:
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
-    return StartNonModalTask(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);<\\>
+    return StartNonModalTask(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalcaseName>);<\\>
     <endif>
 >>
 
 gotoTask(taskCall) ::=<<
-case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalCaseName>NodeName:
+case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalcaseName>NodeName:
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
-    return GotoTask\<<taskCall.TaskResult.ParameterType>\>(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalCaseName>);<\\>
+    return GotoTask\<<taskCall.TaskResult.ParameterType>\>(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalcaseName>);<\\>
     <endif>
 >>
 
 openModalGUI(call) ::=<<
-case <call.PascalCaseName><ToClassNameSuffix()> to:
-    return OpenModalGUI(to);
+case <call.PascalcaseName><ToClassNameSuffix()> <call.CamelcaseName><ToClassNameSuffix()>:
+    return OpenModalGUI(<call.CamelcaseName><ToClassNameSuffix()>);
 >>
 
 startNonModalGUI(call) ::=<<
-case <call.PascalCaseName><ToClassNameSuffix()> to:
-    return StartNonModalGUI(to);
+case <call.PascalcaseName><ToClassNameSuffix()> <call.CamelcaseName><ToClassNameSuffix()>:
+    return StartNonModalGUI(<call.CamelcaseName><ToClassNameSuffix()>);
 >>
 
 gotoGUI(call) ::=<<
-case <call.PascalCaseName><ToClassNameSuffix()> to:
-    return GotoGUI(to);
+case <call.PascalcaseName><ToClassNameSuffix()> <call.CamelcaseName><ToClassNameSuffix()>:
+    return GotoGUI(<call.CamelcaseName><ToClassNameSuffix()>);
 >>

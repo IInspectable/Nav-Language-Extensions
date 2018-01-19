@@ -15,7 +15,8 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public EdgeMode EdgeMode       { get; }
         public string   Name           { get; }
-        public string   PascalCaseName => Name.ToPascalcase();
+        public string   PascalcaseName => Name.ToPascalcase();
+        public string   CamelcaseName  => Name.ToCamelcase();
 
         public abstract string TemplateName { get; }
         public abstract int    SortOrder    { get; }
