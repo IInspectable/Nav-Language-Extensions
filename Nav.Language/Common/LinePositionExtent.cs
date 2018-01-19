@@ -10,14 +10,14 @@ namespace Pharmatechnik.Nav.Language {
             if (start > end) {
                 throw new ArgumentOutOfRangeException(nameof(start));
             }
-                       
+
             Start = start;
             End   = end;
         }
-                
+
         public LinePosition Start { get; }
-        public LinePosition End { get; }
-        
+        public LinePosition End   { get; }
+
         /// <summary>
         /// Determines whether two <see cref="LinePositionExtent"/> are the same.
         /// </summary>
@@ -53,6 +53,8 @@ namespace Pharmatechnik.Nav.Language {
         /// </summary>
         public override int GetHashCode() {
             return Start.GetHashCode() ^ End.GetHashCode();
-        }             
+        }
+
     }
+
 }

@@ -10,7 +10,7 @@ namespace Pharmatechnik.Nav.Language {
 
         public TextLineExtent(int line, TextExtent extent) {
 
-            if(extent.IsMissing && line != -1) {
+            if (extent.IsMissing && line != -1) {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
 
@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
 
-            if(line < -1) {
+            if (line < -1) {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
 
@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public static readonly TextLineExtent Missing = new TextLineExtent(-1, TextExtent.Missing);
-        public static readonly TextLineExtent Empty   = new TextLineExtent(0, TextExtent.Empty);
+        public static readonly TextLineExtent Empty   = new TextLineExtent(0,  TextExtent.Empty);
 
         public bool IsMissing => Line < 0;
 
@@ -44,7 +44,7 @@ namespace Pharmatechnik.Nav.Language {
         /// The extent of the line.
         /// </summary>
         public TextExtent Extent { get; }
-        
+
         int IExtent.Start => Extent.Start;
         int IExtent.End   => Extent.End;
 
@@ -84,5 +84,7 @@ namespace Pharmatechnik.Nav.Language {
         public override int GetHashCode() {
             return Line ^ Extent.GetHashCode();
         }
+
     }
+
 }
