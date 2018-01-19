@@ -2,11 +2,12 @@
 
 using System;
 using System.IO;
+
 using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language.Generator {
 
     public class FileSpec {
         

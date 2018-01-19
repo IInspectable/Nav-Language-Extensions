@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             var injectedCalls          = implementedCalls.Where(c => !c.Node.CodeDoNotInject()).ToList();
 
             var reachableCallsModels = CallCodeModelBuilder.FromCalls(distinctReachableCalls)
-                                                            // Cancel ist immer erreichbar
+                                                            // Cancel ist immer implizit erreichbar
                                                            .Concat(new[] {new CanceCallCodeModel()})
                                                            .OrderBy(c => c.SortOrder);
             var taskBeginModels      = GetTaskBegins(injectedCalls);

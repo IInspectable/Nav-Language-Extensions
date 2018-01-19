@@ -3,7 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Pharmatechnik.Nav.Language.Logging;
+
+using Pharmatechnik.Nav.Language.Generator;
 
 #endregion
 

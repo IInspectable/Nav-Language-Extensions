@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     sealed class CallCodeModelBuilder: SymbolVisitor<CallCodeModel> {
-        
+
         public CallCodeModelBuilder(EdgeMode edgeMode) {
             EdgeMode = edgeMode;
         }
@@ -46,5 +46,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public override CallCodeModel VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
             return new GuiCallCodeModel(viewNodeSymbol.Name, EdgeMode);
         }
+
     }
+
 }

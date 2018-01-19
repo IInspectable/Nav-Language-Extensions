@@ -49,6 +49,9 @@ namespace Pharmatechnik.Nav.Language {
 
     }
 
+    /// <summary>
+    /// In der Codegenerierung werden Exits nicht unterschieden
+    /// </summary>
     class FoldExitsCallComparer: CallComparer {
 
         public override bool Equals(Call x, Call y) {

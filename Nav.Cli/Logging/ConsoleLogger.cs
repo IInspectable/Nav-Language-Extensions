@@ -2,6 +2,8 @@
 
 using System;
 
+using Pharmatechnik.Nav.Language.Generator;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Logging {

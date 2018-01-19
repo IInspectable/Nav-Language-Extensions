@@ -1,4 +1,4 @@
-namespace Pharmatechnik.Nav.Language.Logging {
+namespace Pharmatechnik.Nav.Language.Generator {
     public interface ILogger {
         void LogVerbose(string message);
         void LogInfo(string message);

@@ -54,13 +54,8 @@
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Generator\NavCodeGenerator.cs" />
-    <Compile Include="FileSpec.cs" />
-    <Compile Include="Generator\NavCodeGeneratorPipeline.cs" />
-    <Compile Include="Generator\NavCodeGeneratorPipeline.LoggerAdapter.cs" />
-    <Compile Include="Generator\NavCodeGeneratorPipeline.Statistic.cs" />
     <Compile Include="CommandLine.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Analyzer\SyntaxAnalyzerPipeline.cs" />
     <Compile Include="Analyzer\SyntaxAnalyzerProgram.cs" />

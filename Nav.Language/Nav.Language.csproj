@@ -90,6 +90,7 @@
     <Compile Include="CodeFixes\Rename\RenameCodeFix.cs" />
     <Compile Include="CodeFixes\Rename\ViewNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\TaskDefinitionSymbolExtensions.cs" />
+    <Compile Include="Generator\FileSpec.cs" />
     <Compile Include="CodeGen\CodeGenerationSpec.cs" />
     <Compile Include="CodeGen\CodeGenFacts.cs" />
     <Compile Include="CodeGen\CodeModel\BeginWrapperCodeModel.cs" />
@@ -126,6 +127,10 @@
     <Compile Include="CodeGen\Generator.cs" />
     <Compile Include="CodeGen\Templates\CodeGenFacts.generated.cs" />
     <Compile Include="Diagnostic\DiagnosticFormatter.cs" />
+    <Compile Include="Generator\NavCodeGeneratorPipeline.cs" />
+    <Compile Include="Generator\NavCodeGeneratorPipeline.LoggerAdapter.cs" />
+    <Compile Include="Generator\NavCodeGeneratorPipeline.Statistic.cs" />
+    <Compile Include="Generator\ILogger.cs" />
     <Compile Include="Model\Call.cs" />
     <Compile Include="Model\EdgeExtensions.cs" />
     <Compile Include="Model\ICodeParameter.cs" />

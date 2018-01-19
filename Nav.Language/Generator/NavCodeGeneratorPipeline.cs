@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 
 using JetBrains.Annotations;
+
 using Pharmatechnik.Nav.Language.CodeGen;
-using Pharmatechnik.Nav.Language.Logging;
 
 #endregion
 
@@ -15,28 +15,33 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
         public NavCodeGeneratorPipeline(GenerationOptions options,
                                         ILogger logger = null,
-                                        ISyntaxProviderFactory syntaxProviderFactory = null) {
+                                        ISyntaxProviderFactory syntaxProviderFactory = null,
+                                        IPathProviderFactory pathProviderFactory = null) {
 
-            Options         = options ?? throw new ArgumentNullException(nameof(options));
-            Logger          = logger;
-            ProviderFactory = syntaxProviderFactory ?? SyntaxProviderFactory.Default;
+            Options               = options ?? throw new ArgumentNullException(nameof(options));
+            Logger                = logger;
+            SyntaxProviderFactory = syntaxProviderFactory ?? Language.SyntaxProviderFactory.Default;
+            PathProviderFactory   = pathProviderFactory   ?? Language.PathProviderFactory.Default;
         }
 
         [NotNull]
         public GenerationOptions Options { get; }
-        
+
         [NotNull]
-        public ISyntaxProviderFactory ProviderFactory { get; }
+        public ISyntaxProviderFactory SyntaxProviderFactory { get; }
+
+        [NotNull]
+        public IPathProviderFactory PathProviderFactory { get; }
 
         [CanBeNull]
         public ILogger Logger { get; }
 
         public bool Run(IEnumerable<FileSpec> fileSpecs) {
 
-            using(var logger         = new LoggerAdapter(Logger))
-            using(var syntaxProvider = ProviderFactory.CreateProvider())
-            using(var codeGenerator  = new CodeGenerator(Options))
-            using(var fileGenerator  = new FileGenerator(Options)) {
+            using (var logger = new LoggerAdapter(Logger))
+            using (var syntaxProvider = SyntaxProviderFactory.CreateProvider())
+            using (var codeGenerator = new CodeGenerator(Options, PathProviderFactory))
+            using (var fileGenerator = new FileGenerator(Options)) {
 
                 var statistic = new Statistic();
 
@@ -46,11 +51,11 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
                     statistic.UpdatePerFile();
 
-                    logger.LogProcessFileBegin(fileSpec);        
-                
+                    logger.LogProcessFileBegin(fileSpec);
+
                     // 1. SyntaxTree
                     var syntax = syntaxProvider.FromFile(fileSpec.FilePath);
-                    if(syntax == null) {
+                    if (syntax == null) {
                         logger.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, fileSpec));
                         continue;
                     }
@@ -85,5 +90,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
                 return !logger.HasLoggedErrors;
             }
         }
+
     }
+
 }
