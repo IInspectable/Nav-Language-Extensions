@@ -1,6 +1,7 @@
 #region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using JetBrains.Annotations;
@@ -63,7 +64,9 @@ namespace Pharmatechnik.Nav.Language.Generator {
                     // 2. Semantic Model
                     var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(syntax, syntaxProvider: syntaxProvider);
 
-                    if (logger.LogErrors(syntax.SyntaxTree.Diagnostics) || logger.LogErrors(codeGenerationUnit.Diagnostics)) {
+                    if (logger.LogErrors(syntax.SyntaxTree.Diagnostics) || 
+                        logger.LogErrors(codeGenerationUnit.Diagnostics) ||
+                        logger.LogErrors(codeGenerationUnit.Includes.SelectMany(include=> include.Diagnostics))) {
                         continue;
                     }
 

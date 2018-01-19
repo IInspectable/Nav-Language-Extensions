@@ -18,10 +18,15 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
         sealed class LoggerAdapter: IDisposable {
 
+            readonly HashSet<Diagnostic> _loggedErrors;
+            readonly HashSet<Diagnostic> _loggedWarnings;
+
             [CanBeNull] readonly ILogger _logger;
 
             public LoggerAdapter(ILogger logger) {
                 _logger              = logger;
+                _loggedErrors        = new HashSet<Diagnostic>();
+                _loggedWarnings      = new HashSet<Diagnostic>();
                 ProcessStopwatch     = new Stopwatch();
                 ProcessFileStopwatch = new Stopwatch();
             }
@@ -43,9 +48,13 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
                 bool errorsLogged = false;
                 foreach (var error in diagnostics.Errors()) {
+
+                    if (_loggedErrors.Add(error)) {
+                        _logger?.LogError(error);
+                    }
+
                     errorsLogged    = true;
                     HasLoggedErrors = true;
-                    _logger?.LogError(error);
                 }
 
                 return errorsLogged;
@@ -53,7 +62,9 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
             public void LogWarnings(IEnumerable<Diagnostic> diagnostics) {
                 foreach (var warning in diagnostics.Warnings()) {
-                    _logger?.LogWarning(warning);
+                    if (_loggedWarnings.Add(warning)) {
+                        _logger?.LogWarning(warning);
+                    }
                 }
             }
 
