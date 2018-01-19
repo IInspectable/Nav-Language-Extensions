@@ -11,18 +11,19 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     abstract class TransitionCodeModel: CodeModel {
 
-        protected TransitionCodeModel(ImmutableList<Call> reachableCalls) {
+        protected TransitionCodeModel(IEnumerable<Call> reachableCalls) {
 
             if (reachableCalls == null) {
                 throw new ArgumentNullException(nameof(reachableCalls));
             }
 
-            var implementedCalls = reachableCalls.Where(c => !c.Node.CodeNotImplemented()).ToList();
-            var injectedCalls    = implementedCalls.Where(c => !c.Node.CodeDoNotInject()).ToList();
+            var distinctReachableCalls = reachableCalls.Distinct(CallComparer.FoldExits).ToImmutableList();
+            var implementedCalls       = distinctReachableCalls.Where(c => !c.Node.CodeNotImplemented()).ToList();
+            var injectedCalls          = implementedCalls.Where(c => !c.Node.CodeDoNotInject()).ToList();
 
-            var reachableCallsModels = CallCodeModelBuilder.FromCalls(reachableCalls)
+            var reachableCallsModels = CallCodeModelBuilder.FromCalls(distinctReachableCalls)
                                                             // Cancel ist immer erreichbar
-                                                           .Concat(new[] { new CanceCallCodeModel()})
+                                                           .Concat(new[] {new CanceCallCodeModel()})
                                                            .OrderBy(c => c.SortOrder);
             var taskBeginModels      = GetTaskBegins(injectedCalls);
             var taskBeginFieldModels = GetTaskBeginFields(injectedCalls);
@@ -37,7 +38,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public ImmutableList<FieldCodeModel>     TaskBeginFields { get; }
 
         static IEnumerable<ParameterCodeModel> GetTaskBegins(IEnumerable<Call> reachableCalls) {
-            
+
             var taskDeclarations = GetTaskDeclarations(reachableCalls);
             return ParameterCodeModel.GetTaskBeginsAsParameter(taskDeclarations)
                                      .OrderBy(p => p.ParameterName)
@@ -45,7 +46,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         static IEnumerable<FieldCodeModel> GetTaskBeginFields(IEnumerable<Call> reachableCalls) {
-            
+
             var taskBegins       = GetTaskBegins(reachableCalls);
             var taskBeginMembers = taskBegins.Select(p => new FieldCodeModel(p.ParameterType, p.ParameterName));
 

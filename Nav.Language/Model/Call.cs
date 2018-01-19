@@ -24,7 +24,8 @@ namespace Pharmatechnik.Nav.Language {
         protected CallComparer() {
         }
 
-        public static readonly IEqualityComparer<Call> Default = new CallComparer();
+        public static readonly IEqualityComparer<Call> Default   = new CallComparer();
+        public static readonly IEqualityComparer<Call> FoldExits = new FoldExitsCallComparer();
 
         public virtual bool Equals(Call x, Call y) {
 
@@ -44,6 +45,27 @@ namespace Pharmatechnik.Nav.Language {
             unchecked {
                 return (call.Node.Name.GetHashCode() * 397) ^ (call.EdgeMode?.Name?.GetHashCode() ?? 0);
             }
+        }
+
+    }
+
+    class FoldExitsCallComparer: CallComparer {
+
+        public override bool Equals(Call x, Call y) {
+            if (base.Equals(x, y)) {
+                return true;
+            }
+
+            return x?.Node is IExitNodeSymbol && y?.Node is IExitNodeSymbol;
+        }
+
+        public override int GetHashCode(Call call) {
+            if (call.Node is IExitNodeSymbol) {
+                return typeof(IExitNodeSymbol).GetHashCode();
+            }
+
+            return base.GetHashCode();
+
         }
 
     }
