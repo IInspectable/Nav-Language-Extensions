@@ -71,3 +71,23 @@ function UpdateVersion(){
 	$sw.Close()
 }
 
+
+function ReadVersion() {
+	Param(
+
+        [Parameter(Position=0, Mandatory=$true)]
+        [string] $file
+    )
+
+    $file=Convert-Path $file
+
+    Write-Verbose "Opening file '$file'"
+
+    $xml=[xml](cat $file)
+
+    $productVersionNode=$xml.Project.PropertyGroup.ChildNodes | ? Name -eq ProductVersion
+
+    $version=[Version]::Parse($productVersionNode.InnerText)
+	
+	return $version
+}	
