@@ -32,7 +32,10 @@
 
 /Nav.Language.Tests/bin/Debug
 /Nav.Language.Tests/obj/Debug
+/Nav.Language.Tests/Regression/Tests/**/*.cs
+!/Nav.Language.Tests/Regression/**/*.expected.cs
 
 /.vs
 /**/*.generated.cs
 TestResult.xml
+

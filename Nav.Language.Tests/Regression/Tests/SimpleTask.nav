@@ -1,0 +1,18 @@
+﻿[namespaceprefix Nav.Language.Tests.Regression.Test1]
+
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.IWFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Common.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Common.WFL]
+
+task SimpleTask  [base StandardWFS : IWFServiceBase]
+    [params]
+    [result bool]
+{
+
+    init [params ];
+    exit    End;
+
+    Init --> End;
+}

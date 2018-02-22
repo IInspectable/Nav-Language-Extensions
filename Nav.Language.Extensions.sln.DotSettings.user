@@ -8,10 +8,11 @@
   &lt;Assembly Path="C:\ws\Nav.Language.Extensions\packages\Microsoft.VisualStudio.ImageCatalog.14.3.25407\lib\net45\Microsoft.VisualStudio.ImageCatalog.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndex/@EntryValue">2</s:Int64>
-	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">01/19/2018 09:10:18</s:String>
+	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">02/22/2018 11:15:41</s:String>
 	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialogView/Position/@EntryValue">[44,0](1315,870)</s:String>
 	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/RefactoringWizardWindow/Location/@EntryValue">129,-311</s:String>
 	<s:String x:Key="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue">CodeAnnotations</s:String>
+	
 	
 	
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/@KeyIndexDefined">True</s:Boolean>

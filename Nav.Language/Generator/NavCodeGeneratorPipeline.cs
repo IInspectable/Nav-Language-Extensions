@@ -25,6 +25,8 @@ namespace Pharmatechnik.Nav.Language.Generator {
             PathProviderFactory   = pathProviderFactory   ?? Language.PathProviderFactory.Default;
         }
 
+        public static NavCodeGeneratorPipeline CreateDefault() => new NavCodeGeneratorPipeline(GenerationOptions.Default);
+
         [NotNull]
         public GenerationOptions Options { get; }
 
