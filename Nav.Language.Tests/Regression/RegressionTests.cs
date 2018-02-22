@@ -27,6 +27,12 @@ namespace Nav.Language.Tests.Regression {
             Assert.That(b, Is.True);
         }
 
+        [Test, Explicit]
+        public void GenerateFiles() {
+            // Generiert jediglich alle Files(=> Setup)
+            Assert.That(true);
+        }
+
         [Test, TestCaseSource(nameof(CollectFiles))]
         public void CompareFile(FileTestCase pair) {
 
