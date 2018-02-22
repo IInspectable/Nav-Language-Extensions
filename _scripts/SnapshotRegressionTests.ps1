@@ -1,5 +1,5 @@
 
-$dir = Join-Path $PSScriptRoot "Nav.Language.Tests\Regression\Tests"
+$dir = Join-Path $PSScriptRoot "..\Nav.Language.Tests\Regression\Tests"
 
 ls $dir -recurse -Filter '*.expected.cs' | del -verbose
 
