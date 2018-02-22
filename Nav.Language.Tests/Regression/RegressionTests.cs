@@ -15,7 +15,7 @@ namespace Nav.Language.Tests.Regression {
     [TestFixture]
     public class RegressionTests {
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup() {
 
             var fileSpecs = CollectNavFiles();
