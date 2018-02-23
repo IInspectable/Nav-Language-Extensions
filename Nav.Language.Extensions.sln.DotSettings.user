@@ -16,6 +16,7 @@
 	
 	
 	
+	
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/@KeyIndexDefined">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/Color/@EntryValue">Blue</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/MatchComments/@EntryValue">True</s:Boolean>
