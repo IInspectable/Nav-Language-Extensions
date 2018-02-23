@@ -27,6 +27,11 @@ namespace Nav.Language.Tests.Regression {
             Assert.That(b, Is.True);
         }
 
+        [Test]
+        public void TestDirectory() {
+            Assert.That(TestContext.CurrentContext.TestDirectory, Is.EqualTo("Fail"));
+        }
+
         [Test, Explicit]
         public void GenerateFiles() {
             // Generiert jediglich alle Files(=> Setup)
