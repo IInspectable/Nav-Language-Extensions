@@ -31,7 +31,9 @@ namespace Nav.Language.Tests.Regression {
         public void TestDirectory() {
 
             var navs=CollectNavFiles().Aggregate(String.Empty, (s, f) => s += f.FilePath + ";");
-            Assert.That(navs, Is.EqualTo(">"+navs+"<"));
+         //   TestContext.Error.WriteLine(navs);
+            Assert.That(false, Is.True, navs);
+            //Assert.That(navs, Is.EqualTo(">"+navs+"<"));
         }
 
         [Test, Explicit]
