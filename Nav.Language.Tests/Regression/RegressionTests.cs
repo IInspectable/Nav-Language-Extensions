@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,6 +10,8 @@ using NUnit.Framework;
 using Pharmatechnik.Nav.Language.Generator;
 using Pharmatechnik.Nav.Utilities.IO;
 
+#endregion
+
 namespace Nav.Language.Tests.Regression {
 
     [TestFixture]
@@ -16,13 +20,7 @@ namespace Nav.Language.Tests.Regression {
         [OneTimeSetUp]
         public void Setup() {
 
-            var fileSpecs = CollectNavFiles();
-
-            var pipeline = NavCodeGeneratorPipeline.CreateDefault();
-            var b        = pipeline.Run(fileSpecs);
-
-            // TODO Bessere Fehlerbehandlung/Ausgabe
-            Assert.That(b, Is.True);
+            GenerateFiles();
         }
 
         [Test, Explicit]
@@ -40,8 +38,19 @@ namespace Nav.Language.Tests.Regression {
 
         [Test, Explicit]
         public void GenerateFiles() {
-            // Generiert jediglich alle Files(=> Setup)
-            Assert.That(true);
+
+            // Sicherstellen, dass auch wirklich alle Files (auch die "OneShots") neu geschrieben werden.
+            foreach (var tc in GetFileTestCases()) {
+                File.Delete(tc.GeneratedFile);
+            }
+
+            var fileSpecs = CollectNavFiles();
+
+            var pipeline = NavCodeGeneratorPipeline.CreateDefault();
+            var b        = pipeline.Run(fileSpecs);
+
+            // TODO Bessere Fehlerbehandlung/Ausgabe
+            Assert.That(b, Is.True);
         }
 
         [Test, TestCaseSource(nameof(GetFileTestCases))]
