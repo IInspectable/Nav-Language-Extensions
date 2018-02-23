@@ -28,12 +28,16 @@ namespace Nav.Language.Tests.Regression {
         }
 
         [Test]
-        public void TestDirectory() {
+        public void DiscoverNavFiles() {
 
-            var navs=CollectNavFiles().Aggregate(String.Empty, (s, f) => s += f.FilePath + ";");
-         //   TestContext.Error.WriteLine(navs);
+            var navs = CollectNavFiles().Aggregate(String.Empty, (s, f) => s += f.FilePath + Environment.NewLine);
             Assert.That(false, Is.True, navs);
-            //Assert.That(navs, Is.EqualTo(">"+navs+"<"));
+        }
+
+        [Test]
+        public void DiscoverExpectedFiles() {
+            var cases = GetFileTestCases().Aggregate(String.Empty, (s, c) => s += c.RelativeExpectedFile + Environment.NewLine);
+            Assert.That(false, Is.True, cases);
         }
 
         [Test, Explicit]
