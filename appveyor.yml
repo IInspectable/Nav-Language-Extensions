@@ -4,12 +4,8 @@ configuration: Debug
 platform: Any CPU
 build:
   verbosity: minimal
-test_script:
-- cmd: Run-Tests.bat  
 artifacts:
 - path: deploy\Vsix
   name: Nav.Language.Extension
 - path: deploy\Build Tools
   name: Nav.Language.BuildTools
-- path: TestResult.xml
-  name: TestResult.xml
