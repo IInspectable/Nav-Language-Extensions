@@ -1,6 +1,5 @@
 ﻿#region Using Directives
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,35 +13,32 @@ using Pharmatechnik.Nav.Utilities.IO;
 
 namespace Nav.Language.Tests.Regression {
 
-    [TestFixture, NonParallelizable]
+    [TestFixture]
     public class RegressionTests {
 
-        [OneTimeSetUp]
-        public void Setup() {
+        [Test, TestCaseSource(typeof(RegressionTestsSetup), nameof(RegressionTestsSetup.GetFileTestCases))]
+        public void CompareFile(RegressionTestsSetup.FileTestCase pair) {
 
-            GenerateFiles();
-        }
+            var generatedContent = File.ReadAllText(pair.GeneratedFile);
+            var expectedContent  = File.ReadAllText(pair.ExpectedFile);
 
-        [Test]
-        public void Healthy() {
-            Assert.That(true, Is.True);
-        }
-
-        [Test, Explicit]
-        public void DiscoverNavFiles() {
-
-            var navs = CollectNavFiles().Aggregate(String.Empty, (s, f) => s += f.FilePath + Environment.NewLine);
-            Assert.That(false, Is.True, navs);
-        }
-
-        [Test, Explicit]
-        public void DiscoverExpectedFiles() {
-            var cases = GetFileTestCases().Aggregate(String.Empty, (s, c) => s += c.RelativeExpectedFile + Environment.NewLine);
-            Assert.That(false, Is.True, cases);
+            Assert.That(generatedContent, Is.EqualTo(expectedContent), $"File '{pair.GeneratedFile}' differes from expected file content '{pair.ExpectedFile}'");
         }
 
         [Test, Explicit]
         public void GenerateFiles() {
+
+            // Die Files werden implizit im Fixture Setup ersetellt
+            Assert.That(true, Is.True);
+        }
+
+    }
+
+    [SetUpFixture]
+    public class RegressionTestsSetup {
+
+        [OneTimeSetUp]
+        public void Setup() {
 
             // Sicherstellen, dass auch wirklich alle Files (auch die "OneShots") neu geschrieben werden.
             foreach (var tc in GetFileTestCases()) {
@@ -58,15 +54,6 @@ namespace Nav.Language.Tests.Regression {
             Assert.That(b, Is.True);
         }
 
-        [Test, TestCaseSource(nameof(GetFileTestCases))]
-        public void CompareFile(FileTestCase pair) {
-
-            var generatedContent = File.ReadAllText(pair.GeneratedFile);
-            var expectedContent  = File.ReadAllText(pair.ExpectedFile);
-
-            Assert.That(generatedContent, Is.EqualTo(expectedContent), $"File '{pair.GeneratedFile}' differes from expected file content '{pair.ExpectedFile}'");
-        }
-
         static IEnumerable<FileSpec> CollectNavFiles() {
             var directory    = GetRegressiontestDirectory();
             var navFiles     = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories);
@@ -75,7 +62,7 @@ namespace Nav.Language.Tests.Regression {
             return dirFileSpecs;
         }
 
-        static IEnumerable<FileTestCase> GetFileTestCases() {
+        public static IEnumerable<FileTestCase> GetFileTestCases() {
 
             var directory = GetRegressiontestDirectory();
 
@@ -109,5 +96,7 @@ namespace Nav.Language.Tests.Regression {
         }
 
     }
+
+   
 
 }
