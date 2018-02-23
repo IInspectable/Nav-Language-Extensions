@@ -29,7 +29,9 @@ namespace Nav.Language.Tests.Regression {
 
         [Test]
         public void TestDirectory() {
-            Assert.That(TestContext.CurrentContext.TestDirectory, Is.EqualTo("Fail"));
+
+            var navs=CollectNavFiles().Aggregate(String.Empty, (s, f) => s += f.FilePath + ";");
+            Assert.That(navs, Is.EqualTo(">"+navs+"<"));
         }
 
         [Test, Explicit]
@@ -38,7 +40,7 @@ namespace Nav.Language.Tests.Regression {
             Assert.That(true);
         }
 
-        [Test, TestCaseSource(nameof(CollectFiles))]
+        [Test, TestCaseSource(nameof(GetFileTestCases))]
         public void CompareFile(FileTestCase pair) {
 
             var generatedContent = File.ReadAllText(pair.GeneratedFile);
@@ -55,7 +57,7 @@ namespace Nav.Language.Tests.Regression {
             return dirFileSpecs;
         }
 
-        static IEnumerable<FileTestCase> CollectFiles() {
+        static IEnumerable<FileTestCase> GetFileTestCases() {
 
             var directory = GetRegressiontestDirectory();
 
