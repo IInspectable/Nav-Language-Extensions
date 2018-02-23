@@ -49,6 +49,7 @@ namespace Nav.Language.Tests.Regression {
         [Test, TestCaseSource(nameof(GetFileTestCases))]
         public void CompareFile(FileTestCase pair) {
 
+            Assert.That(false, Is.True, "CompareFile");
             var generatedContent = File.ReadAllText(pair.GeneratedFile);
             var expectedContent  = File.ReadAllText(pair.ExpectedFile);
 
