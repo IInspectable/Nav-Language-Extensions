@@ -1,4 +1,4 @@
-lexer grammar NavLexer;
+ï»¿lexer grammar NavLexer;
 
 channels {
     TriviaChannel
@@ -72,7 +72,7 @@ IdentifierCharacter
     |   'A'..'Z'
     |   '_'
     |   '0'..'9'
-    |   'Ä'|'Ö'|'Ü'|'ä'|'ö'|'ü'|'ß'|'.'
+    |   'Ã„'|'Ã–'|'Ãœ'|'Ã¤'|'Ã¶'|'Ã¼'|'ÃŸ'|'.'
     ;
 
 OpenBrace

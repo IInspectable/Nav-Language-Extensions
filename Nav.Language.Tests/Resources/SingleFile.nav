@@ -1,4 +1,4 @@
- [namespaceprefix a.b.c]
+﻿ [namespaceprefix a.b.c]
 
 task MessageBox 					[code "public enum MessageBoxResult { Ok };"]
 								    [base BaseWFService]
@@ -19,12 +19,12 @@ task ConfirmDialog 					[code "public enum ConfirmDialogResult { Yes, No };"]
                                     [result ConfirmDialogResult]
 {
     init								[params string];
-    view ConfirmDialog;
+    view ConfirmDialög;
     exit   Yes;
     exit   No;
 
-    init --> ConfirmDialog;
+    init --> ConfirmDialög;
 
-    ConfirmDialog --> Yes on Yes_Clicked;
-    ConfirmDialog --> No  on No_Clicked, Close;
+    ConfirmDialög --> Yes on Yes_Clicked;
+    ConfirmDialög --> No  on No_Clicked, Close;
 }

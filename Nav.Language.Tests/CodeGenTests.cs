@@ -223,7 +223,8 @@ namespace Nav.Language.Tests {
             string assemblyName = Path.GetRandomFileName();
             MetadataReference[] references = {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
+             //   MetadataReference.CreateFromFile(typeof(ImmutableArrayExtensions).Assembly.Location)
             };
 
             CSharpCompilation compilation = CSharpCompilation.Create(
