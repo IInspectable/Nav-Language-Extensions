@@ -27,14 +27,14 @@ namespace Nav.Language.Tests.Regression {
             Assert.That(b, Is.True);
         }
 
-        [Test]
+        [Test, Explicit]
         public void DiscoverNavFiles() {
 
             var navs = CollectNavFiles().Aggregate(String.Empty, (s, f) => s += f.FilePath + Environment.NewLine);
             Assert.That(false, Is.True, navs);
         }
 
-        [Test]
+        [Test, Explicit]
         public void DiscoverExpectedFiles() {
             var cases = GetFileTestCases().Aggregate(String.Empty, (s, c) => s += c.RelativeExpectedFile + Environment.NewLine);
             Assert.That(false, Is.True, cases);
@@ -49,7 +49,6 @@ namespace Nav.Language.Tests.Regression {
         [Test, TestCaseSource(nameof(GetFileTestCases))]
         public void CompareFile(FileTestCase pair) {
 
-            Assert.That(false, Is.True, "CompareFile");
             var generatedContent = File.ReadAllText(pair.GeneratedFile);
             var expectedContent  = File.ReadAllText(pair.ExpectedFile);
 
