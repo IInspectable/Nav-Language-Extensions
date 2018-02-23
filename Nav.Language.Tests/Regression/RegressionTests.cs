@@ -14,13 +14,18 @@ using Pharmatechnik.Nav.Utilities.IO;
 
 namespace Nav.Language.Tests.Regression {
 
-    [TestFixture]
+    [TestFixture, NonParallelizable]
     public class RegressionTests {
 
         [OneTimeSetUp]
         public void Setup() {
 
             GenerateFiles();
+        }
+
+        [Test]
+        public void Healthy() {
+            Assert.That(true, Is.True);
         }
 
         [Test, Explicit]
