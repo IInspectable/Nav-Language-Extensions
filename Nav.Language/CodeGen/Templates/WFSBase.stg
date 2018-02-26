@@ -142,7 +142,7 @@ writeTransitionCallBlock(transition, logicMethodName) ::=<<
 switch(body) {
     <transition.ReachableCalls:writeCall(); separator="\r\n">
     default:
-        throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(<logicMethodName>), body) );
+        throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(<logicMethodName>), body));
 }
 >>
 

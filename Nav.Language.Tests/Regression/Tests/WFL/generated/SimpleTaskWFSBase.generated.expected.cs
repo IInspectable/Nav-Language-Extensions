@@ -40,7 +40,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), body));
             }
         }
 

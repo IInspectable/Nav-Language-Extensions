@@ -56,7 +56,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), body));
             }
         }
 
@@ -84,7 +84,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterMsgExitLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterMsgExitLogic), body));
             }
         }
 
@@ -106,7 +106,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterNoResultsLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterNoResultsLogic), body));
             }
         }
 
@@ -126,7 +126,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterMsgNonModalLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterMsgNonModalLogic), body));
             }
         }
 
@@ -146,7 +146,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterMsgContinueLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterMsgContinueLogic), body));
             }
         }
 
@@ -171,7 +171,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterDoSomethingLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterDoSomethingLogic), body));
             }
         }
 
@@ -191,7 +191,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnEndLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnEndLogic), body));
             }
         }
 
@@ -211,7 +211,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnContinueLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnContinueLogic), body));
             }
         }
 
@@ -232,7 +232,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnExitClickLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnExitClickLogic), body));
             }
         }
 
@@ -253,7 +253,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnDoSomethingLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnDoSomethingLogic), body));
             }
         }
 
@@ -273,7 +273,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnMsgAbstractLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnMsgAbstractLogic), body));
             }
         }
 
@@ -294,7 +294,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnMsgNonModalLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnMsgNonModalLogic), body));
             }
         }
 
@@ -315,7 +315,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnReloadClickLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnReloadClickLogic), body));
             }
         }
 
@@ -335,7 +335,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnShowMeModalLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnShowMeModalLogic), body));
             }
         }
 
@@ -355,7 +355,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnShowMeNonModalLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnShowMeNonModalLogic), body));
             }
         }
 
@@ -376,7 +376,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnNonNotImplementedLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnNonNotImplementedLogic), body));
             }
         }
 
@@ -397,7 +397,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnGoToNotImplementedLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnGoToNotImplementedLogic), body));
             }
         }
 
@@ -418,7 +418,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case CANCEL cancel:
                     return cancel;
                 default:
-                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnModalNotImplementedLogic), body) );
+                    throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnModalNotImplementedLogic), body));
             }
         }
 
