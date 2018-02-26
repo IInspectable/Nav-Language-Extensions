@@ -9,6 +9,3 @@ artifacts:
   name: Nav.Language.Extension
 - path: deploy\Build Tools
   name: Nav.Language.BuildTools
-before_build:
-  - nuget restore
-  
