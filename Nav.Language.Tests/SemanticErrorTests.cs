@@ -997,12 +997,134 @@ namespace Nav.Language.Tests {
                                 This(DiagnosticDescriptors.DeadCode.Nav1016DialogNode0HasNoOutgoingEdges, 2));
         }
 
+        [Test]
+        public void Nav0203TriggerNotAllowedAfterChoice() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                exit e1;
+                exit e2;
+                choice C;
+
+                I1  --> C;
+                C   --> e1 on Foo;             
+                C   --> e2;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0203TriggerNotAllowedAfterChoice));
+        }
+
+        [Test]
+        public void Nav0200SignalTriggerNotAllowedAfterInit() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                exit e1;
+
+                I1  --> e1 on Foo;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0200SignalTriggerNotAllowedAfterInit));
+        }
+
+        [Test]
+        public void Nav0201SpontaneousNotAllowedInSignalTrigger() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                exit e1;
+
+                view V1;
+
+                I1  --> V1;
+
+                V1 --> e1 on ""spontaneous"";
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0201SpontaneousNotAllowedInSignalTrigger));
+        }
+
+        [Test]
+        public void Nav0201SpontNotAllowedInSignalTrigger() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                exit e1;
+
+                view V1;
+
+                I1  --> V1;
+
+                V1 --> e1 on ""spont"";
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0201SpontaneousNotAllowedInSignalTrigger));
+        }
+
+        [Test]
+        public void Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodesIf() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                exit e1;
+
+                view V1;
+
+                I1  --> V1;
+
+                V1 --> e1 on Foo if Bla;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0220ConditionsAreNotAllowedInTriggerTransitions));
+        }
+
+        [Test]
+        public void Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodesElse() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                exit e1;
+
+                view V1;
+
+                I1  --> V1;
+
+                V1 --> e1 on Foo else;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0220ConditionsAreNotAllowedInTriggerTransitions));
+        }
+
         // TODO Nav0024OutgoingEdgeForExit0AlreadyDeclared
-        // TODO Nav0200SignalTriggerNotAllowedAfterInit
-        // TODO Nav0201SpontaneousNotAllowedInSignalTrigger
+        // TODO 
+        // TODO 
         // TODO Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
-        // TODO Nav0203TriggerNotAllowedAfterChoice
-        // TODO Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodes
+        // TODO 
+        // TODO 
         // TODO Nav0221OnlyIfConditionsAllowedInExitTransitions
         // TODO Nav2000IdentifierExpected
         // TODO Node reachable by different edges

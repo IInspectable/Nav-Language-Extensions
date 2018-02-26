@@ -361,11 +361,11 @@
                 );
 
             /// <summary>
-            /// Conditions are only supported after Init and Choice nodes
+            /// Conditions are not allowed in trigger transitions
             /// </summary>
-            public static readonly DiagnosticDescriptor Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodes = new DiagnosticDescriptor(
+            public static readonly DiagnosticDescriptor Nav0220ConditionsAreNotAllowedInTriggerTransitions = new DiagnosticDescriptor(
                 id             : DiagnosticId.Nav0220,
-                messageFormat  : "Conditions are only supported after Init and Choice nodes",
+                messageFormat  : "Conditions are not allowed in trigger transitions",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
                 );
