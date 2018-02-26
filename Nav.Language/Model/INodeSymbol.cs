@@ -21,21 +21,21 @@ namespace Pharmatechnik.Nav.Language {
 
     }
 
-    public interface ITargetNode {
+    public interface ITargetNodeSymbol: INodeSymbol {
 
         [NotNull]
         IReadOnlyList<IEdge> Incomings { get; }
 
     }
 
-    public interface ISourceNode {
+    public interface ISourceNodeSymbol: INodeSymbol {
 
         [NotNull]
         IReadOnlyList<IEdge> Outgoings { get; }
 
     }
 
-    public interface IInitNodeSymbol: INodeSymbol, ISourceNode {
+    public interface IInitNodeSymbol: ISourceNodeSymbol {
 
         [NotNull]
         new InitNodeDeclarationSyntax Syntax { get; }
@@ -49,21 +49,21 @@ namespace Pharmatechnik.Nav.Language {
 
     }
 
-    public interface IExitNodeSymbol: INodeSymbol, ITargetNode {
+    public interface IExitNodeSymbol: ITargetNodeSymbol {
 
         [NotNull]
         new ExitNodeDeclarationSyntax Syntax { get; }
 
     }
 
-    public interface IEndNodeSymbol: INodeSymbol, ITargetNode {
+    public interface IEndNodeSymbol: ITargetNodeSymbol {
 
         [NotNull]
         new EndNodeDeclarationSyntax Syntax { get; }
 
     }
 
-    public interface IChoiceNodeSymbol: INodeSymbol, ISourceNode, ITargetNode {
+    public interface IChoiceNodeSymbol: ISourceNodeSymbol, ITargetNodeSymbol {
 
         [NotNull]
         new ChoiceNodeDeclarationSyntax Syntax { get; }
@@ -74,7 +74,7 @@ namespace Pharmatechnik.Nav.Language {
 
     }
 
-    public interface IGuiNodeSymbol: INodeSymbol, ISourceNode, ITargetNode {
+    public interface IGuiNodeSymbol: ISourceNodeSymbol, ITargetNodeSymbol {
 
         // TODO Nur TriggerTransitions?
         [NotNull]
@@ -96,7 +96,7 @@ namespace Pharmatechnik.Nav.Language {
 
     }
 
-    public interface ITaskNodeSymbol: INodeSymbol, ISourceNode, ITargetNode {
+    public interface ITaskNodeSymbol: ISourceNodeSymbol, ITargetNodeSymbol {
 
         [NotNull]
         new TaskNodeDeclarationSyntax Syntax { get; }

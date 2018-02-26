@@ -366,8 +366,8 @@ namespace Pharmatechnik.Nav.Language {
 
                 _diagnostics.Add(new Diagnostic(
                                      triggers.First().Location,
-                                     DiagnosticDescriptors.Semantic.Nav0200SignalTriggerNotAllowedAfterInit,
-                                     triggers.Skip(1).Select(t => t.Location)));
+                                     triggers.Skip(1).Select(t => t.Location),
+                                     DiagnosticDescriptors.Semantic.Nav0200SignalTriggerNotAllowedAfterInit));
             }
         }
 
@@ -388,8 +388,8 @@ namespace Pharmatechnik.Nav.Language {
 
                 _diagnostics.Add(new Diagnostic(
                                      triggers.First().Location,
-                                     DiagnosticDescriptors.Semantic.Nav0203TriggerNotAllowedAfterChoice,
-                                     triggers.Skip(1).Select(t => t.Location)));
+                                     triggers.Skip(1).Select(t => t.Location),
+                                     DiagnosticDescriptors.Semantic.Nav0203TriggerNotAllowedAfterChoice));
             }
         }
 
@@ -1081,7 +1081,22 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
 
-            // TODO High Nodes reachable by different Edges!
+            foreach (IEdge edge in _taskDefinition.Edges()) {
+
+                foreach (var nodeCalls in edge.GetReachableCalls().GroupBy(c => c.Node)) {
+
+                    if (nodeCalls.GroupBy(c => c.EdgeMode.EdgeMode).Count() > 1) {
+
+                        _diagnostics.Add(new Diagnostic(
+                                             nodeCalls.First().EdgeMode.Location,
+                                             nodeCalls.Skip(1).Select(call => call.EdgeMode.Location),
+                                             DiagnosticDescriptors.Semantic.Nav0222Node0IsReachableByDifferentEdgeModes,
+                                             nodeCalls.Key.Name
+                                         ));
+                    }
+                }
+
+            }
         }
 
         public static TaskDefinitionBuilderResult Build(TaskDefinitionSyntax taskDefinitionSyntax, IReadOnlySymbolCollection<TaskDeclarationSymbol> taskDeklarations) {

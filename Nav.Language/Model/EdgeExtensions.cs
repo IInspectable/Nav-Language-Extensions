@@ -11,9 +11,7 @@ namespace Pharmatechnik.Nav.Language {
 
         public static IEnumerable<Call> GetReachableCalls(this IEdge source) {
 
-            return GetReachableCallsImpl<INodeSymbol>(source, new HashSet<IEdge>())
-                  .Select(c => new Call(c.Node, c.EdgeMode))
-                  .Distinct(CallComparer.Default);
+            return GetReachableCallsImpl<INodeSymbol>(source, new HashSet<IEdge>()).Distinct(CallComparer.Default);
 
             IEnumerable<Call> GetReachableCallsImpl<T>(IEdge edge, HashSet<IEdge> seenEdges) where T : class, INodeSymbol {
 
@@ -54,9 +52,9 @@ namespace Pharmatechnik.Nav.Language {
                 switch (sourceNode) {
                     case null:
                         return false;
-                    case ITargetNode targetNode:
+                    case ITargetNodeSymbol targetNode:
                         return targetNode.Incomings.Any(e => IsReachableImpl(e, seenEdges));
-                    case ISourceNode _: // Ein Source Node, der kein Target Node ist, ist immer der Anfang und damit per Definition erreichbar
+                    case ISourceNodeSymbol _: // Ein Source Node, der kein Target Node ist, ist immer der Anfang und damit per Definition erreichbar
                         return true;
                 }
 

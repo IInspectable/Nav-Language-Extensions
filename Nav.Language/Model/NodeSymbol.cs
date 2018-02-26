@@ -98,7 +98,7 @@ namespace Pharmatechnik.Nav.Language {
         public override string Name => Alias?.Name ?? base.Name;
 
         IReadOnlyList<ITransition> IInitNodeSymbol.Outgoings => Outgoings;
-        IReadOnlyList<IEdge> ISourceNode.Outgoings           => Outgoings;
+        IReadOnlyList<IEdge> ISourceNodeSymbol.Outgoings     => Outgoings;
 
         public override IEnumerable<ISymbol> SymbolsAndSelf() {
             yield return this;
@@ -116,7 +116,7 @@ namespace Pharmatechnik.Nav.Language {
             : base(name, location, syntax, containingTask) {
         }
 
-        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
+        IReadOnlyList<IEdge> ITargetNodeSymbol.Incomings => Incomings;
     }
 
     sealed partial class EndNodeSymbol : NodeSymbolWithOnlyIncomings<EndNodeDeclarationSyntax, IEdge>, 
@@ -126,7 +126,7 @@ namespace Pharmatechnik.Nav.Language {
             : base(name, location, syntax, containingTask) {
         }
 
-        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
+        IReadOnlyList<IEdge> ITargetNodeSymbol.Incomings => Incomings;
     }
 
     sealed partial class TaskNodeSymbol : NodeSymbolWithIncomingsAndOutgoings<TaskNodeDeclarationSyntax, IEdge, IExitTransition>, 
@@ -154,8 +154,8 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         public ITaskNodeAliasSymbol Alias { get; }
 
-        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
-        IReadOnlyList<IEdge> ISourceNode.Outgoings => Outgoings;
+        IReadOnlyList<IEdge> ITargetNodeSymbol.Incomings => Incomings;
+        IReadOnlyList<IEdge> ISourceNodeSymbol.Outgoings => Outgoings;
         IReadOnlyList<IExitTransition> ITaskNodeSymbol.Outgoings => Outgoings;
 
         public override IEnumerable<ISymbol> SymbolsAndSelf() {
@@ -174,8 +174,8 @@ namespace Pharmatechnik.Nav.Language {
             : base(name, location, syntax, containingTask) {
         }
 
-        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
-        IReadOnlyList<IEdge> ISourceNode.Outgoings => Outgoings;
+        IReadOnlyList<IEdge> ITargetNodeSymbol.Incomings => Incomings;
+        IReadOnlyList<IEdge> ISourceNodeSymbol.Outgoings => Outgoings;
         IReadOnlyList<ITransition> IGuiNodeSymbol.Outgoings => Outgoings;
     }
 
@@ -186,8 +186,8 @@ namespace Pharmatechnik.Nav.Language {
             : base(name, location, syntax, containingTask) {          
         }
 
-        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
-        IReadOnlyList<IEdge> ISourceNode.Outgoings => Outgoings;
+        IReadOnlyList<IEdge> ITargetNodeSymbol.Incomings => Incomings;
+        IReadOnlyList<IEdge> ISourceNodeSymbol.Outgoings => Outgoings;
         IReadOnlyList<ITransition> IGuiNodeSymbol.Outgoings => Outgoings;
     }
 
@@ -198,8 +198,8 @@ namespace Pharmatechnik.Nav.Language {
             : base(name, location, syntax, containingTask) {
         }
 
-        IReadOnlyList<IEdge> ITargetNode.Incomings => Incomings;
-        IReadOnlyList<IEdge> ISourceNode.Outgoings => Outgoings;
+        IReadOnlyList<IEdge> ITargetNodeSymbol.Incomings => Incomings;
+        IReadOnlyList<IEdge> ISourceNodeSymbol.Outgoings => Outgoings;
         IReadOnlyList<ITransition> IChoiceNodeSymbol.Outgoings => Outgoings;
     }
 }

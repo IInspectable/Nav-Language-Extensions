@@ -46,6 +46,7 @@ namespace Pharmatechnik.Nav.Language {
         public const string Nav0203 = nameof(Nav0203);
         public const string Nav0220 = nameof(Nav0220);
         public const string Nav0221 = nameof(Nav0221);
+        public const string Nav0222 = nameof(Nav0222);
 
         public const string Nav0300 = nameof(Nav0300);
 

@@ -35,5 +35,8 @@ namespace Pharmatechnik.Nav.Language {
 
         [NotNull]
         IReadOnlyList<IExitTransition> ExitTransitions { get; }
+
+        IEnumerable<IEdge> Edges();
+
     }
 }

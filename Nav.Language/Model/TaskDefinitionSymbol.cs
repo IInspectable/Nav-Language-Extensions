@@ -39,25 +39,21 @@ namespace Pharmatechnik.Nav.Language {
 
             yield return this;
 
-            foreach(var symbol in NodeDeclarations.SelectMany(nd => nd.SymbolsAndSelf())) {
+            foreach (var symbol in NodeDeclarations.SelectMany(nd => nd.SymbolsAndSelf())) {
                 yield return symbol;
             }
 
-            foreach (var symbol in InitTransitions.SelectMany(t=>t.Symbols())) {
+            foreach (var symbol in Edges().SelectMany(t => t.Symbols())) {
                 yield return symbol;
             }
+        }
 
-            foreach (var symbol in ChoiceTransitions.SelectMany(t=>t.Symbols())) {
-                yield return symbol;
-            }
-
-            foreach (var symbol in TriggerTransitions.SelectMany(t=>t.Symbols())) {
-                yield return symbol;
-            }
-
-            foreach (var symbol in ExitTransitions.SelectMany(et => et.Symbols())) {
-                yield return symbol;
-            }
+        public IEnumerable<IEdge> Edges() {
+            return Enumerable.Empty<IEdge>()
+                             .Concat(InitTransitions)
+                             .Concat(ChoiceTransitions)
+                             .Concat(TriggerTransitions)
+                             .Concat(ExitTransitions);
         }
 
         internal void FinalConstruct(CodeGenerationUnit codeGenerationUnit) {

@@ -380,6 +380,16 @@
                 defaultSeverity: DiagnosticSeverity.Error
                 );
 
+            /// <summary>
+            /// Node {0} is rechable by different edge modes
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav0222Node0IsReachableByDifferentEdgeModes = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav0222,
+                messageFormat  : "Node {0} is reachable by different edge modes",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Error
+            );
+
             // Code Related
 
             /// <summary>

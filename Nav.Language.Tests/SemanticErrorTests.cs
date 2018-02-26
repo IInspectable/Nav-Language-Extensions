@@ -1119,6 +1119,31 @@ namespace Nav.Language.Tests {
             ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0220ConditionsAreNotAllowedInTriggerTransitions));
         }
 
+        [Test]
+        public void Nav0222Node0IsReachableByDifferentEdgeModes() {
+
+            var nav = @"
+            task A
+            {
+                init I1;  
+                exit e1;
+                choice C;
+                view v1;
+
+                I1  --> v1;
+
+                v1  --> C;
+                C   --> v1;             
+                C   o-> v1;
+                C   --> v1; 
+                C   --> e1;
+            }
+            ";
+
+            var unit = ParseModel(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0222Node0IsReachableByDifferentEdgeModes, locationCount: 2));
+        }
+
         // TODO Nav0024OutgoingEdgeForExit0AlreadyDeclared
         // TODO 
         // TODO 
@@ -1127,7 +1152,6 @@ namespace Nav.Language.Tests {
         // TODO 
         // TODO Nav0221OnlyIfConditionsAllowedInExitTransitions
         // TODO Nav2000IdentifierExpected
-        // TODO Node reachable by different edges
 
         #region Infrastructure
 
