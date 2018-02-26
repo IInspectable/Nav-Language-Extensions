@@ -16,8 +16,8 @@ namespace Nav.Language.Tests.Regression {
     [TestFixture]
     public class RegressionTests {
 
-        [Test, TestCaseSource(typeof(RegressionTestsSetup), nameof(RegressionTestsSetup.GetFileTestCases))]
-        public void CompareFile(RegressionTestsSetup.FileTestCase pair) {
+        [Test, TestCaseSource(nameof(GetFileTestCases))]
+        public void CompareFile(FileTestCase pair) {
 
             var generatedContent = File.ReadAllText(pair.GeneratedFile);
             var expectedContent  = File.ReadAllText(pair.ExpectedFile);
@@ -27,21 +27,20 @@ namespace Nav.Language.Tests.Regression {
 
         [Test, Explicit]
         public void GenerateFiles() {
-
-            // Die Files werden implizit im Fixture Setup ersetellt
-            Assert.That(true, Is.True);
+            GenerateNavCode();
         }
 
-    }
+        public static IEnumerable<FileTestCase> GetFileTestCases() {
 
-    [SetUpFixture]
-    public class RegressionTestsSetup {
+            GenerateNavCode();
 
-        [OneTimeSetUp]
-        public void Setup() {
+            return PlainGetFileTestCases();
+        }
+
+        static void GenerateNavCode() {
 
             // Sicherstellen, dass auch wirklich alle Files (auch die "OneShots") neu geschrieben werden.
-            foreach (var tc in GetFileTestCases()) {
+            foreach(var tc in PlainGetFileTestCases()) {
                 File.Delete(tc.GeneratedFile);
             }
 
@@ -54,15 +53,7 @@ namespace Nav.Language.Tests.Regression {
             Assert.That(b, Is.True);
         }
 
-        static IEnumerable<FileSpec> CollectNavFiles() {
-            var directory    = GetRegressiontestDirectory();
-            var navFiles     = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories);
-            var dirFileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(directory, file), fileName: file));
-
-            return dirFileSpecs;
-        }
-
-        public static IEnumerable<FileTestCase> GetFileTestCases() {
+        static IEnumerable<FileTestCase> PlainGetFileTestCases() {
 
             var directory = GetRegressiontestDirectory();
 
@@ -73,7 +64,14 @@ namespace Nav.Language.Tests.Regression {
                     ExpectedFile  = Path.GetFullPath(Path.ChangeExtension(f, "expected.cs"))
                 }
             );
+        }
 
+        static IEnumerable<FileSpec> CollectNavFiles() {
+            var directory    = GetRegressiontestDirectory();
+            var navFiles     = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories);
+            var dirFileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(directory, file), fileName: file));
+
+            return dirFileSpecs;
         }
 
         static string GetRegressiontestDirectory() {
@@ -96,7 +94,5 @@ namespace Nav.Language.Tests.Regression {
         }
 
     }
-
-   
 
 }
