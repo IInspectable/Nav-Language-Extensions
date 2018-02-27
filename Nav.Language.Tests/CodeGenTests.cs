@@ -17,22 +17,21 @@ using NUnit.Framework;
 using RoslynDiagnostic = Microsoft.CodeAnalysis.Diagnostic;
 using RoslynSyntaxTree = Microsoft.CodeAnalysis.SyntaxTree;
 using RoslynDiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
-
 using Diagnostic = Pharmatechnik.Nav.Language.Diagnostic;
 using DiagnosticSeverity = Pharmatechnik.Nav.Language.DiagnosticSeverity;
-using System.Threading;
 
 #endregion
 
 namespace Nav.Language.Tests {
+
     [TestFixture]
     public class CodeGenTests {
 
         [Test]
         public void SimpleCodegenTest() {
 
-            var codeGenerationUnitSyntax= Syntax.ParseCodeGenerationUnit(Resources.TaskA, filePath: MkFilename("TaskA.nav"));
-            var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
+            var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(Resources.TaskA, filePath: MkFilename("TaskA.nav"));
+            var codeGenerationUnit       = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
 
             var options       = GenerationOptions.Default;
             var codeGenerator = new CodeGenerator(options);
@@ -44,9 +43,9 @@ namespace Nav.Language.Tests {
             var codeGenResult = results[0];
 
             Assert.That(codeGenResult.IBeginWfsCodeSpec.Content, Is.Not.Empty);
-            Assert.That(codeGenResult.IWfsCodeSpec.Content     , Is.Not.Empty);
-            Assert.That(codeGenResult.WfsBaseCodeSpec.Content  , Is.Not.Empty);
-            Assert.That(codeGenResult.WfsCodeSpec.Content      , Is.Not.Empty);
+            Assert.That(codeGenResult.IWfsCodeSpec.Content,      Is.Not.Empty);
+            Assert.That(codeGenResult.WfsBaseCodeSpec.Content,   Is.Not.Empty);
+            Assert.That(codeGenResult.WfsCodeSpec.Content,       Is.Not.Empty);
         }
 
         public static TestCaseData[] CompileTestCases = {
@@ -64,7 +63,7 @@ namespace Nav.Language.Tests {
                 NavFiles = {
                     new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskA)}.nav"), Content = Resources.TaskB}
                 }
-            }){
+            }) {
                 TestName = "TaskB should be compilable"
             },
             new TestCaseData(new TestCase {
@@ -72,31 +71,30 @@ namespace Nav.Language.Tests {
                     new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskA)}.nav"), Content = Resources.TaskA},
                     new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskB)}.nav"), Content = Resources.TaskB}
                 }
-            }){
+            }) {
                 TestName = "TaskA and TaskB should be compilable at the same time"
             },
             new TestCaseData(new TestCase {
                 NavFiles = {
                     new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.SingleFileNav)}.nav"), Content = Resources.SingleFileNav},
                 }
-            }){
+            }) {
                 TestName = "TestNavGeneratorOnSingleFile"
-            }
-            ,
+            },
             new TestCaseData(new TestCase {
                 NavFiles = {
                     new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskA)}.nav"), Content = Resources.TaskA},
                     new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskB)}.nav"), Content = Resources.TaskB},
                     new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskC)}.nav"), Content = Resources.TaskC},
                 }
-            }){
+            }) {
                 TestName = "Task C depends on Task A and Task B"
             },
             new TestCaseData(new TestCase {
                 NavFiles = {
                     new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.NestedChoices)}.nav"), Content = Resources.NestedChoices},
                 }
-            }){
+            }) {
                 TestName = "Nested choices"
             },
             new TestCaseData(new TestCase {
@@ -111,15 +109,16 @@ namespace Nav.Language.Tests {
                             }"
                     }
                 }
-            }){
+            }) {
                 TestName = "Tasksresult without explizit name"
             },
             new TestCaseData(new TestCase {
                 CsFiles = {
                     new TestCaseFile {
-                    FilePath = MkFilename("FrameworkStubsWithoutNS.cs") ,
-                    Content  = Resources.FrameworkStubsWithoutNS
-                } },
+                        FilePath = MkFilename("FrameworkStubsWithoutNS.cs"),
+                        Content  = Resources.FrameworkStubsWithoutNS
+                    }
+                },
                 NavFiles = {
                     new TestCaseFile {
                         FilePath = MkFilename("TaskA.nav"),
@@ -165,7 +164,7 @@ namespace Nav.Language.Tests {
                 }"
                     }
                 }
-            }){
+            }) {
                 TestName = "Complex Task w/o namespaceprefix"
             }
         };
@@ -175,7 +174,7 @@ namespace Nav.Language.Tests {
 
             var syntaxProvider = new TestSyntaxProvider();
             // Dateien bekanntgeben - wir haben hier keine echten Dateien zur Hand!
-            foreach(var navFile in testCase.NavFiles) {
+            foreach (var navFile in testCase.NavFiles) {
                 syntaxProvider.RegisterFile(navFile);
             }
 
@@ -191,27 +190,28 @@ namespace Nav.Language.Tests {
                 var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, syntaxProvider: syntaxProvider);
                 AssertNoDiagnosticErrors(codeGenerationUnit.Diagnostics, codeGenerationUnitSyntax.SyntaxTree.SourceText);
 
-                var options = GenerationOptions.Default;
+                var options       = GenerationOptions.Default;
                 var codeGenerator = new CodeGenerator(options);
-                
+
                 // 3. Code aus Semantic Model erstellen
                 var codeGenerationResults = codeGenerator.Generate(codeGenerationUnit);
-                
+
                 foreach (var codeGenerationResult in codeGenerationResults) {
-     
+
                     // 4. C#-Syntaxbäume des generierten Codes mittels Roslyn erstellen
                     syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IBeginWfsCodeSpec.Content, path: codeGenerationResult.IBeginWfsCodeSpec.FilePath));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCodeSpec.Content     , path: codeGenerationResult.IWfsCodeSpec.FilePath));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCodeSpec.Content  , path: codeGenerationResult.WfsBaseCodeSpec.FilePath));
-                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsCodeSpec.Content      , path: codeGenerationResult.WfsCodeSpec.FilePath));
-                    foreach(var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.IWfsCodeSpec.Content,      path: codeGenerationResult.IWfsCodeSpec.FilePath));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsBaseCodeSpec.Content,   path: codeGenerationResult.WfsBaseCodeSpec.FilePath));
+                    syntaxTrees.Add(CSharpSyntaxTree.ParseText(codeGenerationResult.WfsCodeSpec.Content,       path: codeGenerationResult.WfsCodeSpec.FilePath));
+                    foreach (var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
                         syntaxTrees.Add(CSharpSyntaxTree.ParseText(toCodeSpec.Content, path: toCodeSpec.FilePath));
                     }
-                }                
+                }
             }
+
             // Pseudo Framework Code hinzufügen
             syntaxTrees.Add(GetFrameworkStubCode());
-            foreach(var csFile in testCase.CsFiles) {
+            foreach (var csFile in testCase.CsFiles) {
                 syntaxTrees.Add(CSharpSyntaxTree.ParseText(csFile.Content, path: csFile.FilePath));
             }
 
@@ -224,14 +224,14 @@ namespace Nav.Language.Tests {
             MetadataReference[] references = {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
-             //   MetadataReference.CreateFromFile(typeof(ImmutableArrayExtensions).Assembly.Location)
+                //   MetadataReference.CreateFromFile(typeof(ImmutableArrayExtensions).Assembly.Location)
             };
 
             CSharpCompilation compilation = CSharpCompilation.Create(
                 assemblyName,
                 syntaxTrees: syntaxTrees,
-                references : references,
-                options    : new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+                references: references,
+                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
             using (var ms = new MemoryStream()) {
                 EmitResult result = compilation.Emit(ms);
@@ -241,7 +241,7 @@ namespace Nav.Language.Tests {
                 }
             }
         }
-        
+
         RoslynSyntaxTree GetFrameworkStubCode() {
             return CSharpSyntaxTree.ParseText(Resources.FrameworkStubsCode, path: MkFilename("FrameworkStubCode.cs"));
         }
@@ -276,36 +276,13 @@ namespace Nav.Language.Tests {
             return Path.Combine(@"n:\av", fileName);
         }
 
-        public class TestCaseFile {
-            public string Content { get; set; }
-            public string FilePath { get; set; }
-        }
-
         public class TestCase {
+
             public List<TestCaseFile> NavFiles { get; } = new List<TestCaseFile>();
             public List<TestCaseFile> CsFiles  { get; } = new List<TestCaseFile>();
+
         }
 
-        class TestSyntaxProvider : SyntaxProvider {
+    }
 
-            readonly Dictionary<string, string> _files;
-
-            public TestSyntaxProvider() {
-                _files = new Dictionary<string, string>();
-            }
-
-            public void RegisterFile(TestCaseFile file) {
-                _files[file.FilePath] = file.Content;
-            }
-
-            public override CodeGenerationUnitSyntax FromFile(string filePath, CancellationToken cancellationToken = default(CancellationToken)) {
-
-                if (!_files.TryGetValue(filePath, out var content)) {
-                    return null;
-                }
-
-                return Syntax.ParseCodeGenerationUnit(text: content, filePath: filePath);
-            }
-        }
-    }  
 }

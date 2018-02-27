@@ -934,14 +934,12 @@ namespace Pharmatechnik.Nav.Language {
                         }
                     }
 
-                    foreach (var duplicate in actualExits.GroupBy(e => e.Name).Where(g => g.Count() > 1)) {
-                        // TODO Additional Locations
-                        foreach (var exit in duplicate) {
-                            _diagnostics.Add(new Diagnostic(
-                                                 exit.Location,
-                                                 DiagnosticDescriptors.Semantic.Nav0024OutgoingEdgeForExit0AlreadyDeclared,
-                                                 exit.Name));
-                        }
+                    foreach (var duplicates in actualExits.GroupBy(e => e.Name).Where(g => g.Count() > 1)) {
+                        _diagnostics.Add(new Diagnostic(
+                                             duplicates.First().Location,
+                                             duplicates.Skip(1).Select(d => d.Location),
+                                             DiagnosticDescriptors.Semantic.Nav0024OutgoingEdgeForExit0AlreadyDeclared,
+                                             duplicates.First().Name));
                     }
                 }
             }

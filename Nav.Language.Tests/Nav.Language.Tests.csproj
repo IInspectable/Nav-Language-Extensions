@@ -208,6 +208,7 @@
     <Compile Include="RenameChoiceCodeFixTests.cs" />
     <Compile Include="SemanticErrorTests.cs" />
     <Compile Include="SemanticTests.cs" />
+    <Compile Include="SyntaxErrorTests.cs" />
     <Compile Include="SyntaxFactsTest.cs" />
     <Compile Include="SyntaxNodeTriviaTests.cs" />
     <Compile Include="SyntaxStressTests.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="SyntaxTokenTests.cs" />
+    <Compile Include="TestSyntaxProvider.cs" />
     <Compile Include="TextChangeWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>

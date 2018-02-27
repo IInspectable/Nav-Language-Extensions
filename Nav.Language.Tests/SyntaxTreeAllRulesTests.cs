@@ -11,15 +11,7 @@ namespace Nav.Language.Tests {
 
     [TestFixture]
     public class SyntaxTreeTests {
-
-        [Test]
-        public void TestSyntaxErrors() {
-            var syntaxErrors = SyntaxTree.ParseText(Resources.AllRules)
-                    .Diagnostics;
-            Assert.That(syntaxErrors.Count, Is.EqualTo(0));
-        }
-
-
+        
         [Test]
         public void TestSerializable() {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);

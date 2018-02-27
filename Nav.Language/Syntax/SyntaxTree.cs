@@ -125,9 +125,10 @@ namespace Pharmatechnik.Nav.Language {
 
             var visitor     = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
             var syntax      = visitor.Visit(tree);
-            var tokens      = PostprocessTokens(visitor.Tokens, cts, syntax, cancellationToken);
+            var ppDiagnostics = new List<Diagnostic>();
+            var tokens      = PostprocessTokens(visitor.Tokens, cts, syntax, ppDiagnostics, filePath, cancellationToken);
             var textLines   = GetTextLines(sourceText);
-            var diagnostics = errorListener.Diagnostics;
+            var diagnostics = errorListener.Diagnostics.Concat(ppDiagnostics).ToList();
 
             var syntaxTree = new SyntaxTree(sourceText : sourceText, 
                                             root       : syntax, 
@@ -141,7 +142,13 @@ namespace Pharmatechnik.Nav.Language {
             return syntaxTree;
         }
 
-        static SyntaxTokenList PostprocessTokens(List<SyntaxToken> tokens, NavCommonTokenStream cts, SyntaxNode syntax, CancellationToken cancellationToken) {
+        static SyntaxTokenList PostprocessTokens(
+            List<SyntaxToken> tokens, 
+            NavCommonTokenStream cts, 
+            SyntaxNode syntax, 
+            List<Diagnostic> diagnostics, 
+            string filePath,
+            CancellationToken cancellationToken) {
 
             var finalTokens = new List<SyntaxToken>(cts.AllTokens.Count);
             tokens.Sort(SyntaxTokenComparer.Default);
@@ -210,8 +217,18 @@ namespace Pharmatechnik.Nav.Language {
                         finalTokens.Add(token);
                     }
                 } else {
+
                     finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
-                }                
+
+                    if (candidate.Type == NavGrammarLexer.Unknown) {
+                        diagnostics.Add(
+                            new Diagnostic(candidate.GetLocation(filePath),
+                                           DiagnosticDescriptors.Syntax.Nav0000UnexpectedCharacter,
+                                           candidate.ToString()));
+                    }
+                }
+
+                
             }   
 
             return SyntaxTokenList.AttachSortedTokens(finalTokens);
