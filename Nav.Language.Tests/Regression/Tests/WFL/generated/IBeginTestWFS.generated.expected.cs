@@ -21,6 +21,11 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
     // Redeklarationen von Methoden ohne new sind ok - um in manuell erstellten Oberinterfaces Begins definieren zu können
     #pragma warning disable 0108
 
+    public enum TestReturnCode {
+        OK,
+        Abbrechen
+    }
+
     #region Nav Annotations
     /// <NavFile>..\..\Test.nav</NavFile>
     /// <NavTask>Test</NavTask>

@@ -39,7 +39,13 @@ taskref ShowSomething [namespaceprefix NS.3]
     exit Exit;
 }
 
-task Test  [base StandardWFS : IWFServiceBase]
+task Test 
+    [code "public enum TestReturnCode {"
+    "    OK,"
+    "    Abbrechen"
+    "}"
+    ] 
+    [base StandardWFS : IWFServiceBase]
     [params ITestBS testBS, 
             ISozFactory SOZFactory]
     [result bool]
