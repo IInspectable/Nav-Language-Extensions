@@ -15,4 +15,7 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface IGuiNodeReferenceSymbol : INodeReferenceSymbol<IGuiNodeSymbol> {
     }
+
+    public interface ITaskNodeReferenceSymbol : INodeReferenceSymbol<ITaskNodeSymbol> {
+    }
 }

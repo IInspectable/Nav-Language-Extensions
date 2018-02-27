@@ -11,13 +11,15 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface IInitTransition: ITransition {
 
-        IInitNodeReferenceSymbol InitNodeReference { get; }
+        [CanBeNull]
+        IInitNodeReferenceSymbol InitNodeourceReference { get; }
 
     }
 
     public interface ITriggerTransition: ITransition {
 
-        IGuiNodeReferenceSymbol GuiNodeReference { get; }
+        [CanBeNull]
+        IGuiNodeReferenceSymbol GuiNodeSourceReference { get; }
 
         [NotNull]
         IReadOnlySymbolCollection<ITriggerSymbol> Triggers { get; }
@@ -26,7 +28,21 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface IChoiceTransition: ITransition {
 
-        IChoiceNodeReferenceSymbol ChoiceNodeReference { get; }
+        [CanBeNull]
+        IChoiceNodeReferenceSymbol ChoiceNodeSourceReference { get; }
+
+    }
+
+    public interface IExitTransition: IEdge {
+
+        [NotNull]
+        ExitTransitionDefinitionSyntax Syntax { get; }
+
+        [CanBeNull]
+        ITaskNodeReferenceSymbol TaskNodeSourceReference { get; }
+
+        [CanBeNull]
+        IConnectionPointReferenceSymbol ConnectionPointReference { get; }
 
     }
 

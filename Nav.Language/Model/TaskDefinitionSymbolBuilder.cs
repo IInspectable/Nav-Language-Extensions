@@ -230,6 +230,7 @@ namespace Pharmatechnik.Nav.Language {
         public override void VisitTransitionDefinition(TransitionDefinitionSyntax transitionDefinitionSyntax) {
 
             // Target
+            // TODO entsprechend des Knotens ein ensprechendes NodeReferenceSymbol Derivat instantieren
             NodeReferenceSymbol targetNodeReference = null;
             var                 targetNodeSyntax    = transitionDefinitionSyntax.TargetNode;
             if (targetNodeSyntax != null) {
@@ -593,17 +594,17 @@ namespace Pharmatechnik.Nav.Language {
 
         public override void VisitExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax) {
             // Source
-            ITaskNodeSymbol     sourceTaskNodeSymbol = null;
-            NodeReferenceSymbol sourceNodeReference  = null;
-            var                 sourceNodeSyntax     = exitTransitionDefinitionSyntax.SourceNode;
-            if (sourceNodeSyntax != null) {
+            ITaskNodeSymbol         sourceTaskNodeSymbol = null;
+            TaskNodeReferenceSymbol sourceNodeReference  = null;
+            var                     sourceNodeSyntax     = exitTransitionDefinitionSyntax.SourceNode;
 
+            if (sourceNodeSyntax != null) {
                 // Source in Exit Transition muss immer ein Task sein
                 sourceTaskNodeSymbol = _taskDefinition.NodeDeclarations.TryFindSymbol(sourceNodeSyntax.Name) as ITaskNodeSymbol;
                 var location = sourceNodeSyntax.GetLocation();
 
                 if (location != null) {
-                    sourceNodeReference = new NodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceTaskNodeSymbol, NodeReferenceType.Source);
+                    sourceNodeReference = new TaskNodeReferenceSymbol(sourceNodeSyntax.Name, location, sourceTaskNodeSymbol, NodeReferenceType.Source);
                 }
             }
 
@@ -622,6 +623,7 @@ namespace Pharmatechnik.Nav.Language {
             }
 
             // Target
+            // TODO entsprechend des Knotens ein ensprechendes NodeReferenceSymbol Derivat instantieren
             NodeReferenceSymbol targetNodeReference = null;
             var                 targetNodeSyntax    = exitTransitionDefinitionSyntax.TargetNode;
             if (targetNodeSyntax != null) {
@@ -646,7 +648,6 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
 
-            // TODO sourceNodeReference vom Typ TaskNodeReference. Exit Transitions können als sourceNode nur Tasks beinhalten...
             var exitTransition = new ExitTransition(exitTransitionDefinitionSyntax, _taskDefinition, sourceNodeReference, connectionPointReference, edgeMode, targetNodeReference);
 
             AddExitTransition(exitTransition);

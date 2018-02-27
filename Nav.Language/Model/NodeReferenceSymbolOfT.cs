@@ -33,4 +33,11 @@ namespace Pharmatechnik.Nav.Language {
             : base(name, location, declaration, nodeReferenceType) {
         }
     }
+
+    sealed class TaskNodeReferenceSymbol : NodeReferenceSymbol<ITaskNodeSymbol>, ITaskNodeReferenceSymbol {
+
+        public TaskNodeReferenceSymbol(string name, Location location, ITaskNodeSymbol declaration, NodeReferenceType nodeReferenceType)
+            : base(name, location, declaration, nodeReferenceType) {
+        }
+    }
 }

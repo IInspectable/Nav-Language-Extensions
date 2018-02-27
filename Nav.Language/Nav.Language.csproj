@@ -194,7 +194,6 @@
     <Compile Include="Model\IConnectionPointReferenceSymbol.cs" />
     <Compile Include="Model\IEdge.cs" />
     <Compile Include="Model\IEdgeModeSymbol.cs" />
-    <Compile Include="Model\IExitTransition.cs" />
     <Compile Include="Model\IIncludeSymbol.cs" />
     <Compile Include="Model\IInitNodeAliasSymbol.cs" />
     <Compile Include="Model\IncludeSymbol.cs" />
