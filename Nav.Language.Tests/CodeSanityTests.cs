@@ -236,7 +236,7 @@ namespace Nav.Language.Tests {
         [Description("ISymbol interfaces sollten auf 'Symbol' enden: \r\n")]
         public void ISymbolInterfaceShouldEndWithSymbol() {
 
-            var symbolInterfaces = FindAllDerivedTypesAndSelf<ISymbol>().Where(n => n.IsInterface);
+            var symbolInterfaces = FindAllDerivedTypesAndSelf<ISymbol>().Where(n => n.IsInterface && n.IsPublic);
 
             foreach (var candidate in symbolInterfaces) {
 

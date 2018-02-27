@@ -356,7 +356,10 @@ namespace Pharmatechnik.Nav.Language {
 
             _taskDefinition.InitTransitions.Add(initTransition);
 
-            WireNodeReferences(initTransition);
+            initNode.Outgoings.Add(initTransition);
+            initNode.References.Add(initTransition.SourceReference);
+            
+            WireTargetNodeReferences(initTransition);
 
             VerifyTransition(initTransition);
 
@@ -378,7 +381,10 @@ namespace Pharmatechnik.Nav.Language {
 
             _taskDefinition.ChoiceTransitions.Add(choiceTransition);
 
-            WireNodeReferences(choiceTransition);
+            choiceNode.Outgoings.Add(choiceTransition);
+            choiceNode.References.Add(choiceTransition.SourceReference);
+
+            WireTargetNodeReferences(choiceTransition);
 
             VerifyTransition(choiceTransition);
 
@@ -393,7 +399,13 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
-        private void AddTriggerTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SourceNodeSyntax sourceNodeSyntax, Location location, IGuiNodeSymbol guiNode) {
+        private void AddTriggerTransition(
+            TransitionDefinitionSyntax transitionDefinitionSyntax, 
+            NodeReferenceSymbol targetNodeReference, 
+            EdgeModeSymbol edgeMode, 
+            SourceNodeSyntax sourceNodeSyntax, 
+            Location location, 
+            IGuiNodeSymbolConstruction guiNode) {
 
             // Triggers
             var triggers          = GetTriggers(transitionDefinitionSyntax);
@@ -402,7 +414,10 @@ namespace Pharmatechnik.Nav.Language {
 
             _taskDefinition.TriggerTransitions.Add(triggerTransition);
 
-            WireNodeReferences(triggerTransition);
+            guiNode.Outgoings.Add(triggerTransition);
+            guiNode.References.Add(triggerTransition.SourceReference);
+
+            WireTargetNodeReferences(triggerTransition);
 
             VerifyTransition(triggerTransition);
 
@@ -484,31 +499,7 @@ namespace Pharmatechnik.Nav.Language {
 
         }
 
-        private static void WireNodeReferences(Transition transition) {
-
-            //==============================
-            // Source
-            //==============================
-            if (transition.SourceReference != null) {
-                switch (transition.SourceReference.Declaration) {
-                    case InitNodeSymbol initNode:
-                        initNode.Outgoings.Add(transition);
-                        initNode.References.Add(transition.SourceReference);
-                        break;
-                    case DialogNodeSymbol dialogNode:
-                        dialogNode.Outgoings.Add(transition);
-                        dialogNode.References.Add(transition.SourceReference);
-                        break;
-                    case ViewNodeSymbol viewNode:
-                        viewNode.Outgoings.Add(transition);
-                        viewNode.References.Add(transition.SourceReference);
-                        break;
-                    case ChoiceNodeSymbol choiceNode:
-                        choiceNode.Outgoings.Add(transition);
-                        choiceNode.References.Add(transition.SourceReference);
-                        break;
-                }
-            }
+        private static void WireTargetNodeReferences(Transition transition) {
 
             //==============================
             // Target
@@ -655,6 +646,7 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
 
+            // TODO sourceNodeReference vom Typ TaskNodeReference. Exit Transitions können als sourceNode nur Tasks beinhalten...
             var exitTransition = new ExitTransition(exitTransitionDefinitionSyntax, _taskDefinition, sourceNodeReference, connectionPointReference, edgeMode, targetNodeReference);
 
             AddExitTransition(exitTransition);

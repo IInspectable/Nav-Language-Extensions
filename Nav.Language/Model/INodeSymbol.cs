@@ -43,9 +43,8 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         IInitNodeAliasSymbol Alias { get; }
 
-        // TODO Nur InitTransitions?
         [NotNull]
-        new IReadOnlyList<ITransition> Outgoings { get; }
+        new IReadOnlyList<IInitTransition> Outgoings { get; }
 
     }
 
@@ -68,17 +67,15 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         new ChoiceNodeDeclarationSyntax Syntax { get; }
 
-        // TODO Nur ChoiceTransitions?
         [NotNull]
-        new IReadOnlyList<ITransition> Outgoings { get; }
+        new IReadOnlyList<IChoiceTransition> Outgoings { get; }
 
     }
 
     public interface IGuiNodeSymbol: ISourceNodeSymbol, ITargetNodeSymbol {
 
-        // TODO Nur TriggerTransitions?
         [NotNull]
-        new IReadOnlyList<ITransition> Outgoings { get; }
+        new IReadOnlyList<ITriggerTransition> Outgoings { get; }
 
     }
 

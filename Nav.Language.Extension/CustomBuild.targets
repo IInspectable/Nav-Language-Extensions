@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Extensions</ProductName>
-    <ProductVersion>3.0.144</ProductVersion>
+    <ProductVersion>3.0.145</ProductVersion>
   </PropertyGroup>
   <Import Project="..\_shared\WriteThisAssemblyFile.targets" />
   <PropertyGroup>

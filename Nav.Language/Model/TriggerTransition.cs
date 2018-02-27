@@ -21,8 +21,9 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
-        public IGuiNodeReferenceSymbol                               GuiNodeReference => (IGuiNodeReferenceSymbol) SourceReference;
-        IReadOnlySymbolCollection<ITriggerSymbol> ITriggerTransition.Triggers         => Triggers;
+        public IGuiNodeReferenceSymbol GuiNodeReference => (IGuiNodeReferenceSymbol) SourceReference;
+
+        IReadOnlySymbolCollection<ITriggerSymbol> ITriggerTransition.Triggers => Triggers;
 
         [NotNull]
         public SymbolCollection<TriggerSymbol> Triggers { get; }
