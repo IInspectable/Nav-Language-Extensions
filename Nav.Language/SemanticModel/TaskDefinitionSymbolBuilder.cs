@@ -450,36 +450,7 @@ namespace Pharmatechnik.Nav.Language {
 
         void VerifyTransition(Transition transition) {
 
-            //==============================
-            // Edge Errors
-            //==============================
-            if (transition.EdgeMode != null) {
-
-                if (transition.EdgeMode.EdgeMode != EdgeMode.Goto) {
-
-                    if (transition.TargetReference?.Declaration is ChoiceNodeSymbol) {
-                        _diagnostics.Add(new Diagnostic(
-                                             transition.EdgeMode.Location,
-                                             DiagnosticDescriptors.Semantic.Nav0104ChoiceNode0MustOnlyReachedByGoTo,
-                                             transition.TargetReference.Name));
-                    }
-
-                    if (transition.TargetReference?.Declaration is ExitNodeSymbol) {
-                        _diagnostics.Add(new Diagnostic(
-                                             transition.EdgeMode.Location,
-                                             DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo,
-                                             transition.TargetReference.Name));
-                    }
-
-                    if (transition.TargetReference?.Declaration is EndNodeSymbol) {
-                        _diagnostics.Add(new Diagnostic(
-                                             transition.EdgeMode.Location,
-                                             DiagnosticDescriptors.Semantic.Nav0106EndNode0MustOnlyReachedByGoTo,
-                                             transition.TargetReference.Name));
-                    }
-                }
-            }
-
+           
             // TODO High Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
             //==============================
             // Trigger Errors
@@ -735,37 +706,7 @@ namespace Pharmatechnik.Nav.Language {
                     taskNode.References.Add(exitTransition.TargetReference);
                 }
             }
-
-            //==============================
-            // Edge Errors
-            //==============================
-            if (exitTransition.EdgeMode != null) {
-
-                if (exitTransition.EdgeMode.EdgeMode != EdgeMode.Goto) {
-
-                    if (exitTransition.TargetReference?.Declaration is ChoiceNodeSymbol) {
-                        _diagnostics.Add(new Diagnostic(
-                                             exitTransition.EdgeMode.Location,
-                                             DiagnosticDescriptors.Semantic.Nav0104ChoiceNode0MustOnlyReachedByGoTo,
-                                             exitTransition.TargetReference.Name));
-                    }
-
-                    if (exitTransition.TargetReference?.Declaration is ExitNodeSymbol) {
-                        _diagnostics.Add(new Diagnostic(
-                                             exitTransition.EdgeMode.Location,
-                                             DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo,
-                                             exitTransition.TargetReference.Name));
-                    }
-
-                    if (exitTransition.TargetReference?.Declaration is EndNodeSymbol) {
-                        _diagnostics.Add(new Diagnostic(
-                                             exitTransition.EdgeMode.Location,
-                                             DiagnosticDescriptors.Semantic.Nav0106EndNode0MustOnlyReachedByGoTo,
-                                             exitTransition.TargetReference.Name));
-                    }
-                }
-            }
-
+        
             //==============================
             // Condition Clause Errors
             //==============================

@@ -77,6 +77,9 @@
     <Compile Include="SemanticAnalyzer\Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared.cs" />
     <Compile Include="SemanticAnalyzer\Nav0024OutgoingEdgeForExit0AlreadyDeclared.cs" />
     <Compile Include="SemanticAnalyzer\Nav0025NoOutgoingEdgeForExit0Declared.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0104ChoiceNode0MustOnlyReachedByGoTo.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0105ExitNode0MustOnlyReachedByGoTo.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0106EndNode0MustOnlyReachedByGoTo.cs" />
     <Compile Include="SemanticAnalyzer\Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2.cs" />
     <Compile Include="SemanticAnalyzer\Nav0113TaskNode0HasNoIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav0114DialogNode0HasNoIncomingEdges.cs" />
