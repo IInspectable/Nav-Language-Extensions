@@ -145,7 +145,7 @@ namespace Nav.Language.Tests {
         }
 
         [Test]
-        public void Nav0011CannotResolveNode0() {
+        public void Nav0011CannotResolveNode0_Source() {
 
             var nav = @"
             task A
@@ -162,6 +162,106 @@ namespace Nav.Language.Tests {
             var unit = BuildCodeGenerationUnit(nav);
 
             ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0));
+        }
+
+        [Test]
+        public void Nav0011CannotResolveNode0_Target() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                
+                I1 --> C;     
+                I1 --> e1;
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0));
+        }
+
+        [Test]
+        public void Nav0011CannotResolveNode0_TargetInExitTransition() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+                
+                I1 --> A;  
+                I1 --> e1; 
+                A:e1 --> F;
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0));
+        }
+
+        [Test]
+        public void Nav0221OnlyIfConditionsAllowedInExitTransitions_If() {
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+                
+                I1 --> A;  
+                I1 --> e1; 
+                A:e1 --> e1 if ""Foo"";
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+
+            Assert.That(unit.Diagnostics.Count(), Is.EqualTo(0));
+        }
+
+        [Test]
+        public void Nav0221OnlyIfConditionsAllowedInExitTransitions_Else() {
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+                
+                I1 --> A;  
+                I1 --> e1; 
+                A:e1 --> e1 else;
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0221OnlyIfConditionsAllowedInExitTransitions));
+        }
+
+        [Test]
+        public void Nav0221OnlyIfConditionsAllowedInExitTransitions_ElseIf() {
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                task A;
+                
+                I1 --> A;  
+                I1 --> e1; 
+                A:e1 --> e1 else if ""Foo"";
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0221OnlyIfConditionsAllowedInExitTransitions));
         }
 
         [Test]
@@ -182,6 +282,33 @@ namespace Nav.Language.Tests {
                 I1 --> B;    
                 B:e1 --> e1;
                 B:e2 --> e1;
+//                ^-- Nav0012CannotResolveExit0
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0012CannotResolveExit0));
+        }
+
+        [Test]
+        public void Nav0012CannotResolveExit0_Init() {
+
+            var nav = @"
+            task B {
+                init i1;
+                exit e1;
+                i1 --> e1;
+            }
+            task A
+            {
+                task B;
+                init I1;            
+                exit e1;
+                
+                I1 --> B;    
+                B:e1 --> e1;
+                B:i1 --> e1;
 //                ^-- Nav0012CannotResolveExit0
             }
             ";
@@ -384,7 +511,7 @@ namespace Nav.Language.Tests {
         }
 
         [Test]
-        public void Nav0103InitNodeMustNotContainIncomingEdges() {
+        public void Nav0103InitNodeMustNotContainIncomingEdges_ExitTransition() {
 
             var nav = @"
             task A
@@ -396,6 +523,26 @@ namespace Nav.Language.Tests {
                 I1   --> e1;
                 I1   --> A;
                 A:e1 --> I1;
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0103InitNodeMustNotContainIncomingEdges));
+        }
+
+        [Test]
+        public void Nav0103InitNodeMustNotContainIncomingEdges_Transition() {
+
+            var nav = @"
+            task A
+            {
+                init I1;            
+                exit e1;
+                view A;
+
+                I1  --> A;
+                A   --> I1 on Foo;
+                A   --> e1;
             }
             ";
 

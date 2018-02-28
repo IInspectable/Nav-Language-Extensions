@@ -75,9 +75,12 @@
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="SemanticAnalyzer\Nav0010CannotResolveTask0.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0011CannotResolveNode0.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0012CannotResolveExit0.cs" />
     <Compile Include="SemanticAnalyzer\Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared.cs" />
     <Compile Include="SemanticAnalyzer\Nav0024OutgoingEdgeForExit0AlreadyDeclared.cs" />
     <Compile Include="SemanticAnalyzer\Nav0025NoOutgoingEdgeForExit0Declared.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0103InitNodeMustNotContainIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav0104ChoiceNode0MustOnlyReachedByGoTo.cs" />
     <Compile Include="SemanticAnalyzer\Nav0105ExitNode0MustOnlyReachedByGoTo.cs" />
     <Compile Include="SemanticAnalyzer\Nav0106EndNode0MustOnlyReachedByGoTo.cs" />
@@ -91,6 +94,7 @@
     <Compile Include="SemanticAnalyzer\Nav0201SpontaneousNotAllowedInSignalTrigger.cs" />
     <Compile Include="SemanticAnalyzer\Nav0203TriggerNotAllowedAfterChoice.cs" />
     <Compile Include="SemanticAnalyzer\Nav0220ConditionsAreNotAllowedInTriggerTransitions.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0221OnlyIfConditionsAllowedInExitTransitions.cs" />
     <Compile Include="SemanticAnalyzer\Nav0222Node0IsReachableByDifferentEdgeModes.cs" />
     <Compile Include="SemanticAnalyzer\Nav1010TaskNode0HasNoIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav1012TaskNode0NotRequired.cs" />
