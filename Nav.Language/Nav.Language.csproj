@@ -146,6 +146,15 @@
     <Compile Include="Generator\NavCodeGeneratorPipeline.LoggerAdapter.cs" />
     <Compile Include="Generator\NavCodeGeneratorPipeline.Statistic.cs" />
     <Compile Include="Generator\ILogger.cs" />
+    <Compile Include="Model\Analyzer\Analyzer.cs" />
+    <Compile Include="Model\Analyzer\Nav0107ExitNode0HasNoIncomingEdges.cs" />
+    <Compile Include="Model\Analyzer\Nav0108EndNodeHasNoIncomingEdges.cs" />
+    <Compile Include="Model\Analyzer\Nav0109InitNode0HasNoOutgoingEdges.cs" />
+    <Compile Include="Model\Analyzer\Nav0111ChoiceNode0HasNoIncomingEdges.cs" />
+    <Compile Include="Model\Analyzer\Nav0112ChoiceNode0HasNoOutgoingEdges.cs" />
+    <Compile Include="Model\Analyzer\Nav1007ChoiceNode0HasNoIncomingEdges.cs" />
+    <Compile Include="Model\Analyzer\Nav1008ChoiceNode0HasNoOutgoingEdges.cs" />
+    <Compile Include="Model\Analyzer\Nav1009ChoiceNode0NotRequired.cs" />
     <Compile Include="Model\Call.cs" />
     <Compile Include="Model\EdgeExtensions.cs" />
     <Compile Include="Model\ICodeParameter.cs" />

@@ -5,6 +5,8 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Analyzer;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
@@ -785,88 +787,11 @@ namespace Pharmatechnik.Nav.Language {
 
         void VerifyTaskDefinition() {
 
-            //==============================
-            //  Init Node Errors
-            //==============================
-            foreach (var initNode in _taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
-                if (!initNode.Outgoings.Any()) {
+            var analyzers = SymbolAnalyzer.GetTaskDefinitionAnalyzer();
+            var context   = new AnalyzerContext();
+            foreach (var anlyzer in analyzers) {
+                _diagnostics.AddRange(anlyzer.Analyze(_taskDefinition, context));
 
-                    _diagnostics.Add(new Diagnostic(
-                                         initNode.Alias?.Location ?? initNode.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0109InitNode0HasNoOutgoingEdges,
-                                         initNode.Name));
-                }
-            }
-
-            //==============================
-            //  Exit Node Errors
-            //==============================
-            foreach (var exitNode in _taskDefinition.NodeDeclarations.OfType<IExitNodeSymbol>()) {
-                if (!exitNode.Incomings.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         exitNode.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0107ExitNode0HasNoIncomingEdges,
-                                         exitNode.Name));
-                }
-            }
-
-            //==============================
-            //  End Node Errors
-            //==============================
-            foreach (var endNode in _taskDefinition.NodeDeclarations.OfType<IEndNodeSymbol>()) {
-                if (!endNode.Incomings.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         endNode.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0108EndNodeHasNoIncomingEdges,
-                                         endNode.Name));
-                }
-            }
-
-            //==============================
-            //  Choice Node Errors
-            //==============================
-            foreach (var choiceNode in _taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>()) {
-
-                if (!choiceNode.References.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         choiceNode.Syntax.GetLocation(),
-                                         DiagnosticDescriptors.DeadCode.Nav1009ChoiceNode0NotRequired,
-                                         choiceNode.Name));
-
-                } else if (!choiceNode.Incomings.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         choiceNode.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0111ChoiceNode0HasNoIncomingEdges,
-                                         choiceNode.Name));
-
-                    if (choiceNode.Outgoings.Any()) {
-
-                        _diagnostics.Add(new Diagnostic(
-                                             choiceNode.Outgoings.First().Location,
-                                             choiceNode.Outgoings.Select(edge => edge.Location).Skip(1),
-                                             DiagnosticDescriptors.DeadCode.Nav1007ChoiceNode0HasNoIncomingEdges,
-                                             choiceNode.Name));
-                    }
-
-                } else if (!choiceNode.Outgoings.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         choiceNode.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges,
-                                         choiceNode.Name));
-
-                    if (choiceNode.Incomings.Any()) {
-                        _diagnostics.Add(new Diagnostic(
-                                             choiceNode.Incomings.First().Location,
-                                             choiceNode.Incomings.Select(edge => edge.Location).Skip(1),
-                                             DiagnosticDescriptors.DeadCode.Nav1008ChoiceNode0HasNoOutgoingEdges,
-                                             choiceNode.Name));
-                    }
-                }
             }
 
             //==============================
@@ -1090,7 +1015,7 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
-        public static TaskDefinitionBuilderResult Build(TaskDefinitionSyntax taskDefinitionSyntax, IReadOnlySymbolCollection<TaskDeclarationSymbol> taskDeklarations) {
+        public static TaskDefinitionBuilderResult Build(TaskDefinitionSyntax taskDefinitionSyntax, IReadOnlySymbolCollection<TaskDeclarationSymbol> taskDeklarations) {           
             var builder = new TaskDefinitionSymbolBuilder(taskDeklarations);
             builder.Visit(taskDefinitionSyntax);
             return new TaskDefinitionBuilderResult(builder._taskDefinition, builder._diagnostics);

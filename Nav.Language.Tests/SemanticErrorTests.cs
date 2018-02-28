@@ -850,6 +850,31 @@ namespace Nav.Language.Tests {
         }
 
         [Test]
+        public void Nav1009ChoiceNode0NotRequired() {
+            var nav = @"
+            task C {
+                init I1;
+                init I2;
+                exit e1;
+                exit e2;
+                I1 --> e1;
+                I2 --> e2;
+            }
+            task A
+            {
+                init I1;               
+                exit e1;
+                choice C;
+
+                I1  --> e1;
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.DeadCode.Nav1009ChoiceNode0NotRequired));
+        }
+
+        [Test]
         public void Nav0116ViewNode0HasNoIncomingEdges_1Edge() {
 
             var nav = @"
