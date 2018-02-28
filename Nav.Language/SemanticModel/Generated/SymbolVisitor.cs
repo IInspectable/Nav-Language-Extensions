@@ -1,4 +1,4 @@
-namespace Pharmatechnik.Nav.Language {
+﻿namespace Pharmatechnik.Nav.Language {
 
     partial interface ISymbol {
         void Accept(ISymbolVisitor visitor);
@@ -26,6 +26,10 @@ namespace Pharmatechnik.Nav.Language {
         void VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol);
         void VisitIncludeSymbol(IIncludeSymbol includeSymbol);
         void VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol);
+        void VisitInitNodeReferenceSymbol(IInitNodeReferenceSymbol initNodeReferenceSymbol);
+        void VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol);
+        void VisitGuiNodeReferenceSymbol(IGuiNodeReferenceSymbol guiNodeReferenceSymbol);
+        void VisitTaskNodeReferenceSymbol(ITaskNodeReferenceSymbol taskNodeReferenceSymbol);
     }
 
     public interface ISymbolVisitor<T> {
@@ -49,6 +53,10 @@ namespace Pharmatechnik.Nav.Language {
         T VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol);
         T VisitIncludeSymbol(IIncludeSymbol includeSymbol);
         T VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol);
+        T VisitInitNodeReferenceSymbol(IInitNodeReferenceSymbol initNodeReferenceSymbol);
+        T VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol);
+        T VisitGuiNodeReferenceSymbol(IGuiNodeReferenceSymbol guiNodeReferenceSymbol);
+        T VisitTaskNodeReferenceSymbol(ITaskNodeReferenceSymbol taskNodeReferenceSymbol);
     }
 
     partial class Symbol {
@@ -275,6 +283,7 @@ namespace Pharmatechnik.Nav.Language {
             return visitor.VisitInitNodeAliasSymbol(this);
         }
     }
+
     public abstract class SymbolVisitor: ISymbolVisitor {
 
         public void Visit(ISymbol symbol){
@@ -364,6 +373,22 @@ namespace Pharmatechnik.Nav.Language {
             DefaultVisit(initNodeAliasSymbol);
         }
 
+		public virtual void VisitInitNodeReferenceSymbol(IInitNodeReferenceSymbol initNodeReferenceSymbol) {
+            DefaultVisit(initNodeReferenceSymbol);
+        }
+
+		public virtual void VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol) {
+            DefaultVisit(choiceNodeReferenceSymbol);
+        }
+
+		public virtual void VisitGuiNodeReferenceSymbol(IGuiNodeReferenceSymbol guiNodeReferenceSymbol) {
+            DefaultVisit(guiNodeReferenceSymbol);
+        }
+
+		public virtual void VisitTaskNodeReferenceSymbol(ITaskNodeReferenceSymbol taskNodeReferenceSymbol) {
+            DefaultVisit(taskNodeReferenceSymbol);
+        }
+
     }
 
         public abstract class SymbolVisitor<T>: ISymbolVisitor<T> {
@@ -435,7 +460,7 @@ namespace Pharmatechnik.Nav.Language {
 		public virtual T VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
             return DefaultVisit(taskDefinitionSymbol);
         }
-         
+
 		public virtual T VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
             return DefaultVisit(signalTriggerSymbol);
         }
@@ -454,6 +479,22 @@ namespace Pharmatechnik.Nav.Language {
 
 		public virtual T VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
             return DefaultVisit(initNodeAliasSymbol);
+        }
+
+		public virtual T VisitInitNodeReferenceSymbol(IInitNodeReferenceSymbol initNodeReferenceSymbol) {
+            return DefaultVisit(initNodeReferenceSymbol);
+        }
+
+		public virtual T VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol) {
+            return DefaultVisit(choiceNodeReferenceSymbol);
+        }
+
+		public virtual T VisitGuiNodeReferenceSymbol(IGuiNodeReferenceSymbol guiNodeReferenceSymbol) {
+            return DefaultVisit(guiNodeReferenceSymbol);
+        }
+
+		public virtual T VisitTaskNodeReferenceSymbol(ITaskNodeReferenceSymbol taskNodeReferenceSymbol) {
+            return DefaultVisit(taskNodeReferenceSymbol);
         }
 
     }

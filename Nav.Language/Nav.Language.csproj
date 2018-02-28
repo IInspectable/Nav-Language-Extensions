@@ -200,10 +200,10 @@
     <Compile Include="CodeGen\CSharp.cs" />
     <Compile Include="SemanticModel\EdgeModeSymbol.cs" />
     <Compile Include="SemanticModel\ExitTransition.cs" />
-    <Compile Include="SemanticModel\Generated\SymbolVisitor.Generated.cs">
+    <Compile Include="SemanticModel\Generated\SymbolVisitor.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>SymbolVisitor.Generated.tt</DependentUpon>
+      <DependentUpon>SymbolVisitor.tt</DependentUpon>
     </Compile>
     <Compile Include="SemanticModel\IConnectionPointReferenceSymbol.cs" />
     <Compile Include="SemanticModel\IEdge.cs" />
@@ -374,9 +374,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SemanticModel\Generated\SymbolVisitor.Generated.tt">
+    <Content Include="SemanticModel\Generated\SymbolVisitor.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SymbolVisitor.Generated.cs</LastGenOutput>
+      <LastGenOutput>SymbolVisitor.cs</LastGenOutput>
     </Content>
     <None Include="SemanticModel\_Missing Diagnostics.txt" />
   </ItemGroup>
