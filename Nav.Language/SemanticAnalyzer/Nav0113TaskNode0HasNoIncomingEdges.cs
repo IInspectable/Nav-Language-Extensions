@@ -8,20 +8,18 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
         public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0113TaskNode0HasNoIncomingEdges;
 
         public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+            //==============================
+            //  The task node '{0}' has no incoming edges
+            //==============================
             foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
 
-                if (!taskNode.References.Any()) {
+                if (taskNode.References.Any() && !taskNode.Incomings.Any()) {
 
-                } else {
+                    yield return new Diagnostic(
+                        taskNode.Location,
+                        Descriptor,
+                        taskNode.Name);
 
-                    if (!taskNode.Incomings.Any()) {
-
-                        yield return new Diagnostic(
-                            taskNode.Location,
-                            Descriptor,
-                            taskNode.Name);
-
-                    }
                 }
 
             }

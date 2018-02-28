@@ -8,6 +8,9 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
         public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.DeadCode.Nav1012TaskNode0NotRequired;
 
         public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+            //==============================
+            //  The task node '{0}' is not required by the code and can be safely removed
+            //==============================
             foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
 
                 if (!taskNode.References.Any()) {

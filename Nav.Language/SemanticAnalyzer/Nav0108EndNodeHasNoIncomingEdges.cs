@@ -9,7 +9,7 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
         public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
-            //  End Node Errors
+            //  The end node has no incoming edges
             //==============================
             foreach (var endNode in taskDefinition.NodeDeclarations.OfType<IEndNodeSymbol>()) {
                 if (!endNode.Incomings.Any()) {

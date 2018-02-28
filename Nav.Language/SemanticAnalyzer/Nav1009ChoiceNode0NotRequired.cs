@@ -8,6 +8,9 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
         public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.DeadCode.Nav1009ChoiceNode0NotRequired;
 
         public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+            //==============================
+            //  The choice node '{0}' is not required by the code and can be safely removed
+            //==============================
             foreach (var choiceNode in taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>()) {
 
                 if (!choiceNode.References.Any()) {

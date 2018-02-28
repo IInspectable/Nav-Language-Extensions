@@ -8,9 +8,8 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
         public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0109InitNode0HasNoOutgoingEdges;
 
         public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
-
             //==============================
-            //  Init Node Errors
+            //  The init node '{0}' has no outgoing edges
             //==============================
             foreach (var initNode in taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
                 if (!initNode.Outgoings.Any()) {

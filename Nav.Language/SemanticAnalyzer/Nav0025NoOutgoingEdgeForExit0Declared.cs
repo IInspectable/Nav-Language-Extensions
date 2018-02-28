@@ -8,6 +8,9 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
         public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared;
 
         public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+            //==============================
+            //  No outgoing edge for exit '{0}' declared
+            //==============================
             foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
 
                 if (taskNode.References.Any() && taskNode.Declaration != null) {
