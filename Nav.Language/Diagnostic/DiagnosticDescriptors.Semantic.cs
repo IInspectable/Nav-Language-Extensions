@@ -322,7 +322,7 @@
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0200SignalTriggerNotAllowedAfterInit = new DiagnosticDescriptor(
                 id             : DiagnosticId.Nav0200,
-                messageFormat  : "Trigger not allowed after init",
+                messageFormat  : "Signal trigger not allowed after init",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
             );

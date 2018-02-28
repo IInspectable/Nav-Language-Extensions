@@ -87,6 +87,10 @@
     <Compile Include="SemanticAnalyzer\Nav0115DialogNode0HasNoOutgoingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav0116ViewNode0HasNoIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav0117ViewNode0HasNoOutgoingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0200SignalTriggerNotAllowedAfterInit.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0201SpontaneousNotAllowedInSignalTrigger.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0203TriggerNotAllowedAfterChoice.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0220ConditionsAreNotAllowedInTriggerTransitions.cs" />
     <Compile Include="SemanticAnalyzer\Nav0222Node0IsReachableByDifferentEdgeModes.cs" />
     <Compile Include="SemanticAnalyzer\Nav1010TaskNode0HasNoIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav1012TaskNode0NotRequired.cs" />

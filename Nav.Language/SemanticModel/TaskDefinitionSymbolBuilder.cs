@@ -354,16 +354,6 @@ namespace Pharmatechnik.Nav.Language {
             initNode.References.Add(initTransition.SourceReference);
             
             WireTargetNodeReferences(initTransition);
-
-            var triggers = GetTriggers(transitionDefinitionSyntax).OfType<ISignalTriggerSymbol>().ToList();
-
-            if (triggers.Any()) {
-
-                _diagnostics.Add(new Diagnostic(
-                                     triggers.First().Location,
-                                     triggers.Skip(1).Select(t => t.Location),
-                                     DiagnosticDescriptors.Semantic.Nav0200SignalTriggerNotAllowedAfterInit));
-            }
         }
 
         private void AddChoiceTransition(TransitionDefinitionSyntax transitionDefinitionSyntax, NodeReferenceSymbol targetNodeReference, EdgeModeSymbol edgeMode, SourceNodeSyntax sourceNodeSyntax, Location location, ChoiceNodeSymbol choiceNode) {
@@ -377,16 +367,6 @@ namespace Pharmatechnik.Nav.Language {
             choiceNode.References.Add(choiceTransition.SourceReference);
 
             WireTargetNodeReferences(choiceTransition);
-
-            var triggers = GetTriggers(transitionDefinitionSyntax);
-
-            if (triggers.Any()) {
-
-                _diagnostics.Add(new Diagnostic(
-                                     triggers.First().Location,
-                                     triggers.Skip(1).Select(t => t.Location),
-                                     DiagnosticDescriptors.Semantic.Nav0203TriggerNotAllowedAfterChoice));
-            }
         }
 
         private void AddTriggerTransition(
@@ -407,30 +387,7 @@ namespace Pharmatechnik.Nav.Language {
             guiNode.Outgoings.Add(triggerTransition);
             guiNode.References.Add(triggerTransition.SourceReference);
 
-            WireTargetNodeReferences(triggerTransition);
-
-            //==============================
-            // Nav0201SpontaneousNotAllowedInSignalTrigger
-            //==============================
-            foreach (var trigger in triggers.Where(t => t.IsSignalTrigger)) {
-                if (trigger.Name == SyntaxFacts.SpontaneousKeyword || trigger.Name == SyntaxFacts.SpontKeyword) {
-                    _diagnostics.Add(new Diagnostic(
-                                         trigger.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0201SpontaneousNotAllowedInSignalTrigger));
-                }
-            }
-
-            //==============================
-            // Nav0220ConditionsAreNotAllowedInTriggerTransitions
-            //==============================
-            if (transitionDefinitionSyntax.ConditionClause != null) {
-
-                _diagnostics.Add(new Diagnostic(
-                                     transitionDefinitionSyntax.ConditionClause.GetLocation(),
-                                     DiagnosticDescriptors.Semantic.Nav0220ConditionsAreNotAllowedInTriggerTransitions));
-
-            }
-
+            WireTargetNodeReferences(triggerTransition);           
         }
        
         private static void WireTargetNodeReferences(Transition transition) {
