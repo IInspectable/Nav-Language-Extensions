@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 using NUnit.Framework;
 
@@ -15,15 +14,6 @@ using Pharmatechnik.Nav.Language;
 namespace Nav.Language.Tests {
     [TestFixture]
     public class SemanticAnalyzerTests {
-
-        public string ToUnitTestString(IEnumerable<Diagnostic> diagnostics) {
-
-            return diagnostics.Aggregate(
-                new StringBuilder(), 
-                (sb, diagnostic) =>sb.AppendLine(diagnostic.ToString(UnitTestDiagnosticFormatter.Instance)),
-                sb=> sb.ToString());
-
-        }
 
         [Test]
         public void Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed() {
@@ -92,48 +82,7 @@ namespace Nav.Language.Tests {
             
             ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0005IncludeFile0HasSomeErrors));
         }
-        
-        [Test]
-        public void Nav0010CannotResolveTask0_Unused() {
-
-            var nav = @"
-            task A
-            {
-                init I1;            
-                exit e1;
-                task C;
-//                   ^-- Nav0010CannotResolveTask0
-//              ^-----^  Nav1012TaskNode0NotRequired
-                I1 --> e1;     
-            }
-            ";
-
-            var unit = BuildCodeGenerationUnit(nav);
-
-            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0010CannotResolveTask0),
-                                This(DiagnosticDescriptors.DeadCode.Nav1012TaskNode0NotRequired));
-        }
-
-        [Test]
-        public void Nav0010CannotResolveTask0_Used() {
-
-            var nav = @"
-            task A
-            {
-                init I1;            
-                exit e1;
-                task C;
-//                   ^-- Nav0010CannotResolveTask0
-                I1 --> e1;   
-                I1 --> C;  
-            }
-            ";
-
-            var unit = BuildCodeGenerationUnit(nav);
-
-            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0010CannotResolveTask0));
-        }
-
+            
         [Test]
         public void Nav0010CannotResolveTask0_ExitTransition() {
 

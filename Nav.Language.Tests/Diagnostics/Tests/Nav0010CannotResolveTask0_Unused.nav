@@ -1,0 +1,10 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    task C;
+
+    I1 --> e1;     
+}
+//==>> (5,10,5,11): error Nav0010: Cannot resolve task 'C'
+//==>> (5,5,5,12): warning Nav1012: The task node 'C' is not required by the code and can be safely removed
