@@ -793,48 +793,6 @@ namespace Pharmatechnik.Nav.Language {
                 _diagnostics.AddRange(anlyzer.Analyze(_taskDefinition, context));
             }
 
-            //==============================
-            //  Dialog Node Errors
-            //==============================
-            foreach (var dialogNode in _taskDefinition.NodeDeclarations.OfType<IDialogNodeSymbol>()) {
-
-                if (!dialogNode.References.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         dialogNode.Syntax.GetLocation(),
-                                         DiagnosticDescriptors.DeadCode.Nav1014DialogNode0NotRequired,
-                                         dialogNode.Name));
-
-                } else if (!dialogNode.Incomings.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         dialogNode.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0114DialogNode0HasNoIncomingEdges,
-                                         dialogNode.Name));
-
-                    if (dialogNode.Outgoings.Any()) {
-                        _diagnostics.Add(new Diagnostic(
-                                             dialogNode.Outgoings.First().Location,
-                                             dialogNode.Outgoings.Select(edge => edge.Location).Skip(1),
-                                             DiagnosticDescriptors.DeadCode.Nav1015DialogNode0HasNoIncomingEdges,
-                                             dialogNode.Name));
-                    }
-                } else if (!dialogNode.Outgoings.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         dialogNode.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0115DialogNode0HasNoOutgoingEdges,
-                                         dialogNode.Name));
-
-                    if (dialogNode.Incomings.Any()) {
-                        _diagnostics.Add(new Diagnostic(
-                                             dialogNode.Incomings.First().Location,
-                                             dialogNode.Incomings.Select(edge => edge.Location).Skip(1),
-                                             DiagnosticDescriptors.DeadCode.Nav1016DialogNode0HasNoOutgoingEdges,
-                                             dialogNode.Name));
-                    }
-                }
-            }
 
             //==============================
             //  View Node Errors

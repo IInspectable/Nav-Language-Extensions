@@ -1219,6 +1219,24 @@ namespace Nav.Language.Tests {
             var unit = BuildCodeGenerationUnit(nav);
             ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0024OutgoingEdgeForExit0AlreadyDeclared, locationCount: 2));
         }
+
+        [Test]
+        public void Nav1014DialogNode0NotRequired() {
+            var nav = @"
+           
+            task A
+            {
+                init I1;  
+                exit e1;
+                dialog d;
+
+                I1  --> e1;    
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.DeadCode.Nav1014DialogNode0NotRequired));
+        }
       
         // TODO Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
         // TODO Nav0221OnlyIfConditionsAllowedInExitTransitions
