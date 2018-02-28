@@ -65,7 +65,12 @@ namespace Pharmatechnik.Nav.Language {
         public String               Message    => FormatMessage();
 
         public override string ToString() {
-            return DiagnosticFormatter.Default.Format(this);
+            return ToString(null);
+        }
+
+        public string ToString(DiagnosticFormatter formatter) {
+            formatter = formatter ?? DiagnosticFormatter.Instance;
+            return formatter.Format(this);
         }
 
         #region Equality members

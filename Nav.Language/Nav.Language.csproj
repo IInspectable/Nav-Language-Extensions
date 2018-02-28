@@ -74,6 +74,7 @@
     <Compile Include="..\_shared\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />
     <Compile Include="SemanticAnalyzer\Nav0010CannotResolveTask0.cs" />
     <Compile Include="SemanticAnalyzer\Nav0011CannotResolveNode0.cs" />
     <Compile Include="SemanticAnalyzer\Nav0012CannotResolveExit0.cs" />

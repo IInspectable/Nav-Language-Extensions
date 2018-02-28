@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 using NUnit.Framework;
 
@@ -14,6 +15,15 @@ using Pharmatechnik.Nav.Language;
 namespace Nav.Language.Tests {
     [TestFixture]
     public class SemanticAnalyzerTests {
+
+        public string ToUnitTestString(IEnumerable<Diagnostic> diagnostics) {
+
+            return diagnostics.Aggregate(
+                new StringBuilder(), 
+                (sb, diagnostic) =>sb.AppendLine(diagnostic.ToString(UnitTestDiagnosticFormatter.Instance)),
+                sb=> sb.ToString());
+
+        }
 
         [Test]
         public void Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed() {
