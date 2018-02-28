@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Analyzer {
+namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
     public class AnalyzerContext {
 
@@ -21,7 +21,7 @@ namespace Pharmatechnik.Nav.Language.Analyzer {
 
     }
 
-    static class SymbolAnalyzer {
+    static class Analyzer {
 
         private static readonly Lazy<IList<ITaskDefinitionAnalyzer>> TaskDefinitionAnalyzer = new Lazy<IList<ITaskDefinitionAnalyzer>>(
             () => GetInterfaceImplementationsFromAssembly<ITaskDefinitionAnalyzer>().ToList(),
@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.Analyzer {
 
         private static IEnumerable<T> GetInterfaceImplementationsFromAssembly<T>() where T : class {
 
-            var dll   = typeof(SymbolAnalyzer).GetTypeInfo().Assembly;
+            var dll   = typeof(Analyzer).GetTypeInfo().Assembly;
             var rules = new List<T>();
 
             foreach (var type in dll.ExportedTypes) {

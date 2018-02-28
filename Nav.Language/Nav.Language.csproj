@@ -74,11 +74,11 @@
     <Compile Include="..\_shared\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Analyzer\Nav0024OutgoingEdgeForExit0AlreadyDeclared.cs" />
-    <Compile Include="Analyzer\Nav0025NoOutgoingEdgeForExit0Declared.cs" />
-    <Compile Include="Analyzer\Nav0113TaskNode0HasNoIncomingEdges.cs" />
-    <Compile Include="Analyzer\Nav1010TaskNode0HasNoIncomingEdges.cs" />
-    <Compile Include="Analyzer\Nav1012TaskNode0NotRequired.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0024OutgoingEdgeForExit0AlreadyDeclared.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0025NoOutgoingEdgeForExit0Declared.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0113TaskNode0HasNoIncomingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav1010TaskNode0HasNoIncomingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav1012TaskNode0NotRequired.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFixProvider.cs" />
     <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesCodeFix.cs" />
@@ -151,25 +151,25 @@
     <Compile Include="Generator\NavCodeGeneratorPipeline.LoggerAdapter.cs" />
     <Compile Include="Generator\NavCodeGeneratorPipeline.Statistic.cs" />
     <Compile Include="Generator\ILogger.cs" />
-    <Compile Include="Analyzer\Analyzer.cs" />
-    <Compile Include="Analyzer\Nav0107ExitNode0HasNoIncomingEdges.cs" />
-    <Compile Include="Analyzer\Nav0108EndNodeHasNoIncomingEdges.cs" />
-    <Compile Include="Analyzer\Nav0109InitNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="Analyzer\Nav0111ChoiceNode0HasNoIncomingEdges.cs" />
-    <Compile Include="Analyzer\Nav0112ChoiceNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="Analyzer\Nav1007ChoiceNode0HasNoIncomingEdges.cs" />
-    <Compile Include="Analyzer\Nav1008ChoiceNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="Analyzer\Nav1009ChoiceNode0NotRequired.cs" />
-    <Compile Include="Model\Call.cs" />
-    <Compile Include="Model\EdgeExtensions.cs" />
-    <Compile Include="Model\ICodeParameter.cs" />
-    <Compile Include="Model\InitTransition.cs" />
-    <Compile Include="Model\INodeReferenceSymbolOfT.cs" />
-    <Compile Include="Model\NodeExtensions.cs" />
-    <Compile Include="Model\CodeParameter.cs" />
-    <Compile Include="Model\NodeReferenceSymbolOfT.cs" />
-    <Compile Include="Model\ChoiceTransition.cs" />
-    <Compile Include="Model\TriggerTransition.cs" />
+    <Compile Include="SemanticAnalyzer\Analyzer.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0107ExitNode0HasNoIncomingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0108EndNodeHasNoIncomingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0109InitNode0HasNoOutgoingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0111ChoiceNode0HasNoIncomingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0112ChoiceNode0HasNoOutgoingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav1007ChoiceNode0HasNoIncomingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav1008ChoiceNode0HasNoOutgoingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav1009ChoiceNode0NotRequired.cs" />
+    <Compile Include="SemanticModel\Call.cs" />
+    <Compile Include="SemanticModel\EdgeExtensions.cs" />
+    <Compile Include="SemanticModel\ICodeParameter.cs" />
+    <Compile Include="SemanticModel\InitTransition.cs" />
+    <Compile Include="SemanticModel\INodeReferenceSymbolOfT.cs" />
+    <Compile Include="SemanticModel\NodeExtensions.cs" />
+    <Compile Include="SemanticModel\CodeParameter.cs" />
+    <Compile Include="SemanticModel\NodeReferenceSymbolOfT.cs" />
+    <Compile Include="SemanticModel\ChoiceTransition.cs" />
+    <Compile Include="SemanticModel\TriggerTransition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\CachedSyntaxProvider.cs" />
     <Compile Include="Provider\IPathProvider.cs" />
@@ -194,49 +194,49 @@
     <Compile Include="Diagnostic\DiagnosticExtensions.cs" />
     <Compile Include="Diagnostic\DiagnosticId.cs" />
     <Compile Include="Diagnostic\DiagnosticSeverity.cs" />
-    <Compile Include="Model\CodeGenerationUnitExtensions.cs" />
-    <Compile Include="Model\ConnectionPointReferenceSymbol.cs" />
-    <Compile Include="Model\ConnectionPointSymbol.cs" />
+    <Compile Include="SemanticModel\CodeGenerationUnitExtensions.cs" />
+    <Compile Include="SemanticModel\ConnectionPointReferenceSymbol.cs" />
+    <Compile Include="SemanticModel\ConnectionPointSymbol.cs" />
     <Compile Include="CodeGen\CSharp.cs" />
-    <Compile Include="Model\EdgeModeSymbol.cs" />
-    <Compile Include="Model\ExitTransition.cs" />
-    <Compile Include="Model\Generated\SymbolVisitor.Generated.cs">
+    <Compile Include="SemanticModel\EdgeModeSymbol.cs" />
+    <Compile Include="SemanticModel\ExitTransition.cs" />
+    <Compile Include="SemanticModel\Generated\SymbolVisitor.Generated.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SymbolVisitor.Generated.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\IConnectionPointReferenceSymbol.cs" />
-    <Compile Include="Model\IEdge.cs" />
-    <Compile Include="Model\IEdgeModeSymbol.cs" />
-    <Compile Include="Model\IIncludeSymbol.cs" />
-    <Compile Include="Model\IInitNodeAliasSymbol.cs" />
-    <Compile Include="Model\IncludeSymbol.cs" />
-    <Compile Include="Model\InitNodeAliasSymbol.cs" />
-    <Compile Include="Model\ISymbol.cs" />
-    <Compile Include="Model\ITaskDefinitionSymbol.cs" />
-    <Compile Include="Model\ITaskNodeAlias.cs" />
-    <Compile Include="Model\ITriggerSymbol.cs" />
-    <Compile Include="Model\NodeReferenceSymbol.cs" />
-    <Compile Include="Model\SymbolList.cs" />
-    <Compile Include="Model\TaskDeclarationSymbol.cs" />
-    <Compile Include="Model\TaskDefinitionSymbolExtensions.cs" />
-    <Compile Include="Model\TaskNodeAliasSymbol.cs" />
-    <Compile Include="Model\TaskNodeSymbolExtensions.cs" />
-    <Compile Include="Model\Transition.cs" />
-    <Compile Include="Model\IConnectionPointSymbol.cs" />
-    <Compile Include="Model\ITransition.cs" />
-    <Compile Include="Model\INodeSymbol.cs" />
-    <Compile Include="Model\INodeReferenceSymbol.cs" />
-    <Compile Include="Model\ITaskDeclarationSymbol.cs" />
-    <Compile Include="Model\NodeSymbol.cs" />
-    <Compile Include="Model\TaskDefinitionSymbolBuilder.cs" />
-    <Compile Include="Model\SemanticModelBuilder.cs" />
-    <Compile Include="Model\CodeGenerationUnit.cs" />
-    <Compile Include="Model\Symbol.cs" />
-    <Compile Include="Model\SymbolCollection.cs" />
-    <Compile Include="Model\TaskDeclarationSymbolBuilder.cs" />
-    <Compile Include="Model\TaskDefinitionSymbol.cs" />
-    <Compile Include="Model\TriggerSymbol.cs" />
+    <Compile Include="SemanticModel\IConnectionPointReferenceSymbol.cs" />
+    <Compile Include="SemanticModel\IEdge.cs" />
+    <Compile Include="SemanticModel\IEdgeModeSymbol.cs" />
+    <Compile Include="SemanticModel\IIncludeSymbol.cs" />
+    <Compile Include="SemanticModel\IInitNodeAliasSymbol.cs" />
+    <Compile Include="SemanticModel\IncludeSymbol.cs" />
+    <Compile Include="SemanticModel\InitNodeAliasSymbol.cs" />
+    <Compile Include="SemanticModel\ISymbol.cs" />
+    <Compile Include="SemanticModel\ITaskDefinitionSymbol.cs" />
+    <Compile Include="SemanticModel\ITaskNodeAlias.cs" />
+    <Compile Include="SemanticModel\ITriggerSymbol.cs" />
+    <Compile Include="SemanticModel\NodeReferenceSymbol.cs" />
+    <Compile Include="SemanticModel\SymbolList.cs" />
+    <Compile Include="SemanticModel\TaskDeclarationSymbol.cs" />
+    <Compile Include="SemanticModel\TaskDefinitionSymbolExtensions.cs" />
+    <Compile Include="SemanticModel\TaskNodeAliasSymbol.cs" />
+    <Compile Include="SemanticModel\TaskNodeSymbolExtensions.cs" />
+    <Compile Include="SemanticModel\Transition.cs" />
+    <Compile Include="SemanticModel\IConnectionPointSymbol.cs" />
+    <Compile Include="SemanticModel\ITransition.cs" />
+    <Compile Include="SemanticModel\INodeSymbol.cs" />
+    <Compile Include="SemanticModel\INodeReferenceSymbol.cs" />
+    <Compile Include="SemanticModel\ITaskDeclarationSymbol.cs" />
+    <Compile Include="SemanticModel\NodeSymbol.cs" />
+    <Compile Include="SemanticModel\TaskDefinitionSymbolBuilder.cs" />
+    <Compile Include="SemanticModel\SemanticModelBuilder.cs" />
+    <Compile Include="SemanticModel\CodeGenerationUnit.cs" />
+    <Compile Include="SemanticModel\Symbol.cs" />
+    <Compile Include="SemanticModel\SymbolCollection.cs" />
+    <Compile Include="SemanticModel\TaskDeclarationSymbolBuilder.cs" />
+    <Compile Include="SemanticModel\TaskDefinitionSymbol.cs" />
+    <Compile Include="SemanticModel\TriggerSymbol.cs" />
     <Compile Include="Provider\SyntaxProvider.cs" />
     <Compile Include="Provider\SyntaxProviderFactory.cs" />
     <Compile Include="Syntax\CodeSyntax.cs" />
@@ -374,11 +374,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Model\Generated\SymbolVisitor.Generated.tt">
+    <Content Include="SemanticModel\Generated\SymbolVisitor.Generated.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SymbolVisitor.Generated.cs</LastGenOutput>
     </Content>
-    <None Include="Model\_Missing Diagnostics.txt" />
+    <None Include="SemanticModel\_Missing Diagnostics.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj">

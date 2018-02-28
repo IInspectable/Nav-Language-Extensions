@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Pharmatechnik.Nav.Language.Analyzer {
+namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
     public class Nav1009ChoiceNode0NotRequired: ITaskDefinitionAnalyzer {
 

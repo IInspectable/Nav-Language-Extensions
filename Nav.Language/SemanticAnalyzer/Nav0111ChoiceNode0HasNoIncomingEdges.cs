@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Pharmatechnik.Nav.Language.Analyzer {
+namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0112ChoiceNode0HasNoOutgoingEdges: ITaskDefinitionAnalyzer {
+    public class Nav0111ChoiceNode0HasNoIncomingEdges: ITaskDefinitionAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges;
+        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0111ChoiceNode0HasNoIncomingEdges;
 
         public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.Analyzer {
             //==============================
             foreach (var choiceNode in taskDefinition.NodeDeclarations.OfType<IChoiceNodeSymbol>()) {
 
-                if (choiceNode.Incomings.Any() && !choiceNode.Outgoings.Any()) {
+                if (choiceNode.Outgoings.Any() && !choiceNode.Incomings.Any()) {
 
                     yield return new Diagnostic(
                         choiceNode.Location,

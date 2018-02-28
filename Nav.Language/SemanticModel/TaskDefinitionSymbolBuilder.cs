@@ -5,7 +5,7 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-using Pharmatechnik.Nav.Language.Analyzer;
+using Pharmatechnik.Nav.Language.SemanticAnalyzer;
 
 #endregion
 
@@ -787,7 +787,7 @@ namespace Pharmatechnik.Nav.Language {
 
         void AnalyzeTaskDefinition() {
 
-            var analyzers = SymbolAnalyzer.GetTaskDefinitionAnalyzer();
+            var analyzers = Analyzer.GetTaskDefinitionAnalyzer();
             var context   = new AnalyzerContext();
             foreach (var anlyzer in analyzers) {
                 _diagnostics.AddRange(anlyzer.Analyze(_taskDefinition, context));
