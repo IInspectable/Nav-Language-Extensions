@@ -208,6 +208,7 @@
     <Compile Include="RenameChoiceCodeFixTests.cs" />
     <Compile Include="SemanticAnalyzerTests.cs" />
     <Compile Include="SemanticTests.cs" />
+    <Compile Include="SymbolVisitorTests.cs" />
     <Compile Include="SyntaxErrorTests.cs" />
     <Compile Include="SyntaxFactsTest.cs" />
     <Compile Include="SyntaxNodeTriviaTests.cs" />
