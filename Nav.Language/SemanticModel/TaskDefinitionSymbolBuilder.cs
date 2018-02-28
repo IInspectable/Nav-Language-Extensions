@@ -795,49 +795,6 @@ namespace Pharmatechnik.Nav.Language {
 
 
             //==============================
-            //  View Node Errors
-            //==============================
-            foreach (var viewNode in _taskDefinition.NodeDeclarations.OfType<IViewNodeSymbol>()) {
-
-                if (!viewNode.References.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         viewNode.Syntax.GetLocation(),
-                                         DiagnosticDescriptors.DeadCode.Nav1017ViewNode0NotRequired,
-                                         viewNode.Name));
-
-                } else if (!viewNode.Incomings.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         viewNode.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0116ViewNode0HasNoIncomingEdges,
-                                         viewNode.Name));
-
-                    if (viewNode.Outgoings.Any()) {
-                        _diagnostics.Add(new Diagnostic(
-                                             viewNode.Outgoings.First().Location,
-                                             viewNode.Outgoings.Select(edge => edge.Location).Skip(1),
-                                             DiagnosticDescriptors.DeadCode.Nav1018ViewNode0HasNoIncomingEdges,
-                                             viewNode.Name));
-                    }
-                } else if (!viewNode.Outgoings.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         viewNode.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0117ViewNode0HasNoOutgoingEdges,
-                                         viewNode.Name));
-
-                    if (viewNode.Incomings.Any()) {
-                        _diagnostics.Add(new Diagnostic(
-                                             viewNode.Incomings.First().Location,
-                                             viewNode.Incomings.Select(edge => edge.Location).Skip(1),
-                                             DiagnosticDescriptors.DeadCode.Nav1019ViewNode0HasNoOutgoingEdges,
-                                             viewNode.Name));
-                    }
-                }
-            }
-
-            //==============================
             // Trigger Errors
             //==============================
             var triggerMap = new Dictionary<INodeSymbol, ITriggerSymbol>();

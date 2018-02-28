@@ -79,6 +79,8 @@
     <Compile Include="SemanticAnalyzer\Nav0113TaskNode0HasNoIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav0114DialogNode0HasNoIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav0115DialogNode0HasNoOutgoingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0116ViewNode0HasNoIncomingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav0117ViewNode0HasNoOutgoingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav1010TaskNode0HasNoIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav1012TaskNode0NotRequired.cs" />
     <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
@@ -165,6 +167,9 @@
     <Compile Include="SemanticAnalyzer\Nav1014DialogNode0NotRequired.cs" />
     <Compile Include="SemanticAnalyzer\Nav1015DialogNode0HasNoIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav1016DialogNode0HasNoOutgoingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav1017ViewNode0NotRequired.cs" />
+    <Compile Include="SemanticAnalyzer\Nav1018ViewNode0HasNoIncomingEdges.cs" />
+    <Compile Include="SemanticAnalyzer\Nav1019ViewNode0HasNoOutgoingEdges.cs" />
     <Compile Include="SemanticModel\Call.cs" />
     <Compile Include="SemanticModel\EdgeExtensions.cs" />
     <Compile Include="SemanticModel\ICodeParameter.cs" />

@@ -1237,6 +1237,24 @@ namespace Nav.Language.Tests {
             var unit = BuildCodeGenerationUnit(nav);
             ExpectExactly(unit, This(DiagnosticDescriptors.DeadCode.Nav1014DialogNode0NotRequired));
         }
+
+        [Test]
+        public void Nav1017ViewNode0NotRequired() {
+            var nav = @"
+           
+            task A
+            {
+                init I1;  
+                exit e1;
+                view v;
+
+                I1  --> e1;    
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.DeadCode.Nav1017ViewNode0NotRequired));
+        }
       
         // TODO Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
         // TODO Nav0221OnlyIfConditionsAllowedInExitTransitions
