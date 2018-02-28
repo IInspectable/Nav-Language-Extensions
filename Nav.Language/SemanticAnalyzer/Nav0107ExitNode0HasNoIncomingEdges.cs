@@ -12,6 +12,7 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
             //  The exit node '{0}' has no incoming edges
             //==============================
             foreach (var exitNode in taskDefinition.NodeDeclarations.OfType<IExitNodeSymbol>()) {
+
                 if (!exitNode.Incomings.Any()) {
 
                     yield return new Diagnostic(

@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
             //==============================
             foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
 
-                if (taskNode.References.Any() && !taskNode.Incomings.Any()) {
+                if (taskNode.Outgoings.Any() && !taskNode.Incomings.Any()) {
 
                     yield return new Diagnostic(
                         taskNode.Location,

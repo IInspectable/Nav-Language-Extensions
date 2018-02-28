@@ -12,6 +12,7 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
             //  The init node '{0}' has no outgoing edges
             //==============================
             foreach (var initNode in taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
+
                 if (!initNode.Outgoings.Any()) {
 
                     yield return new Diagnostic(
