@@ -74,6 +74,7 @@
     <Compile Include="..\_shared\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="SemanticAnalyzer\Nav0010CannotResolveTask0.cs" />
     <Compile Include="SemanticAnalyzer\Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared.cs" />
     <Compile Include="SemanticAnalyzer\Nav0024OutgoingEdgeForExit0AlreadyDeclared.cs" />
     <Compile Include="SemanticAnalyzer\Nav0025NoOutgoingEdgeForExit0Declared.cs" />

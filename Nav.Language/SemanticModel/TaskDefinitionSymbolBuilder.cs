@@ -150,16 +150,7 @@ namespace Pharmatechnik.Nav.Language {
 
             var taskNode = new TaskNodeSymbol(taskName, taskLocation, taskNodeDeclarationSyntax, taskNodeAlias, taskDeclaration, _taskDefinition);
 
-            if (taskNode.Declaration == null) {
-                if (taskLocation != null) {
-                    _diagnostics.Add(new Diagnostic(
-                                         taskLocation,
-                                         DiagnosticDescriptors.Semantic.Nav0010CannotResolveTask0,
-                                         taskName));
-                }
-            } else {
-                taskNode.Declaration.References.Add(taskNode);
-            }
+            taskNode.Declaration?.References.Add(taskNode);
 
             AddNodeDeclaration(taskNode);
         }
@@ -364,8 +355,6 @@ namespace Pharmatechnik.Nav.Language {
             
             WireTargetNodeReferences(initTransition);
 
-            VerifyTransition(initTransition);
-
             var triggers = GetTriggers(transitionDefinitionSyntax).OfType<ISignalTriggerSymbol>().ToList();
 
             if (triggers.Any()) {
@@ -388,8 +377,6 @@ namespace Pharmatechnik.Nav.Language {
             choiceNode.References.Add(choiceTransition.SourceReference);
 
             WireTargetNodeReferences(choiceTransition);
-
-            VerifyTransition(choiceTransition);
 
             var triggers = GetTriggers(transitionDefinitionSyntax);
 
@@ -422,8 +409,6 @@ namespace Pharmatechnik.Nav.Language {
 
             WireTargetNodeReferences(triggerTransition);
 
-            VerifyTransition(triggerTransition);
-
             //==============================
             // Nav0201SpontaneousNotAllowedInSignalTrigger
             //==============================
@@ -447,32 +432,7 @@ namespace Pharmatechnik.Nav.Language {
             }
 
         }
-
-        void VerifyTransition(Transition transition) {
-
-           
-            // TODO High Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
-            //==============================
-            // Trigger Errors
-            //==============================
-            //if (transition.Triggers.Any()) {
-
-            //    foreach (var trigger in transition.Triggers.Where(t => t.IsSpontaneousTrigger)) {
-
-            //        if (!(transition.SourceReference?.Declaration is DialogNodeSymbol ||
-            //              transition.SourceReference?.Declaration is ViewNodeSymbol ||
-            //              transition.SourceReference?.Declaration is InitNodeSymbol)) {
-
-            //            _diagnostics.Add(new Diagnostic(
-            //                trigger.Location,
-            //                DiagnosticDescriptors.Semantic.Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes));
-            //        }
-            //    }
-
-            //}
-
-        }
-
+       
         private static void WireTargetNodeReferences(Transition transition) {
 
             //==============================
@@ -634,10 +594,10 @@ namespace Pharmatechnik.Nav.Language {
             if (exitTransition.SourceReference != null) {
                 // Source in Exit Transition muss immer ein Task sein
                 if (exitTransition.SourceReference.Declaration == null) {
-                    _diagnostics.Add(new Diagnostic(
-                                         exitTransition.SourceReference.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0010CannotResolveTask0,
-                                         exitTransition.SourceReference.Name));
+                    //_diagnostics.Add(new Diagnostic(
+                    //                     exitTransition.SourceReference.Location,
+                    //                     DiagnosticDescriptors.Semantic.Nav0010CannotResolveTask0,
+                    //                     exitTransition.SourceReference.Name));
 
                 } else {
                     var sourceNode = (TaskNodeSymbol) exitTransition.SourceReference.Declaration;

@@ -125,6 +125,26 @@ namespace Nav.Language.Tests {
         }
 
         [Test]
+        public void Nav0010CannotResolveTask0_ExitTransition() {
+
+            var nav = @"
+            
+            task A
+            {
+                init I1;            
+                exit e1;
+
+                I1 --> e1;   
+                C:e --> e1;  
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0010CannotResolveTask0));
+        }
+
+        [Test]
         public void Nav0011CannotResolveNode0() {
 
             var nav = @"
