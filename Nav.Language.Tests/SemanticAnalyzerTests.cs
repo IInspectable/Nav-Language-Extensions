@@ -13,7 +13,7 @@ using Pharmatechnik.Nav.Language;
 
 namespace Nav.Language.Tests {
     [TestFixture]
-    public class SemanticErrorTests {
+    public class SemanticAnalyzerTests {
 
         [Test]
         public void Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed() {

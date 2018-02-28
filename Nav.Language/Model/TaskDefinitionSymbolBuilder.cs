@@ -69,7 +69,7 @@ namespace Pharmatechnik.Nav.Language {
                 Visit(transitionDefinitionSyntax);
             }
 
-            VerifyTaskDefinition();
+            AnalyzeTaskDefinition();
         }
 
         #region Node Declarations
@@ -785,81 +785,12 @@ namespace Pharmatechnik.Nav.Language {
 
         #endregion
 
-        void VerifyTaskDefinition() {
+        void AnalyzeTaskDefinition() {
 
             var analyzers = SymbolAnalyzer.GetTaskDefinitionAnalyzer();
             var context   = new AnalyzerContext();
             foreach (var anlyzer in analyzers) {
                 _diagnostics.AddRange(anlyzer.Analyze(_taskDefinition, context));
-
-            }
-
-            //==============================
-            //  Task Node Errors
-            //==============================
-            foreach (var taskNode in _taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
-
-                if (!taskNode.References.Any()) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         taskNode.Syntax.GetLocation(),
-                                         DiagnosticDescriptors.DeadCode.Nav1012TaskNode0NotRequired,
-                                         taskNode.Name));
-
-                } else {
-
-                    if (!taskNode.Incomings.Any()) {
-
-                        _diagnostics.Add(new Diagnostic(
-                                             taskNode.Location,
-                                             DiagnosticDescriptors.Semantic.Nav0113TaskNode0HasNoIncomingEdges,
-                                             taskNode.Name));
-
-                        if (taskNode.Outgoings.Any()) {
-                            _diagnostics.Add(new Diagnostic(
-                                                 taskNode.Outgoings.First().Location,
-                                                 taskNode.Outgoings.Select(edge => edge.Location).Skip(1),
-                                                 DiagnosticDescriptors.DeadCode.Nav1010TaskNode0HasNoIncomingEdges,
-                                                 taskNode.Name));
-                        }
-                    }
-
-                    //==============================
-                    // Exit Errors
-                    //==============================
-                    if (taskNode.Declaration == null) {
-                        continue;
-                    }
-
-                    var expectedExits = taskNode.Declaration.Exits().OrderBy(cp => cp.Name);
-                    var actualExits = taskNode.Outgoings
-                                              .Select(et => et.ConnectionPointReference)
-                                              .Where(cp => cp != null)
-                                              .ToList();
-
-                    foreach (var expectedExit in expectedExits) {
-
-                        if (!actualExits.Exists(cpRef => cpRef.Declaration == expectedExit)) {
-
-                            _diagnostics.Add(new Diagnostic(
-                                                 taskNode.Location,
-                                                 taskNode.Incomings
-                                                         .Select(edge => edge.TargetReference)
-                                                         .Where(nodeReference => nodeReference != null)
-                                                         .Select(nodeReference => nodeReference.Location),
-                                                 DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared,
-                                                 expectedExit.Name));
-                        }
-                    }
-
-                    foreach (var duplicates in actualExits.GroupBy(e => e.Name).Where(g => g.Count() > 1)) {
-                        _diagnostics.Add(new Diagnostic(
-                                             duplicates.First().Location,
-                                             duplicates.Skip(1).Select(d => d.Location),
-                                             DiagnosticDescriptors.Semantic.Nav0024OutgoingEdgeForExit0AlreadyDeclared,
-                                             duplicates.First().Name));
-                    }
-                }
             }
 
             //==============================
