@@ -284,6 +284,49 @@
         }
     }
 
+    partial class InitNodeReferenceSymbol {
+
+        public override void Accept(ISymbolVisitor visitor) {
+            visitor.VisitInitNodeReferenceSymbol(this);
+        }
+
+        public override T Accept<T>(ISymbolVisitor<T> visitor) {
+            return visitor.VisitInitNodeReferenceSymbol(this);
+        }
+    }
+
+    partial class ChoiceNodeReferenceSymbol {
+
+        public override void Accept(ISymbolVisitor visitor) {
+            visitor.VisitChoiceNodeReferenceSymbol(this);
+        }
+
+        public override T Accept<T>(ISymbolVisitor<T> visitor) {
+            return visitor.VisitChoiceNodeReferenceSymbol(this);
+        }
+    }
+
+    partial class GuiNodeReferenceSymbol {
+
+        public override void Accept(ISymbolVisitor visitor) {
+            visitor.VisitGuiNodeReferenceSymbol(this);
+        }
+
+        public override T Accept<T>(ISymbolVisitor<T> visitor) {
+            return visitor.VisitGuiNodeReferenceSymbol(this);
+        }
+    }
+
+    partial class TaskNodeReferenceSymbol {
+
+        public override void Accept(ISymbolVisitor visitor) {
+            visitor.VisitTaskNodeReferenceSymbol(this);
+        }
+
+        public override T Accept<T>(ISymbolVisitor<T> visitor) {
+            return visitor.VisitTaskNodeReferenceSymbol(this);
+        }
+    }
     public abstract class SymbolVisitor: ISymbolVisitor {
 
         public void Visit(ISymbol symbol){

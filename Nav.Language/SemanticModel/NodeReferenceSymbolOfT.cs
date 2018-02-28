@@ -13,28 +13,28 @@ namespace Pharmatechnik.Nav.Language {
         public new T Declaration { get; }
     }
     
-    sealed class InitNodeReferenceSymbol : NodeReferenceSymbol<IInitNodeSymbol>, IInitNodeReferenceSymbol {
+    sealed partial class InitNodeReferenceSymbol : NodeReferenceSymbol<IInitNodeSymbol>, IInitNodeReferenceSymbol {
 
         public InitNodeReferenceSymbol(string name, Location location, IInitNodeSymbol declaration, NodeReferenceType nodeReferenceType)
             : base(name, location, declaration, nodeReferenceType) {
         }
     }
 
-    sealed class ChoiceNodeReferenceSymbol : NodeReferenceSymbol<IChoiceNodeSymbol>, IChoiceNodeReferenceSymbol {
+    sealed partial class ChoiceNodeReferenceSymbol : NodeReferenceSymbol<IChoiceNodeSymbol>, IChoiceNodeReferenceSymbol {
 
         public ChoiceNodeReferenceSymbol(string name, Location location, IChoiceNodeSymbol declaration, NodeReferenceType nodeReferenceType)
             : base(name, location, declaration, nodeReferenceType) {
         }
     }
 
-    sealed class GuiNodeReferenceSymbol : NodeReferenceSymbol<IGuiNodeSymbol>, IGuiNodeReferenceSymbol {
+    sealed partial class GuiNodeReferenceSymbol : NodeReferenceSymbol<IGuiNodeSymbol>, IGuiNodeReferenceSymbol {
 
         public GuiNodeReferenceSymbol(string name, Location location, IGuiNodeSymbol declaration, NodeReferenceType nodeReferenceType)
             : base(name, location, declaration, nodeReferenceType) {
         }
     }
 
-    sealed class TaskNodeReferenceSymbol : NodeReferenceSymbol<ITaskNodeSymbol>, ITaskNodeReferenceSymbol {
+    sealed partial class TaskNodeReferenceSymbol : NodeReferenceSymbol<ITaskNodeSymbol>, ITaskNodeReferenceSymbol {
 
         public TaskNodeReferenceSymbol(string name, Location location, ITaskNodeSymbol declaration, NodeReferenceType nodeReferenceType)
             : base(name, location, declaration, nodeReferenceType) {
