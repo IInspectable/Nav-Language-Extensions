@@ -8,8 +8,8 @@ using System.Linq;
 namespace Pharmatechnik.Nav.Language {
 
     public static class DiagnosticExtensions {
-        
-        public static bool HasErrors(this IEnumerable<Diagnostic> source) {   
+
+        public static bool HasErrors(this IEnumerable<Diagnostic> source) {
             return source.Errors().Any();
         }
 
@@ -20,5 +20,11 @@ namespace Pharmatechnik.Nav.Language {
         public static IEnumerable<Diagnostic> Errors(this IEnumerable<Diagnostic> source) {
             return source.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error);
         }
+
+        public static IEnumerable<Diagnostic> Suggestions(this IEnumerable<Diagnostic> source) {
+            return source.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Suggestion);
+        }
+
     }
+
 }

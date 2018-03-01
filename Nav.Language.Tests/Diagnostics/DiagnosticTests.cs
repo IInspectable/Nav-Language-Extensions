@@ -116,12 +116,22 @@ namespace Nav.Language.Tests {
             var    unit   = BuildCodeGenerationUnit(source);
 
             var expected = ParseDiagnostics(source);
-            var actualDiagnostics = unit.Diagnostics
-                                        .Concat(unit.Syntax.SyntaxTree.Diagnostics)
-                                        .SelectMany(d => d.ExpandLocations());
-            var actual = ToUnitTestString(actualDiagnostics);
 
-            Assert.That(actual, Is.EquivalentTo(expected));
+            // Diagnostic in der stabilen Reihenfolge Error, Warning, Suggestion => Position => Syntaxfehler, Semantikfehler
+            var allDiagnostics = unit.Syntax.SyntaxTree.Diagnostics
+                                     .Concat(unit.Diagnostics)
+                                     .SelectMany(d => d.ExpandLocations())
+                                     .OrderBy(d => d.Location.Start)
+                                     .ToList();
+
+            var errors      = allDiagnostics.Errors();
+            var warnings    = allDiagnostics.Warnings();
+            var suggestions = allDiagnostics.Suggestions();
+
+            var actualDiagnostics = errors.Concat(warnings).Concat(suggestions);
+            var actual            = ToUnitTestString(actualDiagnostics);
+
+            Assert.That(actual, Is.EqualTo(expected));
         }
 
         public static IEnumerable<FileTestCase> GetTestCases() {
@@ -173,17 +183,15 @@ namespace Nav.Language.Tests {
             return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\Diagnostics\Tests"));
         }
 
-        IEnumerable<DiagnosticResult> ParseDiagnostics(string source) {
+        IEnumerable<string> ParseDiagnostics(string source) {
 
             return source.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None)
                          .Where(l => l.StartsWith(UnitTestDiagnosticFormatter.LinePrefix))
-                         .Select(s => s.TrimEnd())
-                         .Select(s => new DiagnosticResult(s));
+                         .Select(s => s.TrimEnd());
         }
 
-        IEnumerable<DiagnosticResult> ToUnitTestString(IEnumerable<Diagnostic> diagnostics) {
-            return diagnostics.Select(diagnostic => diagnostic.ToString(UnitTestDiagnosticFormatter.Instance))
-                              .Select(s => new DiagnosticResult(s));
+        IEnumerable<string> ToUnitTestString(IEnumerable<Diagnostic> diagnostics) {
+            return diagnostics.Select(diagnostic => diagnostic.ToString(UnitTestDiagnosticFormatter.Instance));
         }
 
         public class DiagnosticResult: IEquatable<DiagnosticResult> {
