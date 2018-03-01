@@ -125,7 +125,7 @@ namespace Nav.Language.Tests {
             Assert.That(actual, Is.EqualTo(expected));
         }
 
-        [Test, Explicit]
+        //[Test, Explicit]
         public void FixTests() {
 
             // Macht alles Tests grün...
