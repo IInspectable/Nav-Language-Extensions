@@ -10,10 +10,10 @@ namespace Pharmatechnik.Nav.Language {
 
         public new static readonly DiagnosticFormatter Instance = new UnitTestDiagnosticFormatter();
 
-        public static String LinePrefix => "//==>> ";
+        public static String LinePrefix => "//==>>";
 
         public override string Format(Diagnostic diagnostic, IFormatProvider formatter = null) {
-            return LinePrefix + base.Format(diagnostic, formatter);
+            return $"{LinePrefix}[{diagnostic.Category}]{base.Format(diagnostic, formatter)}";
         }
 
         protected override string FormatFilePath(Diagnostic diagnostic, IFormatProvider formatter) {

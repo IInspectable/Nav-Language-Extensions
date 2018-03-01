@@ -224,7 +224,7 @@ namespace Pharmatechnik.Nav.Language {
                         diagnostics.Add(
                             new Diagnostic(candidate.GetLocation(filePath),
                                            DiagnosticDescriptors.Syntax.Nav0000UnexpectedCharacter,
-                                           candidate.ToString()));
+                                           candidate.Text));
                     }
                 }
 

@@ -11,6 +11,6 @@
 
     v1      --> e1 on trigger;
 }
-//==>> (5,13,5,15): warning Nav0111: The choice node 'c1' has no incoming edges
-//==>> (9,5,9,20): warning Nav1007: The choice node 'c1' has no incoming edges
-//==>> (10,5,10,20): warning Nav1007: The choice node 'c1' has no incoming edges
+//==>>[Semantic](5,13,5,15): warning Nav0111: The choice node 'c1' has no incoming edges
+//==>>[DeadCode](9,5,9,20): warning Nav1007: The choice node 'c1' has no incoming edges
+//==>>[DeadCode](10,5,10,20): warning Nav1007: The choice node 'c1' has no incoming edges

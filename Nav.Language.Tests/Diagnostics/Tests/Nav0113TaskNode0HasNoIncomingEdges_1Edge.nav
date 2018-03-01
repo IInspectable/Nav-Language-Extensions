@@ -7,5 +7,5 @@
     I1      --> e1;      
     A:e1    --> e1;
 }
-//==>> (5,10,5,11): warning Nav0113: The task node 'A' has no incoming edges
-//==>> (8,5,8,20): warning Nav1010: The task node 'A' has no incoming edges
+//==>>[Semantic](5,10,5,11): warning Nav0113: The task node 'A' has no incoming edges
+//==>>[DeadCode](8,5,8,20): warning Nav1010: The task node 'A' has no incoming edges

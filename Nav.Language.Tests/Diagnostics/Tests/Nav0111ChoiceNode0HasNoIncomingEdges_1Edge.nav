@@ -9,5 +9,5 @@
     Choice_e1   o-> v1;
     v1 --> e1   on trigger;
 }
-//==>> (5,12,5,21): warning Nav0111: The choice node 'Choice_e1' has no incoming edges
-//==>> (9,5,9,24): warning Nav1007: The choice node 'Choice_e1' has no incoming edges
+//==>>[Semantic](5,12,5,21): warning Nav0111: The choice node 'Choice_e1' has no incoming edges
+//==>>[DeadCode](9,5,9,24): warning Nav1007: The choice node 'Choice_e1' has no incoming edges

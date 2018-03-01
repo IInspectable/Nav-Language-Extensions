@@ -7,4 +7,4 @@
     I1 --> e1;   
     I1 --> C;  
 }
-//==>> (5,10,5,11): error Nav0010: Cannot resolve task 'C'
+//==>>[Semantic](5,10,5,11): error Nav0010: Cannot resolve task 'C'

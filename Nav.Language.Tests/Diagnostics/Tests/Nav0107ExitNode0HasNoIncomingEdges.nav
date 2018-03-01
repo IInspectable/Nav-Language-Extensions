@@ -7,4 +7,4 @@
     I1  --> V;
     V   --> V on Trigger;
 }
-//==>> (4,10,4,12): warning Nav0107: The exit node 'e1' has no incoming edges
+//==>>[Semantic](4,10,4,12): warning Nav0107: The exit node 'e1' has no incoming edges

@@ -4,6 +4,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 
 using NUnit.Framework;
 
@@ -108,7 +110,7 @@ namespace Nav.Language.Tests {
             var unit = BuildCodeGenerationUnit(nav);
             ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0102EndNodeMustNotContainLeavingEdges));
         }
-
+        
         [Test, TestCaseSource(nameof(GetTestCases))]
         public void TestCase(FileTestCase testCase) {
 
@@ -116,6 +118,41 @@ namespace Nav.Language.Tests {
             var    unit   = BuildCodeGenerationUnit(source);
 
             var expected = ParseDiagnostics(source);
+
+            var actualDiagnostics = GetActualDiagnostics(unit);
+            var actual            = ToUnitTestString(actualDiagnostics);
+
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
+        [Test, Explicit]
+        public void FixTests() {
+
+            // Macht alles Tests grün...
+            foreach(var testcase in GetTestCases()) {
+                var source = File.ReadAllText(testcase.FilePath);
+                var unit   = BuildCodeGenerationUnit(source);
+
+                var actualDiagnostics = GetActualDiagnostics(unit);
+                var actual            = ToUnitTestString(actualDiagnostics);
+
+                var linePrefix = Regex.Escape(UnitTestDiagnosticFormatter.LinePrefix);
+                var rawSource  = Regex.Replace(source, $"^{linePrefix}.*$", "", RegexOptions.Multiline);
+                rawSource = Regex.Replace(rawSource, @"\s+\z", "");
+
+                var newContentBuilder = new StringBuilder();
+                newContentBuilder.AppendLine(rawSource);
+                foreach(var line in actual) {
+                    newContentBuilder.AppendLine(line);
+                }
+
+                var newContent = newContentBuilder.ToString();
+
+                File.WriteAllText(testcase.FilePath, newContent, Encoding.UTF8);
+            }
+        }
+
+        static IEnumerable<Diagnostic> GetActualDiagnostics(CodeGenerationUnit unit) {
 
             // Diagnostic in der stabilen Reihenfolge Error, Warning, Suggestion => Position => Syntaxfehler, Semantikfehler
             var allDiagnostics = unit.Syntax.SyntaxTree.Diagnostics
@@ -129,9 +166,7 @@ namespace Nav.Language.Tests {
             var suggestions = allDiagnostics.Suggestions();
 
             var actualDiagnostics = errors.Concat(warnings).Concat(suggestions);
-            var actual            = ToUnitTestString(actualDiagnostics);
-
-            Assert.That(actual, Is.EqualTo(expected));
+            return actualDiagnostics;
         }
 
         public static IEnumerable<FileTestCase> GetTestCases() {

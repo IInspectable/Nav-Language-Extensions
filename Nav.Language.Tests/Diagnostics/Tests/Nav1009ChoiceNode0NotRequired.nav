@@ -16,4 +16,4 @@ task A
 
     I1  --> e1;
 }
-//==>> (15,5,15,14): warning Nav1009: The choice node 'C' is not required by the code and can be safely removed
+//==>>[DeadCode](15,5,15,14): warning Nav1009: The choice node 'C' is not required by the code and can be safely removed

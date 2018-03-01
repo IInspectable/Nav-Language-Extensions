@@ -6,4 +6,4 @@
 
     I1  --> e1;    
 }
-//==>> (5,5,5,12): warning Nav1017: The view node 'v' is not required by the code and can be safely removed
+//==>>[DeadCode](5,5,5,12): warning Nav1017: The view node 'v' is not required by the code and can be safely removed

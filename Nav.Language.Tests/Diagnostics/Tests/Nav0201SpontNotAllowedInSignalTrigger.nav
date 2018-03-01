@@ -9,4 +9,4 @@
 
     V1 --> e1 on "spont";
 }
-//==>> (10,18,10,25): error Nav0201: Spontaneous not allowed in signal trigger
+//==>>[Semantic](10,18,10,25): error Nav0201: Spontaneous not allowed in signal trigger

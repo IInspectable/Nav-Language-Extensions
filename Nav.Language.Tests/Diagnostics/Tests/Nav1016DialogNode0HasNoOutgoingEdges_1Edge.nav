@@ -8,5 +8,5 @@
     I1  --> e1;
     I2  --> C;                    
 }
-//==>> (6,12,6,13): warning Nav0115: The dialog node 'C' has no outgoing edges
-//==>> (9,5,9,15): warning Nav1016: The dialog node 'C' has no outgoing edges
+//==>>[Semantic](6,12,6,13): warning Nav0115: The dialog node 'C' has no outgoing edges
+//==>>[DeadCode](9,5,9,15): warning Nav1016: The dialog node 'C' has no outgoing edges

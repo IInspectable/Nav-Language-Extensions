@@ -5,4 +5,4 @@
 
     I1  --> e1 on Foo;
 }
-//==>> (6,16,6,22): error Nav0200: Signal trigger not allowed after init
+//==>>[Semantic](6,16,6,22): error Nav0200: Signal trigger not allowed after init

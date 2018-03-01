@@ -8,4 +8,4 @@
     I1 --> e1; 
     A:e1 --> F;
 }
-//==>> (9,14,9,15): error Nav0011: Cannot resolve node 'F'
+//==>>[Semantic](9,14,9,15): error Nav0011: Cannot resolve node 'F'

@@ -19,6 +19,6 @@ task A
     C:e1 --> e1;
     C:e2 --> e1;
 }
-//==>> (15,10,15,11): warning Nav0113: The task node 'C' has no incoming edges
-//==>> (19,5,19,17): warning Nav1010: The task node 'C' has no incoming edges
-//==>> (20,5,20,17): warning Nav1010: The task node 'C' has no incoming edges
+//==>>[Semantic](15,10,15,11): warning Nav0113: The task node 'C' has no incoming edges
+//==>>[DeadCode](19,5,19,17): warning Nav1010: The task node 'C' has no incoming edges
+//==>>[DeadCode](20,5,20,17): warning Nav1010: The task node 'C' has no incoming edges

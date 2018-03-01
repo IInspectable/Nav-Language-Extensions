@@ -6,4 +6,4 @@
     I1 --> C;     
     I1 --> e1;
 }
-//==>> (6,12,6,13): error Nav0011: Cannot resolve node 'C'
+//==>>[Semantic](6,12,6,13): error Nav0011: Cannot resolve node 'C'

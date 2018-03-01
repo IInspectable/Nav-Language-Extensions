@@ -12,5 +12,5 @@ task A
                 
     I1 --> e1;    
 }
-//==>> (1,6,1,7): error Nav0020: A task with the name 'A' is already declared
-//==>> (8,6,8,7): error Nav0020: A task with the name 'A' is already declared
+//==>>[Semantic](1,6,1,7): error Nav0020: A task with the name 'A' is already declared
+//==>>[Semantic](8,6,8,7): error Nav0020: A task with the name 'A' is already declared

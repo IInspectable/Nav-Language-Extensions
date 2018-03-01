@@ -8,4 +8,4 @@
     I1   --> A;
     A:e1 --> I1;
 }
-//==>> (9,14,9,16): error Nav0103: An init node must not contain incoming edges
+//==>>[Semantic](9,14,9,16): error Nav0103: An init node must not contain incoming edges

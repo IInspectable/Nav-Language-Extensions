@@ -9,4 +9,4 @@
     Choice_e1   o-> v1;
     v1          --> e1 on trigger;
 }
-//==>> (9,17,9,20): error Nav0110: 'Modal Edge' edge not allowed here because 'v1' is reachable from init node 'I1'
+//==>>[Semantic](9,17,9,20): error Nav0110: 'Modal Edge' edge not allowed here because 'v1' is reachable from init node 'I1'

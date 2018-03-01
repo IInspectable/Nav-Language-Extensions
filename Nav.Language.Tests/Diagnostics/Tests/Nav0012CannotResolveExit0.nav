@@ -15,4 +15,4 @@ task A
     B:e1 --> e1;
     B:e2 --> e1;
 }
-//==>> (16,7,16,9): error Nav0012: Cannot resolve exit 'e2'
+//==>>[Semantic](16,7,16,9): error Nav0012: Cannot resolve exit 'e2'

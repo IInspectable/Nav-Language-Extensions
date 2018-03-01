@@ -7,5 +7,5 @@
     I1 --> A;
     A  --> e1 on Foo, Foo;
 }
-//==>> (8,18,8,21): error Nav0026: Trigger 'Foo' is already declared
-//==>> (8,23,8,26): error Nav0026: Trigger 'Foo' is already declared
+//==>>[Semantic](8,18,8,21): error Nav0026: Trigger 'Foo' is already declared
+//==>>[Semantic](8,23,8,26): error Nav0026: Trigger 'Foo' is already declared

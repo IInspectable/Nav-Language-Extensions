@@ -9,4 +9,4 @@
 
     V1 --> e1 on Foo if Bla;
 }
-//==>> (10,22,10,28): error Nav0220: Conditions are not allowed in trigger transitions
+//==>>[Semantic](10,22,10,28): error Nav0220: Conditions are not allowed in trigger transitions
