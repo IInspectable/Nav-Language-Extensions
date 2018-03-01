@@ -374,7 +374,6 @@ namespace Pharmatechnik.Nav.Language {
             taskNode?.References.Add(exitTransition.SourceReference);
 
             WireTargetNodeReferences(exitTransition);
-
         }
 
         private void AddInitTransition(InitNodeSymbol initNode, TransitionDefinitionSyntax transitionDefinitionSyntax, SourceNodeSyntax sourceNodeSyntax, Location sourceNodeLocation, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
@@ -405,7 +404,10 @@ namespace Pharmatechnik.Nav.Language {
 
         private void AddTriggerTransition(IGuiNodeSymbolConstruction guiNode, TransitionDefinitionSyntax transitionDefinitionSyntax, SourceNodeSyntax sourceNodeSyntax, Location sourceNodelocation, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
-            var triggers          = GetTriggers(transitionDefinitionSyntax);
+            var result = TriggerSymbolBuilder.Build(transitionDefinitionSyntax);
+            _diagnostics.AddRange(result.Diagnostics);
+
+            var triggers          = result.Triggers;
             var guiNodeReference  = new GuiNodeReferenceSymbol(sourceNodeSyntax.Name, sourceNodelocation, guiNode, NodeReferenceType.Source);
             var triggerTransition = new TriggerTransition(transitionDefinitionSyntax, _taskDefinition, guiNodeReference, edgeMode, targetNodeReference, triggers);
 
@@ -458,7 +460,6 @@ namespace Pharmatechnik.Nav.Language {
             return targetNodeReference;
         }
         
-
         private static void WireTargetNodeReferences(IEdge edge) {
 
             //==============================
@@ -502,65 +503,6 @@ namespace Pharmatechnik.Nav.Language {
 
         #endregion
         
-        #region Trigger
-
-        // TODO Evtl. in eigenen Visitor auslagern
-
-        List<TriggerSymbol> _triggers;
-        SymbolCollection<TriggerSymbol> GetTriggers(TransitionDefinitionSyntax transitionDefinitionSyntax) {
-
-            var triggers = new List<TriggerSymbol>();
-
-            if (transitionDefinitionSyntax.Trigger != null) {
-                _triggers = triggers;
-                Visit(transitionDefinitionSyntax.Trigger);
-                _triggers = null;
-            }
-
-            var result = new SymbolCollection<TriggerSymbol>();
-            foreach (var trigger in triggers) {
-                var existing = result.TryFindSymbol(trigger.Name);
-                if (existing != null) {
-
-                    _diagnostics.Add(new Diagnostic(
-                                         trigger.Location,
-                                         existing.Location,
-                                         DiagnosticDescriptors.Semantic.Nav0026TriggerWithName0AlreadyDeclared,
-                                         existing.Name));
-
-                } else {
-                    result.Add(trigger);
-                }
-            }
-
-            return result;
-        }
-
-        public override void VisitSpontaneousTrigger(SpontaneousTriggerSyntax spontaneousTriggerSyntax) {
-            var location = spontaneousTriggerSyntax.GetLocation();
-            if (location != null) {
-                var trigger = new SpontaneousTriggerSymbol(location, spontaneousTriggerSyntax);
-                _triggers.Add(trigger);
-            }
-        }
-
-        public override void VisitSignalTrigger(SignalTriggerSyntax signalTriggerSyntax) {
-
-            if (signalTriggerSyntax.IdentifierOrStringList == null) {
-                return;
-            }
-
-            foreach (var signal in signalTriggerSyntax.IdentifierOrStringList) {
-                var location = signal.GetLocation();
-                if (location != null) {
-                    var trigger = new SignalTriggerSymbol(signal.Text, location, signal);
-                    _triggers.Add(trigger);
-                }
-            }
-        }
-
-        #endregion
-
         void AnalyzeTaskDefinition() {
 
             var analyzers = Analyzer.GetTaskDefinitionAnalyzer();

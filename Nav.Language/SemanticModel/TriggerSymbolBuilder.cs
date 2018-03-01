@@ -9,32 +9,30 @@ namespace Pharmatechnik.Nav.Language {
             Diagnostics = diagnostics ?? new List<Diagnostic>();
         }
 
-        public SymbolCollection<TriggerSymbol> Triggers { get; }
-
-        public IReadOnlyList<Diagnostic> Diagnostics { get; }
+        public SymbolCollection<TriggerSymbol> Triggers    { get; }
+        public IReadOnlyList<Diagnostic>       Diagnostics { get; }
 
     }
 
-    class TriggerSymbolBuilder: SyntaxNodeVisitor {
+    sealed class TriggerSymbolBuilder: SyntaxNodeVisitor {
 
         readonly List<TriggerSymbol> _triggers;
         readonly List<Diagnostic>    _diagnostics;
 
-        public TriggerSymbolBuilder() {
-            _diagnostics = new List<Diagnostic>();
+        public TriggerSymbolBuilder(List<Diagnostic> diagnostics) {
+            _diagnostics = diagnostics ?? new List<Diagnostic>();
             _triggers    = new List<TriggerSymbol>();
-
         }
 
         public static TriggerSymbolBuilderResult Build(TransitionDefinitionSyntax transitionDefinitionSyntax) {
-            var builder  = new TriggerSymbolBuilder();
+
+            var diagnostics = new List<Diagnostic>();
+            var builder     = new TriggerSymbolBuilder(diagnostics);
+
             var triggers = builder.GetTriggers(transitionDefinitionSyntax);
-            return new TriggerSymbolBuilderResult(triggers, builder._diagnostics);
+
+            return new TriggerSymbolBuilderResult(triggers, diagnostics);
         }
-
-        #region Trigger
-
-        // TODO Evtl. in eigenen Visitor auslagern
 
         public SymbolCollection<TriggerSymbol> GetTriggers(TransitionDefinitionSyntax transitionDefinitionSyntax) {
 
@@ -83,8 +81,6 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
         }
-
-        #endregion
 
     }
 
