@@ -1,0 +1,9 @@
+﻿task A
+{
+    init I1;  
+    exit e1;
+    dialog d;
+
+    I1  --> e1;    
+}
+//==>> (5,5,5,14): warning Nav1014: The dialog node 'd' is not required by the code and can be safely removed

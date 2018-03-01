@@ -1,0 +1,12 @@
+﻿task A
+{
+    init I1;  
+    exit e1;
+    exit e2;
+    choice C;
+
+    I1  --> C;
+    C   --> e1 on Foo;             
+    C   --> e2;
+}
+//==>> (9,16,9,22): error Nav0203: Trigger not allowed after choice

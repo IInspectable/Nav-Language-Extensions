@@ -1,0 +1,19 @@
+﻿task C 
+{
+    init I1;
+    init I2;
+    exit e1;
+    exit e2;
+    I1 --> e1;
+    I2 --> e2;
+}
+
+task A
+{
+    init I1;               
+    exit e1;
+    choice C;
+
+    I1  --> e1;
+}
+//==>> (15,5,15,14): warning Nav1009: The choice node 'C' is not required by the code and can be safely removed

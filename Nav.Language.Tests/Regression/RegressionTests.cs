@@ -11,13 +11,13 @@ using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
-namespace Nav.Language.Tests.Regression {
+namespace Nav.Language.Tests {
 
     [TestFixture]
     public class RegressionTests {
 
         [Test, TestCaseSource(nameof(GetFileTestCases))]
-        public void CompareFile(FileTestCase pair) {
+        public void TestCase(FileTestCase pair) {
 
             var generatedContent = File.ReadAllText(pair.GeneratedFile);
             var expectedContent  = File.ReadAllText(pair.ExpectedFile);

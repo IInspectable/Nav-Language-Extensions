@@ -1,0 +1,17 @@
+﻿ task A
+{
+    init I1;            
+    exit e1;
+    task A;
+    task A;
+    task A;
+                
+    I1   --> e1;    
+    I1   --> A;
+    A:e1 --> e1;
+}
+// TODO Ist das so gewollt?
+//==>> (5,10,5,11): error Nav0022: A node with the name 'A' is already declared
+//==>> (5,10,5,11): error Nav0022: A node with the name 'A' is already declared
+//==>> (6,10,6,11): error Nav0022: A node with the name 'A' is already declared
+//==>> (7,10,7,11): error Nav0022: A node with the name 'A' is already declared

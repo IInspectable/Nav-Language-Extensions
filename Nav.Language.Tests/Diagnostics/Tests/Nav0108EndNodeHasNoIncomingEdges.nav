@@ -1,0 +1,10 @@
+﻿task A
+{
+    init I1;            
+    end;
+    view V;
+
+    I1  --> V;
+    V   --> V on Trigger;
+}
+//==>> (4,5,4,8): warning Nav0108: The end node has no incoming edges

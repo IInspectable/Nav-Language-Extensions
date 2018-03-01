@@ -1,0 +1,11 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    task A;
+                
+    I1 --> A;
+    A --> e1;
+    A:e1 --> e1;
+}
+//==>> (8,5,8,6): error Nav0100: The task 'A' must not contain leaving edges

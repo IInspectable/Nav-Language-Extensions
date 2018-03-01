@@ -1,0 +1,11 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    task A;
+                
+    I1 --> A;  
+    I1 --> e1; 
+    A:e1 --> F;
+}
+//==>> (9,14,9,15): error Nav0011: Cannot resolve node 'F'

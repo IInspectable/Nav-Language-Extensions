@@ -1,0 +1,7 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    I1 ---> e1; // <== SyntaxFehler
+}
+//==>> (5,8,5,8): error Nav0000: Unexpected character '[@22,58:58='-',<45>,channel=10,5:7]'

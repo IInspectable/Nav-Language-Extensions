@@ -1,0 +1,14 @@
+﻿task A
+{
+    init I1;    
+    exit e1;
+    view C;
+
+    I1  --> e1;
+                    
+    C --> e1 on t1;
+    C --> e1 on t2;
+}
+//==>> (5,10,5,11): warning Nav0116: The view node 'C' has no incoming edges
+//==>> (9,5,9,20): warning Nav1018: The view node 'C' has no incoming edges
+//==>> (10,5,10,20): warning Nav1018: The view node 'C' has no incoming edges

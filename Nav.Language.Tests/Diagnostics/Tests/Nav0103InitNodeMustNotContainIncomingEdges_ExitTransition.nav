@@ -1,0 +1,11 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    task A;
+
+    I1   --> e1;
+    I1   --> A;
+    A:e1 --> I1;
+}
+//==>> (9,14,9,16): error Nav0103: An init node must not contain incoming edges

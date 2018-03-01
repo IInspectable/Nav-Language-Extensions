@@ -1,0 +1,17 @@
+﻿task A
+{
+    init I1;  
+    exit e1;
+    choice C;
+    view v1;
+
+    I1  --> v1;
+
+    v1  --> C;
+    C   --> v1;             
+    C   o-> v1;
+    C   --> v1; 
+    C   --> e1;
+}
+//==>> (11,9,11,12): error Nav0222: Node v1 is reachable by different edge modes
+//==>> (12,9,12,12): error Nav0222: Node v1 is reachable by different edge modes

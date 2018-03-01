@@ -11,35 +11,161 @@ using Pharmatechnik.Nav.Language;
 
 #endregion
 
-namespace Nav.Language.Tests.Diagnostics {
+namespace Nav.Language.Tests {
 
     [TestFixture]
     public class DiagnosticTests {
 
+        // TODO Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
+        // TODO Nav0221OnlyIfConditionsAllowedInExitTransitions
+        // TODO Nav2000IdentifierExpected
+
+        [Test]
+        public void Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed() {
+
+            var nav = @"
+            taskref ""foo.nav""
+//                   ^-------^ Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed
+            task A
+            {
+                init I1;            
+                exit e1;
+                I1 --> e1;     
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed));
+        }
+
+        [Test]
+        public void Nav0004File0NotFound() {
+
+            var nav = @"
+            taskref ""foo.nav""
+//                   ^-------^ Nav0004File0NotFound
+            task A
+            {
+                init I1;            
+                exit e1;
+                I1 --> e1;     
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav, MkFileName("bar.nav"));
+
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0004File0NotFound));
+        }
+
+        [Test]
+        public void Nav0005IncludeFile0HasSomeErrors() {
+
+            var includedNav = @"           
+            task A
+            {
+                init I1;            
+                exit e1;
+                I1 ---> e1; // <== SyntaxFehler
+            }
+            ";
+
+            var testNav = @"          
+            taskref ""includedNav.nav"";
+            task B
+            {
+                init I1;            
+                exit e1;
+                task A;
+                I1 --> A; 
+                A:e1 --> e1;
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(new TestCaseFile {Content = testNav, FilePath     = MkFileName(nameof(testNav))},
+                                               new TestCaseFile {Content = includedNav, FilePath = MkFileName(nameof(includedNav))});
+
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0005IncludeFile0HasSomeErrors));
+        }
+
+        [Test]
+        [Ignore("Dieser Test funktioniert in der Praxis nicht, da er bereits zu einem Syntaxfehler führt.")]
+        public void Nav0102EndNodeMustNotContainLeavingEdges() {
+
+            var nav = @"
+          
+            task A
+            {
+                init I1;            
+                exit e1;
+                end;
+                
+                I1 --> e1;
+                end --> e1;
+            }
+            ";
+
+            var unit = BuildCodeGenerationUnit(nav);
+            ExpectExactly(unit, This(DiagnosticDescriptors.Semantic.Nav0102EndNodeMustNotContainLeavingEdges));
+        }
+
         [Test, TestCaseSource(nameof(GetTestCases))]
-        public void TestDiagnostics(FileTestCase testCase) {
+        public void TestCase(FileTestCase testCase) {
 
             string source = testCase.SourceText();
             var    unit   = BuildCodeGenerationUnit(source);
 
             var expected = ParseDiagnostics(source);
-            var actual   = ToUnitTestString(unit.Diagnostics);
+            var actualDiagnostics = unit.Diagnostics
+                                        .Concat(unit.Syntax.SyntaxTree.Diagnostics)
+                                        .SelectMany(d => d.ExpandLocations());
+            var actual = ToUnitTestString(actualDiagnostics);
 
             Assert.That(actual, Is.EquivalentTo(expected));
         }
 
         public static IEnumerable<FileTestCase> GetTestCases() {
 
-            return CollectNavFiles().Select(navFile => new FileTestCase {
+            var directory = GetDiagnosticTestDirectory();
+            var navFiles  = Directory.EnumerateFiles(directory, "*.nav", SearchOption.TopDirectoryOnly);
+            return navFiles.Select(navFile => new FileTestCase {
                 FilePath = navFile,
             });
         }
 
-        static IEnumerable<string> CollectNavFiles() {
-            var directory = GetDiagnosticTestDirectory();
-            var navFiles  = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories);
+        #region Infrastructure
 
-            return navFiles;
+        static DiagnosticExpectation This(DiagnosticDescriptor diagnosticDescriptor, int locationCount = 1) {
+            return new DiagnosticExpectation(diagnosticDescriptor, locationCount);
+        }
+
+        class DiagnosticExpectation {
+
+            public DiagnosticExpectation(DiagnosticDescriptor diagnosticDescriptor, int locationCount = 1) {
+                DiagnosticDescriptor = diagnosticDescriptor;
+                LocationCount        = locationCount;
+            }
+
+            public DiagnosticDescriptor DiagnosticDescriptor { get; }
+            public int                  LocationCount        { get; }
+
+        }
+
+        void ExpectExactly(CodeGenerationUnit unit, params DiagnosticExpectation[] diags) {
+            ExpectExactly(unit.Diagnostics, diags);
+        }
+
+        void ExpectExactly(IReadOnlyList<Diagnostic> diagnostics, params DiagnosticExpectation[] expects) {
+            Assert.That(diagnostics.Select(diag => diag.Descriptor), Is.EquivalentTo(expects.Select(e => e.DiagnosticDescriptor)));
+
+            var expectedLocations = diagnostics.Join(expects,
+                                                     diag => diag.Descriptor.Id,
+                                                     exp => exp.DiagnosticDescriptor.Id,
+                                                     (diag, exp) => new {Diagnostic = diag, ExpectedLocations = exp.LocationCount});
+
+            foreach (var x in expectedLocations) {
+                Assert.That(x.Diagnostic.GetLocations().Count(), Is.EqualTo(x.ExpectedLocations), x.Diagnostic.ToString());
+            }
         }
 
         static string GetDiagnosticTestDirectory() {
@@ -47,15 +173,84 @@ namespace Nav.Language.Tests.Diagnostics {
             return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\Diagnostics\Tests"));
         }
 
-        IEnumerable<string> ParseDiagnostics(string source) {
+        IEnumerable<DiagnosticResult> ParseDiagnostics(string source) {
 
             return source.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None)
                          .Where(l => l.StartsWith(UnitTestDiagnosticFormatter.LinePrefix))
-                         .Select(s => s.TrimEnd());
+                         .Select(s => s.TrimEnd())
+                         .Select(s => new DiagnosticResult(s));
         }
 
-        IEnumerable<string> ToUnitTestString(IEnumerable<Diagnostic> diagnostics) {
-            return diagnostics.Select(diagnostic => diagnostic.ToString(UnitTestDiagnosticFormatter.Instance));
+        IEnumerable<DiagnosticResult> ToUnitTestString(IEnumerable<Diagnostic> diagnostics) {
+            return diagnostics.Select(diagnostic => diagnostic.ToString(UnitTestDiagnosticFormatter.Instance))
+                              .Select(s => new DiagnosticResult(s));
+        }
+
+        public class DiagnosticResult: IEquatable<DiagnosticResult> {
+
+            public DiagnosticResult(string diagnosticText) {
+                DiagnosticText = diagnosticText;
+
+            }
+
+            public string DiagnosticText { get; }
+
+            public override string ToString() {
+                return DiagnosticText;
+            }
+
+            #region Equality members
+
+            public bool Equals(DiagnosticResult other) {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+
+                return string.Equals(DiagnosticText, other.DiagnosticText);
+            }
+
+            public override bool Equals(object obj) {
+                if (ReferenceEquals(null, obj)) {
+                    return false;
+                }
+
+                if (ReferenceEquals(this, obj)) {
+                    return true;
+                }
+
+                if (obj.GetType() != GetType()) {
+                    return false;
+                }
+
+                return Equals((DiagnosticResult) obj);
+            }
+
+            public override int GetHashCode() {
+                return (DiagnosticText != null ? DiagnosticText.GetHashCode() : 0);
+            }
+
+            public static bool operator ==(DiagnosticResult left, DiagnosticResult right) {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(DiagnosticResult left, DiagnosticResult right) {
+                return !Equals(left, right);
+            }
+
+            #endregion
+
+        }
+
+        CodeGenerationUnit BuildCodeGenerationUnit(TestCaseFile navFile, params TestCaseFile[] includes) {
+
+            var syntaxProvider = new TestSyntaxProvider();
+            syntaxProvider.RegisterFile(navFile);
+            foreach (var include in includes) {
+                syntaxProvider.RegisterFile(include);
+            }
+
+            var syntax = syntaxProvider.FromFile(navFile.FilePath);
+            var model  = CodeGenerationUnit.FromCodeGenerationUnitSyntax(syntax, syntaxProvider: syntaxProvider);
+            return model;
         }
 
         CodeGenerationUnit BuildCodeGenerationUnit(string source, string filePath = null) {
@@ -70,14 +265,24 @@ namespace Nav.Language.Tests.Diagnostics {
             public string SourceText() => File.ReadAllText(FilePath);
 
             public override string ToString() {
-                if(FilePath == null) {
+                if (FilePath == null) {
                     return "Unknown";
                 }
 
-                return Path.GetFileNameWithoutExtension(FilePath);
+                return Path.GetFileName(FilePath);
             }
 
         }
+
+        static string MkFileName(string filename) {
+            if (String.IsNullOrEmpty(Path.GetExtension(filename))) {
+                filename = Path.ChangeExtension(filename, "nav");
+            }
+
+            return $@"n:\av\{filename}";
+        }
+
+        #endregion
 
     }
 

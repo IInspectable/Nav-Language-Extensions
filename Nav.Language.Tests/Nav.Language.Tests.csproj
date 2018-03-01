@@ -207,7 +207,6 @@
       <DependentUpon>SyntaxTest.tt</DependentUpon>
     </Compile>
     <Compile Include="RenameChoiceCodeFixTests.cs" />
-    <Compile Include="SemanticAnalyzerTests.cs" />
     <Compile Include="SemanticTests.cs" />
     <Compile Include="SymbolVisitorTests.cs" />
     <Compile Include="SyntaxErrorTests.cs" />
@@ -290,8 +289,68 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Diagnostics\Tests\Nav0011CannotResolveNode0_Source.nav" />
+    <Content Include="Diagnostics\Tests\Nav0010CannotResolveTask0_ExitTransition.nav" />
+    <Content Include="Diagnostics\Tests\Nav0000UnexpectedCharacter.nav" />
     <Content Include="Diagnostics\Tests\Nav0010CannotResolveTask0_Used.nav" />
     <Content Include="Diagnostics\Tests\Nav0010CannotResolveTask0_Unused.nav" />
+    <Content Include="Diagnostics\Tests\Nav0011CannotResolveNode0_Target.nav" />
+    <Content Include="Diagnostics\Tests\Nav0011CannotResolveNode0_TargetInExitTransition.nav" />
+    <Content Include="Diagnostics\Tests\Nav0012CannotResolveExit0.nav" />
+    <Content Include="Diagnostics\Tests\Nav0012CannotResolveExit0_Init.nav" />
+    <Content Include="Diagnostics\Tests\Nav0020TaskWithName0AlreadyDeclared.nav" />
+    <Content Include="Diagnostics\Tests\Nav0021ConnectionPointWithName0AlreadyDeclared.nav" />
+    <Content Include="Diagnostics\Tests\Nav0022NodeWithName0AlreadyDeclared.nav" />
+    <Content Include="Diagnostics\Tests\Nav0022NodeWithName0AlreadyDeclared_3Nodes.nav" />
+    <Content Include="Diagnostics\Tests\Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared.nav" />
+    <Content Include="Diagnostics\Tests\Nav0024OutgoingEdgeForExit0AlreadyDeclared.nav" />
+    <Content Include="Diagnostics\Tests\Nav0025NoOutgoingEdgeForExit0Declared_1Edges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0025NoOutgoingEdgeForExit0Declared_2Edges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0026TriggerWithName0AlreadyDeclared.nav" />
+    <Content Include="Diagnostics\Tests\Nav0100TaskNode0MustNotContainLeavingEdges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0101ExitNodeMustNotContainLeavingEdges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0103InitNodeMustNotContainIncomingEdges_ExitTransition.nav" />
+    <Content Include="Diagnostics\Tests\Nav0103InitNodeMustNotContainIncomingEdges_Transition.nav" />
+    <Content Include="Diagnostics\Tests\Nav0104ChoiceNode0MustOnlyReachedByGoTo_OnExitTransition.nav" />
+    <Content Include="Diagnostics\Tests\Nav0104ChoiceNode0MustOnlyReachedByGoTo_OnModalEdge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0104ChoiceNode0MustOnlyReachedByGoTo_OnNonModalEdge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0105ExitNode0MustOnlyReachedByGoTo_OnExitTransition.nav" />
+    <Content Include="Diagnostics\Tests\Nav0105ExitNode0MustOnlyReachedByGoTo_OnModalEdge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0105ExitNode0MustOnlyReachedByGoTo_OnNonModalEdge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0106EndNode0MustOnlyReachedByGoTo_OnExitTransition.nav" />
+    <Content Include="Diagnostics\Tests\Nav0106EndNode0MustOnlyReachedByGoTo_OnModalEdge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0106EndNode0MustOnlyReachedByGoTo_OnNonModalEdge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0107ExitNode0HasNoIncomingEdges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0108EndNodeHasNoIncomingEdges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0109InitNode0HasNoOutgoingEdges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2.nav" />
+    <Content Include="Diagnostics\Tests\Nav0111ChoiceNode0HasNoIncomingEdges_1Edge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0111ChoiceNode0HasNoIncomingEdges_2Edges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0112ChoiceNode0HasNoOutgoingEdges_1Edge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0112ChoiceNode0HasNoOutgoingEdges_2Edges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0113TaskNode0HasNoIncomingEdges_1Edge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0113TaskNode0HasNoIncomingEdges_2Edges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0114DialogNode0HasNoIncomingEdges_1Edge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0114DialogNode0HasNoIncomingEdges_2Edges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0116ViewNode0HasNoIncomingEdges_1Edge.nav" />
+    <Content Include="Diagnostics\Tests\Nav0116ViewNode0HasNoIncomingEdges_2Edges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0117ViewNode0HasNoOutgoingEdges_2Edges.nav" />
+    <Content Include="Diagnostics\Tests\Nav0200SignalTriggerNotAllowedAfterInit.nav" />
+    <Content Include="Diagnostics\Tests\Nav0201SpontaneousNotAllowedInSignalTrigger.nav" />
+    <Content Include="Diagnostics\Tests\Nav0201SpontNotAllowedInSignalTrigger.nav" />
+    <Content Include="Diagnostics\Tests\Nav0203TriggerNotAllowedAfterChoice.nav" />
+    <Content Include="Diagnostics\Tests\Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodesElse.nav" />
+    <Content Include="Diagnostics\Tests\Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodesIf.nav" />
+    <Content Include="Diagnostics\Tests\Nav0221OnlyIfConditionsAllowedInExitTransitions_Else.nav" />
+    <Content Include="Diagnostics\Tests\Nav0221OnlyIfConditionsAllowedInExitTransitions_ElseIf.nav" />
+    <Content Include="Diagnostics\Tests\Nav0221OnlyIfConditionsAllowedInExitTransitions_If.nav" />
+    <Content Include="Diagnostics\Tests\Nav0222Node0IsReachableByDifferentEdgeModes.nav" />
+    <Content Include="Diagnostics\Tests\Nav1009ChoiceNode0NotRequired.nav" />
+    <Content Include="Diagnostics\Tests\Nav1014DialogNode0NotRequired.nav" />
+    <Content Include="Diagnostics\Tests\Nav1016DialogNode0HasNoOutgoingEdges_1Edge.nav" />
+    <Content Include="Diagnostics\Tests\Nav1016DialogNode0HasNoOutgoingEdges_2Edges.nav" />
+    <Content Include="Diagnostics\Tests\Nav1017ViewNode0NotRequired.nav" />
+    <Content Include="Diagnostics\Tests\Nav1019ViewNode0HasNoOutgoingEdges_1Edge.nav" />
     <Content Include="Regression\Tests\Test.nav" />
     <Content Include="Regression\Tests\SimpleTask.nav" />
   </ItemGroup>

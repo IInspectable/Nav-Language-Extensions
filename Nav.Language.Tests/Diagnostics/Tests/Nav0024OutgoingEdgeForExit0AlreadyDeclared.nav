@@ -1,0 +1,19 @@
+﻿taskref A 
+{
+    init I1;  
+    exit e1;
+}
+
+task B
+{
+    init I1;  
+    exit e1;
+    task A t;
+
+    I1  --> t;
+
+    t:e1 --> e1;
+    t:e1 --> e1;        
+}
+//==>> (15,7,15,9): error Nav0024: An outgoing edge for exit 'e1' is already declared
+//==>> (16,7,16,9): error Nav0024: An outgoing edge for exit 'e1' is already declared

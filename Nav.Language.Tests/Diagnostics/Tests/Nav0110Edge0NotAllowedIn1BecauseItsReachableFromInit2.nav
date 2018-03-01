@@ -1,0 +1,12 @@
+﻿ task A
+{
+    init I1;    
+    exit e1;
+    choice Choice_e1;
+    view v1;
+
+    I1          --> Choice_e1;
+    Choice_e1   o-> v1;
+    v1          --> e1 on trigger;
+}
+//==>> (9,17,9,20): error Nav0110: 'Modal Edge' edge not allowed here because 'v1' is reachable from init node 'I1'

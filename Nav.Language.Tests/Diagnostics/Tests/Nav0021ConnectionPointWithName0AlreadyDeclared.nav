@@ -1,0 +1,13 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    exit e1;
+                
+    I1 --> e1;    
+}
+// TODO ist das wirklich schön, wenn wir zwei Fehlemeldungen für die selbe Ursache bekommen?
+//==>> (4,10,4,12): error Nav0021: A connection point with the name 'e1' is already declared
+//==>> (4,10,4,12): error Nav0022: A node with the name 'e1' is already declared
+//==>> (5,10,5,12): error Nav0021: A connection point with the name 'e1' is already declared
+//==>> (5,10,5,12): error Nav0022: A node with the name 'e1' is already declared
