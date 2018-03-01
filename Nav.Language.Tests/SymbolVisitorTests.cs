@@ -19,6 +19,8 @@ namespace Nav.Language.Tests {
             Assert.That(visitor.VisitChoiceNodeReferenceSymbol(null), Is.True);
             Assert.That(visitor.VisitGuiNodeReferenceSymbol(null),    Is.True);
             Assert.That(visitor.VisitTaskNodeReferenceSymbol(null),   Is.True);
+            Assert.That(visitor.VisitExitNodeReferenceSymbol(null),   Is.True);
+            Assert.That(visitor.VisitEndNodeReferenceSymbol(null),    Is.True);
         }
 
         class SymbolVisitorOfBool: SymbolVisitor<bool> {
@@ -56,6 +58,14 @@ namespace Nav.Language.Tests {
 
             visitor = new TestSymbolVisitor();
             visitor.VisitTaskNodeReferenceSymbol(null);
+            Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
+
+            visitor = new TestSymbolVisitor();
+            visitor.VisitExitNodeReferenceSymbol(null);
+            Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
+
+            visitor = new TestSymbolVisitor();
+            visitor.VisitEndNodeReferenceSymbol(null);
             Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
 
         }

@@ -18,4 +18,10 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface ITaskNodeReferenceSymbol : INodeReferenceSymbol<ITaskNodeSymbol> {
     }
+
+    public interface IExitNodeReferenceSymbol : INodeReferenceSymbol<IExitNodeSymbol> {
+    }
+
+    public interface IEndNodeReferenceSymbol : INodeReferenceSymbol<IEndNodeSymbol> {
+    }
 }

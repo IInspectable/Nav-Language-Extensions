@@ -33,6 +33,8 @@
         void VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol);
         void VisitGuiNodeReferenceSymbol(IGuiNodeReferenceSymbol guiNodeReferenceSymbol);
         void VisitTaskNodeReferenceSymbol(ITaskNodeReferenceSymbol taskNodeReferenceSymbol);
+        void VisitExitNodeReferenceSymbol(IExitNodeReferenceSymbol exitNodeReferenceSymbol);
+        void VisitEndNodeReferenceSymbol(IEndNodeReferenceSymbol endNodeReferenceSymbol);
 
     }
 
@@ -62,6 +64,8 @@
         T VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol);
         T VisitGuiNodeReferenceSymbol(IGuiNodeReferenceSymbol guiNodeReferenceSymbol);
         T VisitTaskNodeReferenceSymbol(ITaskNodeReferenceSymbol taskNodeReferenceSymbol);
+        T VisitExitNodeReferenceSymbol(IExitNodeReferenceSymbol exitNodeReferenceSymbol);
+        T VisitEndNodeReferenceSymbol(IEndNodeReferenceSymbol endNodeReferenceSymbol);
 
     }
 
@@ -360,6 +364,30 @@
 
     }
 
+    partial class ExitNodeReferenceSymbol {
+
+        public override void Accept(ISymbolVisitor visitor) {
+            visitor.VisitExitNodeReferenceSymbol(this);
+        }
+
+        public override T Accept<T>(ISymbolVisitor<T> visitor) {
+            return visitor.VisitExitNodeReferenceSymbol(this);
+        }
+
+    }
+
+    partial class EndNodeReferenceSymbol {
+
+        public override void Accept(ISymbolVisitor visitor) {
+            visitor.VisitEndNodeReferenceSymbol(this);
+        }
+
+        public override T Accept<T>(ISymbolVisitor<T> visitor) {
+            return visitor.VisitEndNodeReferenceSymbol(this);
+        }
+
+    }
+
     public abstract class SymbolVisitor: ISymbolVisitor {
 
         public void Visit(ISymbol symbol) {
@@ -463,6 +491,14 @@
 
         public virtual void VisitTaskNodeReferenceSymbol(ITaskNodeReferenceSymbol taskNodeReferenceSymbol) {
             VisitNodeReferenceSymbol(taskNodeReferenceSymbol);
+        }
+
+        public virtual void VisitExitNodeReferenceSymbol(IExitNodeReferenceSymbol exitNodeReferenceSymbol) {
+            VisitNodeReferenceSymbol(exitNodeReferenceSymbol);
+        }
+
+        public virtual void VisitEndNodeReferenceSymbol(IEndNodeReferenceSymbol endNodeReferenceSymbol) {
+            VisitNodeReferenceSymbol(endNodeReferenceSymbol);
         }
 
     }
@@ -571,6 +607,14 @@
 
         public virtual T VisitTaskNodeReferenceSymbol(ITaskNodeReferenceSymbol taskNodeReferenceSymbol) {
             return VisitNodeReferenceSymbol(taskNodeReferenceSymbol);
+        }
+
+        public virtual T VisitExitNodeReferenceSymbol(IExitNodeReferenceSymbol exitNodeReferenceSymbol) {
+            return VisitNodeReferenceSymbol(exitNodeReferenceSymbol);
+        }
+
+        public virtual T VisitEndNodeReferenceSymbol(IEndNodeReferenceSymbol endNodeReferenceSymbol) {
+            return VisitNodeReferenceSymbol(endNodeReferenceSymbol);
         }
 
     }

@@ -423,18 +423,41 @@ namespace Pharmatechnik.Nav.Language {
                 return null;
             }
 
-            var targetNode         = _taskDefinition.NodeDeclarations.TryFindSymbol(targetNodeSyntax.Name);
-            var targetNodeLocation = targetNodeSyntax.GetLocation();
+            var targetNodeDeclaration = _taskDefinition.NodeDeclarations.TryFindSymbol(targetNodeSyntax.Name);
+            var targetNodeLocation    = targetNodeSyntax.GetLocation();
 
             if (targetNodeLocation == null) {
                 return null;
             }
 
-            // TODO entsprechend des Knotens ein ensprechendes NodeReferenceSymbol Derivat instantieren
-            var targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, targetNode, NodeReferenceType.Target);
-
+            NodeReferenceSymbol targetNodeReference=null;
+            switch (targetNodeDeclaration) {
+                case IInitNodeSymbol initNode:
+                    targetNodeReference = new InitNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, initNode, NodeReferenceType.Target);
+                    break;
+                case IChoiceNodeSymbol choiceNode:
+                    targetNodeReference = new ChoiceNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, choiceNode, NodeReferenceType.Target);
+                    break;
+                case ITaskNodeSymbol taskNode:
+                    targetNodeReference = new TaskNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, taskNode, NodeReferenceType.Target);
+                    break;
+                case IGuiNodeSymbol guiNode:
+                    targetNodeReference = new GuiNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, guiNode, NodeReferenceType.Target);
+                    break;
+                case IExitNodeSymbol exitNode:
+                    targetNodeReference = new ExitNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, exitNode, NodeReferenceType.Target);
+                    break;
+                case IEndNodeSymbol endNode:
+                    targetNodeReference = new EndNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, endNode, NodeReferenceType.Target);
+                    break;
+                default:
+                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, targetNodeDeclaration, NodeReferenceType.Target);
+                    break;
+            }
+            
             return targetNodeReference;
         }
+        
 
         private static void WireTargetNodeReferences(IEdge edge) {
 
@@ -478,7 +501,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         #endregion
-
+        
         #region Trigger
 
         // TODO Evtl. in eigenen Visitor auslagern

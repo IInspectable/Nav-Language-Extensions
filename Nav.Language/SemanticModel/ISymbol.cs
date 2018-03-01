@@ -13,6 +13,5 @@ namespace Pharmatechnik.Nav.Language {
 
         [NotNull]
         Location Location { get; }
-        // TODO Diagnostics hier anhängen?
     }
 }

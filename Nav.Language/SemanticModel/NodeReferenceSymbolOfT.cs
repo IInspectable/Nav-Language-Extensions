@@ -40,4 +40,18 @@ namespace Pharmatechnik.Nav.Language {
             : base(name, location, declaration, nodeReferenceType) {
         }
     }
+
+    sealed partial class ExitNodeReferenceSymbol : NodeReferenceSymbol<IExitNodeSymbol>, IExitNodeReferenceSymbol {
+
+        public ExitNodeReferenceSymbol(string name, Location location, IExitNodeSymbol declaration, NodeReferenceType nodeReferenceType)
+            : base(name, location, declaration, nodeReferenceType) {
+        }
+    }
+
+    sealed partial class EndNodeReferenceSymbol : NodeReferenceSymbol<IEndNodeSymbol>, IEndNodeReferenceSymbol {
+
+        public EndNodeReferenceSymbol(string name, Location location, IEndNodeSymbol declaration, NodeReferenceType nodeReferenceType)
+            : base(name, location, declaration, nodeReferenceType) {
+        }
+    }
 }
