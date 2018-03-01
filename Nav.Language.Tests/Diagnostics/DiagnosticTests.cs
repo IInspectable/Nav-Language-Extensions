@@ -17,7 +17,6 @@ namespace Nav.Language.Tests {
     public class DiagnosticTests {
 
         // TODO Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
-        // TODO Nav0221OnlyIfConditionsAllowedInExitTransitions
         // TODO Nav2000IdentifierExpected
 
         [Test]
@@ -25,7 +24,7 @@ namespace Nav.Language.Tests {
 
             var nav = @"
             taskref ""foo.nav""
-//                   ^-------^ Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed
+            //        ^------^ Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed
             task A
             {
                 init I1;            
@@ -44,7 +43,7 @@ namespace Nav.Language.Tests {
 
             var nav = @"
             taskref ""foo.nav""
-//                   ^-------^ Nav0004File0NotFound
+            /         ^------^ Nav0004File0NotFound
             task A
             {
                 init I1;            
@@ -66,7 +65,8 @@ namespace Nav.Language.Tests {
             {
                 init I1;            
                 exit e1;
-                I1 ---> e1; // <== SyntaxFehler
+                I1 ---> e1; // 
+                //-^- Syntaxfehler
             }
             ";
 
@@ -77,7 +77,7 @@ namespace Nav.Language.Tests {
                 init I1;            
                 exit e1;
                 task A;
-                I1 --> A; 
+                I1   --> A; 
                 A:e1 --> e1;
             }
             ";
@@ -100,7 +100,7 @@ namespace Nav.Language.Tests {
                 exit e1;
                 end;
                 
-                I1 --> e1;
+                I1  --> e1;
                 end --> e1;
             }
             ";
