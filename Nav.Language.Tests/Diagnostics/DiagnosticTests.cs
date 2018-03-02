@@ -18,7 +18,7 @@ namespace Nav.Language.Tests {
     [TestFixture]
     public class DiagnosticTests {
 
-        // TODO Nav2000IdentifierExpected
+        // TODO Nav2000IdentifierExpected vervollständigen
 
         [Test]
         public void Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed() {

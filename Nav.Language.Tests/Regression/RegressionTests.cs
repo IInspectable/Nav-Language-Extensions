@@ -49,7 +49,6 @@ namespace Nav.Language.Tests {
             var pipeline = NavCodeGeneratorPipeline.CreateDefault();
             var b        = pipeline.Run(fileSpecs);
 
-            // TODO Bessere Fehlerbehandlung/Ausgabe
             Assert.That(b, Is.True);
         }
 
