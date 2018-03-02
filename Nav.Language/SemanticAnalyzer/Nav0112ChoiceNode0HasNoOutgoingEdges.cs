@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0112ChoiceNode0HasNoOutgoingEdges: ITaskDefinitionAnalyzer {
+    public class Nav0112ChoiceNode0HasNoOutgoingEdges: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0112ChoiceNode0HasNoOutgoingEdges;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             //  The choice node '{0}' has no outgoing edges
             //==============================

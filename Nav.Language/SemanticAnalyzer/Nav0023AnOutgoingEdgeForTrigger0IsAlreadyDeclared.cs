@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared: ITaskDefinitionAnalyzer {
+    public class Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             // An outgoing edge for Trigger '{0}' is already declared
             //==============================

@@ -2,11 +2,11 @@
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0221OnlyIfConditionsAllowedInExitTransitions: ITaskDefinitionAnalyzer {
+    public class Nav0221OnlyIfConditionsAllowedInExitTransitions: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0221OnlyIfConditionsAllowedInExitTransitions;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0221OnlyIfConditionsAllowedInExitTransitions;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             // Only if conditions allowed in exit transitions
             //==============================

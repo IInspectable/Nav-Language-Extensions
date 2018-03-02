@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0201SpontaneousNotAllowedInSignalTrigger: ITaskDefinitionAnalyzer {
+    public class Nav0201SpontaneousNotAllowedInSignalTrigger: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0201SpontaneousNotAllowedInSignalTrigger;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0201SpontaneousNotAllowedInSignalTrigger;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             // Spontaneous not allowed in signal trigger
             //==============================

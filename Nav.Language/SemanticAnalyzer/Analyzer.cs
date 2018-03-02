@@ -14,20 +14,44 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
     }
 
-    public interface ITaskDefinitionAnalyzer {
+    public interface INavAnalyzer {
 
-        DiagnosticDescriptor Descriptor { get; }
-        IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context);
+        IEnumerable<Diagnostic> Analyze(CodeGenerationUnit codeGenerationUnit, AnalyzerContext context);
+
+    }
+
+    public abstract class NavAnalyzer: INavAnalyzer {
+
+        public abstract DiagnosticDescriptor Descriptor { get; }
+
+        public virtual IEnumerable<Diagnostic> Analyze(CodeGenerationUnit codeGenerationUnit, AnalyzerContext context) {
+            
+            foreach (var diag in codeGenerationUnit.TaskDeclarations.SelectMany(taskDeclaration=> Analyze(taskDeclaration, context))) {
+                yield return diag;
+            }
+
+            foreach (var diag in codeGenerationUnit.TaskDefinitions.SelectMany(taskDefinition=> Analyze(taskDefinition, context))) {
+                yield return diag;
+            }
+        }
+
+        public virtual IEnumerable<Diagnostic> Analyze(ITaskDeclarationSymbol taskDeclaration, AnalyzerContext context) {
+            yield break;
+        }
+
+        public virtual IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+            yield break;
+        }
 
     }
 
     static class Analyzer {
 
-        private static readonly Lazy<IList<ITaskDefinitionAnalyzer>> TaskDefinitionAnalyzer = new Lazy<IList<ITaskDefinitionAnalyzer>>(
-            () => GetInterfaceImplementationsFromAssembly<ITaskDefinitionAnalyzer>().ToList(),
+        private static readonly Lazy<IList<INavAnalyzer>> TaskDefinitionAnalyzer = new Lazy<IList<INavAnalyzer>>(
+            () => GetInterfaceImplementationsFromAssembly<INavAnalyzer>().ToList(),
             LazyThreadSafetyMode.PublicationOnly);
 
-        public static IEnumerable<ITaskDefinitionAnalyzer> GetTaskDefinitionAnalyzer() {
+        public static IEnumerable<INavAnalyzer> GetTaskDefinitionAnalyzer() {
             return TaskDefinitionAnalyzer.Value;
         }
 

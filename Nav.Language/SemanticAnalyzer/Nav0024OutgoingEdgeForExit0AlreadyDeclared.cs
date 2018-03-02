@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0024OutgoingEdgeForExit0AlreadyDeclared: ITaskDefinitionAnalyzer {
+    public class Nav0024OutgoingEdgeForExit0AlreadyDeclared: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0024OutgoingEdgeForExit0AlreadyDeclared;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0024OutgoingEdgeForExit0AlreadyDeclared;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             //  An outgoing edge for exit '{0}' is already declared
             //==============================

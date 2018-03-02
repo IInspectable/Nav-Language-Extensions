@@ -6,8 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 
-using Pharmatechnik.Nav.Language.CodeGen;
-
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
@@ -269,14 +267,7 @@ namespace Pharmatechnik.Nav.Language {
                                      messageArgs       : taskDeclaration.Name));
 
             } else {
-                if (taskDeclaration.Origin==TaskDeclarationOrigin.TaskDeclaration &&
-                    !CSharp.IsValidIdentifier(taskDeclaration.Name)) {
-                    // TODO in SemanticAnalyzer verschieben
-                    _diagnostics.Add(new Diagnostic(
-                                         location  : taskDeclaration.Location,
-                                         descriptor: DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected));
-                }
-
+                
                 _taskDeklarations.Add(taskDeclaration);
             }
         }

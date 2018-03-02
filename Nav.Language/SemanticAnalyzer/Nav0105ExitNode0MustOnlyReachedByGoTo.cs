@@ -2,11 +2,11 @@
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0105ExitNode0MustOnlyReachedByGoTo: ITaskDefinitionAnalyzer {
+    public class Nav0105ExitNode0MustOnlyReachedByGoTo: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0105ExitNode0MustOnlyReachedByGoTo;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             // Exit node '{0}' must only be reached by -->
             //==============================

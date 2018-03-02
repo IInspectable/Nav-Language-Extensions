@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav1017ViewNode0NotRequired: ITaskDefinitionAnalyzer {
+    public class Nav1017ViewNode0NotRequired: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.DeadCode.Nav1017ViewNode0NotRequired;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.DeadCode.Nav1017ViewNode0NotRequired;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             // The view node '{0}' is not required by the code and can be safely removed
             //==============================

@@ -2,11 +2,11 @@
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0220ConditionsAreNotAllowedInTriggerTransitions: ITaskDefinitionAnalyzer {
+    public class Nav0220ConditionsAreNotAllowedInTriggerTransitions: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0220ConditionsAreNotAllowedInTriggerTransitions;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0220ConditionsAreNotAllowedInTriggerTransitions;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             // Conditions are not allowed in trigger transitions
             //==============================

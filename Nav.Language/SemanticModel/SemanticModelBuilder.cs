@@ -7,6 +7,8 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.SemanticAnalyzer;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
@@ -42,7 +44,25 @@ namespace Pharmatechnik.Nav.Language {
 
             builder.Process(syntax, cancellationToken);
 
-            var model=new CodeGenerationUnit(
+            // Temporary model for analyzing
+            var tempModel=new CodeGenerationUnit(
+                syntax, 
+                builder._codeUsings, 
+                builder._taskDeclarations, 
+                builder._taskDefinitions,
+                builder._includes,
+                builder._symbols,
+                builder._diagnostics);
+
+            // Analyze Model
+            var analyzers = Analyzer.GetTaskDefinitionAnalyzer();
+            var context   = new AnalyzerContext();
+            foreach (var analyzer in analyzers) {
+                builder._diagnostics.AddRange(analyzer.Analyze(tempModel, context));
+            }
+
+            // Final Model
+            var model = new CodeGenerationUnit(
                 syntax, 
                 builder._codeUsings, 
                 builder._taskDeclarations, 
@@ -140,15 +160,8 @@ namespace Pharmatechnik.Nav.Language {
             var nsSyntax = codeUsingDeclarationSyntax.Namespace;
             var ns       = nsSyntax.ToString();
 
-            if (_codeUsings.Contains(ns)) {
-                _diagnostics.Add(new Diagnostic(
-                    codeUsingDeclarationSyntax.GetLocation(),
-                    DiagnosticDescriptors.DeadCode.Nav1002UsingDirective0AppearedPreviously,
-                    ns));
+             _codeUsings.Add(ns);
 
-            } else {
-                _codeUsings.Add(ns);
-            }
         }
 
         // ReSharper disable once UnusedParameter.Local

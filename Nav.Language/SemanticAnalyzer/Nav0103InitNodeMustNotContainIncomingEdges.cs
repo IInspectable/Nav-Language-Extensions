@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-     public class Nav0103InitNodeMustNotContainIncomingEdges: ITaskDefinitionAnalyzer {
+     public class Nav0103InitNodeMustNotContainIncomingEdges: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0103InitNodeMustNotContainIncomingEdges;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0103InitNodeMustNotContainIncomingEdges;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             // An init node must not contain incoming edges
             //==============================

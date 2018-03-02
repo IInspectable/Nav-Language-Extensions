@@ -289,6 +289,7 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Diagnostics\Tests\Nav1002UsingDirective0AppearedPreviously.nav" />
     <Content Include="Diagnostics\Tests\Nav2000IdentifierExpected.nav" />
     <Content Include="Diagnostics\Tests\Nav0011CannotResolveNode0_Source.nav" />
     <Content Include="Diagnostics\Tests\Nav0010CannotResolveTask0_ExitTransition.nav" />

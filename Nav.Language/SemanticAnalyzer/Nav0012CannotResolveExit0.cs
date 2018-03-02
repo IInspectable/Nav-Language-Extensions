@@ -2,11 +2,11 @@
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0012CannotResolveExit0: ITaskDefinitionAnalyzer {
+    public class Nav0012CannotResolveExit0: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0012CannotResolveExit0;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0012CannotResolveExit0;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             // Cannot resolve exit '{0}'
             //==============================

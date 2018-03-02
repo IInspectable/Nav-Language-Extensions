@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
 
-    public class Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2: ITaskDefinitionAnalyzer {
+    public class Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2: NavAnalyzer {
 
-        public DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2;
+        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2;
 
-        public IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
             //==============================
             // '{0}' edge not allowed here because '{1}' is reachable from init node '{2}'
             //==============================

@@ -5,8 +5,6 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
-using Pharmatechnik.Nav.Language.SemanticAnalyzer;
-
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
@@ -69,7 +67,6 @@ namespace Pharmatechnik.Nav.Language {
                 Visit(transitionDefinitionSyntax);
             }
 
-            AnalyzeTaskDefinition();
         }
 
         #region Node Declarations
@@ -502,16 +499,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         #endregion
-        
-        void AnalyzeTaskDefinition() {
-
-            var analyzers = Analyzer.GetTaskDefinitionAnalyzer();
-            var context   = new AnalyzerContext();
-            foreach (var analyzer in analyzers) {
-                _diagnostics.AddRange(analyzer.Analyze(_taskDefinition, context));
-            }
-        }
-
+      
         public static TaskDefinitionBuilderResult Build(TaskDefinitionSyntax taskDefinitionSyntax, IReadOnlySymbolCollection<TaskDeclarationSymbol> taskDeklarations) {           
             var builder = new TaskDefinitionSymbolBuilder(taskDeklarations);
             builder.Visit(taskDefinitionSyntax);
