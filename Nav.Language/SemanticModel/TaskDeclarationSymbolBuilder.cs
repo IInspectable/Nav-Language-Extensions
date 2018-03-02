@@ -141,7 +141,7 @@ namespace Pharmatechnik.Nav.Language {
                 _diagnostics.Add(new Diagnostic(
                                      include.Location,
                                      DiagnosticDescriptors.DeadCode.Nav1001IncludeDirectiveForFile0AppearedPreviously,
-                                     include.FileName));
+                                    Path.GetFileName(include.FileName)));
 
             } else {
                 _includes.Add(include);
