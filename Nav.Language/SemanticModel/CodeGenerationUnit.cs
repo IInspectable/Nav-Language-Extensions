@@ -14,7 +14,6 @@ namespace Pharmatechnik.Nav.Language {
 
     public sealed class CodeGenerationUnit {
 
-        // TODO IReadOnlyList mit Immutable ersetzen
         internal CodeGenerationUnit(CodeGenerationUnitSyntax syntax,
                                     ImmutableList<string> codeUsings,
                                     IReadOnlySymbolCollection<ITaskDeclarationSymbol> taskDeclarations,
