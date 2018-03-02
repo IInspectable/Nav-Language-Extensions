@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 using JetBrains.Annotations;
 
@@ -47,29 +48,33 @@ namespace Pharmatechnik.Nav.Language {
             // Temporary model for analyzing
             var tempModel=new CodeGenerationUnit(
                 syntax, 
-                builder._codeUsings, 
+                builder._codeUsings.ToImmutableList(), 
                 builder._taskDeclarations, 
                 builder._taskDefinitions,
                 builder._includes,
                 builder._symbols,
-                builder._diagnostics);
+                builder._diagnostics.ToImmutableList());
 
             foreach(var taskDefinition in builder._taskDefinitions) {
                 taskDefinition.FinalConstruct(tempModel);
             }
 
             // Analyze Model
-            var analyzers = Analyzer.GetTaskDefinitionAnalyzer();
-            var context   = new AnalyzerContext();
+            var analyzers   = Analyzer.GetAnalyzer();
+            var context     = new AnalyzerContext();
+            var diagnostics = new List<Diagnostic>();
+
             foreach (var analyzer in analyzers) {
-                
+
                 cancellationToken.ThrowIfCancellationRequested();
 
-                builder._diagnostics.AddRange(analyzer.Analyze(tempModel, context));
+                diagnostics.AddRange(analyzer.Analyze(tempModel, context));
             }
+            // Bisherige Diagnostics anhängen
+            diagnostics.AddRange(tempModel.Diagnostics);
 
             // Final Model
-            var model = tempModel.WithDiagnostics(builder._diagnostics);
+            var model = tempModel.WithDiagnostics(diagnostics);
 
             foreach(var taskDefinition in builder._taskDefinitions) {
                 taskDefinition.FinalConstruct(model);

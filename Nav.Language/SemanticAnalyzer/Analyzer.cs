@@ -51,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
             () => GetInterfaceImplementationsFromAssembly<INavAnalyzer>().ToList(),
             LazyThreadSafetyMode.PublicationOnly);
 
-        public static IEnumerable<INavAnalyzer> GetTaskDefinitionAnalyzer() {
+        public static IEnumerable<INavAnalyzer> GetAnalyzer() {
             return TaskDefinitionAnalyzer.Value;
         }
 

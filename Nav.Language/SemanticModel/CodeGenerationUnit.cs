@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 using JetBrains.Annotations;
 
@@ -15,23 +16,23 @@ namespace Pharmatechnik.Nav.Language {
 
         // TODO IReadOnlyList mit Immutable ersetzen
         internal CodeGenerationUnit(CodeGenerationUnitSyntax syntax,
-                                    IReadOnlyList<string> codeUsings,
+                                    ImmutableList<string> codeUsings,
                                     IReadOnlySymbolCollection<ITaskDeclarationSymbol> taskDeclarations,
                                     IReadOnlySymbolCollection<ITaskDefinitionSymbol> taskDefinitions,
                                     IReadOnlySymbolCollection<IIncludeSymbol> includes,
                                     IEnumerable<ISymbol> symbols,
-                                    IReadOnlyList<Diagnostic> diagnostics) {
+                                    ImmutableList<Diagnostic> diagnostics) {
 
             Syntax           = syntax           ?? throw new ArgumentNullException(nameof(syntax));
-            CodeUsings       = codeUsings       ?? new List<string>();
+            CodeUsings       = codeUsings       ?? ImmutableList.Create<string>();
             TaskDeclarations = taskDeclarations ?? new SymbolCollection<ITaskDeclarationSymbol>();
             TaskDefinitions  = taskDefinitions  ?? new SymbolCollection<ITaskDefinitionSymbol>();
-            Diagnostics      = diagnostics      ?? new List<Diagnostic>();
+            Diagnostics      = diagnostics      ?? ImmutableList.Create<Diagnostic>();
             Includes         = includes         ?? new SymbolCollection<IIncludeSymbol>();
             Symbols          = new SymbolList(symbols ?? Enumerable.Empty<IIncludeSymbol>());            
         }
 
-        public CodeGenerationUnit WithDiagnostics(IReadOnlyList<Diagnostic> diagnostics) {
+        public CodeGenerationUnit WithDiagnostics(IList<Diagnostic> diagnostics) {
             return new CodeGenerationUnit(
                 Syntax, 
                 CodeUsings, 
@@ -39,7 +40,7 @@ namespace Pharmatechnik.Nav.Language {
                 TaskDefinitions, 
                 Includes, 
                 Symbols,
-                diagnostics);
+                diagnostics.ToImmutableList());
         }
 
         [NotNull]
@@ -49,7 +50,7 @@ namespace Pharmatechnik.Nav.Language {
         public string CodeNamespace => Syntax.CodeNamespace?.ToString() ?? String.Empty;
 
         [NotNull]
-        public IReadOnlyList<string> CodeUsings { get; }
+        public ImmutableList<string> CodeUsings { get; }
 
         [NotNull]
         public IReadOnlySymbolCollection<IIncludeSymbol> Includes { get; }
@@ -64,7 +65,7 @@ namespace Pharmatechnik.Nav.Language {
         public SymbolList Symbols { get; }
 
         [NotNull]
-        public IReadOnlyList<Diagnostic> Diagnostics { get; }
+        public ImmutableList<Diagnostic> Diagnostics { get; }
 
         [NotNull]
         public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default, ISyntaxProvider syntaxProvider=null) {
