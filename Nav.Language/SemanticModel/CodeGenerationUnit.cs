@@ -13,6 +13,7 @@ namespace Pharmatechnik.Nav.Language {
 
     public sealed class CodeGenerationUnit {
 
+        // TODO IReadOnlyList mit Immutable ersetzen
         internal CodeGenerationUnit(CodeGenerationUnitSyntax syntax,
                                     IReadOnlyList<string> codeUsings,
                                     IReadOnlySymbolCollection<ITaskDeclarationSymbol> taskDeclarations,
@@ -28,6 +29,17 @@ namespace Pharmatechnik.Nav.Language {
             Diagnostics      = diagnostics      ?? new List<Diagnostic>();
             Includes         = includes         ?? new SymbolCollection<IIncludeSymbol>();
             Symbols          = new SymbolList(symbols ?? Enumerable.Empty<IIncludeSymbol>());            
+        }
+
+        public CodeGenerationUnit WithDiagnostics(IReadOnlyList<Diagnostic> diagnostics) {
+            return new CodeGenerationUnit(
+                Syntax, 
+                CodeUsings, 
+                TaskDeclarations, 
+                TaskDefinitions, 
+                Includes, 
+                Symbols,
+                diagnostics);
         }
 
         [NotNull]

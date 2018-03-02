@@ -1,0 +1,13 @@
+﻿taskref A 
+{
+    init i;
+    exit e;
+}
+
+task B
+{
+    init i;
+    exit e;
+    i   --> e;
+}
+//==>>[DeadCode](1,1,5,2): warning Nav1005: Taskref 'A' is not required by the code and can be safely removed

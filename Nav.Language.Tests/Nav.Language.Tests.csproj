@@ -290,6 +290,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Diagnostics\Tests\Nav1002UsingDirective0AppearedPreviously.nav" />
+    <Content Include="Diagnostics\Tests\Nav1005TaskDeclaration0NotRequired.nav" />
     <Content Include="Diagnostics\Tests\Nav2000IdentifierExpected.nav" />
     <Content Include="Diagnostics\Tests\Nav0011CannotResolveNode0_Source.nav" />
     <Content Include="Diagnostics\Tests\Nav0010CannotResolveTask0_ExitTransition.nav" />

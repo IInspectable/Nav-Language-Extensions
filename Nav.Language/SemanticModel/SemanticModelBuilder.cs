@@ -54,22 +54,22 @@ namespace Pharmatechnik.Nav.Language {
                 builder._symbols,
                 builder._diagnostics);
 
+            foreach(var taskDefinition in builder._taskDefinitions) {
+                taskDefinition.FinalConstruct(tempModel);
+            }
+
             // Analyze Model
             var analyzers = Analyzer.GetTaskDefinitionAnalyzer();
             var context   = new AnalyzerContext();
             foreach (var analyzer in analyzers) {
+                
+                cancellationToken.ThrowIfCancellationRequested();
+
                 builder._diagnostics.AddRange(analyzer.Analyze(tempModel, context));
             }
 
             // Final Model
-            var model = new CodeGenerationUnit(
-                syntax, 
-                builder._codeUsings, 
-                builder._taskDeclarations, 
-                builder._taskDefinitions,
-                builder._includes,
-                builder._symbols,
-                builder._diagnostics);
+            var model = tempModel.WithDiagnostics(builder._diagnostics);
 
             foreach(var taskDefinition in builder._taskDefinitions) {
                 taskDefinition.FinalConstruct(model);
@@ -179,21 +179,7 @@ namespace Pharmatechnik.Nav.Language {
                     DiagnosticDescriptors.DeadCode.Nav1003IncludeNotRequired));
             }
             
-            // =====================
-            // Unused Task Declarations
-            var unusedTaskDeclarations = _taskDeclarations.Where(td => !td.IsIncluded && td.Origin == TaskDeclarationOrigin.TaskDeclaration && !td.References.Any());
-            foreach (var taskDeclarationSymbol in unusedTaskDeclarations) {
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                // wenn möglich markieren wir die ganze Syntax
-                var location = taskDeclarationSymbol.Syntax?.GetLocation() ?? taskDeclarationSymbol.Location;
-
-                _diagnostics.Add(new Diagnostic(
-                    location, 
-                    DiagnosticDescriptors.DeadCode.Nav1005TaskDeclaration0NotRequired,
-                    taskDeclarationSymbol.Name));
-            }
+            
         }
     }
 }
