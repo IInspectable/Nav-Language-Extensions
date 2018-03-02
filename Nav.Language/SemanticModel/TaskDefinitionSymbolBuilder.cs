@@ -385,10 +385,10 @@ namespace Pharmatechnik.Nav.Language {
 
         private void AddTriggerTransition(IGuiNodeSymbolConstruction guiNode, TransitionDefinitionSyntax transitionDefinitionSyntax, SourceNodeSyntax sourceNodeSyntax, Location sourceNodelocation, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
-            var result = TriggerSymbolBuilder.Build(transitionDefinitionSyntax);
-            _diagnostics.AddRange(result.Diagnostics);
+            (var triggers, var diagnostics) = TriggerSymbolBuilder.Build(transitionDefinitionSyntax);
 
-            var triggers          = result.Triggers;
+            _diagnostics.AddRange(diagnostics);
+
             var guiNodeReference  = new GuiNodeReferenceSymbol(sourceNodeSyntax.Name, sourceNodelocation, guiNode, NodeReferenceType.Source);
             var triggerTransition = new TriggerTransition(transitionDefinitionSyntax, _taskDefinition, guiNodeReference, edgeMode, targetNodeReference, triggers);
 

@@ -134,10 +134,9 @@ namespace Pharmatechnik.Nav.Language {
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var taskDefinitionResult = TaskDefinitionSymbolBuilder.Build(taskDefinitionSyntax, _taskDeclarations);
-            _diagnostics.AddRange(taskDefinitionResult.Diagnostics);
+            (var taskDefinition, var diagnostics) = TaskDefinitionSymbolBuilder.Build(taskDefinitionSyntax, _taskDeclarations);
+            _diagnostics.AddRange(diagnostics);
 
-            var taskDefinition = taskDefinitionResult.TaskDefinition;
             if (taskDefinition == null) {
                 return;
             }
