@@ -269,7 +269,9 @@ namespace Pharmatechnik.Nav.Language {
                                      messageArgs       : taskDeclaration.Name));
 
             } else {
-                if (!CSharp.IsValidIdentifier(taskDeclaration.Name)) {
+                if (taskDeclaration.Origin==TaskDeclarationOrigin.TaskDeclaration &&
+                    !CSharp.IsValidIdentifier(taskDeclaration.Name)) {
+                    // TODO in SemanticAnalyzer verschieben
                     _diagnostics.Add(new Diagnostic(
                                          location  : taskDeclaration.Location,
                                          descriptor: DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected));

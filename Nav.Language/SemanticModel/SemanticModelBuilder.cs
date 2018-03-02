@@ -6,7 +6,6 @@ using System.Threading;
 using System.Collections.Generic;
 
 using JetBrains.Annotations;
-using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
@@ -117,16 +116,8 @@ namespace Pharmatechnik.Nav.Language {
             if(taskDefinition == null) {
                 return;
             }
-            if (_taskDefinitions.Contains(taskDefinition.Name)) {
-                // Doppelte Einträge überspringen. Fehler existiert schon wegen der Taskdeclarations.
-            } else {
-
-                if (!CSharp.IsValidIdentifier(taskDefinition.Name)) {
-                    _diagnostics.Add(new Diagnostic(
-                        taskDefinition.Location,
-                        DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected));
-                }
-
+            // Doppelte Einträge überspringen. Fehler existiert schon wegen der Taskdeclarations.
+            if (!_taskDefinitions.Contains(taskDefinition.Name)) {
                 _taskDefinitions.Add(taskDefinition);
             }
         }

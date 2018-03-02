@@ -401,6 +401,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SemanticAnalyzer\Nav2000IdentifierExpected.cs" />
     <Content Include="SemanticModel\Generated\SymbolVisitor.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>SymbolVisitor.cs</LastGenOutput>

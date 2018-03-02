@@ -1,0 +1,16 @@
+﻿taskref 1T {
+    init i;
+    exit e;
+}
+
+task 2T
+{
+    init i;
+    exit e;
+    task 1T;
+
+    i --> 1T;
+    1T:e --> e;
+}
+//==>>[Semantic](1,9,1,11): error Nav2000: Identifier expected
+//==>>[Semantic](6,6,6,8): error Nav2000: Identifier expected

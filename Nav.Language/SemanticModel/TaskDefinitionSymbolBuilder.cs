@@ -507,8 +507,8 @@ namespace Pharmatechnik.Nav.Language {
 
             var analyzers = Analyzer.GetTaskDefinitionAnalyzer();
             var context   = new AnalyzerContext();
-            foreach (var anlyzer in analyzers) {
-                _diagnostics.AddRange(anlyzer.Analyze(_taskDefinition, context));
+            foreach (var analyzer in analyzers) {
+                _diagnostics.AddRange(analyzer.Analyze(_taskDefinition, context));
             }
         }
 

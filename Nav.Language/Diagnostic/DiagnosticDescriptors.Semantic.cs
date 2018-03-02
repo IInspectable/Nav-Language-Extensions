@@ -338,16 +338,6 @@
             );
 
             /// <summary>
-            /// 'spontaneous' only allowed after view and init nodes
-            /// </summary>
-            public static readonly DiagnosticDescriptor Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes = new DiagnosticDescriptor(
-                id             : DiagnosticId.Nav0202,
-                messageFormat  : "'spontaneous' only allowed after view and init nodes",
-                category       : Category,
-                defaultSeverity: DiagnosticSeverity.Error
-            );
-
-            /// <summary>
             /// Trigger not allowed after choice
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0203TriggerNotAllowedAfterChoice = new DiagnosticDescriptor(

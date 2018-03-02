@@ -18,7 +18,6 @@ namespace Nav.Language.Tests {
     [TestFixture]
     public class DiagnosticTests {
 
-        // TODO Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes
         // TODO Nav2000IdentifierExpected
 
         [Test]
@@ -152,7 +151,7 @@ namespace Nav.Language.Tests {
             }
         }
 
-        static IEnumerable<Diagnostic> GetActualDiagnostics(CodeGenerationUnit unit) {
+        static List<Diagnostic> GetActualDiagnostics(CodeGenerationUnit unit) {
 
             // Diagnostic in der stabilen Reihenfolge Error, Warning, Suggestion => Position => Syntaxfehler, Semantikfehler
             var allDiagnostics = unit.Syntax.SyntaxTree.Diagnostics
@@ -166,7 +165,7 @@ namespace Nav.Language.Tests {
             var suggestions = allDiagnostics.Suggestions();
 
             var actualDiagnostics = errors.Concat(warnings).Concat(suggestions);
-            return actualDiagnostics;
+            return actualDiagnostics.ToList();
         }
 
         public static IEnumerable<FileTestCase> GetTestCases() {
@@ -218,15 +217,16 @@ namespace Nav.Language.Tests {
             return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\Diagnostics\Tests"));
         }
 
-        IEnumerable<string> ParseDiagnostics(string source) {
+        List<string> ParseDiagnostics(string source) {
 
             return source.Split(new[] {"\r\n", "\r", "\n"}, StringSplitOptions.None)
                          .Where(l => l.StartsWith(UnitTestDiagnosticFormatter.LinePrefix))
-                         .Select(s => s.TrimEnd());
+                         .Select(s => s.TrimEnd())
+                         .ToList();
         }
 
-        IEnumerable<string> ToUnitTestString(IEnumerable<Diagnostic> diagnostics) {
-            return diagnostics.Select(diagnostic => diagnostic.ToString(UnitTestDiagnosticFormatter.Instance));
+        List<string> ToUnitTestString(IEnumerable<Diagnostic> diagnostics) {
+            return diagnostics.Select(diagnostic => diagnostic.ToString(UnitTestDiagnosticFormatter.Instance)).ToList();
         }
 
         public class DiagnosticResult: IEquatable<DiagnosticResult> {
