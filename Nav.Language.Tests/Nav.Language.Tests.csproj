@@ -289,8 +289,11 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Diagnostics\Tests\Nav1001IncludeDirectiveForFile0AppearedPreviously.nav" />
     <Content Include="Diagnostics\Tests\Nav1002UsingDirective0AppearedPreviously.nav" />
+    <Content Include="Diagnostics\Tests\Nav1003IncludeNotRequired.nav" />
     <Content Include="Diagnostics\Tests\Nav1005TaskDeclaration0NotRequired.nav" />
+    <Content Include="Diagnostics\Tests\Nav1006SelfReferencingIncludeNotRequired.nav" />
     <Content Include="Diagnostics\Tests\Nav2000IdentifierExpected.nav" />
     <Content Include="Diagnostics\Tests\Nav0011CannotResolveNode0_Source.nav" />
     <Content Include="Diagnostics\Tests\Nav0010CannotResolveTask0_ExitTransition.nav" />
@@ -354,6 +357,7 @@
     <Content Include="Diagnostics\Tests\Nav1016DialogNode0HasNoOutgoingEdges_2Edges.nav" />
     <Content Include="Diagnostics\Tests\Nav1017ViewNode0NotRequired.nav" />
     <Content Include="Diagnostics\Tests\Nav1019ViewNode0HasNoOutgoingEdges_1Edge.nav" />
+    <Content Include="Diagnostics\Tests\ATaskWithoutErrors.nav" />
     <Content Include="Regression\Tests\Test.nav" />
     <Content Include="Regression\Tests\SimpleTask.nav" />
   </ItemGroup>

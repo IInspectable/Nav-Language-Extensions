@@ -114,7 +114,7 @@ namespace Nav.Language.Tests {
         public void TestCase(FileTestCase testCase) {
 
             string source = testCase.SourceText();
-            var    unit   = BuildCodeGenerationUnit(source);
+            var    unit   = BuildCodeGenerationUnit(source, testCase.FilePath);
 
             var expected = ParseDiagnostics(source);
 

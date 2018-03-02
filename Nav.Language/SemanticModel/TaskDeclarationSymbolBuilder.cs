@@ -10,23 +10,6 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language {
 
-    sealed class TaskDeclarationResult {
-
-        public TaskDeclarationResult(IReadOnlyList<Diagnostic> diagnostics,
-                                     SymbolCollection<TaskDeclarationSymbol> taskDeklarations,
-                                     SymbolCollection<IncludeSymbol> includes) {
-
-            Diagnostics      = diagnostics      ?? new List<Diagnostic>();
-            TaskDeklarations = taskDeklarations ?? new SymbolCollection<TaskDeclarationSymbol>();
-            Includes         = includes         ?? new SymbolCollection<IncludeSymbol>();
-        }
-
-        public IReadOnlyList<Diagnostic>               Diagnostics      { get; }
-        public SymbolCollection<TaskDeclarationSymbol> TaskDeklarations { get; }
-        public SymbolCollection<IncludeSymbol>         Includes         { get; }
-
-    }
-
     sealed class TaskDeclarationSymbolBuilder {
 
         readonly CodeGenerationUnitSyntax                _codeGenerationUnitSyntax;
@@ -46,16 +29,28 @@ namespace Pharmatechnik.Nav.Language {
             _taskDeklarations         = new SymbolCollection<TaskDeclarationSymbol>();
             _includes                 = new SymbolCollection<IncludeSymbol>();
         }
-      
-        public static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, ISyntaxProvider syntaxProvider, CancellationToken cancellationToken) {
+
+        public static (
+            IReadOnlyList<Diagnostic>               Diagnostics,
+            SymbolCollection<TaskDeclarationSymbol> TaskDeklarations,
+            SymbolCollection<IncludeSymbol>         Includes) 
+            FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, ISyntaxProvider syntaxProvider, CancellationToken cancellationToken) {
+
             return FromCodeGenerationUnitSyntax(syntax, false, syntaxProvider, cancellationToken);
         }
 
-        static TaskDeclarationResult FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, bool processAsIncludedFile, ISyntaxProvider syntaxProvider, CancellationToken cancellationToken) {
+        static (
+            IReadOnlyList<Diagnostic>               Diagnostics,
+            SymbolCollection<TaskDeclarationSymbol> TaskDeklarations,
+            SymbolCollection<IncludeSymbol>         Includes) 
+            FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, bool processAsIncludedFile, ISyntaxProvider syntaxProvider, CancellationToken cancellationToken) {
+            
             var builder = new TaskDeclarationSymbolBuilder(syntax, processAsIncludedFile, syntaxProvider);
             builder.ProcessCodeGenerationUnitSyntax(syntax, cancellationToken);
 
-            return new TaskDeclarationResult(builder._diagnostics, builder._taskDeklarations, builder._includes);
+            return (Diagnostics: builder._diagnostics,
+                TaskDeklarations: builder._taskDeklarations,
+                Includes: builder._includes);
         }
 
         void ProcessCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
@@ -80,20 +75,20 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         void ProcessIncludeDirective(IncludeDirectiveSyntax includeDirectiveSyntax, CancellationToken cancellationToken) {
-           
+
             var location = includeDirectiveSyntax.StringLiteral.GetLocation();
 
             try {
 
                 var filePath = includeDirectiveSyntax.StringLiteral.ToString().Trim('"');
-                if(!Path.IsPathRooted(filePath)) {
+                if (!Path.IsPathRooted(filePath)) {
 
                     var directory = includeDirectiveSyntax.SyntaxTree.FileInfo?.Directory;
                     if (directory == null) {
 
                         _diagnostics.Add(new Diagnostic(
-                            location,
-                            DiagnosticDescriptors.Semantic.Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed));
+                                             location,
+                                             DiagnosticDescriptors.Semantic.Nav0003SourceFileNeedsToBeSavedBeforeIncludeDirectiveCanBeProcessed));
 
                         return;
                     }
@@ -108,18 +103,18 @@ namespace Pharmatechnik.Nav.Language {
                 if (String.Equals(includeDirectiveSyntax.SyntaxTree.FileInfo?.FullName, filePath, StringComparison.OrdinalIgnoreCase)) {
 
                     _diagnostics.Add(new Diagnostic(
-                        location,
-                        DiagnosticDescriptors.DeadCode.Nav1006SelfReferencingIncludeNotRequired));
+                                         location,
+                                         DiagnosticDescriptors.DeadCode.Nav1006SelfReferencingIncludeNotRequired));
 
                     return;
                 }
-                
+
                 var includeFileSyntax = _syntaxProvider.FromFile(filePath, cancellationToken);
-                if(includeFileSyntax == null) {
+                if (includeFileSyntax == null) {
                     _diagnostics.Add(new Diagnostic(
-                        location,
-                        DiagnosticDescriptors.Semantic.Nav0004File0NotFound,
-                        filePath));
+                                         location,
+                                         DiagnosticDescriptors.Semantic.Nav0004File0NotFound,
+                                         filePath));
                     return;
 
                 }
@@ -130,10 +125,10 @@ namespace Pharmatechnik.Nav.Language {
                 var include      = new IncludeSymbol(filePath, location, fileLocation, includeDirectiveSyntax, diagnostics, result.TaskDeklarations);
 
                 AddInclude(include);
-                
-            } catch(OperationCanceledException) {
+
+            } catch (OperationCanceledException) {
                 throw;
-            } catch(Exception ex) {
+            } catch (Exception ex) {
                 _diagnostics.Add(new Diagnostic(location, DiagnosticDescriptors.NewInternalError(ex)));
             }
         }
@@ -141,21 +136,21 @@ namespace Pharmatechnik.Nav.Language {
         void AddInclude(IncludeSymbol include) {
 
             var existing = _includes.TryFindSymbol(include);
-            if (existing!=null) {
-                
+            if (existing != null) {
+
                 _diagnostics.Add(new Diagnostic(
-                    include.Location,
-                    DiagnosticDescriptors.DeadCode.Nav1001IncludeDirectiveForFile0AppearedPreviously, 
-                    include.FileName));
+                                     include.Location,
+                                     DiagnosticDescriptors.DeadCode.Nav1001IncludeDirectiveForFile0AppearedPreviously,
+                                     include.FileName));
 
             } else {
                 _includes.Add(include);
 
-                if(include.Diagnostics.HasErrors()) {
+                if (include.Diagnostics.HasErrors()) {
                     _diagnostics.Add(new Diagnostic(
-                   include.Location,
-                   DiagnosticDescriptors.Semantic.Nav0005IncludeFile0HasSomeErrors,
-                   include.FileName));
+                                         include.Location,
+                                         DiagnosticDescriptors.Semantic.Nav0005IncludeFile0HasSomeErrors,
+                                         include.FileName));
                 }
 
                 foreach (var decl in include.TaskDeklarations) {
@@ -170,53 +165,53 @@ namespace Pharmatechnik.Nav.Language {
 
                 var identifier = taskDeclarationSyntax.Identifier;
                 var location   = identifier.GetLocation();
-                if(location != null) {
+                if (location != null) {
 
                     var syntax = _processAsIncludedFile ? null : taskDeclarationSyntax;
-                    
+
                     var taskDeclaration = new TaskDeclarationSymbol(
-                        name               : identifier.ToString(), 
-                        location           : location, 
-                        origin             : TaskDeclarationOrigin.TaskDeclaration,  
-                        isIncluded         : _processAsIncludedFile, 
-                        codeTaskResult     : CodeParameter.FromResultDeclaration(taskDeclarationSyntax.CodeResultDeclaration),
-                        syntax             : syntax,
-                        codeNamespace      : taskDeclarationSyntax.CodeNamespaceDeclaration?.Namespace?.Text,
-                        codeNotImplemented : taskDeclarationSyntax.CodeNotImplementedDeclaration!=null);
-                    
+                        name: identifier.ToString(),
+                        location: location,
+                        origin: TaskDeclarationOrigin.TaskDeclaration,
+                        isIncluded: _processAsIncludedFile,
+                        codeTaskResult: CodeParameter.FromResultDeclaration(taskDeclarationSyntax.CodeResultDeclaration),
+                        syntax: syntax,
+                        codeNamespace: taskDeclarationSyntax.CodeNamespaceDeclaration?.Namespace?.Text,
+                        codeNotImplemented: taskDeclarationSyntax.CodeNotImplementedDeclaration != null);
+
                     AddConnectionPoints(taskDeclaration, taskDeclarationSyntax.ConnectionPoints);
                     AddTaskDeclaration(taskDeclaration);
-                }                
+                }
             }
         }
 
         void ProcessTaskDefinition(TaskDefinitionSyntax taskDefinitionSyntax) {
 
-            if(null != taskDefinitionSyntax && !taskDefinitionSyntax.Identifier.IsMissing) {
+            if (null != taskDefinitionSyntax && !taskDefinitionSyntax.Identifier.IsMissing) {
 
                 var identifier = taskDefinitionSyntax.Identifier;
                 var location   = identifier.GetLocation();
-                if(location != null) {
+                if (location != null) {
 
                     var syntax = _processAsIncludedFile ? null : taskDefinitionSyntax;
 
                     var taskDeclaration = new TaskDeclarationSymbol(
-                        name              : identifier.ToString(),
-                        location          : location,
-                        origin            : TaskDeclarationOrigin.TaskDefinition,
-                        isIncluded        : _processAsIncludedFile,
-                        codeTaskResult    : CodeParameter.FromResultDeclaration(taskDefinitionSyntax.CodeResultDeclaration),
-                        syntax            : syntax,
-                        codeNamespace     : _codeGenerationUnitSyntax?.CodeNamespace?.Namespace?.Text,
+                        name: identifier.ToString(),
+                        location: location,
+                        origin: TaskDeclarationOrigin.TaskDefinition,
+                        isIncluded: _processAsIncludedFile,
+                        codeTaskResult: CodeParameter.FromResultDeclaration(taskDefinitionSyntax.CodeResultDeclaration),
+                        syntax: syntax,
+                        codeNamespace: _codeGenerationUnitSyntax?.CodeNamespace?.Namespace?.Text,
                         codeNotImplemented: false
-                        );
+                    );
 
                     AddConnectionPoints(taskDeclaration, taskDefinitionSyntax.NodeDeclarationBlock?.ConnectionPoints().ToList());
                     AddTaskDeclaration(taskDeclaration);
                 }
             }
         }
-        
+
         void AddConnectionPoints(TaskDeclarationSymbol taskDeclaration, IReadOnlyList<ConnectionPointNodeSyntax> connectionPoints) {
 
             if (connectionPoints != null) {
@@ -234,7 +229,7 @@ namespace Pharmatechnik.Nav.Language {
 
                 foreach (var exitNodeSyntax in connectionPoints.OfType<ExitNodeDeclarationSyntax>()) {
 
-                    var identifier = exitNodeSyntax.Identifier.IsMissing ? exitNodeSyntax.ExitKeyword: exitNodeSyntax.Identifier;
+                    var identifier = exitNodeSyntax.Identifier.IsMissing ? exitNodeSyntax.ExitKeyword : exitNodeSyntax.Identifier;
 
                     var location = identifier.GetLocation();
                     var name     = identifier.ToString();
@@ -261,13 +256,13 @@ namespace Pharmatechnik.Nav.Language {
                 var existing = _taskDeklarations[taskDeclaration.Name];
 
                 _diagnostics.Add(new Diagnostic(
-                                     location          : taskDeclaration.Location,
+                                     location: taskDeclaration.Location,
                                      additionalLocation: existing.Location,
-                                     descriptor        : DiagnosticDescriptors.Semantic.Nav0020TaskWithName0AlreadyDeclared,
-                                     messageArgs       : taskDeclaration.Name));
+                                     descriptor: DiagnosticDescriptors.Semantic.Nav0020TaskWithName0AlreadyDeclared,
+                                     messageArgs: taskDeclaration.Name));
 
             } else {
-                
+
                 _taskDeklarations.Add(taskDeclaration);
             }
         }
@@ -277,16 +272,18 @@ namespace Pharmatechnik.Nav.Language {
             if (taskDeclaration.ConnectionPoints.Contains(connectionPoint.Name)) {
 
                 var existing = taskDeclaration.ConnectionPoints[connectionPoint.Name];
-     
+
                 _diagnostics.Add(new Diagnostic(
-                    location          : connectionPoint.Location,
-                    additionalLocation: existing.Location,
-                    descriptor        : DiagnosticDescriptors.Semantic.Nav0021ConnectionPointWithName0AlreadyDeclared,
-                    messageArgs       : connectionPoint.Name));
+                                     location: connectionPoint.Location,
+                                     additionalLocation: existing.Location,
+                                     descriptor: DiagnosticDescriptors.Semantic.Nav0021ConnectionPointWithName0AlreadyDeclared,
+                                     messageArgs: connectionPoint.Name));
 
             } else {
                 taskDeclaration.ConnectionPoints.Add(connectionPoint);
             }
         }
+
     }
+
 }

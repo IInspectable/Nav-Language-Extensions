@@ -2,18 +2,6 @@
 
 namespace Pharmatechnik.Nav.Language {
 
-    sealed class TriggerSymbolBuilderResult {
-
-        public TriggerSymbolBuilderResult(SymbolCollection<TriggerSymbol> triggers, IReadOnlyList<Diagnostic> diagnostics) {
-            Triggers    = triggers    ?? new SymbolCollection<TriggerSymbol>();
-            Diagnostics = diagnostics ?? new List<Diagnostic>();
-        }
-
-        public SymbolCollection<TriggerSymbol> Triggers    { get; }
-        public IReadOnlyList<Diagnostic>       Diagnostics { get; }
-
-    }
-
     sealed class TriggerSymbolBuilder: SyntaxNodeVisitor {
 
         readonly List<TriggerSymbol> _triggers;
@@ -24,14 +12,16 @@ namespace Pharmatechnik.Nav.Language {
             _triggers    = new List<TriggerSymbol>();
         }
 
-        public static TriggerSymbolBuilderResult Build(TransitionDefinitionSyntax transitionDefinitionSyntax) {
+        public static (
+            SymbolCollection<TriggerSymbol> Triggers,
+            IReadOnlyList<Diagnostic>       Diagnostics) Build(TransitionDefinitionSyntax transitionDefinitionSyntax) {
 
             var diagnostics = new List<Diagnostic>();
             var builder     = new TriggerSymbolBuilder(diagnostics);
 
             var triggers = builder.GetTriggers(transitionDefinitionSyntax);
 
-            return new TriggerSymbolBuilderResult(triggers, diagnostics);
+            return (triggers, diagnostics);
         }
 
         public SymbolCollection<TriggerSymbol> GetTriggers(TransitionDefinitionSyntax transitionDefinitionSyntax) {

@@ -13,16 +13,16 @@ using Pharmatechnik.Nav.Language.SemanticAnalyzer;
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-    
+
     sealed class CodeGenerationUnitBuilder {
 
-        readonly ISyntaxProvider _syntaxProvider;
-        readonly List<Diagnostic> _diagnostics;
+        readonly ISyntaxProvider                         _syntaxProvider;
+        readonly List<Diagnostic>                        _diagnostics;
         readonly SymbolCollection<TaskDeclarationSymbol> _taskDeclarations;
-        readonly SymbolCollection<TaskDefinitionSymbol> _taskDefinitions;
-        readonly SymbolCollection<IncludeSymbol> _includes;
-        readonly List<string>  _codeUsings;
-        readonly List<ISymbol> _symbols;
+        readonly SymbolCollection<TaskDefinitionSymbol>  _taskDefinitions;
+        readonly SymbolCollection<IncludeSymbol>         _includes;
+        readonly List<string>                            _codeUsings;
+        readonly List<ISymbol>                           _symbols;
 
         CodeGenerationUnitBuilder(ISyntaxProvider syntaxProvider) {
             _syntaxProvider   = syntaxProvider ?? SyntaxProvider.Default;
@@ -46,16 +46,16 @@ namespace Pharmatechnik.Nav.Language {
             builder.Process(syntax, cancellationToken);
 
             // Temporary model for analyzing
-            var tempModel=new CodeGenerationUnit(
-                syntax, 
-                builder._codeUsings.ToImmutableList(), 
-                builder._taskDeclarations, 
+            var tempModel = new CodeGenerationUnit(
+                syntax,
+                builder._codeUsings.ToImmutableList(),
+                builder._taskDeclarations,
                 builder._taskDefinitions,
                 builder._includes,
                 builder._symbols,
                 builder._diagnostics.ToImmutableList());
 
-            foreach(var taskDefinition in builder._taskDefinitions) {
+            foreach (var taskDefinition in builder._taskDefinitions) {
                 taskDefinition.FinalConstruct(tempModel);
             }
 
@@ -70,17 +70,18 @@ namespace Pharmatechnik.Nav.Language {
 
                 diagnostics.AddRange(analyzer.Analyze(tempModel, context));
             }
+
             // Bisherige Diagnostics anhängen
             diagnostics.AddRange(tempModel.Diagnostics);
 
-            // Final Model
+            // Finales Model mit allen Diagnostics
             var model = tempModel.WithDiagnostics(diagnostics);
 
-            foreach(var taskDefinition in builder._taskDefinitions) {
+            foreach (var taskDefinition in builder._taskDefinitions) {
                 taskDefinition.FinalConstruct(model);
             }
 
-            foreach (var taskDeclaration in builder._taskDeclarations.Where(td=>!td.IsIncluded)) {
+            foreach (var taskDeclaration in builder._taskDeclarations.Where(td => !td.IsIncluded)) {
                 taskDeclaration.FinalConstruct(model);
             }
 
@@ -90,7 +91,6 @@ namespace Pharmatechnik.Nav.Language {
         void Process(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
             ProcessNavLanguage(syntax, cancellationToken);
             ProcessCodeLanguage(syntax, cancellationToken);
-            ProcessFinalSemanticErrors(syntax, cancellationToken);
         }
 
         void ProcessNavLanguage(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
@@ -119,28 +119,29 @@ namespace Pharmatechnik.Nav.Language {
             // 3. Collect Symbols
             //====================
             // Nur Symbole von Taskdeklarationen der eigenen Datei, und auch nur solche, die aus "taskrefs task" entstanden sind
-            _symbols.AddRange(_taskDeclarations.Where(td => !td.IsIncluded && 
-                                                            td.Origin==TaskDeclarationOrigin.TaskDeclaration)
+            _symbols.AddRange(_taskDeclarations.Where(td => !td.IsIncluded &&
+                                                            td.Origin == TaskDeclarationOrigin.TaskDeclaration)
                                                .SelectMany(td => td.SymbolsAndSelf()));
 
             // Alle Symbole und deren "Kinder" der Taskdefinitionen
             _symbols.AddRange(_taskDefinitions.SelectMany(td => td.SymbolsAndSelf()));
 
             // Alle Includes (= taskref "filepath") hinzufügen
-            _symbols.AddRange(_includes);            
+            _symbols.AddRange(_includes);
         }
-        
+
         void ProcessTaskDefinitionSyntax(TaskDefinitionSyntax taskDefinitionSyntax, CancellationToken cancellationToken) {
-            
+
             cancellationToken.ThrowIfCancellationRequested();
-            
-            var taskDefinitionResult= TaskDefinitionSymbolBuilder.Build(taskDefinitionSyntax, _taskDeclarations);
+
+            var taskDefinitionResult = TaskDefinitionSymbolBuilder.Build(taskDefinitionSyntax, _taskDeclarations);
             _diagnostics.AddRange(taskDefinitionResult.Diagnostics);
 
             var taskDefinition = taskDefinitionResult.TaskDefinition;
-            if(taskDefinition == null) {
+            if (taskDefinition == null) {
                 return;
             }
+
             // Doppelte Einträge überspringen. Fehler existiert schon wegen der Taskdeclarations.
             if (!_taskDefinitions.Contains(taskDefinition.Name)) {
                 _taskDefinitions.Add(taskDefinition);
@@ -152,39 +153,17 @@ namespace Pharmatechnik.Nav.Language {
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                ProcessCodeUsingDeclaration(codeUsingDeclarationSyntax);
+                if (codeUsingDeclarationSyntax?.Namespace == null) {
+                    return;
+                }
+
+                var nsSyntax = codeUsingDeclarationSyntax.Namespace;
+                var ns       = nsSyntax.ToString();
+
+                _codeUsings.Add(ns);
             }
         }
-        
-        void ProcessCodeUsingDeclaration(CodeUsingDeclarationSyntax codeUsingDeclarationSyntax) {
 
-            if (codeUsingDeclarationSyntax?.Namespace == null) {
-                return;
-            }
-
-            var nsSyntax = codeUsingDeclarationSyntax.Namespace;
-            var ns       = nsSyntax.ToString();
-
-             _codeUsings.Add(ns);
-
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        void ProcessFinalSemanticErrors(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
-
-            // =====================
-            // Unused Includes
-            var unusedIncludes = _includes.Where(i => !i.TaskDeklarations.SelectMany(td => td.References).Any());
-            foreach (var includeSymbol in unusedIncludes) {
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                _diagnostics.Add(new Diagnostic(
-                    includeSymbol.Syntax.GetLocation(), 
-                    DiagnosticDescriptors.DeadCode.Nav1003IncludeNotRequired));
-            }
-            
-            
-        }
     }
+
 }

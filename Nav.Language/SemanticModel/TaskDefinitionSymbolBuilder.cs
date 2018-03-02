@@ -1,28 +1,12 @@
 #region Using Directives
 
-using System.Collections.Generic;
 using System.Linq;
-
-using JetBrains.Annotations;
+using System.Collections.Generic;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-
-    sealed class TaskDefinitionBuilderResult {
-
-        public TaskDefinitionBuilderResult(TaskDefinitionSymbol taskDefinition, IReadOnlyList<Diagnostic> diagnostics) {
-            TaskDefinition = taskDefinition;
-            Diagnostics    = diagnostics ?? new List<Diagnostic>();
-        }
-
-        [CanBeNull]
-        public TaskDefinitionSymbol TaskDefinition { get; }
-
-        public IReadOnlyList<Diagnostic> Diagnostics { get; }
-
-    }
-
+    
     sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
 
         readonly IReadOnlySymbolCollection<TaskDeclarationSymbol> _taskDeklarations;
@@ -499,11 +483,15 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         #endregion
-      
-        public static TaskDefinitionBuilderResult Build(TaskDefinitionSyntax taskDefinitionSyntax, IReadOnlySymbolCollection<TaskDeclarationSymbol> taskDeklarations) {           
+
+        public static (
+            TaskDefinitionSymbol TaskDefinition,
+            List<Diagnostic>     Diagnostics)
+            Build(TaskDefinitionSyntax taskDefinitionSyntax, IReadOnlySymbolCollection<TaskDeclarationSymbol> taskDeklarations) {
+
             var builder = new TaskDefinitionSymbolBuilder(taskDeklarations);
             builder.Visit(taskDefinitionSyntax);
-            return new TaskDefinitionBuilderResult(builder._taskDefinition, builder._diagnostics);
+            return (builder._taskDefinition, builder._diagnostics);
         }
 
     }
