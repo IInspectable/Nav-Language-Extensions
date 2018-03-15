@@ -15,19 +15,17 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                            string relativeSyntaxFileName, 
                            string filePath, 
                            ImmutableList<string> usingNamespaces, 
-                           string baseInterfaceName,
                            ImmutableList<InitTransitionCodeModel> initTransitions,
                            ImmutableList<string> codeDeclarations) 
             :base(taskCodeInfo, relativeSyntaxFileName, filePath) {
 
             UsingNamespaces   = usingNamespaces   ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            BaseInterfaceName = baseInterfaceName ?? throw new ArgumentNullException(nameof(baseInterfaceName));
             InitTransitions   = initTransitions   ?? throw new ArgumentNullException(nameof(initTransitions));
             CodeDeclarations  = codeDeclarations  ?? throw new ArgumentNullException(nameof(codeDeclarations));
         }
 
         public string Namespace => Task.WflNamespace;
-        public string BaseInterfaceName { get; }
+        public string BaseInterfaceName => Task.IBeginWfsBaseTypeName;
 
         public ImmutableList<string> UsingNamespaces { get; }
         public ImmutableList<InitTransitionCodeModel> InitTransitions { get; }
@@ -54,8 +52,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 relativeSyntaxFileName: relativeSyntaxFileName,
                 filePath              : pathProvider.IBeginWfsFileName,
                 usingNamespaces       : namespaces.ToImmutableList(),
-                // TODO in TaskDefinition
-                baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType,
                 initTransitions       : initTransitions.ToImmutableList(),
                 codeDeclarations      : codeDeclarations.ToImmutableList());
         }

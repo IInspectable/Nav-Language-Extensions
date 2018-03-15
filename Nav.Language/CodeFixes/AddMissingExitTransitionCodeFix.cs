@@ -11,12 +11,12 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes {
     public sealed class AddMissingExitTransitionCodeFix: CodeFix {
         
-        internal AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNode, IConnectionPointSymbol connectionPoint, CodeFixContext context) 
+        internal AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNodeRef, IConnectionPointSymbol connectionPoint, CodeFixContext context) 
             : base(context) {
 
-            ConnectionPoint = connectionPoint                           ?? throw new ArgumentNullException(nameof(connectionPoint));
-            TargetNode      = targetNode                                ?? throw new ArgumentNullException(nameof(targetNode));
-            TaskNode        = targetNode.Declaration as ITaskNodeSymbol ?? throw new ArgumentException(nameof(targetNode));
+            ConnectionPoint = connectionPoint                              ?? throw new ArgumentNullException(nameof(connectionPoint));
+            TargetNodeRef   = targetNodeRef                                ?? throw new ArgumentNullException(nameof(targetNodeRef));
+            TaskNode        = targetNodeRef.Declaration as ITaskNodeSymbol ?? throw new ArgumentException(nameof(targetNodeRef));
             
             if (TaskNode.Declaration != ConnectionPoint.TaskDeclaration) {
                 throw new ArgumentException();
@@ -25,11 +25,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public override string Name              => "Add Missing Edge";
         public override CodeFixImpact Impact     => CodeFixImpact.None;
-        public override TextExtent? ApplicableTo => TargetNode.Location.Extent;
+        public override TextExtent? ApplicableTo => TargetNodeRef.Location.Extent;
         public override CodeFixPrio Prio         => CodeFixPrio.High;
         public ITaskNodeSymbol TaskNode { get ; }
         public IConnectionPointSymbol ConnectionPoint { get; }
-        public INodeReferenceSymbol TargetNode { get; }
+        public INodeReferenceSymbol TargetNodeRef { get; }
         public ITaskDefinitionSymbol ContainingTask => TaskNode.ContainingTask;
 
         internal bool CanApplyFix() {
@@ -37,14 +37,14 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var templateEdge = GetTemplateEdge();
 
             // 1. Wir brauchen eine vollständige Kante als "Formatvorlage"
-            if (templateEdge?.Source == null || templateEdge.EdgeMode == null || templateEdge.Target == null) {
+            if (templateEdge?.SourceReference == null || templateEdge.EdgeMode == null || templateEdge.TargetReference == null) {
                 return false;
             }
             // 2. Es darf noch keine ExitTransition mit dem Verbindungspunkt geben
             return TaskNode.Outgoings
-                              .Where(trans=>trans.ConnectionPoint!=null)
+                              .Where(trans=>trans.ConnectionPointReference!=null)
                               // ReSharper disable once PossibleNullReferenceException
-                              .All(o => o.ConnectionPoint.Declaration != ConnectionPoint);
+                              .All(o => o.ConnectionPointReference.Declaration != ConnectionPoint);
         }
        
         public IList<TextChange> GetTextChanges() {
@@ -63,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var exitTransition = ComposeEdge(templateEdge, sourceName, edgeKeyword, targetName);
             
             // ReSharper disable once PossibleNullReferenceException Check unter CanApplyFix
-            var transitionLine = SyntaxTree.GetTextLineExtentAtPosition(templateEdge.Source.Start);
+            var transitionLine = SyntaxTree.GetTextLineExtentAtPosition(templateEdge.SourceReference.Start);
             textChanges.AddRange(GetInsertChanges(transitionLine.Extent.End, $"{exitTransition}{Context.EditorSettings.NewLine}"));
 
             return textChanges;
@@ -71,16 +71,16 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public TextExtent TryGetSelectionAfterChanges([CanBeNull] CodeGenerationUnit codegenerationUnit) {
   
-            var taskDef    = codegenerationUnit?.TryFindTaskDefinition(TargetNode.Declaration?.ContainingTask.Name);
+            var taskDef    = codegenerationUnit?.TryFindTaskDefinition(TargetNodeRef.Declaration?.ContainingTask.Name);
             var taskNode   = taskDef.TryFindNode<ITaskNodeSymbol>(TaskNode.Name);
-            var exitEdge   = taskNode?.Outgoings.FirstOrDefault(e => e.ConnectionPoint?.Name == ConnectionPoint.Name);
-            var targetNode = exitEdge?.Target;
+            var exitEdge   = taskNode?.Outgoings.FirstOrDefault(e => e.ConnectionPointReference?.Name == ConnectionPoint.Name);
+            var targetNode = exitEdge?.TargetReference;
 
             return targetNode?.Location.Extent?? TextExtent.Missing;
         }
         
         IEdge GetTemplateEdge() {
-            return TargetNode.Edge;
+            return TargetNodeRef.Edge;
         }
 
         string GetApplicableTargetName() {

@@ -20,27 +20,17 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNode(_codeAbstractMethodDeclaration = codeAbstractMethodDeclaration);
         }
 
-        public SyntaxToken TaskKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.TaskKeyword); }
-        }
+        public SyntaxToken TaskKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.TaskKeyword);
 
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
+        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
 
         [SuppressCodeSanityCheck("Der Name IdentifierAlias ist hier ausdrücklich gewollt.")]
-        public SyntaxToken IdentifierAlias {
-            get { return Identifier.NextToken(SyntaxTokenType.Identifier); }
-        }
+        public SyntaxToken IdentifierAlias => Identifier.NextToken(SyntaxTokenType.Identifier);
 
         [CanBeNull]
-        public CodeDoNotInjectDeclarationSyntax CodeDoNotInjectDeclaration {
-            get { return _codeDoNotInjectDeclaration; }
-        }
+        public CodeDoNotInjectDeclarationSyntax CodeDoNotInjectDeclaration => _codeDoNotInjectDeclaration;
 
         [CanBeNull]
-        public CodeAbstractMethodDeclarationSyntax CodeAbstractMethodDeclaration {
-            get { return _codeAbstractMethodDeclaration; }
-        }   
+        public CodeAbstractMethodDeclarationSyntax CodeAbstractMethodDeclaration => _codeAbstractMethodDeclaration;
     }
 }

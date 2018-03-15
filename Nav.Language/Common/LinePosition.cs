@@ -3,8 +3,8 @@ using System;
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
-    public struct LinePosition : IEquatable<LinePosition>, IComparable<LinePosition> {
-        
+    public struct LinePosition: IEquatable<LinePosition>, IComparable<LinePosition> {
+
         readonly int _line;
         readonly int _character;
 
@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language {
                 throw new ArgumentOutOfRangeException(nameof(character));
             }
 
-            _line = line;
+            _line      = line;
             _character = character;
         }
 
@@ -28,16 +28,12 @@ namespace Pharmatechnik.Nav.Language {
         /// <summary>
         /// The line number. The first line in a file is defined as line 0 (zero based line numbering).
         /// </summary>
-        public int Line {
-            get { return _line; }
-        }
+        public int Line => _line;
 
         /// <summary>
         /// The character position within the line (zero based).
         /// </summary>
-        public int Character {
-            get { return _character; }
-        }
+        public int Character => _character;
 
         /// <summary>
         /// Determines whether two <see cref="LinePosition"/> are the same.
@@ -66,7 +62,7 @@ namespace Pharmatechnik.Nav.Language {
         /// </summary>
         /// <param name="obj">The object to compare.</param>
         public override bool Equals(object obj) {
-            return obj is LinePosition && Equals((LinePosition)obj);
+            return obj is LinePosition position && Equals(position);
         }
 
         /// <summary>
@@ -82,7 +78,7 @@ namespace Pharmatechnik.Nav.Language {
         /// </summary>
         /// <example>1,5</example>
         public override string ToString() {
-            return $"{Line+1},{Character+1}";
+            return $"{Line + 1},{Character + 1}";
         }
 
         public int CompareTo(LinePosition other) {
@@ -105,5 +101,7 @@ namespace Pharmatechnik.Nav.Language {
         public static bool operator <=(LinePosition left, LinePosition right) {
             return left.CompareTo(right) <= 0;
         }
+
     }
+
 }

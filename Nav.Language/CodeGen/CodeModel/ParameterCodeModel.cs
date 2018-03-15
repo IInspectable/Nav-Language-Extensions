@@ -11,12 +11,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     class ParameterCodeModel : CodeModel {
         
         public ParameterCodeModel(string parameterType, string parameterName) {
-            ParameterType = parameterType  ?? String.Empty;
-            ParameterName = (parameterName ?? String.Empty).ToCamelcase();
+            ParameterType = parameterType ?? String.Empty;
+            ParameterName = parameterName ?? String.Empty;
         }
 
         public virtual string ParameterType { get; }
         public virtual string ParameterName { get; }
+
+        public ParameterCodeModel WithParameterName(string parameterName) {
+            return new ParameterCodeModel(parameterType: ParameterType, parameterName: parameterName);
+        }
 
         [NotNull]
         public static ParameterCodeModel TaskResult(ITaskDefinitionSymbol taskDefinition) {
@@ -50,7 +54,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 return String.IsNullOrEmpty(name) ? $"p{index++}" : name;
             }
 
-            // TODO parameterName Fallback überprüfen
             int i = 1;
             foreach (var parameterSyntax in parameters) {
                yield return new ParameterCodeModel(
@@ -66,10 +69,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public static ParameterCodeModel GetTaskBeginAsParameter(ITaskDeclarationSymbol taskDeclaration) {
 
             var codeInfo = TaskDeclarationCodeInfo.FromTaskDeclaration(taskDeclaration);
+
+            if (taskDeclaration.CodeNotImplemented) {
+                return new ParameterCodeModel(
+                    parameterType: CodeGenFacts.DefaultIwfsBaseType, 
+                    parameterName: CodeGenFacts.TaskBeginParameterName);
+            }
             
             return new ParameterCodeModel(
                 parameterType: codeInfo.FullyQualifiedBeginInterfaceName, 
-                parameterName: codeInfo.Taskname);
+                parameterName: codeInfo.Taskname.ToCamelcase());
         }       
     }
 }

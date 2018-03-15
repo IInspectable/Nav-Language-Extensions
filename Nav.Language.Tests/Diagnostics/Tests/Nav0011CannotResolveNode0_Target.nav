@@ -1,0 +1,9 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+                
+    I1 --> C;     
+    I1 --> e1;
+}
+//==>>[Semantic](6,12,6,13): error Nav0011: Cannot resolve node 'C'

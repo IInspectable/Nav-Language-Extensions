@@ -1,0 +1,16 @@
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
+
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyCopyright("Copyright ©  2018")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+
+[assembly: ComVisible(false)]
+
+[assembly: AssemblyTitle(ThisAssembly.ProductName)]
+[assembly: AssemblyProduct(ThisAssembly.ProductName)]
+[assembly: AssemblyVersion(ThisAssembly.ProductVersion)]
+[assembly: AssemblyDescription(ThisAssembly.ProductName)]
+[assembly: AssemblyFileVersion(ThisAssembly.ProductVersion)]

@@ -39,12 +39,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var caretPoint = _textView.GetCaretPoint();
             var cachedActionSets = _cachedSuggestedActionSets;
-            IEnumerable<CodeFixSuggestedAction> suggestedActionSets;
-            if(IsCacheValid(cachedActionSets, range)) {                
-                suggestedActionSets = cachedActionSets.SuggestedActionSets;
-            } else {
-                suggestedActionSets = BuildSuggestedActions(range, cancellationToken);
-            }
+            IEnumerable<CodeFixSuggestedAction> suggestedActionSets =
+                IsCacheValid(cachedActionSets, range) ? cachedActionSets.SuggestedActionSets : BuildSuggestedActions(range, cancellationToken);
 
             // Nach Span Gruppieren
             var groupedActions = suggestedActionSets.GroupBy(action => action.ApplicableToSpan);

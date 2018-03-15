@@ -1,0 +1,11 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    view A;
+
+    I1  --> A;
+    A   --> I1 on Foo;
+    A   --> e1;
+}
+//==>>[Semantic](8,13,8,15): error Nav0103: An init node must not contain incoming edges

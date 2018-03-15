@@ -14,7 +14,7 @@
                 messageFormat  : "Source file needs to be saved before include directives can be processed",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// File '{0}' not found
@@ -24,7 +24,7 @@
                 messageFormat  : "File '{0}' not found",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// The file '{0}' has some errors
@@ -34,7 +34,7 @@
                 messageFormat  : "The file '{0}' has some errors",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
+            );
 
             /// <summary>
             /// Cannot resolve task '{0}'
@@ -44,7 +44,7 @@
                 messageFormat  : "Cannot resolve task '{0}'",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// Cannot resolve node '{0}'
@@ -54,7 +54,7 @@
                 messageFormat  : "Cannot resolve node '{0}'",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// Cannot resolve exit '{0}'
@@ -64,7 +64,7 @@
                 messageFormat  : "Cannot resolve exit '{0}'",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// A task with the name '{0}' is already declared
@@ -74,7 +74,7 @@
                 messageFormat  : "A task with the name '{0}' is already declared",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// A connection point with the name '{0}' is already declared
@@ -84,7 +84,7 @@
                 messageFormat  : "A connection point with the name '{0}' is already declared",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// A node with the name '{0}' is already declared
@@ -94,7 +94,7 @@
                 messageFormat  : "A node with the name '{0}' is already declared",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// An outgoing edge for Trigger '{0}' is already declared
@@ -104,8 +104,8 @@
                 messageFormat  : "An outgoing edge for Trigger '{0}' is already declared",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
-           
+            );
+
             /// <summary>
             /// An outgoing edge for exit '{0}' is already declared
             /// </summary>
@@ -114,7 +114,7 @@
                 messageFormat  : "An outgoing edge for exit '{0}' is already declared",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// No outgoing edge for exit '{0}' declared
@@ -124,17 +124,17 @@
                 messageFormat  : "No outgoing edge for exit '{0}' declared",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// Trigger '{0}' is already declared
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0026TriggerWithName0AlreadyDeclared = new DiagnosticDescriptor(
-                id: DiagnosticId.Nav0026,
+                id             : DiagnosticId.Nav0026,
                 messageFormat  : "Trigger '{0}' is already declared",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// The task '{0}' must not contain leaving edges
@@ -144,7 +144,7 @@
                 messageFormat  : "The task '{0}' must not contain leaving edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// An exit node must not contain leaving edges
@@ -154,7 +154,7 @@
                 messageFormat  : "An exit node must not contain leaving edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// An end node must not contain leaving edges
@@ -164,7 +164,7 @@
                 messageFormat  : "An end node must not contain leaving edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// An init node must not contain incoming edges
@@ -174,7 +174,7 @@
                 messageFormat  : "An init node must not contain incoming edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// Choice node '{0}' must only be reached by -->
@@ -184,7 +184,7 @@
                 messageFormat  : "Choice node '{0}' must only be reached by -->",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// Exit node '{0}' must only be reached by -->
@@ -194,7 +194,7 @@
                 messageFormat  : "Exit node '{0}' must only be reached by -->",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// End node '{0}' must only be reached by -->
@@ -204,7 +204,7 @@
                 messageFormat  : "End node '{0}' must only be reached by -->",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// The exit node '{0}' has no incoming edges
@@ -214,7 +214,7 @@
                 messageFormat  : "The exit node '{0}' has no incoming edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
+            );
 
             /// <summary>
             /// The end node has no incoming edges
@@ -224,7 +224,7 @@
                 messageFormat  : "The end node has no incoming edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
+            );
 
             /// <summary>
             /// The init node '{0}' has no outgoing edges
@@ -235,8 +235,7 @@
                 category       : Category,
                 // TODO Error oder Warning - noch klären
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
-
+            );
 
             /// <summary>
             /// '{0}' edge not allowed here because the transition is reachable from an init node
@@ -246,7 +245,7 @@
                 messageFormat  : "'{0}' edge not allowed here because '{1}' is reachable from init node '{2}'",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// The choice node '{0}' has no incoming edges
@@ -256,7 +255,7 @@
                 messageFormat  : "The choice node '{0}' has no incoming edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
+            );
 
             /// <summary>
             /// The choice node '{0}' has no outgoing edges
@@ -266,8 +265,7 @@
                 messageFormat  : "The choice node '{0}' has no outgoing edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
-
+            );
 
             /// <summary>
             /// The task node '{0}' has no incoming edges
@@ -277,7 +275,7 @@
                 messageFormat  : "The task node '{0}' has no incoming edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
+            );
 
             /// <summary>
             /// The dialog node '{0}' has no incoming edges
@@ -287,7 +285,7 @@
                 messageFormat  : "The dialog node '{0}' has no incoming edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
+            );
 
             /// <summary>
             /// The dialog node '{0}' has no outgoing edges
@@ -297,7 +295,7 @@
                 messageFormat  : "The dialog node '{0}' has no outgoing edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
+            );
 
             /// <summary>
             /// The view node '{0}' has no incoming edges
@@ -307,7 +305,7 @@
                 messageFormat  : "The view node '{0}' has no incoming edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
+            );
 
             /// <summary>
             /// The view node '{0}' has no outgoing edges
@@ -317,17 +315,17 @@
                 messageFormat  : "The view node '{0}' has no outgoing edges",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Warning
-                );
+            );
 
             /// <summary>
             /// Trigger not allowed after init
             /// </summary>
             public static readonly DiagnosticDescriptor Nav0200SignalTriggerNotAllowedAfterInit = new DiagnosticDescriptor(
                 id             : DiagnosticId.Nav0200,
-                messageFormat  : "Trigger not allowed after init",
+                messageFormat  : "Signal trigger not allowed after init",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// Spontaneous not allowed in signal trigger
@@ -337,17 +335,7 @@
                 messageFormat  : "Spontaneous not allowed in signal trigger",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
-
-            /// <summary>
-            /// 'spontaneous' only allowed after view and init nodes
-            /// </summary>
-            public static readonly DiagnosticDescriptor Nav0202SpontaneousOnlyAllowedAfterViewAndInitNodes = new DiagnosticDescriptor(
-                id             : DiagnosticId.Nav0202,
-                messageFormat  : "'spontaneous' only allowed after view and init nodes",
-                category       : Category,
-                defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// Trigger not allowed after choice
@@ -356,19 +344,18 @@
                 id             : DiagnosticId.Nav0203,
                 messageFormat  : "Trigger not allowed after choice",
                 category       : Category,
-                // TODO Error oder Warning - noch klären
-                defaultSeverity: DiagnosticSeverity.Warning
-                );
+                defaultSeverity: DiagnosticSeverity.Error
+            );
 
             /// <summary>
-            /// Conditions are only supported after Init and Choice nodes
+            /// Conditions are not allowed in trigger transitions
             /// </summary>
-            public static readonly DiagnosticDescriptor Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodes = new DiagnosticDescriptor(
+            public static readonly DiagnosticDescriptor Nav0220ConditionsAreNotAllowedInTriggerTransitions = new DiagnosticDescriptor(
                 id             : DiagnosticId.Nav0220,
-                messageFormat  : "Conditions are only supported after Init and Choice nodes",
+                messageFormat  : "Conditions are not allowed in trigger transitions",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
 
             /// <summary>
             /// Only if conditions allowed in exit transitions
@@ -378,7 +365,17 @@
                 messageFormat  : "Only if conditions allowed in exit transitions",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
+
+            /// <summary>
+            /// Node {0} is rechable by different edge modes
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav0222Node0IsReachableByDifferentEdgeModes = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav0222,
+                messageFormat  : "Node {0} is reachable by different edge modes",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Error
+            );
 
             // Code Related
 
@@ -390,7 +387,10 @@
                 messageFormat  : "Identifier expected",
                 category       : Category,
                 defaultSeverity: DiagnosticSeverity.Error
-                );
+            );
+
         }
+
     }
+
 }

@@ -13,10 +13,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         protected NavMethodAnnotation(NavTaskAnnotation taskAnnotation,
                                       MethodDeclarationSyntax methodDeclarationSyntax) : base(taskAnnotation) {
 
-            if (methodDeclarationSyntax == null) {
-                throw new ArgumentNullException(nameof(methodDeclarationSyntax));
-            }
-            MethodDeclarationSyntax = methodDeclarationSyntax;
+            MethodDeclarationSyntax = methodDeclarationSyntax ?? throw new ArgumentNullException(nameof(methodDeclarationSyntax));
         }
 
         [NotNull]

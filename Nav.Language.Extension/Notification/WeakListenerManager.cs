@@ -22,8 +22,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Notification {
                 var toRemove = new List<WeakReference<T>>();
 
                 foreach (var entry in _listeners) {
-                    T listener;
-                    if (entry.TryGetTarget(out listener)) {
+                    if (entry.TryGetTarget(out var listener)) {
                         action(listener);
                     } else {
                         toRemove.Add(entry);
@@ -46,8 +45,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Notification {
             lock (_listeners) {
 
                 _listeners.RemoveAll(entry => {
-                    T target;
-                    if(entry.TryGetTarget(out target)) {
+                    if(entry.TryGetTarget(out var target)) {
                         return target == listener;
                     }
                     return false;

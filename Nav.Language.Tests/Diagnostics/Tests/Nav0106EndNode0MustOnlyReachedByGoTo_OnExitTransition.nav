@@ -1,0 +1,17 @@
+﻿task C
+{
+    init I1;            
+    exit e1;
+    I1 --> e1;
+}
+
+task A
+{
+    init I1;            
+    end;
+    task C;
+
+    I1   --> C;
+    C:e1 o-> end;
+}
+//==>>[Semantic](15,10,15,13): error Nav0106: End node 'end' must only be reached by -->

@@ -1,0 +1,12 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    view A;
+                
+    I1 --> A;
+    A  --> e1 on Foo;
+    A  --> e1 on Foo;
+}
+//==>>[Semantic](8,18,8,21): error Nav0023: An outgoing edge for Trigger 'Foo' is already declared
+//==>>[Semantic](9,18,9,21): error Nav0023: An outgoing edge for Trigger 'Foo' is already declared

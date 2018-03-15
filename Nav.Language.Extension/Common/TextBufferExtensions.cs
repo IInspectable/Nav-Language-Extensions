@@ -19,9 +19,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
         [CanBeNull]
         public static ITextDocument GetTextDocument(this ITextBuffer textBuffer) {
-            ITextDocument textDoc;
 
-            textBuffer.Properties.TryGetProperty(typeof(ITextDocument), out textDoc);
+            textBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument textDoc);
 
             if(textDoc == null) {
                 Logger.Warn($"{nameof(GetTextDocument)}: There's no ITextDocument for the {nameof(ITextBuffer)}");

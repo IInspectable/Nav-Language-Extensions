@@ -177,10 +177,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                 var serviceProvider = GetServiceProvider();
 
                 Guid logicalView = Guid.Empty;
-                IVsUIHierarchy hierarchy;
-                uint itemId;
-                IVsWindowFrame windowFrame;
-                VsShellUtilities.OpenDocument(serviceProvider, file, logicalView, out hierarchy, out itemId, out windowFrame);
+                VsShellUtilities.OpenDocument(serviceProvider, file, logicalView, out var _, out var _, out var windowFrame);
 
                 return GetWpfTextViewFromFrame(windowFrame);
             }
@@ -217,21 +214,16 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                 var componentModel = (IComponentModel) GetGlobalService(typeof(SComponentModel));
                 var editorAdapterFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
 
-                IVsUIHierarchy uiHierarchy;
-                uint itemId;
-                IVsWindowFrame windowFrame;
-                if(VsShellUtilities.IsDocumentOpen(
+                if (VsShellUtilities.IsDocumentOpen(
                     package,
                     filePath,
                     Guid.Empty,
-                    out uiHierarchy,
-                    out itemId,
-                    out windowFrame)) {
+                    out IVsUIHierarchy _,
+                    out uint _,
+                    out IVsWindowFrame windowFrame)) {
                     IVsTextView view = VsShellUtilities.GetTextView(windowFrame);
-                    IVsTextLines lines;
-                    if(view.GetBuffer(out lines) == 0) {
-                        var buffer = lines as IVsTextBuffer;
-                        if(buffer != null)
+                    if (view.GetBuffer(out var lines) == 0) {
+                        if (lines is IVsTextBuffer buffer)
                             return editorAdapterFactoryService.GetDataBuffer(buffer);
                     }
                 }
@@ -254,13 +246,11 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                     return null;
                 }
 
-                object curDocument;
-                if(ErrorHandler.Failed(monitorSelection.GetCurrentElementValue((uint) VSConstants.VSSELELEMID.SEID_DocumentFrame, out curDocument))) {
+                if(ErrorHandler.Failed(monitorSelection.GetCurrentElementValue((uint) VSConstants.VSSELELEMID.SEID_DocumentFrame, out var curDocument))) {
                     Logger.Error("Get VSConstants.VSSELELEMID.SEID_DocumentFrame failed");
                     return null;
                 }
-                var frame = curDocument as IVsWindowFrame;
-                if(frame == null) {
+                if(!(curDocument is IVsWindowFrame frame)) {
                     Logger.Error($"{nameof(curDocument)} ist kein {nameof(IVsWindowFrame)}");
                     return null;
                 }
@@ -273,16 +263,13 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         static IWpfTextView GetWpfTextViewFromFrame(IVsWindowFrame frame) {
 
             using(Logger.LogBlock(nameof(GetWpfTextViewFromFrame))) {
-
-                object docView;
-                if(ErrorHandler.Failed(frame.GetProperty((int) __VSFPROPID.VSFPROPID_DocView, out docView))) {
+                if(ErrorHandler.Failed(frame.GetProperty((int) __VSFPROPID.VSFPROPID_DocView, out var docView))) {
                     Logger.Error("Get __VSFPROPID.VSFPROPID_DocView failed");
                     return null;
                 }
 
-                if(docView is IVsCodeWindow) {
-                    IVsTextView textView;
-                    if(ErrorHandler.Failed(((IVsCodeWindow) docView).GetPrimaryView(out textView))) {
+                if(docView is IVsCodeWindow window) {
+                    if(ErrorHandler.Failed(window.GetPrimaryView(out var textView))) {
                         Logger.Error("GetPrimaryView failed");
                         return null;
                     }
@@ -332,14 +319,12 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
             var result          = imageService?.GetImage(moniker, imageAttributes);
 
-            var imageListData = Microsoft.Internal.VisualStudio.PlatformUI.Utilities.GetObjectData(result) as IVsUIWin32ImageList;
-            if(imageListData == null) {
+            if(!(Microsoft.Internal.VisualStudio.PlatformUI.Utilities.GetObjectData(result) is IVsUIWin32ImageList imageListData)) {
                 Logger.Warn($"{nameof(GetImageList)}: Unable to get IVsUIWin32ImageList");
                 return IntPtr.Zero;
             }
 
-            int imageListInt;
-            if(!ErrorHandler.Succeeded(imageListData.GetHIMAGELIST(out imageListInt))) {
+            if(!ErrorHandler.Succeeded(imageListData.GetHIMAGELIST(out var imageListInt))) {
                 Logger.Warn($"{nameof(GetImageList)}: Unable to get HIMAGELIST");
                 return IntPtr.Zero;
 

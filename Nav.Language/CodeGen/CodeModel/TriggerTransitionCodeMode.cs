@@ -8,7 +8,8 @@ using System.Collections.Immutable;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-    class TriggerTransitionCodeModel : TransitionCodeModel {
+
+    class TriggerTransitionCodeModel: TransitionCodeModel {
 
         readonly SignalTriggerCodeInfo _triggerCodeInfo;
 
@@ -18,20 +19,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             ViewParameter    = new ParameterCodeModel(triggerCodeInfo.TOClassName, CodeGenFacts.ToParamtername);
         }
 
-        public string TriggerName            => _triggerCodeInfo.TriggerName;
-        public string TriggerMethodName      => _triggerCodeInfo.TriggerMethodName;
-        public string TriggerLogicMethodName => _triggerCodeInfo.TriggerLogicMethodName;
-        
-        public ParameterCodeModel ViewParameter { get; } 
+        public string TriggerName => _triggerCodeInfo.TriggerName;
 
-        public static IEnumerable<TriggerTransitionCodeModel> FromTriggerTransition(TaskCodeInfo taskCodeInfo, ITransition triggerTransition) {
+        public ParameterCodeModel ViewParameter { get; }
 
-            var guiNode = triggerTransition?.Source?.Declaration as IGuiNodeSymbol;
-            if(guiNode == null) {
-                throw new ArgumentException("Trigger transition expected");
-            }
+        public static IEnumerable<TriggerTransitionCodeModel> FromTriggerTransition(TaskCodeInfo taskCodeInfo, ITriggerTransition triggerTransition) {
 
-            foreach(var signalTrigger in triggerTransition.Triggers.OfType<ISignalTriggerSymbol>()) {
+            foreach (var signalTrigger in triggerTransition.Triggers.OfType<ISignalTriggerSymbol>()) {
 
                 var triggerCodeInfo = SignalTriggerCodeInfo.FromSignalTrigger(signalTrigger, taskCodeInfo);
 
@@ -40,5 +34,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                     reachableCalls : triggerTransition.GetReachableCalls().ToImmutableList());
             }
         }
+
     }
+
 }

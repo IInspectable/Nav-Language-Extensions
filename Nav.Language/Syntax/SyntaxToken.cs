@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
-    [DebuggerDisplay("{ToDebuggerDisplayString(), nq}")]
+    [DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
     public struct SyntaxToken: IExtent {
 
         const int BitMask                = 0xFF;
@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language {
         const int ClassificationBitShift = 0;
 
         readonly SyntaxNode _parent;
-        readonly TextExtent     _extent;
+        readonly TextExtent _extent;
         readonly int        _classificationAndType;
 
         internal SyntaxToken(SyntaxNode parent, SyntaxTokenType type, SyntaxTokenClassification classification, TextExtent extent) {
@@ -26,48 +26,27 @@ namespace Pharmatechnik.Nav.Language {
         public static readonly SyntaxToken Missing= new SyntaxToken(null, SyntaxTokenType.Unknown, SyntaxTokenClassification.Unknown, TextExtent.Missing);    
         public static readonly SyntaxToken Empty  = new SyntaxToken(null, SyntaxTokenType.Unknown, SyntaxTokenClassification.Unknown, TextExtent.Empty);
 
-        public TextExtent Extent {
-            get { return _extent; }
-        }
+        public TextExtent Extent => _extent;
 
         [CanBeNull]
         public Location GetLocation() {
             return SyntaxTree?.GetLocation(Extent);
         }
 
-        public SyntaxTokenClassification Classification {
-            get { return (SyntaxTokenClassification)((_classificationAndType >> ClassificationBitShift) & BitMask); }
-        }
+        public SyntaxTokenClassification Classification => (SyntaxTokenClassification)((_classificationAndType >> ClassificationBitShift) & BitMask);
 
-        public SyntaxTokenType Type {
-            get { return (SyntaxTokenType)((_classificationAndType >> TypeBitShift) & BitMask); }
-        }
+        public SyntaxTokenType Type => (SyntaxTokenType)((_classificationAndType >> TypeBitShift) & BitMask);
 
-        public int Start {
-            get { return _extent.Start; }
-        }
-
-        public int Length {
-            get { return _extent.Length; }
-        }
-        
-        public int End {
-            get { return _extent.End; }
-        }
-       
-        public bool IsMissing {
-            get { return _parent==null || _extent.IsMissing; }
-        }
+        public int Start      => _extent.Start;
+        public int Length     => _extent.Length;
+        public int End        => _extent.End;
+        public bool IsMissing => _parent==null || _extent.IsMissing;
 
         [CanBeNull]
-        public SyntaxNode Parent {
-            get { return _parent; }
-        }
+        public SyntaxNode Parent => _parent;
 
         [CanBeNull]
-        public SyntaxTree SyntaxTree {
-            get { return Parent?.SyntaxTree; }
-        }        
+        public SyntaxTree SyntaxTree => Parent?.SyntaxTree;
 
         public SyntaxToken NextToken() {
             return SyntaxTree?.Tokens.NextOrPrevious(Parent, this, nextToken: true)??Missing;

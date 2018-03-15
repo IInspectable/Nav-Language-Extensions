@@ -8,12 +8,7 @@ namespace Pharmatechnik.Nav.Language {
         internal CodeGenerateToDeclarationSyntax(TextExtent extent) : base(extent) {
         }
 
-        public SyntaxToken GeneratetoKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.GeneratetoKeyword); }
-        }
-
-        public SyntaxToken StringLiteral {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral); }
-        }
+        public SyntaxToken GeneratetoKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.GeneratetoKeyword);
+        public SyntaxToken StringLiteral     => ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral);
     }
 }

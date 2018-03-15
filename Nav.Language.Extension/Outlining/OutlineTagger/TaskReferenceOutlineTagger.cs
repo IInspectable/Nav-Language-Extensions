@@ -54,9 +54,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
             IncludeDirectiveSyntax firstInclude = null;
             IncludeDirectiveSyntax lastInclude  = null;
             foreach (var syntaxNode in allRelevant) {
-
-                var include = syntaxNode as IncludeDirectiveSyntax;
-                if (include != null) {
+                if (syntaxNode is IncludeDirectiveSyntax include) {
                     if (firstInclude == null) {
                         firstInclude = include;
                     }

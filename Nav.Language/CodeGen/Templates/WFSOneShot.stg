@@ -1,5 +1,7 @@
 ﻿delimiters "<", ">"
 
+// Common.stg und CodeGenFacts.stg werden immer importiert
+
 Begin(model, context) ::=<<
 <writeUsingDirectives(model.UsingNamespaces)>
 
@@ -20,11 +22,11 @@ writeInitTransitionCollapsibleList(initTransitions) ::=<<
 
 writeInitTransition(initTransition) ::=<<
 <if(initTransition.GenerateAbstractMethod)>
-public override IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>) {
+public override IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>) {
     throw new NotImplementedException();
 }
 <else>
-protected override INavCommandBody <initTransition.BeginLogicMethodName>(<writeParameterList([initTransition.Parameter, initTransition.TaskBegins])>) {
+protected override INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList([initTransition.Parameter, initTransition.TaskBegins])>) {
     throw new NotImplementedException();
 }
 <endif>
@@ -36,11 +38,11 @@ writeExitTransitionCollapsibleList(exitTransitions) ::=<<
 
 writeExitTransition(exitTransition) ::=<<
 <if(exitTransition.GenerateAbstractMethod)>
-protected override INavCommand <exitTransition.AfterMethodName>(<writeParameterList(exitTransition.TaskResult)>) {
+protected override INavCommand <ExitMethodPrefix()><exitTransition.NodeNamePascalcase>(<writeParameterList(exitTransition.TaskResult)>) {
     throw new NotImplementedException();
 }
 <else>
-protected override INavCommandBody <exitTransition.AfterLogicMethodName>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>) {
+protected override INavCommandBody <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>) {
      throw new NotImplementedException();
 }
 <endif>
@@ -51,7 +53,7 @@ writeTriggerTransitionList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
-protected override INavCommandBody <triggerTransition.TriggerLogicMethodName>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBegins])>) {
+protected override INavCommandBody <triggerTransition.TriggerName><LogicMethodSuffix()>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBegins])>) {
     throw new NotImplementedException();
 }
 >>

@@ -1,0 +1,12 @@
+﻿task A
+{
+    init I1;  
+    init I2;
+    exit e1;
+    view C;
+
+    I1  --> e1;
+    I2  --> C;                    
+}
+//==>>[Semantic](6,10,6,11): warning Nav0117: The view node 'C' has no outgoing edges
+//==>>[DeadCode](9,5,9,15): warning Nav1019: The view node 'C' has no outgoing edges

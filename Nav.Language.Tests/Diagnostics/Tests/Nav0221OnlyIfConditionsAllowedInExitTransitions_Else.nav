@@ -1,0 +1,11 @@
+﻿task A
+{
+    init I1;
+    exit e1;
+    task A;
+                
+    I1      --> A;  
+    I1      --> e1; 
+    A:e1    --> e1 else;
+}
+//==>>[Semantic](9,20,9,24): error Nav0221: Only if conditions allowed in exit transitions

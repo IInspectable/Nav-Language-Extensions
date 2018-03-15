@@ -21,10 +21,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
         static readonly Logger Logger = Logger.Create<NavAnnotationLocationInfoProvider<TAnnotation>>();
 
         protected NavAnnotationLocationInfoProvider(TAnnotation annotation) {
-            if(annotation == null) {
-                throw new ArgumentNullException(nameof(annotation));
-            }
-            Annotation = annotation;
+            Annotation = annotation ?? throw new ArgumentNullException(nameof(annotation));
         }
         
         public TAnnotation Annotation { get; set; }

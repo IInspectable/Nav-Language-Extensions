@@ -1,5 +1,7 @@
 ﻿delimiters "<", ">"
 
+// Common.stg und CodeGenFacts.stg werden immer importiert
+
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
 <writeUsingDirectives(model.UsingNamespaces)>
@@ -9,7 +11,7 @@ namespace <model.Namespace> {
     // Redeklarationen von Methoden ohne new sind ok - um in manuell erstellten Oberinterfaces Begins definieren zu können
     #pragma warning disable 0108
 
-	<writeCodeDeclarationCollapsibleList(model.CodeDeclarations)><\\>
+    <writeCodeDeclarationCollapsibleList(model.CodeDeclarations)><\\>
 
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public interface <BeginInterfacePrefix()><model.Task.TaskNamePascalcase><WfsClassSuffix()>: <model.BaseInterfaceName> {
@@ -19,7 +21,7 @@ namespace <model.Namespace> {
 >>
 
 writeCodeDeclarationCollapsibleList(codeDeclarations) ::=<<
-<codeDeclarations:writeCodeDeclaration(); separator="\r\n\r\n">
+<codeDeclarations:writeCodeDeclaration(); separator="\r\n">
 
 >>
 
@@ -32,5 +34,6 @@ writeBeginMethodDeclarationList(initTransitions) ::=<<
 >>
 
 writeBeginMethodDeclaration(initTransition) ::=<<
-IINIT_TASK <initTransition.BeginMethodName>(<writeParameterList(initTransition.Parameter)>);
+<writeNavInitAnnotation(initTransition.NodeName)>
+IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>);
 >>

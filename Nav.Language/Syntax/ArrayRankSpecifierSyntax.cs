@@ -8,12 +8,7 @@ namespace Pharmatechnik.Nav.Language {
         internal ArrayRankSpecifierSyntax(TextExtent extent) : base(extent) {
         }
      
-        public SyntaxToken OpenBracket {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBracket); }
-        }
-
-        public SyntaxToken CloseBracket {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBracket); }
-        }
+        public SyntaxToken OpenBracket  => ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBracket);
+        public SyntaxToken CloseBracket => ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBracket);
     }
 }

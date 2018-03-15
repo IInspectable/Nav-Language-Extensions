@@ -1,0 +1,12 @@
+﻿task A
+{
+    init I1;  
+    exit e1;
+
+    view V1;
+
+    I1  --> V1;
+
+    V1 --> e1 on Foo else;
+}
+//==>>[Semantic](10,22,10,26): error Nav0220: Conditions are not allowed in trigger transitions

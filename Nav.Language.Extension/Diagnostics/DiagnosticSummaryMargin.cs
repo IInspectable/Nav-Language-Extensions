@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -107,8 +108,25 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
                 _diagnosticService.GoToNextDiagnostic();
 
             } else if ((Keyboard.Modifiers & shiftCtrlModifier) == shiftCtrlModifier && e.ClickCount == 2) {
-                // Shift + Ctrl + Doubleclick => Neuberechnung der Diagnostik
+                
+                // Shift + Ctrl + Doubleclick 
+
+                // Kopieren der Diagnostics in die Zwischenablage für Unittests
+                var errors      = _diagnosticService.GetDiagnosticsWithSeverity(DiagnosticSeverity.Error).Select(d => d.Tag.Diagnostic);
+                var warnings    = _diagnosticService.GetDiagnosticsWithSeverity(DiagnosticSeverity.Warning).Select(d => d.Tag.Diagnostic);
+                var suggestions = _diagnosticService.GetDiagnosticsWithSeverity(DiagnosticSeverity.Suggestion).Select(d => d.Tag.Diagnostic);
+                var diagnostics = errors.Concat(warnings)
+                                   .Concat(suggestions)
+                                   .Aggregate(
+                                        new StringBuilder(),
+                                        (sb, diagnostic) => sb.AppendLine(diagnostic.ToString(UnitTestDiagnosticFormatter.Instance)),
+                                        sb => sb.ToString());
+
+                Clipboard.SetText(diagnostics);
+
+                // Neuberechnung der Diagnostik
                 _diagnosticService.Invalidate();
+
             }            
         }
 

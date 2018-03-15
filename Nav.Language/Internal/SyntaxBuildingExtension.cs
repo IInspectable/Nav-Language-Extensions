@@ -38,5 +38,19 @@ namespace Pharmatechnik.Nav.Language.Internal {
             where T : ParserRuleContext {
             return contexts.Select(visitor);
         }
+
+        public static Location GetLocation(this IToken token, string filePath) {
+
+            if (token == null) {
+                return new Location(TextExtent.Missing, LinePosition.Empty, filePath);
+            }
+
+            var linePosition = new LinePosition(token.Line -1, token.Column);
+            var textExtent = TextExtent.FromBounds(token.StartIndex, token.StopIndex + 1);
+
+            var location = new Location(textExtent, linePosition, filePath);
+
+            return location;
+        }
     }
 }

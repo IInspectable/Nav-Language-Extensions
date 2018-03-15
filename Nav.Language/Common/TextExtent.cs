@@ -13,10 +13,12 @@ namespace Pharmatechnik.Nav.Language {
             if (length < 0) {
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
-            if(start < -1) {
+
+            if (start < -1) {
                 throw new ArgumentOutOfRangeException(nameof(start));
             }
-            if(start==-1 && length > 0) {
+
+            if (start == -1 && length > 0) {
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
 
@@ -24,48 +26,34 @@ namespace Pharmatechnik.Nav.Language {
             _length = length;
         }
 
-        public static readonly TextExtent Empty   = new TextExtent(start:  0, length: 0);
+        public static readonly TextExtent Empty   = new TextExtent(start: 0,  length: 0);
         public static readonly TextExtent Missing = new TextExtent(start: -1, length: 0);
 
         public static TextExtent FromBounds(int start, int end) {
             return new TextExtent(start: start, length: end - start);
         }
 
-        public bool IsMissing {
-            get { return _start<0; }
-        }
-
-        public bool IsEmpty {
-            get { return Length==0; }
-        }
-
-        public bool IsEmptyOrMissing {
-            get { return IsEmpty || IsMissing; }
-        }
+        public bool IsMissing        => _start < 0;
+        public bool IsEmpty          => Length == 0;
+        public bool IsEmptyOrMissing => IsEmpty || IsMissing;
 
         /// <summary>
         /// Gets the starting index of the extent [0..n].
         /// -1 if the is unknown/missing
         /// </summary>
-        public int Start {
-            get { return _start; }
-        }
+        public int Start => _start;
 
         /// <summary>
         /// Gets the length of the extent. Length is guaranteed to be great or equal to 0.
         /// </summary>
-        public int Length {
-            get { return _length; }
-        }
+        public int Length => _length;
 
         /// <summary>
         /// Gets the end index of the extent, starting with 0;
         /// This index is actually one character past the end of the extent.
         /// </summary>
-        public int End {
-            get { return _start+_length; }
-        }
-        
+        public int End => _start + _length;
+
         public bool Contains(TextExtent other) {
             return other.Start >= Start && other.End <= End;
         }
@@ -86,16 +74,17 @@ namespace Pharmatechnik.Nav.Language {
             int intersectStart = Math.Max(Start, span.Start);
             int intersectEnd   = Math.Min(End, span.End);
 
-            return intersectStart <= intersectEnd ? FromBounds(intersectStart, intersectEnd) : (TextExtent?)null;
+            return intersectStart <= intersectEnd ? FromBounds(intersectStart, intersectEnd) : (TextExtent?) null;
         }
 
         public override string ToString() {
             if (IsMissing) {
                 return "<missing>";
             }
+
             return $"[{Start}-{End}]";
         }
-        
+
         /// <summary>
         /// Determines whether two <see cref="TextExtent"/> are the same.
         /// </summary>
@@ -123,14 +112,16 @@ namespace Pharmatechnik.Nav.Language {
         /// </summary>
         /// <param name="obj">The object to compare.</param>
         public override bool Equals(object obj) {
-            return obj is TextExtent && Equals((TextExtent)obj);
+            return obj is TextExtent extent && Equals(extent);
         }
 
         /// <summary>
         /// Provides a hash function for <see cref="TextExtent"/>.
         /// </summary>
         public override int GetHashCode() {
-            return Start^End;
-        }        
+            return Start ^ End;
+        }
+
     }
-} 
+
+}

@@ -1,0 +1,2 @@
+﻿taskref "ATaskWithoutErrors.nav";
+//==>>[DeadCode](1,1,1,34): warning Nav1003: Taskref directive is not required by the code and can be safely removed

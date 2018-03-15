@@ -36,8 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         [CanBeNull]
         internal static T TryGet(ITextBuffer textBuffer, object key) {
             T value = null;
-            WeakReference weakValue;
-            if (textBuffer.Properties.TryGetProperty(key, out weakValue)) {
+            if (textBuffer.Properties.TryGetProperty(key, out WeakReference weakValue)) {
                 value = weakValue.Target as T;
                 if (value == null) {
                     textBuffer.Properties.RemoveProperty(key);

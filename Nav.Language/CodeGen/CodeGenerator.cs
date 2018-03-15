@@ -5,86 +5,98 @@ using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Text;
 
 using Antlr4.StringTemplate;
+
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.CodeGen.Templates;
-// ReSharper disable InconsistentNaming
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
+    // ReSharper disable InconsistentNaming
     public class CodeGenerator: Generator {
 
-        const string TemplateName         = "Begin";
+        const string TemplateBeginName    = "Begin";
         const string ModelAttributeName   = "model";
         const string ContextAttributeName = "context";
 
-        public CodeGenerator(GenerationOptions options, PathProviderFactory pathProviderFactory = null) : base(options) {
-            PathProviderFactory = pathProviderFactory ?? PathProviderFactory.Default;
+        public CodeGenerator(GenerationOptions options, IPathProviderFactory pathProviderFactory = null): base(options) {
+            PathProviderFactory = pathProviderFactory ?? Language.PathProviderFactory.Default;
         }
 
         [NotNull]
-        public PathProviderFactory PathProviderFactory { get; }
+        public IPathProviderFactory PathProviderFactory { get; }
 
         public IImmutableList<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit) {
 
             if (codeGenerationUnit == null) {
                 throw new ArgumentNullException(nameof(codeGenerationUnit));
             }
+
             if (codeGenerationUnit.Syntax.SyntaxTree.Diagnostics.HasErrors()) {
-                throw new ArgumentException("Syntax errors detected");
+                throw new ArgumentException($"The CodeGenerationUnit has syntax errors:\r\n{FormatDiagnostics(codeGenerationUnit.Syntax.SyntaxTree.Diagnostics.Errors())}");
             }
+
             if (codeGenerationUnit.Diagnostics.HasErrors()) {
-                throw new ArgumentException("Semantic errors detected");
+                throw new ArgumentException($"The CodeGenerationUnit has semantic errors:\r\n{FormatDiagnostics(codeGenerationUnit.Diagnostics.Errors())}");
             }
 
-            var codeModelResult = codeGenerationUnit.TaskDefinitions
-                                                    .Select(GenerateCodeModel)
-                                                    .ToImmutableList();
+            if (codeGenerationUnit.Includes.Any(i => i.Diagnostics.HasErrors())) {
+                throw new ArgumentException($"An included file has syntax or semantic errors:\r\n{FormatDiagnostics(codeGenerationUnit.Includes.SelectMany(i => i.Diagnostics).Errors())}");
+            }
 
-            return codeModelResult.Select(GenerateCode).ToImmutableList();
+            return codeGenerationUnit.TaskDefinitions
+                                     .Select(GenerateCodeModel)
+                                     .Select(GenerateCode)
+                                     .ToImmutableList();
+
+            string FormatDiagnostics(IEnumerable<Diagnostic> diagnostics) {
+                return diagnostics.Aggregate(new StringBuilder(), (sb, d) => sb.AppendLine(FormatDiagnostic(d)), sb => sb.ToString());
+            }
+
+            string FormatDiagnostic(Diagnostic diagnostic) {
+                return $"{diagnostic.Descriptor.Id}: {diagnostic.Location} {diagnostic.Message}";
+            }
         }
 
         CodeModelResult GenerateCodeModel(ITaskDefinitionSymbol taskDefinition) {
-            var pathProvider = PathProviderFactory.CreatePathProvider(taskDefinition);
 
-            IEnumerable<TOCodeModel> toCodeModels = null;
-            if (Options.GenerateTOClasses) {
-                toCodeModels = TOCodeModel.FromTaskDefinition(taskDefinition, pathProvider);
-            }
+            var pathProvider = PathProviderFactory.CreatePathProvider(taskDefinition);
 
             var codeModelResult = new CodeModelResult(
                 taskDefinition   : taskDefinition,
                 pathProvider     : pathProvider,
                 beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
-                iwfsCodeModel    : IWfsCodeModel.FromTaskDefinition(taskDefinition     , pathProvider),
-                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition  , pathProvider),
-                wfsCodeModel     : WfsCodeModel.FromTaskDefinition(taskDefinition      , pathProvider),
-                toCodeModels     : toCodeModels
+                iwfsCodeModel    : IWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
+                wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
+                wfsCodeModel     : WfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
+                toCodeModels     : Options.GenerateTOClasses ? TOCodeModel.FromTaskDefinition(taskDefinition, pathProvider) : null
             );
 
             return codeModelResult;
         }
 
         CodeGenerationResult GenerateCode(CodeModelResult codeModelResult) {
+
             var context = new CodeGeneratorContext(this);
 
             var codeGenerationResult = new CodeGenerationResult(
                 taskDefinition   : codeModelResult.TaskDefinition,
                 pathProvider     : codeModelResult.PathProvider,
                 iBeginWfsCodeSpec: GenerateIBeginWfsCodeSpec(codeModelResult.IBeginWfsCodeModel, context),
-                iWfsCodeSpec     : GenerateIWfsCodeSpec(codeModelResult.IWfsCodeModel          , context),
-                wfsBaseCodeSpec  : GenerateWfsBaseCodeSpec(codeModelResult.WfsBaseCodeModel    , context),
-                wfsCodeSpec      : GenerateWfsCodeSpec(codeModelResult.WfsCodeModel            , context),
-                toCodeSpecs      : GenerateToCodeSpecs(codeModelResult.TOCodeModels            , context));
+                iWfsCodeSpec     : GenerateIWfsCodeSpec(codeModelResult.IWfsCodeModel, context),
+                wfsBaseCodeSpec  : GenerateWfsBaseCodeSpec(codeModelResult.WfsBaseCodeModel, context),
+                wfsCodeSpec      : GenerateWfsCodeSpec(codeModelResult.WfsCodeModel, context),
+                toCodeSpecs      : GenerateToCodeSpecs(codeModelResult.TOCodeModels, context));
 
             return codeGenerationResult;
         }
-        
-        static readonly ThreadLocal<TemplateGroup> IBeginWfsTemplateGroup= new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.IBeginWfsTemplate));
+
+        static readonly ThreadLocal<TemplateGroup> IBeginWfsTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.IBeginWfsTemplate));
 
         static CodeGenerationSpec GenerateIBeginWfsCodeSpec(IBeginWfsCodeModel model, CodeGeneratorContext context) {
 
@@ -99,7 +111,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         static CodeGenerationSpec GenerateIWfsCodeSpec(IWfsCodeModel model, CodeGeneratorContext context) {
 
             var template = GetTemplate(IWfsTemplateGroup.Value, model, context);
-            var content = template.Render();
+            var content  = template.Render();
 
             return new CodeGenerationSpec(content, model.FilePath);
         }
@@ -109,13 +121,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         static CodeGenerationSpec GenerateWfsBaseCodeSpec(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
             var template = GetTemplate(WfsBaseTemplateGroup.Value, model, context);
-            var content = template.Render();
+            var content  = template.Render();
 
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
         static readonly ThreadLocal<TemplateGroup> WfsTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.WFSOneShotTemplate));
-        
+
         static CodeGenerationSpec GenerateWfsCodeSpec(WfsCodeModel model, CodeGeneratorContext context) {
 
             var template = GetTemplate(WfsTemplateGroup.Value, model, context);
@@ -129,7 +141,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         static readonly ThreadLocal<TemplateGroup> ToTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.TOTemplate));
-        
+
         static CodeGenerationSpec GenerateToCodeSpec(TOCodeModel model, CodeGeneratorContext context) {
 
             var template = GetTemplate(ToTemplateGroup.Value, model, context);
@@ -151,12 +163,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         static Template GetTemplate(TemplateGroup templateGroup, CodeModel model, CodeGeneratorContext context) {
-            var st = templateGroup.GetInstanceOf(TemplateName);
 
-            st.Add(ModelAttributeName  , model);
+            var st = templateGroup.GetInstanceOf(TemplateBeginName);
+
+            st.Add(ModelAttributeName,   model);
             st.Add(ContextAttributeName, context);
 
             return st;
         }
+
     }
+
 }

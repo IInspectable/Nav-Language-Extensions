@@ -1,5 +1,3 @@
-using System;
-using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
@@ -35,15 +33,10 @@ namespace Nav.Language.Tests {
             
             string s = TestHelper.RandomString(400000);
 
-            var sw = new Stopwatch();
-            sw.Start();
             var syntaxTree = SyntaxTree.ParseText(s);
-            var duration = sw.Elapsed;
 
             var lastToken = syntaxTree.Tokens.Last();
             Assert.That(lastToken.End, Is.EqualTo(s.Length));
-
-            Console.WriteLine(duration.TotalMilliseconds);
         }
 
         [Test]

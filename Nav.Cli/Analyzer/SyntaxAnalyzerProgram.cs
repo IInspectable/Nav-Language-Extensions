@@ -4,13 +4,16 @@ using System;
 using System.IO;
 using System.Linq;
 
+using Pharmatechnik.Nav.Language.Generator;
 using Pharmatechnik.Nav.Utilities.IO;
 using Pharmatechnik.Nav.Language.Logging;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Analyzer {
+
     sealed class SyntaxAnalyzerProgram {
+
         public int Run(CommandLine cl) {
 
             var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
@@ -28,5 +31,7 @@ namespace Pharmatechnik.Nav.Language.Analyzer {
 
             return 0;
         }
+
     }
+
 }

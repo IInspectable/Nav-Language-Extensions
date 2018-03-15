@@ -3,7 +3,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Pharmatechnik.Nav.Language.Logging;
+
+using Pharmatechnik.Nav.Language.Generator;
 
 #endregion
 
@@ -27,13 +28,13 @@ namespace Pharmatechnik.Nav.Language.Analyzer {
                 foreach (var file in files) {
                     analyzer.CurrentFile = file;
                     // 1. SyntaxTree
-                    var syntaxTree = syntaxProvider.FromFile(file.FilePath);
-                    if (syntaxTree == null) {
+                    var syntax = syntaxProvider.FromFile(file.FilePath);
+                    if (syntax == null) {
                          _logger?.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, file));
                         continue;
                     }
 
-                    analyzer.Walk(syntaxTree.GetRoot());
+                    analyzer.Walk(syntax);
                 }
             }
         }

@@ -1,0 +1,18 @@
+﻿task B 
+{
+    init i1;
+    exit e1;
+    i1 --> e1;
+}
+
+task A
+{
+    task B;
+    init I1;
+    exit e1;
+
+    I1 --> B;
+    B:e1 --> e1;
+    B:e2 --> e1;
+}
+//==>>[Semantic](16,7,16,9): error Nav0012: Cannot resolve exit 'e2'

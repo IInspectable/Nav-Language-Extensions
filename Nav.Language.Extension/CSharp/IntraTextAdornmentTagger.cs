@@ -204,12 +204,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
 
             foreach (var spanDataPair in GetAdornmentData(spans).Distinct(new Comparer())) {
                 // Look up the corresponding adornment or create one if it's new.
-                TAdornment adornment;
                 SnapshotSpan snapshotSpan  = spanDataPair.Item1;
                 PositionAffinity? affinity = spanDataPair.Item2;
                 TData adornmentData        = spanDataPair.Item3;
 
-                if (_adornmentCache.TryGetValue(snapshotSpan, out adornment)) {
+                if (_adornmentCache.TryGetValue(snapshotSpan, out var adornment)) {
 
                     if (UpdateAdornment(adornment, adornmentData)) {
                         toRemove.Remove(snapshotSpan);

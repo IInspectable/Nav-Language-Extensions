@@ -17,14 +17,10 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNode(_identifierOrString = identifierOrString);
         }
 
-        public SyntaxToken IfKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.IfKeyword); }
-        }
-        
+        public SyntaxToken IfKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.IfKeyword);
+
         [CanBeNull]
-        public IdentifierOrStringSyntax IdentifierOrString {
-            get { return _identifierOrString; }
-        }
+        public IdentifierOrStringSyntax IdentifierOrString => _identifierOrString;
     }
 
     [Serializable]
@@ -34,9 +30,7 @@ namespace Pharmatechnik.Nav.Language {
         internal ElseConditionClauseSyntax(TextExtent extent) : base(extent) {
         }
 
-        public SyntaxToken ElseKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.ElseKeyword); }
-        }
+        public SyntaxToken ElseKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ElseKeyword);
     }
 
     [Serializable]
@@ -51,13 +45,9 @@ namespace Pharmatechnik.Nav.Language {
         }
        
         [NotNull]
-        public ElseConditionClauseSyntax ElseCondition {
-            get { return _elseCondition; }
-        }
+        public ElseConditionClauseSyntax ElseCondition => _elseCondition;
 
         [NotNull]
-        public IfConditionClauseSyntax IfCondition {
-            get { return _ifCondition; }
-        }
+        public IfConditionClauseSyntax IfCondition => _ifCondition;
     }
 }

@@ -1,0 +1,14 @@
+﻿task A
+{
+    init I1;    
+    exit e1;
+    dialog C;
+
+    I1  --> e1;
+                    
+    C --> e1 on t1;
+    C --> e1 on t2;
+}
+//==>>[Semantic](5,12,5,13): warning Nav0114: The dialog node 'C' has no incoming edges
+//==>>[DeadCode](9,5,9,20): warning Nav1015: The dialog node 'C' has no incoming edges
+//==>>[DeadCode](10,5,10,20): warning Nav1015: The dialog node 'C' has no incoming edges

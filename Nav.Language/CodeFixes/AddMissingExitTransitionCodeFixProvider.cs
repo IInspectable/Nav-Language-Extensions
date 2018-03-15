@@ -35,8 +35,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             public override IEnumerable<AddMissingExitTransitionCodeFix> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
 
                 // Add Missing Edge
-                var taskNode = nodeReferenceSymbol.Declaration as ITaskNodeSymbol;
-                if (taskNode != null) {
+                if (nodeReferenceSymbol.Declaration is ITaskNodeSymbol taskNode) {
                     foreach (var missingExitConnectionPoint in taskNode.GetMissingExitTransitionConnectionPoints()) {
                         yield return new AddMissingExitTransitionCodeFix(nodeReferenceSymbol, missingExitConnectionPoint, Context);
                     }

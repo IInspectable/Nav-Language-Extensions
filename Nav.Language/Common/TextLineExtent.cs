@@ -10,7 +10,7 @@ namespace Pharmatechnik.Nav.Language {
 
         public TextLineExtent(int line, TextExtent extent) {
 
-            if(extent.IsMissing && line != -1) {
+            if (extent.IsMissing && line != -1) {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
 
@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
 
-            if(line < -1) {
+            if (line < -1) {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
 
@@ -31,9 +31,9 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public static readonly TextLineExtent Missing = new TextLineExtent(-1, TextExtent.Missing);
-        public static readonly TextLineExtent Empty   = new TextLineExtent(0, TextExtent.Empty);
+        public static readonly TextLineExtent Empty   = new TextLineExtent(0,  TextExtent.Empty);
 
-        public bool IsMissing { get { return Line < 0; } }
+        public bool IsMissing => Line < 0;
 
         /// <summary>
         /// The line number. The first line in a file is defined as line 0 (zero based line numbering).
@@ -44,15 +44,10 @@ namespace Pharmatechnik.Nav.Language {
         /// The extent of the line.
         /// </summary>
         public TextExtent Extent { get; }
-        
-        int IExtent.Start {
-            get { return Extent.Start; }
-        }
 
-        int IExtent.End {
-            get { return Extent.End; }
-        }
-        
+        int IExtent.Start => Extent.Start;
+        int IExtent.End   => Extent.End;
+
         /// <summary>
         /// Determines whether two <see cref="TextLineExtent"/> are the same.
         /// </summary>
@@ -80,7 +75,7 @@ namespace Pharmatechnik.Nav.Language {
         /// </summary>
         /// <param name="obj">The object to compare.</param>
         public override bool Equals(object obj) {
-            return obj is TextLineExtent && Equals((TextLineExtent)obj);
+            return obj is TextLineExtent extent && Equals(extent);
         }
 
         /// <summary>
@@ -89,5 +84,7 @@ namespace Pharmatechnik.Nav.Language {
         public override int GetHashCode() {
             return Line ^ Extent.GetHashCode();
         }
+
     }
+
 }

@@ -36,9 +36,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         internal bool CanApplyFix() {
 
-            return NodeReference.Type == NodeReferenceType.Target &&
+            return NodeReference.NodeReferenceType == NodeReferenceType.Target &&
                    NodeReference.Declaration   != null &&
-                   NodeReference.Edge.Source   != null &&
+                   NodeReference.Edge.SourceReference   != null &&
                    NodeReference.Edge.EdgeMode != null;
         }
 

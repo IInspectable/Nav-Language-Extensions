@@ -7,41 +7,40 @@ using System.Collections.Immutable;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
-    sealed class InitTransitionCodeModel : TransitionCodeModel {
+    sealed class InitTransitionCodeModel: TransitionCodeModel {
 
         InitTransitionCodeModel(ImmutableList<ParameterCodeModel> parameter, ImmutableList<Call> reachableCalls,
-                                bool generateAbstractMethod, string nodeName) 
-            :base(reachableCalls) {
+                                bool generateAbstractMethod, string nodeName)
+            : base(reachableCalls) {
 
             Parameter              = parameter ?? throw new ArgumentNullException(nameof(parameter));
             GenerateAbstractMethod = generateAbstractMethod;
             NodeName               = nodeName ?? String.Empty;
         }
-        
-        public bool GenerateAbstractMethod { get; }
-        public string NodeName             { get; }
-        public string BeginMethodName      => CodeGenFacts.BeginMethodPrefix;
-        public string BeginLogicMethodName => $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.LogicMethodSuffix}";
+
+        public bool   GenerateAbstractMethod { get; }
+        public string NodeName               { get; }
 
         public ImmutableList<ParameterCodeModel> Parameter { get; }
 
-        internal static InitTransitionCodeModel FromInitTransition(ITransition initTransition, TaskCodeInfo taskCodeInfo) {
-
-            var initNode = initTransition?.Source?.Declaration as IInitNodeSymbol;
+        internal static InitTransitionCodeModel FromInitTransition(IInitNodeSymbol initNode, TaskCodeInfo taskCodeInfo) {
             if (initNode == null) {
-                throw new ArgumentException("Init transition expected");
+                throw new ArgumentNullException(nameof(initNode));
             }
+
             if (taskCodeInfo == null) {
                 throw new ArgumentNullException(nameof(taskCodeInfo));
             }
-            
+
             var parameter = ParameterCodeModel.FromParameterSyntaxes(initNode.Syntax.CodeParamsDeclaration?.ParameterList);
 
             return new InitTransitionCodeModel(
                 parameter             : parameter.ToImmutableList(),
-                reachableCalls        : initTransition.GetReachableCalls().ToImmutableList(),
+                reachableCalls        : initNode.GetReachableCalls().ToImmutableList(),
                 generateAbstractMethod: initNode.CodeGenerateAbstractMethod(),
                 nodeName              : initNode.Name);
-        }        
+        }
+
     }
+
 }

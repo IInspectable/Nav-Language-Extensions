@@ -16,5 +16,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         public virtual void Dispose() {
         }
+
     }
+
 }

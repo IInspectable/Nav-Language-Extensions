@@ -31,15 +31,15 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         [NotNull]
         public static IEnumerable<TextChange> GetRenameSourceChanges(this SyntaxTree syntaxTree, ITransition transition, string newSourceName, EditorSettings editorSettings) {
 
-            if (transition?.Source == null) {
+            if (transition?.SourceReference == null) {
                 yield break;
             }
 
             var replaceText = newSourceName;
-            var replaceLocation = transition.Source.Location;
+            var replaceLocation = transition.SourceReference.Location;
 
             var replaceExtent = replaceLocation.Extent;
-            if (transition.EdgeMode != null && transition.Source.Location.EndLine == transition.EdgeMode.Location.StartLine) {
+            if (transition.EdgeMode != null && transition.SourceReference.Location.EndLine == transition.EdgeMode.Location.StartLine) {
                 // Find the First non-Whitespace Token after Source Edge
                 var firstNoneWhitespaceToken = syntaxTree.FirstNoneWhitespaceToken(TextExtent.FromBounds(replaceLocation.End, transition.EdgeMode.End));
                 if (!firstNoneWhitespaceToken.IsMissing) {
@@ -59,20 +59,20 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         [NotNull]
         public static IEnumerable<TextChange> GetRenameSourceChanges(this SyntaxTree syntaxTree, IExitTransition transition, string newSourceName, EditorSettings editorSettings) {
 
-            if (transition?.Source == null || transition.ConnectionPoint == null) {
+            if (transition?.SourceReference == null || transition.ConnectionPointReference == null) {
                 yield break;
             }
 
-            var replaceText = $"{newSourceName}{SyntaxFacts.Colon}{transition.ConnectionPoint.Name}";
+            var replaceText = $"{newSourceName}{SyntaxFacts.Colon}{transition.ConnectionPointReference.Name}";
             var replaceLocation = new Location(
-                extent: TextExtent.FromBounds(transition.Source.Start, transition.ConnectionPoint.End),
+                extent: TextExtent.FromBounds(transition.SourceReference.Start, transition.ConnectionPointReference.End),
                 linePositionExtent: new LinePositionExtent(
-                    start: transition.Source.Location.StartLinePosition,
-                    end: transition.ConnectionPoint.Location.EndLinePosition),
-                filePath: transition.ConnectionPoint.Location.FilePath);
+                    start: transition.SourceReference.Location.StartLinePosition,
+                    end: transition.ConnectionPointReference.Location.EndLinePosition),
+                filePath: transition.ConnectionPointReference.Location.FilePath);
 
             var replaceExtent = replaceLocation.Extent;
-            if (transition.EdgeMode != null && transition.Source.Location.EndLine == transition.EdgeMode.Location.StartLine) {
+            if (transition.EdgeMode != null && transition.SourceReference.Location.EndLine == transition.EdgeMode.Location.StartLine) {
                 // Find the First non-Whitespace Token after Source Edge
                 var firstNoneWhitespaceToken = syntaxTree.FirstNoneWhitespaceToken(TextExtent.FromBounds(replaceLocation.End, transition.EdgeMode.End));
                 if (!firstNoneWhitespaceToken.IsMissing) {
@@ -93,8 +93,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public static string ComposeEdge(this SyntaxTree syntaxTree, IEdge templateEdge, string sourceName, string edgeKeyword, string targetName, EditorSettings editorSettings) {
 
             string indent = new string(' ', editorSettings.TabSize);
-            if (templateEdge.Source != null) {
-                var templateEdgeLine = syntaxTree.GetTextLineExtentAtPosition(templateEdge.Source.Start);
+            if (templateEdge.SourceReference != null) {
+                var templateEdgeLine = syntaxTree.GetTextLineExtentAtPosition(templateEdge.SourceReference.Start);
                 indent = syntaxTree.GetLineIndent(templateEdgeLine, editorSettings);
             }
 
@@ -107,13 +107,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public static string WhiteSpaceBetweenSourceAndEdgeMode(this SyntaxTree syntaxTree, IEdge edge, string newSourceName, EditorSettings editorSettings) {
 
-            if (edge.Source == null || edge.EdgeMode == null) {
+            if (edge.SourceReference == null || edge.EdgeMode == null) {
                 return " ";
             }
 
-            var oldOffset = syntaxTree.ColumnsBetweenLocations(edge.Source.Location, edge.EdgeMode.Location, editorSettings);
+            var oldOffset = syntaxTree.ColumnsBetweenLocations(edge.SourceReference.Location, edge.EdgeMode.Location, editorSettings);
 
-            var oldLength = edge.Source.Location.Length;
+            var oldLength = edge.SourceReference.Location.Length;
             var newLength = newSourceName.Length;
             var offset = Math.Max(1, oldOffset + oldLength - newLength);
 
@@ -122,10 +122,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public static string WhiteSpaceBetweenEdgeModeAndTarget(this SyntaxTree syntaxTree, IEdge edge, EditorSettings editorSettings) {
 
-            if (edge.EdgeMode == null || edge.Target == null) {
+            if (edge.EdgeMode == null || edge.TargetReference == null) {
                 return " ";
             }
-            var offset = syntaxTree.ColumnsBetweenLocations(edge.EdgeMode.Location, edge.Target.Location, editorSettings);
+            var offset = syntaxTree.ColumnsBetweenLocations(edge.EdgeMode.Location, edge.TargetReference.Location, editorSettings);
             return new String(' ', offset);
         }
 
@@ -135,7 +135,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 return 0;
             }
    
-            int spaceCount = 1;
+            int spaceCount;
             if (location1.EndLine != location2.StartLine) {
                 // Locations in unterschiedliche Zeilen
                 var column = syntaxTree.GetStartColumn(location2, editorSettings);

@@ -17,7 +17,7 @@ namespace Pharmatechnik.Nav.Language {
             WorkingDirectory    = workingDirectory;
         }
         
-        public static readonly DiagnosticFormatter Default = new DiagnosticFormatter(displayEndLocations: false, workingDirectory: null);
+        public static readonly DiagnosticFormatter Instance = new DiagnosticFormatter(displayEndLocations: false, workingDirectory: null);
 
         public bool DisplayEndLocations { get; }
         [CanBeNull]
@@ -29,6 +29,7 @@ namespace Pharmatechnik.Nav.Language {
                 throw new ArgumentNullException(nameof(diagnostic));
             }
 
+            // ReSharper disable once UseStringInterpolation
             return String.Format("{0}{1}: {2}: {3}",
                 FormatFilePath(diagnostic, formatter),
                 FormatSpan(diagnostic, formatter),
@@ -68,6 +69,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         protected virtual string FormatCategoryAndCode(Diagnostic diagnostic, IFormatProvider formatter) {
+            // ReSharper disable once UseStringInterpolation
             return String.Format("{0} {1}",                
                 diagnostic.Severity.ToString().ToLower(),
                 diagnostic.Descriptor.Id

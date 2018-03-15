@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -15,19 +16,35 @@ namespace Pharmatechnik.Nav.Language.Generator {
     class NavCodeGenerator {
 
         public int Run(CommandLine cl) {
-         
+
+            var logger = new ConsoleLogger(fullPaths: cl.FullPaths, verbose: cl.Verbose);
+
+            try {
+
+                var fileSpecs = CollectFiles(cl);
+                var pipeline  = CreatePipeline(cl, logger);
+
+                return pipeline.Run(fileSpecs) ? 0 : 1;
+
+            } catch (Exception ex) {
+
+                logger.LogError(ex.ToString());
+
+                return -1;
+            }
+        }
+
+        static NavCodeGeneratorPipeline CreatePipeline(CommandLine cl, ConsoleLogger logger) {
+
             var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
 
             var options  = new GenerationOptions(force: cl.Force, generateToClasses: cl.GenerateToClasses);
-            var logger   = new ConsoleLogger(fullPaths: cl.FullPaths, verbose: cl.Verbose);            
             var pipeline = new NavCodeGeneratorPipeline(options, logger, syntaxProviderFactory);
 
-            var fileSpecs = CollectFiles(cl, logger);
-
-            return pipeline.Run(fileSpecs) ? 0 : 1;
+            return pipeline;
         }
 
-        static IEnumerable<FileSpec> CollectFiles(CommandLine cl, ILogger logger) {
+        static IEnumerable<FileSpec> CollectFiles(CommandLine cl) {
 
             var dirFileSpecs = Enumerable.Empty<FileSpec>();
             if (cl.Directory != null) {
@@ -40,8 +57,9 @@ namespace Pharmatechnik.Nav.Language.Generator {
                 srcFileSpecs = cl.Sources.Select(FileSpec.FromFile);
             }
 
-            var fileSpecs = Enumerable.Concat(dirFileSpecs, srcFileSpecs);
-            return fileSpecs;
+            return dirFileSpecs.Concat(srcFileSpecs);
         }
+
     }
+
 }

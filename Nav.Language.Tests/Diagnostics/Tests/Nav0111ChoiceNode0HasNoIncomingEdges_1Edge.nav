@@ -1,0 +1,13 @@
+﻿task A
+{
+    init I1;    
+    exit e1;
+    choice Choice_e1;
+    view v1;
+
+    I1          --> e1;
+    Choice_e1   o-> v1;
+    v1 --> e1   on trigger;
+}
+//==>>[Semantic](5,12,5,21): warning Nav0111: The choice node 'Choice_e1' has no incoming edges
+//==>>[DeadCode](9,5,9,24): warning Nav1007: The choice node 'Choice_e1' has no incoming edges

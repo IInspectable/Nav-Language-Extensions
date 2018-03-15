@@ -8,8 +8,6 @@ namespace Pharmatechnik.Nav.Language {
         internal CodeAbstractMethodDeclarationSyntax(TextExtent extent) : base(extent) {
         }
 
-        public SyntaxToken AbstractmethodKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.AbstractmethodKeyword); }
-        }
+        public SyntaxToken AbstractmethodKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.AbstractmethodKeyword);
     }
 }

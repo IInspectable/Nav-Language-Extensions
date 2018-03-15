@@ -18,16 +18,9 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNodes(_exitTransitionDefinitions = exitTransitionDefinitions);
         }
 
-        public IReadOnlyList<TransitionDefinitionSyntax> TransitionDefinitions {
-            get { return _transitionDefinitions; }
-        }
+        public IReadOnlyList<TransitionDefinitionSyntax> TransitionDefinitions => _transitionDefinitions;
+        public IReadOnlyList<ExitTransitionDefinitionSyntax> ExitTransitionDefinitions => _exitTransitionDefinitions;
 
-        public IReadOnlyList<ExitTransitionDefinitionSyntax> ExitTransitionDefinitions {
-            get { return _exitTransitionDefinitions; }
-        }
-
-        protected override bool PromiseNoDescendantNodeOfSameType {
-            get { return true; }
-        }
+        private protected override bool PromiseNoDescendantNodeOfSameType => true;
     }
 }

@@ -27,13 +27,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Keyword)]
         [BaseDefinition(PredefinedClassificationTypeNames.Keyword)]
-        static ClassificationTypeDefinition Keyword;
+        public static ClassificationTypeDefinition Keyword;
       
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Keyword)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
-        internal sealed class KeywordClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class KeywordClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public KeywordClassificationFormatDefinition() {
                 DisplayName = "Nav Keyword";
@@ -47,13 +47,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Comment)]
         [BaseDefinition(PredefinedClassificationTypeNames.Comment)]
-        static ClassificationTypeDefinition Comment;
+        public static ClassificationTypeDefinition Comment;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Comment)]
         [UserVisible(Is.UserVisible)] // This should be visible to the end user
         [Order(Before = Priority.Default)] // Set the priority to be after the default classifiers
-        internal sealed class CommentClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class CommentClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public CommentClassificationFormatDefinition() {
                 DisplayName = "Nav Comment"; // Human readable version of the name
@@ -67,13 +67,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Identifier)]
         [BaseDefinition(PredefinedClassificationTypeNames.Identifier)]
-        static ClassificationTypeDefinition Identifier;
+        public static ClassificationTypeDefinition Identifier;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Identifier)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
-        internal sealed class IdentifierClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class IdentifierClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public IdentifierClassificationFormatDefinition() {
                 DisplayName = "Nav Identifier";
@@ -87,13 +87,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.StringLiteral)]
         [BaseDefinition(PredefinedClassificationTypeNames.String)]
-        static ClassificationTypeDefinition String;
+        public static ClassificationTypeDefinition String;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.StringLiteral)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
-        internal sealed class StringClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class StringClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public StringClassificationFormatDefinition() {
                 DisplayName = "Nav String";
@@ -107,13 +107,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.FormName)]
         [BaseDefinition("class name")]
-        static ClassificationTypeDefinition Type;
+        public static ClassificationTypeDefinition Type;
       
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.FormName)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
-        internal sealed class FormNameClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class FormNameClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public FormNameClassificationFormatDefinition() {
                 DisplayName = "Nav Form Name";
@@ -127,13 +127,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.TaskName)]
         [BaseDefinition("class name")]
-        static ClassificationTypeDefinition TaskName;
+        public static ClassificationTypeDefinition TaskName;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.TaskName)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
-        internal sealed class TaskNameClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class TaskNameClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public TaskNameClassificationFormatDefinition() {
                 DisplayName = "Nav Task Name";
@@ -147,13 +147,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.TypeName)]
         [BaseDefinition("class name")]
-        static ClassificationTypeDefinition TypeName;
+        public static ClassificationTypeDefinition TypeName;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.TypeName)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
-        internal sealed class TypeNameClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class TypeNameClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public TypeNameClassificationFormatDefinition() {
                 DisplayName = "Nav Type Name";
@@ -167,13 +167,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Punctuation)]
         [BaseDefinition("Punctuation")]
-        static ClassificationTypeDefinition Punctuation;
+        public static ClassificationTypeDefinition Punctuation;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Punctuation)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
-        internal sealed class PunctuationClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class PunctuationClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public PunctuationClassificationFormatDefinition() {
                 DisplayName = "Nav Punctuation";
@@ -187,13 +187,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Unknown)]
         [BaseDefinition("Syntax Error")]
-        static ClassificationTypeDefinition Unknown;
+        public static ClassificationTypeDefinition Unknown;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Unknown)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
-        internal sealed class UnknownClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class UnknownClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public UnknownClassificationFormatDefinition() {
                 DisplayName = "Nav Unknown";
@@ -207,13 +207,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.DeadCode)]
         [BaseDefinition("formal language")]
-        static ClassificationTypeDefinition DeadCode;
+        public static ClassificationTypeDefinition DeadCode;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.DeadCode)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.High)]
-        internal sealed class DeadCodeClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class DeadCodeClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public DeadCodeClassificationFormatDefinition() {
                 DisplayName       = "Nav Dead Code";
@@ -228,13 +228,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.ChoiceNode)]
         [BaseDefinition(ClassificationTypeNames.Identifier)]
-        static ClassificationTypeDefinition ChoiceNode;
+        public static ClassificationTypeDefinition ChoiceNode;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.ChoiceNode)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Low)]
-        internal sealed class ChoiceNodeClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class ChoiceNodeClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public ChoiceNodeClassificationFormatDefinition() {
                 IsItalic=true;
@@ -248,13 +248,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.ConnectionPoint)]
         [BaseDefinition(ClassificationTypeNames.Identifier)]
-        static ClassificationTypeDefinition ConnectionPoint;
+        public static ClassificationTypeDefinition ConnectionPoint;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.ConnectionPoint)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Low)]
-        internal sealed class ConnectionPointClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class ConnectionPointClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public ConnectionPointClassificationFormatDefinition() {
                 // IsItalic = true;
@@ -269,13 +269,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(ClassificationTypeNames.Underline)]
         [BaseDefinition("formal language")]
-        static ClassificationTypeDefinition Underline;
+        public static ClassificationTypeDefinition Underline;
 
         [Export(typeof(EditorFormatDefinition))]
         [Name(ClassificationTypeNames.Underline)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
-        internal sealed class UnderlineClassificationFormatDefinition : ClassificationFormatDefinition {
+        public sealed class UnderlineClassificationFormatDefinition : ClassificationFormatDefinition {
 
             public UnderlineClassificationFormatDefinition() {
                 DisplayName = "Nav Underline";

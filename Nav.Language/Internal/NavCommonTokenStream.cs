@@ -11,8 +11,6 @@ namespace Pharmatechnik.Nav.Language.Internal {
         public NavCommonTokenStream(ITokenSource tokenSource, int channel) : base(tokenSource, channel) {
         }
        
-        public IList<IToken> AllTokens {
-            get { return tokens; }
-        }
+        public IList<IToken> AllTokens => tokens;
     }   
 }

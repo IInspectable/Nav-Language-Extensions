@@ -22,10 +22,8 @@ namespace Pharmatechnik.Nav.Language {
             return GetEnumerator();
         }
 
-        public int Count { get { return _identifierOrStrings.Count; } }
+        public int Count => _identifierOrStrings.Count;
 
-        public IdentifierOrStringSyntax this[int index] {
-            get { return _identifierOrStrings[index]; }
-        }
+        public IdentifierOrStringSyntax this[int index] => _identifierOrStrings[index];
     }
 }

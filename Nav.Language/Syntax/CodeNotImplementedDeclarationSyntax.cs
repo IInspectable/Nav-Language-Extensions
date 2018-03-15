@@ -9,8 +9,6 @@ namespace Pharmatechnik.Nav.Language {
         internal CodeNotImplementedDeclarationSyntax(TextExtent extent) : base(extent) {
         }
 
-        public SyntaxToken NotimplementedKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.NotimplementedKeyword); }
-        }
+        public SyntaxToken NotimplementedKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.NotimplementedKeyword);
     }
 }

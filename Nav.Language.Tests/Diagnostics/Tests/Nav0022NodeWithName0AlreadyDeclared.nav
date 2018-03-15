@@ -1,0 +1,13 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    task A;
+    task A;
+                
+    I1   --> e1;    
+    I1   --> A;
+    A:e1 --> e1;
+}
+//==>>[Semantic](5,10,5,11): error Nav0022: A node with the name 'A' is already declared
+//==>>[Semantic](6,10,6,11): error Nav0022: A node with the name 'A' is already declared

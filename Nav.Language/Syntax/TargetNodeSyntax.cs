@@ -14,14 +14,8 @@ namespace Pharmatechnik.Nav.Language {
     public partial class EndTargetNodeSyntax : TargetNodeSyntax {
         internal EndTargetNodeSyntax(TextExtent extent) : base(extent) {}
 
-        public SyntaxToken EndKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.EndKeyword); }
-        }
-
-        public override string Name {
-            get { return EndKeyword.ToString(); }
-        }
-
+        public SyntaxToken EndKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.EndKeyword);
+        public override string Name   => EndKeyword.ToString();
     }
 
     [Serializable]
@@ -34,17 +28,10 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNode(_identifierOrStringList = identifierOrStringList);
         }        
 
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
-
-        public override string Name {
-            get { return Identifier.ToString(); }
-        }
+        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+        public override string Name   => Identifier.ToString();
 
         [CanBeNull]
-        public IdentifierOrStringListSyntax IdentifierOrStringList {
-            get { return _identifierOrStringList; }
-        }
+        public IdentifierOrStringListSyntax IdentifierOrStringList => _identifierOrStringList;
     }
 }

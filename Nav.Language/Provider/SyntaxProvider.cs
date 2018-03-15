@@ -1,29 +1,41 @@
 #region Using Directives
 
 using System.IO;
+using System.Text;
 using System.Threading;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
 
-    public class SyntaxProvider : ISyntaxProvider {
-        
+    public class SyntaxProvider: ISyntaxProvider {
+
         public static readonly ISyntaxProvider Default = new SyntaxProvider();
 
-        public virtual SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = new CancellationToken()) {
+        public virtual CodeGenerationUnitSyntax FromFile(string filePath, CancellationToken cancellationToken = default) {
 
-            if (!File.Exists(filePath)) {            
+            if (!File.Exists(filePath)) {
                 return null;
             }
 
-            // TODO Try catch?
-            var syntaxTree = SyntaxTree.FromFile(filePath, cancellationToken);
+            var content    = ReadAllText(filePath);
+            var syntaxTree = Syntax.ParseCodeGenerationUnit(text: content, filePath: filePath, cancellationToken: cancellationToken);
 
             return syntaxTree;
         }
 
         public virtual void Dispose() {
         }
+
+        static string ReadAllText(string filePath) {
+
+            using (var sr = new StreamReader(path: filePath,
+                                             encoding: Encoding.Default,
+                                             detectEncodingFromByteOrderMarks: true)) {
+                return sr.ReadToEnd();
+            }
+        }
+
     }
+
 }

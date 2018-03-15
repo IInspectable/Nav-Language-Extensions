@@ -1,0 +1,9 @@
+﻿[namespaceprefix F]
+
+[using Foo]
+[using Foo]
+[using Bar]
+[using Foo]
+
+//==>>[DeadCode](4,1,4,12): warning Nav1002: The using directive for 'Foo' appeared previously in this file and can be safely removed
+//==>>[DeadCode](6,1,6,12): warning Nav1002: The using directive for 'Foo' appeared previously in this file and can be safely removed

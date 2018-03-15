@@ -8,8 +8,6 @@ namespace Pharmatechnik.Nav.Language {
         internal CodeDoNotInjectDeclarationSyntax(TextExtent extent) : base(extent) { 
         }
 
-        public SyntaxToken DonotinjectKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.DonotinjectKeyword); }
-        }
+        public SyntaxToken DonotinjectKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.DonotinjectKeyword);
     }
 }

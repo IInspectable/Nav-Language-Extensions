@@ -52,7 +52,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         }
 
         protected static IEnumerable<TextChange> GetRenameTargetChanges(IEdge transition, string newSourceName) {
-            return GetRenameSymbolChanges(transition.Target, newSourceName);
+            return GetRenameSymbolChanges(transition.TargetReference, newSourceName);
         }
 
         protected static IEnumerable<TextChange> GetRenameSymbolChanges(ISymbol symbol, string newName) {

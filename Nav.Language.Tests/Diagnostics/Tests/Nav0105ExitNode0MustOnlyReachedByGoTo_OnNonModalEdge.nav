@@ -1,0 +1,10 @@
+﻿task A
+{
+    init I1;            
+    exit e1;
+    view V;
+
+    I1   --> V;
+    V    ==> e1 on Trigger;
+}
+//==>>[Semantic](8,10,8,13): error Nav0105: Exit node 'e1' must only be reached by -->

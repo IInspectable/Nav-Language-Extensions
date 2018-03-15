@@ -54,7 +54,7 @@ namespace Pharmatechnik.Nav.Language {
             if (ReferenceEquals(this, obj)) {
                 return true;
             }
-            return obj is DiagnosticDescriptor && Equals((DiagnosticDescriptor) obj);
+            return obj is DiagnosticDescriptor descriptor && Equals(descriptor);
         }
 
         public override int GetHashCode() {

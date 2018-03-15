@@ -1,0 +1,10 @@
+﻿task A
+{
+    init I1;            
+    end;
+    view V;
+
+    I1  --> V;
+    V   ==> end on Trigger;
+}
+//==>>[Semantic](8,9,8,12): error Nav0106: End node 'end' must only be reached by -->

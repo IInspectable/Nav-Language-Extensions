@@ -20,6 +20,37 @@ public abstract class StandardWFS<TState> : BaseWFService<TState>, IWFServiceBas
     }
 }
 
+public sealed class TaskCall: INavCommandBody {
+
+    public TaskCall(string nodeName, BeginTaskWrapper beginWrapper) {
+        BeginWrapper = beginWrapper;
+        NodeName     = nodeName;
+    }
+    public string           NodeName { get; }
+    public BeginTaskWrapper BeginWrapper;
+
+}
+
+
+public static class NavCommandBody {
+
+    public static string ComposeUnexpectedTransitionMessage(string logicMethodName, INavCommandBody body) {
+
+        return $"{logicMethodName} returned unexpected result '{OfTypeText(body)}'.";
+    }
+
+    static string OfTypeText(INavCommandBody body) {
+        if (body == null) {
+            return "null";
+        }
+        if (body is TaskCall taskCall) {
+            return $"of task node {taskCall.NodeName}";
+        }
+        return $"of type {body.GetType().FullName}";
+    }
+
+}
+
 public interface INavCommand {
 }
 

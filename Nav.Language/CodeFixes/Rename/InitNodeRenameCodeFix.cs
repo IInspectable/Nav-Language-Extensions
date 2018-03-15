@@ -39,12 +39,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
             }
             
             var textChanges = new List<TextChange>();
-            
+
             if (InitNode.Alias != null) {
                 // Alias umbenennen
                 textChanges.AddRange(GetRenameSymbolChanges(InitNode.Alias, newName));
-            }
-            else {
+            } else {
                 // Alias hinzufügen
                 textChanges.AddRange(GetInsertChanges(InitNode.Syntax.InitKeyword.End, $" {newName}"));
             }

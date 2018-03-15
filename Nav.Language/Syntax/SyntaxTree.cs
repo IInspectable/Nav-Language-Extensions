@@ -20,68 +20,46 @@ namespace Pharmatechnik.Nav.Language {
     [Serializable]
     public class SyntaxTree {
 
-        #region Fields/Ctor
-
-        readonly SyntaxNode                     _root;
-        readonly SyntaxTokenList                _tokens;
-        readonly IReadOnlyList<Diagnostic>      _diagnostics;
-        readonly IReadOnlyList<TextLineExtent>  _textLines;
-        readonly Encoding                       _encoding;
-        readonly FileInfo                        _fileInfo;
-        readonly string                         _sourceText;
+        readonly SyntaxNode                    _root;
+        readonly SyntaxTokenList               _tokens;
+        readonly IReadOnlyList<Diagnostic>     _diagnostics;
+        readonly IReadOnlyList<TextLineExtent> _textLines;
+        readonly FileInfo                      _fileInfo;
+        readonly string                        _sourceText;
 
         internal SyntaxTree(string sourceText,
                             SyntaxNode root,
                             SyntaxTokenList tokens,
                             IReadOnlyList<TextLineExtent> textLines,
                             IReadOnlyList<Diagnostic> diagnostics,
-                            FileInfo fileInfo,
-                            Encoding encoding) {
+                            FileInfo fileInfo) {
 
             _sourceText  = sourceText ?? String.Empty;
             _root        = root;
-            _fileInfo        = fileInfo;
-            _encoding    = encoding;
+            _fileInfo    = fileInfo;
             _diagnostics = diagnostics ?? Enumerable.Empty<Diagnostic>().ToList();
             _tokens      = tokens      ?? SyntaxTokenList.Empty;
             _textLines   = textLines   ?? new List<TextLineExtent>();
         }
 
-        #endregion
+        [NotNull]
+        public SyntaxTokenList Tokens => _tokens;
 
         [NotNull]
-        public SyntaxTokenList Tokens {
-            get { return _tokens; }
-        }
+        public IReadOnlyList<TextLineExtent> TextLines => _textLines;
 
         [NotNull]
-        public IReadOnlyList<TextLineExtent> TextLines {
-            get { return _textLines; }
-        }
-
-        [NotNull]
-        public IReadOnlyList<Diagnostic> Diagnostics {
-            get { return _diagnostics; }
-        }
+        public IReadOnlyList<Diagnostic> Diagnostics => _diagnostics;
 
         public SyntaxNode GetRoot() {
             return _root;
         }
 
         [CanBeNull]
-        public FileInfo FileInfo {
-            get { return _fileInfo; }
-        }
-
-        [CanBeNull]
-        public Encoding Encoding {
-            get { return _encoding; }
-        }
+        public FileInfo FileInfo => _fileInfo;
 
         [NotNull]
-        public string SourceText {
-            get { return _sourceText; }
-        }
+        public string SourceText => _sourceText;
 
         public Location GetLocation(TextExtent extent) {
             return new Location(extent, GetLinePositionExtent(extent), FileInfo?.FullName);
@@ -116,42 +94,19 @@ namespace Pharmatechnik.Nav.Language {
             return lineInformaton;
         }
 
-
-
-        #region Parse Methods
-
-        public static SyntaxTree FromFile(string filePath, CancellationToken cancellationToken = default(CancellationToken)) {
-            return FromFile(filePath, Encoding.Default, cancellationToken);
-        }
-
-        public static SyntaxTree FromFile(string filePath, Encoding encoding, CancellationToken cancellationToken = default(CancellationToken)) {
-
-            using (var sr = new StreamReader(filePath, encoding, true)) {
-
-                return ParseTextCore(sourceText       : sr.ReadToEnd(), 
-                                     treeCreator      : parser => parser.codeGenerationUnit(), 
-                                     filePath         : filePath, 
-                                     encoding         : sr.CurrentEncoding, 
-                                     cancellationToken: cancellationToken);
-            }
-        }
-
-        public static SyntaxTree ParseText(string text, string filePath=null, CancellationToken cancellationToken = default(CancellationToken)) {
+        public static SyntaxTree ParseText(string text, string filePath=null, CancellationToken cancellationToken = default) {
 
             return ParseTextCore(sourceText       : text, 
                                  treeCreator      : parser => parser.codeGenerationUnit(), 
                                  filePath         : filePath, 
-                                 encoding         : null, 
                                  cancellationToken: cancellationToken);
         }
-
-        #endregion
-
+        
         internal static SyntaxTree ParseTextCore(string sourceText, 
                                                  Func<NavGrammarParser, IParseTree> treeCreator, 
                                                  string filePath, 
                                                  Encoding encoding = null, 
-                                                 CancellationToken cancellationToken = default(CancellationToken)) {
+                                                 CancellationToken cancellationToken = default) {
 
             var fileInfo = String.IsNullOrEmpty(filePath) ? null : new FileInfo(filePath);
 
@@ -170,24 +125,30 @@ namespace Pharmatechnik.Nav.Language {
 
             var visitor     = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
             var syntax      = visitor.Visit(tree);
-            var tokens      = PostprocessTokens(visitor.Tokens, cts, syntax, cancellationToken);
+            var ppDiagnostics = new List<Diagnostic>();
+            var tokens      = PostprocessTokens(visitor.Tokens, cts, syntax, ppDiagnostics, filePath, cancellationToken);
             var textLines   = GetTextLines(sourceText);
-            var diagnostics = errorListener.Diagnostics;
+            var diagnostics = errorListener.Diagnostics.Concat(ppDiagnostics).ToList();
 
             var syntaxTree = new SyntaxTree(sourceText : sourceText, 
                                             root       : syntax, 
                                             tokens     : tokens, 
                                             textLines  : textLines,
                                             diagnostics: diagnostics,
-                                            fileInfo   : fileInfo, 
-                                            encoding   : encoding);
+                                            fileInfo   : fileInfo);
 
             syntax.FinalConstruct(syntaxTree, null);
             
             return syntaxTree;
         }
 
-        static SyntaxTokenList PostprocessTokens(List<SyntaxToken> tokens, NavCommonTokenStream cts, SyntaxNode syntax, CancellationToken cancellationToken) {
+        static SyntaxTokenList PostprocessTokens(
+            List<SyntaxToken> tokens, 
+            NavCommonTokenStream cts, 
+            SyntaxNode syntax, 
+            List<Diagnostic> diagnostics, 
+            string filePath,
+            CancellationToken cancellationToken) {
 
             var finalTokens = new List<SyntaxToken>(cts.AllTokens.Count);
             tokens.Sort(SyntaxTokenComparer.Default);
@@ -256,8 +217,18 @@ namespace Pharmatechnik.Nav.Language {
                         finalTokens.Add(token);
                     }
                 } else {
+
                     finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
-                }                
+
+                    if (candidate.Type == NavGrammarLexer.Unknown) {
+                        diagnostics.Add(
+                            new Diagnostic(candidate.GetLocation(filePath),
+                                           DiagnosticDescriptors.Syntax.Nav0000UnexpectedCharacter,
+                                           candidate.Text));
+                    }
+                }
+
+                
             }   
 
             return SyntaxTokenList.AttachSortedTokens(finalTokens);

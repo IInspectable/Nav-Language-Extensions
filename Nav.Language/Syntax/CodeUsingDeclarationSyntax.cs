@@ -11,17 +11,11 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNode(_namespace = namespaceSyntax);
         }
 
-        public SyntaxToken UsingKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.UsingKeyword); }
-        }
+        public SyntaxToken UsingKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.UsingKeyword);
 
         [CanBeNull]
-        public IdentifierOrStringSyntax Namespace {
-            get { return _namespace; }
-        }
+        public IdentifierOrStringSyntax Namespace => _namespace;
 
-        protected override bool PromiseNoDescendantNodeOfSameType {
-            get { return true; }
-        }
+        private protected override bool PromiseNoDescendantNodeOfSameType => true;
     }
 }

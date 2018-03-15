@@ -74,8 +74,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
         
         public static ParseMethod GetParseMethod(ITextBuffer textBuffer) {
-            ParseMethod parseMethod;
-            textBuffer.Properties.TryGetProperty(ParseMethodKey, out parseMethod);
+            textBuffer.Properties.TryGetProperty(ParseMethodKey, out ParseMethod parseMethod);
             return parseMethod ?? Syntax.ParseCodeGenerationUnit;
         }
 
@@ -199,8 +198,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
             void OnTextBufferChanged(object sender, TextContentChangedEventArgs e) {
                 var textBuffer = (ITextBuffer) sender;
-                ParserService target =_target.Target as ParserService;
-                if (null != target) {
+                if (_target.Target is ParserService target) {
                     target.Invalidate();
                 } else {
                     textBuffer.Changed -= OnTextBufferChanged;

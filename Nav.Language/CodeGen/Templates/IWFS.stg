@@ -1,5 +1,7 @@
 ﻿delimiters "<", ">"
 
+// Common.stg und CodeGenFacts.stg werden immer importiert
+
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
 <writeUsingDirectives(model.UsingNamespaces)>
@@ -17,5 +19,6 @@ writeTriggerMethodDeclarationList(triggerTransitions) ::=<<
 >>
 
 writeTriggerMethodDeclaration(triggerTransition) ::=<<
-INavCommand <triggerTransition.TriggerMethodName>(<writeParameterList(triggerTransition.ViewParameter)>);
+<writeTriggerAnnotation(triggerTransition.TriggerName)>
+INavCommand <triggerTransition.TriggerName>(<writeParameterList(triggerTransition.ViewParameter)>);
 >>

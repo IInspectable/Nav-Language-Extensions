@@ -16,9 +16,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             _diagnostics = new List<Diagnostic>();
         }
 
-        public List<Diagnostic> Diagnostics {
-            get { return _diagnostics; }
-        }
+        public List<Diagnostic> Diagnostics => _diagnostics;
 
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) {
 

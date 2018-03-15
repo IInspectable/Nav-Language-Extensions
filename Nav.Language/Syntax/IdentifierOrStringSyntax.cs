@@ -20,15 +20,13 @@ namespace Pharmatechnik.Nav.Language {
         internal IdentifierSyntax(TextExtent extent) : base(extent) {            
         }
 
-        public override string Text { get { return Identifier.ToString(); } }
+        public override string Text => Identifier.ToString();
 
         public override Location GetTextLocation() {
             return GetLocation();
         }
 
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
+        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
     }
 
     [Serializable]
@@ -37,7 +35,7 @@ namespace Pharmatechnik.Nav.Language {
         internal StringLiteralSyntax(TextExtent extent) : base(extent) {            
         }
 
-        public override string Text { get { return StringLiteral.ToString().Trim('"'); } }
+        public override string Text => StringLiteral.ToString().Trim('"');
 
         public override Location GetTextLocation() {
 
@@ -50,8 +48,6 @@ namespace Pharmatechnik.Nav.Language {
             return SyntaxTree.GetLocation(extent);
         }
 
-        public SyntaxToken StringLiteral {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral); }
-        }
+        public SyntaxToken StringLiteral => ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral);
     }
 }

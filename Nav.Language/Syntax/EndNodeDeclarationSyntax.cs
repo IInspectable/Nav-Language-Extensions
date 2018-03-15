@@ -9,8 +9,6 @@ namespace Pharmatechnik.Nav.Language {
             : base(extent) {
         }
 
-        public SyntaxToken EndKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.EndKeyword); }
-        }
+        public SyntaxToken EndKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.EndKeyword);
     }
 }

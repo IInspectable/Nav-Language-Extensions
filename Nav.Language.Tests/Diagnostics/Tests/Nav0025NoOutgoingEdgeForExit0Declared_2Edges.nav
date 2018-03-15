@@ -1,0 +1,28 @@
+﻿task C
+{
+    init I1;
+    init I2;
+    exit e1;
+    exit e2;
+    I1 --> e1;
+    I2 --> e2;
+}
+
+task A
+{
+    init I1; 
+    init I2;
+    init I3;
+    exit e1;
+    task C;
+
+    I1  --> e1;
+    I2  --> C;
+    I3  --> C;
+}
+//==>>[Semantic](17,10,17,11): error Nav0025: No outgoing edge for exit 'e1' declared
+//==>>[Semantic](17,10,17,11): error Nav0025: No outgoing edge for exit 'e2' declared
+//==>>[Semantic](20,13,20,14): error Nav0025: No outgoing edge for exit 'e1' declared
+//==>>[Semantic](20,13,20,14): error Nav0025: No outgoing edge for exit 'e2' declared
+//==>>[Semantic](21,13,21,14): error Nav0025: No outgoing edge for exit 'e1' declared
+//==>>[Semantic](21,13,21,14): error Nav0025: No outgoing edge for exit 'e2' declared

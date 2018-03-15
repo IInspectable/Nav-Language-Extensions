@@ -1,0 +1,9 @@
+﻿task A
+{
+    init I1;    
+    init I2;
+    exit e1;
+
+    I1  --> e1;
+}
+//==>>[Semantic](4,10,4,12): warning Nav0109: The init node 'I2' has no outgoing edges

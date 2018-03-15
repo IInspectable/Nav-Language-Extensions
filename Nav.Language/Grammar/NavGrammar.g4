@@ -1,4 +1,4 @@
-/*
+﻿/*
 Grammar for Nav Language
 */
 

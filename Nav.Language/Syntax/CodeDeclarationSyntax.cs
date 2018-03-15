@@ -8,9 +8,7 @@ namespace Pharmatechnik.Nav.Language {
 
         internal CodeDeclarationSyntax(TextExtent extent) : base(extent) {}
 
-        public SyntaxToken CodeKeyword {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.CodeKeyword); }
-        }
+        public SyntaxToken CodeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.CodeKeyword);
 
         public IEnumerable<SyntaxToken> GetGetStringLiterals() {
             return ChildTokens().OfType(SyntaxTokenType.StringLiteral);

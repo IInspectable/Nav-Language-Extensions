@@ -29,41 +29,25 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [CanBeNull]
-        public IdentifierSourceNodeSyntax SourceNode {
-            get { return _sourceNode; }
-        }
+        public IdentifierSourceNodeSyntax SourceNode => _sourceNode;
 
-        public SyntaxToken Colon {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Colon); }
-        }
+        public SyntaxToken Colon => ChildTokens().FirstOrMissing(SyntaxTokenType.Colon);
 
         [SuppressCodeSanityCheck("Der Name ExitIdentifier ist hier ausdrücklich gewollt.")]
-        public SyntaxToken ExitIdentifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
-        
-        [CanBeNull]
-        public EdgeSyntax Edge {
-            get { return _edge; }
-        }
+        public SyntaxToken ExitIdentifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
 
         [CanBeNull]
-        public TargetNodeSyntax TargetNode {
-            get { return _targetNode; }
-        }
+        public EdgeSyntax Edge => _edge;
 
         [CanBeNull]
-        public ConditionClauseSyntax ConditionClause {
-            get { return _conditionClause; }
-        }
+        public TargetNodeSyntax TargetNode => _targetNode;
 
         [CanBeNull]
-        public DoClauseSyntax DoClause {
-            get { return _doClause; }
-        }
+        public ConditionClauseSyntax ConditionClause => _conditionClause;
 
-        public SyntaxToken Semicolon {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon); }
-        }        
+        [CanBeNull]
+        public DoClauseSyntax DoClause => _doClause;
+
+        public SyntaxToken Semicolon => ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon);
     }
 }

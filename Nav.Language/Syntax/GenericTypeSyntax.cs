@@ -12,13 +12,9 @@ namespace Pharmatechnik.Nav.Language {
             AddChildNodes(_genericArguments = genericArguments);
         }
 
-        public SyntaxToken Identifier {
-            get { return ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier); }
-        }
+        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
 
         [NotNull]
-        public IReadOnlyList<CodeTypeSyntax> GenericArguments {
-            get { return _genericArguments; }
-        }
+        public IReadOnlyList<CodeTypeSyntax> GenericArguments => _genericArguments;
     }
 }

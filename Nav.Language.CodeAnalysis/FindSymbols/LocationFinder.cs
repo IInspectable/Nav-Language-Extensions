@@ -38,8 +38,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         const string MsgUnableToFindTheTaskAnnotation            = "Unable to find the task annotation";
         const string MsgUnableToGetMemberLoation                 = "Unable to get the member location";
 
-        const string MsgErrorWhileParsingNavFile0                = "Error while parsing nav file '{0}'";
-        const string MsgMissingProjectForAssembly0               = "Missing project for assembly '{0}'.";
+        const string MsgErrorWhileParsingNavFile0  = "Error while parsing nav file '{0}'";
+        const string MsgMissingProjectForAssembly0 = "Missing project for assembly '{0}'.";
 
         const string BeginLogicMethodName = CodeGenFacts.BeginMethodPrefix+CodeGenFacts.LogicMethodSuffix;
 
@@ -77,8 +77,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             var locationResult = Task.Run(() => {
 
                 var syntaxTree = SyntaxTree.ParseText(sourceText, annotation.NavFileName, cancellationToken);
-                var codeGenerationUnitSyntax = syntaxTree.GetRoot() as CodeGenerationUnitSyntax;
-                if (codeGenerationUnitSyntax == null) {
+                if (!(syntaxTree.GetRoot() is CodeGenerationUnitSyntax codeGenerationUnitSyntax)) {
                     throw new LocationNotFoundException(String.Format(MsgErrorWhileParsingNavFile0, annotation.NavFileName));
                 }
 
@@ -106,9 +105,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         static IEnumerable<Location> GetTriggerLocations(ITaskDefinitionSymbol task, NavTriggerAnnotation triggerAnnotation) {
 
-            var trigger = task.Transitions
-                .SelectMany(t => t.Triggers)
-                .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
+            var trigger = task.TriggerTransitions
+                              .SelectMany(t => t.Triggers)
+                              .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
 
             if (trigger == null) {
                 // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
@@ -137,9 +136,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         static IEnumerable<AmbiguousLocation> GetExitLocations(ITaskDefinitionSymbol task, NavExitAnnotation exitAnnotation) {
 
             var exitTransitions = task.ExitTransitions
-                .Where(et => et.Source?.Name == exitAnnotation.ExitTaskName)
-                .Where(et => et.ConnectionPoint != null)
-                .Select(et => new AmbiguousLocation(et.ConnectionPoint?.Location, et.ConnectionPoint.Name))
+                .Where(et => et.SourceReference?.Name == exitAnnotation.ExitTaskName)
+                .Where(et => et.ConnectionPointReference != null)
+                .Select(et => new AmbiguousLocation(et.ConnectionPointReference?.Location, et.ConnectionPointReference.Name))
                 .ToList();
 
             if (!exitTransitions.Any()) {
@@ -489,7 +488,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             var textExtent = memberLocation.SourceSpan.ToTextExtent();
             var lineExtent = lineSpan.ToLinePositionExtent();
-            var filePath = memberLocation.SourceTree?.FilePath;
+            var filePath   = memberLocation.SourceTree?.FilePath;
 
             var loc = new Location(textExtent, lineExtent, filePath);
 
@@ -502,9 +501,6 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
         static IImmutableSet<T> ToImmutableSet<T>(T item) {
             return new[] { item }.ToImmutableHashSet();
-        }        
-
-        
-
+        }       
     }
 }

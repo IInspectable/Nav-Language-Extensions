@@ -1,13 +1,7 @@
 ﻿
-$targetFiles=
-    "$PSScriptRoot'\..\Nav.Language.Extension\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language.Service\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language.ServiceHost\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language.CodeAnalysis\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Language\CustomBuild.targets",
-	"$PSScriptRoot'\..\Nav.Cli\CustomBuild.targets",
-	"$PSScriptRoot'\..\Nav.Language.BuildTasks\UpdateProductVersion.targets",
-    "$PSScriptRoot'\..\Nav.Utilities\UpdateProductVersion.targets"
+function GetTargetFile(){
+    Get-ChildItem "$PSScriptRoot\..\CustomBuild.targets" -Recurse
+}
 
 function IncreaseMajor(){
     [CmdletBinding()]
@@ -76,4 +70,3 @@ function UpdateVersion(){
     $xml.Save($sw)
 	$sw.Close()
 }
-

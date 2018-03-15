@@ -9,17 +9,20 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public static partial class CodeGenFacts {
 
-        internal static string BuildQualifiedNameQualifiedName(params string[] identifier) {
+        internal static string BuildQualifiedName(params string[] identifier) {
             var parts = identifier.Where(part => !String.IsNullOrEmpty(part)).ToList();
 
-            if(!parts.Any()) {
+            if (!parts.Any()) {
                 return String.Empty;
             }
-            if(parts.Count == 1) {
+
+            if (parts.Count == 1) {
                 return parts[0];
             }
 
             return parts.Skip(1).Aggregate(parts[0], (s, part) => String.Join(".", s, part));
         }
+
     }
+
 }

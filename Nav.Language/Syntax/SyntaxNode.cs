@@ -12,17 +12,17 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
-    [DebuggerDisplay("{ToDebuggerDisplayString(), nq}")]
+    [DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
     public abstract partial class SyntaxNode: IExtent {
 
         readonly TextExtent _extent;
 
         List<SyntaxNode> _childNodes;
-        SyntaxTree _syntaxTree;
-        SyntaxNode _parent;
+        SyntaxTree       _syntaxTree;
+        SyntaxNode       _parent;
 
         internal SyntaxNode(TextExtent extent) {
-            _extent     = extent;
+            _extent = extent;
         }
 
         internal void FinalConstruct(SyntaxTree syntaxTree, SyntaxNode parent) {
@@ -41,13 +41,11 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
-        public int Start { get { return Extent.Start; } }
-        public int End { get { return Extent.End; } }
-        public int Length { get { return Extent.Length; } }
+        public int Start  => Extent.Start;
+        public int End    => Extent.End;
+        public int Length => Extent.Length;
 
-        public TextExtent Extent {
-            get { return _extent; }
-        }
+        public TextExtent Extent => _extent;
 
         [CanBeNull]
         public SyntaxNode Parent {
@@ -55,7 +53,7 @@ namespace Pharmatechnik.Nav.Language {
                 EnsureConstructed();
                 return _parent;
             }
-        }       
+        }
 
         public Location GetLocation() {
             EnsureConstructed();
@@ -64,7 +62,7 @@ namespace Pharmatechnik.Nav.Language {
 
         [NotNull]
         public IEnumerable<SyntaxToken> ChildTokens() {
-            return SyntaxTree.Tokens[Extent].Where(token => token.Parent== this);
+            return SyntaxTree.Tokens[Extent].Where(token => token.Parent == this);
         }
 
         static readonly IReadOnlyList<SyntaxNode> EmptyNodeList = new List<SyntaxNode>();
@@ -72,7 +70,7 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public IReadOnlyList<SyntaxNode> ChildNodes() {
             EnsureConstructed();
-            return _childNodes?? EmptyNodeList;
+            return _childNodes ?? EmptyNodeList;
         }
 
         [NotNull]
@@ -99,12 +97,13 @@ namespace Pharmatechnik.Nav.Language {
         IEnumerable<T> DescendantNodesAndSelfImpl<T>(bool includeSelf) where T : SyntaxNode {
             EnsureConstructed();
             if (includeSelf && this is T) {
-                yield return (T)this;
+                yield return (T) this;
 
-                if(typeof(T) == GetType() && PromiseNoDescendantNodeOfSameType) {
+                if (typeof(T) == GetType() && PromiseNoDescendantNodeOfSameType) {
                     yield break;
                 }
             }
+
             foreach (var node in ChildNodes().SelectMany(child => child.DescendantNodesAndSelf<T>())) {
                 yield return node;
             }
@@ -118,9 +117,7 @@ namespace Pharmatechnik.Nav.Language {
         /// Eigentlich müsste diese Eigenschaft systematisch überschrieben werden. Bisweilen werden hiermit nur
         /// die Hotspots optimiert.
         /// </summary>
-        protected virtual bool PromiseNoDescendantNodeOfSameType {
-            get { return false; }
-        }
+        private protected virtual bool PromiseNoDescendantNodeOfSameType => false;
 
         /// <summary>
         /// Gets a list of ancestor nodes
@@ -137,15 +134,17 @@ namespace Pharmatechnik.Nav.Language {
                 yield return node;
             }
         }
-        
+
         public SyntaxNode FindNode(int position) {
             var token = SyntaxTree.Tokens.FindAtPosition(position);
             if (token.IsMissing) {
                 return null;
             }
+
             if (Extent.Contains(token.Extent)) {
                 return token.Parent;
             }
+
             return null;
         }
 
@@ -164,44 +163,42 @@ namespace Pharmatechnik.Nav.Language {
                 // Trivia geht mindestens zum Zeilenanfang der Node
                 start = leadingExtent.Start;
                 // Jetzt alle vorigen Zeilen durchlaufen
-                var line = nodeStartLine.Line-1;
+                var line = nodeStartLine.Line - 1;
                 while (line >= 0) {
 
-                    var lineExtent=SyntaxTree.GetTextLineExtent(line).Extent;
+                    var lineExtent = SyntaxTree.GetTextLineExtent(line).Extent;
                     if (!SyntaxTree.Tokens[lineExtent].All(token => isTrivia(token.Classification))) {
                         // Zeile besteht nicht nur aus Trivias
                         break;
                     }
 
-                    start = lineExtent.Start;
-                    line -= 1;
+                    start =  lineExtent.Start;
+                    line  -= 1;
                 }
             }
-          
+
             return TextExtent.FromBounds(start, Start);
         }
 
         // Die Trailing Trivias gehen bis zum nächsten Token, respektive zum Ende der Zeile
-        public TextExtent GetTrailingTriviaExtent(bool onlyWhiteSpace=false) {
+        public TextExtent GetTrailingTriviaExtent(bool onlyWhiteSpace = false) {
 
             var isTrivia       = GetIsTriviaFunc(onlyWhiteSpace);
-            var nodeEndLine    = SyntaxTree.GetTextLineExtentAtPosition(End);            
+            var nodeEndLine    = SyntaxTree.GetTextLineExtentAtPosition(End);
             var trailingExtent = TextExtent.FromBounds(End, nodeEndLine.Extent.End);
 
             var endToken = SyntaxTree.Tokens[trailingExtent]
                                      .SkipWhile(token => isTrivia(token.Classification))
                                      .FirstOrDefault();
 
-            var end = endToken.IsMissing? nodeEndLine.Extent.End: endToken.Start;
+            var end = endToken.IsMissing ? nodeEndLine.Extent.End : endToken.Start;
 
             return TextExtent.FromBounds(End, end);
         }
 
         static Func<SyntaxTokenClassification, bool> GetIsTriviaFunc(bool onlyWhiteSpace = false) {
-            return onlyWhiteSpace ? (c => c == SyntaxTokenClassification.Whitespace) : 
-                                    new Func<SyntaxTokenClassification, bool>(SyntaxFacts.IsTrivia);            
+            return onlyWhiteSpace ? (c => c == SyntaxTokenClassification.Whitespace) : new Func<SyntaxTokenClassification, bool>(SyntaxFacts.IsTrivia);
         }
-
 
         [NotNull]
         public SyntaxTree SyntaxTree {
@@ -210,15 +207,15 @@ namespace Pharmatechnik.Nav.Language {
                 return _syntaxTree;
             }
         }
-        
+
         protected void AddChildNode(SyntaxNode syntaxNode) {
             EnsureConstructionMode();
             EnsureChildNodes();
-            if (syntaxNode != null) {                
+            if (syntaxNode != null) {
                 _childNodes.Add(syntaxNode);
             }
         }
-        
+
         protected void AddChildNodes(IEnumerable<SyntaxNode> syntaxNodes) {
             EnsureConstructionMode();
             EnsureChildNodes();
@@ -245,7 +242,7 @@ namespace Pharmatechnik.Nav.Language {
                 throw new InvalidOperationException();
             }
         }
-        
+
         public override string ToString() {
             return SyntaxTree.SourceText.Substring(Start, Length);
         }
@@ -253,5 +250,7 @@ namespace Pharmatechnik.Nav.Language {
         public string ToDebuggerDisplayString() {
             return $"{Extent} {GetType().Name}";
         }
+
     }
+
 }
