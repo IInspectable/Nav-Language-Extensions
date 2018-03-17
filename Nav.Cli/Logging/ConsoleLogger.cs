@@ -10,14 +10,16 @@ namespace Pharmatechnik.Nav.Language.Logging {
 
     public class ConsoleLogger : ILogger {
 
-        public ConsoleLogger(bool fullPaths, bool verbose, string verbosePrefix = null) {
-            FullPaths = fullPaths;
-            Verbose = verbose;
-            VerbosePrefix=verbosePrefix?? "Verbose:";
+        public ConsoleLogger(bool fullPaths, bool noWarnings = false, bool verbose = false, string verbosePrefix = null) {
+            FullPaths     = fullPaths;
+            NoWarnings    = noWarnings;
+            Verbose       = verbose;
+            VerbosePrefix = verbosePrefix ?? "Verbose:";
         }
 
         public bool FullPaths { get; }
         public bool Verbose { get; }
+        public bool NoWarnings { get;}
         public string VerbosePrefix { get; }
 
         public void LogVerbose(string message) {
@@ -40,6 +42,9 @@ namespace Pharmatechnik.Nav.Language.Logging {
         }
 
         public void LogWarning(Diagnostic diag) {
+            if (NoWarnings) {
+                return;
+            }
             WriteWarning(FormatDiagnostic(diag));
         }
 
@@ -59,10 +64,10 @@ namespace Pharmatechnik.Nav.Language.Logging {
             WriteLine(message, ConsoleColor.Yellow);
         }
 
-        void WriteLine(string message, ConsoleColor backgroundColor) {
+        void WriteLine(string message, ConsoleColor foregroundColor) {
             var oldBackground = Console.ForegroundColor;
             try {
-                Console.ForegroundColor = backgroundColor;
+                Console.ForegroundColor = foregroundColor;
                 Console.WriteLine(message);
             } finally {
                 Console.ForegroundColor = oldBackground;

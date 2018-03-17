@@ -17,7 +17,10 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
         public int Run(CommandLine cl) {
 
-            var logger = new ConsoleLogger(fullPaths: cl.FullPaths, verbose: cl.Verbose);
+            var logger = new ConsoleLogger(
+                fullPaths : cl.FullPaths, 
+                noWarnings: cl.NoWarnings,
+                verbose   : cl.Verbose);
 
             try {
 

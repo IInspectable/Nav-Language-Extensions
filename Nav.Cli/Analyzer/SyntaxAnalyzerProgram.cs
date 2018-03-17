@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language.Analyzer {
 
             var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
 
-            var logger   = new ConsoleLogger(fullPaths: cl.FullPaths, verbose: cl.Verbose);
+            var logger   = new ConsoleLogger(fullPaths: cl.FullPaths, noWarnings: cl.NoWarnings, verbose: cl.Verbose);
             var pipeline = new SyntaxAnalyzerPipeline(logger, syntaxProviderFactory);
 
             var navFiles  = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);
