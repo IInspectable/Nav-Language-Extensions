@@ -20,6 +20,7 @@ namespace Pharmatechnik.Nav.Language {
         public bool UseSyntaxCache { get; set; }
         public bool Verbose { get; set; }
         public bool FullPaths { get; set; }
+        public bool NoWarnings { get; set; }
 
         public bool Analyze { get; set; }
         public string Pattern { get; set; }
@@ -32,11 +33,12 @@ namespace Pharmatechnik.Nav.Language {
                 { "d=|directory="       , "Help for dir", v => cla.Directory = v  },
                 { "s=|sources="         , v => cla.Sources.Add(v)  },
                 { "f|force"             , v => cla.Force   = v != null  },
-                { "t|generatetoclasses" , v => cla.GenerateToClasses   = v != null },
-                { "c|useSyntaxCache"    , v => cla.UseSyntaxCache   = v != null },
-                { "v|verbose"           , v => cla.Verbose = v != null },
-                { "fullpaths"           , v => cla.FullPaths = v != null },
-                { "h|?|help"            , v => showHelp = v != null },
+                { "t|generatetoclasses" , v => cla.GenerateToClasses = v != null },
+                { "c|useSyntaxCache"    , v => cla.UseSyntaxCache    = v != null },
+                { "nowarnings"          , v => cla.NoWarnings = v != null },
+                { "v|verbose"           , v => cla.Verbose    = v != null },
+                { "fullpaths"           , v => cla.FullPaths  = v != null },
+                { "h|?|help"            , v => showHelp       = v != null },
             };
 
             try {

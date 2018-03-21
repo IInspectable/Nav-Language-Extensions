@@ -88,7 +88,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
                     if (fileResult.Action == FileGeneratorAction.Updated) {
                         var message = $"   + {fileIdentity}";
-                        _logger?.LogInfo(message);
+                        _logger?.LogVerbose(message);
                     } else {
                         var message = $"   ~ {fileIdentity}";
                         _logger?.LogVerbose(message);
