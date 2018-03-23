@@ -354,16 +354,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             var task = Task.Run(async ()  =>  {
 
-                var compilation   = await project.GetCompilationAsync(cancellationToken);
-                var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.Task.FullyQualifiedWfsBaseName);
-                if (wfsBaseSymbol == null) {
-                    throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.Task.FullyQualifiedWfsBaseName));
-                }
-
-                // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
-                // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
-                var derived        = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
-                var memberSymbol   = derived?.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
+                var memberSymbol   = await FindTriggerMethodSymbol(project, codegenInfo, cancellationToken);               
                 var memberLocation = memberSymbol?.Locations.FirstOrDefault();
                 var location       = ToLocation(memberLocation);
 
@@ -376,6 +367,23 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             }, cancellationToken);
 
             return task;
+        }
+
+        /// <exception cref="LocationNotFoundException"/>
+        public static async Task<Microsoft.CodeAnalysis.ISymbol> FindTriggerMethodSymbol(Project project, SignalTriggerCodeInfo codegenInfo, CancellationToken cancellationToken) {
+
+            var compilation   = await project.GetCompilationAsync(cancellationToken);
+            var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.Task.FullyQualifiedWfsBaseName);
+            if (wfsBaseSymbol == null) {
+                throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.Task.FullyQualifiedWfsBaseName));
+            }
+
+            // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
+            // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
+            var derived      = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
+            var memberSymbol = derived?.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
+
+            return memberSymbol;
         }
 
         #endregion

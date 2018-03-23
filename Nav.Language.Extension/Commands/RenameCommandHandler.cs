@@ -3,13 +3,16 @@
 using System;
 using System.Linq;
 using System.ComponentModel.Composition;
+using System.Threading;
 
+using Microsoft.CodeAnalysis.Rename;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 
+using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.CodeFixes.Rename;
-
+using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.CodeFixes;
@@ -41,7 +44,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             return CommandState.Available;
         }
 
-        public void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
+        public async void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
 
             var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
             if (!codeGenerationUnitAndSnapshot.IsCurrent(args.SubjectBuffer.CurrentSnapshot)) {
@@ -56,7 +59,28 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 nextHandler();
                 return;
             }
-          
+
+            //if (symbol is ISignalTriggerSymbol signaltrigger) {
+
+            //    var project = args.TextView.TextBuffer.GetContainingProject();
+            //    if (project == null) {
+            //        return;
+            //    }
+
+            //    var codeGenInfo   = SignalTriggerCodeInfo.FromSignalTrigger(signaltrigger);
+            //    var triggerMethod = await LocationFinder.FindTriggerMethodSymbol(project, codeGenInfo, CancellationToken.None);
+
+            //    var originalSolution = project.Solution;
+            //    var workspace        = originalSolution.Workspace;
+            //    var optionSet        = workspace.Options;
+
+            //    var solution = await Renamer.RenameSymbolAsync(originalSolution, triggerMethod, "OnFoo", optionSet, CancellationToken.None);
+
+            //    workspace.TryApplyChanges(solution);
+
+            //    return;
+            //}
+
             var codeFixContext = new CodeFixContext(
                     symbol.Location.Extent, 
                     codeGenerationUnitAndSnapshot.CodeGenerationUnit, 
@@ -103,6 +127,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 textChangesAndSnapshot: textChangesAndSnapshot);
 
             SemanticModelService.TryGet(args.SubjectBuffer)?.UpdateSynchronously();
+
 
             // TODO Selection Logik?
         }
