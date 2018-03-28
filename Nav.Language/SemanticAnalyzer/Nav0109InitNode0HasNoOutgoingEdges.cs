@@ -11,6 +11,10 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
             //==============================
             //  The init node '{0}' has no outgoing edges
             //==============================
+            // Wenn überhaupt keine Edges definiert sind, werten wir bisweilen unbenutzte Verbindungspunkte nicht als Warnung
+            if (!taskDefinition.Edges().Any()) {
+                yield break;
+            }
             foreach (var initNode in taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
 
                 if (!initNode.Outgoings.Any()) {

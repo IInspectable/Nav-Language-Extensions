@@ -289,6 +289,7 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Diagnostics\Tests\_TaskWithConnectionPointsButNoEdges.nav" />
     <Content Include="Diagnostics\Tests\Nav1001IncludeDirectiveForFile0AppearedPreviously.nav" />
     <Content Include="Diagnostics\Tests\Nav1002UsingDirective0AppearedPreviously.nav" />
     <Content Include="Diagnostics\Tests\Nav1003IncludeNotRequired.nav" />
