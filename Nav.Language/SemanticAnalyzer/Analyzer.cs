@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
             }
 
             foreach (var diag in codeGenerationUnit.TaskDefinitions.SelectMany(taskDefinition=> Analyze(taskDefinition, context))) {
-                yield return diag;
+              yield return diag;
             }
         }
 

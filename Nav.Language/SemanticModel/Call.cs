@@ -3,13 +3,15 @@
 using System;
 using System.Collections.Generic;
 
+using JetBrains.Annotations;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
 
     public sealed class Call {
 
-        public Call(INodeSymbol node, IEdgeModeSymbol edgeMode) {
+        public Call([NotNull] INodeSymbol node, [NotNull] IEdgeModeSymbol edgeMode) {
             Node     = node     ?? throw new ArgumentNullException(nameof(node));
             EdgeMode = edgeMode ?? throw new ArgumentNullException(nameof(edgeMode));
         }
