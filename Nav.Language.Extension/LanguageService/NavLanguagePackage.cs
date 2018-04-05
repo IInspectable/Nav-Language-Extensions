@@ -67,6 +67,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
     [Guid(GuidList.NavPackageGuid)]
     [ProvideAutoLoad("{adfc4e64-0397-11d1-9f4e-00a0c911004f}")] // VSConstants.UICONTEXT_NoSolution
     [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")] // VSConstants.UICONTEXT_SolutionExists
+    [ProvideShowBraceCompletion]
+    [ProvideShowDropdownBarOption]
     sealed partial class NavLanguagePackage : Package {
 
         static readonly Logger Logger = Logger.Create<NavLanguagePackage>();

@@ -192,6 +192,9 @@
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationLocationInfoProvider.cs" />
     <Compile Include="LanguageService\CodeWindowManager.cs" />
+    <Compile Include="LanguageService\LanguageServiceOptionRegistrationAttribute.cs" />
+    <Compile Include="LanguageService\ProvideShowBraceCompletionAttribute.cs" />
+    <Compile Include="LanguageService\ProvideShowDropdownBarOptionAttribute.cs" />
     <Compile Include="NavigationBar\DropdownBarClient.cs" />
     <Compile Include="Images\NavigationBarImages.cs" />
     <Compile Include="NavigationBar\NavigationItem.cs" />

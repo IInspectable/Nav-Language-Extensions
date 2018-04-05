@@ -2,7 +2,6 @@
 
 using System;
 using System.Linq;
-using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -18,6 +17,7 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Utilities.Logging;
@@ -40,7 +40,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         readonly IVsDropdownBarManager _manager;
         readonly WorkspaceRegistration _workspaceRegistration;
         readonly Dictionary<int, int> _activeSelections;
-        readonly Dispatcher _dispatcher;
         readonly IVsEditorAdaptersFactoryService _editorAdaptersFactoryService;
         readonly Dictionary<IVsTextView, IWpfTextView> _trackedViews;
         readonly IDisposable _comEventSink;
@@ -68,7 +67,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             _serviceProvider  = serviceProvider;
             _projectItems     = ImmutableList<NavigationItem>.Empty;
             _taskItems        = ImmutableList<NavigationItem>.Empty;
-            _dispatcher       = Dispatcher.CurrentDispatcher;
             _activeSelections = new Dictionary<int, int>();
             _focusedCombo     = -1;
             _trackedViews     = new Dictionary<IVsTextView, IWpfTextView>();
@@ -113,6 +111,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
         
         void UpdateImageList() {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var imageService = (IVsImageService2) _serviceProvider.GetService(typeof(SVsImageService));
             var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
@@ -312,15 +312,17 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             return VSConstants.S_OK;
         }
 
-        protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
-            _dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(UpdateNavigationItems));
+        protected override async void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            UpdateNavigationItems();
         }
         
-        void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
+        async void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
             using (Logger.LogBlock(nameof(OnCaretPositionChanged))) {
-                _dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => SetActiveSelection(TaskComboIndex)));
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                SetActiveSelection(TaskComboIndex);
                 #if ShowMemberCombobox
-                _dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => SetActiveSelection(MemberComboIndex)));
+                SetActiveSelection(MemberComboIndex);
                 #endif
             }
         }

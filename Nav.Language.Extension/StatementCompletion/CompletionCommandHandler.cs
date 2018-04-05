@@ -63,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
                     switch ((VSConstants.VSStd2KCmdID)nCmdId) {
                         case VSConstants.VSStd2KCmdID.TYPECHAR:
                             char ch = GetTypeChar(pvaIn);
-                            if (ch == ' ')
+                            if (ch == ':' || ch == '[')
                                 StartSession();
                             else if (_currentSession != null)
                                 Filter();

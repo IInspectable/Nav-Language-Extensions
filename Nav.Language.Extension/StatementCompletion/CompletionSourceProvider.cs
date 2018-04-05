@@ -1,5 +1,7 @@
 ﻿#region Using Directives
 
+using System.ComponentModel.Composition;
+
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Utilities;
@@ -8,7 +10,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
 
-    //[Export(typeof(ICompletionSourceProvider))]
+    [Export(typeof(ICompletionSourceProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
     [Name("Nav Completion")]
     class CompletionSourceProvider : ICompletionSourceProvider {

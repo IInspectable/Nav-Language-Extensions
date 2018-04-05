@@ -40,38 +40,80 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
             
             var triggerPoint = (SnapshotPoint)snapshotPoint;
 
-            SnapshotPoint start = triggerPoint;
+            var start = triggerPoint;
             var line = triggerPoint.GetContainingLine();
 
-            while (start > line.Start && !char.IsWhiteSpace((start - 1).GetChar())) {
+            while (start > line.Start && char.IsLetterOrDigit((start - 1).GetChar()) && (start - 1).GetChar()!=':' ) {
                 start -= 1;
             }
             var applicableToSpan = new SnapshotSpan(start, triggerPoint);
-            var startText=applicableToSpan.GetText();
+            
+            var exitNodeName = "";
 
+            if (start > line.Start && (start - 1).GetChar() == ':') {
+
+                var exitNodeEnd   = start - 1;
+                var exitNodeStart = exitNodeEnd;
+                while (exitNodeStart > line.Start && !char.IsWhiteSpace((exitNodeStart - 1).GetChar())) {
+                    exitNodeStart -= 1;
+                }
+
+                var exitNodeSpan = new SnapshotSpan(exitNodeStart, exitNodeEnd);
+                exitNodeName = exitNodeSpan.GetText();
+            }
+
+            var applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
+
+            List<Completion> completions = new List<Completion>();
+            
             var extent = TextExtent.FromBounds(triggerPoint, triggerPoint);
             
             var taskDefinition = codeGenerationUnit.TaskDefinitions
                                                     .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent));
-
-            var img=NavLanguagePackage.GetBitmapSource(ImageMonikers.InitConnectionPoint);
           
-            List<Completion> completions = new List<Completion>();
             if (taskDefinition != null) {
-                foreach(var node in taskDefinition.NodeDeclarations) {
-                    if(String.IsNullOrWhiteSpace(startText) || node.Name.StartsWith(startText)) {
-                        
-                        completions.Add(new Completion(node.Name, node.Name, "Desc", img, "Bla"));
+
+                var cpsAdded = false;
+                if(!String.IsNullOrEmpty(exitNodeName)) {
+
+                    var exitNodeCandidate=taskDefinition.NodeDeclarations
+                                                        .OfType<ITaskNodeSymbol>()
+                                                        .FirstOrDefault(n => n.Name == exitNodeName);
+                    
+                    if (exitNodeCandidate?.Declaration != null) {
+                        foreach (var cp in exitNodeCandidate.Declaration.Exits()) {
+                            var imageMoniker = ImageMonikers.FromSymbol(cp);
+                            var imgSrc       =NavLanguagePackage.GetBitmapSource(imageMoniker);
+                            var desc         = "Foo";
+                    
+                            completions.Add(new Completion(cp.Name, cp.Name, desc, imgSrc, "Bla"));
+                            cpsAdded=true;
+                        }
                     }
                 }
+
+                if (cpsAdded) {
+                    completionSets.Add(new CompletionSet("All", "All", applicableTo, completions, Enumerable.Empty<Completion>()));
+                    return;
+
+                }
+
+                foreach (var node in taskDefinition.NodeDeclarations) {
+
+                    var imageMoniker = ImageMonikers.FromSymbol(node);
+                    var imgSrc       = NavLanguagePackage.GetBitmapSource(imageMoniker);
+                    var desc         = node.Syntax.ToString();
+
+                    completions.Add(new Completion(node.Name, node.Name, desc, imgSrc, "Bla"));
+                }
+                
             }
-            img= NavLanguagePackage.GetBitmapSource(KnownMonikers.IntellisenseKeyword);
+
+            var img= NavLanguagePackage.GetBitmapSource(KnownMonikers.IntellisenseKeyword);
             foreach(var keyword in SyntaxFacts.Keywords.OrderBy(n=>n)) {
                 completions.Add(new Completion(displayText: keyword, insertionText: keyword, description: $"{keyword} Keyword", iconSource: img, iconAutomationText: "keyword"));
             }
             
-            var applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
-
             completionSets.Add(new CompletionSet("All", "All", applicableTo, completions, Enumerable.Empty<Completion>()));
 
             completions = new List<Completion>();
