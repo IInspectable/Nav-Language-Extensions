@@ -108,9 +108,9 @@ namespace Pharmatechnik.Nav.Language.Generator {
                 const int width = 40;
 
                 _logger?.LogInfo(HorizontalRule($"{ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion}", width));
-                _logger?.LogInfo($"{statistic.FileCount} {Pluralize("file",                 statistic.FileCount)} with {statistic.TaskCount} {Pluralize("task", statistic.TaskCount)} processed.");
+                _logger?.LogInfo($"{statistic.FileCount} {Pluralize("file",                 statistic.FileCount)} with {statistic.TaskCount} task {Pluralize("definition", statistic.TaskCount)} processed.");
                 _logger?.LogInfo($"   Updated: {statistic.FilesUpated,3} {Pluralize("File", statistic.FilesUpated)}");
-                _logger?.LogInfo($"   Skiped : {statistic.FilesSkiped,3} {Pluralize("File", statistic.FilesSkiped)}");
+                _logger?.LogInfo($"   Skipped: {statistic.FilesSkiped,3} {Pluralize("File", statistic.FilesSkiped)}");
                 _logger?.LogInfo(HorizontalRule($"Completed in {_processStopwatch.Elapsed.TotalSeconds} seconds", width));
             }
 
