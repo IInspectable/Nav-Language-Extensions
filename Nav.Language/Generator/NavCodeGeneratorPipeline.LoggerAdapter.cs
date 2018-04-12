@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -105,13 +106,27 @@ namespace Pharmatechnik.Nav.Language.Generator {
             public void LogProcessEnd(Statistic statistic) {
                 _processStopwatch.Stop();
 
-                const int width = 40;
+                var lines = new[] {
+                    $"{ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion}",
+                    $"{statistic.FileCount} .nav {Pluralize("file",                statistic.FileCount)} with {statistic.TaskCount} task {Pluralize("definition", statistic.TaskCount)} processed.",
+                    $"   Updated: {statistic.FilesUpated,3} .cs {Pluralize("file", statistic.FilesUpated)}",
+                    $"   Skipped: {statistic.FilesSkiped,3} .cs {Pluralize("file", statistic.FilesSkiped)}",
+                    $"Completed in {_processStopwatch.Elapsed.TotalSeconds} seconds"
+                };
 
-                _logger?.LogInfo(HorizontalRule($"{ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion}", width));
-                _logger?.LogInfo($"{statistic.FileCount} {Pluralize("file",                 statistic.FileCount)} with {statistic.TaskCount} task {Pluralize("definition", statistic.TaskCount)} processed.");
-                _logger?.LogInfo($"   Updated: {statistic.FilesUpated,3} {Pluralize("File", statistic.FilesUpated)}");
-                _logger?.LogInfo($"   Skipped: {statistic.FilesSkiped,3} {Pluralize("File", statistic.FilesSkiped)}");
-                _logger?.LogInfo(HorizontalRule($"Completed in {_processStopwatch.Elapsed.TotalSeconds} seconds", width));
+                var hrWidth = lines.Max(line => line.Length);
+                hrWidth += hrWidth % 2; // Auf gerade Zahl aufrunden
+
+                for (int i = 0; i < lines.Length; i++) {
+                    var line = lines[i];
+
+                    // Die erste und letzte Zeile bekommen einen horizontalen Strich
+                    if (i == 0 || i == lines.Length - 1) {
+                        _logger?.LogInfo(HorizontalRule(line, hrWidth));
+                    } else {
+                        _logger?.LogInfo(line);
+                    }
+                }
             }
 
             static string HorizontalRule(string message, int length, char lineChar = '-') {
