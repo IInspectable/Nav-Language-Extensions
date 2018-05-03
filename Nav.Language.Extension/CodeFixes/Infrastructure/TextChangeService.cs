@@ -46,7 +46,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
                 foreach (var change in textChangesAndSnapshot.TextChanges) {
                     var span = TranslateToTextEditSpan(textChangesAndSnapshot.Snapshot, change.Extent, textEdit);
-                    textEdit.Replace(span, change.NewText);
+                    textEdit.Replace(span, change.ReplacementText);
                 }
 
                 var textSnapshot=textEdit.Apply();
