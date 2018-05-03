@@ -29,14 +29,14 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             if (extent.IsMissing) {
                 yield break;
             }
-            yield return new TextChange(extent, String.Empty);
+            yield return TextChange.NewRemove(extent);
         }
 
         protected static IEnumerable<TextChange> GetInsertChanges(int position, string newText) {
             if (newText == null) {
                 yield break;
             }
-            yield return new TextChange(TextExtent.FromBounds(position, position), newText);
+            yield return TextChange.NewInsert(position, newText);
         }
 
         protected IEnumerable<TextChange> GetRemoveSyntaxNodeChanges(SyntaxNode syntaxNode) {
@@ -59,7 +59,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             if (symbol == null || symbol.Name == newName) {
                 yield break;
             }
-            yield return new TextChange(symbol.Location.Extent, newName);
+            yield return TextChange.NewReplace(symbol.Location.Extent, newName);
         }
 
         protected string ComposeEdge(IEdge templateEdge, string sourceName, string edgeKeyword, string targetName) {

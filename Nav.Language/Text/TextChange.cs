@@ -6,15 +6,23 @@ using System;
 
 namespace Pharmatechnik.Nav.Language.Text {
 
-    public struct TextChange : IEquatable<TextChange> {
+    public struct TextChange: IEquatable<TextChange> {
 
-        public TextChange(TextExtent extent, string newText) {
+        TextChange(TextExtent extent, string newText) {
             Extent  = extent;
             NewText = newText ?? throw new ArgumentNullException(nameof(newText));
         }
 
         public static TextChange NewInsert(int position, string newText) {
             return new TextChange(TextExtent.FromBounds(position, position), newText);
+        }
+
+        public static TextChange NewRemove(TextExtent extent) {
+            return new TextChange(extent, String.Empty);
+        }
+
+        public static TextChange NewReplace(TextExtent extent, string newText) {
+            return new TextChange(extent, newText);
         }
 
         public TextExtent Extent { get; }
@@ -33,6 +41,7 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
+
             return obj is TextChange change && Equals(change);
         }
 
@@ -50,6 +59,8 @@ namespace Pharmatechnik.Nav.Language.Text {
             return !left.Equals(right);
         }
 
-        #endregion        
+        #endregion
+
     }
+
 }

@@ -18,13 +18,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public static IEnumerable<TextChange> GetRemoveSyntaxNodeChanges(this SyntaxTree syntaxTree, SyntaxNode syntaxNode, EditorSettings editorSettings) {
 
             var fullExtent = syntaxNode.GetFullExtent(onlyWhiteSpace: true);
-            yield return new TextChange(fullExtent, String.Empty);
+            yield return  TextChange.NewRemove(fullExtent);
 
             var lineExtent = syntaxTree.GetTextLineExtentAtPosition(fullExtent.End - 1).Extent;
             // Prinzipiell enthalten die TrailingTrivia auch das NL Token. Wenn wir aber nicht die einzige Syntax in der Zeile sind,
             // soll das NL erhalten bleiben. Deswegen schieben wir das durch den fullExtent gelöschte NL hier wieder ein.
             if (fullExtent.Start > lineExtent.Start && fullExtent.End == lineExtent.End) {
-                yield return new TextChange(TextExtent.FromBounds(lineExtent.End, lineExtent.End), editorSettings.NewLine);
+                yield return TextChange.NewInsert(lineExtent.End, editorSettings.NewLine);
             }
         }
 
@@ -53,7 +53,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 }
             }
 
-            yield return new TextChange(replaceExtent, replaceText);
+            yield return TextChange.NewReplace(replaceExtent, replaceText);
         }
 
         [NotNull]
@@ -87,7 +87,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 }
             }
 
-            yield return new TextChange(replaceExtent, replaceText);
+            yield return TextChange.NewReplace(replaceExtent, replaceText);
         }
 
         public static string ComposeEdge(this SyntaxTree syntaxTree, IEdge templateEdge, string sourceName, string edgeKeyword, string targetName, EditorSettings editorSettings) {

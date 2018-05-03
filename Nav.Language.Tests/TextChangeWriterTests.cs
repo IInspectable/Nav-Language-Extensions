@@ -141,7 +141,7 @@ namespace Nav.Language.Tests {
         }
 
         TextChange NewTextChange(int start, int length, string text) {
-            return new TextChange(new TextExtent( start, length), text);
+            return TextChange.NewReplace(new TextExtent( start, length), text);
         }
     }    
 }
