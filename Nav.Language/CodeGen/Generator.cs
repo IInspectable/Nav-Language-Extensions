@@ -9,7 +9,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     public abstract class Generator: IDisposable {
 
         protected Generator(GenerationOptions options) {
-            Options = options ?? throw new ArgumentNullException(nameof(options));
+            Options = options ?? GenerationOptions.Default;
         }
 
         public GenerationOptions Options { get; }

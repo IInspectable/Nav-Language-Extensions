@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         const string ModelAttributeName   = "model";
         const string ContextAttributeName = "context";
 
-        public CodeGenerator(GenerationOptions options, IPathProviderFactory pathProviderFactory = null): base(options) {
+        public CodeGenerator(GenerationOptions options = null, IPathProviderFactory pathProviderFactory = null): base(options) {
             PathProviderFactory = pathProviderFactory ?? Language.PathProviderFactory.Default;
         }
 
