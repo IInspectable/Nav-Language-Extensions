@@ -4,16 +4,44 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+
 using JetBrains.Annotations;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-    public class FileGenerator: Generator {
+
+    public interface IFileGeneratorProvider {
+
+        IFileGenerator Create(GenerationOptions options);
+
+    }
+
+    public interface IFileGenerator: IDisposable {
+
+        IImmutableList<FileGeneratorResult> Generate(CodeGenerationResult codeGenerationResult);
+
+    }
+
+    public sealed class FileGeneratorProvider: IFileGeneratorProvider {
+
+        FileGeneratorProvider() {
+
+        }
+
+        public static readonly IFileGeneratorProvider Default = new FileGeneratorProvider();
+
+        public IFileGenerator Create(GenerationOptions options) {
+            return new FileGenerator(options);
+        }
+
+    }
+
+    public class FileGenerator: Generator, IFileGenerator {
 
         public FileGenerator(GenerationOptions options): base(options) {
         }
-        
+
         public IImmutableList<FileGeneratorResult> Generate(CodeGenerationResult codeGenerationResult) {
 
             if (codeGenerationResult == null) {
@@ -27,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCodeSpec,       OverwriteCondition.Never, legacyFileName: codeGenerationResult.PathProvider.LegacyWfsFileName)
             };
 
-            foreach(var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
+            foreach (var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
                 results.Add(WriteFile(codeGenerationResult.TaskDefinition, toCodeSpec, OverwriteCondition.Never));
             }
 
@@ -51,7 +79,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         static void EnsureDirectory(string fileName) {
             var dir = Path.GetDirectoryName(fileName);
             // ReSharper disable once AssignNullToNotNullAttribute Lass krachen
-            Directory.CreateDirectory(dir);            
+            Directory.CreateDirectory(dir);
         }
 
         bool ShouldWrite(CodeGenerationSpec codeGenerationSpec, OverwriteCondition condition, string legacyFileName) {
@@ -70,14 +98,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             // Eine Datei mit der Größe 0 gilt als nicht existent, und wird neu geschrieben 
             if (condition == OverwriteCondition.Never) {
-                
+
                 var fileInfo = new FileInfo(codeGenerationSpec.FilePath);
                 // Wenn z.B. in Visual Studio der Inhalt einer Datei gelöscht wird, dann hat die Datei auf Grund der 
                 // trotzdem geschriebenen BOM eine Länge von bis zu 4 Byte.
                 // Es dürfte super unwahrscheinlich sein, dass es eine Datei ohne BOM, dafür aber sinnvollen Inhalt
                 // existiert. Deshalb gehen wir hier davon aus, dass jede Datei mit einer Länge kleiner als 4 Bytes
                 // de facto leer ist.
-                return fileInfo.Length<=4;
+                return fileInfo.Length <= 4;
             }
 
             // => condition == OverwriteCondition.ContentChanged
@@ -94,8 +122,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         }
 
         enum OverwriteCondition {
+
             Never,
             ContentChanged
+
         }
+
     }
+
 }

@@ -17,8 +17,34 @@ using Pharmatechnik.Nav.Language.CodeGen.Templates;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
+    public interface ICodeGeneratorProvider {
+
+        ICodeGenerator Create(GenerationOptions options, IPathProviderFactory pathProviderFactory);
+
+    }
+
+    public sealed class CodeGeneratorProvider: ICodeGeneratorProvider {
+
+        CodeGeneratorProvider() {
+
+        }
+
+        public static readonly ICodeGeneratorProvider Default = new CodeGeneratorProvider();
+
+        public ICodeGenerator Create(GenerationOptions options, IPathProviderFactory pathProviderFactory) {
+            return new CodeGenerator(options, pathProviderFactory);
+        }
+
+    }
+
+    public interface ICodeGenerator: IDisposable {
+
+        IImmutableList<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit);
+
+    }
+
     // ReSharper disable InconsistentNaming
-    public class CodeGenerator: Generator {
+    public class CodeGenerator: Generator, ICodeGenerator {
 
         const string TemplateBeginName    = "Begin";
         const string ModelAttributeName   = "model";

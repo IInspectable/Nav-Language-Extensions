@@ -1,7 +1,9 @@
 namespace Pharmatechnik.Nav.Language {
 
-    public interface ISyntaxProviderFactory {    
+    public interface ISyntaxProviderFactory {
+
         ISyntaxProvider CreateProvider();
+
     }
 
 }
