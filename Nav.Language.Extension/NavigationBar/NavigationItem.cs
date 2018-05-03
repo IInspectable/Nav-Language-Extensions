@@ -4,6 +4,8 @@ using System.Collections.Immutable;
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {

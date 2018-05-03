@@ -1,6 +1,8 @@
 using System;
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language {
     [Serializable]
     [SampleSyntax("[params Type1 p1, Type2 p2]")]

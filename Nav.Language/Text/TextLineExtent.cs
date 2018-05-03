@@ -1,6 +1,6 @@
 using System;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language.Text {
 
     /// <summary>
     /// Represents an extent of a single line.

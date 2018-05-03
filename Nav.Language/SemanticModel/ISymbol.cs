@@ -2,6 +2,8 @@
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {

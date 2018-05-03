@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using System.Linq;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {

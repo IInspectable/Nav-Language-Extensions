@@ -1,6 +1,7 @@
 using System;
 using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Internal;
+using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language {
 

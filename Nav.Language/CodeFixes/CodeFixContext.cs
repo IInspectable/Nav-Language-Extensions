@@ -4,6 +4,8 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {

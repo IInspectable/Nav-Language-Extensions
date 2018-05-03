@@ -6,6 +6,7 @@ using System.Threading;
 using Microsoft.VisualStudio.Text;
 using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 using Pharmatechnik.Nav.Language.Internal;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 

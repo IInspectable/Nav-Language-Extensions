@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language.Internal {
 
     static class ExtentExtensions {

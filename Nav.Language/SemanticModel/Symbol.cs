@@ -1,6 +1,8 @@
 using System;
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language {
 
     abstract partial class Symbol: ISymbol {

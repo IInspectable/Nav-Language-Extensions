@@ -2,6 +2,8 @@
 
 using Antlr4.Runtime;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Internal {

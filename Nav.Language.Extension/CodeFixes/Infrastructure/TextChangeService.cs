@@ -9,6 +9,8 @@ using Microsoft.VisualStudio.Text.Operations;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
+using TextExtent = Pharmatechnik.Nav.Language.Text.TextExtent;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {

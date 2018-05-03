@@ -12,6 +12,7 @@ using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Generated;
 using Pharmatechnik.Nav.Language.Internal;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 

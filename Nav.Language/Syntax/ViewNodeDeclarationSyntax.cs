@@ -1,5 +1,7 @@
 using System;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language {
     [Serializable]
     [SampleSyntax("view Identifier;")]

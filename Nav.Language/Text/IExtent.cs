@@ -1,4 +1,4 @@
-﻿namespace Pharmatechnik.Nav.Language {
+﻿namespace Pharmatechnik.Nav.Language.Text {
 
     public interface IExtent {
 

@@ -1,6 +1,8 @@
 using System;
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language {
     [Serializable]
     [SampleSyntax("init Identifier [abstractmethod] [params T1 param1, T2<T3, T4<T5>> param2, T6[][] param3] do Instruction;")]

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language {
     [Serializable]
     [SampleSyntax("[base StandardWFS<TSType> : IWFServiceBase, IBeginWFSType]")]

@@ -3,6 +3,8 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Internal {

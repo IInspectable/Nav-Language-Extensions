@@ -2,7 +2,7 @@
 
 using System;
 using NUnit.Framework;
-using Pharmatechnik.Nav.Language;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion

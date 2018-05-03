@@ -1,6 +1,6 @@
 using System;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language.Text {
 
     [Serializable]
     public struct LinePositionExtent: IEquatable<LinePositionExtent> {

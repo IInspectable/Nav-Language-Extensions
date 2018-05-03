@@ -3,16 +3,12 @@
 using System;
 using System.Linq;
 using System.ComponentModel.Composition;
-using System.Threading;
 
-using Microsoft.CodeAnalysis.Rename;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
 
-using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.CodeFixes.Rename;
-using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.CodeFixes;
@@ -44,7 +40,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             return CommandState.Available;
         }
 
-        public async void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
+        public void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
 
             var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
             if (!codeGenerationUnitAndSnapshot.IsCurrent(args.SubjectBuffer.CurrentSnapshot)) {

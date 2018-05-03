@@ -7,6 +7,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 
 using Pharmatechnik.Nav.Language.Generated;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 

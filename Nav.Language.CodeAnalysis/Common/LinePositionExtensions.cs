@@ -3,6 +3,10 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
+using Pharmatechnik.Nav.Language.Text;
+
+using LinePosition = Pharmatechnik.Nav.Language.Text.LinePosition;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeAnalysis.Common {
