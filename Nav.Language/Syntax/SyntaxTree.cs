@@ -24,31 +24,22 @@ namespace Pharmatechnik.Nav.Language {
         readonly SyntaxNode                    _root;
         readonly SyntaxTokenList               _tokens;
         readonly IReadOnlyList<Diagnostic>     _diagnostics;
-        readonly IReadOnlyList<TextLineExtent> _textLines;
-        readonly FileInfo                      _fileInfo;
-        readonly string                        _sourceText;
+        readonly SourceText _sourceText;
 
-        internal SyntaxTree(string sourceText,
+        internal SyntaxTree(SourceText sourceText,
                             SyntaxNode root,
                             SyntaxTokenList tokens,
-                            IReadOnlyList<TextLineExtent> textLines,
-                            IReadOnlyList<Diagnostic> diagnostics,
-                            FileInfo fileInfo) {
+                            IReadOnlyList<Diagnostic> diagnostics) {
 
-            _sourceText  = sourceText ?? String.Empty;
+            _sourceText  = sourceText ?? SourceText.Empty;
             _root        = root;
-            _fileInfo    = fileInfo;
             _diagnostics = diagnostics ?? Enumerable.Empty<Diagnostic>().ToList();
             _tokens      = tokens      ?? SyntaxTokenList.Empty;
-            _textLines   = textLines   ?? new List<TextLineExtent>();
         }
 
         [NotNull]
         public SyntaxTokenList Tokens => _tokens;
-
-        [NotNull]
-        public IReadOnlyList<TextLineExtent> TextLines => _textLines;
-
+        
         [NotNull]
         public IReadOnlyList<Diagnostic> Diagnostics => _diagnostics;
 
@@ -57,10 +48,13 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         [CanBeNull]
-        public FileInfo FileInfo => _fileInfo;
+        public FileInfo FileInfo => SourceText.FileInfo;
 
         [NotNull]
-        public string SourceText => _sourceText;
+        public IReadOnlyList<TextLineExtent> TextLines => SourceText.TextLines;
+
+        [NotNull]
+        public SourceText SourceText => _sourceText;
 
         public Location GetLocation(TextExtent extent) {
             return new Location(extent, GetLineRange(extent), FileInfo?.FullName);
@@ -80,7 +74,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public TextLineExtent GetTextLineExtent(int line) {
-            return _textLines[line];
+            return TextLines[line];
         }
 
         public TextLineExtent GetTextLineExtentAtPosition(int position) {
@@ -91,29 +85,29 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         TextLineExtent GetTextLineExtentAtPositionCore(int position) {
-            var lineInformaton = _textLines.FindElementAtPosition(position);
+            var lineInformaton = TextLines.FindElementAtPosition(position);
             return lineInformaton;
         }
 
         public static SyntaxTree ParseText(string text, string filePath=null, CancellationToken cancellationToken = default) {
 
-            return ParseTextCore(sourceText       : text, 
+            return ParseTextCore(text             : text, 
                                  treeCreator      : parser => parser.codeGenerationUnit(), 
                                  filePath         : filePath, 
                                  cancellationToken: cancellationToken);
         }
         
-        internal static SyntaxTree ParseTextCore(string sourceText, 
+        internal static SyntaxTree ParseTextCore(string text, 
                                                  Func<NavGrammarParser, IParseTree> treeCreator, 
                                                  string filePath, 
                                                  Encoding encoding = null, 
                                                  CancellationToken cancellationToken = default) {
 
-            var fileInfo = String.IsNullOrEmpty(filePath) ? null : new FileInfo(filePath);
 
-            sourceText = sourceText ?? String.Empty;
+            text = text ?? String.Empty;
 
-            var stream        = new AntlrInputStream(sourceText);
+            var sourceText    = SourceText.From(text, filePath);
+            var stream        = new AntlrInputStream(text);
             var lexer         = new NavGrammarLexer(stream);
             var cts           = new NavCommonTokenStream(lexer);
             var parser        = new NavGrammarParser(cts);
@@ -122,21 +116,17 @@ namespace Pharmatechnik.Nav.Language {
             parser.RemoveErrorListeners();
             parser.AddErrorListener(errorListener);
 
-            var tree = treeCreator(parser);
-
-            var visitor     = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
-            var syntax      = visitor.Visit(tree);
+            var tree          = treeCreator(parser);
+            var visitor       = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
+            var syntax        = visitor.Visit(tree);
             var ppDiagnostics = new List<Diagnostic>();
-            var tokens      = PostprocessTokens(visitor.Tokens, cts, syntax, ppDiagnostics, filePath, cancellationToken);
-            var textLines   = GetTextLines(sourceText);
-            var diagnostics = errorListener.Diagnostics.Concat(ppDiagnostics).ToList();
+            var tokens        = PostprocessTokens(visitor.Tokens, cts, syntax, ppDiagnostics, filePath, cancellationToken);
+            var diagnostics   = errorListener.Diagnostics.Concat(ppDiagnostics).ToList();
 
             var syntaxTree = new SyntaxTree(sourceText : sourceText, 
                                             root       : syntax, 
                                             tokens     : tokens, 
-                                            textLines  : textLines,
-                                            diagnostics: diagnostics,
-                                            fileInfo   : fileInfo);
+                                            diagnostics: diagnostics);
 
             syntax.FinalConstruct(syntaxTree, null);
             
@@ -260,45 +250,5 @@ namespace Pharmatechnik.Nav.Language {
             return -1;
         }
         
-        static IReadOnlyList<TextLineExtent> GetTextLines(string text) {
-
-            int index;
-            int line      = 0;
-            int lineStart = 0;
-            var lines     = new List<TextLineExtent>();
-            for (index = 0; index < text.Length; index++) {
-
-                char c = text[index];
-
-                bool isNewLine = false;
-
-                if (c == '\n') {
-                    isNewLine = true;
-                } else if (c == '\r') {
-                    isNewLine = true;
-                    // => \r\n
-                    if (index + 1 < text.Length && text[index + 1] == '\n') {
-                        index++;
-                    }
-                }
-
-                if (isNewLine) {
-                    // Achtung: Extent End zeigt immer _hinter_ das letzte Zeichen!
-                    var lineEnd = index + 1;
-                    lines.Add(new TextLineExtent(line, TextExtent.FromBounds(lineStart, lineEnd)));
-                    line++;
-                    lineStart = lineEnd;
-                }
-            }
-
-            // Letzte Zeile nicht vergessen. 
-            if (index > lineStart) {
-                // Achtung: Extent End zeigt immer _hinter_ das letzte Zeichen!
-                var lineEnd = index + 1;
-                lines.Add(new TextLineExtent(line, TextExtent.FromBounds(lineStart, lineEnd)));
-            }
-
-            return lines;
-        }
     }
 }

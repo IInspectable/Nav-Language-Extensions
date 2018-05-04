@@ -29,12 +29,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             Line   = line;
             Extent = extent;
         }
-
-        public static readonly TextLineExtent Missing = new TextLineExtent(-1, TextExtent.Missing);
-        public static readonly TextLineExtent Empty   = new TextLineExtent(0,  TextExtent.Empty);
-
-        public bool IsMissing => Line < 0;
-
+      
         /// <summary>
         /// The line number. The first line in a file is defined as line 0 (zero based line numbering).
         /// </summary>

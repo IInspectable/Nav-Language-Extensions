@@ -212,6 +212,7 @@
     <Compile Include="CodeGen\Templates\Resources.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
     <Compile Include="Common\StringExtensions.cs" />
+    <Compile Include="Text\SourceText.cs" />
     <Compile Include="Text\TextLineExtent.cs" />
     <Compile Include="Text\LinePosition.cs" />
     <Compile Include="Text\LineRange.cs" />

@@ -14,6 +14,8 @@ using Pharmatechnik.Nav.Language.CodeGen;
 
 using NUnit.Framework;
 
+using Pharmatechnik.Nav.Language.Text;
+
 using RoslynDiagnostic = Microsoft.CodeAnalysis.Diagnostic;
 using RoslynSyntaxTree = Microsoft.CodeAnalysis.SyntaxTree;
 using RoslynDiagnosticSeverity = Microsoft.CodeAnalysis.DiagnosticSeverity;
@@ -259,9 +261,9 @@ namespace Nav.Language.Tests {
             return $"{diagnostic.Id}: {diagnostic.Location} {diagnostic.GetMessage()}";
         }
 
-        void AssertNoDiagnosticErrors(IEnumerable<Diagnostic> diagnostics, string sourceText) {
+        void AssertNoDiagnosticErrors(IEnumerable<Diagnostic> diagnostics, SourceText sourceText) {
             var errors = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
-            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors) + sourceText);
+            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors) + sourceText.Text);
         }
 
         string FormatDiagnostics(IEnumerable<Diagnostic> diagnostics) {
