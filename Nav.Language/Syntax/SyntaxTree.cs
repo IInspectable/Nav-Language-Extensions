@@ -3,15 +3,16 @@
 using System;
 using System.Text;
 using System.Linq;
-using System.Collections.Generic;
 using System.Threading;
+using System.Collections.Generic;
+
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using JetBrains.Annotations;
 
-using Pharmatechnik.Nav.Language.Generated;
-using Pharmatechnik.Nav.Language.Internal;
 using Pharmatechnik.Nav.Language.Text;
+using Pharmatechnik.Nav.Language.Internal;
+using Pharmatechnik.Nav.Language.Generated;
 
 #endregion
 
@@ -36,9 +37,8 @@ namespace Pharmatechnik.Nav.Language {
             _diagnostics = diagnostics ?? Enumerable.Empty<Diagnostic>().ToList();
         }
 
-        public SyntaxNode GetRoot() {
-            return _root;
-        }
+        [NotNull]
+        public SyntaxNode Root => _root;
 
         [NotNull]
         public SourceText SourceText => _sourceText;

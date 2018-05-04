@@ -37,7 +37,7 @@ namespace Pharmatechnik.Nav.Language.Text {
         public Location GetLocation(TextExtent extent) {
             return new Location(extent, GetLineRange(extent), FileInfo?.FullName);
         }
-        
+
         public TextLineExtent GetTextLineExtent(int line) {
             return TextLines[line];
         }
@@ -46,6 +46,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             if (position < 0 || position > Length) {
                 throw new ArgumentOutOfRangeException(nameof(position));
             }
+
             return GetTextLineExtentAtPositionCore(position);
         }
 
@@ -62,6 +63,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
         }
 
+        // TODO effizienter implementieren
         TextLineExtent GetTextLineExtentAtPositionCore(int position) {
             var lineInformaton = TextLines.FindElementAtPosition(position);
             return lineInformaton;
@@ -116,6 +118,7 @@ namespace Pharmatechnik.Nav.Language.Text {
         readonly Lazy<IReadOnlyList<TextLineExtent>> _textLines;
 
         public StringSourceText(string text, string filePath) {
+
             Text     = text ?? String.Empty;
             FileInfo = String.IsNullOrEmpty(filePath) ? null : new FileInfo(filePath);
 
@@ -123,8 +126,8 @@ namespace Pharmatechnik.Nav.Language.Text {
         }
 
         public override FileInfo FileInfo { get; }
-        public override int      Length   => Text.Length;
         public override string   Text     { get; }
+        public override int      Length   => Text.Length;
 
         public override IReadOnlyList<TextLineExtent> TextLines => _textLines.Value;
 

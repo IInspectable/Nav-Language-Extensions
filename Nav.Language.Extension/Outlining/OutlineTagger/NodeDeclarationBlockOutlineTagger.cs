@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
         public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
 
-            var nodeDeclarationBlocks = syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<NodeDeclarationBlockSyntax>();
+            var nodeDeclarationBlocks = syntaxTreeAndSnapshot.SyntaxTree.Root.DescendantNodes<NodeDeclarationBlockSyntax>();
 
             foreach (var nodeDeclarationBlock in nodeDeclarationBlocks) {
 

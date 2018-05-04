@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
         public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
             
-            var nsDecl = syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<CodeNamespaceDeclarationSyntax>().FirstOrDefault();
+            var nsDecl = syntaxTreeAndSnapshot.SyntaxTree.Root.DescendantNodes<CodeNamespaceDeclarationSyntax>().FirstOrDefault();
             if (nsDecl == null) {
                 yield break;
             }

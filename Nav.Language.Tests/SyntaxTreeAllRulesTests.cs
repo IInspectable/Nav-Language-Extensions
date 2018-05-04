@@ -17,7 +17,7 @@ namespace Nav.Language.Tests {
         public void TestEmptyText() {
             var syntaxTree = SyntaxTree.ParseText(String.Empty);
             Assert.That(syntaxTree,           Is.Not.Null);
-            Assert.That(syntaxTree.GetRoot(), Is.Not.Null);
+            Assert.That(syntaxTree.Root, Is.Not.Null);
         }
 
         [Test]
@@ -40,8 +40,8 @@ namespace Nav.Language.Tests {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
 
             Assert.That(syntaxTree.Tokens.Count(token => token.Parent == null), Is.EqualTo(0));
-            Assert.That(syntaxTree.GetRoot().DescendantNodes().Count(node => node.Parent == null), Is.EqualTo(0));
-            Assert.That(syntaxTree.GetRoot().Parent, Is.Null);
+            Assert.That(syntaxTree.Root.DescendantNodes().Count(node => node.Parent == null), Is.EqualTo(0));
+            Assert.That(syntaxTree.Root.Parent, Is.Null);
         }
 
         [Test]
@@ -51,14 +51,14 @@ namespace Nav.Language.Tests {
             Assert.That(syntaxTree.Tokens.OfClassification(SyntaxTokenClassification.Comment).Count(), Is.EqualTo(2));
 
             var firstComment = syntaxTree.Tokens.OfClassification(SyntaxTokenClassification.Comment).First();
-            Assert.That(firstComment.Parent, Is.EqualTo(syntaxTree.GetRoot()));
+            Assert.That(firstComment.Parent, Is.EqualTo(syntaxTree.Root));
             Assert.That(firstComment.Type, Is.EqualTo(SyntaxTokenType.SingleLineComment));
             Assert.That(firstComment.Classification, Is.EqualTo(SyntaxTokenClassification.Comment));
         }
         
         [Test]
         public void TestEndOfFile() {
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
 
             Assert.That(syntaxRoot.ChildTokens().Last().Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
         }
@@ -66,7 +66,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestCodeNamespaceDeclaration() {
             // [namespaceprefix NS.1]
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
             var codeNamespaceDeclaration = syntaxRoot.DescendantNodes<CodeNamespaceDeclarationSyntax>().First();
 
             Assert.That(codeNamespaceDeclaration.NamespaceprefixKeyword.ToString(), Is.EqualTo("namespaceprefix"));
@@ -91,7 +91,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestCodeUsingDirective() {
             // [using U1]
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
             var codeUsingDirective = syntaxRoot.DescendantNodes<CodeUsingDeclarationSyntax>().First();
 
             Assert.That(codeUsingDirective.UsingKeyword.ToString(), Is.EqualTo("using"));
@@ -111,7 +111,7 @@ namespace Nav.Language.Tests {
         public void TestTaskIncludeDirective() {
             // taskref "F1";
 
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
             var includeDirective = syntaxRoot.DescendantNodes<IncludeDirectiveSyntax>().First();
 
             Assert.That(includeDirective.TaskrefKeyword.ToString(), Is.EqualTo("taskref"));
@@ -133,7 +133,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestTaskDeclaration() {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
-            var taskDeclaration = syntaxTree.GetRoot().DescendantNodes<TaskDeclarationSyntax>().First();
+            var taskDeclaration = syntaxTree.Root.DescendantNodes<TaskDeclarationSyntax>().First();
 
             Assert.That(taskDeclaration.ChildNodes()
                     .Count, Is.EqualTo(6));
@@ -269,7 +269,7 @@ namespace Nav.Language.Tests {
 
         [Test]
         public void TestTaskDefinition() {
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
 
             var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
@@ -334,7 +334,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestNodeDeclarationBlock() {
 
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
 
             var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
@@ -407,7 +407,7 @@ namespace Nav.Language.Tests {
 
         [Test]
         public  void TestTransitionDefinitionBlock() {
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
 
             var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 

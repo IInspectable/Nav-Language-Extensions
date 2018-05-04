@@ -299,7 +299,7 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
         CodeGenerationUnit GetCodeGenerationUnit(string text) {
 
             var tree=SyntaxTree.ParseText(text);
-            return CodeGenerationUnit.FromCodeGenerationUnitSyntax(tree.GetRoot() as CodeGenerationUnitSyntax);
+            return CodeGenerationUnit.FromCodeGenerationUnitSyntax(tree.Root as CodeGenerationUnitSyntax);
         }
 
         #endregion

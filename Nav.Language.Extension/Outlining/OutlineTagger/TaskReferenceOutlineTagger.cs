@@ -11,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
         public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
 
             // Task Declarations
-            foreach (var taskReferenceDefinition in syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<TaskDeclarationSyntax>()) {
+            foreach (var taskReferenceDefinition in syntaxTreeAndSnapshot.SyntaxTree.Root.DescendantNodes<TaskDeclarationSyntax>()) {
                 var extent = taskReferenceDefinition.Extent;
                
                 if (extent.Length <= 0) {
@@ -45,10 +45,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Outlining {
 
 
             // Zusammenhängende Blöcke von taskref "file" als Region zusammenfassen
-            var allRelevant = syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<TaskDefinitionSyntax>().Concat<SyntaxNode>(
-                syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes <TaskDeclarationSyntax>())
+            var allRelevant = syntaxTreeAndSnapshot.SyntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().Concat<SyntaxNode>(
+                syntaxTreeAndSnapshot.SyntaxTree.Root.DescendantNodes <TaskDeclarationSyntax>())
                 .Concat(
-                    syntaxTreeAndSnapshot.SyntaxTree.GetRoot().DescendantNodes<IncludeDirectiveSyntax>())
+                    syntaxTreeAndSnapshot.SyntaxTree.Root.DescendantNodes<IncludeDirectiveSyntax>())
                 .OrderBy(s => s.Extent.Start);
 
             IncludeDirectiveSyntax firstInclude = null;

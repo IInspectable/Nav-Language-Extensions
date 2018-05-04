@@ -14,7 +14,7 @@ namespace Nav.Language.Tests {
                     
             Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
 
-            var task = syntaxTree.GetRoot().DescendantNodes<TaskDefinitionSyntax>().First();
+            var task = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First();
 
             Assert.That(task.TaskKeyword, Is.Not.Null);
             Assert.That(task.TaskKeyword.Parent, Is.EqualTo(task));
@@ -24,8 +24,8 @@ namespace Nav.Language.Tests {
             Assert.That(initNode.InitKeyword.Parent,          Is.EqualTo(initNode));
             Assert.That(initNode.Parent,                  Is.EqualTo(task.NodeDeclarationBlock));
             Assert.That(task.NodeDeclarationBlock.Parent, Is.EqualTo(task));
-            Assert.That(task.Parent,                      Is.EqualTo(syntaxTree.GetRoot()));
-            Assert.That(syntaxTree.GetRoot().Parent,           Is.Null);
+            Assert.That(task.Parent,                      Is.EqualTo(syntaxTree.Root));
+            Assert.That(syntaxTree.Root.Parent,           Is.Null);
         }
 
         [Test]
@@ -85,7 +85,7 @@ namespace Nav.Language.Tests {
             var syntaxTree = SyntaxTree.ParseText(nav);
             Assert.That(syntaxTree.Diagnostics.Any(), Is.True);
 
-            Assert.That(syntaxTree.GetRoot().DescendantNodes<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
+            Assert.That(syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = SyntaxTree.ParseText(nav);
             Assert.That(syntaxTree.Diagnostics.Any(), Is.True);
-            Assert.That(syntaxTree.GetRoot().DescendantNodes().OfType<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
+            Assert.That(syntaxTree.Root.DescendantNodes().OfType<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
         }
 
         [Test]
@@ -113,7 +113,7 @@ namespace Nav.Language.Tests {
             Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count(t=>t.Parent== null), Is.EqualTo(0));
 
-            var task = syntaxTree.GetRoot().DescendantNodes<TaskDefinitionSyntax>().First();
+            var task = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First();
 
             Assert.That(task.ChildTokens().Count(), Is.EqualTo(4));
 
@@ -129,7 +129,7 @@ namespace Nav.Language.Tests {
 
             Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
 
-            var taskKeywordToken = syntaxTree.GetRoot().DescendantNodes<TaskDefinitionSyntax>().First().TaskKeyword;
+            var taskKeywordToken = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First().TaskKeyword;
 
             Assert.That(taskKeywordToken.Classification, Is.EqualTo(SyntaxTokenClassification.Keyword));
 

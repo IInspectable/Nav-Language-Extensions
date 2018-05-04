@@ -77,7 +77,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             var locationResult = Task.Run(() => {
 
                 var syntaxTree = SyntaxTree.ParseText(sourceText, annotation.NavFileName, cancellationToken);
-                if (!(syntaxTree.GetRoot() is CodeGenerationUnitSyntax codeGenerationUnitSyntax)) {
+                if (!(syntaxTree.Root is CodeGenerationUnitSyntax codeGenerationUnitSyntax)) {
                     throw new LocationNotFoundException(String.Format(MsgErrorWhileParsingNavFile0, annotation.NavFileName));
                 }
 

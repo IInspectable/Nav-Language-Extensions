@@ -63,7 +63,7 @@ namespace Nav.Language.Tests {
 
             var syntax = SyntaxTree.ParseText(Resources.AllRules);
             var walker = new CodeSyntaxTester();
-            walker.Walk(syntax.GetRoot());
+            walker.Walk(syntax.Root);
             foreach (var fail in walker.BaseFails) {
                 Assert.That(fail.ActualBaseType, Is.EqualTo(fail.ExpectedBaseType), "Base von {0} sollte {1} sein.", fail.SyntaxType.Name, fail.ExpectedBaseType.Name);
             }
@@ -75,7 +75,7 @@ namespace Nav.Language.Tests {
 
             var syntax = SyntaxTree.ParseText(Resources.AllRules);
             var walker = new CodeSyntaxTester();
-            walker.Walk(syntax.GetRoot());
+            walker.Walk(syntax.Root);
             foreach (var fail in walker.NameFails) {
                 Assert.Fail("Name von {0} sollte mit 'Code' beginnen.", fail.Name);
             }
