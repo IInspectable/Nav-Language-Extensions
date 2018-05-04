@@ -25,15 +25,15 @@ namespace Pharmatechnik.Nav.Language {
             _filePath = location._filePath;
         }
 
-        public Location(TextExtent extent, LinePositionExtent linePositionExtent, [CanBeNull] string filePath) {
+        public Location(TextExtent extent, LineRange lineRange, [CanBeNull] string filePath) {
             _extent   = extent;
-            _start    = linePositionExtent.Start;
-            _end      = linePositionExtent.End;
+            _start    = lineRange.Start;
+            _end      = lineRange.End;
             _filePath = filePath;
         }
 
         public Location(TextExtent extent, LinePosition linePosition, [CanBeNull] string filePath):
-            this(extent, new LinePositionExtent(linePosition, linePosition), filePath) {
+            this(extent, new LineRange(linePosition, linePosition), filePath) {
         }
 
         public Location(string filePath) {
@@ -45,10 +45,10 @@ namespace Pharmatechnik.Nav.Language {
 
         //TODO Missing/None
 
-        public TextExtent         Extent            => _extent;
-        public LinePosition       StartLinePosition => _start;
-        public LinePosition       EndLinePosition   => _end;
-        public LinePositionExtent LineExtent        => new LinePositionExtent(_start, _end);
+        public TextExtent   Extent            => _extent;
+        public LinePosition StartLinePosition => _start;
+        public LinePosition EndLinePosition   => _end;
+        public LineRange    LineRange         => new LineRange(_start, _end);
 
         /// <summary>
         /// The path to the file or null.
@@ -129,9 +129,9 @@ namespace Pharmatechnik.Nav.Language {
         public override int GetHashCode() {
             unchecked {
                 var hashCode = _extent.GetHashCode();
-                hashCode     = (hashCode * 397) ^ _start.GetHashCode();
-                hashCode     = (hashCode * 397) ^ _end.GetHashCode();
-                hashCode     = (hashCode * 397) ^ (_filePath?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ _start.GetHashCode();
+                hashCode = (hashCode * 397) ^ _end.GetHashCode();
+                hashCode = (hashCode * 397) ^ (_filePath?.GetHashCode() ?? 0);
                 return hashCode;
             }
         }

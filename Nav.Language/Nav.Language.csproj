@@ -75,6 +75,7 @@
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="CodeGen\ICodeGenerator.cs" />
+    <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />
     <Compile Include="SemanticAnalyzer\Nav0010CannotResolveTask0.cs" />
     <Compile Include="SemanticAnalyzer\Nav0011CannotResolveNode0.cs" />
@@ -213,7 +214,7 @@
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Text\TextLineExtent.cs" />
     <Compile Include="Text\LinePosition.cs" />
-    <Compile Include="Text\LinePositionExtent.cs" />
+    <Compile Include="Text\LineRange.cs" />
     <Compile Include="Common\Location.cs" />
     <Compile Include="Dependencies\DependencyAnalyzer.cs" />
     <Compile Include="Dependencies\DependencyExtensions.cs" />

@@ -16,8 +16,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Common {
             return new LinePosition(linePosition.Line, linePosition.Character);            
         }
 
-        public static LinePositionExtent ToLinePositionExtent(this FileLinePositionSpan fileLinePositionSpan) {
-            return new LinePositionExtent(
+        public static LineRange ToLineRange(this FileLinePositionSpan fileLinePositionSpan) {
+            return new LineRange(
                 fileLinePositionSpan.StartLinePosition.ToLinePosition(), 
                 fileLinePositionSpan.EndLinePosition.ToLinePosition());
         }

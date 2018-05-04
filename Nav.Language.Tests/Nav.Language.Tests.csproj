@@ -175,6 +175,7 @@
   <ItemGroup>
     <Compile Include="CodeGenFactsTests.cs" />
     <Compile Include="CodeGenTests.cs" />
+    <Compile Include="VersionStampTests.cs" />
     <EmbeddedResource Include="Resources\FrameworkStubs.cs" />
     <Compile Include="Diagnostics\DiagnosticTests.cs" />
     <Compile Include="PathProviderTests.cs" />

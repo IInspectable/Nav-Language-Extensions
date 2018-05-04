@@ -66,7 +66,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var replaceText = $"{newSourceName}{SyntaxFacts.Colon}{transition.ConnectionPointReference.Name}";
             var replaceLocation = new Location(
                 extent: TextExtent.FromBounds(transition.SourceReference.Start, transition.ConnectionPointReference.End),
-                linePositionExtent: new LinePositionExtent(
+                lineRange: new LineRange(
                     start: transition.SourceReference.Location.StartLinePosition,
                     end: transition.ConnectionPointReference.Location.EndLinePosition),
                 filePath: transition.ConnectionPointReference.Location.FilePath);

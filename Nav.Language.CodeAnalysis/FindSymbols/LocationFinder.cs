@@ -272,11 +272,12 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     if (!lineSpan.IsValid) {
                         continue;
                     }
+
                     var filePath   = loc.SourceTree?.FilePath;
                     var textExtent = loc.SourceSpan.ToTextExtent();
-                    var lineExtent = lineSpan.ToLinePositionExtent();
+                    var lineRange  = lineSpan.ToLineRange();
 
-                    locs.Add(new Location(textExtent, lineExtent, filePath));
+                    locs.Add(new Location(textExtent, lineRange, filePath));
                 }
 
                 if (!locs.Any()) {
@@ -328,11 +329,11 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     if (!lineSpan.IsValid) {
                         continue;
                     }
-                    
+
                     var textExtent = loc.SourceSpan.ToTextExtent();
-                    var lineExtent = lineSpan.ToLinePositionExtent();
+                    var lineRange  = lineSpan.ToLineRange();
                     
-                    locs.Add(new Location(textExtent, lineExtent, filePath));
+                    locs.Add(new Location(textExtent, lineRange, filePath));
                 }
 
                 if(!locs.Any()) {
@@ -495,10 +496,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             }
 
             var textExtent = memberLocation.SourceSpan.ToTextExtent();
-            var lineExtent = lineSpan.ToLinePositionExtent();
+            var lineRange  = lineSpan.ToLineRange();
             var filePath   = memberLocation.SourceTree?.FilePath;
 
-            var loc = new Location(textExtent, lineExtent, filePath);
+            var loc = new Location(textExtent, lineRange, filePath);
 
             return loc;
         }

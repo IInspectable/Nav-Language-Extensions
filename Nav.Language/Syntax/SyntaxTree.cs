@@ -63,15 +63,15 @@ namespace Pharmatechnik.Nav.Language {
         public string SourceText => _sourceText;
 
         public Location GetLocation(TextExtent extent) {
-            return new Location(extent, GetLinePositionExtent(extent), FileInfo?.FullName);
+            return new Location(extent, GetLineRange(extent), FileInfo?.FullName);
         }
 
-        LinePositionExtent GetLinePositionExtent(TextExtent extent) {
+        LineRange GetLineRange(TextExtent extent) {
 
             var start = GetLinePositionAtPosition(extent.Start);
             var end   = GetLinePositionAtPosition(extent.End);
 
-            return new LinePositionExtent(start, end);
+            return new LineRange(start, end);
         }
 
         LinePosition GetLinePositionAtPosition(int position) {
