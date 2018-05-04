@@ -64,8 +64,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var nodeSymbol = NodeReference.Declaration;
 
             // ReSharper disable once PossibleNullReferenceException Check ist schon in CanApplyFix passiert
-            var nodeDeclarationLine = SyntaxTree.SourceText.GetTextLineExtentAtPosition(nodeSymbol.Start);
-            var nodeTransitionLine  = SyntaxTree.SourceText.GetTextLineExtentAtPosition(NodeReference.End);
+            var nodeDeclarationLine = SyntaxTree.SourceText.GetTextLineAtPosition(nodeSymbol.Start);
+            var nodeTransitionLine  = SyntaxTree.SourceText.GetTextLineAtPosition(NodeReference.End);
 
             var choiceDeclaration = $"{GetLineIndent(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
             var choiceTransition  = $"{GetLineIndent(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";

@@ -78,8 +78,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return SyntaxTree.ColumnsBetweenKeywordAndIdentifier(node, newKeyword, Context.EditorSettings);
         }
 
-        protected string GetLineIndent(TextLineExtent lineExtent) {
-            return SyntaxTree.GetLineIndent(lineExtent, Context.EditorSettings);
+        protected string GetLineIndent(SourceTextLine sourceTextLine) {
+            return SyntaxTree.GetLineIndent(sourceTextLine, Context.EditorSettings);
         }        
     }
 }

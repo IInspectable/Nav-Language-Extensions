@@ -1,14 +1,16 @@
 using System;
 
+using JetBrains.Annotations;
+
 namespace Pharmatechnik.Nav.Language.Text {
 
     /// <summary>
     /// Represents an extent of a single line.
     /// </summary>
     [Serializable]
-    public struct TextLineExtent: IExtent, IEquatable<TextLineExtent> {
+    public struct SourceTextLine: IExtent, IEquatable<SourceTextLine> {
 
-        public TextLineExtent(int line, TextExtent extent) {
+        internal SourceTextLine(SourceText sourceText, int line, TextExtent extent) {
 
             if (extent.IsMissing && line != -1) {
                 throw new ArgumentOutOfRangeException(nameof(line));
@@ -26,10 +28,16 @@ namespace Pharmatechnik.Nav.Language.Text {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
 
-            Line   = line;
-            Extent = extent;
+            // TODO Range check against sourceText
+
+            SourceText = sourceText ?? throw new ArgumentNullException(nameof(sourceText));
+            Line       = line;
+            Extent     = extent;
         }
-      
+
+        [NotNull]
+        public SourceText SourceText { get; }
+
         /// <summary>
         /// The line number. The first line in a file is defined as line 0 (zero based line numbering).
         /// </summary>
@@ -44,37 +52,42 @@ namespace Pharmatechnik.Nav.Language.Text {
         int IExtent.End   => Extent.End;
 
         /// <summary>
-        /// Determines whether two <see cref="TextLineExtent"/> are the same.
+        /// Determines whether two <see cref="SourceTextLine"/> are the same.
         /// </summary>
-        public static bool operator ==(TextLineExtent left, TextLineExtent right) {
+        public static bool operator ==(SourceTextLine left, SourceTextLine right) {
             return left.Equals(right);
         }
 
         /// <summary>
         /// Determines whether two <see cref="TextExtent"/> are different.
         /// </summary>
-        public static bool operator !=(TextLineExtent left, TextLineExtent right) {
+        public static bool operator !=(SourceTextLine left, SourceTextLine right) {
             return !left.Equals(right);
         }
 
         /// <summary>
-        /// Determines whether two <see cref="TextLineExtent"/> are the same.
+        /// Determines whether two <see cref="SourceTextLine"/> are the same.
         /// </summary>
         /// <param name="other">The object to compare.</param>
-        public bool Equals(TextLineExtent other) {
+        public bool Equals(SourceTextLine other) {
             return other.Line == Line && other.Extent == Extent;
         }
 
         /// <summary>
-        /// Determines whether two <see cref="TextLineExtent"/> are the same.
+        /// Determines whether two <see cref="SourceTextLine"/> are the same.
         /// </summary>
         /// <param name="obj">The object to compare.</param>
         public override bool Equals(object obj) {
-            return obj is TextLineExtent extent && Equals(extent);
+            return obj is SourceTextLine extent && Equals(extent);
+        }
+
+        // TODO Unit Test
+        public override string ToString() {
+            return SourceText.ToString(Extent);
         }
 
         /// <summary>
-        /// Provides a hash function for <see cref="TextLineExtent"/>.
+        /// Provides a hash function for <see cref="SourceTextLine"/>.
         /// </summary>
         public override int GetHashCode() {
             return Line ^ Extent.GetHashCode();

@@ -22,10 +22,11 @@ namespace Pharmatechnik.Nav.Language.Text {
         [NotNull]
         public abstract string Text { get; }
 
-        [NotNull]
-        public abstract IReadOnlyList<TextLineExtent> TextLines { get; }
-
         public abstract int Length { get; }
+
+        [NotNull]
+        public abstract IReadOnlyList<SourceTextLine> TextLines { get; }
+
         public abstract string Substring(int startIndex, int length);
 
         public static SourceText From(string text, string filePath) {
@@ -37,17 +38,13 @@ namespace Pharmatechnik.Nav.Language.Text {
         public Location GetLocation(TextExtent extent) {
             return new Location(extent, GetLineRange(extent), FileInfo?.FullName);
         }
-
-        public TextLineExtent GetTextLineExtent(int line) {
-            return TextLines[line];
-        }
-
-        public TextLineExtent GetTextLineExtentAtPosition(int position) {
+        
+        public SourceTextLine GetTextLineAtPosition(int position) {
             if (position < 0 || position > Length) {
                 throw new ArgumentOutOfRangeException(nameof(position));
             }
 
-            return GetTextLineExtentAtPositionCore(position);
+            return GetTextLineAtPositionCore(position);
         }
 
         LineRange GetLineRange(TextExtent extent) {
@@ -59,22 +56,30 @@ namespace Pharmatechnik.Nav.Language.Text {
         }
 
         LinePosition GetLinePositionAtPosition(int position) {
-            var lineInformaton = GetTextLineExtentAtPositionCore(position);
+            var lineInformaton = GetTextLineAtPositionCore(position);
             return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
         }
 
-        // TODO effizienter implementieren
-        TextLineExtent GetTextLineExtentAtPositionCore(int position) {
+        // TODO effizienter implementieren + UnitTests
+        SourceTextLine GetTextLineAtPositionCore(int position) {
             var lineInformaton = TextLines.FindElementAtPosition(position);
             return lineInformaton;
         }
 
-        protected static IReadOnlyList<TextLineExtent> ParseTextLines(string text) {
+        public override string ToString() {
+            return Text;
+        }
+
+        public string ToString(TextExtent textExtent) {
+            return Text.Substring(startIndex: textExtent.Start, length: textExtent.Length);
+        }
+
+        protected IReadOnlyList<SourceTextLine> ParseTextLines(string text) {
 
             int index;
             int line      = 0;
             int lineStart = 0;
-            var lines     = new List<TextLineExtent>();
+            var lines     = new List<SourceTextLine>();
             for (index = 0; index < text.Length; index++) {
 
                 char c = text[index];
@@ -94,7 +99,7 @@ namespace Pharmatechnik.Nav.Language.Text {
                 if (isNewLine) {
                     // Achtung: Extent End zeigt immer _hinter_ das letzte Zeichen!
                     var lineEnd = index + 1;
-                    lines.Add(new TextLineExtent(line, TextExtent.FromBounds(lineStart, lineEnd)));
+                    lines.Add(new SourceTextLine(this, line, TextExtent.FromBounds(lineStart, lineEnd)));
                     line++;
                     lineStart = lineEnd;
                 }
@@ -104,7 +109,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             if (index > lineStart) {
                 // Achtung: Extent End zeigt immer _hinter_ das letzte Zeichen!
                 var lineEnd = index + 1;
-                lines.Add(new TextLineExtent(line, TextExtent.FromBounds(lineStart, lineEnd)));
+                lines.Add(new SourceTextLine(this, line, TextExtent.FromBounds(lineStart, lineEnd)));
             }
 
             return lines;
@@ -115,21 +120,21 @@ namespace Pharmatechnik.Nav.Language.Text {
     [Serializable]
     sealed class StringSourceText: SourceText {
 
-        readonly Lazy<IReadOnlyList<TextLineExtent>> _textLines;
+        readonly Lazy<IReadOnlyList<SourceTextLine>> _textLines;
 
         public StringSourceText(string text, string filePath) {
 
             Text     = text ?? String.Empty;
             FileInfo = String.IsNullOrEmpty(filePath) ? null : new FileInfo(filePath);
 
-            _textLines = new Lazy<IReadOnlyList<TextLineExtent>>(() => ParseTextLines(Text), LazyThreadSafetyMode.PublicationOnly);
+            _textLines = new Lazy<IReadOnlyList<SourceTextLine>>(() => ParseTextLines(Text), LazyThreadSafetyMode.PublicationOnly);
         }
 
         public override FileInfo FileInfo { get; }
         public override string   Text     { get; }
         public override int      Length   => Text.Length;
 
-        public override IReadOnlyList<TextLineExtent> TextLines => _textLines.Value;
+        public override IReadOnlyList<SourceTextLine> TextLines => _textLines.Value;
 
         public override string Substring(int startIndex, int length) {
             return Text.Substring(startIndex: startIndex, length: length);
