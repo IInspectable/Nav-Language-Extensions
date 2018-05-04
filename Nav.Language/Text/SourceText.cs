@@ -7,6 +7,8 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Internal;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Text {
@@ -31,6 +33,39 @@ namespace Pharmatechnik.Nav.Language.Text {
         }
 
         public static SourceText Empty => new StringSourceText(null, null);
+
+        public Location GetLocation(TextExtent extent) {
+            return new Location(extent, GetLineRange(extent), FileInfo?.FullName);
+        }
+        
+        public TextLineExtent GetTextLineExtent(int line) {
+            return TextLines[line];
+        }
+
+        public TextLineExtent GetTextLineExtentAtPosition(int position) {
+            if (position < 0 || position > Length) {
+                throw new ArgumentOutOfRangeException(nameof(position));
+            }
+            return GetTextLineExtentAtPositionCore(position);
+        }
+
+        LineRange GetLineRange(TextExtent extent) {
+
+            var start = GetLinePositionAtPosition(extent.Start);
+            var end   = GetLinePositionAtPosition(extent.End);
+
+            return new LineRange(start, end);
+        }
+
+        LinePosition GetLinePositionAtPosition(int position) {
+            var lineInformaton = GetTextLineExtentAtPositionCore(position);
+            return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
+        }
+
+        TextLineExtent GetTextLineExtentAtPositionCore(int position) {
+            var lineInformaton = TextLines.FindElementAtPosition(position);
+            return lineInformaton;
+        }
 
         protected static IReadOnlyList<TextLineExtent> ParseTextLines(string text) {
 

@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var fullExtent = syntaxNode.GetFullExtent(onlyWhiteSpace: true);
             yield return  TextChange.NewRemove(fullExtent);
 
-            var lineExtent = syntaxTree.GetTextLineExtentAtPosition(fullExtent.End - 1).Extent;
+            var lineExtent = syntaxTree.SourceText.GetTextLineExtentAtPosition(fullExtent.End - 1).Extent;
             // Prinzipiell enthalten die TrailingTrivia auch das NL Token. Wenn wir aber nicht die einzige Syntax in der Zeile sind,
             // soll das NL erhalten bleiben. Deswegen schieben wir das durch den fullExtent gelöschte NL hier wieder ein.
             if (fullExtent.Start > lineExtent.Start && fullExtent.End == lineExtent.End) {
@@ -94,7 +94,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
             string indent = new string(' ', editorSettings.TabSize);
             if (templateEdge.SourceReference != null) {
-                var templateEdgeLine = syntaxTree.GetTextLineExtentAtPosition(templateEdge.SourceReference.Start);
+                var templateEdgeLine = syntaxTree.SourceText.GetTextLineExtentAtPosition(templateEdge.SourceReference.Start);
                 indent = syntaxTree.GetLineIndent(templateEdgeLine, editorSettings);
             }
 
@@ -152,8 +152,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return Math.Max(1, spaceCount);
         }
 
+        // TODO in SourceText!
         public static int GetEndColumn(this SyntaxTree syntaxTree, Location location, EditorSettings editorSettings) {
-            var endLineExtent = syntaxTree.GetTextLineExtentAtPosition(location.End);
+            var endLineExtent = syntaxTree.SourceText.GetTextLineExtentAtPosition(location.End);
             var lineStartIndex = endLineExtent.Extent.Start;
             var length = location.EndLinePosition.Character;
 
@@ -163,9 +164,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return column;
         }
 
+        // TODO in SourceText!
         public static int GetStartColumn(this SyntaxTree syntaxTree, Location location, EditorSettings editorSettings) {
 
-            var startLineExtent = syntaxTree.GetTextLineExtentAtPosition(location.Start);
+            var startLineExtent = syntaxTree.SourceText.GetTextLineExtentAtPosition(location.Start);
             var lineStartIndex = startLineExtent.Extent.Start;
             var length = location.StartLinePosition.Character;
 
@@ -175,6 +177,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return column;
         }
 
+        // TODO in SourceText!
         public static string GetLineIndent(this SyntaxTree syntaxTree, TextLineExtent lineExtent, EditorSettings editorSettings) {
 
             var line = syntaxTree.SourceText.Substring(lineExtent.Extent.Start, lineExtent.Extent.Length);

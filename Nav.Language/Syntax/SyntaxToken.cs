@@ -32,7 +32,7 @@ namespace Pharmatechnik.Nav.Language {
 
         [CanBeNull]
         public Location GetLocation() {
-            return SyntaxTree?.GetLocation(Extent);
+            return SyntaxTree?.SourceText.GetLocation(Extent);
         }
 
         public SyntaxTokenClassification Classification => (SyntaxTokenClassification)((_classificationAndType >> ClassificationBitShift) & BitMask);

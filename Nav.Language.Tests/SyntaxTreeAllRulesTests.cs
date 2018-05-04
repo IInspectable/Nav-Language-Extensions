@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -11,7 +12,20 @@ namespace Nav.Language.Tests {
 
     [TestFixture]
     public class SyntaxTreeTests {
-        
+
+        [Test]
+        public void TestEmptyText() {
+            var syntaxTree = SyntaxTree.ParseText(String.Empty);
+            Assert.That(syntaxTree,           Is.Not.Null);
+            Assert.That(syntaxTree.GetRoot(), Is.Not.Null);
+        }
+
+        [Test]
+        public void TestParseEmptyCodeDeclaration() {
+            var syntax = Syntax.ParseCodeDeclaration(String.Empty);
+            Assert.That(syntax, Is.Not.Null);
+        }
+
         [Test]
         public void TestSerializable() {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);

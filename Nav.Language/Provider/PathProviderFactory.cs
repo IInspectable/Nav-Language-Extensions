@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language {
             }
 
             var syntax     = taskDefinition.Syntax;
-            var syntaxFile = syntax.SyntaxTree.FileInfo;
+            var syntaxFile = syntax.SyntaxTree.SourceText.FileInfo;
             if (syntaxFile == null) {
                 throw new ArgumentException("No FileInfo available", nameof(taskDefinition));
             }

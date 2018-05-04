@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
 using System;
-using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
@@ -21,86 +20,47 @@ namespace Pharmatechnik.Nav.Language {
     [Serializable]
     public class SyntaxTree {
 
-        readonly SyntaxNode                    _root;
-        readonly SyntaxTokenList               _tokens;
-        readonly IReadOnlyList<Diagnostic>     _diagnostics;
-        readonly SourceText _sourceText;
+        readonly SyntaxNode                _root;
+        readonly SyntaxTokenList           _tokens;
+        readonly SourceText                _sourceText;
+        readonly IReadOnlyList<Diagnostic> _diagnostics;
 
         internal SyntaxTree(SourceText sourceText,
                             SyntaxNode root,
                             SyntaxTokenList tokens,
                             IReadOnlyList<Diagnostic> diagnostics) {
 
-            _sourceText  = sourceText ?? SourceText.Empty;
-            _root        = root;
-            _diagnostics = diagnostics ?? Enumerable.Empty<Diagnostic>().ToList();
+            _root        = root        ?? throw new ArgumentNullException(nameof(root));
             _tokens      = tokens      ?? SyntaxTokenList.Empty;
+            _sourceText  = sourceText  ?? SourceText.Empty;
+            _diagnostics = diagnostics ?? Enumerable.Empty<Diagnostic>().ToList();
         }
-
-        [NotNull]
-        public SyntaxTokenList Tokens => _tokens;
-        
-        [NotNull]
-        public IReadOnlyList<Diagnostic> Diagnostics => _diagnostics;
 
         public SyntaxNode GetRoot() {
             return _root;
         }
 
-        [CanBeNull]
-        public FileInfo FileInfo => SourceText.FileInfo;
-
-        [NotNull]
-        public IReadOnlyList<TextLineExtent> TextLines => SourceText.TextLines;
-
         [NotNull]
         public SourceText SourceText => _sourceText;
 
-        public Location GetLocation(TextExtent extent) {
-            return new Location(extent, GetLineRange(extent), FileInfo?.FullName);
-        }
+        [NotNull]
+        public SyntaxTokenList Tokens => _tokens;
 
-        LineRange GetLineRange(TextExtent extent) {
+        [NotNull]
+        public IReadOnlyList<Diagnostic> Diagnostics => _diagnostics;
 
-            var start = GetLinePositionAtPosition(extent.Start);
-            var end   = GetLinePositionAtPosition(extent.End);
-
-            return new LineRange(start, end);
-        }
-
-        LinePosition GetLinePositionAtPosition(int position) {
-            var lineInformaton = GetTextLineExtentAtPositionCore(position);
-            return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
-        }
-
-        public TextLineExtent GetTextLineExtent(int line) {
-            return TextLines[line];
-        }
-
-        public TextLineExtent GetTextLineExtentAtPosition(int position) {
-            if (position < 0 || position > SourceText.Length) {
-                throw new ArgumentOutOfRangeException(nameof(position));
-            }
-            return GetTextLineExtentAtPositionCore(position);
-        }
-
-        TextLineExtent GetTextLineExtentAtPositionCore(int position) {
-            var lineInformaton = TextLines.FindElementAtPosition(position);
-            return lineInformaton;
-        }
-
-        public static SyntaxTree ParseText(string text, string filePath=null, CancellationToken cancellationToken = default) {
+        public static SyntaxTree ParseText(string text, string filePath = null, CancellationToken cancellationToken = default) {
 
             return ParseTextCore(text             : text, 
                                  treeCreator      : parser => parser.codeGenerationUnit(), 
                                  filePath         : filePath, 
                                  cancellationToken: cancellationToken);
         }
-        
-        internal static SyntaxTree ParseTextCore(string text, 
-                                                 Func<NavGrammarParser, IParseTree> treeCreator, 
-                                                 string filePath, 
-                                                 Encoding encoding = null, 
+
+        internal static SyntaxTree ParseTextCore(string text,
+                                                 Func<NavGrammarParser, IParseTree> treeCreator,
+                                                 string filePath,
+                                                 Encoding encoding = null,
                                                  CancellationToken cancellationToken = default) {
 
 

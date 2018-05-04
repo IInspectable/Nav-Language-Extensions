@@ -82,7 +82,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
                     var fileIdentity = fileResult.FileName;
 
-                    var syntaxDirectory = fileResult.TaskDefinition.Syntax.SyntaxTree.FileInfo?.DirectoryName;
+                    var syntaxDirectory = fileResult.TaskDefinition.Syntax.SyntaxTree.SourceText.FileInfo?.DirectoryName;
                     if (syntaxDirectory != null) {
                         fileIdentity = PathHelper.GetRelativePath(syntaxDirectory, fileResult.FileName);
                     }

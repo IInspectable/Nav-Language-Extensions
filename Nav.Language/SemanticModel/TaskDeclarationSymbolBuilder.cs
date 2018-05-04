@@ -83,7 +83,7 @@ namespace Pharmatechnik.Nav.Language {
                 var filePath = includeDirectiveSyntax.StringLiteral.ToString().Trim('"');
                 if (!Path.IsPathRooted(filePath)) {
 
-                    var directory = includeDirectiveSyntax.SyntaxTree.FileInfo?.Directory;
+                    var directory = includeDirectiveSyntax.SyntaxTree.SourceText.FileInfo?.Directory;
                     if (directory == null) {
 
                         _diagnostics.Add(new Diagnostic(
@@ -100,7 +100,7 @@ namespace Pharmatechnik.Nav.Language {
                 filePath = Path.GetFullPath(filePath);
 
                 // nav File inkludiert sich selbst
-                if (String.Equals(includeDirectiveSyntax.SyntaxTree.FileInfo?.FullName, filePath, StringComparison.OrdinalIgnoreCase)) {
+                if (String.Equals(includeDirectiveSyntax.SyntaxTree.SourceText.FileInfo?.FullName, filePath, StringComparison.OrdinalIgnoreCase)) {
 
                     _diagnostics.Add(new Diagnostic(
                                          location,

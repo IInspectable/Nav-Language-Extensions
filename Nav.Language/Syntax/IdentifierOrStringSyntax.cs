@@ -47,7 +47,7 @@ namespace Pharmatechnik.Nav.Language {
             
             var extent = TextExtent.FromBounds(Extent.Start + 1, Extent.End - 1);
 
-            return SyntaxTree.GetLocation(extent);
+            return SyntaxTree.SourceText.GetLocation(extent);
         }
 
         public SyntaxToken StringLiteral => ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral);

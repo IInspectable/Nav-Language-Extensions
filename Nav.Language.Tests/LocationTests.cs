@@ -61,7 +61,7 @@ namespace Nav.Language.Tests {
             int expectedLine = 0;
             int currentEnd = 0;
 
-            foreach (var lineExtent in syntaxTree.TextLines) {
+            foreach (var lineExtent in syntaxTree.SourceText.TextLines) {
                 // Keine Zeilensprünge
                 Assert.That(lineExtent.Line, Is.EqualTo(expectedLine));
                 // Lückenlosigkeit
