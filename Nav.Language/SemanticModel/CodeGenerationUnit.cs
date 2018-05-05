@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language {
             Diagnostics      = diagnostics;
         }
 
-        public CodeGenerationUnit WithDiagnostics(ImmutableArray<Diagnostic> diagnostics) {
+        internal CodeGenerationUnit WithDiagnostics(ImmutableArray<Diagnostic> diagnostics) {
             return new CodeGenerationUnit(
                 Syntax, 
                 CodeUsings, 
