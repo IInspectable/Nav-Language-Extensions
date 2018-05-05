@@ -25,16 +25,7 @@ namespace Nav.Language.Tests {
             var syntax = Syntax.ParseCodeDeclaration(String.Empty);
             Assert.That(syntax, Is.Not.Null);
         }
-
-        [Test]
-        public void TestSerializable() {
-            var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
-
-            var copy = Clone(syntaxTree);
-
-            Assert.That(copy.Tokens.Count, Is.EqualTo(syntaxTree.Tokens.Count));
-        }
-
+       
         [Test]
         public void TestParentedNodesAndTokens() {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
@@ -476,17 +467,6 @@ namespace Nav.Language.Tests {
             Assert.That(exitNodeTransition.Semicolon.ToString(), Is.EqualTo(";"));
             Assert.That(exitNodeTransition.Semicolon.Type, Is.EqualTo(SyntaxTokenType.Semicolon));
         }
-
-        static T Clone<T>(T original) {
-
-            using (var stream = new MemoryStream()) {
-                var formatter = new BinaryFormatter();
-
-                formatter.Serialize(stream, original);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                return (T)formatter.Deserialize(stream);
-            }
-        }
+        
     }
 }

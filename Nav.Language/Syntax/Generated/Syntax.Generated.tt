@@ -28,7 +28,7 @@ namespace Pharmatechnik.Nav.Language {
 		var parserMethodName=Char.ToLower(nodeType.Name[0]) + nodeType.Name.Substring(1, nodeType.Name.Length-7);
 #>
 		public static <#= nodeType.Name #> Parse<#= methodName #>(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
-			return (<#=nodeType.Name#>)SyntaxTree.ParseTextCore(text, parser => parser.<#=parserMethodName#>(), filePath, null, cancellationToken).GetRoot();		
+			return (<#=nodeType.Name#>)SyntaxTree.ParseText(text, parser => parser.<#=parserMethodName#>(), filePath, null, cancellationToken).Root;		
 		}
 
 <#        

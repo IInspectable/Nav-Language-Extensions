@@ -2,12 +2,13 @@
 
 using System;
 using System.Text;
-using System.Linq;
 using System.Threading;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;
@@ -18,86 +19,77 @@ using Pharmatechnik.Nav.Language.Generated;
 
 namespace Pharmatechnik.Nav.Language {
 
-    [Serializable]
     public class SyntaxTree {
-
-        readonly SyntaxNode                _root;
-        readonly SyntaxTokenList           _tokens;
-        readonly SourceText                _sourceText;
-        readonly IReadOnlyList<Diagnostic> _diagnostics;
 
         internal SyntaxTree(SourceText sourceText,
                             SyntaxNode root,
                             SyntaxTokenList tokens,
-                            IReadOnlyList<Diagnostic> diagnostics) {
+                            ImmutableArray<Diagnostic> diagnostics) {
 
-            _root        = root        ?? throw new ArgumentNullException(nameof(root));
-            _tokens      = tokens      ?? SyntaxTokenList.Empty;
-            _sourceText  = sourceText  ?? SourceText.Empty;
-            _diagnostics = diagnostics ?? Enumerable.Empty<Diagnostic>().ToList();
+            Root        = root       ?? throw new ArgumentNullException(nameof(root));
+            Tokens      = tokens     ?? SyntaxTokenList.Empty;
+            SourceText  = sourceText ?? SourceText.Empty;
+            Diagnostics = diagnostics;
         }
 
         [NotNull]
-        public SyntaxNode Root => _root;
+        public SyntaxNode Root { get; }
 
         [NotNull]
-        public SourceText SourceText => _sourceText;
+        public SourceText SourceText { get; }
 
         [NotNull]
-        public SyntaxTokenList Tokens => _tokens;
+        public SyntaxTokenList Tokens { get; }
 
-        [NotNull]
-        public IReadOnlyList<Diagnostic> Diagnostics => _diagnostics;
+        public ImmutableArray<Diagnostic> Diagnostics { get; }
 
         public static SyntaxTree ParseText(string text, string filePath = null, CancellationToken cancellationToken = default) {
 
-            return ParseTextCore(text             : text, 
-                                 treeCreator      : parser => parser.codeGenerationUnit(), 
-                                 filePath         : filePath, 
-                                 cancellationToken: cancellationToken);
+            return ParseText(text: text,
+                             treeCreator: parser => parser.codeGenerationUnit(),
+                             filePath: filePath,
+                             cancellationToken: cancellationToken);
         }
 
-        internal static SyntaxTree ParseTextCore(string text,
-                                                 Func<NavGrammarParser, IParseTree> treeCreator,
-                                                 string filePath,
-                                                 Encoding encoding = null,
-                                                 CancellationToken cancellationToken = default) {
-
+        internal static SyntaxTree ParseText(string text,
+                                             Func<NavGrammarParser, IParseTree> treeCreator,
+                                             string filePath,
+                                             Encoding encoding = null,
+                                             CancellationToken cancellationToken = default) {
 
             text = text ?? String.Empty;
 
             var sourceText    = SourceText.From(text, filePath);
+            var diagnostics   = ImmutableArray.CreateBuilder<Diagnostic>();
             var stream        = new AntlrInputStream(text);
             var lexer         = new NavGrammarLexer(stream);
             var cts           = new NavCommonTokenStream(lexer);
             var parser        = new NavGrammarParser(cts);
-            var errorListener = new NavErrorListener(filePath);
+            var errorListener = new NavErrorListener(filePath, diagnostics);
 
             parser.RemoveErrorListeners();
             parser.AddErrorListener(errorListener);
 
-            var tree          = treeCreator(parser);
-            var visitor       = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
-            var syntax        = visitor.Visit(tree);
-            var ppDiagnostics = new List<Diagnostic>();
-            var tokens        = PostprocessTokens(visitor.Tokens, cts, syntax, ppDiagnostics, filePath, cancellationToken);
-            var diagnostics   = errorListener.Diagnostics.Concat(ppDiagnostics).ToList();
+            var tree    = treeCreator(parser);
+            var visitor = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
+            var syntax  = visitor.Visit(tree);
+            var tokens  = PostprocessTokens(visitor.Tokens, cts, syntax, diagnostics, filePath, cancellationToken);
 
-            var syntaxTree = new SyntaxTree(sourceText : sourceText, 
-                                            root       : syntax, 
-                                            tokens     : tokens, 
-                                            diagnostics: diagnostics);
+            var syntaxTree = new SyntaxTree(sourceText : sourceText,
+                                            root       : syntax,
+                                            tokens     : tokens,
+                                            diagnostics: diagnostics.ToImmutable());
 
             syntax.FinalConstruct(syntaxTree, null);
-            
+
             return syntaxTree;
         }
 
         static SyntaxTokenList PostprocessTokens(
-            List<SyntaxToken> tokens, 
-            NavCommonTokenStream cts, 
-            SyntaxNode syntax, 
-            List<Diagnostic> diagnostics, 
+            List<SyntaxToken> tokens,
+            NavCommonTokenStream cts,
+            SyntaxNode syntax,
+            ImmutableArray<Diagnostic>.Builder diagnostics,
             string filePath,
             CancellationToken cancellationToken) {
 
@@ -127,6 +119,7 @@ namespace Pharmatechnik.Nav.Language {
                         continue;
                     }
                 }
+
                 // Das Token existiert noch nicht, da es der Parser/Visitor offensichtlich nicht "erwischt hat" (t, u)
                 SyntaxTokenClassification tokenClassification;
                 switch (candidate.Channel) {
@@ -151,6 +144,7 @@ namespace Pharmatechnik.Nav.Language {
                                 // Wir haben sonst eigentlich nix im Trivia Channel
                                 throw new ArgumentException();
                         }
+
                         break;
                     case Lexer.DefaultTokenChannel:
                         tokenClassification = SyntaxTokenClassification.Skiped;
@@ -158,13 +152,13 @@ namespace Pharmatechnik.Nav.Language {
                     default:
                         throw new ArgumentException();
                 }
-                
+
                 // TODO: hier evtl. den "echten" Parent herausfinden...
                 SyntaxNode parent = syntax;
 
                 // Fix Für Single Line Comments, da diese leider immer auch das EOL beinhalten
-                if(candidate.Type == NavGrammarLexer.SingleLineComment) {
-                    foreach(var token in SplitSingleLineCommenTokens(candidate, parent)) {
+                if (candidate.Type == NavGrammarLexer.SingleLineComment) {
+                    foreach (var token in SplitSingleLineCommenTokens(candidate, parent)) {
                         finalTokens.Add(token);
                     }
                 } else {
@@ -179,36 +173,41 @@ namespace Pharmatechnik.Nav.Language {
                     }
                 }
 
-                
-            }   
+            }
 
             return SyntaxTokenList.AttachSortedTokens(finalTokens);
         }
 
         static IEnumerable<SyntaxToken> SplitSingleLineCommenTokens(IToken candidate, SyntaxNode parent) {
             int newLineIndex = FindNewLineIndexInSingleLineComment(candidate.Text);
-            if(newLineIndex > 0) {
-                var tokenExtent = TextExtent.FromBounds(candidate.StartIndex, candidate.StartIndex + newLineIndex);
-                var newLineExtent = TextExtent.FromBounds(candidate.StartIndex + newLineIndex, candidate.StopIndex + 1);
+            if (newLineIndex > 0) {
+                var tokenExtent   = TextExtent.FromBounds(candidate.StartIndex, candidate.StartIndex + newLineIndex);
+                var newLineExtent = TextExtent.FromBounds(candidate.StartIndex                       + newLineIndex, candidate.StopIndex + 1);
 
-                yield return SyntaxTokenFactory.CreateToken(tokenExtent, SyntaxTokenType.SingleLineComment, SyntaxTokenClassification.Comment, parent);
-                yield return SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine, SyntaxTokenClassification.Whitespace, parent);
+                yield return SyntaxTokenFactory.CreateToken(tokenExtent,   SyntaxTokenType.SingleLineComment, SyntaxTokenClassification.Comment,    parent);
+                yield return SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine,           SyntaxTokenClassification.Whitespace, parent);
             } else {
                 yield return SyntaxTokenFactory.CreateToken(candidate, SyntaxTokenClassification.Comment, parent);
             }
         }
 
         static int FindNewLineIndexInSingleLineComment(string text) {
+
             char c1 = text[text.Length - 2];
             char c2 = text[text.Length - 1];
-            if (c2 == '\n' || c2== '\r') {
+
+            if (c2 == '\n' || c2 == '\r') {
+
                 if (c1 == '\n') {
                     return text.Length - 2;
                 }
+
                 return text.Length - 1;
             }
+
             return -1;
         }
-        
+
     }
+
 }

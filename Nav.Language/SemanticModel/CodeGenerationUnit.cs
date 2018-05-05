@@ -15,23 +15,23 @@ namespace Pharmatechnik.Nav.Language {
     public sealed class CodeGenerationUnit {
 
         internal CodeGenerationUnit(CodeGenerationUnitSyntax syntax,
-                                    ImmutableList<string> codeUsings,
+                                    ImmutableArray<string> codeUsings,
                                     IReadOnlySymbolCollection<ITaskDeclarationSymbol> taskDeclarations,
                                     IReadOnlySymbolCollection<ITaskDefinitionSymbol> taskDefinitions,
                                     IReadOnlySymbolCollection<IIncludeSymbol> includes,
                                     IEnumerable<ISymbol> symbols,
-                                    ImmutableList<Diagnostic> diagnostics) {
+                                    ImmutableArray<Diagnostic> diagnostics) {
 
-            Syntax           = syntax           ?? throw new ArgumentNullException(nameof(syntax));
-            CodeUsings       = codeUsings       ?? ImmutableList.Create<string>();
+            Syntax           = syntax ?? throw new ArgumentNullException(nameof(syntax));
+            CodeUsings       = codeUsings;
             TaskDeclarations = taskDeclarations ?? new SymbolCollection<ITaskDeclarationSymbol>();
             TaskDefinitions  = taskDefinitions  ?? new SymbolCollection<ITaskDefinitionSymbol>();
-            Diagnostics      = diagnostics      ?? ImmutableList.Create<Diagnostic>();
             Includes         = includes         ?? new SymbolCollection<IIncludeSymbol>();
-            Symbols          = new SymbolList(symbols ?? Enumerable.Empty<IIncludeSymbol>());            
+            Symbols          = new SymbolList(symbols ?? Enumerable.Empty<IIncludeSymbol>());
+            Diagnostics      = diagnostics;
         }
 
-        public CodeGenerationUnit WithDiagnostics(IList<Diagnostic> diagnostics) {
+        public CodeGenerationUnit WithDiagnostics(ImmutableArray<Diagnostic> diagnostics) {
             return new CodeGenerationUnit(
                 Syntax, 
                 CodeUsings, 
@@ -39,7 +39,7 @@ namespace Pharmatechnik.Nav.Language {
                 TaskDefinitions, 
                 Includes, 
                 Symbols,
-                diagnostics.ToImmutableList());
+                diagnostics);
         }
 
         [NotNull]
@@ -48,8 +48,7 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public string CodeNamespace => Syntax.CodeNamespace?.ToString() ?? String.Empty;
 
-        [NotNull]
-        public ImmutableList<string> CodeUsings { get; }
+        public ImmutableArray<string> CodeUsings { get; }
 
         [NotNull]
         public IReadOnlySymbolCollection<IIncludeSymbol> Includes { get; }
@@ -63,8 +62,7 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         public SymbolList Symbols { get; }
 
-        [NotNull]
-        public ImmutableList<Diagnostic> Diagnostics { get; }
+        public ImmutableArray<Diagnostic> Diagnostics { get; }
 
         [NotNull]
         public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default, ISyntaxProvider syntaxProvider=null) {

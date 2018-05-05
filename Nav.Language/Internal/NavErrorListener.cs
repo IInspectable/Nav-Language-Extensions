@@ -1,22 +1,24 @@
 ﻿#region Using Directives
 
-using System.Collections.Generic;
+using System.Collections.Immutable;
+
 using Antlr4.Runtime;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Internal {
 
-    sealed class NavErrorListener : BaseErrorListener {
-        readonly string _filePath;
-        readonly List<Diagnostic> _diagnostics;
+    sealed class NavErrorListener: BaseErrorListener {
 
-        public NavErrorListener(string filePath) {
+        readonly string                             _filePath;
+        readonly ImmutableArray<Diagnostic>.Builder _diagnostics;
+
+        public NavErrorListener(string filePath, ImmutableArray<Diagnostic>.Builder diagnostics) {
             _filePath    = filePath;
-            _diagnostics = new List<Diagnostic>();
+            _diagnostics = diagnostics;
         }
 
-        public List<Diagnostic> Diagnostics => _diagnostics;
+        public ImmutableArray<Diagnostic>.Builder Diagnostics => _diagnostics;
 
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) {
 
@@ -26,5 +28,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             _diagnostics.Add(error);
         }
+
     }
+
 }

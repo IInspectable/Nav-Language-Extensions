@@ -19,7 +19,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in doClauseSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(doClauseSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(doClauseSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in doClauseSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -33,7 +33,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in goToEdgeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(goToEdgeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(goToEdgeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in goToEdgeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -47,7 +47,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in arrayTypeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(arrayTypeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(arrayTypeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in arrayTypeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -61,7 +61,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in modalEdgeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(modalEdgeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(modalEdgeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in modalEdgeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -75,7 +75,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in parameterSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(parameterSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(parameterSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in parameterSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -89,7 +89,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in identifierSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(identifierSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(identifierSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in identifierSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -103,7 +103,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in simpleTypeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(simpleTypeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(simpleTypeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in simpleTypeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -117,7 +117,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in genericTypeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(genericTypeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(genericTypeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in genericTypeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -131,7 +131,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in nonModalEdgeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(nonModalEdgeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(nonModalEdgeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in nonModalEdgeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -145,7 +145,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in endTargetNodeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(endTargetNodeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(endTargetNodeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in endTargetNodeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -159,7 +159,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in parameterListSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(parameterListSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(parameterListSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in parameterListSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -173,7 +173,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in signalTriggerSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(signalTriggerSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(signalTriggerSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in signalTriggerSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -187,7 +187,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in stringLiteralSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(stringLiteralSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(stringLiteralSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in stringLiteralSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -201,7 +201,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in initSourceNodeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(initSourceNodeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(initSourceNodeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in initSourceNodeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -215,7 +215,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in taskDefinitionSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(taskDefinitionSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(taskDefinitionSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in taskDefinitionSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -229,7 +229,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -243,7 +243,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in taskDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(taskDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(taskDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in taskDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -257,7 +257,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in includeDirectiveSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(includeDirectiveSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(includeDirectiveSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in includeDirectiveSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -271,7 +271,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in ifConditionClauseSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(ifConditionClauseSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(ifConditionClauseSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in ifConditionClauseSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -285,7 +285,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in arrayRankSpecifierSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(arrayRankSpecifierSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(arrayRankSpecifierSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in arrayRankSpecifierSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -299,7 +299,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeGenerationUnitSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeGenerationUnitSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeGenerationUnitSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeGenerationUnitSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -313,7 +313,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in endNodeDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(endNodeDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(endNodeDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in endNodeDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -327,7 +327,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in spontaneousTriggerSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(spontaneousTriggerSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(spontaneousTriggerSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in spontaneousTriggerSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -341,7 +341,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeBaseDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeBaseDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeBaseDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeBaseDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -355,7 +355,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in elseConditionClauseSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(elseConditionClauseSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(elseConditionClauseSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in elseConditionClauseSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -369,7 +369,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in exitNodeDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(exitNodeDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(exitNodeDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in exitNodeDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -383,7 +383,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in initNodeDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(initNodeDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(initNodeDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in initNodeDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -397,7 +397,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in taskNodeDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(taskNodeDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(taskNodeDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in taskNodeDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -411,7 +411,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in viewNodeDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(viewNodeDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(viewNodeDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in viewNodeDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -425,7 +425,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeUsingDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeUsingDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeUsingDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeUsingDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -439,7 +439,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in identifierSourceNodeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(identifierSourceNodeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(identifierSourceNodeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in identifierSourceNodeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -453,7 +453,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in identifierTargetNodeSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(identifierTargetNodeSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(identifierTargetNodeSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in identifierTargetNodeSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -467,7 +467,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in nodeDeclarationBlockSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(nodeDeclarationBlockSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(nodeDeclarationBlockSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in nodeDeclarationBlockSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -481,7 +481,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in transitionDefinitionSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(transitionDefinitionSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(transitionDefinitionSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in transitionDefinitionSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -495,7 +495,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in choiceNodeDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(choiceNodeDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(choiceNodeDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in choiceNodeDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -509,7 +509,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeParamsDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeParamsDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeParamsDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeParamsDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -523,7 +523,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeResultDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeResultDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeResultDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeResultDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -537,7 +537,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in dialogNodeDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(dialogNodeDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(dialogNodeDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in dialogNodeDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -551,7 +551,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in elseIfConditionClauseSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(elseIfConditionClauseSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(elseIfConditionClauseSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in elseIfConditionClauseSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -565,7 +565,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in identifierOrStringListSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(identifierOrStringListSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(identifierOrStringListSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in identifierOrStringListSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -579,7 +579,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeNamespaceDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeNamespaceDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeNamespaceDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeNamespaceDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -593,7 +593,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in exitTransitionDefinitionSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(exitTransitionDefinitionSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(exitTransitionDefinitionSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in exitTransitionDefinitionSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -607,7 +607,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeGenerateToDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeGenerateToDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeGenerateToDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeGenerateToDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -621,7 +621,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in transitionDefinitionBlockSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(transitionDefinitionBlockSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(transitionDefinitionBlockSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in transitionDefinitionBlockSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -635,7 +635,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeDoNotInjectDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeDoNotInjectDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeDoNotInjectDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeDoNotInjectDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -649,7 +649,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeAbstractMethodDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeAbstractMethodDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeAbstractMethodDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeAbstractMethodDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
@@ -663,7 +663,7 @@ namespace Nav.Language.Tests {
 			foreach(var diagnostic in codeNotImplementedDeclarationSyntax.SyntaxTree.Diagnostics) {
 				Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
 			}
-			Assert.That(codeNotImplementedDeclarationSyntax.SyntaxTree.Diagnostics.Count, Is.EqualTo(0));
+			Assert.That(codeNotImplementedDeclarationSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 			foreach (var token in codeNotImplementedDeclarationSyntax.ChildTokens()) {
 		        Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
 		    }
