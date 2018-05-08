@@ -1,7 +1,11 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Collections.Generic;
 
 using Pharmatechnik.Nav.Language.Text;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.Internal {
 
@@ -14,8 +18,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 return missing;
             }
 
-            int index = FindFirstTokenIndexAtOrAfter(tokens, currentToken.Start);
-
+            int index = FindIndexAtPosition(tokens, currentToken.Start);
             if (index < 0) {
                 return missing; // eingenlich könnte man hier auch eine ArgumentException werfen...
             }
@@ -43,9 +46,8 @@ namespace Pharmatechnik.Nav.Language.Internal {
             if (!includeOverlapping) {
                 return GetElementsInside(tokens, extent);
             }
-            else {
-                return GetElementsIncludeOverlapping(tokens, extent);
-            }            
+
+            return GetElementsIncludeOverlapping(tokens, extent);
         }
 
         static IEnumerable<TElement> GetElementsIncludeOverlapping<TElement, TExtent>(this IReadOnlyList<TElement> tokens,
@@ -55,10 +57,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             int startIndex = tokens.FindIndexAtPosition(extent.Start);
             if (startIndex < 0) {
-                startIndex = tokens.FindFirstTokenIndexAtOrAfter(extent.Start);
-                if (startIndex < 0) {
-                    yield break;
-                }
+                yield break;
             }
 
             // Sonderlocke für "Punktsuche"
@@ -81,7 +80,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             where TElement: IExtent
             where TExtent : IExtent {
 
-            int startIndex = tokens.FindFirstTokenIndexAtOrAfter(extent.Start);
+            int startIndex = tokens.FindIndexAtPosition(extent.Start);
             if (startIndex < 0) {
                 yield break;
             }
@@ -114,35 +113,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
             }
             throw new ArgumentOutOfRangeException(nameof(index));
         }
-
+        
         /// <summary>
         /// Findet den Index des ersten Tokens, dessen Start größer oder gleich der angegebenen Position ist. 
-        /// </summary>
-        public static int FindFirstTokenIndexAtOrAfter<T>(this IReadOnlyList<T> tokens, int pos) where T : IExtent {
-
-            // Da die Tokens nach Start Position aufsteigend sortiert sind, 
-            // drängt sich eine Binärsuche geradezu auf.
-            int iMin = 0;
-            int iMax = tokens.Count - 1;
-
-            while (iMin < iMax) {
-                int iMid = iMin + (iMax - iMin) / 2;
-
-                if (tokens[iMid].Start >= pos) {
-                    iMax = iMid;
-                } else {
-                    iMin = iMid + 1;
-                }
-            }
-
-            if (iMax == iMin && tokens[iMin].Start >= pos) {
-                return iMin;
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// Findet den Index des Elements, bei dem sich die angegebene Position innerhalb des Elements befindet.
         /// </summary>
         public static int FindIndexAtPosition<T>(this IReadOnlyList<T> tokens, int pos) where T : IExtent {
 
@@ -164,12 +137,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 }
             }
 
-            var i = ~iMin;
-            if (i < 0) {
-                i = ~i - 1;
-            }
-
-            return i;
+            return iMin-1;
         }
     }
 }
