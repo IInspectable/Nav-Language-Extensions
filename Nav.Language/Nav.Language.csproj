@@ -333,6 +333,8 @@
     <Compile Include="Syntax\DialogNodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\EndNodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\ExitNodeDeclarationSyntax.cs" />
+    <Compile Include="Text\SourceTextLineList.cs" />
+    <Compile Include="Text\StringSourceText.cs" />
     <Compile Include="Text\TextExtent.cs" />
     <Compile Include="Syntax\InitNodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\NodeDeclarationSyntax.cs" />

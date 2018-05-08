@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Immutable;
 
 using JetBrains.Annotations;
 
@@ -93,8 +94,48 @@ namespace Pharmatechnik.Nav.Language {
             return hasSignificantContent ? column : Int32.MaxValue;
         }
 
+        public static ImmutableArray<int> ParseLineStarts(this string text) {
 
-        
+            if (text.Length == 0) {
+                return ImmutableArray.Create(0);
+            }
+
+            var lineStarts = ImmutableArray.CreateBuilder<int>();
+
+            int index;
+            int lineStart = 0;
+            for (index = 0; index < text.Length; index++) {
+
+                char c = text[index];
+
+                bool isNewLine = false;
+
+                if (c == '\n') {
+                    isNewLine = true;
+                } else if (c == '\r') {
+                    isNewLine = true;
+                    // => \r\n
+                    if (index + 1 < text.Length && text[index + 1] == '\n') {
+                        index++;
+                    }
+                }
+
+                if (isNewLine) {
+                    // Achtung: Extent End zeigt immer _hinter_ das letzte Zeichen!
+                    var lineEnd = index + 1;
+                    lineStarts.Add(lineStart);
+                    lineStart = lineEnd;
+                }
+            }
+
+            // Einzige/letzte Zeile nicht vergessen. 
+            if (index >= lineStart) {
+                lineStarts.Add(lineStart);
+            }
+
+            return lineStarts.ToImmutable();
+        }
+
     }
 
 }
