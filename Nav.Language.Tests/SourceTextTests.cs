@@ -67,10 +67,10 @@ namespace Nav.Language.Tests {
                 // Keine Zeilensprünge
                 Assert.That(lineExtent.Line, Is.EqualTo(expectedLine));
                 // Lückenlosigkeit
-                Assert.That(lineExtent.Extent.Start, Is.EqualTo(currentEnd));
+                Assert.That(lineExtent.Start, Is.EqualTo(currentEnd));
 
                 expectedLine++;
-                currentEnd = lineExtent.Extent.End;
+                currentEnd = lineExtent.End;
             }
             Assert.That(currentEnd, Is.EqualTo(Resources.LargeNav.Length));
         }

@@ -144,29 +144,32 @@ namespace Pharmatechnik.Nav.Language.Internal {
         /// <summary>
         /// Findet den Index des Elements, bei dem sich die angegebene Position innerhalb des Elements befindet.
         /// </summary>
-        public static int FindIndexAtPosition<T>(this IReadOnlyList<T> tokens, int pos) where T: IExtent {
+        public static int FindIndexAtPosition<T>(this IReadOnlyList<T> tokens, int pos) where T : IExtent {
 
-            // Da die Tokens nach Start Position aufsteigend sortiert sind, 
-            // drängt sich eine Binärsuche geradezu auf.
             int iMin = 0;
             int iMax = tokens.Count - 1;
+            while (iMin <= iMax) {
 
-            while (iMin < iMax) {
-                int iMid = iMin + (iMax - iMin) / 2;
+                int iMid  = iMin + (iMax - iMin >> 1);
+                int value = tokens[iMid].Start;
 
-                if (tokens[iMid].End <= pos) {
-                    iMin = iMid+1;
-                } else if (tokens[iMid].Start > pos) {
-                    iMax = iMid;
-                } else {
+                if (value == pos) {
                     return iMid;
+                }
+
+                if (value < pos) {
+                    iMin = iMid + 1;
+                } else {
+                    iMax = iMid - 1;
                 }
             }
 
-            if (iMax == iMin && tokens[iMin].Start <= pos && tokens[iMin].End > pos) {
-                return iMin;
+            var i = ~iMin;
+            if (i < 0) {
+                i = ~i - 1;
             }
-            return -1;
+
+            return i;
         }
     }
 }

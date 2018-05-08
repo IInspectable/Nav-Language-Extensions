@@ -93,6 +93,8 @@ namespace Pharmatechnik.Nav.Language {
             return hasSignificantContent ? column : Int32.MaxValue;
         }
 
+
+        
     }
 
 }

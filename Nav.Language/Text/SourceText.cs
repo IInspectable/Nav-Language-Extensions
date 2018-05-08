@@ -60,10 +60,11 @@ namespace Pharmatechnik.Nav.Language.Text {
             return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
         }
 
-        // TODO effizienter implementieren + UnitTests
+        int _lastLineNumber;
+
         SourceTextLine GetTextLineAtPositionCore(int position) {
             
-            if (position == 0 && Length == 0) {
+            if (position == 0 ) {
                 return TextLines[0];
             }
 
@@ -71,15 +72,34 @@ namespace Pharmatechnik.Nav.Language.Text {
                 return TextLines[TextLines.Count - 1];
             }
 
-            var lineInformaton = TextLines.FindElementAtPosition(position);
-            return lineInformaton;
+            // Natürlich ist der Zugriff auf _lastLineNumber nicht "Threadsafe". Das macht aber auch nichts. Wir verwenden den Wert nur als Hint
+            // da davon auszugehen ist, dass die Zugriffe auf die Zeileninformationen immer in etwa im selben Bereich stattfinden. Im worst case
+            // werden ohnehin alle Zeilen durchsucht-
+            var lastLineNumber = _lastLineNumber;
+            if (position >= TextLines[lastLineNumber].Start)
+            {
+                var limit = Math.Min(TextLines.Count, lastLineNumber + 4);
+                for (int i = lastLineNumber; i < limit; i++)
+                {
+                    if (position < TextLines[i].Start)
+                    {
+                        var lineNumber = i - 1;
+                        _lastLineNumber = lineNumber;
+                        return TextLines[lineNumber];
+                    }
+                }
+            }
+
+            var textLine = TextLines.FindElementAtPosition(position);
+            _lastLineNumber = textLine.Line;
+            return textLine;
         }
 
         public override string ToString() {
             return Text;
         }
 
-        public string ToString(TextExtent textExtent) {
+        public string Substring(TextExtent textExtent) {
             return Text.Substring(startIndex: textExtent.Start, length: textExtent.Length);
         }
 
@@ -108,16 +128,16 @@ namespace Pharmatechnik.Nav.Language.Text {
                 if (isNewLine) {
                     // Achtung: Extent End zeigt immer _hinter_ das letzte Zeichen!
                     var lineEnd = index + 1;
-                    lines.Add(new SourceTextLine(this, line, TextExtent.FromBounds(lineStart, lineEnd)));
+                    lines.Add(new SourceTextLine(this, line: line, lineStart: lineStart, lineEnd: lineEnd));
                     line++;
                     lineStart = lineEnd;
                 }
             }
 
-            // Einzige/Letzte/Zeile nicht vergessen. 
+            // Einzige/letzte Zeile nicht vergessen. 
             if (index >= lineStart) {
                 var lineEnd = index ;
-                lines.Add(new SourceTextLine(this, line, TextExtent.FromBounds(lineStart, lineEnd)));
+                lines.Add(new SourceTextLine(this, line: line, lineStart: lineStart, lineEnd: lineEnd));
             }
 
             return lines;

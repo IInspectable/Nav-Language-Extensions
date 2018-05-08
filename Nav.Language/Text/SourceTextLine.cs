@@ -10,29 +10,32 @@ namespace Pharmatechnik.Nav.Language.Text {
     [Serializable]
     public struct SourceTextLine: IExtent, IEquatable<SourceTextLine> {
 
-        internal SourceTextLine(SourceText sourceText, int line, TextExtent extent) {
+        internal SourceTextLine(SourceText sourceText, int line, int lineStart, int lineEnd) {
 
-            if (extent.IsMissing && line != -1) {
+            if (sourceText == null) {
+                throw new ArgumentNullException(nameof(sourceText));
+            }
+
+            if (TextExtent.FromBounds(lineStart, lineEnd).IsMissing) {
+                throw new ArgumentOutOfRangeException(nameof(lineEnd));
+            }
+
+            if (line < 0) {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
 
-            if (line < 0 && !extent.IsMissing) {
+            if (line > lineEnd) {
                 throw new ArgumentOutOfRangeException(nameof(line));
             }
 
-            if (line < -1) {
-                throw new ArgumentOutOfRangeException(nameof(line));
+            if (lineEnd > sourceText.Length) {
+                throw new ArgumentOutOfRangeException(nameof(lineEnd));
             }
 
-            if (line > extent.End) {
-                throw new ArgumentOutOfRangeException(nameof(line));
-            }
-
-            // TODO Range check against sourceText
-
-            SourceText = sourceText ?? throw new ArgumentNullException(nameof(sourceText));
+            SourceText = sourceText;
             Line       = line;
-            Extent     = extent;
+            Start      = lineStart;
+            End        = lineEnd;
         }
 
         [NotNull]
@@ -46,10 +49,10 @@ namespace Pharmatechnik.Nav.Language.Text {
         /// <summary>
         /// The extent of the line.
         /// </summary>
-        public TextExtent Extent { get; }
+        public TextExtent Extent => TextExtent.FromBounds(Start, End);
 
-        int IExtent.Start => Extent.Start;
-        int IExtent.End   => Extent.End;
+        public int Start { get; }
+        public int End   { get; }
 
         /// <summary>
         /// Determines whether two <see cref="SourceTextLine"/> are the same.
@@ -81,9 +84,8 @@ namespace Pharmatechnik.Nav.Language.Text {
             return obj is SourceTextLine extent && Equals(extent);
         }
 
-        // TODO Unit Test
         public override string ToString() {
-            return SourceText.ToString(Extent);
+            return SourceText.Substring(Extent);
         }
 
         /// <summary>
