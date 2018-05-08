@@ -54,24 +54,6 @@ namespace Nav.Language.Tests {
             Assert.That(t1.GetLocation().LineRange.Start.Line, Is.EqualTo(0));          
         }
 
-        [Test]
-        public void TextLinesTest() {
-            var syntaxTree = SyntaxTree.ParseText(Resources.LargeNav);
-
-            int expectedLine = 0;
-            int currentEnd = 0;
-
-            foreach (var lineExtent in syntaxTree.SourceText.TextLines) {
-                // Keine Zeilensprünge
-                Assert.That(lineExtent.Line, Is.EqualTo(expectedLine));
-                // Lückenlosigkeit
-                Assert.That(lineExtent.Extent.Start, Is.EqualTo(currentEnd));
-
-                expectedLine++;
-                currentEnd = lineExtent.Extent.End;
-            }
-            // Vollständige Abdeckung: Achtung End zeigt _hinter_ das Ende!
-            Assert.That(currentEnd, Is.EqualTo(Resources.LargeNav.Length+1));
-        }
+        
     }
 }

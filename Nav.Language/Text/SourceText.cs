@@ -29,7 +29,7 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         public abstract string Substring(int startIndex, int length);
 
-        public static SourceText From(string text, string filePath) {
+        public static SourceText From(string text, string filePath = null) {
             return new StringSourceText(text: text, filePath: filePath);
         }
 
@@ -62,6 +62,15 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         // TODO effizienter implementieren + UnitTests
         SourceTextLine GetTextLineAtPositionCore(int position) {
+            
+            if (position == 0 && Length == 0) {
+                return TextLines[0];
+            }
+
+            if (position == Length) {
+                return TextLines[TextLines.Count - 1];
+            }
+
             var lineInformaton = TextLines.FindElementAtPosition(position);
             return lineInformaton;
         }
@@ -105,10 +114,9 @@ namespace Pharmatechnik.Nav.Language.Text {
                 }
             }
 
-            // Letzte Zeile nicht vergessen. 
-            if (index > lineStart) {
-                // Achtung: Extent End zeigt immer _hinter_ das letzte Zeichen!
-                var lineEnd = index + 1;
+            // Einzige/Letzte/Zeile nicht vergessen. 
+            if (index >= lineStart) {
+                var lineEnd = index ;
                 lines.Add(new SourceTextLine(this, line, TextExtent.FromBounds(lineStart, lineEnd)));
             }
 
