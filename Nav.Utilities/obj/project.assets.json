@@ -137,7 +137,7 @@
     "version": "1.0.0",
     "restore": {
       "projectUniqueName": "C:\\ws\\git\\Nav.Language.Extensions\\Nav.Utilities\\Nav.Utilities.csproj",
-      "projectName": "Nav.Utilities",
+      "projectName": "Pharmatechnik.Nav.Utilities",
       "projectPath": "C:\\ws\\git\\Nav.Language.Extensions\\Nav.Utilities\\Nav.Utilities.csproj",
       "packagesPath": "C:\\Users\\mnhaenel\\.nuget\\packages\\",
       "outputPath": "C:\\ws\\git\\Nav.Language.Extensions\\Nav.Utilities\\obj\\",
