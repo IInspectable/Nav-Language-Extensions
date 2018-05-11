@@ -48,7 +48,7 @@
     <Compile Include="..\Shared\Options.cs">
       <Link>CommandLine\Options.cs</Link>
     </Compile>
-    <Compile Include="..\_shared\GobalAssemblyInfo.cs">
+    <Compile Include="..\_build\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Generator\NavCodeGenerator.cs" />

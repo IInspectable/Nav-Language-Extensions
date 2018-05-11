@@ -54,7 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="..\_shared\GobalAssemblyInfo.cs">
+    <Compile Include="..\_build\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="ThisAssembly.generated.cs" />

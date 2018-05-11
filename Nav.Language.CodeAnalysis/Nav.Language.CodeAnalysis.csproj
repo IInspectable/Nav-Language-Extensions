@@ -41,7 +41,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\_shared\GobalAssemblyInfo.cs">
+    <Compile Include="..\_build\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Annotation\AnnotationReader.cs" />
