@@ -37,5 +37,7 @@
 
 /.vs
 /**/*.generated.cs
+/**/*.nuget.cache
+/**/project.assets.json
 TestResult.xml
 
