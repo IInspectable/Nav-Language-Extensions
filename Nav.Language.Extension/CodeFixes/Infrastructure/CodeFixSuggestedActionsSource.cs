@@ -90,7 +90,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         }
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
-            return Task.Factory.StartNew(() => BuildSuggestedActions(range, cancellationToken).Any(), cancellationToken);
+            return Task.Factory.StartNew(() => BuildSuggestedActions(range, cancellationToken).Any(), 
+                                         cancellationToken, 
+                                         TaskCreationOptions.None, TaskScheduler.Default);
         }
 
         protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {

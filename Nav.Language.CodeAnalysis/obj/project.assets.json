@@ -153,15 +153,6 @@
           "lib/net45/NLog.dll": {}
         }
       },
-      "ReSharper.Annotations/7.1.3.130415": {
-        "type": "package",
-        "compile": {
-          "lib/net/JetBrains.Annotations.dll": {}
-        },
-        "runtime": {
-          "lib/net/JetBrains.Annotations.dll": {}
-        }
-      },
       "StringTemplate4/4.0.8": {
         "type": "package",
         "dependencies": {
@@ -1004,15 +995,6 @@
           "lib/net45/NLog.dll": {}
         }
       },
-      "ReSharper.Annotations/7.1.3.130415": {
-        "type": "package",
-        "compile": {
-          "lib/net/JetBrains.Annotations.dll": {}
-        },
-        "runtime": {
-          "lib/net/JetBrains.Annotations.dll": {}
-        }
-      },
       "StringTemplate4/4.0.8": {
         "type": "package",
         "dependencies": {
@@ -1795,15 +1777,6 @@
           "lib/net45/NLog.dll": {}
         }
       },
-      "ReSharper.Annotations/7.1.3.130415": {
-        "type": "package",
-        "compile": {
-          "lib/net/JetBrains.Annotations.dll": {}
-        },
-        "runtime": {
-          "lib/net/JetBrains.Annotations.dll": {}
-        }
-      },
       "StringTemplate4/4.0.8": {
         "type": "package",
         "dependencies": {
@@ -2584,15 +2557,6 @@
         },
         "runtime": {
           "lib/net45/NLog.dll": {}
-        }
-      },
-      "ReSharper.Annotations/7.1.3.130415": {
-        "type": "package",
-        "compile": {
-          "lib/net/JetBrains.Annotations.dll": {}
-        },
-        "runtime": {
-          "lib/net/JetBrains.Annotations.dll": {}
         }
       },
       "StringTemplate4/4.0.8": {
@@ -3426,17 +3390,6 @@
         "lib/xamarinios10/NLog.xml",
         "nlog.4.5.4.nupkg.sha512",
         "nlog.nuspec"
-      ]
-    },
-    "ReSharper.Annotations/7.1.3.130415": {
-      "sha512": "3if1zsegg5Do6iK9fpkkCn40iHwZl8ndjsgvTpMFfzmQ+zmzrXRRSITlYtT9zrlvW9mvj3IRmPFtKxn3CJDcWA==",
-      "type": "package",
-      "path": "resharper.annotations/7.1.3.130415",
-      "files": [
-        "lib/net/JetBrains.Annotations.dll",
-        "lib/net/JetBrains.Annotations.xml",
-        "resharper.annotations.7.1.3.130415.nupkg.sha512",
-        "resharper.annotations.nuspec"
       ]
     },
     "StringTemplate4/4.0.8": {
@@ -5807,7 +5760,6 @@
       "Microsoft.Composition >= 1.0.31",
       "Nav.Language >= 1.0.0",
       "Nav.Utilities >= 1.0.0",
-      "ReSharper.Annotations >= 7.1.3.130415",
       "System.Composition >= 1.1.0",
       "System.Security.Cryptography.Algorithms >= 4.3.1",
       "System.Security.Cryptography.X509Certificates >= 4.3.2",
@@ -5867,10 +5819,6 @@
           "Microsoft.Composition": {
             "target": "Package",
             "version": "[1.0.31, )"
-          },
-          "ReSharper.Annotations": {
-            "target": "Package",
-            "version": "[7.1.3.130415, )"
           },
           "System.Composition": {
             "target": "Package",
