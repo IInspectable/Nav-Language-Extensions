@@ -4,8 +4,10 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)microsoft.visualstudio.threading.analyzers\15.7.18\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.visualstudio.threading.analyzers\15.7.18\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
     <Import Project="$(NuGetPackageRoot)msbuildtasks\1.5.0.235\build\MSBuildTasks.targets" Condition="Exists('$(NuGetPackageRoot)msbuildtasks\1.5.0.235\build\MSBuildTasks.targets')" />
-    <Import Project="$(NuGetPackageRoot)microsoft.vssdk.buildtools\15.5.100\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.vssdk.buildtools\15.5.100\build\Microsoft.VSSDK.BuildTools.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.vssdk.buildtools\15.7.109\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.vssdk.buildtools\15.7.109\build\Microsoft.VSSDK.BuildTools.targets')" />
+    <Import Project="$(NuGetPackageRoot)microsoft.visualstudio.sdk.embedinteroptypes\15.0.16\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.visualstudio.sdk.embedinteroptypes\15.0.16\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets')" />
     <Import Project="$(NuGetPackageRoot)microsoft.visualstudio.sdk.vsixsuppression\14.1.37\build\Microsoft.VisualStudio.SDK.VsixSuppression.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.visualstudio.sdk.vsixsuppression\14.1.37\build\Microsoft.VisualStudio.SDK.VsixSuppression.targets')" />
   </ImportGroup>
 </Project>

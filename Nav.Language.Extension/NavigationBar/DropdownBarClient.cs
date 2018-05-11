@@ -312,14 +312,12 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             return VSConstants.S_OK;
         }
 
-        protected override async void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+        protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
             UpdateNavigationItems();
         }
         
-        async void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
+        void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
             using (Logger.LogBlock(nameof(OnCaretPositionChanged))) {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 SetActiveSelection(TaskComboIndex);
                 #if ShowMemberCombobox
                 SetActiveSelection(MemberComboIndex);

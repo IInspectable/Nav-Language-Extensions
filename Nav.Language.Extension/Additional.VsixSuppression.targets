@@ -16,4 +16,20 @@
     <Message Text='Suppressed "%(SuppressPackaging.FileName)%(SuppressPackaging.Extension)" from being included in VSIX.'
              Condition=" '@(SuppressPackaging)' != '' "/>
   </Target>
+  
+  <Target Name="IncludeNuGetPackageReferences" AfterTargets="GetVsixSourceItems">
+    <!--<Error Text="@(ReferenceCopyLocalPaths -> '%(NuGetPackageId)', '%0a')"/>-->
+    <ItemGroup>
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'NLog'" />    
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Rx-Core'" />    
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Rx-Interfaces'" />    
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Rx-Linq'" />  
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Rx-PlatformServices'" />    
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'StreamJsonRpc'" />    
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Antlr4.Runtime'" />    
+      <VSIXSourceItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Microsoft.VisualStudio.Threading'" />    
+      
+    </ItemGroup>
+  </Target>
+
 </Project>

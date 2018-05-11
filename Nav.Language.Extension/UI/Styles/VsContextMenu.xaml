@@ -3,7 +3,7 @@
                     xmlns:imaging = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
                     xmlns:utils   = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Utilities"
                     xmlns:local   = "clr-namespace:Pharmatechnik.Nav.Language.Extension.UI"
-                    xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0">
+                    xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
 
     <utils:BrushToColorConverter x:Key="BrushToColorConverter" x:Uid="BrushToColorConverter_1" />
 

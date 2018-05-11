@@ -13,7 +13,8 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Import Project="$(NuGetPackageRoot)nunit3testadapter\3.10.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('$(NuGetPackageRoot)nunit3testadapter\3.10.0\build\net35\NUnit3TestAdapter.props')" />
+    <Import Project="$(NuGetPackageRoot)nunit\3.10.1\build\NUnit.props" Condition="Exists('$(NuGetPackageRoot)nunit\3.10.1\build\NUnit.props')" />
     <Import Project="$(NuGetPackageRoot)antlr4.codegenerator\4.6.4\build\Antlr4.CodeGenerator.props" Condition="Exists('$(NuGetPackageRoot)antlr4.codegenerator\4.6.4\build\Antlr4.CodeGenerator.props')" />
-    <Import Project="$(NuGetPackageRoot)nunit3testadapter\3.9.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('$(NuGetPackageRoot)nunit3testadapter\3.9.0\build\net35\NUnit3TestAdapter.props')" />
   </ImportGroup>
 </Project>

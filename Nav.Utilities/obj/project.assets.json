@@ -2,8 +2,20 @@
   "version": 3,
   "targets": {
     ".NETFramework,Version=v4.7.1": {
-      "NLog/4.4.12": {
+      "NLog/4.5.4": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.Data",
+          "System.IO.Compression",
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Transactions",
+          "System.Xml"
+        ],
         "compile": {
           "lib/net45/NLog.dll": {}
         },
@@ -22,8 +34,20 @@
       }
     },
     ".NETFramework,Version=v4.7.1/win": {
-      "NLog/4.4.12": {
+      "NLog/4.5.4": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.Data",
+          "System.IO.Compression",
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Transactions",
+          "System.Xml"
+        ],
         "compile": {
           "lib/net45/NLog.dll": {}
         },
@@ -42,8 +66,20 @@
       }
     },
     ".NETFramework,Version=v4.7.1/win-x64": {
-      "NLog/4.4.12": {
+      "NLog/4.5.4": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.Data",
+          "System.IO.Compression",
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Transactions",
+          "System.Xml"
+        ],
         "compile": {
           "lib/net45/NLog.dll": {}
         },
@@ -62,8 +98,20 @@
       }
     },
     ".NETFramework,Version=v4.7.1/win-x86": {
-      "NLog/4.4.12": {
+      "NLog/4.5.4": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.Data",
+          "System.IO.Compression",
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Transactions",
+          "System.Xml"
+        ],
         "compile": {
           "lib/net45/NLog.dll": {}
         },
@@ -83,28 +131,34 @@
     }
   },
   "libraries": {
-    "NLog/4.4.12": {
-      "sha512": "fODew3BFT2XhAuqhGo2ZYT9OJE0ciGEBfvKXOmAAvaDsP/3ROIf083p8QUnmwKKw4jCkVW06ObX6gn/eFi2Skg==",
+    "NLog/4.5.4": {
+      "sha512": "sYOzep0pdVat2zkOREy6FQwcH4zRCTimGr4c1Esqc0+t9QYvQ5JXDnW/sdqOsVxbxJ28sa/3MRUGSAfXz7eIGw==",
       "type": "package",
-      "path": "nlog/4.4.12",
+      "path": "nlog/4.5.4",
       "files": [
-        "lib/MonoAndroid10/NLog.dll",
-        "lib/MonoAndroid10/NLog.xml",
-        "lib/Xamarin.iOS10/NLog.dll",
-        "lib/Xamarin.iOS10/NLog.xml",
+        "lib/monoandroid44/NLog.dll",
+        "lib/monoandroid44/NLog.xml",
         "lib/net35/NLog.dll",
         "lib/net35/NLog.xml",
-        "lib/net40/NLog.dll",
-        "lib/net40/NLog.xml",
+        "lib/net40-client/NLog.dll",
+        "lib/net40-client/NLog.xml",
         "lib/net45/NLog.dll",
         "lib/net45/NLog.xml",
+        "lib/netstandard1.3/NLog.dll",
+        "lib/netstandard1.3/NLog.xml",
+        "lib/netstandard1.5/NLog.dll",
+        "lib/netstandard1.5/NLog.xml",
+        "lib/netstandard2.0/NLog.dll",
+        "lib/netstandard2.0/NLog.xml",
         "lib/sl4/NLog.dll",
         "lib/sl4/NLog.xml",
         "lib/sl5/NLog.dll",
         "lib/sl5/NLog.xml",
         "lib/wp8/NLog.dll",
         "lib/wp8/NLog.xml",
-        "nlog.4.4.12.nupkg.sha512",
+        "lib/xamarinios10/NLog.dll",
+        "lib/xamarinios10/NLog.xml",
+        "nlog.4.5.4.nupkg.sha512",
         "nlog.nuspec"
       ]
     },
@@ -126,7 +180,7 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.1": [
-      "NLog >= 4.4.12",
+      "NLog >= 4.5.4",
       "System.Collections.Immutable >= 1.3.1"
     ]
   },
@@ -137,7 +191,7 @@
     "version": "1.0.0",
     "restore": {
       "projectUniqueName": "C:\\ws\\git\\Nav.Language.Extensions\\Nav.Utilities\\Nav.Utilities.csproj",
-      "projectName": "Pharmatechnik.Nav.Utilities",
+      "projectName": "Nav.Utilities",
       "projectPath": "C:\\ws\\git\\Nav.Language.Extensions\\Nav.Utilities\\Nav.Utilities.csproj",
       "packagesPath": "C:\\Users\\mnhaenel\\.nuget\\packages\\",
       "outputPath": "C:\\ws\\git\\Nav.Language.Extensions\\Nav.Utilities\\obj\\",
@@ -165,7 +219,7 @@
         "dependencies": {
           "NLog": {
             "target": "Package",
-            "version": "[4.4.12, )"
+            "version": "[4.5.4, )"
           },
           "System.Collections.Immutable": {
             "target": "Package",

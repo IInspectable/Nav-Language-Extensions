@@ -34,17 +34,17 @@
           "lib/net45/Antlr4.Runtime.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis/2.6.1": {
+      "Microsoft.CodeAnalysis/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[2.6.1]",
-          "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "[2.6.1]"
+          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[2.8.0]",
+          "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "[2.8.0]"
         }
       },
       "Microsoft.CodeAnalysis.Analyzers/2.6.0": {
         "type": "package"
       },
-      "Microsoft.CodeAnalysis.Common/2.6.1": {
+      "Microsoft.CodeAnalysis.Common/2.8.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "1.1.0",
@@ -94,10 +94,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.CSharp/2.6.1": {
+      "Microsoft.CodeAnalysis.CSharp/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.dll": {}
@@ -106,11 +106,11 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.CSharp.Workspaces/2.6.1": {
+      "Microsoft.CodeAnalysis.CSharp.Workspaces/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp": "[2.6.1]",
-          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.CSharp": "[2.8.0]",
+          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {}
@@ -119,10 +119,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.VisualBasic/2.6.1": {
+      "Microsoft.CodeAnalysis.VisualBasic/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "2.6.1"
+          "Microsoft.CodeAnalysis.Common": "2.8.0"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll": {}
@@ -131,11 +131,11 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.6.1": {
+      "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.VisualBasic": "[2.6.1]",
-          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.VisualBasic": "[2.8.0]",
+          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
@@ -144,10 +144,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.Workspaces.Common/2.6.1": {
+      "Microsoft.CodeAnalysis.Workspaces.Common/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "[2.6.1]",
+          "Microsoft.CodeAnalysis.Common": "[2.8.0]",
           "System.Composition": "1.0.31"
         },
         "compile": {
@@ -165,8 +165,20 @@
           "System.Composition": "1.0.31"
         }
       },
-      "NLog/4.4.12": {
+      "NLog/4.5.4": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.Data",
+          "System.IO.Compression",
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Transactions",
+          "System.Xml"
+        ],
         "compile": {
           "lib/net45/NLog.dll": {}
         },
@@ -174,13 +186,16 @@
           "lib/net45/NLog.dll": {}
         }
       },
-      "NUnit/3.9.0": {
+      "NUnit/3.10.1": {
         "type": "package",
         "compile": {
           "lib/net45/nunit.framework.dll": {}
         },
         "runtime": {
           "lib/net45/nunit.framework.dll": {}
+        },
+        "build": {
+          "build/NUnit.props": {}
         }
       },
       "NUnit.Console/3.8.0": {
@@ -223,7 +238,7 @@
           "NUnit.Extension.VSProjectLoader": "3.7.0"
         }
       },
-      "NUnit3TestAdapter/3.9.0": {
+      "NUnit3TestAdapter/3.10.0": {
         "type": "package",
         "build": {
           "build/net35/NUnit3TestAdapter.props": {}
@@ -879,13 +894,13 @@
           "lib/net46/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Pharmatechnik.Nav.Language/1.0.0": {
+      "Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Pharmatechnik.Nav.Utilities": "1.0.0",
+          "Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -898,24 +913,24 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
+          "bin/placeholder/Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
+          "bin/placeholder/Nav.Language.dll": {}
         }
       },
-      "Pharmatechnik.Nav.Utilities/1.0.0": {
+      "Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
-          "NLog": "4.4.12",
+          "NLog": "4.5.4",
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
+          "bin/placeholder/Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
+          "bin/placeholder/Nav.Utilities.dll": {}
         }
       }
     },
@@ -952,17 +967,17 @@
           "lib/net45/Antlr4.Runtime.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis/2.6.1": {
+      "Microsoft.CodeAnalysis/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[2.6.1]",
-          "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "[2.6.1]"
+          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[2.8.0]",
+          "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "[2.8.0]"
         }
       },
       "Microsoft.CodeAnalysis.Analyzers/2.6.0": {
         "type": "package"
       },
-      "Microsoft.CodeAnalysis.Common/2.6.1": {
+      "Microsoft.CodeAnalysis.Common/2.8.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "1.1.0",
@@ -1012,10 +1027,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.CSharp/2.6.1": {
+      "Microsoft.CodeAnalysis.CSharp/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.dll": {}
@@ -1024,11 +1039,11 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.CSharp.Workspaces/2.6.1": {
+      "Microsoft.CodeAnalysis.CSharp.Workspaces/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp": "[2.6.1]",
-          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.CSharp": "[2.8.0]",
+          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {}
@@ -1037,10 +1052,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.VisualBasic/2.6.1": {
+      "Microsoft.CodeAnalysis.VisualBasic/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "2.6.1"
+          "Microsoft.CodeAnalysis.Common": "2.8.0"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll": {}
@@ -1049,11 +1064,11 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.6.1": {
+      "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.VisualBasic": "[2.6.1]",
-          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.VisualBasic": "[2.8.0]",
+          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
@@ -1062,10 +1077,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.Workspaces.Common/2.6.1": {
+      "Microsoft.CodeAnalysis.Workspaces.Common/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "[2.6.1]",
+          "Microsoft.CodeAnalysis.Common": "[2.8.0]",
           "System.Composition": "1.0.31"
         },
         "compile": {
@@ -1083,8 +1098,20 @@
           "System.Composition": "1.0.31"
         }
       },
-      "NLog/4.4.12": {
+      "NLog/4.5.4": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.Data",
+          "System.IO.Compression",
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Transactions",
+          "System.Xml"
+        ],
         "compile": {
           "lib/net45/NLog.dll": {}
         },
@@ -1092,13 +1119,16 @@
           "lib/net45/NLog.dll": {}
         }
       },
-      "NUnit/3.9.0": {
+      "NUnit/3.10.1": {
         "type": "package",
         "compile": {
           "lib/net45/nunit.framework.dll": {}
         },
         "runtime": {
           "lib/net45/nunit.framework.dll": {}
+        },
+        "build": {
+          "build/NUnit.props": {}
         }
       },
       "NUnit.Console/3.8.0": {
@@ -1141,7 +1171,7 @@
           "NUnit.Extension.VSProjectLoader": "3.7.0"
         }
       },
-      "NUnit3TestAdapter/3.9.0": {
+      "NUnit3TestAdapter/3.10.0": {
         "type": "package",
         "build": {
           "build/net35/NUnit3TestAdapter.props": {}
@@ -1737,13 +1767,13 @@
           "lib/net46/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Pharmatechnik.Nav.Language/1.0.0": {
+      "Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Pharmatechnik.Nav.Utilities": "1.0.0",
+          "Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -1756,24 +1786,24 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
+          "bin/placeholder/Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
+          "bin/placeholder/Nav.Language.dll": {}
         }
       },
-      "Pharmatechnik.Nav.Utilities/1.0.0": {
+      "Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
-          "NLog": "4.4.12",
+          "NLog": "4.5.4",
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
+          "bin/placeholder/Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
+          "bin/placeholder/Nav.Utilities.dll": {}
         }
       }
     },
@@ -1810,17 +1840,17 @@
           "lib/net45/Antlr4.Runtime.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis/2.6.1": {
+      "Microsoft.CodeAnalysis/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[2.6.1]",
-          "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "[2.6.1]"
+          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[2.8.0]",
+          "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "[2.8.0]"
         }
       },
       "Microsoft.CodeAnalysis.Analyzers/2.6.0": {
         "type": "package"
       },
-      "Microsoft.CodeAnalysis.Common/2.6.1": {
+      "Microsoft.CodeAnalysis.Common/2.8.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "1.1.0",
@@ -1870,10 +1900,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.CSharp/2.6.1": {
+      "Microsoft.CodeAnalysis.CSharp/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.dll": {}
@@ -1882,11 +1912,11 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.CSharp.Workspaces/2.6.1": {
+      "Microsoft.CodeAnalysis.CSharp.Workspaces/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp": "[2.6.1]",
-          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.CSharp": "[2.8.0]",
+          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {}
@@ -1895,10 +1925,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.VisualBasic/2.6.1": {
+      "Microsoft.CodeAnalysis.VisualBasic/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "2.6.1"
+          "Microsoft.CodeAnalysis.Common": "2.8.0"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll": {}
@@ -1907,11 +1937,11 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.6.1": {
+      "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.VisualBasic": "[2.6.1]",
-          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.VisualBasic": "[2.8.0]",
+          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
@@ -1920,10 +1950,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.Workspaces.Common/2.6.1": {
+      "Microsoft.CodeAnalysis.Workspaces.Common/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "[2.6.1]",
+          "Microsoft.CodeAnalysis.Common": "[2.8.0]",
           "System.Composition": "1.0.31"
         },
         "compile": {
@@ -1941,8 +1971,20 @@
           "System.Composition": "1.0.31"
         }
       },
-      "NLog/4.4.12": {
+      "NLog/4.5.4": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.Data",
+          "System.IO.Compression",
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Transactions",
+          "System.Xml"
+        ],
         "compile": {
           "lib/net45/NLog.dll": {}
         },
@@ -1950,13 +1992,16 @@
           "lib/net45/NLog.dll": {}
         }
       },
-      "NUnit/3.9.0": {
+      "NUnit/3.10.1": {
         "type": "package",
         "compile": {
           "lib/net45/nunit.framework.dll": {}
         },
         "runtime": {
           "lib/net45/nunit.framework.dll": {}
+        },
+        "build": {
+          "build/NUnit.props": {}
         }
       },
       "NUnit.Console/3.8.0": {
@@ -1999,7 +2044,7 @@
           "NUnit.Extension.VSProjectLoader": "3.7.0"
         }
       },
-      "NUnit3TestAdapter/3.9.0": {
+      "NUnit3TestAdapter/3.10.0": {
         "type": "package",
         "build": {
           "build/net35/NUnit3TestAdapter.props": {}
@@ -2595,13 +2640,13 @@
           "lib/net46/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Pharmatechnik.Nav.Language/1.0.0": {
+      "Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Pharmatechnik.Nav.Utilities": "1.0.0",
+          "Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -2614,24 +2659,24 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
+          "bin/placeholder/Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
+          "bin/placeholder/Nav.Language.dll": {}
         }
       },
-      "Pharmatechnik.Nav.Utilities/1.0.0": {
+      "Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
-          "NLog": "4.4.12",
+          "NLog": "4.5.4",
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
+          "bin/placeholder/Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
+          "bin/placeholder/Nav.Utilities.dll": {}
         }
       }
     },
@@ -2668,17 +2713,17 @@
           "lib/net45/Antlr4.Runtime.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis/2.6.1": {
+      "Microsoft.CodeAnalysis/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[2.6.1]",
-          "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "[2.6.1]"
+          "Microsoft.CodeAnalysis.CSharp.Workspaces": "[2.8.0]",
+          "Microsoft.CodeAnalysis.VisualBasic.Workspaces": "[2.8.0]"
         }
       },
       "Microsoft.CodeAnalysis.Analyzers/2.6.0": {
         "type": "package"
       },
-      "Microsoft.CodeAnalysis.Common/2.6.1": {
+      "Microsoft.CodeAnalysis.Common/2.8.0": {
         "type": "package",
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "1.1.0",
@@ -2728,10 +2773,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.CSharp/2.6.1": {
+      "Microsoft.CodeAnalysis.CSharp/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.dll": {}
@@ -2740,11 +2785,11 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.CSharp.Workspaces/2.6.1": {
+      "Microsoft.CodeAnalysis.CSharp.Workspaces/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.CSharp": "[2.6.1]",
-          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.CSharp": "[2.8.0]",
+          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {}
@@ -2753,10 +2798,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.VisualBasic/2.6.1": {
+      "Microsoft.CodeAnalysis.VisualBasic/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "2.6.1"
+          "Microsoft.CodeAnalysis.Common": "2.8.0"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll": {}
@@ -2765,11 +2810,11 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.6.1": {
+      "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.VisualBasic": "[2.6.1]",
-          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.6.1]"
+          "Microsoft.CodeAnalysis.VisualBasic": "[2.8.0]",
+          "Microsoft.CodeAnalysis.Workspaces.Common": "[2.8.0]"
         },
         "compile": {
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
@@ -2778,10 +2823,10 @@
           "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll": {}
         }
       },
-      "Microsoft.CodeAnalysis.Workspaces.Common/2.6.1": {
+      "Microsoft.CodeAnalysis.Workspaces.Common/2.8.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.CodeAnalysis.Common": "[2.6.1]",
+          "Microsoft.CodeAnalysis.Common": "[2.8.0]",
           "System.Composition": "1.0.31"
         },
         "compile": {
@@ -2799,8 +2844,20 @@
           "System.Composition": "1.0.31"
         }
       },
-      "NLog/4.4.12": {
+      "NLog/4.5.4": {
         "type": "package",
+        "frameworkAssemblies": [
+          "Microsoft.CSharp",
+          "System",
+          "System.Configuration",
+          "System.Core",
+          "System.Data",
+          "System.IO.Compression",
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Transactions",
+          "System.Xml"
+        ],
         "compile": {
           "lib/net45/NLog.dll": {}
         },
@@ -2808,13 +2865,16 @@
           "lib/net45/NLog.dll": {}
         }
       },
-      "NUnit/3.9.0": {
+      "NUnit/3.10.1": {
         "type": "package",
         "compile": {
           "lib/net45/nunit.framework.dll": {}
         },
         "runtime": {
           "lib/net45/nunit.framework.dll": {}
+        },
+        "build": {
+          "build/NUnit.props": {}
         }
       },
       "NUnit.Console/3.8.0": {
@@ -2857,7 +2917,7 @@
           "NUnit.Extension.VSProjectLoader": "3.7.0"
         }
       },
-      "NUnit3TestAdapter/3.9.0": {
+      "NUnit3TestAdapter/3.10.0": {
         "type": "package",
         "build": {
           "build/net35/NUnit3TestAdapter.props": {}
@@ -3453,13 +3513,13 @@
           "lib/net46/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Pharmatechnik.Nav.Language/1.0.0": {
+      "Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Pharmatechnik.Nav.Utilities": "1.0.0",
+          "Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -3472,24 +3532,24 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
+          "bin/placeholder/Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
+          "bin/placeholder/Nav.Language.dll": {}
         }
       },
-      "Pharmatechnik.Nav.Utilities/1.0.0": {
+      "Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
-          "NLog": "4.4.12",
+          "NLog": "4.5.4",
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
+          "bin/placeholder/Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
+          "bin/placeholder/Nav.Utilities.dll": {}
         }
       }
     }
@@ -3581,13 +3641,14 @@
         "lib/portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1/Antlr4.Runtime.xml"
       ]
     },
-    "Microsoft.CodeAnalysis/2.6.1": {
-      "sha512": "fj/JBVjy9v7ss9MsTVxR655zpmKF1hO2UL3SJmZ4d0gJBHR+OONzUMmu0ueRokLBkvtMF3hDgpXUO/fXsK1xyA==",
+    "Microsoft.CodeAnalysis/2.8.0": {
+      "sha512": "17mvMPfruDiLDXS4T0La+/siXtmbhNj2NnqEqEaBooNZrsOzm6mmJhPTW5NA92PrEWL/8Cd1w4eXaFops3FQJA==",
       "type": "package",
-      "path": "microsoft.codeanalysis/2.6.1",
+      "path": "microsoft.codeanalysis/2.8.0",
       "files": [
+        ".signature.p7s",
         "ThirdPartyNotices.rtf",
-        "microsoft.codeanalysis.2.6.1.nupkg.sha512",
+        "microsoft.codeanalysis.2.8.0.nupkg.sha512",
         "microsoft.codeanalysis.nuspec"
       ]
     },
@@ -3607,73 +3668,87 @@
         "tools/uninstall.ps1"
       ]
     },
-    "Microsoft.CodeAnalysis.Common/2.6.1": {
-      "sha512": "FUDSP9wUdFrVQlSvfzpDWdeeoYHAyhednROVZVEccDDo8XV58NYAg5aNYWVnwsYfbhyFwAk/xFNXK6vi9c6vYg==",
+    "Microsoft.CodeAnalysis.Common/2.8.0": {
+      "sha512": "lYUBqh3OD3iEQqxt9KB472VzgOnEKoUVG4Lx5Xw4oJe9dZtITkHFtct+T73jH3FOASFI1NSzzP5MBM0c9zZspA==",
       "type": "package",
-      "path": "microsoft.codeanalysis.common/2.6.1",
+      "path": "microsoft.codeanalysis.common/2.8.0",
       "files": [
+        ".signature.p7s",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.dll",
+        "lib/netstandard1.3/Microsoft.CodeAnalysis.pdb",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.xml",
-        "microsoft.codeanalysis.common.2.6.1.nupkg.sha512",
+        "microsoft.codeanalysis.common.2.8.0.nupkg.sha512",
         "microsoft.codeanalysis.common.nuspec"
       ]
     },
-    "Microsoft.CodeAnalysis.CSharp/2.6.1": {
-      "sha512": "HodSc/cNtkTMufeYqliX6/RPH66/n8fRRHkmzP0R7ezr5b/DmPyMjiTBr1mOs5NbXyqjSTTSdPJ4xfBlp2NREQ==",
+    "Microsoft.CodeAnalysis.CSharp/2.8.0": {
+      "sha512": "+4CHAwHMwLO5GRqPJ7Khv2Ny//omhukPKP3Ny/d2XDpt11bX35zb9pTziwZN0eNvxj6a46joIdHEYQ1JsekI3w==",
       "type": "package",
-      "path": "microsoft.codeanalysis.csharp/2.6.1",
+      "path": "microsoft.codeanalysis.csharp/2.8.0",
       "files": [
+        ".signature.p7s",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.dll",
+        "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.pdb",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.xml",
-        "microsoft.codeanalysis.csharp.2.6.1.nupkg.sha512",
+        "microsoft.codeanalysis.csharp.2.8.0.nupkg.sha512",
         "microsoft.codeanalysis.csharp.nuspec"
       ]
     },
-    "Microsoft.CodeAnalysis.CSharp.Workspaces/2.6.1": {
-      "sha512": "80Qva3plPdI6sM8B6PYkmrgb+TI2lLd2feEto5eLPwL9s5EaBgvX778jL2vRs+WTZ22as42SFftVM+9I2YxSag==",
+    "Microsoft.CodeAnalysis.CSharp.Workspaces/2.8.0": {
+      "sha512": "hpSNX6kgb13ABbOmxAD2sj/7J7IN3HWz1AWcmEuouTZM+OeWLSHDmPGlN4eaUDPMCoe1DY7v16D3V0BY+q7BTw==",
       "type": "package",
-      "path": "microsoft.codeanalysis.csharp.workspaces/2.6.1",
+      "path": "microsoft.codeanalysis.csharp.workspaces/2.8.0",
       "files": [
+        ".signature.p7s",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.dll",
+        "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.pdb",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.CSharp.Workspaces.xml",
-        "microsoft.codeanalysis.csharp.workspaces.2.6.1.nupkg.sha512",
+        "microsoft.codeanalysis.csharp.workspaces.2.8.0.nupkg.sha512",
         "microsoft.codeanalysis.csharp.workspaces.nuspec"
       ]
     },
-    "Microsoft.CodeAnalysis.VisualBasic/2.6.1": {
-      "sha512": "jeXBxfRDyNfYGYpTT4w7d/LaVTNjR1S9hu/R6ZOxLO9J3REgUCTU+hAMeSYc3/yQfeoEFe2qYoJKnji4IWRQIQ==",
+    "Microsoft.CodeAnalysis.VisualBasic/2.8.0": {
+      "sha512": "NL0DwkxMg6gokLv63+hjmVAk4+UsnBvW4dqYxIOfyvWXdWZ1glFBLqqtX2LLtJd7a7qszPbodPYW5jGEUNex6w==",
       "type": "package",
-      "path": "microsoft.codeanalysis.visualbasic/2.6.1",
+      "path": "microsoft.codeanalysis.visualbasic/2.8.0",
       "files": [
+        ".signature.p7s",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.dll",
+        "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.pdb",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.xml",
-        "microsoft.codeanalysis.visualbasic.2.6.1.nupkg.sha512",
+        "microsoft.codeanalysis.visualbasic.2.8.0.nupkg.sha512",
         "microsoft.codeanalysis.visualbasic.nuspec"
       ]
     },
-    "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.6.1": {
-      "sha512": "PW/et8iIZohNw/G2fnP5vcWZaTWV3Z+TTrtKwZ431LE4FDv/fFyGTBAbNN2tsnyUoOvyEaJLBautJrpj+30wJQ==",
+    "Microsoft.CodeAnalysis.VisualBasic.Workspaces/2.8.0": {
+      "sha512": "xHFYwEVo1En6o5nBCq9JpQQCgMEQM7AqbW2sMnz06SYgZaHDHqc4KPOUvmf/Cu90aetavJ8EscwbsJ06d9WQuA==",
       "type": "package",
-      "path": "microsoft.codeanalysis.visualbasic.workspaces/2.6.1",
+      "path": "microsoft.codeanalysis.visualbasic.workspaces/2.8.0",
       "files": [
+        ".signature.p7s",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.dll",
+        "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.pdb",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.VisualBasic.Workspaces.xml",
-        "microsoft.codeanalysis.visualbasic.workspaces.2.6.1.nupkg.sha512",
+        "microsoft.codeanalysis.visualbasic.workspaces.2.8.0.nupkg.sha512",
         "microsoft.codeanalysis.visualbasic.workspaces.nuspec"
       ]
     },
-    "Microsoft.CodeAnalysis.Workspaces.Common/2.6.1": {
-      "sha512": "QZ2craFKKchzDZFxSObfPt8PR5GazkYPGTiFXVi5rHk0HSotSMR2sU7GUAKmg7bsGSTeHDr187vpvsZu6VuGTA==",
+    "Microsoft.CodeAnalysis.Workspaces.Common/2.8.0": {
+      "sha512": "xt6VmGncJW14z3O0/k7+0cO8w9tB3O6CUL6sM6LesgGmD6zZPbWKY9KpRgV7RewA1flLuXBaUknRjwj0kLA6/g==",
       "type": "package",
-      "path": "microsoft.codeanalysis.workspaces.common/2.6.1",
+      "path": "microsoft.codeanalysis.workspaces.common/2.8.0",
       "files": [
+        ".signature.p7s",
         "lib/net46/Microsoft.CodeAnalysis.Workspaces.Desktop.dll",
+        "lib/net46/Microsoft.CodeAnalysis.Workspaces.Desktop.pdb",
         "lib/net46/Microsoft.CodeAnalysis.Workspaces.Desktop.xml",
         "lib/net46/Microsoft.CodeAnalysis.Workspaces.dll",
+        "lib/net46/Microsoft.CodeAnalysis.Workspaces.pdb",
         "lib/net46/Microsoft.CodeAnalysis.Workspaces.xml",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.Workspaces.dll",
+        "lib/netstandard1.3/Microsoft.CodeAnalysis.Workspaces.pdb",
         "lib/netstandard1.3/Microsoft.CodeAnalysis.Workspaces.xml",
-        "microsoft.codeanalysis.workspaces.common.2.6.1.nupkg.sha512",
+        "microsoft.codeanalysis.workspaces.common.2.8.0.nupkg.sha512",
         "microsoft.codeanalysis.workspaces.common.nuspec"
       ]
     },
@@ -3687,59 +3762,66 @@
         "microsoft.composition.nuspec"
       ]
     },
-    "NLog/4.4.12": {
-      "sha512": "fODew3BFT2XhAuqhGo2ZYT9OJE0ciGEBfvKXOmAAvaDsP/3ROIf083p8QUnmwKKw4jCkVW06ObX6gn/eFi2Skg==",
+    "NLog/4.5.4": {
+      "sha512": "sYOzep0pdVat2zkOREy6FQwcH4zRCTimGr4c1Esqc0+t9QYvQ5JXDnW/sdqOsVxbxJ28sa/3MRUGSAfXz7eIGw==",
       "type": "package",
-      "path": "nlog/4.4.12",
+      "path": "nlog/4.5.4",
       "files": [
-        "lib/MonoAndroid10/NLog.dll",
-        "lib/MonoAndroid10/NLog.xml",
-        "lib/Xamarin.iOS10/NLog.dll",
-        "lib/Xamarin.iOS10/NLog.xml",
+        "lib/monoandroid44/NLog.dll",
+        "lib/monoandroid44/NLog.xml",
         "lib/net35/NLog.dll",
         "lib/net35/NLog.xml",
-        "lib/net40/NLog.dll",
-        "lib/net40/NLog.xml",
+        "lib/net40-client/NLog.dll",
+        "lib/net40-client/NLog.xml",
         "lib/net45/NLog.dll",
         "lib/net45/NLog.xml",
+        "lib/netstandard1.3/NLog.dll",
+        "lib/netstandard1.3/NLog.xml",
+        "lib/netstandard1.5/NLog.dll",
+        "lib/netstandard1.5/NLog.xml",
+        "lib/netstandard2.0/NLog.dll",
+        "lib/netstandard2.0/NLog.xml",
         "lib/sl4/NLog.dll",
         "lib/sl4/NLog.xml",
         "lib/sl5/NLog.dll",
         "lib/sl5/NLog.xml",
         "lib/wp8/NLog.dll",
         "lib/wp8/NLog.xml",
-        "nlog.4.4.12.nupkg.sha512",
+        "lib/xamarinios10/NLog.dll",
+        "lib/xamarinios10/NLog.xml",
+        "nlog.4.5.4.nupkg.sha512",
         "nlog.nuspec"
       ]
     },
-    "NUnit/3.9.0": {
-      "sha512": "0zKA0MB0bRKqPyInRlTgKvZTx/MhJGGnSUJ4sjx68JnfVGbH0Tp+Xq7uW+HVw0B5gCN8s0pUQlrbC3mjGyUU8A==",
+    "NUnit/3.10.1": {
+      "sha512": "E3ii6+VLdeIxTQ5gPjk/7g/xl+aCifbfcIkiGayZCuos+22FEdtKGrxMe6SzoXCQCcL7gdqhfNIFTaZ1+dS18g==",
       "type": "package",
-      "path": "nunit/3.9.0",
+      "path": "nunit/3.10.1",
       "files": [
         "CHANGES.md",
         "LICENSE.txt",
         "NOTICES.txt",
-        "lib/monoandroid/nunit.framework.dll",
-        "lib/monoandroid/nunit.framework.xml",
+        "build/NUnit.props",
         "lib/net20/NUnit.System.Linq.dll",
         "lib/net20/nunit.framework.dll",
+        "lib/net20/nunit.framework.pdb",
         "lib/net20/nunit.framework.xml",
         "lib/net35/nunit.framework.dll",
+        "lib/net35/nunit.framework.pdb",
         "lib/net35/nunit.framework.xml",
         "lib/net40/nunit.framework.dll",
+        "lib/net40/nunit.framework.pdb",
         "lib/net40/nunit.framework.xml",
         "lib/net45/nunit.framework.dll",
+        "lib/net45/nunit.framework.pdb",
         "lib/net45/nunit.framework.xml",
-        "lib/netstandard1.3/nunit.framework.dll",
-        "lib/netstandard1.3/nunit.framework.xml",
         "lib/netstandard1.6/nunit.framework.dll",
+        "lib/netstandard1.6/nunit.framework.pdb",
         "lib/netstandard1.6/nunit.framework.xml",
-        "lib/uap/nunit.framework.dll",
-        "lib/uap/nunit.framework.xml",
-        "lib/xamarin.ios/nunit.framework.dll",
-        "lib/xamarin.ios/nunit.framework.xml",
-        "nunit.3.9.0.nupkg.sha512",
+        "lib/netstandard2.0/nunit.framework.dll",
+        "lib/netstandard2.0/nunit.framework.pdb",
+        "lib/netstandard2.0/nunit.framework.xml",
+        "nunit.3.10.1.nupkg.sha512",
         "nunit.nuspec"
       ]
     },
@@ -3847,25 +3929,24 @@
         "nunit.runners.nuspec"
       ]
     },
-    "NUnit3TestAdapter/3.9.0": {
-      "sha512": "mtJZ7ejIVZliD0NI0HA3z1VgvBQVmwbnMOF2Lvg7j0MBJYXFOdBgNZcNZHFa8/lbgeckGxV4H93e+njHRbBtpQ==",
+    "NUnit3TestAdapter/3.10.0": {
+      "sha512": "hC4QeR/iC8yJcI9eyAfAFWBaDP7lh4CnXqIMLq26CLLGQsLqy44uJwBVmo/0o9aTKVwPm/M1lPYqYcfOJMDqyg==",
       "type": "package",
-      "path": "nunit3testadapter/3.9.0",
+      "path": "nunit3testadapter/3.10.0",
       "files": [
         "LICENSE.txt",
-        "build/net35/Mono.Cecil.Mdb.dll",
-        "build/net35/Mono.Cecil.Pdb.dll",
-        "build/net35/Mono.Cecil.Rocks.dll",
         "build/net35/Mono.Cecil.dll",
         "build/net35/NUnit3.TestAdapter.dll",
+        "build/net35/NUnit3.TestAdapter.pdb",
         "build/net35/NUnit3TestAdapter.props",
         "build/net35/nunit.engine.api.dll",
         "build/net35/nunit.engine.dll",
         "build/netcoreapp1.0/Mono.Cecil.dll",
         "build/netcoreapp1.0/NUnit3.TestAdapter.dll",
+        "build/netcoreapp1.0/NUnit3.TestAdapter.pdb",
         "build/netcoreapp1.0/NUnit3TestAdapter.props",
         "build/netcoreapp1.0/nunit.engine.netstandard.dll",
-        "nunit3testadapter.3.9.0.nupkg.sha512",
+        "nunit3testadapter.3.10.0.nupkg.sha512",
         "nunit3testadapter.nuspec"
       ]
     },
@@ -6219,12 +6300,12 @@
         "system.xml.xpath.xdocument.nuspec"
       ]
     },
-    "Pharmatechnik.Nav.Language/1.0.0": {
+    "Nav.Language/1.0.0": {
       "type": "project",
       "path": "../Nav.Language/Nav.Language.csproj",
       "msbuildProject": "../Nav.Language/Nav.Language.csproj"
     },
-    "Pharmatechnik.Nav.Utilities/1.0.0": {
+    "Nav.Utilities/1.0.0": {
       "type": "project",
       "path": "../Nav.Utilities/Nav.Utilities.csproj",
       "msbuildProject": "../Nav.Utilities/Nav.Utilities.csproj"
@@ -6234,18 +6315,18 @@
     ".NETFramework,Version=v4.7.1": [
       "Antlr4 >= 4.6.4",
       "Antlr4.CodeGenerator >= 4.6.4",
-      "Microsoft.CodeAnalysis >= 2.6.1",
+      "Microsoft.CodeAnalysis >= 2.8.0",
       "Microsoft.CodeAnalysis.Analyzers >= 2.6.0",
       "Microsoft.Composition >= 1.0.31",
-      "NUnit >= 3.9.0",
+      "NUnit >= 3.10.1",
       "NUnit.Console >= 3.8.0",
       "NUnit.Extension.NUnitProjectLoader >= 3.6.0",
       "NUnit.Extension.NUnitV2Driver >= 3.7.0",
       "NUnit.Extension.NUnitV2ResultWriter >= 3.6.0",
       "NUnit.Runners >= 3.8.0",
-      "NUnit3TestAdapter >= 3.9.0",
-      "Pharmatechnik.Nav.Language >= 1.0.0",
-      "Pharmatechnik.Nav.Utilities >= 1.0.0",
+      "NUnit3TestAdapter >= 3.10.0",
+      "Nav.Language >= 1.0.0",
+      "Nav.Utilities >= 1.0.0",
       "System.Composition >= 1.1.0",
       "System.Security.Cryptography.Algorithms >= 4.3.1",
       "System.Security.Cryptography.X509Certificates >= 4.3.2",
@@ -6304,7 +6385,7 @@
           },
           "Microsoft.CodeAnalysis": {
             "target": "Package",
-            "version": "[2.6.1, )"
+            "version": "[2.8.0, )"
           },
           "Microsoft.CodeAnalysis.Analyzers": {
             "target": "Package",
@@ -6316,7 +6397,7 @@
           },
           "NUnit": {
             "target": "Package",
-            "version": "[3.9.0, )"
+            "version": "[3.10.1, )"
           },
           "NUnit.Console": {
             "target": "Package",
@@ -6340,7 +6421,7 @@
           },
           "NUnit3TestAdapter": {
             "target": "Package",
-            "version": "[3.9.0, )"
+            "version": "[3.10.0, )"
           },
           "System.Composition": {
             "target": "Package",
