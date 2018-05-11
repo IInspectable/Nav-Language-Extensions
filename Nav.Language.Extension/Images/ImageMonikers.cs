@@ -4,6 +4,7 @@ using System;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Shell;
 
 using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
@@ -217,17 +218,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         #region Actions
 
-        public static ImageMoniker AddEdge => KnownMonikers.AddAssociation;
-
-        public static ImageMoniker RenameNode => KnownMonikers.Rename;
-
-        public static ImageMoniker InsertNode => KnownMonikers.InsertClause;
-
+        public static ImageMoniker AddEdge              => KnownMonikers.AddAssociation;
+        public static ImageMoniker RenameNode           => KnownMonikers.Rename;
+        public static ImageMoniker InsertNode           => KnownMonikers.InsertClause;
         public static ImageMoniker DeleteQuotationMarks => KnownMonikers.PendingDeleteNode;
-
-        public static ImageMoniker RemoveUnusedSymbol => KnownMonikers.PendingDeleteNode;
-
-        public static ImageMoniker AddSemicolon => KnownMonikers.PendingAddNode;
+        public static ImageMoniker RemoveUnusedSymbol   => KnownMonikers.PendingDeleteNode;
+        public static ImageMoniker AddSemicolon         => KnownMonikers.PendingAddNode;
 
         #endregion
 
@@ -251,6 +247,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         }
 
         static IImageHandle GetCompositedImageHandle(params ImageCompositionLayer[] layers) {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var imageService = NavLanguagePackage.GetGlobalService< SVsImageService, IVsImageService2>();
             
