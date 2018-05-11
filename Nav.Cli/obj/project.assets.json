@@ -172,13 +172,13 @@
           "lib/net45/_._": {}
         }
       },
-      "Nav.Language/1.0.0": {
+      "Pharmatechnik.Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -191,13 +191,13 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         }
       },
-      "Nav.Utilities/1.0.0": {
+      "Pharmatechnik.Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -205,10 +205,10 @@
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         }
       }
     },
@@ -383,13 +383,13 @@
           "lib/net45/_._": {}
         }
       },
-      "Nav.Language/1.0.0": {
+      "Pharmatechnik.Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -402,13 +402,13 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         }
       },
-      "Nav.Utilities/1.0.0": {
+      "Pharmatechnik.Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -416,10 +416,10 @@
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         }
       }
     },
@@ -594,13 +594,13 @@
           "lib/net45/_._": {}
         }
       },
-      "Nav.Language/1.0.0": {
+      "Pharmatechnik.Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -613,13 +613,13 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         }
       },
-      "Nav.Utilities/1.0.0": {
+      "Pharmatechnik.Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -627,10 +627,10 @@
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         }
       }
     },
@@ -805,13 +805,13 @@
           "lib/net45/_._": {}
         }
       },
-      "Nav.Language/1.0.0": {
+      "Pharmatechnik.Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -824,13 +824,13 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         }
       },
-      "Nav.Utilities/1.0.0": {
+      "Pharmatechnik.Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -838,10 +838,10 @@
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         }
       }
     }
@@ -1553,12 +1553,12 @@
         "system.threading.nuspec"
       ]
     },
-    "Nav.Language/1.0.0": {
+    "Pharmatechnik.Nav.Language/1.0.0": {
       "type": "project",
       "path": "../Nav.Language/Nav.Language.csproj",
       "msbuildProject": "../Nav.Language/Nav.Language.csproj"
     },
-    "Nav.Utilities/1.0.0": {
+    "Pharmatechnik.Nav.Utilities/1.0.0": {
       "type": "project",
       "path": "../Nav.Utilities/Nav.Utilities.csproj",
       "msbuildProject": "../Nav.Utilities/Nav.Utilities.csproj"
@@ -1566,8 +1566,8 @@
   },
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.1": [
-      "Nav.Language >= 1.0.0",
-      "Nav.Utilities >= 1.0.0",
+      "Pharmatechnik.Nav.Language >= 1.0.0",
+      "Pharmatechnik.Nav.Utilities >= 1.0.0",
       "System.Collections >= 4.3.0",
       "System.Collections.Immutable >= 1.3.1",
       "System.Diagnostics.Debug >= 4.3.0",
@@ -1586,7 +1586,7 @@
     "version": "1.0.0",
     "restore": {
       "projectUniqueName": "C:\\ws\\git\\Nav.Language.Extensions\\Nav.Cli\\Nav.Cli.csproj",
-      "projectName": "Nav.Cli",
+      "projectName": "nav",
       "projectPath": "C:\\ws\\git\\Nav.Language.Extensions\\Nav.Cli\\Nav.Cli.csproj",
       "packagesPath": "C:\\Users\\mnhaenel\\.nuget\\packages\\",
       "outputPath": "C:\\ws\\git\\Nav.Language.Extensions\\Nav.Cli\\obj\\",

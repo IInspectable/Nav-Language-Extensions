@@ -856,7 +856,7 @@
           "build/_._": {}
         }
       },
-      "Newtonsoft.Json/11.0.2": {
+      "Newtonsoft.Json/6.0.6": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -1682,13 +1682,13 @@
           "lib/net46/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Nav.Language/1.0.0": {
+      "Pharmatechnik.Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -1701,21 +1701,21 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         }
       },
-      "Nav.Language.CodeAnalysis/1.0.0": {
+      "Pharmatechnik.Nav.Language.CodeAnalysis/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "2.6.0",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "2.8.0",
           "Microsoft.Composition": "1.0.31",
-          "Nav.Language": "1.0.0",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Language": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "ReSharper.Annotations": "7.1.3.130415",
           "System.Composition": "1.1.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
@@ -1725,13 +1725,13 @@
           "System.Xml.ReaderWriter": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.CodeAnalysis.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.CodeAnalysis.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.CodeAnalysis.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.CodeAnalysis.dll": {}
         }
       },
-      "Nav.Language.Extension/1.0.0": {
+      "Pharmatechnik.Nav.Language.Extension/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -1762,13 +1762,11 @@
           "Microsoft.VisualStudio.Threading.Analyzers": "15.7.18",
           "Microsoft.VisualStudio.Validation": "15.3.53",
           "NLog": "4.5.4",
-          "Nav.Language": "1.0.0",
-          "Nav.Language.CodeAnalysis": "1.0.0",
-          "Nav.Utilities": "1.0.0",
-          "Newtonsoft.Json": "11.0.2",
+          "Pharmatechnik.Nav.Language": "1.0.0",
+          "Pharmatechnik.Nav.Language.CodeAnalysis": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "Rx-Linq": "2.2.5",
           "Rx-PlatformServices": "2.2.5",
-          "StreamJsonRpc": "1.3.23",
           "System.Composition": "1.1.0",
           "System.Runtime.Handles": "4.3.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
@@ -1778,13 +1776,13 @@
           "System.Xml.ReaderWriter": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.Extension.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.Extension.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.Extension.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.Extension.dll": {}
         }
       },
-      "Nav.Utilities/1.0.0": {
+      "Pharmatechnik.Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -1792,10 +1790,10 @@
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         }
       }
     },
@@ -2654,7 +2652,7 @@
           "build/_._": {}
         }
       },
-      "Newtonsoft.Json/11.0.2": {
+      "Newtonsoft.Json/6.0.6": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -3420,13 +3418,13 @@
           "lib/net46/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Nav.Language/1.0.0": {
+      "Pharmatechnik.Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -3439,21 +3437,21 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         }
       },
-      "Nav.Language.CodeAnalysis/1.0.0": {
+      "Pharmatechnik.Nav.Language.CodeAnalysis/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "2.6.0",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "2.8.0",
           "Microsoft.Composition": "1.0.31",
-          "Nav.Language": "1.0.0",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Language": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "ReSharper.Annotations": "7.1.3.130415",
           "System.Composition": "1.1.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
@@ -3463,13 +3461,13 @@
           "System.Xml.ReaderWriter": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.CodeAnalysis.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.CodeAnalysis.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.CodeAnalysis.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.CodeAnalysis.dll": {}
         }
       },
-      "Nav.Language.Extension/1.0.0": {
+      "Pharmatechnik.Nav.Language.Extension/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -3500,13 +3498,11 @@
           "Microsoft.VisualStudio.Threading.Analyzers": "15.7.18",
           "Microsoft.VisualStudio.Validation": "15.3.53",
           "NLog": "4.5.4",
-          "Nav.Language": "1.0.0",
-          "Nav.Language.CodeAnalysis": "1.0.0",
-          "Nav.Utilities": "1.0.0",
-          "Newtonsoft.Json": "11.0.2",
+          "Pharmatechnik.Nav.Language": "1.0.0",
+          "Pharmatechnik.Nav.Language.CodeAnalysis": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "Rx-Linq": "2.2.5",
           "Rx-PlatformServices": "2.2.5",
-          "StreamJsonRpc": "1.3.23",
           "System.Composition": "1.1.0",
           "System.Runtime.Handles": "4.3.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
@@ -3516,13 +3512,13 @@
           "System.Xml.ReaderWriter": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.Extension.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.Extension.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.Extension.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.Extension.dll": {}
         }
       },
-      "Nav.Utilities/1.0.0": {
+      "Pharmatechnik.Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -3530,10 +3526,10 @@
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         }
       }
     },
@@ -4392,7 +4388,7 @@
           "build/_._": {}
         }
       },
-      "Newtonsoft.Json/11.0.2": {
+      "Newtonsoft.Json/6.0.6": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -5158,13 +5154,13 @@
           "lib/net46/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Nav.Language/1.0.0": {
+      "Pharmatechnik.Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -5177,21 +5173,21 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         }
       },
-      "Nav.Language.CodeAnalysis/1.0.0": {
+      "Pharmatechnik.Nav.Language.CodeAnalysis/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "2.6.0",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "2.8.0",
           "Microsoft.Composition": "1.0.31",
-          "Nav.Language": "1.0.0",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Language": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "ReSharper.Annotations": "7.1.3.130415",
           "System.Composition": "1.1.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
@@ -5201,13 +5197,13 @@
           "System.Xml.ReaderWriter": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.CodeAnalysis.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.CodeAnalysis.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.CodeAnalysis.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.CodeAnalysis.dll": {}
         }
       },
-      "Nav.Language.Extension/1.0.0": {
+      "Pharmatechnik.Nav.Language.Extension/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -5238,13 +5234,11 @@
           "Microsoft.VisualStudio.Threading.Analyzers": "15.7.18",
           "Microsoft.VisualStudio.Validation": "15.3.53",
           "NLog": "4.5.4",
-          "Nav.Language": "1.0.0",
-          "Nav.Language.CodeAnalysis": "1.0.0",
-          "Nav.Utilities": "1.0.0",
-          "Newtonsoft.Json": "11.0.2",
+          "Pharmatechnik.Nav.Language": "1.0.0",
+          "Pharmatechnik.Nav.Language.CodeAnalysis": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "Rx-Linq": "2.2.5",
           "Rx-PlatformServices": "2.2.5",
-          "StreamJsonRpc": "1.3.23",
           "System.Composition": "1.1.0",
           "System.Runtime.Handles": "4.3.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
@@ -5254,13 +5248,13 @@
           "System.Xml.ReaderWriter": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.Extension.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.Extension.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.Extension.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.Extension.dll": {}
         }
       },
-      "Nav.Utilities/1.0.0": {
+      "Pharmatechnik.Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -5268,10 +5262,10 @@
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         }
       }
     },
@@ -6130,7 +6124,7 @@
           "build/_._": {}
         }
       },
-      "Newtonsoft.Json/11.0.2": {
+      "Newtonsoft.Json/6.0.6": {
         "type": "package",
         "compile": {
           "lib/net45/Newtonsoft.Json.dll": {}
@@ -6896,13 +6890,13 @@
           "lib/net46/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "Nav.Language/1.0.0": {
+      "Pharmatechnik.Nav.Language/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Antlr4": "4.6.4",
           "Antlr4.CodeGenerator": "4.6.4",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "StringTemplate4": "4.0.8",
           "System.Collections": "4.3.0",
           "System.Collections.Immutable": "1.3.1",
@@ -6915,21 +6909,21 @@
           "System.Threading": "4.3.0"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.dll": {}
         }
       },
-      "Nav.Language.CodeAnalysis/1.0.0": {
+      "Pharmatechnik.Nav.Language.CodeAnalysis/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
           "Microsoft.CodeAnalysis.Analyzers": "2.6.0",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "2.8.0",
           "Microsoft.Composition": "1.0.31",
-          "Nav.Language": "1.0.0",
-          "Nav.Utilities": "1.0.0",
+          "Pharmatechnik.Nav.Language": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "ReSharper.Annotations": "7.1.3.130415",
           "System.Composition": "1.1.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
@@ -6939,13 +6933,13 @@
           "System.Xml.ReaderWriter": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.CodeAnalysis.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.CodeAnalysis.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.CodeAnalysis.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.CodeAnalysis.dll": {}
         }
       },
-      "Nav.Language.Extension/1.0.0": {
+      "Pharmatechnik.Nav.Language.Extension/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -6976,13 +6970,11 @@
           "Microsoft.VisualStudio.Threading.Analyzers": "15.7.18",
           "Microsoft.VisualStudio.Validation": "15.3.53",
           "NLog": "4.5.4",
-          "Nav.Language": "1.0.0",
-          "Nav.Language.CodeAnalysis": "1.0.0",
-          "Nav.Utilities": "1.0.0",
-          "Newtonsoft.Json": "11.0.2",
+          "Pharmatechnik.Nav.Language": "1.0.0",
+          "Pharmatechnik.Nav.Language.CodeAnalysis": "1.0.0",
+          "Pharmatechnik.Nav.Utilities": "1.0.0",
           "Rx-Linq": "2.2.5",
           "Rx-PlatformServices": "2.2.5",
-          "StreamJsonRpc": "1.3.23",
           "System.Composition": "1.1.0",
           "System.Runtime.Handles": "4.3.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
@@ -6992,13 +6984,13 @@
           "System.Xml.ReaderWriter": "4.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Language.Extension.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.Extension.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Language.Extension.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Language.Extension.dll": {}
         }
       },
-      "Nav.Utilities/1.0.0": {
+      "Pharmatechnik.Nav.Utilities/1.0.0": {
         "type": "project",
         "framework": ".NETFramework,Version=v4.7.1",
         "dependencies": {
@@ -7006,10 +6998,10 @@
           "System.Collections.Immutable": "1.3.1"
         },
         "compile": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         },
         "runtime": {
-          "bin/placeholder/Nav.Utilities.dll": {}
+          "bin/placeholder/Pharmatechnik.Nav.Utilities.dll": {}
         }
       }
     }
@@ -7980,12 +7972,11 @@
         "tools/MSBuild.Community.Tasks.xsd"
       ]
     },
-    "Newtonsoft.Json/11.0.2": {
-      "sha512": "IvJe1pj7JHEsP8B8J8DwlMEx8UInrs/x+9oVY+oCD13jpLu4JbJU2WCIsMRn5C4yW9+DgkaO8uiVE5VHKjpmdQ==",
+    "Newtonsoft.Json/6.0.6": {
+      "sha512": "w26uZNyCG5VeoKiEOJ4+9/o8koSofLKwHl7WLreIcp0U6r57L7WiRXmjp8MTKFw6dYNZ9AE0lw69WYbIhUsU9Q==",
       "type": "package",
-      "path": "newtonsoft.json/11.0.2",
+      "path": "newtonsoft.json/6.0.6",
       "files": [
-        "LICENSE.md",
         "lib/net20/Newtonsoft.Json.dll",
         "lib/net20/Newtonsoft.Json.xml",
         "lib/net35/Newtonsoft.Json.dll",
@@ -7994,18 +7985,15 @@
         "lib/net40/Newtonsoft.Json.xml",
         "lib/net45/Newtonsoft.Json.dll",
         "lib/net45/Newtonsoft.Json.xml",
-        "lib/netstandard1.0/Newtonsoft.Json.dll",
-        "lib/netstandard1.0/Newtonsoft.Json.xml",
-        "lib/netstandard1.3/Newtonsoft.Json.dll",
-        "lib/netstandard1.3/Newtonsoft.Json.xml",
-        "lib/netstandard2.0/Newtonsoft.Json.dll",
-        "lib/netstandard2.0/Newtonsoft.Json.xml",
-        "lib/portable-net40+sl5+win8+wp8+wpa81/Newtonsoft.Json.dll",
-        "lib/portable-net40+sl5+win8+wp8+wpa81/Newtonsoft.Json.xml",
-        "lib/portable-net45+win8+wp8+wpa81/Newtonsoft.Json.dll",
-        "lib/portable-net45+win8+wp8+wpa81/Newtonsoft.Json.xml",
-        "newtonsoft.json.11.0.2.nupkg.sha512",
-        "newtonsoft.json.nuspec"
+        "lib/netcore45/Newtonsoft.Json.dll",
+        "lib/netcore45/Newtonsoft.Json.xml",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.dll",
+        "lib/portable-net40+sl5+wp80+win8+wpa81/Newtonsoft.Json.xml",
+        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.dll",
+        "lib/portable-net45+wp80+win8+wpa81+aspnetcore50/Newtonsoft.Json.xml",
+        "newtonsoft.json.6.0.6.nupkg.sha512",
+        "newtonsoft.json.nuspec",
+        "tools/install.ps1"
       ]
     },
     "NLog/4.5.4": {
@@ -10648,22 +10636,22 @@
         "system.xml.xpath.xdocument.nuspec"
       ]
     },
-    "Nav.Language/1.0.0": {
+    "Pharmatechnik.Nav.Language/1.0.0": {
       "type": "project",
       "path": "../Nav.Language/Nav.Language.csproj",
       "msbuildProject": "../Nav.Language/Nav.Language.csproj"
     },
-    "Nav.Language.CodeAnalysis/1.0.0": {
+    "Pharmatechnik.Nav.Language.CodeAnalysis/1.0.0": {
       "type": "project",
       "path": "../Nav.Language.CodeAnalysis/Nav.Language.CodeAnalysis.csproj",
       "msbuildProject": "../Nav.Language.CodeAnalysis/Nav.Language.CodeAnalysis.csproj"
     },
-    "Nav.Language.Extension/1.0.0": {
+    "Pharmatechnik.Nav.Language.Extension/1.0.0": {
       "type": "project",
       "path": "../Nav.Language.Extension/Nav.Language.Extension.csproj",
       "msbuildProject": "../Nav.Language.Extension/Nav.Language.Extension.csproj"
     },
-    "Nav.Utilities/1.0.0": {
+    "Pharmatechnik.Nav.Utilities/1.0.0": {
       "type": "project",
       "path": "../Nav.Utilities/Nav.Utilities.csproj",
       "msbuildProject": "../Nav.Utilities/Nav.Utilities.csproj"
@@ -10672,7 +10660,7 @@
   "projectFileDependencyGroups": {
     ".NETFramework,Version=v4.7.1": [
       "NUnit >= 3.10.1",
-      "Nav.Language.Extension >= 1.0.0",
+      "Pharmatechnik.Nav.Language.Extension >= 1.0.0",
       "System.Collections.Immutable >= 1.3.1"
     ]
   },
