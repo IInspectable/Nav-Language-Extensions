@@ -53,7 +53,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             if(commandHandlers.Count > 0) {
                 // Build up chain of handlers.
-                var handlerChain = lastHandler ?? (() => default(CommandState));
+                var handlerChain = lastHandler ?? (() => default);
                 for(int i = commandHandlers.Count - 1; i >= 1; i--) {
                     // Declare locals to ensure that we don't end up capturing the wrong thing
                     var nextHandler = handlerChain;

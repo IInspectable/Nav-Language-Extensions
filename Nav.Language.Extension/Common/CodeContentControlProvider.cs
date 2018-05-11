@@ -84,8 +84,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
         ITextBuffer CreatePreviewBuffer(SnapshotSpan span) {
 
-            bool needsEllipses;
-            var exposedSpans = GetPreviewSpans(span, 23, out needsEllipses);
+            var exposedSpans = GetPreviewSpans(span, 23, out bool needsEllipses);
 
             ITextBuffer buffer = _projectionFactory.CreateElisionBuffer(null, exposedSpans, ElisionBufferOptions.None);
             if(needsEllipses) {

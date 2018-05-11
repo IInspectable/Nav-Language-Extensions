@@ -38,7 +38,7 @@
 
     }
 
-    public interface ISymbolVisitor<T> {
+    public interface ISymbolVisitor<out T> {
 
         T VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol);
         T VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol);
@@ -510,7 +510,7 @@
         }
 
         protected virtual T DefaultVisit(ISymbol symbol) {
-            return default(T);
+            return default;
         }
 
         public virtual T VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {

@@ -385,7 +385,7 @@ namespace Pharmatechnik.Nav.Language {
 
         private void AddTriggerTransition(IGuiNodeSymbolConstruction guiNode, TransitionDefinitionSyntax transitionDefinitionSyntax, SourceNodeSyntax sourceNodeSyntax, Location sourceNodelocation, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
-            (var triggers, var diagnostics) = TriggerSymbolBuilder.Build(transitionDefinitionSyntax);
+            var (triggers, diagnostics) = TriggerSymbolBuilder.Build(transitionDefinitionSyntax);
 
             _diagnostics.AddRange(diagnostics);
 
@@ -413,7 +413,7 @@ namespace Pharmatechnik.Nav.Language {
                 return null;
             }
 
-            NodeReferenceSymbol targetNodeReference=null;
+            NodeReferenceSymbol targetNodeReference;
             switch (targetNodeDeclaration) {
                 case IInitNodeSymbol initNode:
                     targetNodeReference = new InitNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, initNode, NodeReferenceType.Target);

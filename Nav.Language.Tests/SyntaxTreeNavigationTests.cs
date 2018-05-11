@@ -12,7 +12,7 @@ namespace Nav.Language.Tests {
         public void TestTokenParent() {
             var syntaxTree = SyntaxTree.ParseText("task Test { init I;}");
                     
-            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
             var task = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First();
 
@@ -110,7 +110,7 @@ namespace Nav.Language.Tests {
         public void TestCommentToken() {
             var syntaxTree = SyntaxTree.ParseText("task /* Kommentar*/ \r\nTest { init I;}");
 
-            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count(t=>t.Parent== null), Is.EqualTo(0));
 
             var task = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First();
@@ -127,7 +127,7 @@ namespace Nav.Language.Tests {
         public void TestPrevNextToken() {
             var syntaxTree = SyntaxTree.ParseText("task Test {}");
 
-            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
             var taskKeywordToken = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First().TaskKeyword;
 

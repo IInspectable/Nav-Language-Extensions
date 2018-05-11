@@ -103,7 +103,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             }
         }
 
-        static async Task<IEnumerable<LocationInfo>> GetLocationInfosAsync(IEnumerable<ILocationInfoProvider> providers, CancellationToken cancellationToken = default(CancellationToken)) {
+        static async Task<IEnumerable<LocationInfo>> GetLocationInfosAsync(IEnumerable<ILocationInfoProvider> providers, CancellationToken cancellationToken = default) {
             using(Logger.LogBlock(nameof(GetLocationInfosAsync))) {
 
                 var results = await Task.WhenAll(providers.Select(p => p.GetLocationsAsync(cancellationToken)));

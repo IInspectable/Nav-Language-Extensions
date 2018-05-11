@@ -23,13 +23,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         public static ImageMoniker FromCodeFixImpact(CodeFixImpact impact) {
             switch (impact) {
                 case CodeFixImpact.None:
-                    return default(ImageMoniker);
+                    return default;
                 case CodeFixImpact.Medium:
                     return KnownMonikers.StatusWarningOutline;
                 case CodeFixImpact.High:
                     return KnownMonikers.StatusInvalidOutline;
                 default:
-                    return default(ImageMoniker);
+                    return default;
             }
         }
 

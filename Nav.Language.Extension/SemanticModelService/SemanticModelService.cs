@@ -78,7 +78,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             OnRebuildTriggered(EventArgs.Empty);
         }
 
-        public CodeGenerationUnitAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default(CancellationToken)) {
+        public CodeGenerationUnitAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default) {
 
             var codeGenerationUnitAndSnapshot = CodeGenerationUnitAndSnapshot;
             if(codeGenerationUnitAndSnapshot != null && codeGenerationUnitAndSnapshot.IsCurrent(TextBuffer)) {

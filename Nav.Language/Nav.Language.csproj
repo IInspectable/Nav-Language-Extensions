@@ -47,7 +47,6 @@
     <Compile Include="..\_shared\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CodeGen\ICodeGenerator.cs" />
     <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />
     <Compile Include="SemanticAnalyzer\Nav0010CannotResolveTask0.cs" />

@@ -13,7 +13,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count % 2, Is.EqualTo(1));
 
             Assert.That(syntaxTree.Tokens.FindAtPosition(-1).IsMissing, Is.True);
@@ -36,7 +36,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count,   Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length,   Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count%2, Is.EqualTo(0));
 
             Assert.That(syntaxTree.Tokens.FindAtPosition( 0).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
@@ -58,7 +58,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseTaskDefinition(taskDef).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
             AssertTokens(syntaxTree.Tokens, 0, 1, SyntaxTokenType.Whitespace);
             AssertTokens(syntaxTree.Tokens, 0, 2, SyntaxTokenType.Whitespace);
@@ -77,7 +77,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseTaskDefinition(taskDef).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
             AssertTokens(syntaxTree.Tokens, 0, 0, true, SyntaxTokenType.Whitespace);
             AssertTokens(syntaxTree.Tokens, 0, 1, true, SyntaxTokenType.Whitespace);

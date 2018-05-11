@@ -34,7 +34,7 @@ namespace Pharmatechnik.Nav.Language {
 #>
     }
 
-    public interface ISymbolVisitor<T> {
+    public interface ISymbolVisitor<out T> {
 <#
     foreach(var entry in classMap) {
         var codeClass = entry.Key;
