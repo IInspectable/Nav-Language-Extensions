@@ -95,7 +95,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         public static T FindElementAtPosition<T>(this IReadOnlyList<T> tokens, int position, bool defaultIfNotFound=false) where T : IExtent {
 
-            int index = tokens.FindIndexAtPosition(position);
+            int index = tokens.FindIndexAtOrAfterPosition(position);
             if (index < 0) {
                 if(defaultIfNotFound) {
                     return default;
@@ -113,9 +113,20 @@ namespace Pharmatechnik.Nav.Language.Internal {
             }
             throw new ArgumentOutOfRangeException(nameof(index));
         }
-        
+
         /// <summary>
         /// Findet den Index des ersten Tokens, dessen Start größer oder gleich der angegebenen Position ist. 
+        /// </summary>
+        public static int FindIndexAtOrAfterPosition<T>(this IReadOnlyList<T> tokens, int pos) where T : IExtent {
+            var index = FindIndexAtPosition(tokens, pos);
+            if (index < 0) {
+                index = ~index - 1;
+            }
+            return index;
+        }
+
+        /// <summary>
+        /// Findet den Index des ersten Tokens, dessen Start gleich der angegebenen Position ist. 
         /// </summary>
         public static int FindIndexAtPosition<T>(this IReadOnlyList<T> tokens, int pos) where T : IExtent {
 
@@ -137,7 +148,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 }
             }
 
-            return iMin-1;
+            return ~iMin;
         }
     }
 }
