@@ -55,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             where TElement : IExtent
             where TExtent : IExtent {
 
-            int startIndex = tokens.FindIndexAtPosition(extent.Start);
+            int startIndex = tokens.FindIndexAtOrAfterPosition(extent.Start);
             if (startIndex < 0) {
                 yield break;
             }

@@ -1,6 +1,7 @@
 #region Using Directives
 
 using System.Threading;
+using Microsoft.VisualStudio.Shell;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -31,6 +32,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         IVsThreadedWaitDialog3 CreateDialog(IVsThreadedWaitDialogFactory dialogFactory) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             Marshal.ThrowExceptionForHR(dialogFactory.CreateInstance(out var dialog2));
 
             var dialog3 = (IVsThreadedWaitDialog3) dialog2;
@@ -78,6 +82,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         void UpdateDialog() {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             _dialog.UpdateProgress(
                 szUpdatedWaitMessage: _message,
                 szProgressText      : null,
@@ -92,6 +99,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         public void Dispose() {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             _dialog.EndWaitDialog(out int _);
         }
 

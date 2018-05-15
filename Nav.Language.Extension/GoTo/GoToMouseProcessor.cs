@@ -5,6 +5,7 @@ using System.Windows.Input;
 
 using JetBrains.Annotations;
 
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 
@@ -59,10 +60,12 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
 
         public override void PostprocessMouseMove(MouseEventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             UpdateNavigateToTagSpan();
         }
         
         public override void PostprocessMouseLeftButtonUp(MouseButtonEventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             NavigateToTagSpan();
         }
         
@@ -120,6 +123,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
 
         async void NavigateToTagSpan() {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (_navigateToTagSpan == null) {
                 return;

@@ -5,6 +5,7 @@ using System.Drawing;
 
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Shell;
 
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
@@ -25,6 +26,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         public static IntPtr GetImageList(Color backgroundColor, IVsImageService2 imageService) {
 
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             EnsureImageListHandle(imageService);
 
             IntPtr hImageList = NavLanguagePackage.GetImageList(_imageListHandle.Moniker, backgroundColor);
@@ -33,6 +36,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         }
 
         static void EnsureImageListHandle(IVsImageService2 imageService) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (_imageListHandle != null) {
                 return;

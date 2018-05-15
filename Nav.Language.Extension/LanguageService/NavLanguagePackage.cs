@@ -188,6 +188,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         [CanBeNull]
         public static IWpfTextView OpenFileInPreviewTab(string file) {
 
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             using(Logger.LogBlock(nameof(OpenFileInPreviewTab))) {
 
                 IVsNewDocumentStateContext newDocumentStateContext = null;
@@ -241,6 +243,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         [CanBeNull]
         public static IWpfTextView GetActiveTextView() {
 
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             using(Logger.LogBlock(nameof(GetActiveTextView))) {
 
                 var monitorSelection = (IVsMonitorSelection) GetGlobalService(typeof(SVsShellMonitorSelection));
@@ -263,6 +267,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         [CanBeNull]
         static IWpfTextView GetWpfTextViewFromFrame(IVsWindowFrame frame) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             using(Logger.LogBlock(nameof(GetWpfTextViewFromFrame))) {
                 if(ErrorHandler.Failed(frame.GetProperty((int) __VSFPROPID.VSFPROPID_DocView, out var docView))) {
@@ -295,6 +301,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         public static BitmapSource GetBitmapSource(ImageMoniker moniker, Color? backgroundColor = null) {
 
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WPF, backgroundColor);
             var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
             var result          = imageService?.GetImage(moniker, imageAttributes);
@@ -306,6 +314,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         public static Bitmap GetBitmap(ImageMoniker moniker, Color? backgroundColor=null) {
             
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WinForms, backgroundColor);
             var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
             var result          = imageService?.GetImage(moniker, imageAttributes);
@@ -316,6 +326,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         }
 
         public static IntPtr GetImageList(ImageMoniker moniker, Color? backgroundColor = null) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var imageAttributes = GetImageAttributes(_UIImageType.IT_ImageList, _UIDataFormat.DF_Win32, backgroundColor);
             var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();

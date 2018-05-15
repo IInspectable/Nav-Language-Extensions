@@ -2,6 +2,8 @@
 
 using System;
 using System.ComponentModel.Composition;
+
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Tagging;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
@@ -28,6 +30,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         public async void ExecuteCommand(GoToDefinitionCommandArgs args, Action nextHandler) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             using(var tagAggregator = _viewTagAggregatorFactoryService.CreateTagAggregator<GoToTag>(args.TextView)) {
                 var navigateToTagSpan = args.TextView.GetGoToDefinitionTagSpanAtCaretPosition(tagAggregator);

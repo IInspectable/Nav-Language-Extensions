@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 
@@ -31,6 +32,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         public async void ExecuteCommand(ViewCodeCommandArgs args, Action nextHandler) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var semanticModelService=SemanticModelService.TryGet(args.SubjectBuffer);
             var codeGenerationUnitAndSnapshot = semanticModelService?.CodeGenerationUnitAndSnapshot;

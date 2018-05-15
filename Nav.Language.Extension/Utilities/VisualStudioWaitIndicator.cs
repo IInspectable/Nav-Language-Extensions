@@ -21,6 +21,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         public WaitIndicatorResult Wait(string title, string message, bool allowCancel, Action<IWaitContext> action) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             using(var waitContext = StartWait(title, message, allowCancel)) {
                 try {
                     action(waitContext);
@@ -39,9 +42,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         VisualStudioWaitContext StartWait(string title, string message, bool allowCancel) {
-
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
+           
             var dialogFactory = (IVsThreadedWaitDialogFactory) _serviceProvider.GetService(typeof(SVsThreadedWaitDialogFactory));
-            //Contract.ThrowIfNull(dialogFactory);
+           
 
             return new VisualStudioWaitContext(dialogFactory, title, message, allowCancel);
         }

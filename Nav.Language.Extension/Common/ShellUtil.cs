@@ -13,13 +13,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             ShowMessagebox(message, OLEMSGICON.OLEMSGICON_INFO);
         }
 
-        public static void ShowErrorMessage(string message) {            
+        public static void ShowErrorMessage(string message) {      
+            ThreadHelper.ThrowIfNotOnUIThread();
             ShowMessagebox(message, OLEMSGICON.OLEMSGICON_CRITICAL);
         }
 
          static void ShowMessagebox(string message, OLEMSGICON msgicon, 
                                     OLEMSGBUTTON msgbtn = OLEMSGBUTTON.OLEMSGBUTTON_OK, 
                                     OLEMSGDEFBUTTON msgdefbtn = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var uiShell = (IVsUIShell) ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell));
             var unused  = Guid.Empty;

@@ -7,6 +7,7 @@ using System.Windows.Controls.Primitives;
 
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
@@ -53,6 +54,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         async void OnClick(object sender, RoutedEventArgs e) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var transform          = TransformToAncestor(_textView.VisualElement);
             var placementRectangle = transform.TransformBounds(new Rect(0, 0, ActualWidth, ActualHeight));

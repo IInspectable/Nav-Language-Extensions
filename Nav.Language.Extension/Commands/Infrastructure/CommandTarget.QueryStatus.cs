@@ -4,6 +4,7 @@ using System;
 
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 
@@ -14,6 +15,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
     partial class CommandTarget : IOleCommandTarget {
         
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (pguidCmdGroup == VSConstants.VSStd2K)
             {
@@ -28,6 +31,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
         
         int QueryVisualStudio2000Status(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             switch((VSConstants.VSStd2KCmdID) prgCmds[0].cmdID) {
                 case VSConstants.VSStd2KCmdID.COMMENT_BLOCK:
                 case VSConstants.VSStd2KCmdID.COMMENTBLOCK:
@@ -56,6 +62,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         private int QueryVisualStudio97Status(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             switch ((VSConstants.VSStd97CmdID)prgCmds[0].cmdID) {
                 case VSConstants.VSStd97CmdID.GotoDefn:
                     return QueryGoToDefinitionStatus(prgCmds);
@@ -151,6 +158,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var guidCmdGroup = pguidCmdGroup;
 
             CommandState ExecuteNextCommandTarget() {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 result = NextCommandTarget.QueryStatus(ref guidCmdGroup, commandCount, prgCmds, commandText);
 
                 // ReSharper disable BitwiseOperatorOnEnumWithoutFlags

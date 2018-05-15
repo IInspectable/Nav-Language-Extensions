@@ -3,6 +3,7 @@
 using System;
 
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 
 using Pharmatechnik.Nav.Utilities.Logging;
 
@@ -13,6 +14,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
     static class ComEventSink {
 
         public static IDisposable Advise<T>(object obj, T sink) where T : class {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (!typeof(T).IsInterface) {
                 throw new InvalidOperationException();
@@ -46,6 +49,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             }
 
             public void Dispose() {
+
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 if (_unadvised) {
                     Logger.Error("Already unadvised.");

@@ -6,6 +6,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 
 #endregion
 
@@ -17,6 +18,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
        const VSConstants.VSStd2KCmdID CmdidPreviousHighlightedReference = (VSConstants.VSStd2KCmdID)2401;
 
         public virtual int Exec(ref Guid pguidCmdGroup, uint commandId, uint executeInformation, IntPtr pvaIn, IntPtr pvaOut) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var subjectBuffer = GetSubjectBufferContainingCaret();
 
             if(subjectBuffer == null) {
@@ -37,6 +41,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         private int ExecuteVisualStudio97(ref Guid pguidCmdGroup, uint commandId, uint executeInformation, IntPtr pvaIn, IntPtr pvaOut, ITextBuffer subjectBuffer, IContentType contentType) {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             int result = VSConstants.S_OK;
             var guidCmdGroup = pguidCmdGroup;
 
@@ -60,6 +67,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         protected virtual int ExecuteVisualStudio2000(ref Guid pguidCmdGroup, uint commandId, uint executeInformation, IntPtr pvaIn, IntPtr pvaOut, ITextBuffer subjectBuffer, IContentType contentType) {
+           
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             int result = VSConstants.S_OK;
             var guidCmdGroup = pguidCmdGroup;
 
