@@ -502,14 +502,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Shell.Immutable.14.0">
       <Version>15.0.25405</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.0">
-      <Version>12.0.30111</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.15.0.DesignTime">
       <Version>15.0.26932</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.9.0">
-      <Version>9.0.30730</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Threading">
       <Version>15.7.18</Version>
