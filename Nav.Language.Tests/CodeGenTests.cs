@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Emit;
@@ -226,8 +227,7 @@ namespace Nav.Language.Tests {
             MetadataReference[] references = {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
-          //      MetadataReference.CreateFromFile(typeof(ImmutableArrayExtensions).Assembly.Location),
-                //   MetadataReference.CreateFromFile(typeof(ImmutableArrayExtensions).Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(ImmutableArray).Assembly.Location),
             };
 
             CSharpCompilation compilation = CSharpCompilation.Create(
