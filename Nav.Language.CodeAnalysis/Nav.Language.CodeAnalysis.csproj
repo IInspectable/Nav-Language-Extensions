@@ -66,7 +66,6 @@
     <Compile Include="ThisAssembly.generated.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="CustomBuild.targets" />
   </ItemGroup>
   <ItemGroup>
