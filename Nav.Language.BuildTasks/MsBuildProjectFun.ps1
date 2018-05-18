@@ -1,81 +1,128 @@
 ﻿#Import-VisualStudioVars 2017
-'Hi'
-$projectPath="C:\ws\XTplus\z_Himi\XTplusApplication\src\XTplus.Verkauf\XTplus.Verkauf.csproj"
 
-$msbuildPath = Join-Path (split-path (gcm msbuild).Path) 'Microsoft.Build.dll'
+function Get-MSBuildProject {
+    [cmdletbinding()]
+    param(
+        [Parameter(Position = 1)]
+        $projectFile,
 
-Add-Type -Path $msbuildPath | Out-Null
+        [Parameter(ValueFromPipeline = $true)]
+        $sourceObject
+    )
+    begin {
+        $msbuildPath = Join-Path (split-path (Get-Command msbuild).Path) 'Microsoft.Build.dll'
+        Add-Type -Path $msbuildPath | Out-Null
+    }
+    process {
+        $project = $null
+        if ($projectFile) 
+        {
+            $fullPath = Convert-Path $projectFile
+            $projectCollection = (New-Object Microsoft.Build.Evaluation.ProjectCollection)
+            $project = ([Microsoft.Build.Construction.ProjectRootElement]::Open([string]$fullPath, $projectCollection))
+        } 
+        elseif ($sourceObject -is [Microsoft.Build.Construction.ProjectRootElement]) 
+        {
+            $project = $sourceObject
+        }
+        else 
+        {
+            $project = $sourceObject.ContainingProject
+        }
+
+        return $project
+    }
+}
+
+function Remove-EmptyItemGroups {
+    [cmdletbinding()]
+param(
+    [Microsoft.Build.Construction.ProjectRootElement] $pre
+)
+
+    $itemGroupsToRemove = @($pre.ItemGroups | where { $_.Items.Count -eq 0})
+    foreach ( $itemGroup in $itemGroupsToRemove) {
+        $pre.RemoveChild($itemGroup)
+    }
+
+}
+
+function Remove-EmptyPropertyGroups {
+    [cmdletbinding()]
+param(
+    [Microsoft.Build.Construction.ProjectRootElement] $pre
+)
+
+   # Leere Property Groups entfernen
+    $propertyGroupsToRemove = @($pre.PropertyGroups | where { $_.Properties.Count -eq 0})
+    $propertyGroupsToRemove
+    foreach ( $propertyGroup in $propertyGroupsToRemove) {
+        $pre.RemoveChild($propertyGroup)
+    }
+
+}
+
+$projectPath = "C:\ws\XTplus\z_Himi\XTplusApplication\src\XTplus.Verkauf\XTplus.Verkauf.csproj"
 
 
 tf checkout $projectPath | Out-Null
-$projectCollection = (New-Object Microsoft.Build.Evaluation.ProjectCollection)
-$pre=[Microsoft.Build.Construction.ProjectRootElement]::Open($projectPath, $projectCollection)
 
-foreach($propertyGroup in $pre.PropertyGroups){
+$pre = Get-MSBuildProject $projectPath
 
-    foreach($property in $propertyGroup.Properties){
+foreach ($propertyGroup in $pre.PropertyGroups) {
 
-        if($property.Name -eq 'PreBuildEvent'){
+    foreach ($property in $propertyGroup.Properties) {
 
-            $valuesToAdd=@()
+        if ($property.Name -eq 'PreBuildEvent') {
+
+            $valuesToAdd = @()
             $property.Value
             
-            $pattern= ".*Framework\.Tools\.NavigationModeler\.exe.*"
+            $pattern = ".*Framework\.Tools\.NavigationModeler\.exe.*"
 
-             $values=@($property.Value | Split-String -separator '&& ^'  )
-             foreach($value in $values){
-                if($value -notmatch $pattern){
-                    $valuesToAdd +=$value
+            $values = @($property.Value | Split-String -separator '&& ^'  )
+            foreach ($value in $values) {
+                if ($value -notmatch $pattern) {
+                    $valuesToAdd += $value
                 }
-             }
-             $property.Value = $valuesToAdd -join '&& ^'
-             $property.Value
+            }
+            $property.Value = $valuesToAdd -join '&& ^'
+            $property.Value
             
         }
     }
 }
 
 # Bisherige nav Items entfernen
-foreach($itemGroup in $pre.ItemGroups) {
+foreach ($itemGroup in $pre.ItemGroups) {
 
-    $itemsToRemove=@()
-    foreach($item in $itemGroup.Items){
+    $itemsToRemove = @()
+    foreach ($item in $itemGroup.Items) {
     
-        if($item.Include.endsWith('.nav')){
+        if ($item.Include.endsWith('.nav')) {
             $itemsToRemove += $item
         }        
     }
     
-    foreach($item in $itemsToRemove) {
-        #$itemGroup.RemoveChild($item)
+    foreach ($item in $itemsToRemove) {
+        $itemGroup.RemoveChild($item)
     }
 }
 
 # Neue GenerateNavCode Items hinzufügen
-$ig=$pre.AddItemGroup()
-
 $projectdir = split-path $projectPath
-
+$ig = $pre.AddItemGroup()
 ls $projectdir -filter '*.nav' -Recurse | % { 
     
     Push-Location $projectdir | Out-Null
-    $navFile=Resolve-Path ($_.FullName) -Relative
+    $navFile = Resolve-Path ($_.FullName) -Relative
     Pop-Location | Out-Null
 
     $ig.AddItem("GenerateNavCode", $navFile) | Out-Null
 }
 
-# Leere Itemgroups entfernen (=> Fleißarbeit)
-$itemGroupsToRemove=@($pre.ItemGroups | where { $_.Items.Count -eq 0})
-foreach( $itemGroup in $itemGroupsToRemove) {
-    $pre.RemoveChild($itemGroup)
-}
+Remove-EmptyItemGroups $pre
+Remove-EmptyPropertyGroups $pre
 
-# Leere Property Groups entfernen
- $propertyGroupsToRemove=@($pre.PropertyGroups | where { $_.Properties.Count -eq 0})
- $propertyGroupsToRemove
- foreach( $propertyGroup in $propertyGroupsToRemove) {
-     $pre.RemoveChild($propertyGroup)
-  }
 
 $pre.Save()
