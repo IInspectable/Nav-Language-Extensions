@@ -90,6 +90,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
             Logger.Info($"{nameof(NavLanguagePackage)}.{nameof(Initialize)}");
 
+            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
             async Task<object> CreateNavLanguageInfoAsync(IAsyncServiceContainer container,
                                                           CancellationToken ct,
                                                           Type serviceType) {

@@ -15,7 +15,7 @@
       <AdditionalNugetItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Rx-Linq'" />  
       <AdditionalNugetItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Rx-PlatformServices'" />    
       <AdditionalNugetItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Antlr4.Runtime'" />    
-      <AdditionalNugetItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Microsoft.VisualStudio.Threading'" />    
+      <!--<AdditionalNugetItem Include="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Microsoft.VisualStudio.Threading'" />-->    
       
 
       <VSIXSourceItem Include="@(AdditionalNugetItem)" />
