@@ -4,9 +4,10 @@ using System;
 
 using System.IO;
 using System.Drawing;
-using System.ComponentModel.Design;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 using JetBrains.Annotations;
 
@@ -14,19 +15,20 @@ using EnvDTE;
 
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Outlining;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 
 using Control = System.Windows.Controls.Control;
+using Task = System.Threading.Tasks.Task;
 
 #endregion
 
@@ -63,13 +65,14 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                             ShowDropDownOptions   = false)]
     [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageInfo), NavLanguageContentDefinitions.FileExtension)]
-    [PackageRegistration(UseManagedResourcesOnly = true)]   
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [ProvideService(typeof(NavLanguagePackage), IsAsyncQueryable = true)]
     [Guid(GuidList.NavPackageGuid)]
-    [ProvideAutoLoad("{adfc4e64-0397-11d1-9f4e-00a0c911004f}")] // VSConstants.UICONTEXT_NoSolution
-    [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")] // VSConstants.UICONTEXT_SolutionExists
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)] // VSConstants.UICONTEXT_SolutionExists
+    [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string,                   PackageAutoLoadFlags.BackgroundLoad)] // VSConstants.UICONTEXT_NoSolution
     [ProvideShowBraceCompletion]
     [ProvideShowDropdownBarOption]
-    sealed partial class NavLanguagePackage : Package {
+    sealed partial class NavLanguagePackage: AsyncPackage {
 
         static readonly Logger Logger = Logger.Create<NavLanguagePackage>();
 
@@ -83,27 +86,35 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             LoggerConfig.Initialize(Path.GetTempPath(), "Nav.Language.Extension");
         }
 
-        #region Documentation
-        /// <summary>
-        /// Initialization of the package; this method is called right after the package is sited, so this is the place
-        /// where you can put all the initialization code that rely on services provided by VisualStudio.
-        /// </summary>
-        #endregion
-        protected override void Initialize() {
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress) {
 
-            var langService = new NavLanguageInfo(this);
-            ((IServiceContainer)this).AddService(langService.GetType(), langService, true);
+            await base.InitializeAsync(cancellationToken, progress);  
+            await Task.Delay(1, cancellationToken);
 
-            ((IServiceContainer)this).AddService(GetType(), this, true);
-
-            base.Initialize();
+            AddService(typeof(NavLanguageInfo),    CreateNavLanguageInfoAsync,    true);
+            AddService(typeof(NavLanguagePackage), CreateNavLanguagePackageAsync, true);
 
             Logger.Info($"{nameof(NavLanguagePackage)}.{nameof(Initialize)}");
         }
-        
+
+        private async Task<object> CreateNavLanguageInfoAsync(IAsyncServiceContainer container,
+                                                              CancellationToken cancellationToken,
+                                                              Type serviceType) {
+            await Task.Delay(1, cancellationToken);
+            return Task.FromResult(new NavLanguageInfo(this));
+        }
+
+        private async Task<object> CreateNavLanguagePackageAsync(IAsyncServiceContainer container,
+                                                                 CancellationToken cancellationToken,
+                                                                 Type serviceType) {
+            await Task.Delay(1, cancellationToken);
+            return Task.FromResult(this);
+        }
+
         public static object GetGlobalService<TService>() where TService : class {
             return GetGlobalService(typeof(TService));
         }
+
 
         public static TInterface GetGlobalService<TService, TInterface>() where TInterface : class {
             return GetGlobalService(typeof(TService)) as TInterface;
