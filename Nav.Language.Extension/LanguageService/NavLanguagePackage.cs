@@ -76,40 +76,35 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         static readonly Logger Logger = Logger.Create<NavLanguagePackage>();
 
-        // ReSharper disable once EmptyConstructor
-        public NavLanguagePackage() {
-            // Inside this method you can place any initialization code that does not require
-            // any Visual Studio service because at this point the package object is created but
-            // not sited yet inside Visual Studio environment. The place to do all the other
-            // initialization is the Initialize method.
-
+        public NavLanguagePackage() {           
             LoggerConfig.Initialize(Path.GetTempPath(), "Nav.Language.Extension");
         }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress) {
 
-            await base.InitializeAsync(cancellationToken, progress);  
+            await base.InitializeAsync(cancellationToken, progress);
             await Task.Delay(1, cancellationToken);
 
             AddService(typeof(NavLanguageInfo),    CreateNavLanguageInfoAsync,    true);
             AddService(typeof(NavLanguagePackage), CreateNavLanguagePackageAsync, true);
 
             Logger.Info($"{nameof(NavLanguagePackage)}.{nameof(Initialize)}");
-        }
 
-        private async Task<object> CreateNavLanguageInfoAsync(IAsyncServiceContainer container,
-                                                              CancellationToken cancellationToken,
-                                                              Type serviceType) {
-            await Task.Delay(1, cancellationToken);
-            return Task.FromResult(new NavLanguageInfo(this));
-        }
+            async Task<object> CreateNavLanguageInfoAsync(IAsyncServiceContainer container,
+                                                          CancellationToken ct,
+                                                          Type serviceType) {
+                await Task.Delay(1, ct);
+                return Task.FromResult(new NavLanguageInfo(this));
+            }
 
-        private async Task<object> CreateNavLanguagePackageAsync(IAsyncServiceContainer container,
-                                                                 CancellationToken cancellationToken,
-                                                                 Type serviceType) {
-            await Task.Delay(1, cancellationToken);
-            return Task.FromResult(this);
+            async Task<object> CreateNavLanguagePackageAsync(IAsyncServiceContainer container,
+                                                             CancellationToken ct,
+                                                             Type serviceType) {
+                await Task.Delay(1, ct);
+                return Task.FromResult(this);
+            }
         }
+        
 
         public static object GetGlobalService<TService>() where TService : class {
             return GetGlobalService(typeof(TService));
