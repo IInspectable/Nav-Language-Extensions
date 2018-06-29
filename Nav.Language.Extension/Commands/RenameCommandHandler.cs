@@ -6,6 +6,7 @@ using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Shell;
 
 using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.CodeFixes.Rename;
@@ -41,6 +42,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         public void ExecuteCommand(RenameCommandArgs args, Action nextHandler) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var codeGenerationUnitAndSnapshot = TryGetCodeGenerationUnitAndSnapshot(args.SubjectBuffer);
             if (!codeGenerationUnitAndSnapshot.IsCurrent(args.SubjectBuffer.CurrentSnapshot)) {

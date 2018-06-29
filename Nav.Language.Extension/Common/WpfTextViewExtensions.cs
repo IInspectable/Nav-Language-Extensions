@@ -1,13 +1,15 @@
 ﻿#region Using Directives
 
-using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using JetBrains.Annotations;
+
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
+
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
@@ -79,15 +81,19 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
         public static void PrepareSizeToFit(this IWpfTextView view) {
             view.LayoutChanged += (s, e) => {
-                view.VisualElement.Dispatcher.BeginInvoke(new Action(() => {
+                ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
+
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
                     view.VisualElement.Height = view.LineHeight * view.TextBuffer.CurrentSnapshot.LineCount;
                     double width = view.VisualElement.Width;
                     if (!IsNormal(view.MaxTextRightCoordinate))
                         return;
                     if (IsNormal(width) && view.MaxTextRightCoordinate <= width)
                         return;
+
                     view.VisualElement.Width = view.MaxTextRightCoordinate;
-                }));
+                });
             };
         }
 

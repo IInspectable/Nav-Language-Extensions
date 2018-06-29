@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Shell;
+
 using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Text;
@@ -24,6 +26,9 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             if(_disposed) {
                 throw new ObjectDisposedException("OokCompletionSource");
             }

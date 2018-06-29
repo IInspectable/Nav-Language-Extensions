@@ -10,6 +10,7 @@ using System.ComponentModel.Composition;
 using System.Windows.Controls.Primitives;
 
 using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
@@ -17,6 +18,8 @@ using Pharmatechnik.Nav.Language.Extension.UI;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
+
+using Task = System.Threading.Tasks.Task;
 
 #endregion
 
@@ -113,6 +116,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         }
 
         void GoToLocationInPreviewTab(LocationInfo locationInfo) {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if(!locationInfo.IsValid) {
                 ShowLocationErrorMessage(locationInfo);

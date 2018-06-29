@@ -71,7 +71,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         public static ImageMoniker TaskDeclaration {
             get {
-
+                ThreadHelper.ThrowIfNotOnUIThread();
                 // TODO High GetCompositedImageHandle muss im UI thread aufgerufen werden!
                 if (_taskDeclarationImageHandle == null) {
 

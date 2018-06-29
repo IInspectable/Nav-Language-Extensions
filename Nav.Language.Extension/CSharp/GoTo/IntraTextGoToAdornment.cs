@@ -9,19 +9,18 @@ using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
+
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
-    sealed class IntraTextGoToAdornment : ButtonBase {
+    sealed class IntraTextGoToAdornment: ButtonBase {
 
-        readonly IWpfTextView _textView;
+        readonly IWpfTextView        _textView;
         readonly GoToLocationService _goToLocationService;
-        readonly CrispImage _crispImage;
-
-        IntraTextGoToTag _goToTag;
+        readonly CrispImage          _crispImage;
 
         internal IntraTextGoToAdornment(IntraTextGoToTag goToTag, IWpfTextView textView, GoToLocationService goToLocationService) {
 
@@ -36,40 +35,41 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             Background  = Brushes.Transparent;
             BorderBrush = Brushes.Transparent;
             Cursor      = Cursors.Hand;
-            Margin      = new Thickness(0, 0, 0, 0);            
+            Margin      = new Thickness(0, 0, 0, 0);
             Content     = _crispImage;
 
             Click += OnClick;
-            
+
             Update(goToTag);
         }
 
-        public IntraTextGoToTag GoToTag {
-            get { return _goToTag; }
-        }
+        public IntraTextGoToTag GoToTag { get; private set; }
 
         protected override void OnVisualParentChanged(DependencyObject oldParent) {
             base.OnVisualParentChanged(oldParent);
             UpdateColor();
         }
 
-        async void OnClick(object sender, RoutedEventArgs e) {
+        void OnClick(object sender, RoutedEventArgs e) {
 
-            ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
 
-            var transform          = TransformToAncestor(_textView.VisualElement);
-            var placementRectangle = transform.TransformBounds(new Rect(0, 0, ActualWidth, ActualHeight));
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            await _goToLocationService.GoToLocationInPreviewTabAsync(
-                _textView, 
-                placementRectangle,
-                _goToTag.Provider);
+                var transform          = TransformToAncestor(_textView.VisualElement);
+                var placementRectangle = transform.TransformBounds(new Rect(0, 0, ActualWidth, ActualHeight));
+
+                await _goToLocationService.GoToLocationInPreviewTabAsync(
+                    _textView,
+                    placementRectangle,
+                    GoToTag.Provider);
+            });
         }
 
         internal void Update(IntraTextGoToTag goToTag) {
-            _goToTag            = goToTag;            
-            ToolTip             = _goToTag.ToolTip;
-            _crispImage.Moniker = _goToTag.ImageMoniker;          
+            GoToTag             = goToTag;
+            ToolTip             = GoToTag.ToolTip;
+            _crispImage.Moniker = GoToTag.ImageMoniker;
 
             UpdateColor();
         }
@@ -79,5 +79,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 ImageThemingUtilities.SetImageBackgroundColor(_crispImage, backgroundBrush.Color);
             }
         }
+
     }
+
 }

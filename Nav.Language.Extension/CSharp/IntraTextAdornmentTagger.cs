@@ -18,6 +18,7 @@ using System.Linq;
 using System.Windows;
 using System.Collections.Generic;
 
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -91,12 +92,18 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp
                 _invalidatedSpans.AddRange(spans);
 
                 if (wasEmpty && _invalidatedSpans.Count > 0) {
-                    TextView.VisualElement.Dispatcher.BeginInvoke(new Action(AsyncUpdate));
+                    
+                    ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
+
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        
+                        Update();
+                    });
                 }
             }
         }
 
-        void AsyncUpdate() {
+        void Update() {
 
             // Store the snapshot that we're now current with and send an event
             // for the text that has changed.

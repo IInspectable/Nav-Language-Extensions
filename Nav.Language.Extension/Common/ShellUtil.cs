@@ -10,6 +10,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
     static class ShellUtil {
 
         public static void ShowInfoMessage(string message) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ShowMessagebox(message, OLEMSGICON.OLEMSGICON_INFO);
         }
 

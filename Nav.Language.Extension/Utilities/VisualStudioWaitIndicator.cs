@@ -52,6 +52,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         IWaitContext IWaitIndicator.StartWait(string title, string message, bool allowCancel) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return StartWait(title, message, allowCancel);
         }
     }
