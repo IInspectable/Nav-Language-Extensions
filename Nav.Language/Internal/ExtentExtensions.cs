@@ -80,12 +80,19 @@ namespace Pharmatechnik.Nav.Language.Internal {
             where TElement: IExtent
             where TExtent : IExtent {
 
-            int startIndex = tokens.FindIndexAtPosition(extent.Start);
+            int startIndex = tokens.FindIndexAtOrAfterPosition(extent.Start);
             if (startIndex < 0) {
                 yield break;
             }
             for (int index = startIndex; index < tokens.Count; index++) {
                 var token = tokens[index];
+
+                // TODO Wie kann das sein, dass FindIndexAtOrAfterPosition ein ISymbol findet,
+                // das vor extent.Start liegt? Hängt das damit zusammen, dass Symbole
+                // nicht lückenlos aneinander liegen?
+                if (token.Start < extent.Start) {
+                    continue;
+                }
                 if (token.End > extent.End) {
                     break;
                 }
