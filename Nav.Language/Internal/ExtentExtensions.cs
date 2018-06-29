@@ -125,6 +125,8 @@ namespace Pharmatechnik.Nav.Language.Internal {
         /// Findet den Index des ersten Tokens, dessen Start größer oder gleich der angegebenen Position ist. 
         /// </summary>
         public static int FindIndexAtOrAfterPosition<T>(this IReadOnlyList<T> tokens, int pos) where T : IExtent {
+           // TODO Sollte bei pos < 0 eine Ausnahme geworfen werden?
+            
             var index = FindIndexAtPosition(tokens, pos);
             if (index < 0) {
                 index = ~index - 1;
