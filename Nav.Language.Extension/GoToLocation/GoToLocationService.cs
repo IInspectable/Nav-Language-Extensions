@@ -12,6 +12,7 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 using Pharmatechnik.Nav.Language.Extension.UI;
@@ -59,6 +60,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
                         waitContext.AllowCancel = false;
                         waitContext.Message     = OpeningFileMessage;
+
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(waitContext.CancellationToken); 
 
                         NavLanguagePackage.GoToLocationInPreviewTab(locationResult.Location);
 
@@ -130,6 +133,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         }
 
         void ShowLocationErrorMessage(LocationInfo locationInfo) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ShellUtil.ShowErrorMessage(locationInfo.ErrorMessage);
         }
     }

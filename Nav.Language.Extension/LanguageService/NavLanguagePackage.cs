@@ -66,12 +66,13 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
     [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageInfo), NavLanguageContentDefinitions.FileExtension)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideService(typeof(NavLanguagePackage), IsAsyncQueryable = true)]
     [Guid(GuidList.NavPackageGuid)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)] // VSConstants.UICONTEXT_SolutionExists
     [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string,                   PackageAutoLoadFlags.BackgroundLoad)] // VSConstants.UICONTEXT_NoSolution
     [ProvideShowBraceCompletion]
     [ProvideShowDropdownBarOption]
+    [ProvideService(typeof(NavLanguageInfo), IsAsyncQueryable    = true)]
+    [ProvideService(typeof(NavLanguagePackage), IsAsyncQueryable = true)]
     sealed partial class NavLanguagePackage: AsyncPackage {
 
         static readonly Logger Logger = Logger.Create<NavLanguagePackage>();

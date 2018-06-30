@@ -338,10 +338,15 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         void OnThemeChanged(ThemeChangedEventArgs e) {
 
-            UpdateImageList();
+            ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
 
-            SetActiveSelection(TaskComboIndex);
-            SetActiveSelection(ProjectComboIndex);
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                UpdateImageList();
+
+                SetActiveSelection(TaskComboIndex);
+                SetActiveSelection(ProjectComboIndex);
+            });
         }
 
         ImmutableList<NavigationItem> GetItems(int iCombo) {
