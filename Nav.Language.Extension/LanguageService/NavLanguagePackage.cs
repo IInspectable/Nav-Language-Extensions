@@ -149,8 +149,10 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         [CanBeNull]
         public static IWpfTextView GoToLocationInPreviewTab(Location location) {
-
+            
             using (Logger.LogBlock(nameof(GoToLocationInPreviewTab))) {
+
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 if(location == null) {
                     return null;
@@ -184,6 +186,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         public static IWpfTextView OpenFile(string file) {
 
             using(Logger.LogBlock(nameof(OpenFile))) {
+
+                ThreadHelper.ThrowIfNotOnUIThread();
 
                 var serviceProvider = GetServiceProvider();
 

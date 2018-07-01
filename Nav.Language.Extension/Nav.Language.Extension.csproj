@@ -281,8 +281,6 @@
     <Compile Include="ParserService\SyntaxTreeAndSnapshot.cs" />
     <Compile Include="BraceCompletion\BraceCompletionProvider.cs" />
     <Compile Include="ParserService\ParserServiceDependent.cs" />
-    <Compile Include="QuickInfo\IntellisenseController.cs" />
-    <Compile Include="QuickInfo\IntellisenseControllerProvider.cs" />
     <Compile Include="QuickInfo\DebugQuickInfoSourceProvider.cs" />
     <Compile Include="QuickInfo\DebugQuickInfoSource.cs" />
     <Compile Include="Classification\SyntaxClassifier.cs" />

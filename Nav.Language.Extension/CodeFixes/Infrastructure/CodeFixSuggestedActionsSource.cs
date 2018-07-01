@@ -10,24 +10,26 @@ using System.Collections.Immutable;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
-    partial class CodeFixSuggestedActionsSource : SemanticModelServiceDependent, ISuggestedActionsSource {
+
+    partial class CodeFixSuggestedActionsSource: SemanticModelServiceDependent, ISuggestedActionsSource {
 
         readonly ICodeFixSuggestedActionProviderService _codeFixSuggestedActionProviderService;
-        readonly ITextView _textView;
+        readonly ITextView                              _textView;
 
         volatile SuggestedActionSetsAndRange _cachedSuggestedActionSets;
 
         public CodeFixSuggestedActionsSource(ITextBuffer textBuffer, ICodeFixSuggestedActionProviderService codeFixSuggestedActionProviderService, ITextView textView)
             : base(textBuffer) {
             _codeFixSuggestedActionProviderService = codeFixSuggestedActionProviderService;
-            _textView = textView;
+            _textView                              = textView;
         }
-        
+
         public event EventHandler<EventArgs> SuggestedActionsChanged;
 
         public bool TryGetTelemetryId(out Guid telemetryId) {
@@ -37,19 +39,22 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
 
-            var caretPoint = _textView.GetCaretPoint();
+            var caretPoint       = _textView.GetCaretPoint();
             var cachedActionSets = _cachedSuggestedActionSets;
             IEnumerable<CodeFixSuggestedAction> suggestedActionSets =
                 IsCacheValid(cachedActionSets, range) ? cachedActionSets.SuggestedActionSets : BuildSuggestedActions(range, cancellationToken);
 
             // Nach Span Gruppieren
-            var groupedActions = suggestedActionSets.GroupBy(action => action.ApplicableToSpan);
+            var groupedActions     = suggestedActionSets.GroupBy(action => action.ApplicableToSpan);
             var suggestedActionSet = new List<SuggestedActionSet>();
             foreach (var actionsInSpan in groupedActions) {
                 var orderedActions = actionsInSpan.OrderByDescending(codeFixSuggestedAction => codeFixSuggestedAction.Prio);
-                suggestedActionSet.Add(new SuggestedActionSet(orderedActions, applicableToSpan: actionsInSpan.Key ?? range));
+                suggestedActionSet.Add(new SuggestedActionSet(
+                                           categoryName: null,
+                                           actions: orderedActions,
+                                           applicableToSpan: actionsInSpan.Key ?? range));
             }
-            
+
             // Sortierung nach Nähe zum Caret Point
             var orderedSuggestionSets = suggestedActionSet.OrderBy(s => s, new SuggestedActionSetComparer(caretPoint, range));
             // Doppelte Actions entfernen. Es bleibt nur die zum Caret nächste Action bestehen.
@@ -78,7 +83,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var actions = new List<ISuggestedAction>();
 
-            foreach(var action in actionSet.Actions) {
+            foreach (var action in actionSet.Actions) {
                 if (seenTitles.Add(action.DisplayText)) {
                     actions.Add(action);
                 }
@@ -86,12 +91,17 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             return actions.Count == 0
                 ? null
-                : new SuggestedActionSet(actions, actionSet.Title, actionSet.Priority, actionSet.ApplicableToSpan);
+                : new SuggestedActionSet(
+                    categoryName: null,
+                    actions: actions,
+                    title: actionSet.Title,
+                    priority: actionSet.Priority,
+                    applicableToSpan: actionSet.ApplicableToSpan);
         }
 
         public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
-            return Task.Factory.StartNew(() => BuildSuggestedActions(range, cancellationToken).Any(), 
-                                         cancellationToken, 
+            return Task.Factory.StartNew(() => BuildSuggestedActions(range, cancellationToken).Any(),
+                                         cancellationToken,
                                          TaskCreationOptions.None, TaskScheduler.Default);
         }
 
@@ -100,12 +110,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             _cachedSuggestedActionSets = null;
             InvalidateSuggestedActions();
         }
-        
+
         static bool IsCacheValid(SuggestedActionSetsAndRange cache, SnapshotSpan range) {
             if (cache == null) {
                 return false;
             }
-            
+
             return cache.Range == range;
         }
 
@@ -121,11 +131,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
                 _cachedSuggestedActionSets = null;
                 return ImmutableList<CodeFixSuggestedAction>.Empty;
             }
-            
+
             var parameter  = new CodeFixSuggestedActionParameter(range, codeGenerationUnitAndSnapshot, _textView);
             var actionsets = _codeFixSuggestedActionProviderService.GetCodeFixSuggestedActions(parameter, cancellationToken).ToImmutableList();
 
-            if (cancellationToken.IsCancellationRequested || actionsets.Count==0) {
+            if (cancellationToken.IsCancellationRequested || actionsets.Count == 0) {
                 return ImmutableList<CodeFixSuggestedAction>.Empty;
             }
 
@@ -135,15 +145,19 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             return actionsetsAndRange.SuggestedActionSets;
         }
-               
+
         sealed class SuggestedActionSetsAndRange {
+
             public SuggestedActionSetsAndRange(SnapshotSpan range, ImmutableList<CodeFixSuggestedAction> suggestedActionSets) {
-                Range = range;
+                Range               = range;
                 SuggestedActionSets = suggestedActionSets;
             }
 
-            public SnapshotSpan Range { get; }
+            public SnapshotSpan                          Range               { get; }
             public ImmutableList<CodeFixSuggestedAction> SuggestedActionSets { get; }
+
         }
+
     }
+
 }

@@ -26,8 +26,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         Cursor _overriddenCursor;
 
-        [CanBeNull]
-        ITagSpan<GoToTag> _navigateToTagSpan;
+        [CanBeNull] ITagSpan<GoToTag> _navigateToTagSpan;
 
         GoToMouseProcessor(IWpfTextView textView,
                            TextViewConnectionListener textViewConnectionListener,
@@ -60,12 +59,15 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
 
         public override void PostprocessMouseMove(MouseEventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             UpdateNavigateToTagSpan();
         }
 
+        #pragma warning disable VSTHRD010
         public override void PostprocessMouseLeftButtonUp(MouseButtonEventArgs e) {
             NavigateToTagSpan();
         }
+        #pragma warning restore VSTHRD010
 
         void OnTextViewLostAggregateFocus(object sender, EventArgs e) {
             RemoveNavigateToTagSpan();

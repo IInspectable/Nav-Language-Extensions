@@ -1,50 +1,70 @@
 ﻿#region Using Directives
 
-using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
+
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Threading;
+
+using ThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
-    sealed class DebugQuickInfoSource : ParserServiceDependent, IQuickInfoSource {
+    sealed class DebugQuickInfoSource: ParserServiceDependent, IAsyncQuickInfoSource {
 
         public DebugQuickInfoSource(ITextBuffer textBuffer): base(textBuffer) {
         }
 
-        public void AugmentQuickInfoSession(IQuickInfoSession session, IList<object> qiContent, out ITrackingSpan applicableToSpan) {
-            applicableToSpan = null;
+        public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken) {
 
-            var modifier = ModifierKeys.Control | ModifierKeys.Shift;
-            if((Keyboard.Modifiers & modifier) != modifier) {
-                return;
+            await Task.Yield().ConfigureAwait(false);
+            if (cancellationToken.IsCancellationRequested) {
+                return null;
             }
 
             var syntaxTreeAndSnapshot = ParserService.SyntaxTreeAndSnapshot;
             if (syntaxTreeAndSnapshot == null) {
-                return;
+                return null;
             }
+
             // Map the trigger point down to our buffer.
-            SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(syntaxTreeAndSnapshot.Snapshot);
-            if(!subjectTriggerPoint.HasValue) {
-                return;
+            SnapshotPoint? triggerPoint = session.GetTriggerPoint(syntaxTreeAndSnapshot.Snapshot);
+            if (triggerPoint == null) {
+                return null;
             }
 
-            var triggerToken = syntaxTreeAndSnapshot.SyntaxTree.Tokens.FindAtPosition(subjectTriggerPoint.Value.Position);
+            var triggerToken = syntaxTreeAndSnapshot.SyntaxTree.Tokens.FindAtPosition(triggerPoint.Value.Position);
 
-            if(triggerToken.IsMissing || triggerToken.Parent == null) {
-                return;
+            if (triggerToken.IsMissing || triggerToken.Parent == null) {
+                return null;
             }
 
-            var location = triggerToken.GetLocation();
-            qiContent.Add($"{triggerToken.Type} ({triggerToken.Classification}) Ln {location?.StartLine + 1} Ch {location?.StartCharacter + 1}\r\n{triggerToken.Parent?.GetType().Name}");
-
-            applicableToSpan = syntaxTreeAndSnapshot.Snapshot.CreateTrackingSpan(
+            var applicableToSpan = syntaxTreeAndSnapshot.Snapshot.CreateTrackingSpan(
                 triggerToken.Start,
                 triggerToken.Length,
                 SpanTrackingMode.EdgeExclusive);
+
+            var location  = triggerToken.GetLocation();
+            var qiContent = $"{triggerToken.Type} ({triggerToken.Classification}) Ln {location?.StartLine + 1} Ch {location?.StartCharacter + 1}\r\n{triggerToken.Parent?.GetType().Name}";
+
+            var qiItemitem = new QuickInfoItem(applicableToSpan: applicableToSpan,
+                                               item: qiContent
+            );
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            var modifier = ModifierKeys.Control | ModifierKeys.Shift;
+            if ((Keyboard.Modifiers & modifier) != modifier) {
+                return null;
+            }
+
+            return qiItemitem;
         }
+
     }
+
 }

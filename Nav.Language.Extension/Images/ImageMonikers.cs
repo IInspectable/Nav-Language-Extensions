@@ -1,6 +1,7 @@
 #region Using Directives
 
 using System;
+
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Imaging.Interop;
@@ -50,12 +51,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         /// <summary>
         /// Nav file --> C# file
         /// </summary>
-        public static ImageMoniker GoToDeclaration     => KnownMonikers.GoToDefinition;
+        public static ImageMoniker GoToDeclaration => KnownMonikers.GoToDefinition;
 
         /// <summary>
         /// C# file --> Nav file
         /// </summary>
-        public static ImageMoniker GoToDefinition      => KnownMonikers.GoToDeclaration;
+        public static ImageMoniker GoToDefinition => KnownMonikers.GoToDeclaration;
+
         public static ImageMoniker Include             => KnownMonikers.ClassFile;
         public static ImageMoniker GoToNodeDeclaration => KnownMonikers.GoToReference;
         public static ImageMoniker GoToMethodPublic    => KnownMonikers.MethodPublic;
@@ -66,21 +68,36 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         #endregion
 
         #region Symbols
-        
-        static IImageHandle _taskDeclarationImageHandle;
+
+        static ImageMoniker? _taskDeclarationImageMoniker;
 
         public static ImageMoniker TaskDeclaration {
             get {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                // TODO High GetCompositedImageHandle muss im UI thread aufgerufen werden!
-                if (_taskDeclarationImageHandle == null) {
-
-                    _taskDeclarationImageHandle = GetCompositedImageHandle(
-                        CreateLayer(TaskDefinition),
-                        CreateLayer(KnownMonikers.ReferencedElement));
+                #pragma warning disable VSTHRD010
+                if (_taskDeclarationImageMoniker.HasValue) {
+                    return _taskDeclarationImageMoniker.Value;
                 }
 
-                return _taskDeclarationImageHandle.Moniker;
+                if (ThreadHelper.CheckAccess()) {
+                    // Darf nur im GUI Thread erstellt werden
+                    _taskDeclarationImageMoniker = CreateTaskDeclarationImageHandle();
+                }
+
+                // Natürlich kann es erste Aufrufer geben, die nicht vom GUI Thrad kommen
+                // - dann gibt es keinen Moniker. So what, das Problem heilt sich selbst,
+                // sobals der erste GUI Call kommt.
+                // Bisweilen kein praxisrelevantes Problem..
+
+                return _taskDeclarationImageMoniker.GetValueOrDefault();
+
+                ImageMoniker CreateTaskDeclarationImageHandle() {
+                    ThreadHelper.ThrowIfNotOnUIThread();
+                    return GetCompositedImageHandle(
+                        CreateLayer(TaskDefinition),
+                        CreateLayer(KnownMonikers.ReferencedElement)).Moniker;
+                }
+
+                #pragma warning restore VSTHRD010
             }
         }
 
@@ -96,30 +113,32 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         public static ImageMoniker ViewNode            => KnownMonikers.WindowsForm;
         public static ImageMoniker DialogNode          => KnownMonikers.Dialog;
         public static ImageMoniker SignalTrigger       => KnownMonikers.EventTrigger;
-        public static ImageMoniker Edge                => KnownMonikers.AssociationRelationship;        
-        public static ImageMoniker ModalEdge           => new ImageMoniker { Guid = CustomMonikerGuid, Id = 1 };
-        public static ImageMoniker NonModalEdge        => new ImageMoniker { Guid = CustomMonikerGuid, Id = 2 };
-        public static ImageMoniker GoToEdge            => new ImageMoniker { Guid = CustomMonikerGuid, Id = 3 };
+        public static ImageMoniker Edge                => KnownMonikers.AssociationRelationship;
+        public static ImageMoniker ModalEdge           => new ImageMoniker {Guid = CustomMonikerGuid, Id = 1};
+        public static ImageMoniker NonModalEdge        => new ImageMoniker {Guid = CustomMonikerGuid, Id = 2};
+        public static ImageMoniker GoToEdge            => new ImageMoniker {Guid = CustomMonikerGuid, Id = 3};
 
         public static ImageMoniker FromSymbol(ISymbol symbol) {
             return SymbolImageMonikerFinder.FindImageMoniker(symbol);
         }
 
-        sealed class SymbolImageMonikerFinder : SymbolVisitor<ImageMoniker> {
+        sealed class SymbolImageMonikerFinder: SymbolVisitor<ImageMoniker> {
 
             public static ImageMoniker FindImageMoniker(ISymbol symbol) {
                 var finder = new SymbolImageMonikerFinder();
                 return finder.Visit(symbol);
             }
 
+            #pragma warning disable VSTHRD010
             public override ImageMoniker VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
                 return TaskDeclaration;
             }
+            #pragma warning restore VSTHRD010
 
             public override ImageMoniker VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
                 return TaskDefinition;
             }
-            
+
             public override ImageMoniker VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
                 return Include;
             }
@@ -129,7 +148,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             }
 
             public override ImageMoniker VisitEdgeModeSymbol(IEdgeModeSymbol edgeModeSymbol) {
-                switch(edgeModeSymbol.EdgeMode) {
+                switch (edgeModeSymbol.EdgeMode) {
 
                     case EdgeMode.Modal:
                         return ModalEdge;
@@ -139,7 +158,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
                         return GoToEdge;
                     default:
                         return Edge;
-                }                
+                }
             }
 
             #region ConnectionPoints
@@ -179,7 +198,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             public override ImageMoniker VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
                 return InitNode;
             }
-           
+
             public override ImageMoniker VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
                 return Visit(initNodeAliasSymbol.InitNode);
             }
@@ -213,6 +232,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
             }
 
             #endregion
+
         }
 
         #endregion
@@ -232,7 +252,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         static ImageCompositionLayer CreateLayer(
             ImageMoniker imageMoniker,
-            int virtualWidth   = 16,
+            int virtualWidth = 16,
             int virtualYOffset = 0,
             int virtualXOffset = 0) {
 
@@ -240,29 +260,30 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
                 VirtualWidth        = virtualWidth,
                 VirtualHeight       = 16,
                 ImageMoniker        = imageMoniker,
-                HorizontalAlignment = (uint)_UIImageHorizontalAlignment.IHA_Left,
-                VerticalAlignment   = (uint)_UIImageVerticalAlignment.IVA_Top,
+                HorizontalAlignment = (uint) _UIImageHorizontalAlignment.IHA_Left,
+                VerticalAlignment   = (uint) _UIImageVerticalAlignment.IVA_Top,
                 VirtualXOffset      = virtualXOffset,
                 VirtualYOffset      = virtualYOffset,
             };
         }
 
         static IImageHandle GetCompositedImageHandle(params ImageCompositionLayer[] layers) {
-            
+
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            var imageService = NavLanguagePackage.GetGlobalService< SVsImageService, IVsImageService2>();
-            
-            var imageHandle = imageService.AddCustomCompositeImage(
-                virtualWidth : 16,
-                virtualHeight: 16,
-                layerCount   : layers.Length,
-                layers       : layers);
+            var imageService = NavLanguagePackage.GetGlobalService<SVsImageService, IVsImageService2>();
 
+            var imageHandle = imageService.AddCustomCompositeImage(
+                virtualWidth: 16,
+                virtualHeight: 16,
+                layerCount: layers.Length,
+                layers: layers);
 
             return imageHandle;
         }
 
         #endregion
+
     }
+
 }
