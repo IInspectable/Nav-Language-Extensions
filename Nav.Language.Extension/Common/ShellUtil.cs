@@ -39,8 +39,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
                 msgdefbtn      : msgdefbtn,
                 msgicon        : msgicon,
                 fSysAlert      : 0,
-                // ReSharper disable once UnusedVariable
-                pnResult       : out var result);
+                pnResult       : out _);
         }
     }
 }
