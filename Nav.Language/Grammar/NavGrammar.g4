@@ -2,9 +2,10 @@
 Grammar for Nav Language
 */
 
-grammar NavGrammar;
+parser grammar NavGrammar;
 
-import NavTokens;
+options
+{ tokenVocab = NavTokens; }
 
 codeGenerationUnit
     :   (codeNamespaceDeclaration

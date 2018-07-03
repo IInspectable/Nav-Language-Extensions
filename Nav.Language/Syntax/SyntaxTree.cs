@@ -52,7 +52,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         internal static SyntaxTree ParseText(string text,
-                                             Func<NavGrammarParser, IParseTree> treeCreator,
+                                             Func<NavGrammar, IParseTree> treeCreator,
                                              string filePath,
                                              Encoding encoding = null,
                                              CancellationToken cancellationToken = default) {
@@ -62,9 +62,9 @@ namespace Pharmatechnik.Nav.Language {
             var sourceText    = SourceText.From(text, filePath);
             var diagnostics   = ImmutableArray.CreateBuilder<Diagnostic>();
             var stream        = new AntlrInputStream(text);
-            var lexer         = new NavGrammarLexer(stream);
-            var cts           = new NavCommonTokenStream(lexer);
-            var parser        = new NavGrammarParser(cts);
+            var tokenSource   = new NavTokens(stream);
+            var cts           = new NavCommonTokenStream(tokenSource);
+            var parser        = new NavGrammar(cts);
             var errorListener = new NavErrorListener(filePath, diagnostics);
 
             parser.RemoveErrorListeners();
@@ -123,21 +123,21 @@ namespace Pharmatechnik.Nav.Language {
                 // Das Token existiert noch nicht, da es der Parser/Visitor offensichtlich nicht "erwischt hat" (t, u)
                 SyntaxTokenClassification tokenClassification;
                 switch (candidate.Channel) {
-                    case NavGrammarLexer.TriviaChannel:
+                    case NavTokens.TriviaChannel:
                         switch (candidate.Type) {
-                            case NavGrammarLexer.NewLine:
+                            case NavTokens.NewLine:
                                 tokenClassification = SyntaxTokenClassification.Whitespace;
                                 break;
-                            case NavGrammarLexer.Whitespace:
+                            case NavTokens.Whitespace:
                                 tokenClassification = SyntaxTokenClassification.Whitespace;
                                 break;
-                            case NavGrammarLexer.SingleLineComment:
+                            case NavTokens.SingleLineComment:
                                 tokenClassification = SyntaxTokenClassification.Comment;
                                 break;
-                            case NavGrammarLexer.MultiLineComment:
+                            case NavTokens.MultiLineComment:
                                 tokenClassification = SyntaxTokenClassification.Comment;
                                 break;
-                            case NavGrammarLexer.Unknown:
+                            case NavTokens.Unknown:
                                 tokenClassification = SyntaxTokenClassification.Skiped;
                                 break;
                             default:
@@ -157,7 +157,7 @@ namespace Pharmatechnik.Nav.Language {
                 SyntaxNode parent = syntax;
 
                 // Fix Für Single Line Comments, da diese leider immer auch das EOL beinhalten
-                if (candidate.Type == NavGrammarLexer.SingleLineComment) {
+                if (candidate.Type == NavGrammar.SingleLineComment) {
                     foreach (var token in SplitSingleLineCommenTokens(candidate, parent)) {
                         finalTokens.Add(token);
                     }
@@ -165,7 +165,7 @@ namespace Pharmatechnik.Nav.Language {
 
                     finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
 
-                    if (candidate.Type == NavGrammarLexer.Unknown) {
+                    if (candidate.Type == NavGrammar.Unknown) {
                         diagnostics.Add(
                             new Diagnostic(candidate.GetLocation(filePath),
                                            DiagnosticDescriptors.Syntax.Nav0000UnexpectedCharacter,

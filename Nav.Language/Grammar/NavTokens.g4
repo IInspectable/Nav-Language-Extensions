@@ -1,4 +1,4 @@
-﻿lexer grammar NavLexer;
+﻿lexer grammar NavTokens;
 
 channels {
     TriviaChannel

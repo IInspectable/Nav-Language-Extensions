@@ -25,7 +25,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeGenerationUnit
 
-        public override SyntaxNode VisitCodeGenerationUnit([NotNull] NavGrammarParser.CodeGenerationUnitContext context) {
+        public override SyntaxNode VisitCodeGenerationUnit([NotNull] NavGrammar.CodeGenerationUnitContext context) {
 
             var node = new CodeGenerationUnitSyntax(
                 CreateExtent(context),
@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitMemberDeclaration(NavGrammarParser.MemberDeclarationContext context) {
+        public override SyntaxNode VisitMemberDeclaration(NavGrammar.MemberDeclarationContext context) {
             if (context.includeDirective() != null) {
                 return VisitIncludeDirective(context.includeDirective());
             }
@@ -67,7 +67,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeNamespaceDeclaration
 
-        public override SyntaxNode VisitCodeNamespaceDeclaration([NotNull] NavGrammarParser.CodeNamespaceDeclarationContext context) {
+        public override SyntaxNode VisitCodeNamespaceDeclaration([NotNull] NavGrammar.CodeNamespaceDeclarationContext context) {
             
             var node = new CodeNamespaceDeclarationSyntax(
                 extent:CreateExtent(context),
@@ -88,7 +88,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeUsingDeclaration
 
-        public override SyntaxNode VisitCodeUsingDeclaration(NavGrammarParser.CodeUsingDeclarationContext context) {
+        public override SyntaxNode VisitCodeUsingDeclaration(NavGrammar.CodeUsingDeclarationContext context) {
             
             var node = new CodeUsingDeclarationSyntax(
                 extent:CreateExtent(context),
@@ -109,7 +109,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region IncludeDirective
 
-        public override SyntaxNode VisitIncludeDirective(NavGrammarParser.IncludeDirectiveContext context) {
+        public override SyntaxNode VisitIncludeDirective(NavGrammar.IncludeDirectiveContext context) {
             
             var node = new IncludeDirectiveSyntax(
                 CreateExtent(context));
@@ -125,7 +125,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region TaskDeclaration
 
-        public override SyntaxNode VisitTaskDeclaration(NavGrammarParser.TaskDeclarationContext context) {
+        public override SyntaxNode VisitTaskDeclaration(NavGrammar.TaskDeclarationContext context) {
             
             var node = new TaskDeclarationSyntax(
                 CreateExtent(context),
@@ -156,7 +156,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitConnectionPointNodeDeclaration(NavGrammarParser.ConnectionPointNodeDeclarationContext context) {
+        public override SyntaxNode VisitConnectionPointNodeDeclaration(NavGrammar.ConnectionPointNodeDeclarationContext context) {
             if (context.initNodeDeclaration() != null) {
                 return VisitInitNodeDeclaration(context.initNodeDeclaration());
             }
@@ -173,7 +173,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region TaskDefinition
 
-        public override SyntaxNode VisitTaskDefinition(NavGrammarParser.TaskDefinitionContext context) {
+        public override SyntaxNode VisitTaskDefinition(NavGrammar.TaskDefinitionContext context) {
             
             var node = new TaskDefinitionSyntax(
                 CreateExtent(context),
@@ -219,7 +219,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
         
         #region Node Declarations
 
-        public override SyntaxNode VisitNodeDeclarationBlock(NavGrammarParser.NodeDeclarationBlockContext context) {
+        public override SyntaxNode VisitNodeDeclarationBlock(NavGrammar.NodeDeclarationBlockContext context) {
             
             var node= new NodeDeclarationBlockSyntax(
                 CreateExtent(context),
@@ -233,7 +233,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitNodeDeclaration(NavGrammarParser.NodeDeclarationContext context) {
+        public override SyntaxNode VisitNodeDeclaration(NavGrammar.NodeDeclarationContext context) {
             if (context.connectionPointNodeDeclaration() != null) {
                 return VisitConnectionPointNodeDeclaration(context.connectionPointNodeDeclaration());
             }
@@ -252,7 +252,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return null;
         }
 
-        public override SyntaxNode VisitInitNodeDeclaration(NavGrammarParser.InitNodeDeclarationContext context) {
+        public override SyntaxNode VisitInitNodeDeclaration(NavGrammar.InitNodeDeclarationContext context) {
 
             var node = new InitNodeDeclarationSyntax(CreateExtent(context),  
                     codeAbstractMethodDeclaration: 
@@ -276,7 +276,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitExitNodeDeclaration(NavGrammarParser.ExitNodeDeclarationContext context) {
+        public override SyntaxNode VisitExitNodeDeclaration(NavGrammar.ExitNodeDeclarationContext context) {
             
             var node = new ExitNodeDeclarationSyntax(CreateExtent(context));
 
@@ -287,7 +287,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitEndNodeDeclaration(NavGrammarParser.EndNodeDeclarationContext context) {
+        public override SyntaxNode VisitEndNodeDeclaration(NavGrammar.EndNodeDeclarationContext context) {
             
             var node = new EndNodeDeclarationSyntax(CreateExtent(context));
 
@@ -297,7 +297,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitTaskNodeDeclaration(NavGrammarParser.TaskNodeDeclarationContext context) {
+        public override SyntaxNode VisitTaskNodeDeclaration(NavGrammar.TaskNodeDeclarationContext context) {
             
             var node = new TaskNodeDeclarationSyntax(CreateExtent(context), 
                     codeDoNotInjectDeclaration: 
@@ -318,7 +318,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitChoiceNodeDeclaration(NavGrammarParser.ChoiceNodeDeclarationContext context) {
+        public override SyntaxNode VisitChoiceNodeDeclaration(NavGrammar.ChoiceNodeDeclarationContext context) {
             
             var node = new ChoiceNodeDeclarationSyntax(CreateExtent(context));
 
@@ -329,7 +329,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitDialogNodeDeclaration(NavGrammarParser.DialogNodeDeclarationContext context) {
+        public override SyntaxNode VisitDialogNodeDeclaration(NavGrammar.DialogNodeDeclarationContext context) {
             
             var node = new DialogNodeDeclarationSyntax(CreateExtent(context));
 
@@ -340,7 +340,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitViewNodeDeclaration(NavGrammarParser.ViewNodeDeclarationContext context) {
+        public override SyntaxNode VisitViewNodeDeclaration(NavGrammar.ViewNodeDeclarationContext context) {
 
             var node = new ViewNodeDeclarationSyntax(CreateExtent(context));
 
@@ -355,7 +355,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region TransitionDefinitionBlock
 
-        public override SyntaxNode VisitTransitionDefinitionBlock(NavGrammarParser.TransitionDefinitionBlockContext context) {
+        public override SyntaxNode VisitTransitionDefinitionBlock(NavGrammar.TransitionDefinitionBlockContext context) {
             var node = new TransitionDefinitionBlockSyntax(
                     extent: 
                     CreateExtent(context),
@@ -374,7 +374,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitTransitionDefinition(NavGrammarParser.TransitionDefinitionContext context) {
+        public override SyntaxNode VisitTransitionDefinition(NavGrammar.TransitionDefinitionContext context) {
             
             var node = new TransitionDefinitionSyntax(
                     extent:
@@ -410,7 +410,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitSourceNode(NavGrammarParser.SourceNodeContext context) {
+        public override SyntaxNode VisitSourceNode(NavGrammar.SourceNodeContext context) {
 
             if (context.initSourceNode() != null) {
                 return VisitInitSourceNode(context.initSourceNode());
@@ -422,19 +422,19 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return null;
         }
 
-        public override SyntaxNode VisitInitSourceNode(NavGrammarParser.InitSourceNodeContext context) {
+        public override SyntaxNode VisitInitSourceNode(NavGrammar.InitSourceNodeContext context) {
             var node = new InitSourceNodeSyntax(CreateExtent(context));
             CreateToken(node, context.InitKeyword(), SyntaxTokenClassification.Keyword);
             return node;
         }
 
-        public override SyntaxNode VisitIdentifierSourceNode(NavGrammarParser.IdentifierSourceNodeContext context) {
+        public override SyntaxNode VisitIdentifierSourceNode(NavGrammar.IdentifierSourceNodeContext context) {
             var node = new IdentifierSourceNodeSyntax(CreateExtent(context));
             CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
             return node;
         }
         
-        public override SyntaxNode VisitTargetNode(NavGrammarParser.TargetNodeContext context) {
+        public override SyntaxNode VisitTargetNode(NavGrammar.TargetNodeContext context) {
 
             if (context.endTargetNode() != null) {
                 return VisitEndTargetNode(context.endTargetNode());
@@ -445,13 +445,13 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return null;
         }
 
-        public override SyntaxNode VisitEndTargetNode(NavGrammarParser.EndTargetNodeContext context) {
+        public override SyntaxNode VisitEndTargetNode(NavGrammar.EndTargetNodeContext context) {
             var node = new EndTargetNodeSyntax(extent:CreateExtent(context));
             CreateToken(node, context.EndKeyword(), SyntaxTokenClassification.Keyword);
             return node;
         }
 
-        public override SyntaxNode VisitIdentifierTargetNode(NavGrammarParser.IdentifierTargetNodeContext context) {
+        public override SyntaxNode VisitIdentifierTargetNode(NavGrammar.IdentifierTargetNodeContext context) {
             var node = new IdentifierTargetNodeSyntax(
                  extent:
                  CreateExtent(context),
@@ -468,7 +468,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitTrigger(NavGrammarParser.TriggerContext context) {
+        public override SyntaxNode VisitTrigger(NavGrammar.TriggerContext context) {
             if (context.signalTrigger() != null) {
                 return VisitSignalTrigger(context.signalTrigger());
             }
@@ -478,7 +478,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return null;
         }
 
-        public override SyntaxNode VisitSpontaneousTrigger(NavGrammarParser.SpontaneousTriggerContext context) {
+        public override SyntaxNode VisitSpontaneousTrigger(NavGrammar.SpontaneousTriggerContext context) {
             var node = new SpontaneousTriggerSyntax(
                      extent:
                      CreateExtent(context)                    
@@ -490,7 +490,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitSignalTrigger(NavGrammarParser.SignalTriggerContext context) {
+        public override SyntaxNode VisitSignalTrigger(NavGrammar.SignalTriggerContext context) {
             
             var node = new SignalTriggerSyntax(
                     extent:
@@ -506,7 +506,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitConditionClause([NotNull] NavGrammarParser.ConditionClauseContext context) {
+        public override SyntaxNode VisitConditionClause([NotNull] NavGrammar.ConditionClauseContext context) {
 
             if (context.ifConditionClause() != null) {
                 return VisitIfConditionClause(context.ifConditionClause());
@@ -520,7 +520,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return null;         
         }
 
-        public override SyntaxNode VisitIfConditionClause(NavGrammarParser.IfConditionClauseContext context) {
+        public override SyntaxNode VisitIfConditionClause(NavGrammar.IfConditionClauseContext context) {
             var node = new IfConditionClauseSyntax(
                     extent:CreateExtent(context),
                     identifierOrString:
@@ -533,7 +533,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitElseConditionClause(NavGrammarParser.ElseConditionClauseContext context) {
+        public override SyntaxNode VisitElseConditionClause(NavGrammar.ElseConditionClauseContext context) {
             var node = new ElseConditionClauseSyntax(extent: CreateExtent(context));
 
             CreateToken(node, context.ElseKeyword(), SyntaxTokenClassification.Keyword);
@@ -541,7 +541,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitElseIfConditionClause(NavGrammarParser.ElseIfConditionClauseContext context) {
+        public override SyntaxNode VisitElseIfConditionClause(NavGrammar.ElseIfConditionClauseContext context) {
             var node = new ElseIfConditionClauseSyntax(
                     extent: CreateExtent(context),
                     elseCondition:
@@ -556,7 +556,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitDoClause(NavGrammarParser.DoClauseContext context) {
+        public override SyntaxNode VisitDoClause(NavGrammar.DoClauseContext context) {
             
             var node = new DoClauseSyntax(
                     extent:
@@ -572,7 +572,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
         
-        public override SyntaxNode VisitExitTransitionDefinition(NavGrammarParser.ExitTransitionDefinitionContext context) {
+        public override SyntaxNode VisitExitTransitionDefinition(NavGrammar.ExitTransitionDefinitionContext context) {
 
             var node = new ExitTransitionDefinitionSyntax(
                 extent:
@@ -610,7 +610,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region Edge
 
-        public override SyntaxNode VisitEdge(NavGrammarParser.EdgeContext context) {
+        public override SyntaxNode VisitEdge(NavGrammar.EdgeContext context) {
 
             if (context.nonModalEdge() != null) {
                 return VisitNonModalEdge(context.nonModalEdge());
@@ -626,7 +626,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region Overrides of NavGrammarBaseVisitor<SyntaxNode>
 
-        public override SyntaxNode VisitModalEdge(NavGrammarParser.ModalEdgeContext context) {
+        public override SyntaxNode VisitModalEdge(NavGrammar.ModalEdgeContext context) {
 
             var node = new ModalEdgeSyntax(CreateExtent(context));
 
@@ -635,7 +635,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitGoToEdge(NavGrammarParser.GoToEdgeContext context) {
+        public override SyntaxNode VisitGoToEdge(NavGrammar.GoToEdgeContext context) {
 
             var node = new GoToEdgeSyntax(CreateExtent(context));
 
@@ -644,7 +644,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitNonModalEdge(NavGrammarParser.NonModalEdgeContext context) {
+        public override SyntaxNode VisitNonModalEdge(NavGrammar.NonModalEdgeContext context) {
 
             var node = new NonModalEdgeSyntax(CreateExtent(context));
 
@@ -659,7 +659,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeNotImplementedDeclaration
 
-        public override SyntaxNode VisitCodeNotImplementedDeclaration(NavGrammarParser.CodeNotImplementedDeclarationContext context) {
+        public override SyntaxNode VisitCodeNotImplementedDeclaration(NavGrammar.CodeNotImplementedDeclarationContext context) {
             
             var node= new CodeNotImplementedDeclarationSyntax(CreateExtent(context));
 
@@ -674,7 +674,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeDoNotInjectDeclaration
 
-        public override SyntaxNode VisitCodeDoNotInjectDeclaration(NavGrammarParser.CodeDoNotInjectDeclarationContext context) {
+        public override SyntaxNode VisitCodeDoNotInjectDeclaration(NavGrammar.CodeDoNotInjectDeclarationContext context) {
             
             var node= new CodeDoNotInjectDeclarationSyntax(CreateExtent(context));
 
@@ -689,7 +689,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeAbstractMethodDeclaration
 
-        public override SyntaxNode VisitCodeAbstractMethodDeclaration(NavGrammarParser.CodeAbstractMethodDeclarationContext context) {
+        public override SyntaxNode VisitCodeAbstractMethodDeclaration(NavGrammar.CodeAbstractMethodDeclarationContext context) {
             
             var node = new CodeAbstractMethodDeclarationSyntax(CreateExtent(context));
 
@@ -704,7 +704,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeDeclaration
 
-        public override SyntaxNode VisitCodeDeclaration(NavGrammarParser.CodeDeclarationContext context) {
+        public override SyntaxNode VisitCodeDeclaration(NavGrammar.CodeDeclarationContext context) {
 
             var node = new CodeDeclarationSyntax(CreateExtent(context));
 
@@ -720,7 +720,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeBaseDeclaration
 
-        public override SyntaxNode VisitCodeBaseDeclaration(NavGrammarParser.CodeBaseDeclarationContext context) {
+        public override SyntaxNode VisitCodeBaseDeclaration(NavGrammar.CodeBaseDeclarationContext context) {
 
             var node = new CodeBaseDeclarationSyntax(CreateExtent(context),
                 context.codeType()
@@ -742,7 +742,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeGenerateToDeclaration
 
-        public override SyntaxNode VisitCodeGenerateToDeclaration(NavGrammarParser.CodeGenerateToDeclarationContext context) {
+        public override SyntaxNode VisitCodeGenerateToDeclaration(NavGrammar.CodeGenerateToDeclarationContext context) {
             var node= new CodeGenerateToDeclarationSyntax(CreateExtent(context));
 
             CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
@@ -757,7 +757,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeParamsDeclaration
 
-        public override SyntaxNode VisitCodeParamsDeclaration(NavGrammarParser.CodeParamsDeclarationContext context) {
+        public override SyntaxNode VisitCodeParamsDeclaration(NavGrammar.CodeParamsDeclarationContext context) {
 
             var node = new CodeParamsDeclarationSyntax(CreateExtent(context),
                  parameterList:
@@ -778,7 +778,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region ParameterList
 
-        public override SyntaxNode VisitParameterList(NavGrammarParser.ParameterListContext context) {
+        public override SyntaxNode VisitParameterList(NavGrammar.ParameterListContext context) {
 
             var node = new ParameterListSyntax(CreateExtent(context), 
                 parameters: 
@@ -797,7 +797,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region Parameter
 
-        public override SyntaxNode VisitParameter([NotNull] NavGrammarParser.ParameterContext context) {
+        public override SyntaxNode VisitParameter([NotNull] NavGrammar.ParameterContext context) {
             var node = new ParameterSyntax(
                 CreateExtent(context),
                 type:
@@ -815,7 +815,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeResultDeclaration
 
-        public override SyntaxNode VisitCodeResultDeclaration(NavGrammarParser.CodeResultDeclarationContext context) {
+        public override SyntaxNode VisitCodeResultDeclaration(NavGrammar.CodeResultDeclarationContext context) {
 
             var node = new CodeResultDeclarationSyntax(CreateExtent(context),
                 result: context.parameter()
@@ -833,7 +833,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeType
 
-        public override SyntaxNode VisitCodeType(NavGrammarParser.CodeTypeContext context) {
+        public override SyntaxNode VisitCodeType(NavGrammar.CodeTypeContext context) {
 
 
             if (context.simpleType() != null) {
@@ -850,7 +850,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
         }
 
 
-        public override SyntaxNode VisitSimpleType(NavGrammarParser.SimpleTypeContext context) {
+        public override SyntaxNode VisitSimpleType(NavGrammar.SimpleTypeContext context) {
 
             var node = new SimpleTypeSyntax(CreateExtent(context));
 
@@ -859,7 +859,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitArrayType(NavGrammarParser.ArrayTypeContext context) {
+        public override SyntaxNode VisitArrayType(NavGrammar.ArrayTypeContext context) {
 
             CodeTypeSyntax type = null;
             if (context.simpleType() != null) {
@@ -880,7 +880,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region Overrides of NavGrammarBaseVisitor<SyntaxNode>
 
-        public override SyntaxNode VisitArrayRankSpecifier(NavGrammarParser.ArrayRankSpecifierContext context) {
+        public override SyntaxNode VisitArrayRankSpecifier(NavGrammar.ArrayRankSpecifierContext context) {
             var node = new ArrayRankSpecifierSyntax(CreateExtent(context));
 
             CreateToken(node, context.OpenBracket(),  SyntaxTokenClassification.Punctuation);
@@ -891,7 +891,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #endregion
 
-        public override SyntaxNode VisitGenericType(NavGrammarParser.GenericTypeContext context) {
+        public override SyntaxNode VisitGenericType(NavGrammar.GenericTypeContext context) {
 
             var node = new GenericTypeSyntax(CreateExtent(context), 
                 genericArguments: 
@@ -913,7 +913,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region IdentifierOrString
 
-        public override SyntaxNode VisitIdentifierOrStringList(NavGrammarParser.IdentifierOrStringListContext context) {
+        public override SyntaxNode VisitIdentifierOrStringList(NavGrammar.IdentifierOrStringListContext context) {
 
             var node = new IdentifierOrStringListSyntax(CreateExtent(context),
                 identifierOrStrings:
@@ -928,7 +928,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return node;
         }
 
-        public override SyntaxNode VisitIdentifierOrString(NavGrammarParser.IdentifierOrStringContext context) {
+        public override SyntaxNode VisitIdentifierOrString(NavGrammar.IdentifierOrStringContext context) {
             if (context.identifier() != null) {     
                 return VisitIdentifier(context.identifier());
             }
@@ -938,13 +938,13 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return null;
         }
 
-        public override SyntaxNode VisitIdentifier(NavGrammarParser.IdentifierContext context) {
+        public override SyntaxNode VisitIdentifier(NavGrammar.IdentifierContext context) {
             var node = new IdentifierSyntax(CreateExtent(context));
             CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
             return node;
         }
 
-        public override SyntaxNode VisitStringLiteral(NavGrammarParser.StringLiteralContext context) {
+        public override SyntaxNode VisitStringLiteral(NavGrammar.StringLiteralContext context) {
             var node = new StringLiteralSyntax(CreateExtent(context));
             CreateToken(node, context.StringLiteral(), SyntaxTokenClassification.StringLiteral);
             return node;

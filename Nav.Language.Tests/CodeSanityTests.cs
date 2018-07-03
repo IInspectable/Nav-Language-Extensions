@@ -85,8 +85,8 @@ namespace Nav.Language.Tests {
         [Description("Mit diesem Test stellen wir sicher, dass es für alle Token-Arten aus der NavTokens.g4 einen korrekten SyntaxTokenType Enum Wert gibt: \r\n")]
         public void TestSyntaxTokenTypeMapping() {
 
-            var expectedTypes = typeof (NavGrammarParser).GetFields(BindingFlags.Public | BindingFlags.Static)
-                    .Where(f => f.IsLiteral && !f.Name.StartsWith("RULE_"))
+            var expectedTypes = typeof (NavTokens).GetFields(BindingFlags.Public | BindingFlags.Static)
+                    .Where(f => f.IsLiteral && !f.Name.EndsWith("Channel"))
                     .ToList();
 
             var actualTypes = typeof(SyntaxTokenType).GetFields(BindingFlags.Public | BindingFlags.Static)
