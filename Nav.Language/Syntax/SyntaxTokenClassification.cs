@@ -1,6 +1,7 @@
 ﻿namespace Pharmatechnik.Nav.Language {
 
     public enum SyntaxTokenClassification {
+
         Unknown,
         Skiped,
         Whitespace,
@@ -14,5 +15,7 @@
         TypeName,
         PreprocessorText,
         PreprocessorKeyword
+
     }
+
 }

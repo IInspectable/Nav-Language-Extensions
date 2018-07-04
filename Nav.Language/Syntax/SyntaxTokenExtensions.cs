@@ -4,6 +4,7 @@ using System.Linq;
 namespace Pharmatechnik.Nav.Language {
 
     public static class SyntaxTokenExtensions {
+
         public static IEnumerable<SyntaxToken> OfClassification(this IEnumerable<SyntaxToken> source, SyntaxTokenClassification classification) {
             return source.Where(t => t.Classification == classification);
         }
@@ -35,5 +36,7 @@ namespace Pharmatechnik.Nav.Language {
         public static SyntaxToken LastOrDefault(this IEnumerable<SyntaxToken> source, SyntaxTokenType type) {
             return source.LastOrDefault(t => t.Type == type);
         }
+
     }
+
 }

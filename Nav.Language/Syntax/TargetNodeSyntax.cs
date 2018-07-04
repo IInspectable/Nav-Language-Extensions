@@ -1,4 +1,5 @@
 using System;
+
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;
@@ -6,34 +7,42 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
-    public abstract class TargetNodeSyntax : SyntaxNode {
-        protected TargetNodeSyntax(TextExtent extent) : base(extent) {}
+    public abstract class TargetNodeSyntax: SyntaxNode {
+
+        protected TargetNodeSyntax(TextExtent extent): base(extent) {
+        }
+
         public abstract string Name { get; }
+
     }
 
     [Serializable]
     [SampleSyntax("end")]
-    public partial class EndTargetNodeSyntax : TargetNodeSyntax {
-        internal EndTargetNodeSyntax(TextExtent extent) : base(extent) {}
+    public partial class EndTargetNodeSyntax: TargetNodeSyntax {
 
-        public SyntaxToken EndKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.EndKeyword);
-        public override string Name   => EndKeyword.ToString();
+        internal EndTargetNodeSyntax(TextExtent extent): base(extent) {
+        }
+
+        public          SyntaxToken EndKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.EndKeyword);
+        public override string      Name       => EndKeyword.ToString();
+
     }
 
     [Serializable]
     [SampleSyntax("Identifier (identifierOrStringList)")]
-    public partial class IdentifierTargetNodeSyntax : TargetNodeSyntax {
-        readonly IdentifierOrStringListSyntax _identifierOrStringList;
+    public partial class IdentifierTargetNodeSyntax: TargetNodeSyntax {
 
-        internal IdentifierTargetNodeSyntax(TextExtent extent, IdentifierOrStringListSyntax identifierOrStringList) 
+        internal IdentifierTargetNodeSyntax(TextExtent extent, IdentifierOrStringListSyntax identifierOrStringList)
             : base(extent) {
-            AddChildNode(_identifierOrStringList = identifierOrStringList);
-        }        
+            AddChildNode(IdentifierOrStringList = identifierOrStringList);
+        }
 
-        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
-        public override string Name   => Identifier.ToString();
+        public          SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+        public override string      Name       => Identifier.ToString();
 
         [CanBeNull]
-        public IdentifierOrStringListSyntax IdentifierOrStringList => _identifierOrStringList;
+        public IdentifierOrStringListSyntax IdentifierOrStringList { get; }
+
     }
+
 }

@@ -10,16 +10,15 @@ namespace Pharmatechnik.Nav.Language {
     [SampleSyntax("")]
     public partial class NodeDeclarationBlockSyntax : SyntaxNode {
 
-        readonly IReadOnlyList<NodeDeclarationSyntax> _nodeDeclarations;
 
         internal NodeDeclarationBlockSyntax(TextExtent extent, IReadOnlyList<NodeDeclarationSyntax> nodeDeclarations) 
             : base(extent) {
 
-            AddChildNodes(_nodeDeclarations = nodeDeclarations);
+            AddChildNodes(NodeDeclarations = nodeDeclarations);
         }
 
         [NotNull]
-        public IReadOnlyList<NodeDeclarationSyntax> NodeDeclarations => _nodeDeclarations;
+        public IReadOnlyList<NodeDeclarationSyntax> NodeDeclarations { get; }
 
         [NotNull]
         public IEnumerable<ConnectionPointNodeSyntax> ConnectionPoints() {

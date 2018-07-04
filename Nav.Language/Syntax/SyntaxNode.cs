@@ -17,14 +17,12 @@ namespace Pharmatechnik.Nav.Language {
     [DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
     public abstract partial class SyntaxNode: IExtent {
 
-        readonly TextExtent _extent;
-
         List<SyntaxNode> _childNodes;
         SyntaxTree       _syntaxTree;
         SyntaxNode       _parent;
 
         internal SyntaxNode(TextExtent extent) {
-            _extent = extent;
+            Extent = extent;
         }
 
         internal void FinalConstruct(SyntaxTree syntaxTree, SyntaxNode parent) {
@@ -47,7 +45,7 @@ namespace Pharmatechnik.Nav.Language {
         public int End    => Extent.End;
         public int Length => Extent.Length;
 
-        public TextExtent Extent => _extent;
+        public TextExtent Extent { get; }
 
         [CanBeNull]
         public SyntaxNode Parent {

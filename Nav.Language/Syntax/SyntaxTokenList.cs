@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using JetBrains.Annotations;
+
 using Pharmatechnik.Nav.Language.Internal;
 using Pharmatechnik.Nav.Language.Text;
 
@@ -16,22 +17,22 @@ namespace Pharmatechnik.Nav.Language {
     [Serializable]
     public sealed class SyntaxTokenList: IReadOnlyList<SyntaxToken> {
 
-        static readonly IReadOnlyList<SyntaxToken> EmptyTokens= new List<SyntaxToken>(Enumerable.Empty<SyntaxToken>()).AsReadOnly();
-        readonly IReadOnlyList<SyntaxToken> _tokens;
+        static readonly IReadOnlyList<SyntaxToken> EmptyTokens = new List<SyntaxToken>(Enumerable.Empty<SyntaxToken>()).AsReadOnly();
+        readonly        IReadOnlyList<SyntaxToken> _tokens;
 
         public SyntaxTokenList(List<SyntaxToken> tokens): this(tokens, attachSorted: false) {
         }
 
         SyntaxTokenList(IReadOnlyList<SyntaxToken> tokens, bool attachSorted) {
 
-            if(attachSorted || tokens==null || tokens.Count==0) {
+            if (attachSorted || tokens == null || tokens.Count == 0) {
                 // Tokens sind bereits sortiert oder es gibt keine Tokens
                 _tokens = tokens ?? EmptyTokens;
             } else {
                 var tokenList = new List<SyntaxToken>(tokens);
                 tokenList.Sort(SyntaxTokenComparer.Default);
                 _tokens = tokenList;
-            }            
+            }
         }
 
         internal static SyntaxTokenList AttachSortedTokens(IReadOnlyList<SyntaxToken> tokens) {
@@ -56,9 +57,10 @@ namespace Pharmatechnik.Nav.Language {
         public IEnumerable<SyntaxToken> this[TextExtent extent, bool includeOverlapping = false] => _tokens.GetElements(extent, includeOverlapping);
 
         public SyntaxToken FindAtPosition(int position) {
-            if(position < 0) {
+            if (position < 0) {
                 return SyntaxToken.Missing;
             }
+
             return _tokens.FindElementAtPosition(position, defaultIfNotFound: true);
         }
 
@@ -69,6 +71,7 @@ namespace Pharmatechnik.Nav.Language {
                     return token;
                 }
             }
+
             return SyntaxToken.Missing;
         }
 
@@ -79,11 +82,14 @@ namespace Pharmatechnik.Nav.Language {
                     return token;
                 }
             }
+
             return SyntaxToken.Missing;
         }
 
         internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, bool nextToken) {
             return _tokens.NextOrPreviousElement(node, currentToken, nextToken, SyntaxToken.Missing);
         }
+
     }
+
 }

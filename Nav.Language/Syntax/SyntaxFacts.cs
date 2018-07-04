@@ -2,6 +2,7 @@
 
 using System.Linq;
 using System.Collections.Immutable;
+
 using Pharmatechnik.Nav.Language.Generated;
 
 #endregion
@@ -9,6 +10,7 @@ using Pharmatechnik.Nav.Language.Generated;
 namespace Pharmatechnik.Nav.Language {
 
     public static class SyntaxFacts {
+
         // Keywords
         public static readonly string TaskKeyword            = GetLiteralName(NavGrammar.TaskKeyword);
         public static readonly string TaskrefKeyword         = GetLiteralName(NavGrammar.TaskrefKeyword);
@@ -35,30 +37,30 @@ namespace Pharmatechnik.Nav.Language {
         public static readonly string NotimplementedKeyword  = GetLiteralName(NavGrammar.NotimplementedKeyword);
         public static readonly string AbstractmethodKeyword  = GetLiteralName(NavGrammar.AbstractmethodKeyword);
         public static readonly string DonotinjectKeyword     = GetLiteralName(NavGrammar.DonotinjectKeyword);
-        public static readonly string GoToEdgeKeyword        = GetLiteralName(NavGrammar.GoToEdgeKeyword);        
+        public static readonly string GoToEdgeKeyword        = GetLiteralName(NavGrammar.GoToEdgeKeyword);
         public static readonly string NonModalEdgeKeyword    = GetLiteralName(NavGrammar.NonModalEdgeKeyword);
         public static readonly string ModalEdgeKeyword       = "o->";
         public static readonly string ModalEdgeKeywordAlt    = "*->";
 
         public static readonly ImmutableHashSet<string> NavKeywords = new[] {
-            TaskKeyword           ,
-            TaskrefKeyword        ,
-            InitKeyword           ,
-            InitKeywordAlt        ,
-            EndKeyword            ,
-            ChoiceKeyword         ,
-            DialogKeyword         ,
-            ViewKeyword           ,
-            ExitKeyword           ,
-            OnKeyword             ,
-            IfKeyword             ,
-            ElseKeyword           ,
-            SpontaneousKeyword    ,
-            SpontKeyword          ,
-            DoKeyword             ,
-            GoToEdgeKeyword       ,
-            NonModalEdgeKeyword   ,
-            ModalEdgeKeyword      ,
+            TaskKeyword,
+            TaskrefKeyword,
+            InitKeyword,
+            InitKeywordAlt,
+            EndKeyword,
+            ChoiceKeyword,
+            DialogKeyword,
+            ViewKeyword,
+            ExitKeyword,
+            OnKeyword,
+            IfKeyword,
+            ElseKeyword,
+            SpontaneousKeyword,
+            SpontKeyword,
+            DoKeyword,
+            GoToEdgeKeyword,
+            NonModalEdgeKeyword,
+            ModalEdgeKeyword,
             ModalEdgeKeywordAlt
         }.ToImmutableHashSet();
 
@@ -67,17 +69,17 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public static readonly ImmutableHashSet<string> CodeKeywords = new[] {
-            ResultKeyword         ,
-            ParamsKeyword         ,
-            BaseKeyword           ,
+            ResultKeyword,
+            ParamsKeyword,
+            BaseKeyword,
             NamespaceprefixKeyword,
-            UsingKeyword          ,
-            CodeKeyword           ,
-            GeneratetoKeyword     ,
-            NotimplementedKeyword ,
-            AbstractmethodKeyword ,
-            DonotinjectKeyword    
-            
+            UsingKeyword,
+            CodeKeyword,
+            GeneratetoKeyword,
+            NotimplementedKeyword,
+            AbstractmethodKeyword,
+            DonotinjectKeyword
+
         }.ToImmutableHashSet();
 
         public static bool IsCodeKeyword(string value) {
@@ -104,16 +106,16 @@ namespace Pharmatechnik.Nav.Language {
         public static readonly string Colon        = GetLiteralName(NavGrammar.Colon);
 
         public static readonly ImmutableHashSet<string> Punctuations = new[] {
-            OpenBrace   ,
-            CloseBrace  ,
-            OpenParen   ,
-            CloseParen  ,
-            OpenBracket ,
+            OpenBrace,
+            CloseBrace,
+            OpenParen,
+            CloseParen,
+            OpenBracket,
             CloseBracket,
-            LessThan    ,
-            GreaterThan ,
-            Semicolon   ,
-            Comma       ,
+            LessThan,
+            GreaterThan,
+            Semicolon,
+            Comma,
             Colon
         }.ToImmutableHashSet();
 
@@ -126,18 +128,20 @@ namespace Pharmatechnik.Nav.Language {
             return c >= 'a' && c <= 'z' ||
                    c >= 'A' && c <= 'Z' ||
                    c >= '0' && c <= '9' ||
-                   c == 'Ä' || c == 'Ö' || c == 'Ü' || 
-                   c == 'ä' || c == 'ö' || c == 'ü' || 
-                   c == 'ß' || c == '.' || c == '_';
+                   c == 'Ä'             || c == 'Ö' || c == 'Ü' ||
+                   c == 'ä'             || c == 'ö' || c == 'ü' ||
+                   c == 'ß'             || c == '.' || c == '_';
         }
 
         public static bool IsValidIdentifier(string value) {
             if (string.IsNullOrEmpty(value)) {
                 return false;
             }
-            if(Keywords.Contains(value)) {
+
+            if (Keywords.Contains(value)) {
                 return false;
             }
+
             return value.All(IsIdentifierCharacter);
         }
 
@@ -153,5 +157,7 @@ namespace Pharmatechnik.Nav.Language {
         public static bool IsTrivia(SyntaxTokenClassification classification) {
             return classification == SyntaxTokenClassification.Comment || classification == SyntaxTokenClassification.Whitespace;
         }
+
     }
+
 }

@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language {
+
     [Serializable]
     [SampleSyntax("T1 param1, T2 param2")]
-    public partial class ParameterListSyntax : SyntaxNode, IReadOnlyList<ParameterSyntax> {
+    public partial class ParameterListSyntax: SyntaxNode, IReadOnlyList<ParameterSyntax> {
 
         readonly IReadOnlyList<ParameterSyntax> _parameters;
 
-        internal ParameterListSyntax(TextExtent extent, IReadOnlyList<ParameterSyntax> parameters) : base(extent) {
+        internal ParameterListSyntax(TextExtent extent, IReadOnlyList<ParameterSyntax> parameters): base(extent) {
             AddChildNodes(_parameters = parameters);
         }
 
@@ -26,5 +27,7 @@ namespace Pharmatechnik.Nav.Language {
         public int Count => _parameters.Count;
 
         public ParameterSyntax this[int index] => _parameters[index];
+
     }
+
 }

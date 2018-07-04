@@ -18,7 +18,7 @@ using Pharmatechnik.Nav.Language.Generated;
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-    
+
     public class SyntaxTree {
 
         internal SyntaxTree(SourceText sourceText,
@@ -59,9 +59,9 @@ namespace Pharmatechnik.Nav.Language {
 
             text = text ?? String.Empty;
 
-            var sourceText    = SourceText.From(text, filePath);
-            var diagnostics   = ImmutableArray.CreateBuilder<Diagnostic>();
-            
+            var sourceText  = SourceText.From(text, filePath);
+            var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
+
             // Setup Lexer
             var stream             = new AntlrInputStream(text);
             var lexer              = new NavTokens(stream);
@@ -81,9 +81,9 @@ namespace Pharmatechnik.Nav.Language {
             var syntax  = visitor.Visit(tree);
             var tokens  = PostprocessTokens(visitor.Tokens, cts, syntax, diagnostics, filePath, cancellationToken);
 
-            var syntaxTree = new SyntaxTree(sourceText : sourceText,
-                                            root       : syntax,
-                                            tokens     : tokens,
+            var syntaxTree = new SyntaxTree(sourceText: sourceText,
+                                            root: syntax,
+                                            tokens: tokens,
                                             diagnostics: diagnostics.ToImmutable());
 
             syntax.FinalConstruct(syntaxTree, null);
@@ -165,7 +165,7 @@ namespace Pharmatechnik.Nav.Language {
                                 tokenClassification = SyntaxTokenClassification.PreprocessorText;
                                 break;
                         }
-                        
+
                         break;
                     default:
                         throw new ArgumentException();
@@ -191,11 +191,11 @@ namespace Pharmatechnik.Nav.Language {
                     }
 
                     // TODO Nur vorübergehend hier?
-                    if (candidate.Type == NavTokens.PreprocessorSharp||
-                        candidate.Type == NavTokens.PreprocessorKeyword ) {
+                    if (candidate.Type == NavTokens.PreprocessorSharp ||
+                        candidate.Type == NavTokens.PreprocessorKeyword) {
 
                         var loc = candidate.GetLocation(filePath);
-                        if (candidate.Type == NavTokens.PreprocessorSharp && 
+                        if (candidate.Type                  == NavTokens.PreprocessorSharp &&
                             loc.StartLinePosition.Character != 0) {
                             diagnostics.Add(
                                 new Diagnostic(loc,
@@ -245,7 +245,7 @@ namespace Pharmatechnik.Nav.Language {
 
             return -1;
         }
-    
+
     }
 
 }

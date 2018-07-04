@@ -1,22 +1,25 @@
 using System;
 using System.Collections.Generic;
+
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language {
+
     [Serializable]
     [SampleSyntax("Type<T1, T2<T3, T4>>")]
-    public partial class GenericTypeSyntax : CodeTypeSyntax {
-        readonly IReadOnlyList<CodeTypeSyntax> _genericArguments;
+    public partial class GenericTypeSyntax: CodeTypeSyntax {
 
-        internal GenericTypeSyntax(TextExtent extent, IReadOnlyList<CodeTypeSyntax> genericArguments) : base(extent) {
-            AddChildNodes(_genericArguments = genericArguments);
+        internal GenericTypeSyntax(TextExtent extent, IReadOnlyList<CodeTypeSyntax> genericArguments): base(extent) {
+            AddChildNodes(GenericArguments = genericArguments);
         }
 
         public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
 
         [NotNull]
-        public IReadOnlyList<CodeTypeSyntax> GenericArguments => _genericArguments;
+        public IReadOnlyList<CodeTypeSyntax> GenericArguments { get; }
+
     }
+
 }
