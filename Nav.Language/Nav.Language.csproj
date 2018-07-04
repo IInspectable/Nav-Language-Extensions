@@ -430,9 +430,7 @@
       <Version>4.3.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="obj\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="CustomBuild.targets" />
