@@ -18,7 +18,7 @@ using Pharmatechnik.Nav.Language.Generated;
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-
+    
     public class SyntaxTree {
 
         internal SyntaxTree(SourceText sourceText,
@@ -61,14 +61,20 @@ namespace Pharmatechnik.Nav.Language {
 
             var sourceText    = SourceText.From(text, filePath);
             var diagnostics   = ImmutableArray.CreateBuilder<Diagnostic>();
-            var stream        = new AntlrInputStream(text);
-            var tokenSource   = new NavTokens(stream);
-            var cts           = new NavCommonTokenStream(tokenSource);
-            var parser        = new NavGrammar(cts);
-            var errorListener = new NavErrorListener(filePath, diagnostics);
+            
+            // Setup Lexer
+            var stream             = new AntlrInputStream(text);
+            var lexer              = new NavTokens(stream);
+            var lexerErrorListener = new NavLexerErrorListener(sourceText, diagnostics);
+            lexer.RemoveErrorListeners();
+            lexer.AddErrorListener(lexerErrorListener);
 
+            // Setup Parser
+            var cts                 = new NavCommonTokenStream(lexer);
+            var parser              = new NavGrammar(cts);
+            var parserErrorListener = new NavParserErrorListener(sourceText, diagnostics);
             parser.RemoveErrorListeners();
-            parser.AddErrorListener(errorListener);
+            parser.AddErrorListener(parserErrorListener);
 
             var tree    = treeCreator(parser);
             var visitor = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
@@ -146,8 +152,20 @@ namespace Pharmatechnik.Nav.Language {
                         }
 
                         break;
-                    case Lexer.DefaultTokenChannel:
+                    case NavTokens.DefaultTokenChannel:
                         tokenClassification = SyntaxTokenClassification.Skiped;
+                        break;
+                    case NavTokens.PreprocessorChannel:
+                        switch (candidate.Type) {
+                            case NavTokens.PreprocessorSharp:
+                            case NavTokens.PreprocessorKeyword:
+                                tokenClassification = SyntaxTokenClassification.PreprocessorKeyword;
+                                break;
+                            default:
+                                tokenClassification = SyntaxTokenClassification.PreprocessorText;
+                                break;
+                        }
+                        
                         break;
                     default:
                         throw new ArgumentException();
@@ -165,12 +183,32 @@ namespace Pharmatechnik.Nav.Language {
 
                     finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
 
-                    if (candidate.Type == NavGrammar.Unknown) {
+                    if (candidate.Type == NavTokens.Unknown) {
                         diagnostics.Add(
                             new Diagnostic(candidate.GetLocation(filePath),
                                            DiagnosticDescriptors.Syntax.Nav0000UnexpectedCharacter,
                                            candidate.Text));
                     }
+
+                    // TODO Nur vorübergehend hier?
+                    if (candidate.Type == NavTokens.PreprocessorSharp||
+                        candidate.Type == NavTokens.PreprocessorKeyword ) {
+
+                        var loc = candidate.GetLocation(filePath);
+                        if (candidate.Type == NavTokens.PreprocessorSharp && 
+                            loc.StartLinePosition.Character != 0) {
+                            diagnostics.Add(
+                                new Diagnostic(loc,
+                                               DiagnosticDescriptors.Syntax.Nav3001PreprocessorDirectiveMustAppearOnFirstNonWhitespacePosition));
+                        } else {
+                            diagnostics.Add(
+                                new Diagnostic(loc,
+                                               DiagnosticDescriptors.Syntax.Nav3000InvalidPreprocessorDirective,
+                                               candidate.Text));
+                        }
+
+                    }
+
                 }
 
             }
@@ -207,7 +245,7 @@ namespace Pharmatechnik.Nav.Language {
 
             return -1;
         }
-
+    
     }
 
 }

@@ -12,5 +12,7 @@
         TaskName,
         FormName,
         TypeName,
+        PreprocessorText,
+        PreprocessorKeyword
     }
 }

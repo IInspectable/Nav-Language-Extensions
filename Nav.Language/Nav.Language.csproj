@@ -48,6 +48,7 @@
     </Compile>
     <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />
+    <Compile Include="Internal\NavLexerErrorListener.cs" />
     <Compile Include="SemanticAnalyzer\Nav0010CannotResolveTask0.cs" />
     <Compile Include="SemanticAnalyzer\Nav0011CannotResolveNode0.cs" />
     <Compile Include="SemanticAnalyzer\Nav0012CannotResolveExit0.cs" />
@@ -328,7 +329,7 @@
     <Compile Include="Syntax\SyntaxTokenExtensions.cs" />
     <Compile Include="Internal\SyntaxTokenFactory.cs" />
     <Compile Include="Syntax\SyntaxTokenClassification.cs" />
-    <Compile Include="Internal\NavErrorListener.cs" />
+    <Compile Include="Internal\NavParserErrorListener.cs" />
     <Compile Include="Text\TextChange.cs" />
     <Compile Include="Text\TextChangeWriter.cs" />
     <Compile Include="ThisAssembly.generated.cs" />

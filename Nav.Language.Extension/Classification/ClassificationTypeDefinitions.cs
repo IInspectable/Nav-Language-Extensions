@@ -292,6 +292,46 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
         #endregion
 
+        #region PreprocessorKeyword
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(ClassificationTypeNames.PreprocessorKeyword)]
+        [BaseDefinition("preprocessor keyword")]
+        public static ClassificationTypeDefinition PreprocessorKeyword;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.PreprocessorKeyword)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Default)]
+        public sealed class PreprocessorKeywordClassificationFormatDefinition : ClassificationFormatDefinition {
+
+            public PreprocessorKeywordClassificationFormatDefinition() {
+                DisplayName = "Nav Preprocessor Keyword";
+            }
+        }
+
+        #endregion
+
+        #region PreprocessorKeyword
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(ClassificationTypeNames.PreprocessorText)]
+        [BaseDefinition("preprocessor text")]
+        public static ClassificationTypeDefinition PreprocessorText;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.PreprocessorText)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Default)]
+        public sealed class PreprocessorTextClassificationFormatDefinition : ClassificationFormatDefinition {
+
+            public PreprocessorTextClassificationFormatDefinition() {
+                DisplayName = "Nav Preprocessor Text";
+            }
+        }
+
+        #endregion
+
         public static Dictionary<SyntaxTokenClassification, IClassificationType> GetSyntaxTokenClassificationMap(IClassificationTypeRegistryService registry) {
 
             var classificationMap = new Dictionary<SyntaxTokenClassification, IClassificationType> {
@@ -305,6 +345,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                 {SyntaxTokenClassification.FormName      , registry.GetClassificationType(ClassificationTypeNames.FormName)},
                 {SyntaxTokenClassification.TypeName      , registry.GetClassificationType(ClassificationTypeNames.TypeName)},
                 {SyntaxTokenClassification.TaskName      , registry.GetClassificationType(ClassificationTypeNames.TaskName)},
+
+                {SyntaxTokenClassification.PreprocessorKeyword, registry.GetClassificationType(ClassificationTypeNames.PreprocessorKeyword)},
+                {SyntaxTokenClassification.PreprocessorText   , registry.GetClassificationType(ClassificationTypeNames.PreprocessorText)},
             };
 
             return classificationMap;

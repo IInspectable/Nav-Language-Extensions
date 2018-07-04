@@ -86,7 +86,7 @@ namespace Nav.Language.Tests {
         public void TestSyntaxTokenTypeMapping() {
 
             var expectedTypes = typeof (NavTokens).GetFields(BindingFlags.Public | BindingFlags.Static)
-                    .Where(f => f.IsLiteral && !f.Name.EndsWith("Channel"))
+                    .Where(f => f.IsLiteral && !f.Name.EndsWith("Channel") && !f.Name.EndsWith("Mode"))
                     .ToList();
 
             var actualTypes = typeof(SyntaxTokenType).GetFields(BindingFlags.Public | BindingFlags.Static)

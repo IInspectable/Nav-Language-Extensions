@@ -16,6 +16,30 @@
                 category       : Category,
                 defaultSeverity: Severity
                 );
+
+            //------------------------------
+            // Preprocessor Errors
+
+            /// <summary>
+            /// Invalid Preprocessor directive
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav3000InvalidPreprocessorDirective = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav3000,
+                messageFormat  : "Invalid Preprocessor directive",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Error
+            );
+
+            /// <summary>
+            /// Preprocessor directives must appear as the first non-whitespace character on a line
+            /// </summary>
+            public static readonly DiagnosticDescriptor Nav3001PreprocessorDirectiveMustAppearOnFirstNonWhitespacePosition = new DiagnosticDescriptor(
+                id             : DiagnosticId.Nav3001,
+                messageFormat  : "Preprocessor directives must appear as the first non-whitespace character on a line",
+                category       : Category,
+                defaultSeverity: DiagnosticSeverity.Error
+            );
+
         }
     }
 }
