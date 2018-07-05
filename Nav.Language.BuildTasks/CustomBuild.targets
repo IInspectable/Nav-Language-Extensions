@@ -6,12 +6,32 @@
   </PropertyGroup>
   <Import Project="..\_build\WriteThisAssemblyFile.targets" />
   <PropertyGroup>
-    <DeployDirectory>$(OutputPath)\..\..\..\deploy\Build Tools</DeployDirectory>
+    <DeployDirectory>$([System.IO.Path]::GetFullPath($(OutputPath)\..\..\..\deploy\Build Tools))</DeployDirectory>
   </PropertyGroup>
+
+  <!-- Es ist einfacher die Files explizit anzugeben...-->
+  <ItemGroup>
+    <Deploy Include="$(OutputPath)\Antlr3.Runtime.dll"/>
+    <Deploy Include="$(OutputPath)\Antlr4.Runtime.dll"/>
+    <Deploy Include="$(OutputPath)\Antlr4.StringTemplate.dll"/>
+    <Deploy Include="$(OutputPath)\nav.exe"/>
+    <Deploy Include="$(OutputPath)\nav.exe.config"/>
+    <Deploy Include="$(OutputPath)\NLog.dll"/>
+    <Deploy Include="$(OutputPath)\Pharmatechnik.Nav.Language.BuildTasks.dll"/>
+    <Deploy Include="$(OutputPath)\Pharmatechnik.Nav.Language.dll"/>
+    <Deploy Include="$(OutputPath)\Pharmatechnik.Nav.Language.targets"/>
+    <Deploy Include="$(OutputPath)\Pharmatechnik.Nav.Utilities.dll"/>
+    <Deploy Include="$(OutputPath)\System.Collections.Immutable.dll"/>
+    <Deploy Include="$(OutputPath)\System.Memory.dll"/>
+    <Deploy Include="$(OutputPath)\System.Runtime.CompilerServices.Unsafe.dll"/>
+  </ItemGroup>
+
   <Target Name="DeployFiles" AfterTargets="CopyFilesToOutputDirectory">
     <ItemGroup>
       <_FilesToDelete Include="$(DeployDirectory)\**\*" />
-      <_itemsToDeploy Include="$(OutputPath)\**\*" Exclude="$(OutputPath)\**\*.xml;$(OutputPath)\**\*.pdb" />
+      <!--<_itemsToDeploy Include="$(OutputPath)\**\*" Exclude="$(OutputPath)\**\*.xml;$(OutputPath)\**\*.pdb" />-->
+      <_itemsToDeploy Include="@(Deploy)" />
+
     </ItemGroup>
     <Message Text="Copy files to directory '$([System.IO.Path]::GetFullPath('$(DeployDirectory)'))'" Importance="high" />
     <Delete Files="@(_FilesToDelete)" />
