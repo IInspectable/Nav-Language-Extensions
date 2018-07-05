@@ -94,7 +94,7 @@ namespace Pharmatechnik.Nav.Language {
             return hasSignificantContent ? column : Int32.MaxValue;
         }
 
-        public static ImmutableArray<int> ParseLineStarts(this string text) {
+        public static ImmutableArray<int> ParseLineStarts(this ReadOnlySpan<char> text) {
 
             if (text.Length == 0) {
                 return ImmutableArray.Create(0);

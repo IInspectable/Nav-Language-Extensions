@@ -10,7 +10,7 @@ namespace Pharmatechnik.Nav.Language.Text {
     [Serializable]
     public struct SourceTextLine: IExtent, IEquatable<SourceTextLine> {
 
-        internal SourceTextLine(SourceText sourceText, int line, int lineStart, int lineEnd) {
+        internal SourceTextLine(StringSourceText sourceText, int line, int lineStart, int lineEnd) {
 
             if (sourceText == null) {
                 throw new ArgumentNullException(nameof(sourceText));
@@ -40,6 +40,18 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         [NotNull]
         public SourceText SourceText { get; }
+
+        public ReadOnlySpan<char> Span => SourceText.Slice(Extent);
+
+        [NotNull]
+        public Location Location => SourceText.GetLocation(Extent);
+
+        [NotNull]
+        public Location GetLocation(int charPositionInLine, int length) {
+            var start  = Extent.Start + charPositionInLine;
+            var extent = new TextExtent(start: start, length: length);
+            return SourceText.GetLocation(extent);
+        }
 
         /// <summary>
         /// The line number. The first line in a file is defined as line 0 (zero based line numbering).

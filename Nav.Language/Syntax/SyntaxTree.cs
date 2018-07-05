@@ -18,7 +18,7 @@ using Pharmatechnik.Nav.Language.Generated;
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-
+  
     public class SyntaxTree {
 
         internal SyntaxTree(SourceText sourceText,
@@ -61,9 +61,10 @@ namespace Pharmatechnik.Nav.Language {
 
             var sourceText  = SourceText.From(text, filePath);
             var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
-
+            
+            
             // Setup Lexer
-            var stream             = new AntlrInputStream(text);
+            var stream             = new AntlrInputStream(sourceText.Text);
             var lexer              = new NavTokens(stream);
             var lexerErrorListener = new NavLexerErrorListener(sourceText, diagnostics);
             lexer.RemoveErrorListeners();

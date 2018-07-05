@@ -37,7 +37,9 @@ namespace Nav.Language.Tests {
 
             var tl = st.GetTextLineAtPosition(0);
 
-            Assert.That(tl.ToString(), Is.EqualTo(testText));
+            Assert.That(tl.ToString(),      Is.EqualTo(testText));
+            Assert.That(tl.Span.ToString(), Is.EqualTo(testText));
+
         }
 
         [Test]
@@ -51,9 +53,9 @@ namespace Nav.Language.Tests {
             Assert.That(st.FileInfo,        Is.Null);
             Assert.That(st.TextLines.Count, Is.EqualTo(2));
 
-
-            Assert.That(st.TextLines[0].ToString(), Is.EqualTo("hello There!\r\n"));
-            Assert.That(st.TextLines[1].ToString(), Is.EqualTo(""));
+            Assert.That(st.TextLines[0].ToString(),      Is.EqualTo("hello There!\r\n"));
+            Assert.That(st.TextLines[0].Span.ToString(), Is.EqualTo("hello There!\r\n"));
+            Assert.That(st.TextLines[1].ToString(),      Is.EqualTo(""));
         }
 
         [Test]
@@ -72,7 +74,38 @@ namespace Nav.Language.Tests {
                 expectedLine++;
                 currentEnd = lineExtent.End;
             }
+
             Assert.That(currentEnd, Is.EqualTo(Resources.LargeNav.Length));
+        }
+
+        [Test]
+        public void TestGetLoationInTextLine() {
+
+            const string testText = "Hello There!\r\nNext Line";
+
+            SourceText st = SourceText.From(testText);
+
+            // "There"
+            var line1 = st.TextLines[0];
+            var loc1  = line1.GetLocation(6, 5);
+            var text1 = st.Substring(loc1.Start, loc1.Length);
+
+            Assert.That(loc1.StartLinePosition.Line,      Is.EqualTo(0));
+            Assert.That(loc1.StartLinePosition.Character, Is.EqualTo(6));
+            Assert.That(loc1.EndLinePosition.Line,        Is.EqualTo(0));
+            Assert.That(loc1.EndLinePosition.Character,   Is.EqualTo(11));
+            Assert.That(text1,                            Is.EqualTo("There"));
+
+            // "Next"
+            var line2 = st.TextLines[1];
+            var loc2  = line2.GetLocation(0, 4);
+            var text2 = st.Substring(loc2.Start, loc2.Length);
+
+            Assert.That(loc2.StartLinePosition.Line,      Is.EqualTo(1));
+            Assert.That(loc2.StartLinePosition.Character, Is.EqualTo(0));
+            Assert.That(loc2.EndLinePosition.Line,        Is.EqualTo(1));
+            Assert.That(loc2.EndLinePosition.Character,   Is.EqualTo(4));
+            Assert.That(text2,                            Is.EqualTo("Next"));
         }
 
     }

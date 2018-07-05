@@ -124,7 +124,7 @@ Unknown
 mode PreprocessorMode;
 
 PreprocessorKeyword
-    :   LetterCharacter*   
+    :   LetterCharacter+   
     -> channel(PreprocessorChannel), mode(PreprocessorTextMode)
     ;
 
