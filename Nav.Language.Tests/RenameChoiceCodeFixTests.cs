@@ -286,8 +286,8 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
             return writer.ApplyTextChanges(text, textChanges);
         }
 
-        EditorSettings GetEditorSettings() {
-            return new EditorSettings(4, "\r\n");
+        TextEditorSettings GetEditorSettings() {
+            return new TextEditorSettings(4, "\r\n");
         }
 
         private static T FindNodeSymbol<T>(CodeGenerationUnit unit, string taskName, string nodeName)where T : INodeSymbol {

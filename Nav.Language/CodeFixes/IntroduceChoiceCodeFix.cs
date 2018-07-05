@@ -72,13 +72,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
             var textChanges = new List<TextChange>();
             // Die Choice Deklaration: choice NeueChoice;
-            textChanges.AddRange(GetInsertChanges(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{Context.EditorSettings.NewLine}"));
+            textChanges.AddRange(GetInsertChanges(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{Context.TextEditorSettings.NewLine}"));
             // Die Node Reference wird nun umgebogen auf die choice
             textChanges.AddRange(GetRenameSymbolChanges(NodeReference, choiceName));
             // Die Edge der choice ist immer '-->'
             textChanges.AddRange(GetRenameSymbolChanges(edgeMode, SyntaxFacts.GoToEdgeKeyword));
             // Die neue choice Transition 
-            textChanges.AddRange(GetInsertChanges(nodeTransitionLine.Extent.End, $"{choiceTransition}{Context.EditorSettings.NewLine}"));
+            textChanges.AddRange(GetInsertChanges(nodeTransitionLine.Extent.End, $"{choiceTransition}{Context.TextEditorSettings.NewLine}"));
 
             return textChanges;
         }

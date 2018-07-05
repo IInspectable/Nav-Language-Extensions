@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language.Text {
 
     static class StringExtensions {
 
@@ -31,8 +31,6 @@ namespace Pharmatechnik.Nav.Language {
             return s.Substring(0, 1).ToUpperInvariant() + s.Substring(1);
         }
 
-        #region Dokumentation
-
         /// <summary>
         /// Liefert den Spaltenindex (beginnend bei 0) für den angegebenen Offset vom Start der Zeile. 
         /// Es werden Tabulatoren entsprechend eingerechnet.
@@ -44,9 +42,7 @@ namespace Pharmatechnik.Nav.Language {
         /// ^^-^---^
         /// Der Spaltenindex für den Zeichenindex 4 ist 8 (man beachte die 2 Tabulatoren!).
         /// </example>
-
-        #endregion
-        public static int GetColumnForOffset(this string text, int tabSize, int offset) {
+        public static int GetColumnForOffset(this ReadOnlySpan<char> text, int tabSize, int offset) {
             var column = 0;
             for (int index = 0; index < offset; index++) {
                 var c = text[index];
@@ -60,8 +56,6 @@ namespace Pharmatechnik.Nav.Language {
             return column;
         }
 
-        #region Dokumentation
-
         /// <summary>
         /// Liefert den Spaltenindex (beginnend bei 0) für das erste Signifikante Zeichen in der angegebenen Zeile.
         /// Als nicht signifikant gelten alle Arten von Leerzeichen. Dabei werden Tabulatoren entsprechend umgerechnet.
@@ -73,9 +67,7 @@ namespace Pharmatechnik.Nav.Language {
         /// --------^ 
         /// Der Signifikante Spaltenindex für diese Zeile ist 8.
         /// </example>
-
-        #endregion
-        public static int GetSignificantColumn(this string text, int tabSize) {
+        public static int GetSignificantColumn(this ReadOnlySpan<char> text, int tabSize) {
             bool hasSignificantContent = false;
             int  column                = 0;
             for (int index = 0; index < text.Length; index++) {

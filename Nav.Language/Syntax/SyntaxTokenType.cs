@@ -49,7 +49,7 @@ namespace Pharmatechnik.Nav.Language {
         Colon                  = NavTokens.Colon,
         StringLiteral          = NavTokens.StringLiteral,
         Unknown                = NavTokens.Unknown,
-        PreprocessorSharp      = NavTokens.PreprocessorSharp,
+        HashToken              = NavTokens.HashToken,
         PreprocessorKeyword    = NavTokens.PreprocessorKeyword,
         PreprocessorText       = NavTokens.PreprocessorText,
         PreprocessorNewLine    = NavTokens.PreprocessorNewLine,

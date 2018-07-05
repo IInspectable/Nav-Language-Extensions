@@ -8,7 +8,8 @@ using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text.Outlining;
-using Pharmatechnik.Nav.Language.CodeFixes;
+
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -139,8 +140,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
              return symbol;
          }
 
-         public static EditorSettings GetEditorSettings(this ITextView textView) {
-             return new EditorSettings(
+         public static TextEditorSettings GetEditorSettings(this ITextView textView) {
+             return new TextEditorSettings(
                  tabSize: textView.Options.GetTabSize(),
                  newLine: textView.Options.GetNewLineCharacter());
          }

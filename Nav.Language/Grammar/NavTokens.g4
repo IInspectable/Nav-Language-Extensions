@@ -36,7 +36,7 @@ NonModalEdgeKeyword    : '==>';
 //------------------
 // DEFAULT_MODE
 
-PreprocessorSharp                  
+HashToken                  
     : '#'  
     -> channel(PreprocessorChannel), mode(PreprocessorMode)
     ;

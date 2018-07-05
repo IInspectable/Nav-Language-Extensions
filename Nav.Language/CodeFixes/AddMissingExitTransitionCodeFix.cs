@@ -64,7 +64,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             
             // ReSharper disable once PossibleNullReferenceException Check unter CanApplyFix
             var transitionLine = SyntaxTree.SourceText.GetTextLineAtPosition(templateEdge.SourceReference.Start);
-            textChanges.AddRange(GetInsertChanges(transitionLine.Extent.End, $"{exitTransition}{Context.EditorSettings.NewLine}"));
+            textChanges.AddRange(GetInsertChanges(transitionLine.Extent.End, $"{exitTransition}{Context.TextEditorSettings.NewLine}"));
 
             return textChanges;
         }

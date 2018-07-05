@@ -40,15 +40,15 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         }
 
         protected IEnumerable<TextChange> GetRemoveSyntaxNodeChanges(SyntaxNode syntaxNode) {
-            return SyntaxTree.GetRemoveSyntaxNodeChanges(syntaxNode, Context.EditorSettings);            
+            return SyntaxTree.GetRemoveSyntaxNodeChanges(syntaxNode, Context.TextEditorSettings);            
         }
         
         protected IEnumerable<TextChange> GetRenameSourceChanges(ITransition transition, string newSourceName) {
-            return SyntaxTree.GetRenameSourceChanges(transition, newSourceName, Context.EditorSettings);
+            return SyntaxTree.GetRenameSourceChanges(transition, newSourceName, Context.TextEditorSettings);
         }
 
         protected IEnumerable<TextChange> GetRenameSourceChanges(IExitTransition transition, string newSourceName) {
-            return SyntaxTree.GetRenameSourceChanges(transition, newSourceName, Context.EditorSettings);
+            return SyntaxTree.GetRenameSourceChanges(transition, newSourceName, Context.TextEditorSettings);
         }
 
         protected static IEnumerable<TextChange> GetRenameTargetChanges(IEdge transition, string newSourceName) {
@@ -63,23 +63,23 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         }
 
         protected string ComposeEdge(IEdge templateEdge, string sourceName, string edgeKeyword, string targetName) {
-            return SyntaxTree.ComposeEdge(templateEdge, sourceName, edgeKeyword, targetName, Context.EditorSettings);
+            return SyntaxTree.ComposeEdge(templateEdge, sourceName, edgeKeyword, targetName, Context.TextEditorSettings);
         }
 
         protected string WhiteSpaceBetweenSourceAndEdgeMode(IEdge edge, string newSourceName) {
-            return SyntaxTree.WhiteSpaceBetweenSourceAndEdgeMode(edge, newSourceName, Context.EditorSettings);
+            return SyntaxTree.WhiteSpaceBetweenSourceAndEdgeMode(edge, newSourceName, Context.TextEditorSettings);
         }
 
         protected string WhiteSpaceBetweenEdgeModeAndTarget(IEdge edge) {
-            return SyntaxTree.WhiteSpaceBetweenEdgeModeAndTarget(edge, Context.EditorSettings);
+            return SyntaxTree.WhiteSpaceBetweenEdgeModeAndTarget(edge, Context.TextEditorSettings);
         }
 
         protected int ColumnsBetweenKeywordAndIdentifier(INodeSymbol node, string newKeyword = null) {
-            return SyntaxTree.ColumnsBetweenKeywordAndIdentifier(node, newKeyword, Context.EditorSettings);
+            return SyntaxTree.ColumnsBetweenKeywordAndIdentifier(node, newKeyword, Context.TextEditorSettings);
         }
 
         protected string GetLineIndent(SourceTextLine sourceTextLine) {
-            return SyntaxTree.GetLineIndent(sourceTextLine, Context.EditorSettings);
+            return sourceTextLine.GetLineIndent(Context.TextEditorSettings.TabSize);
         }        
     }
 }

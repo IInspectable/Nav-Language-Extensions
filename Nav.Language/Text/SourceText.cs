@@ -26,13 +26,20 @@ namespace Pharmatechnik.Nav.Language.Text {
         [NotNull]
         public abstract SourceTextLineList TextLines { get; }
 
-        public abstract string Substring(int startIndex, int length);
-        public abstract ReadOnlySpan<char> Slice(int startIndex, int length);
+        public string Substring(TextExtent textExtent) {
+            return Substring(textExtent.Start, textExtent.Length);
+        }
 
+        public string Substring(int startIndex, int length) {
+            return Slice(startIndex: startIndex, length: length).ToString();
+        }
+        
         public ReadOnlySpan<char> Slice(TextExtent textExtent) {
             return Slice(textExtent.Start, textExtent.Length);
         }
 
+        public abstract ReadOnlySpan<char> Slice(int startIndex, int length);
+        
         public static SourceText From(string text, string filePath = null) {
             return new StringSourceText(text: text, filePath: filePath);
         }
@@ -49,11 +56,7 @@ namespace Pharmatechnik.Nav.Language.Text {
         public override string ToString() {
             return Text;
         }
-
-        public string Substring(TextExtent textExtent) {
-            return Text.Substring(startIndex: textExtent.Start, length: textExtent.Length);
-        }
-
+        
         /// <summary>
         /// Liefert die Zeileninformation für die angegebene Zeile (zero based).
         /// </summary>

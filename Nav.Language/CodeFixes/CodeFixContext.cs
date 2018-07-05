@@ -11,10 +11,10 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes {
     public sealed class CodeFixContext {
 
-        public CodeFixContext(TextExtent range, CodeGenerationUnit codeGenerationUnit, EditorSettings editorSettings) {
+        public CodeFixContext(TextExtent range, CodeGenerationUnit codeGenerationUnit, TextEditorSettings textEditorSettings) {
             
             CodeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
-            EditorSettings     = editorSettings     ?? throw new ArgumentNullException(nameof(editorSettings));
+            TextEditorSettings     = textEditorSettings     ?? throw new ArgumentNullException(nameof(textEditorSettings));
             Range              = range;
 
             if(range.End > codeGenerationUnit.Syntax.SyntaxTree.SourceText.Length) {
@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         public TextExtent Range { get; }
         public CodeGenerationUnit CodeGenerationUnit { get; }
-        public EditorSettings EditorSettings { get; }
+        public TextEditorSettings TextEditorSettings { get; }
         
         public IEnumerable<ISymbol> FindSymbols(bool includeOverlapping = false) {
             return CodeGenerationUnit.Symbols[Range];

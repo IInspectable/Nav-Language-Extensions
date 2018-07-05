@@ -2,6 +2,8 @@
 
 using System;
 
+using Pharmatechnik.Nav.Language.Text;
+
 // ReSharper disable InconsistentNaming
 
 #endregion

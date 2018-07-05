@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Immutable;
 
 using Pharmatechnik.Nav.Language.Generated;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 

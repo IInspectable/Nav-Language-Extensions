@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+
+using NUnit.Framework;
 
 using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.Text;
@@ -106,6 +108,42 @@ namespace Nav.Language.Tests {
             Assert.That(loc2.EndLinePosition.Line,        Is.EqualTo(1));
             Assert.That(loc2.EndLinePosition.Character,   Is.EqualTo(4));
             Assert.That(text2,                            Is.EqualTo("Next"));
+        }
+
+        [Test]
+        public void SliceFromLineStartToPosition() {
+            const string testText = "Hello There!\r\n" +
+                                    "Next Line";
+
+            SourceText st = SourceText.From(testText);
+
+            var position = testText.IndexOf("Line", StringComparison.Ordinal);
+            var sliceEnd = st.SliceFromPositionToLineEnd(position);
+            Assert.That(sliceEnd.ToString(), Is.EqualTo("Line"));
+        }
+
+        [Test]
+        public void SliceFromPositionToLineEnd() {
+            const string testText = "Hello There!\r\n" +
+                                    "Next Line";
+
+            SourceText st = SourceText.From(testText);
+
+            var position = testText.IndexOf("Line", StringComparison.Ordinal);
+            var sliceEnd = st.SliceFromPositionToLineEnd(position);
+            Assert.That(sliceEnd.ToString(), Is.EqualTo("Line"));
+        }
+
+        [Test]
+        public void TextLineSlice() {
+            const string testText = "Hello There!\r\n" +
+                                    "Next Line";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+            var slice=tl2.Slice(charPositionInLine: 5, length: 4);
+            Assert.That(slice.ToString(), Is.EqualTo("Line"));
         }
 
     }

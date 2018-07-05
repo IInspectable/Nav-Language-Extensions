@@ -46,6 +46,7 @@
     <Compile Include="..\_build\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Text\SourceTextExtensions.cs" />
     <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />
     <Compile Include="Internal\NavLexerErrorListener.cs" />
@@ -84,7 +85,7 @@
     <Compile Include="CodeFixes\CodeFixContext.cs" />
     <Compile Include="CodeFixes\CodeFixImpact.cs" />
     <Compile Include="CodeFixes\CodeFixPrio.cs" />
-    <Compile Include="CodeFixes\EditorSettings.cs" />
+    <Compile Include="Text\TextEditorSettings.cs" />
     <Compile Include="CodeFixes\RemoveUnusedIncludeDirectiveCodeFix.cs" />
     <Compile Include="CodeFixes\RemoveUnusedTaskDeclarationCodeFix.cs" />
     <Compile Include="CodeFixes\RemoveUnusedNodesCodeFix.cs" />
@@ -183,7 +184,7 @@
     <Compile Include="Provider\PathProviderFactory.cs" />
     <Compile Include="CodeGen\Templates\Resources.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
-    <Compile Include="Common\StringExtensions.cs" />
+    <Compile Include="Text\StringExtensions.cs" />
     <Compile Include="Syntax\SourceTextCharStream.cs" />
     <Compile Include="Text\SourceText.cs" />
     <Compile Include="Text\SourceTextLine.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="Syntax\DialogNodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\EndNodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\ExitNodeDeclarationSyntax.cs" />
+    <Compile Include="Text\SourceTextLineExtensions.cs" />
     <Compile Include="Text\SourceTextLineList.cs" />
     <Compile Include="Text\StringSourceText.cs" />
     <Compile Include="Text\TextExtent.cs" />

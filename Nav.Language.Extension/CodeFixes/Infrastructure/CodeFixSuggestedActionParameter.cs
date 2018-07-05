@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             CodeFixContext = new CodeFixContext(
                 range          : new TextExtent(range.Start, range.Length),
                 codeGenerationUnit: CodeGenerationUnitAndSnapshot.CodeGenerationUnit,
-                editorSettings    : TextView.GetEditorSettings());
+                textEditorSettings    : TextView.GetEditorSettings());
         }
         
         [NotNull]

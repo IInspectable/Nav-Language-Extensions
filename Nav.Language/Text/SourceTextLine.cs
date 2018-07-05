@@ -43,6 +43,8 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         public ReadOnlySpan<char> Span => SourceText.Slice(Extent);
 
+        public ReadOnlySpan<char> Slice(int charPositionInLine, int length) => SourceText.Slice(Start + charPositionInLine, length);
+        
         [NotNull]
         public Location Location => SourceText.GetLocation(Extent);
 

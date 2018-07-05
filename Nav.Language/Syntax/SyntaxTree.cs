@@ -80,7 +80,7 @@ namespace Pharmatechnik.Nav.Language {
             var tree    = treeCreator(parser);
             var visitor = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
             var syntax  = visitor.Visit(tree);
-            var tokens  = PostprocessTokens(visitor.Tokens, cts, syntax, diagnostics, filePath, cancellationToken);
+            var tokens  = PostprocessTokens(sourceText, visitor.Tokens, cts, syntax, diagnostics, filePath, cancellationToken);
 
             var syntaxTree = new SyntaxTree(sourceText: sourceText,
                                             root: syntax,
@@ -93,6 +93,7 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         static SyntaxTokenList PostprocessTokens(
+            SourceText sourceText,
             List<SyntaxToken> tokens,
             NavCommonTokenStream cts,
             SyntaxNode syntax,
@@ -158,7 +159,7 @@ namespace Pharmatechnik.Nav.Language {
                         break;
                     case NavTokens.PreprocessorChannel:
                         switch (candidate.Type) {
-                            case NavTokens.PreprocessorSharp:
+                            case NavTokens.HashToken:
                             case NavTokens.PreprocessorKeyword:
                                 tokenClassification = SyntaxTokenClassification.PreprocessorKeyword;
                                 break;
@@ -192,21 +193,25 @@ namespace Pharmatechnik.Nav.Language {
                     }
 
                     // TODO Nur vorübergehend hier?
-                    if (candidate.Type == NavTokens.PreprocessorSharp ||
+                    if (candidate.Type == NavTokens.HashToken ||
                         candidate.Type == NavTokens.PreprocessorKeyword) {
+                        
+                        var location = candidate.GetLocation(filePath);
 
-                        var loc = candidate.GetLocation(filePath);
-                        if (candidate.Type                  == NavTokens.PreprocessorSharp &&
-                            loc.StartLinePosition.Character != 0) {
-                            diagnostics.Add(
-                                new Diagnostic(loc,
-                                               DiagnosticDescriptors.Syntax.Nav3001PreprocessorDirectiveMustAppearOnFirstNonWhitespacePosition));
-                        } else {
-                            diagnostics.Add(
-                                new Diagnostic(loc,
-                                               DiagnosticDescriptors.Syntax.Nav3000InvalidPreprocessorDirective,
-                                               candidate.Text));
+                        if (candidate.Type == NavTokens.HashToken) {
+                            var span = sourceText.SliceFromLineStartToPosition(candidate.StartIndex);
+                            if (!span.IsWhiteSpace()) {
+                                diagnostics.Add(
+                                    new Diagnostic(location, 
+                                                   DiagnosticDescriptors.Syntax.Nav3001PreprocessorDirectiveMustAppearOnFirstNonWhitespacePosition));
+                            }
                         }
+                        
+                        // TODO werden derzeit nicht unterstützt
+                        diagnostics.Add(
+                            new Diagnostic(location,
+                                           DiagnosticDescriptors.Syntax.Nav3000InvalidPreprocessorDirective,
+                                           candidate.Text));
 
                     }
 
