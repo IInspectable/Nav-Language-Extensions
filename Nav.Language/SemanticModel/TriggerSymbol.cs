@@ -4,33 +4,37 @@ namespace Pharmatechnik.Nav.Language {
 
         // ReSharper disable once NotNullMemberIsNotInitialized Transition wird im Ctor der Transition während der Initialisierung gesetzt 
         // In der "freien" Wildbahn" darf hingegen der Null Fall nicht auftreten
-        protected TriggerSymbol(string name, Location location) : base(name, location) {
+        protected TriggerSymbol(string name, Location location): base(name, location) {
         }
 
-        public ITriggerTransition Transition { get; set; }
-        public abstract bool IsSignalTrigger { get; }
-        public abstract bool IsSpontaneousTrigger { get; }
+        public          ITriggerTransition Transition           { get; set; }
+        public abstract bool               IsSignalTrigger      { get; }
+        public abstract bool               IsSpontaneousTrigger { get; }
+
     }
 
-    sealed partial class SignalTriggerSymbol : TriggerSymbol, ISignalTriggerSymbol {
+    sealed partial class SignalTriggerSymbol: TriggerSymbol, ISignalTriggerSymbol {
 
-        public SignalTriggerSymbol(string name, Location location, IdentifierOrStringSyntax syntax) : base(name, location) {
-            Syntax = syntax;
-        }
-        
-        public IdentifierOrStringSyntax Syntax { get; }
-        public override bool IsSignalTrigger      => true;
-        public override bool IsSpontaneousTrigger => false;
-    }
-
-    sealed partial class SpontaneousTriggerSymbol : TriggerSymbol, ISpontaneousTriggerSymbol {
-
-        public SpontaneousTriggerSymbol(Location location, SpontaneousTriggerSyntax syntax) : base(SpontaneousTriggerSyntax.Keyword, location) {
+        public SignalTriggerSymbol(string name, Location location, IdentifierOrStringSyntax syntax): base(name, location) {
             Syntax = syntax;
         }
 
-        public SpontaneousTriggerSyntax Syntax { get; }
-        public override bool IsSignalTrigger      => false;
-        public override bool IsSpontaneousTrigger => true;
+        public          IdentifierOrStringSyntax Syntax               { get; }
+        public override bool                     IsSignalTrigger      => true;
+        public override bool                     IsSpontaneousTrigger => false;
+
     }
+
+    sealed partial class SpontaneousTriggerSymbol: TriggerSymbol, ISpontaneousTriggerSymbol {
+
+        public SpontaneousTriggerSymbol(Location location, SpontaneousTriggerSyntax syntax): base(SpontaneousTriggerSyntax.Keyword, location) {
+            Syntax = syntax;
+        }
+
+        public          SpontaneousTriggerSyntax Syntax               { get; }
+        public override bool                     IsSignalTrigger      => false;
+        public override bool                     IsSpontaneousTrigger => true;
+
+    }
+
 }

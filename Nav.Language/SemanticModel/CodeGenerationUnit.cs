@@ -22,8 +22,8 @@ namespace Pharmatechnik.Nav.Language {
                                     IEnumerable<ISymbol> symbols,
                                     ImmutableArray<Diagnostic> diagnostics) {
 
-            Syntax           = syntax ?? throw new ArgumentNullException(nameof(syntax));
             CodeUsings       = codeUsings;
+            Syntax           = syntax           ?? throw new ArgumentNullException(nameof(syntax));
             TaskDeclarations = taskDeclarations ?? new SymbolCollection<ITaskDeclarationSymbol>();
             TaskDefinitions  = taskDefinitions  ?? new SymbolCollection<ITaskDefinitionSymbol>();
             Includes         = includes         ?? new SymbolCollection<IIncludeSymbol>();
@@ -33,11 +33,11 @@ namespace Pharmatechnik.Nav.Language {
 
         internal CodeGenerationUnit WithDiagnostics(ImmutableArray<Diagnostic> diagnostics) {
             return new CodeGenerationUnit(
-                Syntax, 
-                CodeUsings, 
-                TaskDeclarations, 
-                TaskDefinitions, 
-                Includes, 
+                Syntax,
+                CodeUsings,
+                TaskDeclarations,
+                TaskDefinitions,
+                Includes,
                 Symbols,
                 diagnostics);
         }
@@ -65,8 +65,10 @@ namespace Pharmatechnik.Nav.Language {
         public ImmutableArray<Diagnostic> Diagnostics { get; }
 
         [NotNull]
-        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default, ISyntaxProvider syntaxProvider=null) {
+        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default, ISyntaxProvider syntaxProvider = null) {
             return CodeGenerationUnitBuilder.FromCodeGenerationUnitSyntax(syntax, cancellationToken, syntaxProvider);
-        }       
+        }
+
     }
+
 }

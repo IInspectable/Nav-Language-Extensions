@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language {
 
         public static (
             SymbolCollection<TriggerSymbol> Triggers,
-            IReadOnlyList<Diagnostic>       Diagnostics) Build(TransitionDefinitionSyntax transitionDefinitionSyntax) {
+            IReadOnlyList<Diagnostic> Diagnostics) Build(TransitionDefinitionSyntax transitionDefinitionSyntax) {
 
             var diagnostics = new List<Diagnostic>();
             var builder     = new TriggerSymbolBuilder(diagnostics);

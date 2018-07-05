@@ -7,15 +7,15 @@ using System.Collections.Generic;
 
 namespace Pharmatechnik.Nav.Language {
 
-    sealed partial class IncludeSymbol : Symbol, IIncludeSymbol {
-        
-        public IncludeSymbol(string fileName, 
-                             Location location, 
-                             Location fileLocation, 
+    sealed partial class IncludeSymbol: Symbol, IIncludeSymbol {
+
+        public IncludeSymbol(string fileName,
+                             Location location,
+                             Location fileLocation,
                              IncludeDirectiveSyntax syntax,
-                             IReadOnlyList<Diagnostic> diagnostics, 
-                             SymbolCollection<TaskDeclarationSymbol> taskDeklarations) 
-            :base(fileName.ToLowerInvariant(), location) {
+                             IReadOnlyList<Diagnostic> diagnostics,
+                             SymbolCollection<TaskDeclarationSymbol> taskDeklarations)
+            : base(fileName.ToLowerInvariant(), location) {
 
             FileName         = fileName;
             FileLocation     = fileLocation     ?? throw new ArgumentNullException(nameof(fileLocation));
@@ -24,12 +24,14 @@ namespace Pharmatechnik.Nav.Language {
             TaskDeklarations = taskDeklarations ?? new SymbolCollection<TaskDeclarationSymbol>();
         }
 
-        public string FileName { get; }
-        public Location FileLocation { get; }
-        public IncludeDirectiveSyntax Syntax { get;}
-        public IReadOnlyList<Diagnostic> Diagnostics { get; }
+        public string                                  FileName         { get; }
+        public Location                                FileLocation     { get; }
+        public IncludeDirectiveSyntax                  Syntax           { get; }
+        public IReadOnlyList<Diagnostic>               Diagnostics      { get; }
         public SymbolCollection<TaskDeclarationSymbol> TaskDeklarations { get; }
-        
+
         IReadOnlySymbolCollection<ITaskDeclarationSymbol> IIncludeSymbol.TaskDeklarations => TaskDeklarations;
+
     }
+
 }

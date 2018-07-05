@@ -15,11 +15,11 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
-    public sealed class SymbolList : IReadOnlyList<ISymbol> {
+    public sealed class SymbolList: IReadOnlyList<ISymbol> {
 
         readonly IReadOnlyList<ISymbol> _symbols;
 
-        public SymbolList() : this(null) {
+        public SymbolList(): this(null) {
         }
 
         public SymbolList(IEnumerable<ISymbol> symbols) {
@@ -49,5 +49,7 @@ namespace Pharmatechnik.Nav.Language {
         public ISymbol FindAtPosition(int position) {
             return _symbols.FindElementAtPosition(position, defaultIfNotFound: true);
         }
+
     }
+
 }

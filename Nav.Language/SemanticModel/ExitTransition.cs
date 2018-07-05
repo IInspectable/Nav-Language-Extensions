@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language {
 
             Syntax                   = syntax         ?? throw new ArgumentNullException(nameof(syntax));
             ContainingTask           = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
-            TaskNodeSourceReference        = taskNodeReference;
+            TaskNodeSourceReference  = taskNodeReference;
             ConnectionPointReference = connectionPointReference;
             EdgeMode                 = edgeMode;
             TargetReference          = targetReference;

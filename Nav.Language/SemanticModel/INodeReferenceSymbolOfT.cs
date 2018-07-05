@@ -2,26 +2,35 @@
 
 namespace Pharmatechnik.Nav.Language {
 
-    public interface INodeReferenceSymbol<out T> : INodeReferenceSymbol where T : INodeSymbol {
+    public interface INodeReferenceSymbol<out T>: INodeReferenceSymbol where T : INodeSymbol {
+
         [CanBeNull]
         new T Declaration { get; }
+
     }
 
-    public interface IInitNodeReferenceSymbol : INodeReferenceSymbol<IInitNodeSymbol> {
-    }    
+    public interface IInitNodeReferenceSymbol: INodeReferenceSymbol<IInitNodeSymbol> {
 
-    public interface IChoiceNodeReferenceSymbol : INodeReferenceSymbol<IChoiceNodeSymbol> {
-    } 
-
-    public interface IGuiNodeReferenceSymbol : INodeReferenceSymbol<IGuiNodeSymbol> {
     }
 
-    public interface ITaskNodeReferenceSymbol : INodeReferenceSymbol<ITaskNodeSymbol> {
+    public interface IChoiceNodeReferenceSymbol: INodeReferenceSymbol<IChoiceNodeSymbol> {
+
     }
 
-    public interface IExitNodeReferenceSymbol : INodeReferenceSymbol<IExitNodeSymbol> {
+    public interface IGuiNodeReferenceSymbol: INodeReferenceSymbol<IGuiNodeSymbol> {
+
     }
 
-    public interface IEndNodeReferenceSymbol : INodeReferenceSymbol<IEndNodeSymbol> {
+    public interface ITaskNodeReferenceSymbol: INodeReferenceSymbol<ITaskNodeSymbol> {
+
     }
+
+    public interface IExitNodeReferenceSymbol: INodeReferenceSymbol<IExitNodeSymbol> {
+
+    }
+
+    public interface IEndNodeReferenceSymbol: INodeReferenceSymbol<IEndNodeSymbol> {
+
+    }
+
 }

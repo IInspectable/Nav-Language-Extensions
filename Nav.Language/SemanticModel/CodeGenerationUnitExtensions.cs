@@ -3,11 +3,13 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+
 using JetBrains.Annotations;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
+
     public static class CodeGenerationUnitExtensions {
 
         [CanBeNull]
@@ -34,5 +36,7 @@ namespace Pharmatechnik.Nav.Language {
                          .ThenBy(ns => ns)
                          .ToImmutableList();
         }
+
     }
+
 }

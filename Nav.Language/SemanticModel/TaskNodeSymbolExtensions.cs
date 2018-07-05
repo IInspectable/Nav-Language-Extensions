@@ -6,6 +6,7 @@ using System.Collections.Generic;
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
+
     public static class TaskNodeSymbolExtensions {
 
         public static IEnumerable<IConnectionPointSymbol> GetMissingExitTransitionConnectionPoints(this ITaskNodeSymbol taskNode) {
@@ -26,7 +27,7 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
         }
-        
+
         public static bool CodeGenerateAbstractMethod(this IInitNodeSymbol initNode) {
             return initNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
         }
@@ -42,5 +43,7 @@ namespace Pharmatechnik.Nav.Language {
         public static bool CodeDoNotInject(this INodeSymbol node) {
             return (node as ITaskNodeSymbol)?.Syntax.CodeDoNotInjectDeclaration?.Keyword.IsMissing == false;
         }
+
     }
+
 }
