@@ -398,7 +398,7 @@
       <Version>4.6.4</Version>
     </PackageReference>
     <PackageReference Include="Antlr4.CodeGenerator">
-      <Version>4.6.4</Version>
+      <Version>4.6.5-rc002</Version>
     </PackageReference>
     <PackageReference Include="StringTemplate4">
       <Version>4.0.8</Version>
