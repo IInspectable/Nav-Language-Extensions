@@ -141,9 +141,152 @@ namespace Nav.Language.Tests {
 
             SourceText st = SourceText.From(testText);
 
-            var tl2 = st.TextLines[1];
-            var slice=tl2.Slice(charPositionInLine: 5, length: 4);
+            var tl2   = st.TextLines[1];
+            var slice = tl2.Slice(charPositionInLine: 5, length: 4);
             Assert.That(slice.ToString(), Is.EqualTo("Line"));
+        }
+
+        [Test]
+        public void GetSignificantColumn1() {
+            const string testText = "Hello There!\r\n" +
+                                    "\t Foo";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetSignificantColumn(tabSize: 4);
+            Assert.That(col, Is.EqualTo(4 + 1));
+        }
+
+        [Test]
+        public void GetSignificantColumn2() {
+            const string testText = "Hello There!\r\n" +
+                                    "\t    Foo";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetSignificantColumn(tabSize: 4);
+            Assert.That(col, Is.EqualTo(4 + 4));
+        }
+
+        [Test]
+        public void GetSignificantColumn3() {
+            const string testText = "Hello There!\r\n" +
+                                    " \t Foo";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetSignificantColumn(tabSize: 4);
+            Assert.That(col, Is.EqualTo(0 + 4 + 1));
+        }
+
+        [Test]
+        public void GetSignificantColumnEmptyLine() {
+            const string testText = "Hello There!\r\n" +
+                                    "";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetSignificantColumn(tabSize: 4);
+            Assert.That(col, Is.EqualTo(Int32.MaxValue));
+        }
+
+        [Test]
+        public void GetSignificantColumnWhiteSpaceLine() {
+            const string testText = "Hello There!\r\n" +
+                                    "   ";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetSignificantColumn(tabSize: 4);
+            Assert.That(col, Is.EqualTo(Int32.MaxValue));
+        }
+
+        [Test]
+        public void GetIndentAsSpaces() {
+            const string testText = "Hello There!\r\n" +
+                                    " \t Foo";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var spaces = tl2.GetIndentAsSpaces(tabSize: 4);
+            Assert.That(spaces, Is.EqualTo("     "));
+        }
+
+        [Test]
+        public void GetColumnForOffset1() {
+            const string testText = "Hello There!\r\n" +
+                                    "\tFoo";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetColumnForOffset(tabSize: 4, charPositionInLine: 1);
+            Assert.That(col, Is.EqualTo(4));
+        }
+
+        [Test]
+        public void GetColumnForOffset2() {
+            const string testText = "Hello There!\r\n" +
+                                    " \tFoo";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetColumnForOffset(tabSize: 4, charPositionInLine: 2);
+            Assert.That(col, Is.EqualTo(4));
+        }
+
+        [Test]
+        public void GetColumnForOffset3() {
+            const string testText = "Hello There!\r\n" +
+                                    "  \tFoo";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetColumnForOffset(tabSize: 4, charPositionInLine: 3);
+            Assert.That(col, Is.EqualTo(4));
+        }
+
+        [Test]
+        public void GetColumnForOffset4() {
+            const string testText = "Hello There!\r\n" +
+                                    "   \tFoo";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetColumnForOffset(tabSize: 4, charPositionInLine: 4);
+            Assert.That(col, Is.EqualTo(4));
+        }
+
+        [Test]
+        public void GetColumnForOffset5() {
+            const string testText = "Hello There!\r\n" +
+                                    "    \tFoo";
+
+            SourceText st = SourceText.From(testText);
+
+            var tl2 = st.TextLines[1];
+
+            var col = tl2.GetColumnForOffset(tabSize: 4, charPositionInLine: 5);
+            Assert.That(col, Is.EqualTo(8));
         }
 
     }

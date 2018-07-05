@@ -4,7 +4,7 @@ namespace Pharmatechnik.Nav.Language.Text {
 
     public static class SourceTextLineExtensions {
 
-        public static string GetLineIndent(this SourceTextLine sourceText, int tabSize) {
+        public static string GetIndentAsSpaces(this SourceTextLine sourceText, int tabSize) {
 
             var startColumn = sourceText.GetSignificantColumn(tabSize);
 

@@ -95,7 +95,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             string indent = new string(' ', textEditorSettings.TabSize);
             if (templateEdge.SourceReference != null) {
                 var templateEdgeLine = syntaxTree.SourceText.GetTextLineAtPosition(templateEdge.SourceReference.Start);
-                indent = templateEdgeLine.GetLineIndent(textEditorSettings.TabSize);
+                indent = templateEdgeLine.GetIndentAsSpaces(textEditorSettings.TabSize);
             }
 
             var whiteSpaceBetweenSourceAndEdgeMode = syntaxTree.WhiteSpaceBetweenSourceAndEdgeMode(templateEdge, sourceName, textEditorSettings);

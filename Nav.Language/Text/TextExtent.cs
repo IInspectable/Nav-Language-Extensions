@@ -5,9 +5,6 @@ namespace Pharmatechnik.Nav.Language.Text {
     [Serializable]
     public struct TextExtent: IExtent, IEquatable<TextExtent> {
 
-        readonly int _start;
-        readonly int _length;
-
         public TextExtent(int start, int length) {
 
             if (length < 0) {
@@ -22,8 +19,8 @@ namespace Pharmatechnik.Nav.Language.Text {
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
 
-            _start  = start;
-            _length = length;
+            Start  = start;
+            Length = length;
         }
 
         public static readonly TextExtent Empty   = new TextExtent(start: 0,  length: 0);
@@ -33,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             return new TextExtent(start: start, length: end - start);
         }
 
-        public bool IsMissing        => _start < 0;
+        public bool IsMissing        => Start  < 0;
         public bool IsEmpty          => Length == 0;
         public bool IsEmptyOrMissing => IsEmpty || IsMissing;
 
@@ -41,18 +38,18 @@ namespace Pharmatechnik.Nav.Language.Text {
         /// Gets the starting index of the extent [0..n].
         /// -1 if the is unknown/missing
         /// </summary>
-        public int Start => _start;
+        public int Start { get; }
 
         /// <summary>
         /// Gets the length of the extent. Length is guaranteed to be great or equal to 0.
         /// </summary>
-        public int Length => _length;
+        public int Length { get; }
 
         /// <summary>
         /// Gets the end index of the extent, starting with 0;
         /// This index is actually one character past the end of the extent.
         /// </summary>
-        public int End => _start + _length;
+        public int End => Start + Length;
 
         public bool Contains(TextExtent other) {
             return other.Start >= Start && other.End <= End;
