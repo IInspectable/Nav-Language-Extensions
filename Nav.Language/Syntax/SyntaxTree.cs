@@ -64,7 +64,7 @@ namespace Pharmatechnik.Nav.Language {
             
             
             // Setup Lexer
-            var stream             = new AntlrInputStream(sourceText.Text);
+            var stream             = sourceText.ToCharStream();
             var lexer              = new NavTokens(stream);
             var lexerErrorListener = new NavLexerErrorListener(sourceText, diagnostics);
             lexer.RemoveErrorListeners();

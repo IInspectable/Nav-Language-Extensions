@@ -28,6 +28,8 @@ namespace Pharmatechnik.Nav.Language.Text {
         public override int                Length    => _memory.Length;
         public override ReadOnlySpan<char> Span      => _memory.Span;
 
+        public override char this[int index] => _memory.Span[index];
+
         public override string Substring(int startIndex, int length) {
             return Slice(startIndex: startIndex, length: length).ToString();
         }

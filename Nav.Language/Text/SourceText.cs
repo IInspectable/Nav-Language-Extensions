@@ -39,6 +39,8 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         public static SourceText Empty => new StringSourceText(null, null);
 
+        public abstract char this[int index] { get; }
+
         [NotNull]
         public Location GetLocation(TextExtent extent) {
             return new Location(extent, GetLineRange(extent), FileInfo?.FullName);
