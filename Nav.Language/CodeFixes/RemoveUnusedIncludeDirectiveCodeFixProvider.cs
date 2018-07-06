@@ -20,7 +20,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             var codeFix = new RemoveUnusedIncludeDirectiveCodeFix(context);
             if (codeFix.CanApplyFix()) {
                 yield return codeFix;
-            }           
+            }
         }
+
     }
+
 }

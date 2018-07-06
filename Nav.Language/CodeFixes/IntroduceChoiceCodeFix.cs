@@ -16,38 +16,40 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             NodeReference = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
         }
 
-       
-        public override string Name              => "Introduce Choice";
-        public override CodeFixImpact Impact     => CodeFixImpact.None;
-        public override TextExtent? ApplicableTo => NodeReference.Location.Extent;
-        public override CodeFixPrio Prio         => CodeFixPrio.Medium;
-        public INodeReferenceSymbol NodeReference { get; }
+        public INodeReferenceSymbol  NodeReference  { get; }
         public ITaskDefinitionSymbol ContainingTask => NodeReference.Declaration?.ContainingTask;
+
+        public override string          Name         => "Introduce Choice";
+        public override CodeFixImpact   Impact       => CodeFixImpact.None;
+        public override TextExtent?     ApplicableTo => NodeReference.Location.Extent;
+        public override CodeFixPrio     Prio         => CodeFixPrio.Medium;
+        public override CodeFixCategory Category     => CodeFixCategory.Refactoring;
 
         public string SuggestChoiceName() {
             string baseName   = $"Choice_{NodeReference.Name}";
             string choiceName = baseName;
-            int number = 1;
-            while(!String.IsNullOrEmpty(ValidateChoiceName(choiceName))) {
+            int    number     = 1;
+            while (!String.IsNullOrEmpty(ValidateChoiceName(choiceName))) {
                 choiceName = $"{baseName}{number++}";
             }
+
             return choiceName;
         }
 
         internal bool CanApplyFix() {
 
-            return NodeReference.NodeReferenceType == NodeReferenceType.Target &&
-                   NodeReference.Declaration   != null &&
-                   NodeReference.Edge.SourceReference   != null &&
-                   NodeReference.Edge.EdgeMode != null;
+            return NodeReference.NodeReferenceType    == NodeReferenceType.Target &&
+                   NodeReference.Declaration          != null                     &&
+                   NodeReference.Edge.SourceReference != null                     &&
+                   NodeReference.Edge.EdgeMode        != null;
         }
 
-        public string ValidateChoiceName(string choiceName) {     
+        public string ValidateChoiceName(string choiceName) {
             return ContainingTask.ValidateNewNodeName(choiceName);
         }
 
         public IList<TextChange> GetTextChanges(string choiceName) {
-            
+
             if (!CanApplyFix()) {
                 throw new InvalidOperationException();
             }
@@ -55,7 +57,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             choiceName = choiceName?.Trim();
 
             var validationMessage = ValidateChoiceName(choiceName);
-            if(!String.IsNullOrEmpty(validationMessage)) {
+            if (!String.IsNullOrEmpty(validationMessage)) {
                 throw new ArgumentException(validationMessage, nameof(choiceName));
             }
 
@@ -84,9 +86,11 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         }
 
         string WhiteSpaceBetweenChoiceKeywordAndIdentifier(INodeSymbol sampleNode) {
-            
+
             var offset = ColumnsBetweenKeywordAndIdentifier(sampleNode, newKeyword: SyntaxFacts.ChoiceKeyword);
             return new String(' ', offset);
         }
+
     }
+
 }

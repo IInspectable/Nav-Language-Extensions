@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -9,18 +10,19 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     sealed class ChoiceRenameCodeFix: RenameNodeCodeFix<IChoiceNodeSymbol> {
-        
-        internal ChoiceRenameCodeFix(IChoiceNodeSymbol choiceNodeSymbol, ISymbol originatingSymbol, CodeFixContext context) 
+
+        internal ChoiceRenameCodeFix(IChoiceNodeSymbol choiceNodeSymbol, ISymbol originatingSymbol, CodeFixContext context)
             : base(choiceNodeSymbol, originatingSymbol, context) {
         }
 
-        public override string Name          => "Rename Choice";
+        public IChoiceNodeSymbol ChoiceNodeSymbol => Symbol;
+
+        public override string        Name   => "Rename Choice";
         public override CodeFixImpact Impact => CodeFixImpact.None;
-        IChoiceNodeSymbol ChoiceNodeSymbol   => Symbol;
-        
+
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
 
-            newName = newName?.Trim()??String.Empty;
+            newName = newName?.Trim() ?? String.Empty;
 
             var validationMessage = ValidateSymbolName(newName);
             if (!String.IsNullOrEmpty(validationMessage)) {
@@ -45,5 +47,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
             return textChanges;
         }
+
     }
+
 }

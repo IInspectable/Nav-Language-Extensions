@@ -13,22 +13,24 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public static IEnumerable<RemoveUnusedTaskDeclarationCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
             // Wir schlagen den Codefix nur vor, wenn sich das Caret in einer Task Declaration befindet
             var taskDeclarationSyntaxes = context.FindNodes<SyntaxNode>()
-                // Hoch zur zugehörigen TaskDeclarationSyntax
-                .Select(syntaxNode => syntaxNode?.AncestorsAndSelf().OfType<TaskDeclarationSyntax>().FirstOrDefault())
-                .Where(taskDeclarationSyntax => taskDeclarationSyntax != null)
-                // Wenn der Range mehr als eine TaskDeclarationSyntax enthält, dann müssen wir hier die doppelten Syntaxen entfernen
-                .Distinct();
+                                                  // Hoch zur zugehörigen TaskDeclarationSyntax
+                                                 .Select(syntaxNode => syntaxNode?.AncestorsAndSelf().OfType<TaskDeclarationSyntax>().FirstOrDefault())
+                                                 .Where(taskDeclarationSyntax => taskDeclarationSyntax != null)
+                                                  // Wenn der Range mehr als eine TaskDeclarationSyntax enthält, dann müssen wir hier die doppelten Syntaxen entfernen
+                                                 .Distinct();
 
             // Das zur TaskDeclarationSyntax gehörige Symbol finden
             var taskDeclarationSymbols = taskDeclarationSyntaxes
-                .Select(taskDeclarationSyntax => context.CodeGenerationUnit.TaskDeclarations.FirstOrDefault(taskDeclarationSymbol => taskDeclarationSymbol.Syntax == taskDeclarationSyntax))
-                .Where(taskDeclarationSymbol => taskDeclarationSymbol != null);
+                                        .Select(taskDeclarationSyntax => context.CodeGenerationUnit.TaskDeclarations.FirstOrDefault(taskDeclarationSymbol => taskDeclarationSymbol.Syntax == taskDeclarationSyntax))
+                                        .Where(taskDeclarationSymbol => taskDeclarationSymbol != null);
 
             var codeFixes = taskDeclarationSymbols
-                .Select(taskDeclarationSymbol => new RemoveUnusedTaskDeclarationCodeFix(taskDeclarationSymbol, context))
-                .Where(codeFix => codeFix.CanApplyFix());
+                           .Select(taskDeclarationSymbol => new RemoveUnusedTaskDeclarationCodeFix(taskDeclarationSymbol, context))
+                           .Where(codeFix => codeFix.CanApplyFix());
 
             return codeFixes;
         }
+
     }
+
 }

@@ -9,25 +9,26 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    sealed class ViewNodeRenameCodeFix : RenameNodeCodeFix<IViewNodeSymbol> {
-        
-        internal ViewNodeRenameCodeFix(IViewNodeSymbol viewNodeSymbol, ISymbol originatingSymbol, CodeFixContext context) 
+    sealed class ViewNodeRenameCodeFix: RenameNodeCodeFix<IViewNodeSymbol> {
+
+        internal ViewNodeRenameCodeFix(IViewNodeSymbol viewNodeSymbol, ISymbol originatingSymbol, CodeFixContext context)
             : base(viewNodeSymbol, originatingSymbol, context) {
         }
 
-        public override string Name          => "Rename View";
+        public IViewNodeSymbol ViewNode => Symbol;
+
+        public override string        Name   => "Rename View";
         public override CodeFixImpact Impact => CodeFixImpact.High;
-        IViewNodeSymbol ViewNode             => Symbol;
-        
+
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
 
-            newName = newName?.Trim()??String.Empty;
+            newName = newName?.Trim() ?? String.Empty;
 
             var validationMessage = ValidateSymbolName(newName);
             if (!String.IsNullOrEmpty(validationMessage)) {
                 throw new ArgumentException(validationMessage, nameof(newName));
             }
-            
+
             var textChanges = new List<TextChange>();
             // Die Dialog Node
             textChanges.AddRange(GetRenameSymbolChanges(ViewNode, newName));
@@ -46,5 +47,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
             return textChanges;
         }
+
     }
+
 }

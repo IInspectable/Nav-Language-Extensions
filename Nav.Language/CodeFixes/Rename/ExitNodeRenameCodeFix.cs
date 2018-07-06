@@ -9,25 +9,26 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    sealed class ExitNodeRenameCodeFix : RenameNodeCodeFix<IExitNodeSymbol> {
-        
-        internal ExitNodeRenameCodeFix(IExitNodeSymbol exitNodeSymbol, ISymbol originatingSymbol, CodeFixContext context) 
+    sealed class ExitNodeRenameCodeFix: RenameNodeCodeFix<IExitNodeSymbol> {
+
+        internal ExitNodeRenameCodeFix(IExitNodeSymbol exitNodeSymbol, ISymbol originatingSymbol, CodeFixContext context)
             : base(exitNodeSymbol, originatingSymbol, context) {
         }
 
-        public override string Name          => "Rename Exit";
+        public IExitNodeSymbol ExitNode => Symbol;
+
+        public override string        Name   => "Rename Exit";
         public override CodeFixImpact Impact => CodeFixImpact.High;
-        IExitNodeSymbol ExitNode             => Symbol;
-        
+
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
 
-            newName = newName?.Trim()??String.Empty;
+            newName = newName?.Trim() ?? String.Empty;
 
             var validationMessage = ValidateSymbolName(newName);
             if (!String.IsNullOrEmpty(validationMessage)) {
                 throw new ArgumentException(validationMessage, nameof(newName));
             }
-            
+
             var textChanges = new List<TextChange>();
             // Das Exit selbst
             textChanges.AddRange(GetRenameSymbolChanges(ExitNode, newName));
@@ -40,5 +41,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
             return textChanges;
         }
+
     }
+
 }

@@ -130,8 +130,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             return new String(' ', offset);
         }
 
-        
-
         public static SyntaxToken FirstNoneWhitespaceToken(this SyntaxTree syntaxTree, TextExtent extent) {
             return syntaxTree.Tokens[extent]
                              .SkipWhile(token => token.Type == SyntaxTokenType.Whitespace)

@@ -19,6 +19,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public override CodeFixImpact Impact     => CodeFixImpact.None;
         public override TextExtent? ApplicableTo => null;
         public override CodeFixPrio Prio         => CodeFixPrio.Low;
+        public override CodeFixCategory Category => CodeFixCategory.StyleFix;
 
         internal bool CanApplyFix() {
             return GetCanditates().Any();

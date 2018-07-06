@@ -6,6 +6,7 @@ using System.Collections.Generic;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
+
     public class AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider {
 
         public static IEnumerable<AddMissingSemicolonsOnIncludeDirectivesCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
@@ -13,11 +14,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             if (!context.ContainsNodes<IncludeDirectiveSyntax>()) {
                 yield break;
             }
-            
+
             var codeFix = new AddMissingSemicolonsOnIncludeDirectivesCodeFix(context);
             if (codeFix.CanApplyFix()) {
                 yield return codeFix;
             }
         }
+
     }
+
 }

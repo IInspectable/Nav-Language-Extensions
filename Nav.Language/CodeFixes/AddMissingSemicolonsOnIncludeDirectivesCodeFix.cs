@@ -8,16 +8,18 @@ using Pharmatechnik.Nav.Language.Text;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
-    public class AddMissingSemicolonsOnIncludeDirectivesCodeFix : CodeFix {
+
+    public class AddMissingSemicolonsOnIncludeDirectivesCodeFix: CodeFix {
 
         internal AddMissingSemicolonsOnIncludeDirectivesCodeFix(CodeFixContext context)
             : base(context) {
         }
 
-        public override string Name              => "Add missing ';' on Include Directives";
-        public override CodeFixImpact Impact     => CodeFixImpact.None;
-        public override TextExtent? ApplicableTo => null;
-        public override CodeFixPrio Prio         => CodeFixPrio.Low;
+        public override string          Name         => "Add missing ';' on Include Directives";
+        public override CodeFixImpact   Impact       => CodeFixImpact.None;
+        public override TextExtent?     ApplicableTo => null;
+        public override CodeFixPrio     Prio         => CodeFixPrio.Low;
+        public override CodeFixCategory Category     => CodeFixCategory.StyleFix;
 
         internal bool CanApplyFix() {
             return GetCanditates().Any();
@@ -34,7 +36,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             foreach (var includeDirectiveSyntax in GetCanditates()) {
                 textChanges.AddRange(GetInsertChanges(includeDirectiveSyntax.End, SyntaxFacts.Semicolon));
             }
+
             return textChanges;
         }
+
     }
+
 }

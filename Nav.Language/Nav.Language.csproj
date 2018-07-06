@@ -46,6 +46,7 @@
     <Compile Include="..\_build\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CodeFixes\CodeFixCategory.cs" />
     <Compile Include="Text\SourceTextExtensions.cs" />
     <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />

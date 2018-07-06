@@ -17,7 +17,7 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
-
+    
     //// ISuggestedActionsSource2
     //class CatSet: ISuggestedActionCategorySet {
 

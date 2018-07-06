@@ -10,25 +10,28 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language.CodeFixes {
 
     public abstract class CodeFix {
-        
+
         protected CodeFix(CodeFixContext context) {
             Context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public CodeFixContext Context { get; }
-        public abstract TextExtent? ApplicableTo { get; }
-        public abstract CodeFixPrio Prio { get; }
-        public CodeGenerationUnit CodeGenerationUnit => Context.CodeGenerationUnit;
-        public CodeGenerationUnitSyntax Syntax       => CodeGenerationUnit.Syntax;
-        public SyntaxTree SyntaxTree                 => Syntax.SyntaxTree;
 
-        public abstract string Name { get; }
-        public abstract CodeFixImpact Impact { get; }
-        
+        public abstract string          Name         { get; }
+        public abstract CodeFixImpact   Impact       { get; }
+        public abstract TextExtent?     ApplicableTo { get; }
+        public abstract CodeFixPrio     Prio         { get; }
+        public abstract CodeFixCategory Category     { get; }
+
+        public CodeGenerationUnit       CodeGenerationUnit => Context.CodeGenerationUnit;
+        public CodeGenerationUnitSyntax Syntax             => CodeGenerationUnit.Syntax;
+        public SyntaxTree               SyntaxTree         => Syntax.SyntaxTree;
+
         protected static IEnumerable<TextChange> GetRemoveChanges(TextExtent extent) {
             if (extent.IsMissing) {
                 yield break;
             }
+
             yield return TextChange.NewRemove(extent);
         }
 
@@ -36,13 +39,14 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             if (newText == null) {
                 yield break;
             }
+
             yield return TextChange.NewInsert(position, newText);
         }
 
         protected IEnumerable<TextChange> GetRemoveSyntaxNodeChanges(SyntaxNode syntaxNode) {
-            return SyntaxTree.GetRemoveSyntaxNodeChanges(syntaxNode, Context.TextEditorSettings);            
+            return SyntaxTree.GetRemoveSyntaxNodeChanges(syntaxNode, Context.TextEditorSettings);
         }
-        
+
         protected IEnumerable<TextChange> GetRenameSourceChanges(ITransition transition, string newSourceName) {
             return SyntaxTree.GetRenameSourceChanges(transition, newSourceName, Context.TextEditorSettings);
         }
@@ -59,6 +63,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             if (symbol == null || symbol.Name == newName) {
                 yield break;
             }
+
             yield return TextChange.NewReplace(symbol.Location.Extent, newName);
         }
 
@@ -80,6 +85,8 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
         protected string GetIndentAsSpaces(SourceTextLine sourceTextLine) {
             return sourceTextLine.GetIndentAsSpaces(Context.TextEditorSettings.TabSize);
-        }        
+        }
+
     }
+
 }

@@ -10,35 +10,41 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
 
-    public class RemoveUnusedTaskDeclarationCodeFix : CodeFix {
+    public class RemoveUnusedTaskDeclarationCodeFix: CodeFix {
 
         internal RemoveUnusedTaskDeclarationCodeFix(ITaskDeclarationSymbol taskDeclarationSymbol, CodeFixContext context)
             : base(context) {
             TaskDeclaration = taskDeclarationSymbol ?? throw new ArgumentNullException(nameof(taskDeclarationSymbol));
         }
-        
-        public override string Name              => "Remove Unused Task Declaration";
-        public override CodeFixImpact Impact     => CodeFixImpact.None;
-        public override TextExtent? ApplicableTo => null;
-        public override CodeFixPrio Prio         => CodeFixPrio.Medium;
+
         public ITaskDeclarationSymbol TaskDeclaration { get; }
-       
+
+        public override string          Name         => "Remove Unused Task Declaration";
+        public override CodeFixImpact   Impact       => CodeFixImpact.None;
+        public override TextExtent?     ApplicableTo => null;
+        public override CodeFixPrio     Prio         => CodeFixPrio.Medium;
+        public override CodeFixCategory Category     => CodeFixCategory.StyleFix;
+
         internal bool CanApplyFix() {
-            return TaskDeclaration.References.Count == 0 && 
-                   TaskDeclaration.Syntax!=null && 
-                   TaskDeclaration.Origin==TaskDeclarationOrigin.TaskDeclaration &&
-                   TaskDeclaration.IsIncluded==false;
+            return TaskDeclaration.References.Count == 0                                     &&
+                   TaskDeclaration.Syntax           != null                                  &&
+                   TaskDeclaration.Origin           == TaskDeclarationOrigin.TaskDeclaration &&
+                   TaskDeclaration.IsIncluded       == false;
         }
-        
+
         public IList<TextChange> GetTextChanges() {
-            if(!CanApplyFix()) {
+            if (!CanApplyFix()) {
                 throw new InvalidOperationException();
             }
+
             var textChanges = new List<TextChange?>();
             foreach (var textChange in GetRemoveSyntaxNodeChanges(TaskDeclaration.Syntax)) {
                 textChanges.Add(textChange);
             }
+
             return textChanges.OfType<TextChange>().ToList();
-        }     
+        }
+
     }
+
 }

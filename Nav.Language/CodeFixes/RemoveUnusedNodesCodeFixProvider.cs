@@ -16,23 +16,25 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
 
             // Die zugehörigen TaskDefinitionen
             var taskDefinitionSyntaxes = nodeDeclarationSyntaxes
-                .Select(nodeDeclaration => nodeDeclaration?.Ancestors().OfType<TaskDefinitionSyntax>().FirstOrDefault())
-                .Where(taskDefinitionSyntax => taskDefinitionSyntax != null)
-                // Wenn der Range mehr als eine NodeDeclaration enthält, dann müssen wir hier die doppelten Taskdefinitionen entfernen
-                .Distinct();
+                                        .Select(nodeDeclaration => nodeDeclaration?.Ancestors().OfType<TaskDefinitionSyntax>().FirstOrDefault())
+                                        .Where(taskDefinitionSyntax => taskDefinitionSyntax != null)
+                                         // Wenn der Range mehr als eine NodeDeclaration enthält, dann müssen wir hier die doppelten Taskdefinitionen entfernen
+                                        .Distinct();
 
             // Die TaskDefinitionSymbols
             var taskDefinitionSymbols = taskDefinitionSyntaxes
-                // Das zur TaskDefinition gehörige Symbol finden
-                .Select(taskDefinitionSyntax => context.CodeGenerationUnit.TaskDefinitions.FirstOrDefault(taskDefinition => taskDefinition.Syntax == taskDefinitionSyntax))
-                .Where(taskDefinition => taskDefinition != null);
+                                        // Das zur TaskDefinition gehörige Symbol finden
+                                       .Select(taskDefinitionSyntax => context.CodeGenerationUnit.TaskDefinitions.FirstOrDefault(taskDefinition => taskDefinition.Syntax == taskDefinitionSyntax))
+                                       .Where(taskDefinition => taskDefinition != null);
 
             // Die Codefxes
             var codeFixes = taskDefinitionSymbols
-                .Select(taskDefinition => new RemoveUnusedNodesCodeFix(taskDefinition, context))
-                .Where(codeFix => codeFix.CanApplyFix());
+                           .Select(taskDefinition => new RemoveUnusedNodesCodeFix(taskDefinition, context))
+                           .Where(codeFix => codeFix.CanApplyFix());
 
             return codeFixes;
         }
+
     }
+
 }

@@ -2,31 +2,33 @@
 
 using System;
 using System.Collections.Generic;
+
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
-    sealed class DialogNodeRenameCodeFix : RenameNodeCodeFix<IDialogNodeSymbol> {
-        
-        internal DialogNodeRenameCodeFix(IDialogNodeSymbol dialogNodeSymbol, ISymbol originatingSymbol, CodeFixContext context) 
+    sealed class DialogNodeRenameCodeFix: RenameNodeCodeFix<IDialogNodeSymbol> {
+
+        internal DialogNodeRenameCodeFix(IDialogNodeSymbol dialogNodeSymbol, ISymbol originatingSymbol, CodeFixContext context)
             : base(dialogNodeSymbol, originatingSymbol, context) {
         }
 
-        public override string Name          => "Rename Dialog";
+        public IDialogNodeSymbol DialogNode => Symbol;
+
+        public override string        Name   => "Rename Dialog";
         public override CodeFixImpact Impact => CodeFixImpact.High;
-        IDialogNodeSymbol DialogNode         => Symbol;
-        
+
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
 
-            newName = newName?.Trim()??String.Empty;
+            newName = newName?.Trim() ?? String.Empty;
 
             var validationMessage = ValidateSymbolName(newName);
             if (!String.IsNullOrEmpty(validationMessage)) {
                 throw new ArgumentException(validationMessage, nameof(newName));
             }
-            
+
             var textChanges = new List<TextChange>();
             // Die Dialog Node
             textChanges.AddRange(GetRenameSymbolChanges(DialogNode, newName));
@@ -45,5 +47,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
             return textChanges;
         }
+
     }
+
 }

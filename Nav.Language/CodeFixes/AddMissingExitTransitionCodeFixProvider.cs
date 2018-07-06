@@ -7,21 +7,21 @@ using System.Collections.Generic;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
-    
+
     public static class AddMissingExitTransitionCodeFixProvider {
-        
+
         public static IEnumerable<AddMissingExitTransitionCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
 
             var visitor = new Visitor(context);
 
             return context.FindSymbols()
                           .Select(symbol => visitor.Visit(symbol))
-                          .SelectMany(codeFixes=>codeFixes)
+                          .SelectMany(codeFixes => codeFixes)
                           .Where(codeFix => codeFix != null && codeFix.CanApplyFix());
         }
 
-        sealed class Visitor : SymbolVisitor<IEnumerable<AddMissingExitTransitionCodeFix>> {
-            
+        sealed class Visitor: SymbolVisitor<IEnumerable<AddMissingExitTransitionCodeFix>> {
+
             public Visitor(CodeFixContext context) {
                 Context = context;
             }
@@ -41,6 +41,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                     }
                 }
             }
+
         }
-    }    
+
+    }
+
 }

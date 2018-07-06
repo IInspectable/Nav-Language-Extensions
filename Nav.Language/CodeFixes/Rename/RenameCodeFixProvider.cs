@@ -10,28 +10,28 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
     public static class RenameCodeFixProvider {
 
-        public static IEnumerable<RenameCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken= default) {
+        public static IEnumerable<RenameCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken = default) {
             return context.FindSymbols()
                           .Select(symbol => new Visitor(symbol, context).Visit(symbol))
                           .Where(codeFix => codeFix != null);
         }
 
-        sealed class Visitor : SymbolVisitor<RenameCodeFix> {
+        sealed class Visitor: SymbolVisitor<RenameCodeFix> {
 
             public Visitor(ISymbol originatingSymbol, CodeFixContext context) {
-                OriginatingSymbol  = originatingSymbol;
-                Context = context;
+                OriginatingSymbol = originatingSymbol;
+                Context           = context;
             }
 
-            ISymbol OriginatingSymbol { get; }
-            CodeFixContext Context { get; }
+            ISymbol        OriginatingSymbol { get; }
+            CodeFixContext Context           { get; }
 
-            
             public override RenameCodeFix VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
                 // Wenn es bereits einen Alias gibt, dann funktioniert der Rename nur auf dem Alias-Symbol
                 if (OriginatingSymbol == initNodeSymbol && initNodeSymbol.Alias != null) {
                     return DefaultVisit(initNodeSymbol);
                 }
+
                 return new InitNodeRenameCodeFix(initNodeSymbol, OriginatingSymbol, Context);
             }
 
@@ -48,6 +48,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 if (OriginatingSymbol == taskNodeSymbol && taskNodeSymbol.Alias != null) {
                     return DefaultVisit(taskNodeSymbol);
                 }
+
                 return new TaskNodeRenameCodeFix(taskNodeSymbol, OriginatingSymbol, Context);
             }
 
@@ -75,6 +76,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 if (taskDefinitionSymbol.AsTaskDeclaration == null) {
                     return DefaultVisit(taskDefinitionSymbol);
                 }
+
                 return Visit(taskDefinitionSymbol.AsTaskDeclaration);
             }
 
@@ -82,8 +84,12 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
                 if (nodeReferenceSymbol.Declaration == null) {
                     return DefaultVisit(nodeReferenceSymbol);
                 }
+
                 return Visit(nodeReferenceSymbol.Declaration);
             }
+
         }
-    }    
+
+    }
+
 }

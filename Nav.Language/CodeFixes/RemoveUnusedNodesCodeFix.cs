@@ -9,18 +9,20 @@ using Pharmatechnik.Nav.Language.Text;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeFixes {
-    public class RemoveUnusedNodesCodeFix : CodeFix {
+
+    public class RemoveUnusedNodesCodeFix: CodeFix {
 
         internal RemoveUnusedNodesCodeFix(ITaskDefinitionSymbol taskDefinitionSymbol, CodeFixContext context)
             : base(context) {
             TaskDefinition = taskDefinitionSymbol ?? throw new ArgumentNullException(nameof(taskDefinitionSymbol));
         }
 
-        public override string Name              => "Remove Unused Nodes";
-        public override CodeFixImpact Impact     => CodeFixImpact.None;
-        public override TextExtent? ApplicableTo => null;
-        public override CodeFixPrio Prio         => CodeFixPrio.Medium;
-        public ITaskDefinitionSymbol TaskDefinition { get; }
+        public override string                Name           => "Remove Unused Nodes";
+        public override CodeFixImpact         Impact         => CodeFixImpact.None;
+        public override TextExtent?           ApplicableTo   => null;
+        public override CodeFixPrio           Prio           => CodeFixPrio.Medium;
+        public          ITaskDefinitionSymbol TaskDefinition { get; }
+        public override CodeFixCategory       Category       => CodeFixCategory.StyleFix;
 
         internal bool CanApplyFix() {
             return GetCandidates().Any();
@@ -36,7 +38,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
             foreach (var textChange in GetCandidates().SelectMany(c => GetRemoveSyntaxNodeChanges(c.Syntax))) {
                 textChanges.Add(textChange);
             }
+
             return textChanges.OfType<TextChange>().ToList();
         }
+
     }
+
 }
