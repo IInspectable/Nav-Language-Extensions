@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,30 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+
+    //// ISuggestedActionsSource2
+    //class CatSet: ISuggestedActionCategorySet {
+
+    //    public CatSet() {
+    //        ISuggestedActionCategoryRegistryService d=null;
+    //        var set = d.CreateSuggestedActionCategorySet(PredefinedSuggestedActionCategoryNames.Refactoring);
+    //    }
+    //    public IEnumerator<string> GetEnumerator() {
+    //        yield return PredefinedSuggestedActionCategoryNames.Refactoring; //Schraubenzieher
+    //        yield return PredefinedSuggestedActionCategoryNames.ErrorFix;    // Birne mit Error
+    //        yield return PredefinedSuggestedActionCategoryNames.StyleFix;    // Birne
+    //        yield return PredefinedSuggestedActionCategoryNames.CodeFix;     // Birne
+    //    }
+
+    //    public bool Contains(string categoryName) {
+    //        return categoryName == null || PredefinedSuggestedActionCategoryNames.Refactoring == categoryName;
+    //    }
+
+    //    IEnumerator IEnumerable.GetEnumerator() {
+    //        return GetEnumerator();
+    //    }
+
+    //}
 
     partial class CodeFixSuggestedActionsSource: SemanticModelServiceDependent, ISuggestedActionsSource {
 
