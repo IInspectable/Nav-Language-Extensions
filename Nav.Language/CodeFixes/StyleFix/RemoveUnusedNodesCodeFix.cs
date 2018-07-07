@@ -29,9 +29,13 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.StyleFix {
         }
 
         IEnumerable<INodeSymbol> GetCandidates() {
-            return TaskDefinition.NodeDeclarations.Where(n => n.References.Count == 0);
+            // Verbindungspunkte stellen die Schnittstelle zum Task dar, und können
+            // von daher nicht als "unbnutzt, und entfernbar" behandelt werden, auch
+            // wenn es bisweilen keine Referenzen auf diese gibt.
+            return TaskDefinition.NodeDeclarations.Where(n => n.References.Count == 0 && 
+                                                              !n.IsConnectionPoint());
         }
-
+        
         public IList<TextChange> GetTextChanges() {
 
             var textChanges = new List<TextChange?>();
