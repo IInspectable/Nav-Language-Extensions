@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.CodeFixes;
-using Pharmatechnik.Nav.Language.CodeFixes.Rename;
+using Pharmatechnik.Nav.Language.CodeFixes.Refactoring;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion

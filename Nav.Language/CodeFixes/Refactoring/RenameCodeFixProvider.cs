@@ -6,7 +6,7 @@ using System.Threading;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring {
 
     public static class RenameCodeFixProvider {
 

@@ -1,4 +1,4 @@
-﻿namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
+﻿namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring {
 
     abstract class RenameNodeCodeFix<T>: RenameCodeFix<T> where T : class, INodeSymbol {
 

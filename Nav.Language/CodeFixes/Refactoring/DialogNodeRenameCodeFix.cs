@@ -7,17 +7,17 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring {
 
-    sealed class ViewNodeRenameCodeFix: RenameNodeCodeFix<IViewNodeSymbol> {
+    sealed class DialogNodeRenameCodeFix: RenameNodeCodeFix<IDialogNodeSymbol> {
 
-        internal ViewNodeRenameCodeFix(IViewNodeSymbol viewNodeSymbol, ISymbol originatingSymbol, CodeFixContext context)
-            : base(viewNodeSymbol, originatingSymbol, context) {
+        internal DialogNodeRenameCodeFix(IDialogNodeSymbol dialogNodeSymbol, ISymbol originatingSymbol, CodeFixContext context)
+            : base(dialogNodeSymbol, originatingSymbol, context) {
         }
 
-        public IViewNodeSymbol ViewNode => Symbol;
+        public IDialogNodeSymbol DialogNode => Symbol;
 
-        public override string        Name   => "Rename View";
+        public override string        Name   => "Rename Dialog";
         public override CodeFixImpact Impact => CodeFixImpact.High;
 
         public override IEnumerable<TextChange> GetTextChanges(string newName) {
@@ -31,16 +31,16 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
             var textChanges = new List<TextChange>();
             // Die Dialog Node
-            textChanges.AddRange(GetRenameSymbolChanges(ViewNode, newName));
+            textChanges.AddRange(GetRenameSymbolChanges(DialogNode, newName));
 
             // Die Dialog-Referenzen auf der "linken Seite"
-            foreach (var transition in ViewNode.Outgoings) {
+            foreach (var transition in DialogNode.Outgoings) {
                 var textChange = GetRenameSourceChanges(transition, newName);
                 textChanges.AddRange(textChange);
             }
 
             // Die Dialog-Referenzen auf der "rechten Seite"
-            foreach (var transition in ViewNode.Incomings) {
+            foreach (var transition in DialogNode.Incomings) {
                 var textChange = GetRenameTargetChanges(transition, newName);
                 textChanges.AddRange(textChange);
             }

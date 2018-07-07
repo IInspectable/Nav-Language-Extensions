@@ -1,11 +1,11 @@
 #region Using Directives
 
-using System.Threading;
 using System.Collections.Generic;
+using System.Threading;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeFixes.StyleFix {
 
     public class AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider {
 

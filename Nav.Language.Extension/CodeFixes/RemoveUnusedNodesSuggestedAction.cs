@@ -3,7 +3,8 @@
 using System.Threading;
 
 using Microsoft.VisualStudio.Imaging.Interop;
-using Pharmatechnik.Nav.Language.CodeFixes;
+
+using Pharmatechnik.Nav.Language.CodeFixes.StyleFix;
 using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion

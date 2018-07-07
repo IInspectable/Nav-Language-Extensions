@@ -3,14 +3,15 @@
 using System.Threading;
 
 using Microsoft.VisualStudio.Imaging.Interop;
-using Pharmatechnik.Nav.Language.CodeFixes;
+
+using Pharmatechnik.Nav.Language.CodeFixes.StyleFix;
 using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
-    class AddMissingSemicolonsOnIncludeDirectivesSuggestedAction : CodeFixSuggestedAction<AddMissingSemicolonsOnIncludeDirectivesCodeFix> {
+    class AddMissingSemicolonsOnIncludeDirectivesSuggestedAction: CodeFixSuggestedAction<AddMissingSemicolonsOnIncludeDirectivesCodeFix> {
 
         public AddMissingSemicolonsOnIncludeDirectivesSuggestedAction(AddMissingSemicolonsOnIncludeDirectivesCodeFix codeFix,
                                                                       CodeFixSuggestedActionParameter parameter,
@@ -19,11 +20,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         }
 
         public override ImageMoniker IconMoniker => ImageMonikers.AddSemicolon;
-        public override string DisplayText       => CodeFix.Name;
+        public override string       DisplayText => CodeFix.Name;
 
         protected override void Apply(CancellationToken cancellationToken) {
 
-            ApplyTextChanges(CodeFix.GetTextChanges());                
+            ApplyTextChanges(CodeFix.GetTextChanges());
         }
+
     }
+
 }

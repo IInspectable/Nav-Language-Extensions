@@ -9,9 +9,9 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring {
 
-    public abstract class RenameCodeFix: CodeFix {
+    public abstract class RenameCodeFix: RefactoringCodeFix {
 
         protected RenameCodeFix(CodeFixContext context)
             : base(context) {
@@ -36,7 +36,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
 
         public override TextExtent?     ApplicableTo => OriginatingSymbol.Location.Extent;
         public override CodeFixPrio     Prio         => CodeFixPrio.Low;
-        public override CodeFixCategory Category     => CodeFixCategory.Refactoring;
 
         [NotNull]
         public T Symbol { get; }

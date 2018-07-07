@@ -1,12 +1,12 @@
 #region Using Directives
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeFixes.StyleFix {
 
     public sealed class RemoveSignalTriggerQuotationMarksCodeFixProvider {
 

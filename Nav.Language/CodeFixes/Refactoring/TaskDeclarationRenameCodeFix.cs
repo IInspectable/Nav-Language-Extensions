@@ -8,7 +8,7 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes.Rename {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring {
 
     sealed class TaskDeclarationRenameCodeFix: RenameCodeFix<ITaskDeclarationSymbol> {
 

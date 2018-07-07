@@ -10,9 +10,9 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeFixes.ErrorFix {
 
-    public sealed class AddMissingExitTransitionCodeFix: CodeFix {
+    public sealed class AddMissingExitTransitionCodeFix: ErrorCodeFix {
 
         internal AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNodeRef, IConnectionPointSymbol connectionPoint, CodeFixContext context)
             : base(context) {
@@ -36,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public override CodeFixImpact   Impact       => CodeFixImpact.None;
         public override TextExtent?     ApplicableTo => TargetNodeRef.Location.Extent;
         public override CodeFixPrio     Prio         => CodeFixPrio.High;
-        public override CodeFixCategory Category     => CodeFixCategory.ErrorFix;
+        
 
         internal bool CanApplyFix() {
 

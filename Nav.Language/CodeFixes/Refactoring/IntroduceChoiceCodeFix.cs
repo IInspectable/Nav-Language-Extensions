@@ -7,9 +7,9 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring {
 
-    public class IntroduceChoiceCodeFix: CodeFix {
+    public class IntroduceChoiceCodeFix: RefactoringCodeFix {
 
         internal IntroduceChoiceCodeFix(INodeReferenceSymbol nodeReference, CodeFixContext context)
             : base(context) {
@@ -23,7 +23,6 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         public override CodeFixImpact   Impact       => CodeFixImpact.None;
         public override TextExtent?     ApplicableTo => NodeReference.Location.Extent;
         public override CodeFixPrio     Prio         => CodeFixPrio.Medium;
-        public override CodeFixCategory Category     => CodeFixCategory.Refactoring;
 
         public string SuggestChoiceName() {
             string baseName   = $"Choice_{NodeReference.Name}";

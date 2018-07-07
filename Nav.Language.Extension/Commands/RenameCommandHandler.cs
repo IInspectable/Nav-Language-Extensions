@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell;
 
 using Pharmatechnik.Nav.Language.CodeFixes;
-using Pharmatechnik.Nav.Language.CodeFixes.Rename;
+using Pharmatechnik.Nav.Language.CodeFixes.Refactoring;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.CodeFixes;

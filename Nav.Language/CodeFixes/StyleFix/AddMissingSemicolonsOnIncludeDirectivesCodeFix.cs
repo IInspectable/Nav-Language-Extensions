@@ -1,25 +1,24 @@
 ﻿#region Using Directives
 
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeFixes.StyleFix {
 
-    public class AddMissingSemicolonsOnIncludeDirectivesCodeFix: CodeFix {
+    public class AddMissingSemicolonsOnIncludeDirectivesCodeFix: StyleCodeFix {
 
         internal AddMissingSemicolonsOnIncludeDirectivesCodeFix(CodeFixContext context)
             : base(context) {
         }
 
-        public override string          Name         => "Add missing ';' on Include Directives";
-        public override CodeFixImpact   Impact       => CodeFixImpact.None;
-        public override TextExtent?     ApplicableTo => null;
-        public override CodeFixPrio     Prio         => CodeFixPrio.Low;
-        public override CodeFixCategory Category     => CodeFixCategory.StyleFix;
+        public override string        Name         => "Add missing ';' on Include Directives";
+        public override CodeFixImpact Impact       => CodeFixImpact.None;
+        public override TextExtent?   ApplicableTo => null;
+        public override CodeFixPrio   Prio         => CodeFixPrio.Low;
 
         internal bool CanApplyFix() {
             return GetCanditates().Any();
