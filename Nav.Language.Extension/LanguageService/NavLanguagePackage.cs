@@ -1,13 +1,11 @@
 ﻿#region Using Directives
 
 using System;
-
+using System.ComponentModel.Design;
 using System.IO;
 using System.Drawing;
 using System.Windows.Media.Imaging;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 
 using JetBrains.Annotations;
 
@@ -28,7 +26,6 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 
 using Control = System.Windows.Controls.Control;
-using Task = System.Threading.Tasks.Task;
 
 #endregion
 
@@ -65,15 +62,13 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
                             ShowDropDownOptions   = false)]
     [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageInfo), NavLanguageContentDefinitions.FileExtension)]
-    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true)]
     [Guid(GuidList.NavPackageGuid)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)] // VSConstants.UICONTEXT_SolutionExists
-    [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string,                   PackageAutoLoadFlags.BackgroundLoad)] // VSConstants.UICONTEXT_NoSolution
     [ProvideShowBraceCompletion]
     [ProvideShowDropdownBarOption]
-    [ProvideService(typeof(NavLanguageInfo), IsAsyncQueryable    = true)]
-    [ProvideService(typeof(NavLanguagePackage), IsAsyncQueryable = true)]
-    sealed partial class NavLanguagePackage: AsyncPackage {
+    [ProvideService(typeof(NavLanguageInfo))]
+    [ProvideService(typeof(NavLanguagePackage))]
+    sealed partial class NavLanguagePackage: Package {
 
         static readonly Logger Logger = Logger.Create<NavLanguagePackage>();
 
@@ -81,32 +76,54 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
             LoggerConfig.Initialize(Path.GetTempPath(), "Nav.Language.Extension");
         }
 
-        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress) {
+        protected override void Initialize() {
+            base.Initialize();
 
-            await base.InitializeAsync(cancellationToken, progress);
-            await Task.Delay(1, cancellationToken);
+            var serviceContainer = (IServiceContainer) this;
 
-            AddService(typeof(NavLanguageInfo),    CreateNavLanguageInfoAsync,    true);
-            AddService(typeof(NavLanguagePackage), CreateNavLanguagePackageAsync, true);
-
-            Logger.Info($"{nameof(NavLanguagePackage)}.{nameof(Initialize)}");
-
-            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-
-            async Task<object> CreateNavLanguageInfoAsync(IAsyncServiceContainer container,
-                                                          CancellationToken ct,
-                                                          Type serviceType) {
-                await Task.Delay(1, ct);
-                return Task.FromResult(new NavLanguageInfo(this));
-            }
-
-            async Task<object> CreateNavLanguagePackageAsync(IAsyncServiceContainer container,
-                                                             CancellationToken ct,
-                                                             Type serviceType) {
-                await Task.Delay(1, ct);
-                return Task.FromResult(this);
-            }
+            serviceContainer.AddService(typeof(NavLanguageInfo),    OnCreateService, true);
+            serviceContainer.AddService(typeof(NavLanguagePackage), OnCreateService, true);
         }
+
+        object OnCreateService(IServiceContainer container, Type serviceType) {
+
+            if (serviceType == typeof(NavLanguageInfo)) {
+                return new NavLanguageInfo(this);
+            }
+
+            if (serviceType == typeof(NavLanguagePackage)) {
+                return this;
+            }
+
+            return null;
+        }
+
+        //protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress) {
+
+        //    await base.InitializeAsync(cancellationToken, progress);
+        //    await Task.Delay(1, cancellationToken);
+
+        //    AddService(typeof(NavLanguageInfo),    CreateNavLanguageInfoAsync,    true);
+        //    AddService(typeof(NavLanguagePackage), CreateNavLanguagePackageAsync, true);
+
+        //    Logger.Info($"{nameof(NavLanguagePackage)}.{nameof(Initialize)}");
+
+        //    await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+        //    async Task<object> CreateNavLanguageInfoAsync(IAsyncServiceContainer container,
+        //                                                  CancellationToken ct,
+        //                                                  Type serviceType) {
+        //        await Task.Delay(1, ct);
+        //        return Task.FromResult(new NavLanguageInfo(this));
+        //    }
+
+        //    async Task<object> CreateNavLanguagePackageAsync(IAsyncServiceContainer container,
+        //                                                     CancellationToken ct,
+        //                                                     Type serviceType) {
+        //        await Task.Delay(1, ct);
+        //        return Task.FromResult(this);
+        //    }
+        //}
         
 
         public static object GetGlobalService<TService>() where TService : class {
