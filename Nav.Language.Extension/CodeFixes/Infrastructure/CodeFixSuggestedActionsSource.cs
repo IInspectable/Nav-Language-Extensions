@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
 using System;
-using System.Collections;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,12 +11,13 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Language.Intellisense;
 
+using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
-    
+
     //// ISuggestedActionsSource2
     //class CatSet: ISuggestedActionCategorySet {
 
@@ -42,17 +42,22 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     //}
 
-    partial class CodeFixSuggestedActionsSource: SemanticModelServiceDependent, ISuggestedActionsSource {
+    partial class CodeFixSuggestedActionsSource: SemanticModelServiceDependent, ISuggestedActionsSource2 {
 
-        readonly ICodeFixSuggestedActionProviderService _codeFixSuggestedActionProviderService;
-        readonly ITextView                              _textView;
+        readonly ISuggestedActionCategoryRegistryService _suggestedActionCategoryRegistryService;
+        readonly ICodeFixSuggestedActionProviderService  _codeFixSuggestedActionProviderService;
+        readonly ITextView                               _textView;
 
         volatile SuggestedActionSetsAndRange _cachedSuggestedActionSets;
 
-        public CodeFixSuggestedActionsSource(ITextBuffer textBuffer, ICodeFixSuggestedActionProviderService codeFixSuggestedActionProviderService, ITextView textView)
+        public CodeFixSuggestedActionsSource(ITextBuffer textBuffer,
+                                             ISuggestedActionCategoryRegistryService suggestedActionCategoryRegistryService,
+                                             ICodeFixSuggestedActionProviderService codeFixSuggestedActionProviderService,
+                                             ITextView textView)
             : base(textBuffer) {
-            _codeFixSuggestedActionProviderService = codeFixSuggestedActionProviderService;
-            _textView                              = textView;
+            _suggestedActionCategoryRegistryService = suggestedActionCategoryRegistryService;
+            _codeFixSuggestedActionProviderService  = codeFixSuggestedActionProviderService;
+            _textView                               = textView;
         }
 
         public event EventHandler<EventArgs> SuggestedActionsChanged;
@@ -62,26 +67,88 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return false;
         }
 
+        public Task<ISuggestedActionCategorySet> GetSuggestedActionCategoriesAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
+
+            return Task.Factory.StartNew(GetSuggestedActionCategorySet,
+                                         cancellationToken,
+                                         TaskCreationOptions.None, TaskScheduler.Default);
+
+            ISuggestedActionCategorySet GetSuggestedActionCategorySet() {
+
+                var actions = GetOrCreateFixSuggestedActions(range, cancellationToken);
+
+                var categories = actions.GroupBy(a => a.Category)
+                                        .Select(g => g.Key)
+                                        .ToList();
+
+                if (!requestedActionCategories.Contains(PredefinedSuggestedActionCategoryNames.Refactoring)) {
+                    categories.Remove(CodeFixCategory.Refactoring);
+                    categories.Remove(CodeFixCategory.StyleFix);
+                }
+
+                var suggestions = categories.Select(ToCategoryName);
+
+                return _suggestedActionCategoryRegistryService.CreateSuggestedActionCategorySet(suggestions);
+            }
+
+        }
+
+        string ToCategoryName(CodeFixCategory category) {
+            switch (category) {
+                case CodeFixCategory.CodeFix:
+                    return PredefinedSuggestedActionCategoryNames.CodeFix;
+                case CodeFixCategory.ErrorFix:
+                    return PredefinedSuggestedActionCategoryNames.ErrorFix;
+                case CodeFixCategory.StyleFix:
+                    return PredefinedSuggestedActionCategoryNames.StyleFix;
+                case CodeFixCategory.Refactoring:
+                    return PredefinedSuggestedActionCategoryNames.Refactoring;
+                default:
+                    return PredefinedSuggestedActionCategoryNames.Any;
+            }
+        }
+
+        public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
+            return Task.Factory.StartNew(() => {
+                                             var actions = GetOrCreateFixSuggestedActions(range, cancellationToken);
+                                             return actions.Any();
+                                         },
+                                         cancellationToken,
+                                         TaskCreationOptions.None, TaskScheduler.Default);
+        }
+
         public IEnumerable<SuggestedActionSet> GetSuggestedActions(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
 
-            var caretPoint       = _textView.GetCaretPoint();
-            var cachedActionSets = _cachedSuggestedActionSets;
-            IEnumerable<CodeFixSuggestedAction> suggestedActionSets =
-                IsCacheValid(cachedActionSets, range) ? cachedActionSets.SuggestedActionSets : BuildSuggestedActions(range, cancellationToken);
+            var caretPoint = _textView.GetCaretPoint();
+            var actions    = GetOrCreateFixSuggestedActions(range, cancellationToken);
+
+            // Nach Katergorie gruppieren
+            var actionsByCategory = actions.GroupBy(a => a.Category)
+                                           .ToList();
+
+            return actionsByCategory.SelectMany(actionsByCat => BuildSuggestedActionSets(
+                                                    actionsByCat.Key,
+                                                    actionsByCat, 
+                                                    range, 
+                                                    caretPoint));
+        }
+
+        private IEnumerable<SuggestedActionSet> BuildSuggestedActionSets(CodeFixCategory category, IEnumerable<CodeFixSuggestedAction> suggestedActionSets, SnapshotSpan range, SnapshotPoint? caretPoint) {
 
             // Nach Span Gruppieren
-            var groupedActions     = suggestedActionSets.GroupBy(action => action.ApplicableToSpan);
-            var suggestedActionSet = new List<SuggestedActionSet>();
+            var groupedActions = suggestedActionSets.GroupBy(action => action.ApplicableToSpan);
+            var actionSets     = new List<SuggestedActionSet>();
             foreach (var actionsInSpan in groupedActions) {
                 var orderedActions = actionsInSpan.OrderByDescending(codeFixSuggestedAction => codeFixSuggestedAction.Prio);
-                suggestedActionSet.Add(new SuggestedActionSet(
-                                           categoryName: null,
-                                           actions: orderedActions,
-                                           applicableToSpan: actionsInSpan.Key ?? range));
+                actionSets.Add(new SuggestedActionSet(
+                                   categoryName: ToCategoryName(category),
+                                   actions: orderedActions,
+                                  title: "Hi",
+                                   applicableToSpan: actionsInSpan.Key ?? range));
             }
 
             // Sortierung nach Nähe zum Caret Point
-            var orderedSuggestionSets = suggestedActionSet.OrderBy(s => s, new SuggestedActionSetComparer(caretPoint, range));
+            var orderedSuggestionSets = actionSets.OrderBy(s => s, new SuggestedActionSetComparer(caretPoint, range));
             // Doppelte Actions entfernen. Es bleibt nur die zum Caret nächste Action bestehen.
             var filteredSets = FilterDuplicateTitles(orderedSuggestionSets);
 
@@ -117,17 +184,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             return actions.Count == 0
                 ? null
                 : new SuggestedActionSet(
-                    categoryName: null,
+                    categoryName: actionSet.CategoryName,
                     actions: actions,
                     title: actionSet.Title,
                     priority: actionSet.Priority,
                     applicableToSpan: actionSet.ApplicableToSpan);
-        }
-
-        public Task<bool> HasSuggestedActionsAsync(ISuggestedActionCategorySet requestedActionCategories, SnapshotSpan range, CancellationToken cancellationToken) {
-            return Task.Factory.StartNew(() => BuildSuggestedActions(range, cancellationToken).Any(),
-                                         cancellationToken,
-                                         TaskCreationOptions.None, TaskScheduler.Default);
         }
 
         protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
@@ -147,6 +208,14 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         void InvalidateSuggestedActions() {
             _cachedSuggestedActionSets = null;
             SuggestedActionsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private ImmutableList<CodeFixSuggestedAction> GetOrCreateFixSuggestedActions(SnapshotSpan range, CancellationToken cancellationToken) {
+
+            var cachedActionSets = _cachedSuggestedActionSets;
+            ImmutableList<CodeFixSuggestedAction> suggestedActionSets =
+                IsCacheValid(cachedActionSets, range) ? cachedActionSets.SuggestedActionSets : BuildSuggestedActions(range, cancellationToken);
+            return suggestedActionSets;
         }
 
         protected ImmutableList<CodeFixSuggestedAction> BuildSuggestedActions(SnapshotSpan range, CancellationToken cancellationToken) {

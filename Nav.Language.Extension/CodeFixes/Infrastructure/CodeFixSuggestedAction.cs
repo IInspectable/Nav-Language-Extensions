@@ -26,10 +26,11 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         protected CodeFixSuggestedActionContext   Context   { get; }
         protected CodeFixSuggestedActionParameter Parameter { get; }
 
-        public abstract Span?       ApplicableToSpan { get; }
-        public abstract CodeFixPrio Prio             { get; }
-        public abstract string      DisplayText      { get; }
-        public abstract string      UndoDescription  { get; }
+        public abstract Span?           ApplicableToSpan { get; }
+        public abstract CodeFixPrio     Prio             { get; }
+        public abstract CodeFixCategory Category         { get; }
+        public abstract string          DisplayText      { get; }
+        public abstract string          UndoDescription  { get; }
 
         public virtual ImageMoniker IconMoniker        => default;
         public virtual string       IconAutomationText => null;
@@ -64,13 +65,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
             var textChangesAndSnapshot = new TextChangesAndSnapshot(
                 textChanges: textChanges,
-                snapshot   : Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
+                snapshot: Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
 
             return Context.TextChangeService.ApplyTextChanges(
-                textView              : Parameter.TextView,
-                undoDescription       : UndoDescription,
+                textView: Parameter.TextView,
+                undoDescription: UndoDescription,
                 textChangesAndSnapshot: textChangesAndSnapshot,
-                waitMessage           : DisplayText);
+                waitMessage: DisplayText);
         }
 
     }

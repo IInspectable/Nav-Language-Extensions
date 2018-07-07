@@ -14,21 +14,30 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
     [Export(typeof(ISuggestedActionsSourceProvider))]
     [Name(nameof(CodeFixSuggestedActionsSourceProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
-    internal class CodeFixSuggestedActionsSourceProvider : ISuggestedActionsSourceProvider {
+    internal class CodeFixSuggestedActionsSourceProvider: ISuggestedActionsSourceProvider {
 
-        readonly ICodeFixSuggestedActionProviderService _codeFixSuggestedActionProviderService;
+        readonly ICodeFixSuggestedActionProviderService  _codeFixSuggestedActionProviderService;
+        readonly ISuggestedActionCategoryRegistryService _suggestedActionCategoryRegistryService;
 
         [ImportingConstructor]
-        public CodeFixSuggestedActionsSourceProvider(ICodeFixSuggestedActionProviderService codeFixSuggestedActionProviderService) {
-            _codeFixSuggestedActionProviderService = codeFixSuggestedActionProviderService;
+        public CodeFixSuggestedActionsSourceProvider(ICodeFixSuggestedActionProviderService codeFixSuggestedActionProviderService,
+                                                     ISuggestedActionCategoryRegistryService suggestedActionCategoryRegistryService) {
+            _codeFixSuggestedActionProviderService  = codeFixSuggestedActionProviderService;
+            _suggestedActionCategoryRegistryService = suggestedActionCategoryRegistryService;
         }
-        
+
         public ISuggestedActionsSource CreateSuggestedActionsSource(ITextView textView, ITextBuffer textBuffer) {
             if (textBuffer == null && textView == null) {
                 return null;
             }
+
             // TODO nur einzelne Textbuffer unterstützen?
-            return new CodeFixSuggestedActionsSource(textBuffer, _codeFixSuggestedActionProviderService, textView);
+            return new CodeFixSuggestedActionsSource(textBuffer,
+                                                     _suggestedActionCategoryRegistryService,
+                                                     _codeFixSuggestedActionProviderService,
+                                                     textView);
         }
+
     }
+
 }
