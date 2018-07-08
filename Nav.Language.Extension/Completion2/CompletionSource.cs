@@ -111,7 +111,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                     var imageMoniker = ImageMonikers.FromSymbol(node);
                     var desc         = node.Syntax.ToString();
 
-                    completions.Add(CreateCompletion(node.Name, node.Name, imageMoniker));
+                    completions.Add(CreateCompletion(node.Name, desc, imageMoniker));
 
                     moniker = "keyword";
                 }
@@ -123,7 +123,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             }
 
             // Keywords
-            foreach (var keyword in SyntaxFacts.Keywords.OrderBy(n => n)) {
+            foreach (var keyword in SyntaxFacts.NavKeywords.OrderBy(n => n)) {
 
                 completions.Add(CreateCompletion(keyword, keyword, KnownMonikers.IntellisenseKeyword));
             }

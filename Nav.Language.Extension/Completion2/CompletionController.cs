@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
         public CompletionController(IWpfTextView textView,
                                     ICompletionBroker broker,
-                                    IQuickInfoBroker quickInfoBroker) {
+                                    IAsyncQuickInfoBroker quickInfoBroker) {
 
             _currentSession = null;
             QuickInfoBroker = quickInfoBroker;
@@ -31,10 +31,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
         public IOleCommandTarget Next { get; set; }
 
-        public        IWpfTextView      TextView        { get; }
-        public        ICompletionBroker Broker          { get; }
-        public        IQuickInfoBroker  QuickInfoBroker { get; }
-        public static bool              ShowAllMembers  { get; private set; }
+        public        IWpfTextView          TextView        { get; }
+        public        ICompletionBroker     Broker          { get; }
+        public        IAsyncQuickInfoBroker QuickInfoBroker { get; }
+        public static bool                  ShowAllMembers  { get; private set; }
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut) {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -210,9 +210,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             _currentSession.Start();
 
             if (QuickInfoBroker.IsQuickInfoActive(TextView)) {
-                foreach (IQuickInfoSession session in QuickInfoBroker.GetSessions(TextView)) {
-                    session.Dismiss();
-                }
+                var session = QuickInfoBroker.GetSession(TextView);
+                session.DismissAsync();
             }
 
             return true;

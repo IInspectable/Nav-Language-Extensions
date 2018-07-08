@@ -111,13 +111,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             var match      = string.Empty;
 
             int startIndex = 0;
-
+            
             for (int i = 0; i < typedLower.Length; i++) {
                 char c = typedLower[i];
 
                 if (!textLower.Contains(match + c)) {
-                    if (!matches.Any())
+
+                    if (!matches.Any()) {
                         return DefaultEmptyList;
+                    }
 
                     match      = string.Empty;
                     startIndex = matches.Last().Value.End;
@@ -125,18 +127,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
                 string current = match + c;
                 int    index   = textLower.IndexOf(current, startIndex, StringComparison.Ordinal);
-                int    offset  = 0;
 
                 if (index == -1)
                     return DefaultEmptyList;
 
-                if (index > 0) {
-                    index  = textLower.IndexOf("_" + current, startIndex, StringComparison.Ordinal);
-                    offset = 1;
-                }
-
                 if (index > -1) {
-                    matches[index] =  new Span(index + offset, current.Length);
+                    matches[index] =  new Span(index, current.Length);
                     match          += c;
                 } else {
                     return DefaultEmptyList;

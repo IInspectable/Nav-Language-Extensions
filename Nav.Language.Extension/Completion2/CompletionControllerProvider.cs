@@ -16,10 +16,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
         readonly IVsEditorAdaptersFactoryService _adaptersFactory;
         readonly ICompletionBroker               _completionBroker;
-        private  IQuickInfoBroker                _quickInfoBroker;
+        readonly IAsyncQuickInfoBroker           _quickInfoBroker;
 
         [ImportingConstructor]
-        public CompletionControllerProvider(IVsEditorAdaptersFactoryService adaptersFactory, ICompletionBroker completionBroker, IQuickInfoBroker quickInfoBroker) {
+        public CompletionControllerProvider(IVsEditorAdaptersFactoryService adaptersFactory,
+                                            ICompletionBroker completionBroker,
+                                            IAsyncQuickInfoBroker quickInfoBroker) {
             _adaptersFactory  = adaptersFactory;
             _completionBroker = completionBroker;
             _quickInfoBroker  = quickInfoBroker;
