@@ -1,30 +1,28 @@
-﻿#region Using Directives
-
+﻿using System.ComponentModel.Composition;
 using System.Diagnostics;
-using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Utilities;
+using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Language.Intellisense;
+using Microsoft.VisualStudio.Utilities;
 
-#endregion
-
-namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
+namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
     [Export(typeof(IVsTextViewCreationListener))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
     [TextViewRole(PredefinedTextViewRoles.Interactive)]
-    class CompletionCommandHandlerProvider : IVsTextViewCreationListener {
+    class CompletionControllerProvider: IVsTextViewCreationListener {
 
         readonly IVsEditorAdaptersFactoryService _adaptersFactory;
-        readonly ICompletionBroker _completionBroker ;
+        readonly ICompletionBroker               _completionBroker;
+        private  IQuickInfoBroker                _quickInfoBroker;
 
         [ImportingConstructor]
-        public CompletionCommandHandlerProvider(IVsEditorAdaptersFactoryService adaptersFactory, ICompletionBroker completionBroker) {
+        public CompletionControllerProvider(IVsEditorAdaptersFactoryService adaptersFactory, ICompletionBroker completionBroker, IQuickInfoBroker quickInfoBroker) {
             _adaptersFactory  = adaptersFactory;
             _completionBroker = completionBroker;
+            _quickInfoBroker  = quickInfoBroker;
         }
 
         public void VsTextViewCreated(IVsTextView textViewAdapter) {
@@ -32,10 +30,15 @@ namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
             IWpfTextView view = _adaptersFactory.GetWpfTextView(textViewAdapter);
             Debug.Assert(view != null);
 
-            CompletionCommandHandler filter = new CompletionCommandHandler(view, _completionBroker);
+            CompletionController filter = new CompletionController(
+                view,
+                _completionBroker,
+                _quickInfoBroker);
 
             textViewAdapter.AddCommandFilter(filter, out var next);
             filter.Next = next;
         }
+
     }
+
 }

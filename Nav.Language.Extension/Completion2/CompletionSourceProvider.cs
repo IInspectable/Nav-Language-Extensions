@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.StatementCompletion {
+namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
     [Export(typeof(ICompletionSourceProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]

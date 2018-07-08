@@ -159,6 +159,9 @@
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
     <Compile Include="Common\TextViewExtensions.cs" />
     <Compile Include="Common\TextUndoTransaction.cs" />
+    <Compile Include="Completion2\CompletionController.cs" />
+    <Compile Include="Completion2\CompletionControllerProvider.cs" />
+    <Compile Include="Completion2\FilteredCompletionSet.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationCodeFileLocationInfoProvider.cs" />
@@ -205,10 +208,8 @@
     <Compile Include="QuickInfo\EdgeQuickInfoControl.xaml.cs">
       <DependentUpon>EdgeQuickInfoControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StatementCompletion\CompletionCommandHandler.cs" />
-    <Compile Include="StatementCompletion\CompletionCommandHandlerProvider.cs" />
-    <Compile Include="StatementCompletion\CompletionSource.cs" />
-    <Compile Include="StatementCompletion\CompletionSourceProvider.cs" />
+    <Compile Include="Completion2\CompletionSource.cs" />
+    <Compile Include="Completion2\CompletionSourceProvider.cs" />
     <Compile Include="BraceMatching\BraceMatchingTagger.cs" />
     <Compile Include="BraceMatching\BraceMatchingTaggerProvider.cs" />
     <Compile Include="BraceMatching\BraceMatchingTypeNames.cs" />
