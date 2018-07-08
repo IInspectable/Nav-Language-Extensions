@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 
 using JetBrains.Annotations;
@@ -9,7 +10,34 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.Text {
 
-    static class StringExtensions {
+    public static class StringExtensions {
+
+        public static IEnumerable<string> CamelHumpSplit(this string source) {
+            if (source.Length < 1) {
+                yield return source;
+
+                yield break;
+            }
+
+            int lastIndex = 0;
+            int length;
+            int index;
+            for (index = 1; index < source.Length; index++) {
+
+                var c = source[index];
+                if (Char.IsUpper(c)) {
+                    length = index - lastIndex;
+                    yield return source.Substring(lastIndex, length);
+
+                    lastIndex = index;
+                }
+            }
+
+            length = index - lastIndex;
+            if (length > 0) {
+                yield return source.Substring(lastIndex, length);
+            }
+        }
 
         [NotNull]
         public static string ToCamelcase(this string s) {

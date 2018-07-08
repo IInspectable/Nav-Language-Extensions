@@ -15,7 +15,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
     public class FilteredCompletionSet: CompletionSet2 {
 
-        static readonly List<Span> DefaultEmptyList = new List<Span>();
+        static List<Span> DefaultEmptyList => new List<Span>();
 
         readonly FilteredObservableCollection<Completion> _currentCompletions;
         readonly List<string>                             _activeFilters;
@@ -91,27 +91,51 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         }
 
         private bool DoesCompletionMatchDisplayText(Completion completion) {
-            return _typed.Length == 0 || completion.DisplayText.IndexOf(_typed, StringComparison.OrdinalIgnoreCase) > -1;
+            return _typed.Length == 0 ||
+                   GetHighlightedSpansInDisplayText(completion.DisplayText).Any();
+
+            //    completion.DisplayText.IndexOf(_typed, StringComparison.OrdinalIgnoreCase) > -1;
         }
 
         private bool DoesCompletionMatchAutomationText(Completion completion) {
             return _activeFilters.Exists(x => x.Is(completion.IconAutomationText)) &&
-                   (CompletionController.ShowAllMembers || _typed.Length == 0 || GetHighlightedSpansInDisplayText(completion.DisplayText).Count > 0);
+                   (CompletionController.ShowAllMembers                                 ||
+                    _typed.Length                                                  == 0 ||
+                    GetHighlightedSpansInDisplayText(completion.DisplayText).Count > 0);
         }
 
         public override IReadOnlyList<Span> GetHighlightedSpansInDisplayText(string displayText) {
             return GetHighlightedSpans(displayText, _typed);
         }
 
-        public static List<Span> GetHighlightedSpans(string displayText, string typed) {
+        public static List<Span> GetHighlightedSpans(string text, string typed) {
+            var result = GetHighlightedSpansImpl(text, typed);
 
-            var textLower  = displayText.ToLowerInvariant();
+            //var parts     = typed.CamelHumpSplit();
+            //var partSpans = new List<Span>();
+            //foreach (var part in parts) {
+            //    var spans = GetHighlightedSpansImpl(text, part);
+            //    if (!spans.Any()) {
+            //        return result;
+            //    }
+
+            //    partSpans.AddRange(spans);
+            //}
+
+            //result.AddRange(partSpans);
+
+            return result;
+        }
+
+        public static List<Span> GetHighlightedSpansImpl(string text, string typed) {
+
+            var textLower  = text.ToLowerInvariant();
             var typedLower = typed.ToLowerInvariant();
             var matches    = new SortedList<int, Span>();
             var match      = string.Empty;
 
             int startIndex = 0;
-            
+
             for (int i = 0; i < typedLower.Length; i++) {
                 char c = typedLower[i];
 

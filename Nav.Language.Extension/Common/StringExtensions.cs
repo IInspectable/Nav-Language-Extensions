@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -11,8 +12,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         public static bool Is(this string a, string b) {
             return string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
         }
-
-        #region Dokumentation
 
         /// <summary>
         /// Liefert den Spaltenindex (beginnend bei 0) für den angegebenen Offset vom Start der Zeile. 
@@ -25,9 +24,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         /// ^^-^---^
         /// Der Spaltenindex für den Zeichenindex 4 ist 8 (man beachte die 2 Tabulatoren!).
         /// </example>
-
-        #endregion
-
         public static int GetColumnForOffset(this string text, int tabSize, int offset) {
             var column = 0;
             for (int index = 0; index < offset; index++) {
@@ -42,8 +38,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             return column;
         }
 
-        #region Dokumentation
-
         /// <summary>
         /// Liefert den Spaltenindex (beginnend bei 0) für das erste Signifikante Zeichen in der angegebenen Zeile.
         /// Als nicht signifikant gelten alle Arten von Leerzeichen. Dabei werden Tabulatoren entsprechend umgerechnet.
@@ -55,9 +49,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         /// --------^ 
         /// Der Signifikante Spaltenindex für diese Zeile ist 8.
         /// </example>
-
-        #endregion
-
         public static int GetSignificantColumn(this string text, int tabSize) {
             bool hasSignificantContent = false;
             int  column                = 0;
@@ -76,6 +67,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
             return hasSignificantContent ? column : Int32.MaxValue;
         }
+
+        
 
     }
 

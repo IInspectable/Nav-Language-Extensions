@@ -43,6 +43,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="SymbolListTests.cs" />
     <Compile Include="CodeGenFactsTests.cs" />
     <Compile Include="CodeGenTests.cs" />
