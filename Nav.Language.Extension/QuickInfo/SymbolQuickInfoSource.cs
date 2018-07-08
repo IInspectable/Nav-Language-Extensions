@@ -55,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var qiContent = SymbolQuickInfoBuilder.Build(triggerSymbol, SyntaxQuickinfoBuilderService);
+            var qiContent = SyntaxQuickinfoBuilderService.BuildQuickInfoContent(triggerSymbol);
             if (qiContent == null) {
                 return null;
             }

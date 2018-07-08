@@ -17,9 +17,9 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
     [Export]
-    sealed class SyntaxQuickinfoBuilderService {
+     sealed partial class SyntaxQuickinfoBuilderService {
 
-        readonly IClassificationFormatMapService _classificationFormatMapService;
+        readonly IClassificationFormatMapService                            _classificationFormatMapService;
         readonly Dictionary<SyntaxTokenClassification, IClassificationType> _classificationMap;
 
         [ImportingConstructor]
@@ -31,9 +31,13 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         }
 
-        public TextBlock ToTextBlock(string text, SyntaxTokenClassification classification) {
+        public UIElement BuildQuickInfoContent(ISymbol source) {
+            return Builder.Build(source, this);
+        }
 
-            var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
+        TextBlock ToTextBlock(string text, SyntaxTokenClassification classification) {
+
+            var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
 
             var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
             textBlock.SetDefaultTextProperties(formatMap);
@@ -45,26 +49,26 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             return textBlock;
         }
 
-        public TextBlock ToTextBlock(SyntaxTree syntaxTree) {
+        TextBlock ToTextBlock(SyntaxTree syntaxTree) {
 
-            var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
+            var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
             var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
 
             textBlock.SetDefaultTextProperties(formatMap);
 
-            foreach(var token in syntaxTree.Tokens) {
+            foreach (var token in syntaxTree.Tokens) {
 
                 var run = ToRun(token.ToString(), token.Classification, formatMap);
-                
+
                 textBlock.Inlines.Add(run);
             }
 
             return textBlock;
         }
 
-        public TextBlock ToTextBlock(SignalTriggerCodeInfo codeInfo) {
+        TextBlock ToTextBlock(SignalTriggerCodeInfo codeInfo) {
 
-            var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
+            var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
             var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
 
             textBlock.SetDefaultTextProperties(formatMap);
@@ -75,7 +79,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var typeRun = ToRun(codeInfo.Task.WfsTypeName, SyntaxTokenClassification.TaskName, formatMap);
             textBlock.Inlines.Add(typeRun);
 
-            var methodRun = ToRun("."+ codeInfo.TriggerLogicMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
+            var methodRun = ToRun("." + codeInfo.TriggerLogicMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
             textBlock.Inlines.Add(methodRun);
 
             return textBlock;
@@ -92,5 +96,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
             return run;
         }
+
     }
+
 }

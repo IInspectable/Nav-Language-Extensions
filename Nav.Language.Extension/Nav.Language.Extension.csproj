@@ -161,6 +161,8 @@
     <Compile Include="Common\TextUndoTransaction.cs" />
     <Compile Include="Completion2\CompletionController.cs" />
     <Compile Include="Completion2\CompletionControllerProvider.cs" />
+    <Compile Include="Completion2\CompletionElementProvider.cs" />
+    <Compile Include="Completion2\CompletionProviderNames.cs" />
     <Compile Include="Completion2\FilteredCompletionSet.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
@@ -292,7 +294,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParserService\ParserService.cs" />
     <Compile Include="QuickInfo\QuickInfoSourceProviderNames.cs" />
-    <Compile Include="QuickInfo\SymbolQuickInfoBuilder.cs" />
+    <Compile Include="QuickInfo\SyntaxQuickinfoBuilderService.Builder.cs" />
     <Compile Include="QuickInfo\SymbolQuickInfoControl.xaml.cs">
       <DependentUpon>SymbolQuickInfoControl.xaml</DependentUpon>
     </Compile>

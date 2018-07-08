@@ -106,12 +106,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                 }
 
                 // Node Completions
-                foreach (var node in taskDefinition.NodeDeclarations.OrderBy(n=>n.Name)) {
+                foreach (var node in taskDefinition.NodeDeclarations.OrderBy(n => n.Name)) {
 
-                    var imageMoniker = ImageMonikers.FromSymbol(node);
-                    var desc         = node.Syntax.ToString();
+                    var description = node.Syntax.ToString();
 
-                    completions.Add(CreateCompletion(node.Name, desc, imageMoniker));
+                    completions.Add(CreateCompletion(node, description));
 
                     moniker = "keyword";
                 }
@@ -119,7 +118,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             }
 
             if (!completions.Any()) {
-                 moniker = "keyword";
+                moniker = "keyword";
             }
 
             // Keywords
@@ -127,9 +126,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
                 completions.Add(CreateCompletion(keyword, keyword, KnownMonikers.IntellisenseKeyword));
             }
-            
+
             CreateCompletionSet(moniker, completionSets, completions, applicableTo);
-      
+
         }
 
         public override void Dispose() {
@@ -152,6 +151,22 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                     completionSets.Add(new FilteredCompletionSet(moniker, applicableTo, list, Enumerable.Empty<Completion4>(), null));
                 }
             }
+        }
+
+        Completion4 CreateCompletion(ISymbol symbol, string description) {
+
+            var imageMoniker = ImageMonikers.FromSymbol(symbol);
+
+            var completion = new Completion4(displayText: symbol.Name,
+                                             insertionText: symbol.Name,
+                                             description: description,
+                                             iconMoniker: imageMoniker,
+                                             iconAutomationText: null,
+                                             attributeIcons: null);
+
+            completion.Properties.AddProperty(nameof(ISymbol), symbol);
+
+            return completion;
         }
 
         private Completion4 CreateCompletion(string name, string description,
