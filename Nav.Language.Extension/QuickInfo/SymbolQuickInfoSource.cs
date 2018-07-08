@@ -16,12 +16,12 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
     sealed class SymbolQuickInfoSource: SemanticModelServiceDependent, IAsyncQuickInfoSource {
 
         public SymbolQuickInfoSource(ITextBuffer textBuffer,
-                                     SyntaxQuickinfoBuilderService syntaxQuickinfoBuilderService): base(textBuffer) {
+                                     QuickinfoBuilderService quickinfoBuilderService): base(textBuffer) {
 
-            SyntaxQuickinfoBuilderService = syntaxQuickinfoBuilderService;
+            QuickinfoBuilderService = quickinfoBuilderService;
         }
 
-        public SyntaxQuickinfoBuilderService SyntaxQuickinfoBuilderService { get; }
+        public QuickinfoBuilderService QuickinfoBuilderService { get; }
 
         public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken) {
 
@@ -55,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var qiContent = SyntaxQuickinfoBuilderService.BuildQuickInfoContent(triggerSymbol);
+            var qiContent = QuickinfoBuilderService.BuildSymbolQuickInfoContent(triggerSymbol);
             if (qiContent == null) {
                 return null;
             }

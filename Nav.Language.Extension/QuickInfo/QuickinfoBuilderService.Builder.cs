@@ -15,22 +15,22 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
-    partial class SyntaxQuickinfoBuilderService {
+    partial class QuickinfoBuilderService {
 
         sealed class Builder: SymbolVisitor<UIElement> {
 
             #region Infrastructure
 
-            Builder(ISymbol originatingSymbol, SyntaxQuickinfoBuilderService syntaxQuickinfoBuilderService) {
-                OriginatingSymbol             = originatingSymbol;
-                SyntaxQuickinfoBuilderService = syntaxQuickinfoBuilderService;
+            Builder(ISymbol originatingSymbol, QuickinfoBuilderService quickinfoBuilderService) {
+                OriginatingSymbol       = originatingSymbol;
+                QuickinfoBuilderService = quickinfoBuilderService;
             }
 
-            ISymbol                       OriginatingSymbol             { get; }
-            SyntaxQuickinfoBuilderService SyntaxQuickinfoBuilderService { get; }
+            ISymbol                 OriginatingSymbol       { get; }
+            QuickinfoBuilderService QuickinfoBuilderService { get; }
 
-            public static UIElement Build(ISymbol source, SyntaxQuickinfoBuilderService syntaxQuickinfoBuilderService) {
-                var builder = new Builder(source, syntaxQuickinfoBuilderService);
+            public static UIElement Build(ISymbol source, QuickinfoBuilderService quickinfoBuilderService) {
+                var builder = new Builder(source, quickinfoBuilderService);
                 return builder.Visit(source);
             }
 
@@ -38,7 +38,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
                 var control = new SymbolQuickInfoControl {
                     CrispImage  = {Moniker = imageMoniker},
-                    TextContent = {Content = SyntaxQuickinfoBuilderService.ToTextBlock(syntax.SyntaxTree)}
+                    TextContent = {Content = QuickinfoBuilderService.ToTextBlock(syntax.SyntaxTree)}
                 };
                 return control;
             }
@@ -88,7 +88,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
                 return CreateSymbolQuickInfoControl(syntax, ImageMonikers.FromSymbol(taskDeclarationSymbol));
             }
-
+            
             public override UIElement VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
 
                 var syntaxText = $"{taskDefinitionSymbol.Syntax.TaskKeyword} {taskDefinitionSymbol.Name}";
@@ -105,7 +105,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
                 var control = new SymbolQuickInfoControl {
                     CrispImage  = {Moniker = ImageMonikers.FromSymbol(includeSymbol)},
-                    TextContent = {Content = SyntaxQuickinfoBuilderService.ToTextBlock(includeSymbol.FileName, SyntaxTokenClassification.Identifier)}
+                    TextContent = {Content = QuickinfoBuilderService.ToTextBlock(includeSymbol.FileName, SyntaxTokenClassification.Identifier)}
                 };
 
                 panel.Children.Add(control);
@@ -212,7 +212,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
                 var control = new SymbolQuickInfoControl {
                     CrispImage  = {Moniker = ImageMonikers.FromSymbol(signalTriggerSymbol)},
-                    TextContent = {Content = SyntaxQuickinfoBuilderService.ToTextBlock(signalTriggerCodeModel)}
+                    TextContent = {Content = QuickinfoBuilderService.ToTextBlock(signalTriggerCodeModel)}
                 };
 
                 panel.Children.Add(control);
@@ -229,9 +229,9 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
                                          .OrderBy(call => call.Node.Name)
                                          .Select(call => new CallViewModel(
                                                      edgeModeMoniker: ImageMonikers.FromSymbol(call.EdgeMode),
-                                                     verb: SyntaxQuickinfoBuilderService.ToTextBlock(GetVerb(call.EdgeMode), SyntaxTokenClassification.Keyword),
+                                                     verb: QuickinfoBuilderService.ToTextBlock(GetVerb(call.EdgeMode), SyntaxTokenClassification.Keyword),
                                                      nodeMoniker: ImageMonikers.FromSymbol(call.Node),
-                                                     node: SyntaxQuickinfoBuilderService.ToTextBlock(call.Node.Name, SyntaxTokenClassification.Identifier
+                                                     node: QuickinfoBuilderService.ToTextBlock(call.Node.Name, SyntaxTokenClassification.Identifier
                                                      ))));
 
                 var control = new EdgeQuickInfoControl {

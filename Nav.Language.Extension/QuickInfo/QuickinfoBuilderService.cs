@@ -17,21 +17,21 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
     [Export]
-     sealed partial class SyntaxQuickinfoBuilderService {
+    sealed partial class QuickinfoBuilderService {
 
         readonly IClassificationFormatMapService                            _classificationFormatMapService;
         readonly Dictionary<SyntaxTokenClassification, IClassificationType> _classificationMap;
 
         [ImportingConstructor]
-        public SyntaxQuickinfoBuilderService(IClassificationFormatMapService classificationFormatMapService,
-                                             IClassificationTypeRegistryService classificationTypeRegistryService) {
+        public QuickinfoBuilderService(IClassificationFormatMapService classificationFormatMapService,
+                                       IClassificationTypeRegistryService classificationTypeRegistryService) {
 
             _classificationFormatMapService = classificationFormatMapService;
             _classificationMap              = ClassificationTypeDefinitions.GetSyntaxTokenClassificationMap(classificationTypeRegistryService);
 
         }
 
-        public UIElement BuildQuickInfoContent(ISymbol source) {
+        public UIElement BuildSymbolQuickInfoContent(ISymbol source) {
             return Builder.Build(source, this);
         }
 

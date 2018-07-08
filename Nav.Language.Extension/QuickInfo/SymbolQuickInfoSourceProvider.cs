@@ -23,15 +23,15 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         public SymbolQuickInfoSourceProvider(ITextStructureNavigatorSelectorService navigatorService,
                                              ITextBufferFactoryService textBufferFactoryService,
                                              CodeContentControlProvider codeContentControlProvider,
-                                             SyntaxQuickinfoBuilderService syntaxQuickinfoBuilderService) {
+                                             QuickinfoBuilderService quickinfoBuilderService) {
 
-            SyntaxQuickinfoBuilderService = syntaxQuickinfoBuilderService;
+            QuickinfoBuilderService = quickinfoBuilderService;
         }
 
-        SyntaxQuickinfoBuilderService SyntaxQuickinfoBuilderService { get; }
+        QuickinfoBuilderService QuickinfoBuilderService { get; }
 
         IAsyncQuickInfoSource IAsyncQuickInfoSourceProvider.TryCreateQuickInfoSource(ITextBuffer textBuffer) {
-            return new SymbolQuickInfoSource(textBuffer, SyntaxQuickinfoBuilderService);
+            return new SymbolQuickInfoSource(textBuffer, QuickinfoBuilderService);
         }
 
     }

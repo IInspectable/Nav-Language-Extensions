@@ -18,22 +18,25 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
     class CompletionElementProvider: IUIElementProvider<Completion, ICompletionSession> {
 
         [ImportingConstructor]
-        public CompletionElementProvider(SyntaxQuickinfoBuilderService syntaxQuickinfoBuilderService) {
-            SyntaxQuickinfoBuilderService = syntaxQuickinfoBuilderService;
+        public CompletionElementProvider(QuickinfoBuilderService quickinfoBuilderService) {
+            QuickinfoBuilderService = quickinfoBuilderService;
 
         }
 
-        public SyntaxQuickinfoBuilderService SyntaxQuickinfoBuilderService { get; }
+        public QuickinfoBuilderService QuickinfoBuilderService { get; }
 
         public UIElement GetUIElement(Completion itemToRender, ICompletionSession context, UIElementType elementType) {
             if (elementType == UIElementType.Tooltip &&
-                itemToRender.Properties.TryGetProperty(nameof(ISymbol), out ISymbol item)
+                itemToRender.Properties.TryGetProperty(SymbolPropertyName, out ISymbol item)
             ) {
-                return SyntaxQuickinfoBuilderService.BuildQuickInfoContent(item);
+                return QuickinfoBuilderService.BuildSymbolQuickInfoContent(item);
             }
 
             return null;
         }
+
+        public static string SymbolPropertyName  => nameof(SymbolPropertyName);
+        public static string KeywordPropertyName => nameof(KeywordPropertyName);
 
     }
 

@@ -294,13 +294,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParserService\ParserService.cs" />
     <Compile Include="QuickInfo\QuickInfoSourceProviderNames.cs" />
-    <Compile Include="QuickInfo\SyntaxQuickinfoBuilderService.Builder.cs" />
+    <Compile Include="QuickInfo\QuickinfoBuilderService.Builder.cs" />
     <Compile Include="QuickInfo\SymbolQuickInfoControl.xaml.cs">
       <DependentUpon>SymbolQuickInfoControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="QuickInfo\SymbolQuickInfoSourceProvider.cs" />
     <Compile Include="QuickInfo\SymbolQuickInfoSource.cs" />
-    <Compile Include="QuickInfo\SyntaxQuickinfoBuilderService.cs" />
+    <Compile Include="QuickInfo\QuickinfoBuilderService.cs" />
     <Compile Include="SemanticModelService\SemanticModelServiceDependent.cs" />
     <Compile Include="SemanticModelService\CodeGenerationUnitAndSnapshot.cs" />
     <Compile Include="SemanticModelService\SemanticModelService.cs" />

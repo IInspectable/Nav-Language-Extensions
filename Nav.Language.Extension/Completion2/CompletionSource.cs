@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
@@ -90,10 +89,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
                     if (exitNodeCandidate?.Declaration != null) {
                         foreach (var cp in exitNodeCandidate.Declaration.Exits()) {
-                            var imageMoniker = ImageMonikers.FromSymbol(cp);
-                            var desc         = cp.Name; // TODO Syntax?
 
-                            completions.Add(CreateCompletion(cp.Name, desc, imageMoniker));
+                            completions.Add(CreateSymbolCompletion(cp, cp.Name));
 
                             moniker = "exitNode";
                         }
@@ -110,7 +107,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
                     var description = node.Syntax.ToString();
 
-                    completions.Add(CreateCompletion(node, description));
+                    completions.Add(CreateSymbolCompletion(node, description));
 
                     moniker = "keyword";
                 }
@@ -124,7 +121,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             // Keywords
             foreach (var keyword in SyntaxFacts.NavKeywords.OrderBy(n => n)) {
 
-                completions.Add(CreateCompletion(keyword, keyword, KnownMonikers.IntellisenseKeyword));
+                completions.Add(CreateKeywordCompletion(keyword));
             }
 
             CreateCompletionSet(moniker, completionSets, completions, applicableTo);
@@ -139,7 +136,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         private static void CreateCompletionSet(string moniker, IList<CompletionSet> completionSets, List<Completion4> list, ITrackingSpan applicableTo) {
             if (list.Any()) {
                 if (moniker == "keyword") {
-
                     // IntellisenseFilter[] filters = new[] {
                     //     new IntellisenseFilter(KnownMonikers.Property,   "Standard rules (Alt + S)",      "s", "Standard"),
                     //     new IntellisenseFilter(KnownMonikers.CSFileNode, "C# analysis rules (Alt + C)",   "c", "CSharp"),
@@ -153,7 +149,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             }
         }
 
-        Completion4 CreateCompletion(ISymbol symbol, string description) {
+        Completion4 CreateSymbolCompletion(ISymbol symbol, string description) {
 
             var imageMoniker = ImageMonikers.FromSymbol(symbol);
 
@@ -164,24 +160,21 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                                              iconAutomationText: null,
                                              attributeIcons: null);
 
-            completion.Properties.AddProperty(nameof(ISymbol), symbol);
+            completion.Properties.AddProperty(CompletionElementProvider.SymbolPropertyName, symbol);
 
             return completion;
         }
 
-        private Completion4 CreateCompletion(string name, string description,
-                                             ImageMoniker imageMoniker,
-                                             string automationText = null
-        ) {
+        Completion4 CreateKeywordCompletion(string keyword) {
 
-            //var attributeIcons = new[] { new CompletionIcon2(KnownMonikers.IntellisenseWarning, "warning", "") };
-
-            var completion = new Completion4(displayText: name,
-                                             insertionText: name,
-                                             description: description,
-                                             iconMoniker: imageMoniker,
-                                             iconAutomationText: automationText,
+            var completion = new Completion4(displayText: keyword,
+                                             insertionText: keyword,
+                                             description: $"{keyword} Keyword",
+                                             iconMoniker: KnownMonikers.IntellisenseKeyword,
+                                             iconAutomationText: null,
                                              attributeIcons: null);
+
+            completion.Properties.AddProperty(CompletionElementProvider.KeywordPropertyName, keyword);
 
             return completion;
         }
