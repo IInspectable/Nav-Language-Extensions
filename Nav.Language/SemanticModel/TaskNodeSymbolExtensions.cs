@@ -44,6 +44,40 @@ namespace Pharmatechnik.Nav.Language {
             return (node as ITaskNodeSymbol)?.Syntax.CodeDoNotInjectDeclaration?.Keyword.IsMissing == false;
         }
 
+        public static IEnumerable<IConnectionPointSymbol> GetUnconnectedExits(this ITaskNodeSymbol taskNode) {
+
+            if (taskNode.Declaration != null) {
+
+                var expectedExits  = taskNode.Declaration.Exits().OrderBy(cp => cp.Name);
+                var connectedExits = GetConnectedExits(taskNode).ToList();
+
+                foreach (var expectedExit in expectedExits) {
+
+                    if (!connectedExits.Exists(connectedExit => connectedExit == expectedExit)) {
+                        yield return expectedExit;
+                    }
+                }
+
+            }
+
+        }
+
+        public static IEnumerable<IConnectionPointSymbol> GetConnectedExits(this ITaskNodeSymbol taskNode) {
+
+            if (taskNode.Declaration != null) {
+
+                var actualExits = taskNode.Outgoings
+                                          .Select(et => et?.ConnectionPointReference?.Declaration)
+                                          .Where(cps => cps != null);
+
+                return actualExits;
+
+            }
+
+            return Enumerable.Empty<IConnectionPointSymbol>();
+
+        }
+
     }
 
 }

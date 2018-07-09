@@ -49,25 +49,25 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             var start = triggerPoint;
             var line  = triggerPoint.GetContainingLine();
 
-            while (start > line.Start && char.IsLetterOrDigit((start - 1).GetChar()) ) {
+            while (start > line.Start && char.IsLetterOrDigit((start - 1).GetChar())) {
                 start -= 1;
             }
 
-            bool showEdgeModes=false;
+            bool showEdgeModes = false;
             if (start > line.Start && (start - 1).GetChar() == '-') {
 
-                start -= 1;
-                showEdgeModes=true;
+                start         -= 1;
+                showEdgeModes =  true;
             }
 
-            var applicableToSpan = new SnapshotSpan(start, triggerPoint);
-            var applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
-            string moniker     = null;
-            var    completions = new List<Completion4>();
+            var    applicableToSpan = new SnapshotSpan(start, triggerPoint);
+            var    applicableTo     = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
+            string moniker          = null;
+            var    completions      = new List<Completion4>();
 
             // Edge Modes
             if (showEdgeModes) {
-                
+
                 completions.Add(CreateKeywordCompletion(SyntaxFacts.GoToEdgeKeyword));
                 completions.Add(CreateKeywordCompletion(SyntaxFacts.ModalEdgeKeyword));
 
@@ -77,14 +77,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
                 return;
             }
-            
 
             var extent = TextExtent.FromBounds(triggerPoint, triggerPoint);
 
             var taskDefinition = codeGenerationUnit.TaskDefinitions
                                                    .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent));
-
-            
 
             if (taskDefinition != null) {
 
@@ -109,7 +106,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                                                               .FirstOrDefault(n => n.Name == exitNodeName);
 
                         if (exitNodeCandidate?.Declaration != null) {
-                            foreach (var cp in exitNodeCandidate.Declaration.Exits()) {
+                            // Erst die noch nicht verbundenen
+                            foreach (var cp in exitNodeCandidate.GetUnconnectedExits()) {
+
+                                completions.Add(CreateSymbolCompletion(cp, cp.Name));
+
+                                moniker = "exitNode";
+                            }
+
+                            // Dann die bereits verbundenen
+                            foreach (var cp in exitNodeCandidate.GetConnectedExits()) {
 
                                 completions.Add(CreateSymbolCompletion(cp, cp.Name));
 
@@ -123,9 +129,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                         }
                     }
                 }
-                
-                // Node Completions
-                foreach (var node in taskDefinition.NodeDeclarations.OrderBy(n => n.Name)) {
+
+               
+                // Node Completions. Zuerst die mit den wenigsten Referenzen => Knoten ohne Referenz erscheinen ganz oben
+                foreach (var node in taskDefinition.NodeDeclarations.OrderBy(n => n.References.Count).ThenBy(n => n.Name)) {
 
                     var description = node.Syntax.ToString();
 
