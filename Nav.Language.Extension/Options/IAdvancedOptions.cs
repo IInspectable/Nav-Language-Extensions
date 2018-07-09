@@ -4,5 +4,6 @@
         bool SemanticHighlighting { get; }
         bool HighlightReferencesUnderCursor { get;  }
         bool HighlightReferencesUnderInclude { get;  }
+        bool AutoInsertDelimiters {get;}
     }
 }

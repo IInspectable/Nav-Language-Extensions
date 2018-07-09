@@ -16,7 +16,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
     partial class NavigationBar: TypeAndMemberDropdownBars {
 
-        class ModelBuilder: SemanticModelServiceDependent {
+        sealed class ModelBuilder: SemanticModelServiceDependent {
 
             readonly NavigationBar         _parent;
             readonly WorkspaceRegistration _workspaceRegistration;
@@ -40,15 +40,37 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 _projectItems = ImmutableList<NavigationBarItem>.Empty;
                 _taskItems    = ImmutableList<NavigationBarItem>.Empty;
 
-                UpdateNavigationItems(notifyModelChanged: false);
+                UpdateItems(notifyModelChanged: false);
                 ConnectToWorkspace(_workspaceRegistration.Workspace, notifyModelChanged: false);
+            }
+
+            public override void Dispose() {
+                base.Dispose();
+                DisconnectFromWorkspace();
             }
 
             public ImmutableList<NavigationBarItem> ProjectItems => _projectItems;
             public ImmutableList<NavigationBarItem> TaskItems    => _taskItems;
 
             protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
-                UpdateNavigationItems();
+                UpdateItems();
+            }
+
+            void UpdateItems(bool notifyModelChanged = true) {
+
+                using (Logger.LogBlock(nameof(UpdateItems))) {
+
+                    _projectItems = NavigationBarProjectItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
+                    _taskItems    = NavigationBarTaskItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
+
+                    if (notifyModelChanged) {
+                        NotifyModelChanged();
+                    }
+                }
+            }
+
+            void NotifyModelChanged() {
+                _parent.OnModelChanged();
             }
 
             #region Workspace Management
@@ -104,28 +126,11 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                     args.Kind == WorkspaceChangeKind.ProjectReloaded  ||
                     args.Kind == WorkspaceChangeKind.ProjectRemoved) {
 
-                    UpdateNavigationItems();
+                    UpdateItems();
                 }
             }
 
             #endregion
-
-            void UpdateNavigationItems(bool notifyModelChanged = true) {
-
-                using (Logger.LogBlock(nameof(UpdateNavigationItems))) {
-
-                    _projectItems = NavigationBarProjectItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
-                    _taskItems    = NavigationBarTaskItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
-
-                    if (notifyModelChanged) {
-                        NotifyModelChanged();
-                    }
-                }
-            }
-
-            void NotifyModelChanged() {
-                _parent.OnModelChanged();
-            }
 
         }
 

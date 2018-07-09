@@ -3,15 +3,15 @@
 using System;
 using System.Drawing;
 
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
+using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Images {
+namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
     static class NavigationBarImages {
 

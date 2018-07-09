@@ -34,6 +34,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         IntPtr _imageListHandle;
 
         public NavigationBar(NavLanguageService languageService, IVsTextView view): base(languageService) {
+
             _languageService = languageService;
 
             var componentModel = (IComponentModel) ServiceProvider.GetService(typeof(SComponentModel));
@@ -45,12 +46,25 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             _modelBuilder = new ModelBuilder(this, textBuffer);
 
             textView.Caret.PositionChanged += OnCaretPositionChanged;
+            textView.Closed                += (_, __) => Dispose();
             VSColorTheme.ThemeChanged      += OnThemeChanged;
 
             UpdateImageList(synchronizeDropdowns: false);
         }
 
+        public void Dispose() {
+            VSColorTheme.ThemeChanged -= OnThemeChanged;
+            _modelBuilder.Dispose();
+        }
+
         private IServiceProvider ServiceProvider => _languageService.Package;
+
+        private IVsImageService2 ImageService {
+            get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                return (IVsImageService2) ServiceProvider.GetService(typeof(SVsImageService));
+            }
+        }
 
         void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
             SynchronizeDropdowns();
@@ -93,7 +107,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             // Projekt Combobox
             var projectItems = GetItems(ProjectComboIndex);
             foreach (var entry in projectItems) {
-                dropDownTypes.Add(new DropDownMember(entry.DisplayName, entry.ToSpan(), entry.ImageIndex, DROPDOWNFONTATTR.FONTATTR_PLAIN));
+                dropDownTypes.Add(new DropDownMember(entry.DisplayName, entry.LineSpan, entry.ImageIndex, DROPDOWNFONTATTR.FONTATTR_PLAIN));
             }
 
             if (projectItems.Any()) {
@@ -103,7 +117,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             // Task Entries
             var taskItems = GetItems(TaskComboIndex);
             foreach (var entry in taskItems) {
-                dropDownMembers.Add(new DropDownMember(entry.DisplayName, entry.ToSpan(), entry.ImageIndex, DROPDOWNFONTATTR.FONTATTR_PLAIN));
+                dropDownMembers.Add(new DropDownMember(entry.DisplayName, entry.LineSpan, entry.ImageIndex, DROPDOWNFONTATTR.FONTATTR_PLAIN));
             }
 
             selectedMember = CalculateActiveSelectionIndex(taskItems, line);
@@ -157,10 +171,9 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            var imageService            = (IVsImageService2) ServiceProvider.GetService(typeof(SVsImageService));
             var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
 
-            _imageListHandle = NavigationBarImages.GetImageList(comboBoxBackgroundColor, imageService);
+            _imageListHandle = NavigationBarImages.GetImageList(comboBoxBackgroundColor, ImageService);
 
             if (synchronizeDropdowns) {
                 SynchronizeDropdowns();

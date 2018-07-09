@@ -2,46 +2,52 @@
 
 using System;
 using System.ComponentModel.Design;
-using System.IO;
 using System.Drawing;
-using System.Windows.Media.Imaging;
+using System.IO;
 using System.Runtime.InteropServices;
-
-using JetBrains.Annotations;
+using System.Windows.Media.Imaging;
 
 using EnvDTE;
 
+using JetBrains.Annotations;
+
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
-using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Outlining;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Utilities.Logging;
 
 using Control = System.Windows.Controls.Control;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
+namespace Pharmatechnik.Nav.Language.Extension {
 
     [ProvideLanguageService(typeof(NavLanguageService),
         NavLanguageContentDefinitions.LanguageName,
         101,
-        AutoOutlining         = true,
-        MatchBraces           = true,
-        ShowSmartIndent       = false,
-        DefaultToInsertSpaces = true,
-        MatchBracesAtCaret    = true,
-        RequestStockColors    = true,
-        ShowDropDownOptions   = false)]
+        AutoOutlining               = true,
+        MatchBraces                 = true,
+        ShowSmartIndent             = false,
+        DefaultToInsertSpaces       = true,
+        MatchBracesAtCaret          = true,
+        EnableAsyncCompletion       = true,
+        ShowCompletion              = true,
+        RequestStockColors          = true,
+        EnableLineNumbers           = true,
+        EnableAdvancedMembersOption = false,
+        ShowMatchingBrace           = true,
+        ShowDropDownOptions         = true)]
     [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageService), NavLanguageContentDefinitions.FileExtension)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
@@ -79,7 +85,6 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
             return null;
         }
-        
 
         public static object GetGlobalService<TService>() where TService : class {
             return GetGlobalService(typeof(TService));

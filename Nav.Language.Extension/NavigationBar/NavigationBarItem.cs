@@ -10,7 +10,7 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
-    class NavigationBarItem {
+    sealed class NavigationBarItem {
 
         public NavigationBarItem(string displayName, int imageIndex): this(displayName, imageIndex, null, -1) {
         }
@@ -27,14 +27,14 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         /// Liefert den Anzeigenamen
         /// </summary>
         public string DisplayName { get; }
-        
+
         /// <summary>
         /// Liefert den Image Index für das item.
         /// </summary>
         public int ImageIndex { get; }
 
         public int StartLine => Location?.StartLine ?? 0;
-        public int EndLine => Location?.EndLine ?? 0;
+        public int EndLine   => Location?.EndLine   ?? 0;
 
         [CanBeNull]
         public Location Location { get; }
@@ -48,16 +48,12 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         /// <summary>
         /// Gibt den Startpunkt des Bereichs an.
         /// </summary>
-        public int Start {
-            get { return Extent?.Start ?? -1; }
-        }
+        public int Start => Extent?.Start ?? -1;
 
         /// <summary>
         /// Gibt den Endpunkt des Bereichs an.
         /// </summary>
-        public int End {
-            get { return Extent?.End ?? -1; }
-        }
+        public int End => Extent?.End ?? -1;
 
         /// <summary>
         /// Gibt die Stelle an, an die bei Auswahl des Items hinnavigiert werden soll.
@@ -67,14 +63,15 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         [NotNull]
         public ImmutableList<NavigationBarItem> Children { get; set; }
 
-        public Microsoft.VisualStudio.TextManager.Interop.TextSpan ToSpan() {
-   
-            return new Microsoft.VisualStudio.TextManager.Interop.TextSpan {
-                iStartIndex = 0,
-                iEndIndex   = 0,
-                iStartLine  = StartLine,
-                iEndLine    = EndLine,
-            };
+        public Microsoft.VisualStudio.TextManager.Interop.TextSpan LineSpan {
+            get {
+                return new Microsoft.VisualStudio.TextManager.Interop.TextSpan {
+                    iStartIndex = 0,
+                    iEndIndex   = 0,
+                    iStartLine  = StartLine,
+                    iEndLine    = EndLine,
+                };
+            }
         }
 
     }

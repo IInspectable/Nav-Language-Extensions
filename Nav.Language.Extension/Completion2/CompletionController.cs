@@ -29,14 +29,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             Broker   = broker;
         }
 
-        public IOleCommandTarget Next { get; set; }
+        public IOleCommandTarget     Next            { get; set; }
+        public IWpfTextView          TextView        { get; }
+        public ICompletionBroker     Broker          { get; }
+        public IAsyncQuickInfoBroker QuickInfoBroker { get; }
 
-        public        IWpfTextView          TextView        { get; }
-        public        ICompletionBroker     Broker          { get; }
-        public        IAsyncQuickInfoBroker QuickInfoBroker { get; }
-        public static bool                  ShowAllMembers  { get; private set; }
+        public static bool ShowAllMembers { get; private set; }
 
         public int Exec(ref Guid pguidCmdGroup, uint nCmdID, uint nCmdexecopt, IntPtr pvaIn, IntPtr pvaOut) {
+
             ThreadHelper.ThrowIfNotOnUIThread();
 
             bool handled = false;
@@ -91,35 +92,23 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         private void HandleTypeChar(IntPtr pvaIn) {
             bool handled = false;
 
-            // TODO AutoListMembers Settings abfragen
-            char ch = (char) (ushort) Marshal.GetObjectForNativeVariant(pvaIn);
+            if (NavLanguagePackage.Language.Preferences.AutoListMembers) {
 
-            if (ch == ':' || ch=='-') {
-                StartSession();
-                handled = true;
+                char ch = (char) (ushort) Marshal.GetObjectForNativeVariant(pvaIn);
+
+                if (char.IsLetterOrDigit(ch)) {
+                    StartSession();
+                    handled = true;
+                } else if (ch == ':' || ch == '-' || ch == ' ' || ch == '[') {
+                    Dismiss();
+                    StartSession();
+                    handled = true;
+                }
             }
 
             if (!handled && _currentSession != null) {
                 Filter();
             }
-
-            //if (EditorConfigPackage.Language.Preferences.AutoListMembers)
-            //{
-            //    char ch = (char)(ushort)Marshal.GetObjectForNativeVariant(pvaIn);
-
-            //    if (char.IsLetterOrDigit(ch) && EditorConfigPackage.Language.Preferences.AutoListMembers)
-            //    {
-            //        StartSession();
-            //        handled = true;
-            //    }
-            //    else if ((ch == ':' || ch == '=' || ch == ' ' || ch == ',') && EditorConfigPackage.Language.Preferences.AutoListMembers)
-            //    {
-            //        Dismiss();
-            //        StartSession();
-            //        handled = true;
-            //    }
-            //}
-
         }
 
         private void Filter() {
@@ -146,12 +135,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                 _currentSession.Dismiss();
                 return false;
             } else {
-                // TODO AutoInsertDelimiters
+
                 //string moniker = _currentSession.SelectedCompletionSet.Moniker;
                 _currentSession.Commit();
 
-                //if (!EditorConfigPackage.CompletionOptions.AutoInsertDelimiters)
-                //    return true;
+                if (!NavLanguagePackage.AdvancedOptions.AutoInsertDelimiters) {
+                    return true;
+                }
+
+                // TODO AutoInsertDelimiters
 
                 //SnapshotPoint position = TextView.Caret.Position.BufferPosition;
                 //ITextSnapshotLine line = TextView.TextBuffer.CurrentSnapshot.GetLineFromPosition(position);

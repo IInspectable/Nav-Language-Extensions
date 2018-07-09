@@ -46,7 +46,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                     codeGenerationUnitAndSnapshot: codeGenerationUnitAndSnapshot));
 
             // Semantic Highlighting
-            var advancedOptions = NavLanguagePackage.GetAdvancedOptionsDialogPage();
+            var advancedOptions = NavLanguagePackage.AdvancedOptions;
             if (advancedOptions.SemanticHighlighting) {
 
                 // Init Nodes

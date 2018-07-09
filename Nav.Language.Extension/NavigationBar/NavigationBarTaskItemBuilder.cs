@@ -3,7 +3,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 

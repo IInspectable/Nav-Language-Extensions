@@ -155,7 +155,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
                 yield break;
             }
 
-            var advancedOptions = NavLanguagePackage.GetAdvancedOptionsDialogPage();
+            var advancedOptions = NavLanguagePackage.AdvancedOptions;
          
             foreach (var reference in ReferenceFinder.FindReferences(symbol, advancedOptions)) {
 

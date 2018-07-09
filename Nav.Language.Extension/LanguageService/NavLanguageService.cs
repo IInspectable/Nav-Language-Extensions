@@ -9,7 +9,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
     [Guid(GuidList.NavLanguage)]
     public class NavLanguageService: Microsoft.VisualStudio.Package.LanguageService {
 
-        public NavLanguageService(NavLanguagePackage package) {
+        public NavLanguageService(Extension.NavLanguagePackage package) {
             Package = package;
 
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -17,7 +17,7 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
         }
 
-        public NavLanguagePackage Package { get; }
+        public Extension.NavLanguagePackage Package { get; }
 
         public override LanguagePreferences GetLanguagePreferences() {
             var preferences = new LanguagePreferences(Site, typeof(NavLanguageService).GUID, Name);

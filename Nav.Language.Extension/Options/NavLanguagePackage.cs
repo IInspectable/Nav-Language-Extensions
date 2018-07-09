@@ -6,7 +6,7 @@ using Pharmatechnik.Nav.Language.Extension.Options;
 #endregion
 
 // ReSharper disable once CheckNamespace
-namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
+namespace Pharmatechnik.Nav.Language.Extension {
 
     [ProvideLanguageEditorOptionPage(
         pageType          : typeof(AdvancedOptionsDialogPage), 
@@ -15,12 +15,15 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
         pageName          : AdvancedOptionsDialogPage.PageName, 
         pageNameResourceId: "#120")]
     public sealed partial class NavLanguagePackage {
-        
-        internal static IAdvancedOptions GetAdvancedOptionsDialogPage() {
-             
-            var package = (NavLanguagePackage)GetGlobalService(typeof(NavLanguagePackage));
 
-            return (AdvancedOptionsDialogPage)package.GetDialogPage(typeof (AdvancedOptionsDialogPage));
+        internal static IAdvancedOptions AdvancedOptions {
+            get {
+
+                var package = (NavLanguagePackage) GetGlobalService(typeof(NavLanguagePackage));
+
+                return (AdvancedOptionsDialogPage) package.GetDialogPage(typeof(AdvancedOptionsDialogPage));
+            }
         }
+
     }
 }
