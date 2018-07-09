@@ -9,16 +9,16 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
-    class ProjectItemBuilder {
+    class NavigationBarProjectItemBuilder {
         
-        public static ImmutableList<NavigationItem> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
+        public static ImmutableList<NavigationBarItem> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
             if (codeGenerationUnitAndSnapshot == null) {
-                return ImmutableList<NavigationItem>.Empty;
+                return ImmutableList<NavigationBarItem>.Empty;
             }
 
             return new[] {
-                new NavigationItem(
+                new NavigationBarItem(
                     displayName: codeGenerationUnitAndSnapshot.Snapshot.TextBuffer.GetContainingProject()?.Name ?? "Miscellaneous Files",
                     imageIndex : NavigationBarImages.Index.ProjectNode)
             }.ToImmutableList();

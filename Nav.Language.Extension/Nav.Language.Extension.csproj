@@ -195,15 +195,16 @@
     <Compile Include="GoToLocation\Provider\TaskExitDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationLocationInfoProvider.cs" />
-    <Compile Include="LanguageService\CodeWindowManager.cs" />
+    <Compile Include="NavigationBar\NavigationBar.ModelBuilder.cs" />
+    <Compile Include="NavigationBar\NavigationBar.cs" />
+    <Compile Include="LanguageService\NavLanguageService.cs" />
     <Compile Include="LanguageService\LanguageServiceOptionRegistrationAttribute.cs" />
     <Compile Include="LanguageService\ProvideShowBraceCompletionAttribute.cs" />
     <Compile Include="LanguageService\ProvideShowDropdownBarOptionAttribute.cs" />
-    <Compile Include="NavigationBar\DropdownBarClient.cs" />
     <Compile Include="Images\NavigationBarImages.cs" />
-    <Compile Include="NavigationBar\NavigationItem.cs" />
-    <Compile Include="NavigationBar\ProjectItemBuilder.cs" />
-    <Compile Include="NavigationBar\TaskNavigationItemBuilder.cs" />
+    <Compile Include="NavigationBar\NavigationBarItem.cs" />
+    <Compile Include="NavigationBar\NavigationBarProjectItemBuilder.cs" />
+    <Compile Include="NavigationBar\NavigationBarTaskItemBuilder.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\WeakListenerManager.cs" />
     <Compile Include="Images\ImageMonikers.cs" />
@@ -254,7 +255,6 @@
     <Compile Include="HighlightReferences\ReferenceHighlightTaggerProvider.cs" />
     <Compile Include="HighlightReferences\ReferenceFinder.cs" />
     <Compile Include="LanguageService\GuidList.cs" />
-    <Compile Include="LanguageService\NavLanguageInfo.cs" />
     <Compile Include="LanguageService\NavLanguagePackage.cs" />
     <Compile Include="GoTo\ModifierKeyState.cs" />
     <Compile Include="GoTo\GoToSymbolBuilder.cs" />
@@ -528,6 +528,9 @@
     <PackageReference Include="System.Xml.ReaderWriter">
       <Version>4.3.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="LanguageService2\" />
   </ItemGroup>
   <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

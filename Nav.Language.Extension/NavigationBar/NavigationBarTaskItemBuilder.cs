@@ -9,24 +9,24 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
-    class TaskNavigationItemBuilder : SymbolVisitor {
+    class NavigationBarTaskItemBuilder : SymbolVisitor {
 
-        protected TaskNavigationItemBuilder() {
-            NavigationItems = new List<NavigationItem>();
-            MemberItems     = new List<NavigationItem>();
+        protected NavigationBarTaskItemBuilder() {
+            NavigationItems = new List<NavigationBarItem>();
+            MemberItems     = new List<NavigationBarItem>();
         }
 
-        public List<NavigationItem> NavigationItems { get; }
-        public List<NavigationItem> MemberItems { get; }
+        public List<NavigationBarItem> NavigationItems { get; }
+        public List<NavigationBarItem> MemberItems { get; }
 
-        public static ImmutableList<NavigationItem> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
+        public static ImmutableList<NavigationBarItem> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
 
             var codeGenerationUnit = codeGenerationUnitAndSnapshot?.CodeGenerationUnit;
             if(codeGenerationUnit == null) {
-                return ImmutableList<NavigationItem>.Empty;
+                return ImmutableList<NavigationBarItem>.Empty;
             }
 
-            var builder = new TaskNavigationItemBuilder();
+            var builder = new NavigationBarTaskItemBuilder();
 
             foreach (var symbol in codeGenerationUnit.TaskDefinitions) {
                 builder.Visit(symbol);
@@ -50,7 +50,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             }
             #endif
 
-            NavigationItems.Add(new NavigationItem(
+            NavigationItems.Add(new NavigationBarItem(
                 displayName    : taskDefinitionSymbol.Name, 
                 imageIndex     : NavigationBarImages.Index.TaskDefinition, 
                 location       : taskDefinitionSymbol.Syntax.GetLocation(), 
@@ -68,7 +68,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
                 return;
             }
 
-            NavigationItems.Add(new NavigationItem(
+            NavigationItems.Add(new NavigationBarItem(
                 displayName    : taskDeclarationSymbol.Name, 
                 imageIndex     : NavigationBarImages.Index.TaskDeclaration, 
                 location       : taskDeclarationSymbol.Syntax?.GetLocation(), 
