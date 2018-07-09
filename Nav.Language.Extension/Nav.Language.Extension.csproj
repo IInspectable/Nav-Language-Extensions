@@ -195,16 +195,18 @@
     <Compile Include="GoToLocation\Provider\TaskExitDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationLocationInfoProvider.cs" />
-    <Compile Include="NavigationBar\NavigationBar.ModelBuilder.cs" />
-    <Compile Include="NavigationBar\NavigationBar.cs" />
+    <Compile Include="LanguageService\NavCodeWindowManager.cs" />
     <Compile Include="LanguageService\NavLanguageService.cs" />
+    <Compile Include="LanguageService\NavLanguagePreferences.cs" />
     <Compile Include="LanguageService\LanguageServiceOptionRegistrationAttribute.cs" />
     <Compile Include="LanguageService\ProvideShowBraceCompletionAttribute.cs" />
     <Compile Include="LanguageService\ProvideShowDropdownBarOptionAttribute.cs" />
+    <Compile Include="NavigationBar\NavNavigationBar.cs" />
     <Compile Include="NavigationBar\NavigationBarImages.cs" />
     <Compile Include="NavigationBar\NavigationBarItem.cs" />
     <Compile Include="NavigationBar\NavigationBarProjectItemBuilder.cs" />
     <Compile Include="NavigationBar\NavigationBarTaskItemBuilder.cs" />
+    <Compile Include="NavLanguagePackage.Guids.cs" />
     <Compile Include="Notification\NotificationService.cs" />
     <Compile Include="Notification\WeakListenerManager.cs" />
     <Compile Include="Images\ImageMonikers.cs" />
@@ -254,7 +256,6 @@
     <Compile Include="HighlightReferences\ReferenceHighlightTag.cs" />
     <Compile Include="HighlightReferences\ReferenceHighlightTaggerProvider.cs" />
     <Compile Include="HighlightReferences\ReferenceFinder.cs" />
-    <Compile Include="LanguageService\GuidList.cs" />
     <Compile Include="NavLanguagePackage.cs" />
     <Compile Include="GoTo\ModifierKeyState.cs" />
     <Compile Include="GoTo\GoToSymbolBuilder.cs" />
@@ -271,7 +272,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Options\IAdvancedOptions.cs" />
-    <Compile Include="Options\NavLanguagePackage.cs" />
+    <Compile Include="NavLanguagePackage.AdvancedOptions.cs" />
     <Compile Include="Outlining\OutlineTagger\CodeNamespaceDeclarationOutlineTagger.cs" />
     <Compile Include="Outlining\OutlineTagger\CodeUsingDirectiveOutlineTagger.cs" />
     <Compile Include="Outlining\OutlineTagger\MultilineCommentOutlineTagger.cs" />

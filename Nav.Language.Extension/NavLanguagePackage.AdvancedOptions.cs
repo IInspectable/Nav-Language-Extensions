@@ -5,7 +5,6 @@ using Pharmatechnik.Nav.Language.Extension.Options;
 
 #endregion
 
-// ReSharper disable once CheckNamespace
 namespace Pharmatechnik.Nav.Language.Extension {
 
     [ProvideLanguageEditorOptionPage(
@@ -26,4 +25,5 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
     }
+
 }

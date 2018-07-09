@@ -36,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         static void EnsureImageListHandle(IVsImageService2 imageService) {
-
+            
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (_imageListHandle != null) {

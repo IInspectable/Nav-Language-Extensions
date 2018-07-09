@@ -51,13 +51,13 @@ namespace Pharmatechnik.Nav.Language.Extension {
     [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageService), NavLanguageContentDefinitions.FileExtension)]
     [PackageRegistration(UseManagedResourcesOnly = true)]
-    [Guid(GuidList.NavPackageGuid)]
+    [Guid(Guids.PackageGuidString)]
     [ProvideShowBraceCompletion]
     [ProvideShowDropdownBarOption]
     [ProvideService(typeof(NavLanguageService))]
     [ProvideService(typeof(NavLanguagePackage))]
     sealed partial class NavLanguagePackage: Package {
-
+        
         static readonly Logger Logger = Logger.Create<NavLanguagePackage>();
 
         public NavLanguagePackage() {

@@ -1,76 +1,60 @@
-﻿using System.Runtime.InteropServices;
+﻿#region Using Directives
 
-using Microsoft.VisualStudio.Package;
-using Microsoft.VisualStudio.Shell;
+using System.Runtime.InteropServices;
+
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.TextManager.Interop;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.LanguageService {
 
-    [Guid(GuidList.NavLanguage)]
-    public class NavLanguageService: Microsoft.VisualStudio.Package.LanguageService {
+    [Guid(NavLanguagePackage.Guids.LanguageGuidString)]
+    public class NavLanguageService: IVsLanguageInfo {
 
-        public NavLanguageService(Extension.NavLanguagePackage package) {
-            Package = package;
+        
 
-            ThreadHelper.ThrowIfNotOnUIThread();
-            SetSite(package);
+        readonly NavLanguagePackage _package;
 
+        private NavLanguagePreferences _preferences;
+
+        public NavLanguageService(NavLanguagePackage package) {
+            _package = package;
         }
 
-        public Extension.NavLanguagePackage Package { get; }
+        public NavLanguagePreferences Preferences {
+            get {
+                if (_preferences == null) {
+                    _preferences = new NavLanguagePreferences(_package, typeof(NavLanguageService).GUID, NavLanguageContentDefinitions.LanguageName);
+                    _preferences.Init();
+                }
 
-        public override LanguagePreferences GetLanguagePreferences() {
-            var preferences = new LanguagePreferences(Site, typeof(NavLanguageService).GUID, Name);
-            preferences.Init();
-
-            preferences.EnableCodeSense             = true;
-            preferences.EnableMatchBraces           = true;
-            preferences.EnableMatchBracesAtCaret    = true;
-            preferences.EnableShowMatchingBrace     = true;
-            preferences.EnableCommenting            = true;
-            preferences.HighlightMatchingBraceFlags = _HighlightMatchingBraceFlags.HMB_USERECTANGLEBRACES;
-            preferences.LineNumbers                 = true;
-            preferences.MaxErrorMessages            = 100;
-            preferences.AutoOutlining               = true;
-            preferences.MaxRegionTime               = 2000;
-            preferences.InsertTabs                  = false;
-            preferences.IndentSize                  = 4;
-            preferences.ShowNavigationBar           = true;
-            preferences.EnableAsyncCompletion       = true;
-
-            preferences.WordWrap       = false;
-            preferences.WordWrapGlyphs = true;
-
-            preferences.AutoListMembers      = true;
-            preferences.EnableQuickInfo      = true;
-            preferences.ParameterInformation = true;
-            preferences.HideAdvancedMembers  = false;
-
-            return preferences;
-        }
-
-        public override IScanner GetScanner(IVsTextLines buffer) {
-            return null;
-        }
-
-        public override AuthoringScope ParseSource(ParseRequest req) {
-            return null;
-        }
-
-        public override string GetFormatFilterList() {
-            return $"Nav File (*{NavLanguageContentDefinitions.FileExtension})|*{NavLanguageContentDefinitions.FileExtension}";
-        }
-
-        public override string Name => NavLanguageContentDefinitions.LanguageName;
-
-        public override TypeAndMemberDropdownBars CreateDropDownHelper(IVsTextView forView)
-        {
-            if (Preferences.ShowNavigationBar) {
-                return new NavigationBar.NavigationBar(this, forView);
+                return _preferences;
             }
-
-            return null;
         }
+
+        public int GetCodeWindowManager(IVsCodeWindow pCodeWin, out IVsCodeWindowManager ppCodeWinMgr) {
+
+            ppCodeWinMgr = new NavCodeWindowManager(this, _package, pCodeWin);
+
+            return VSConstants.S_OK;
+        }
+
+        public int GetColorizer(IVsTextLines pBuffer, out IVsColorizer ppColorizer) {
+            ppColorizer = null;
+            return VSConstants.E_NOTIMPL;
+        }
+
+        public int GetFileExtensions(out string pbstrExtensions) {
+            pbstrExtensions = NavLanguageContentDefinitions.FileExtension;
+            return VSConstants.S_OK;
+        }
+
+        public int GetLanguageName(out string bstrName) {
+            bstrName = NavLanguageContentDefinitions.LanguageName;
+            return VSConstants.S_OK;
+        }
+
     }
 
 }

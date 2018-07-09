@@ -1,4 +1,4 @@
-﻿#region
+﻿#region 
 
 using System.Collections.Immutable;
 
@@ -10,13 +10,13 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
-    sealed class NavigationBarItem {
+    class NavigationBarItem {
 
         public NavigationBarItem(string displayName, int imageIndex): this(displayName, imageIndex, null, -1) {
         }
 
-        public NavigationBarItem(string displayName, int imageIndex, [CanBeNull] Location location, int navigationPoint, ImmutableList<NavigationBarItem> children = null) {
-            Location        = location;
+        public NavigationBarItem(string displayName, int imageIndex, [CanBeNull] Location location, int navigationPoint, ImmutableList<NavigationBarItem> children=null) {
+            Extent          = location?.Extent;
             NavigationPoint = navigationPoint;
             DisplayName     = displayName;
             ImageIndex      = imageIndex;
@@ -33,17 +33,11 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         /// </summary>
         public int ImageIndex { get; }
 
-        public int StartLine => Location?.StartLine ?? 0;
-        public int EndLine   => Location?.EndLine   ?? 0;
-
-        [CanBeNull]
-        public Location Location { get; }
-
         /// <summary>
         /// Gibt den gesamte Bereich des Items an, oder null, falls es keinen definierten Bereich gibt (z.B. Projekt Items)
         /// </summary>
         [CanBeNull]
-        public TextExtent? Extent => Location?.Extent;
+        public TextExtent? Extent { get; }
 
         /// <summary>
         /// Gibt den Startpunkt des Bereichs an.
@@ -62,18 +56,5 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         [NotNull]
         public ImmutableList<NavigationBarItem> Children { get; set; }
-
-        public Microsoft.VisualStudio.TextManager.Interop.TextSpan LineSpan {
-            get {
-                return new Microsoft.VisualStudio.TextManager.Interop.TextSpan {
-                    iStartIndex = 0,
-                    iEndIndex   = 0,
-                    iStartLine  = StartLine,
-                    iEndLine    = EndLine,
-                };
-            }
-        }
-
     }
-
 }

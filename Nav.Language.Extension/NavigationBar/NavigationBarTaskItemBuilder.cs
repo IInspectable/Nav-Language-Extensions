@@ -76,7 +76,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         #if ShowMemberCombobox
         public override void VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
-            MemberItems.Add(new NavigationItem(signalTriggerSymbol.Name, NavigationBarImages.Index.TriggerSymbol, signalTriggerSymbol.Transition.Location, signalTriggerSymbol.Start));
+            MemberItems.Add(new NavigationBarItem(signalTriggerSymbol.Name, NavigationBarImages.Index.TriggerSymbol, signalTriggerSymbol.Transition.Location, signalTriggerSymbol.Start));
         }
         #endif
     }
