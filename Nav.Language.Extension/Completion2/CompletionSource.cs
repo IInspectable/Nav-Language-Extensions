@@ -49,59 +49,81 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             var start = triggerPoint;
             var line  = triggerPoint.GetContainingLine();
 
-            while (start > line.Start && char.IsLetterOrDigit((start - 1).GetChar()) && (start - 1).GetChar() != ':') {
+            while (start > line.Start && char.IsLetterOrDigit((start - 1).GetChar()) ) {
                 start -= 1;
             }
 
-            var applicableToSpan = new SnapshotSpan(start, triggerPoint);
+            bool showEdgeModes=false;
+            if (start > line.Start && (start - 1).GetChar() == '-') {
 
-            var exitNodeName = "";
-
-            if (start > line.Start && (start - 1).GetChar() == ':') {
-
-                var exitNodeEnd   = start - 1;
-                var exitNodeStart = exitNodeEnd;
-                while (exitNodeStart > line.Start && !char.IsWhiteSpace((exitNodeStart - 1).GetChar())) {
-                    exitNodeStart -= 1;
-                }
-
-                var exitNodeSpan = new SnapshotSpan(exitNodeStart, exitNodeEnd);
-                exitNodeName = exitNodeSpan.GetText();
+                start -= 1;
+                showEdgeModes=true;
             }
 
+            var applicableToSpan = new SnapshotSpan(start, triggerPoint);
             var applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
+            string moniker     = null;
+            var    completions = new List<Completion4>();
+
+            // Edge Modes
+            if (showEdgeModes) {
+                
+                completions.Add(CreateKeywordCompletion(SyntaxFacts.GoToEdgeKeyword));
+                completions.Add(CreateKeywordCompletion(SyntaxFacts.ModalEdgeKeyword));
+
+                moniker = "keyword";
+
+                CreateCompletionSet(moniker, completionSets, completions, applicableTo);
+
+                return;
+            }
+            
 
             var extent = TextExtent.FromBounds(triggerPoint, triggerPoint);
 
             var taskDefinition = codeGenerationUnit.TaskDefinitions
                                                    .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent));
 
-            string moniker     = null;
-            var    completions = new List<Completion4>();
+            
 
             if (taskDefinition != null) {
 
-                if (!String.IsNullOrEmpty(exitNodeName)) {
+                // Exit Connection Points
+                var exitNodeName = "";
 
-                    var exitNodeCandidate = taskDefinition.NodeDeclarations
-                                                          .OfType<ITaskNodeSymbol>()
-                                                          .FirstOrDefault(n => n.Name == exitNodeName);
+                if (start > line.Start && (start - 1).GetChar() == ':') {
 
-                    if (exitNodeCandidate?.Declaration != null) {
-                        foreach (var cp in exitNodeCandidate.Declaration.Exits()) {
+                    var exitNodeEnd   = start - 1;
+                    var exitNodeStart = exitNodeEnd;
+                    while (exitNodeStart > line.Start && !char.IsWhiteSpace((exitNodeStart - 1).GetChar())) {
+                        exitNodeStart -= 1;
+                    }
 
-                            completions.Add(CreateSymbolCompletion(cp, cp.Name));
+                    var exitNodeSpan = new SnapshotSpan(exitNodeStart, exitNodeEnd);
+                    exitNodeName = exitNodeSpan.GetText();
 
-                            moniker = "exitNode";
+                    if (!String.IsNullOrEmpty(exitNodeName)) {
+
+                        var exitNodeCandidate = taskDefinition.NodeDeclarations
+                                                              .OfType<ITaskNodeSymbol>()
+                                                              .FirstOrDefault(n => n.Name == exitNodeName);
+
+                        if (exitNodeCandidate?.Declaration != null) {
+                            foreach (var cp in exitNodeCandidate.Declaration.Exits()) {
+
+                                completions.Add(CreateSymbolCompletion(cp, cp.Name));
+
+                                moniker = "exitNode";
+                            }
+                        }
+
+                        if (completions.Any()) {
+                            CreateCompletionSet(moniker, completionSets, completions, applicableTo);
+                            return;
                         }
                     }
-
-                    if (completions.Any()) {
-                        CreateCompletionSet(moniker, completionSets, completions, applicableTo);
-                        return;
-                    }
                 }
-
+                
                 // Node Completions
                 foreach (var node in taskDefinition.NodeDeclarations.OrderBy(n => n.Name)) {
 

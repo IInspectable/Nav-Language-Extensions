@@ -9,37 +9,61 @@ namespace Nav.Language.Tests {
     [TestFixture]
     public class StringExtensionsTests {
 
-        public static IEnumerable<TestCase> GetTestCases() {
-            yield return new TestCase("FooBarBaz", "Foo", "Bar", "Baz");
-            yield return new TestCase("fooBarBaz", "foo", "Bar", "Baz");
-            yield return new TestCase("FBZ", "F", "B", "Z");
-            yield return new TestCase("fBZ", "f", "B", "Z");
-            yield return new TestCase("fbZ", "fb",  "Z");
-            yield return new TestCase("fbz", "fbz");
-            yield return new TestCase("");
+        [Test, TestCaseSource(nameof(GetMatchPartsTestCases))]
+        public void Test(MatchPartsTestCase testCase) {
+
+            var parts = PatternMatcher.Default.GetMatchedParts(testCase.Input, testCase.Pattern);
+
+            Assert.That(parts, Is.EqualTo(testCase.Expected));
         }
 
-        [Test, TestCaseSource(nameof(GetTestCases))]
-        public void TestCamelHumps(TestCase testCase) {
+        public static IEnumerable<MatchPartsTestCase> GetMatchPartsTestCases() {
+            yield return new MatchPartsTestCase {
+                Input    = "InputString",
+                Pattern  = "is",
+                Expected = {E(0, 1), E(5, 1)}
+            };
 
-            var result = testCase.Input.CamelHumpSplit();
+            yield return new MatchPartsTestCase {
+                Input    = "inputstring",
+                Pattern  = "is",
+                Expected = {E(0, 1), E(5, 1)}
+            };
 
-            Assert.That(result, Is.EqualTo(testCase.Parts));
-        }
+            yield return new MatchPartsTestCase {
+                Input    = "InputString",
+                Pattern  = "InSt",
+                Expected = {E(0, 2), E(5, 2)}
+            };
 
-        public class TestCase {
+            // Kein Match
+            yield return new MatchPartsTestCase {
+                Input   = "InputString",
+                Pattern = "Foo",
+            };
 
-            public string   Input { get; }
-            public string[] Parts { get; }
+            // TODO Dieser Test verhält sich nicht ideal. Eigentlich sollten vorzugsweise
+            // die Großbuchstaben selektiert werden. Im Falle des "t" wird jedoch bereits
+            // das erste Vorkommen ("Parts") als match gewertet.
+            yield return new MatchPartsTestCase {
+                Input    = "MatchPartsTestCase",
+                Pattern  = "mptc",
+                Expected = {E(0, 1), E(5, 1), E(8, 1), E(13, 2)}
+            };
 
-            public TestCase(string input, params string[] parts) {
-                Input = input;
-                Parts = parts;
-
+            TextExtent E(int start, int length) {
+                return new TextExtent(start, length);
             }
+        }
+
+        public class MatchPartsTestCase {
+
+            public string           Input    { get; set; }
+            public string           Pattern  { get; set; }
+            public List<TextExtent> Expected { get; } = new List<TextExtent>();
 
             public override string ToString() {
-                return Input;
+                return $"{Input} ({Pattern})";
             }
 
         }

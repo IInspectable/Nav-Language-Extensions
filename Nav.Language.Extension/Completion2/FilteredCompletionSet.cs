@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -15,10 +16,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
     public class FilteredCompletionSet: CompletionSet2 {
 
-        static List<Span> DefaultEmptyList => new List<Span>();
-
         readonly FilteredObservableCollection<Completion> _currentCompletions;
-        readonly List<string>                             _activeFilters;
+        readonly List<IIntellisenseFilter>                _activeFilters;
 
         string _typed;
 
@@ -34,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
             _currentCompletions = new FilteredObservableCollection<Completion>(observableCollection);
 
-            _activeFilters = new List<string>();
+            _activeFilters = new List<IIntellisenseFilter>();
 
         }
 
@@ -50,13 +49,21 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
             CustomFilter();
 
-            var ordered = _currentCompletions.OrderByDescending(c => GetHighlightedSpansInDisplayText(c.DisplayText).Sum(s => s.Length))
-                                             .ThenBy(c => c.DisplayText.Length)
-                                             .ToList();
+            bool       isCompletionUnique = false;
+            Completion completionToSelect = null;
+            if (!String.IsNullOrEmpty(_typed)) {
 
-            if (ordered.Any()) {
-                int count = ordered.Count();
-                SelectionStatus = new CompletionSelectionStatus(ordered.First(), count == 1, count == 1);
+                var orderedByMatch = _currentCompletions.OrderByDescending(c => GetHighlightedSpansInDisplayText(c.DisplayText).Sum(s => s.Length))
+                                                 .ToList();
+
+                if (orderedByMatch.Any()) {
+                    isCompletionUnique = orderedByMatch.Count == 1;
+                    completionToSelect = orderedByMatch.First();
+                }
+            }
+
+            if (completionToSelect != null) {
+                SelectionStatus = new CompletionSelectionStatus(completionToSelect, isCompletionUnique, isCompletionUnique);
             } else {
                 SelectBestMatch(CompletionMatchType.MatchDisplayText, false);
             }
@@ -68,12 +75,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
             if (currentActiveFilters != null && currentActiveFilters.Count > 0) {
 
-                var activeFilters = currentActiveFilters.Where(f => f.IsChecked).Select(f => f.AutomationText)
-                                                        .ToList();
+                var activeFilters = currentActiveFilters.Where(f => f.IsChecked).ToList();
 
                 if (!activeFilters.Any()) {
-                    activeFilters = currentActiveFilters.Select(f => f.AutomationText)
-                                                        .ToList();
+                    activeFilters = currentActiveFilters.ToList();
                 }
 
                 _activeFilters.Clear();
@@ -92,78 +97,36 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
         private bool DoesCompletionMatchDisplayText(Completion completion) {
             return _typed.Length == 0 ||
-                   GetHighlightedSpansInDisplayText(completion.DisplayText).Any();
-
-            //    completion.DisplayText.IndexOf(_typed, StringComparison.OrdinalIgnoreCase) > -1;
+                   GetMatchedParts(completion.DisplayText, _typed).Any();
         }
 
         private bool DoesCompletionMatchAutomationText(Completion completion) {
-            return _activeFilters.Exists(x => x.Is(completion.IconAutomationText)) &&
-                   (CompletionController.ShowAllMembers                                 ||
-                    _typed.Length                                                  == 0 ||
-                    GetHighlightedSpansInDisplayText(completion.DisplayText).Count > 0);
+
+            bool matchesFilter = _activeFilters.Exists(filter => String.Equals(filter.AutomationText, completion.IconAutomationText, StringComparison.OrdinalIgnoreCase));
+
+            return matchesFilter &&
+                   (CompletionController.ShowAllMembers                        ||
+                    _typed.Length                                         == 0 ||
+                    GetMatchedParts(completion.DisplayText, _typed).Count > 0);
         }
 
         public override IReadOnlyList<Span> GetHighlightedSpansInDisplayText(string displayText) {
             return GetHighlightedSpans(displayText, _typed);
         }
 
-        public static List<Span> GetHighlightedSpans(string text, string typed) {
-            var result = GetHighlightedSpansImpl(text, typed);
+        static List<Span> GetHighlightedSpans(string text, string typed) {
 
-            //var parts     = typed.CamelHumpSplit();
-            //var partSpans = new List<Span>();
-            //foreach (var part in parts) {
-            //    var spans = GetHighlightedSpansImpl(text, part);
-            //    if (!spans.Any()) {
-            //        return result;
-            //    }
+            return GetMatchedParts(text, typed)
+                  .Select(part => part.ToSpan())
+                  .ToList();
 
-            //    partSpans.AddRange(spans);
-            //}
-
-            //result.AddRange(partSpans);
-
-            return result;
         }
 
-        public static List<Span> GetHighlightedSpansImpl(string text, string typed) {
+        static List<TextExtent> GetMatchedParts(string text, string typed) {
 
-            var textLower  = text.ToLowerInvariant();
-            var typedLower = typed.ToLowerInvariant();
-            var matches    = new SortedList<int, Span>();
-            var match      = string.Empty;
+            return PatternMatcher.Default
+                                 .GetMatchedParts(text, typed);
 
-            int startIndex = 0;
-
-            for (int i = 0; i < typedLower.Length; i++) {
-                char c = typedLower[i];
-
-                if (!textLower.Contains(match + c)) {
-
-                    if (!matches.Any()) {
-                        return DefaultEmptyList;
-                    }
-
-                    match      = string.Empty;
-                    startIndex = matches.Last().Value.End;
-                }
-
-                string current = match + c;
-                int    index   = textLower.IndexOf(current, startIndex, StringComparison.Ordinal);
-
-                if (index == -1)
-                    return DefaultEmptyList;
-
-                if (index > -1) {
-                    matches[index] =  new Span(index, current.Length);
-                    match          += c;
-                } else {
-                    return DefaultEmptyList;
-                }
-            }
-
-            return matches.Values.ToList();
         }
 
     }

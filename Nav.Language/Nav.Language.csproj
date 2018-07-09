@@ -50,6 +50,7 @@
     <Compile Include="CodeFixes\ErrorFix\ErrorCodeFix.cs" />
     <Compile Include="CodeFixes\Refactoring\RefactoringCodeFix.cs" />
     <Compile Include="CodeFixes\StyleFix\StyleCodeFix.cs" />
+    <Compile Include="Text\PatternMatcher.cs" />
     <Compile Include="Text\SourceTextExtensions.cs" />
     <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />

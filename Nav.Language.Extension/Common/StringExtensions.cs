@@ -9,10 +9,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
     static class StringExtensions {
 
-        public static bool Is(this string a, string b) {
-            return string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
-        }
-
         /// <summary>
         /// Liefert den Spaltenindex (beginnend bei 0) für den angegebenen Offset vom Start der Zeile. 
         /// Es werden Tabulatoren entsprechend eingerechnet.

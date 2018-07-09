@@ -66,8 +66,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                 }
             }
 
-            if (!handled)
+            if (!handled) {
                 hresult = Next.Exec(pguidCmdGroup, nCmdID, nCmdexecopt, pvaIn, pvaOut);
+            }
 
             if (ErrorHandler.Succeeded(hresult)) {
                 if (pguidCmdGroup == VSConstants.VSStd2K) {
@@ -93,7 +94,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             // TODO AutoListMembers Settings abfragen
             char ch = (char) (ushort) Marshal.GetObjectForNativeVariant(pvaIn);
 
-            if (ch == ':') {
+            if (ch == ':' || ch=='-') {
                 StartSession();
                 handled = true;
             }
@@ -126,8 +127,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         }
 
         bool Dismiss() {
-            if (_currentSession == null)
+            if (_currentSession == null) {
                 return false;
+            }
 
             _currentSession.Dismiss();
 
@@ -135,10 +137,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         }
 
         bool Commit(bool force) {
-            if (_currentSession == null)
+            if (_currentSession == null) {
                 return false;
+            }
 
             if (!_currentSession.SelectedCompletionSet.SelectionStatus.IsSelected && !force) {
+
                 _currentSession.Dismiss();
                 return false;
             } else {
@@ -194,8 +198,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         }
 
         bool StartSession() {
-            if (_currentSession != null)
+            if (_currentSession != null) {
                 return false;
+            }
 
             SnapshotPoint caret    = TextView.Caret.Position.BufferPosition;
             ITextSnapshot snapshot = caret.Snapshot;
@@ -218,20 +223,25 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         }
 
         private bool CompleteWord() {
+
             StartSession();
 
-            if (_currentSession == null || _currentSession.CompletionSets.Count == 0)
+            if (_currentSession == null || _currentSession.CompletionSets.Count == 0) {
                 return false;
+            }
 
             if (_currentSession.CompletionSets[0].Completions.Count == 1) {
+
                 string text = _currentSession.CompletionSets[0].ApplicableTo.GetText(TextView.TextSnapshot);
 
-                if (!text.Equals(_currentSession.CompletionSets[0].Completions[0].DisplayText, StringComparison.OrdinalIgnoreCase))
-                    return Commit(true);
+                if (!text.Equals(_currentSession.CompletionSets[0].Completions[0].DisplayText, StringComparison.OrdinalIgnoreCase)) {
+                    return Commit(force: true);
+                }
 
                 ShowAllMembers = true;
                 Dismiss();
                 StartSession();
+
             } else {
                 Filter();
             }

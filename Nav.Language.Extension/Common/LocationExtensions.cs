@@ -17,5 +17,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             // TODO Adaption von Start und Legth
             return new SnapshotSpan(textSnapshot, start: extent.Start, length: extent.Length);
         }
+
+        public static Span ToSpan(this TextExtent extent) {
+            return new Span(start: extent.Start, length: extent.Length);
+        }
     }
 }
