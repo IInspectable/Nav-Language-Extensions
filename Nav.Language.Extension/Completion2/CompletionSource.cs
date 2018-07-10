@@ -10,19 +10,55 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 
 using Pharmatechnik.Nav.Language.Extension.Images;
-using Pharmatechnik.Nav.Language.Text;
+
+using TextExtent = Pharmatechnik.Nav.Language.Text.TextExtent;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
+    static class TextSnaphotLineExtensions {
+
+        public static SnapshotPoint GetStartOfIdentifier(this ITextSnapshotLine line, SnapshotPoint start) {
+            while (start > line.Start && char.IsLetterOrDigit((start - 1).GetChar())) {
+                start -= 1;
+            }
+
+            return start;
+        }
+
+        public static SnapshotPoint? GetPreviousNonWhitespace(this ITextSnapshotLine line, SnapshotPoint start) {
+
+            if (start == line.Start) {
+                return null;
+            }
+
+            do {
+                start -= 1;
+            } while (start > line.Start && char.IsWhiteSpace(start.GetChar()));
+
+            return start;
+        }
+
+        public static SnapshotSpan? GetSpanOfPreviousIdentifier(this ITextSnapshotLine line, SnapshotPoint start) {
+
+            var wordEnd = line.GetPreviousNonWhitespace(start);
+            if (wordEnd == null) {
+                return null;
+            }
+
+            var wordStart = line.GetStartOfIdentifier(wordEnd.Value);
+
+            return new SnapshotSpan(wordStart, wordEnd.Value + 1);
+        }
+
+    }
+
     class CompletionSource: SemanticModelServiceDependent, ICompletionSource {
 
-        readonly ITextBuffer _buffer;
-        bool                 _disposed;
+        bool _disposed;
 
         public CompletionSource(ITextBuffer buffer): base(buffer) {
-            _buffer = buffer;
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets) {
@@ -33,31 +69,29 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                 throw new ObjectDisposedException("OokCompletionSource");
             }
 
-            var codeGenerationUnit = SemanticModelService.CodeGenerationUnitAndSnapshot?.CodeGenerationUnit;
-            if (codeGenerationUnit == null) {
-                return;
-            }
+            var generationUnitAndSnapshot = SemanticModelService.UpdateSynchronously();
+            var codeGenerationUnit        = generationUnitAndSnapshot.CodeGenerationUnit;
+            var snapshot                  = generationUnitAndSnapshot.Snapshot;
 
-            ITextSnapshot snapshot      = _buffer.CurrentSnapshot;
-            var           snapshotPoint = session.GetTriggerPoint(snapshot);
+            var snapshotPoint = session.GetTriggerPoint(snapshot);
             if (snapshotPoint == null) {
                 return;
             }
 
             var triggerPoint = (SnapshotPoint) snapshotPoint;
 
-            var start = triggerPoint;
             var line  = triggerPoint.GetContainingLine();
+            var start = line.GetStartOfIdentifier(triggerPoint);
 
-            while (start > line.Start && char.IsLetterOrDigit((start - 1).GetChar())) {
+            var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
+            var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
+            var previousWordSpan           = line.GetSpanOfPreviousIdentifier(start);
+
+            var  prevousIdentfier = previousWordSpan?.GetText() ?? "";
+            bool showEdgeModes    = previousNonWhitespace == '-';
+
+            if (showEdgeModes) {
                 start -= 1;
-            }
-
-            bool showEdgeModes = false;
-            if (start > line.Start && (start - 1).GetChar() == '-') {
-
-                start         -= 1;
-                showEdgeModes =  true;
             }
 
             var    applicableToSpan = new SnapshotSpan(start, triggerPoint);
@@ -78,10 +112,43 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                 return;
             }
 
+            // Code Keyword
+            if (previousNonWhitespace.ToString() == SyntaxFacts.OpenBracket) {
+
+                foreach (var keyword in SyntaxFacts.CodeKeywords) {
+                    completions.Add(CreateKeywordCompletion(keyword));
+                }
+
+                moniker = "keyword";
+                CreateCompletionSet(moniker, completionSets, completions, applicableTo);
+
+                return;
+            }
+
+            if (prevousIdentfier == SyntaxFacts.TaskKeyword) {
+                var taskDecls = codeGenerationUnit.TaskDeclarations;
+                foreach (var decl in taskDecls) {
+                    completions.Add(CreateSymbolCompletion(decl, "decl"));
+
+                    moniker = "keyword";
+                }
+
+                if (completions.Any()) {
+                    CreateCompletionSet(moniker, completionSets, completions, applicableTo);
+                    return;
+                }
+
+            }
+
             var extent = TextExtent.FromBounds(triggerPoint, triggerPoint);
 
             var taskDefinition = codeGenerationUnit.TaskDefinitions
                                                    .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent));
+
+            if (taskDefinition == null) {
+                taskDefinition = codeGenerationUnit.TaskDefinitions
+                                                   .LastOrDefault(td => extent.Start > td.Syntax.Start);
+            }
 
             if (taskDefinition != null) {
 
@@ -130,7 +197,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                     }
                 }
 
-               
                 // Node Completions. Zuerst die mit den wenigsten Referenzen => Knoten ohne Referenz erscheinen ganz oben
                 foreach (var node in taskDefinition.NodeDeclarations.OrderBy(n => n.References.Count).ThenBy(n => n.Name)) {
 

@@ -76,7 +76,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                     switch ((VSConstants.VSStd2KCmdID) nCmdID) {
                         case VSConstants.VSStd2KCmdID.TYPECHAR:
                             ShowAllMembers = false;
-                            HandleTypeChar(pvaIn);
+                            char ch = (char) (ushort) Marshal.GetObjectForNativeVariant(pvaIn);
+                            HandleTypeChar(ch);
                             break;
                         case VSConstants.VSStd2KCmdID.BACKSPACE:
                         case VSConstants.VSStd2KCmdID.DELETE:
@@ -89,23 +90,31 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             return hresult;
         }
 
-        private void HandleTypeChar(IntPtr pvaIn) {
+        private void HandleTypeChar(char ch) {
             bool handled = false;
 
+            if (Char.IsWhiteSpace(ch)) {
+                Dismiss();
+                handled=true;
+            }
+
             if (NavLanguagePackage.Language.Preferences.AutoListMembers) {
-
-                char ch = (char) (ushort) Marshal.GetObjectForNativeVariant(pvaIn);
-
+                
                 if (char.IsLetterOrDigit(ch)) {
                     StartSession();
                     handled = true;
-                } else if (ch == ':' || ch == '-' || ch == ' ' || ch == '[') {
+                } else if (ch == ':' || ch == '-' || ch == '[') {
                     Dismiss();
                     StartSession();
                     handled = true;
                 }
             }
 
+            if (!handled && (!char.IsLetterOrDigit(ch) & ch!='-')) {
+                Dismiss();
+                handled=true;
+            }
+            
             if (!handled && _currentSession != null) {
                 Filter();
             }
