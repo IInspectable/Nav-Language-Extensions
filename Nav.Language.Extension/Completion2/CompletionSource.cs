@@ -260,8 +260,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                                              description: description,
                                              iconMoniker: imageMoniker,
                                              iconAutomationText: "Symbol",
-                                             attributeIcons: null);
-
+                                             attributeIcons: null,
+                                             suffix: null);
+           
             completion.Properties.AddProperty(CompletionElementProvider.SymbolPropertyName, symbol);
 
             return completion;

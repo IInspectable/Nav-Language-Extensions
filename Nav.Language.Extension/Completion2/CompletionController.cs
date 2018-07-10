@@ -19,20 +19,20 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         private ICompletionSession _currentSession;
 
         public CompletionController(IWpfTextView textView,
-                                    ICompletionBroker broker,
+                                    ICompletionBroker completionBroker,
                                     IAsyncQuickInfoBroker quickInfoBroker) {
 
             _currentSession = null;
             QuickInfoBroker = quickInfoBroker;
 
-            TextView = textView;
-            Broker   = broker;
+            TextView         = textView;
+            CompletionBroker = completionBroker;
         }
 
-        public IOleCommandTarget     Next            { get; set; }
-        public IWpfTextView          TextView        { get; }
-        public ICompletionBroker     Broker          { get; }
-        public IAsyncQuickInfoBroker QuickInfoBroker { get; }
+        public IOleCommandTarget     Next             { get; set; }
+        public IWpfTextView          TextView         { get; }
+        public ICompletionBroker     CompletionBroker { get; }
+        public IAsyncQuickInfoBroker QuickInfoBroker  { get; }
 
         public static bool ShowAllMembers { get; private set; }
 
@@ -95,11 +95,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
             if (Char.IsWhiteSpace(ch)) {
                 Dismiss();
-                handled=true;
+                handled = true;
             }
 
             if (NavLanguagePackage.Language.Preferences.AutoListMembers) {
-                
+
                 if (char.IsLetterOrDigit(ch)) {
                     StartSession();
                     handled = true;
@@ -110,11 +110,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                 }
             }
 
-            if (!handled && (!char.IsLetterOrDigit(ch) & ch!='-')) {
+            if (!handled && (!char.IsLetterOrDigit(ch) & ch != '-')) {
                 Dismiss();
-                handled=true;
+                handled = true;
             }
-            
+
             if (!handled && _currentSession != null) {
                 Filter();
             }
@@ -206,10 +206,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             SnapshotPoint caret    = TextView.Caret.Position.BufferPosition;
             ITextSnapshot snapshot = caret.Snapshot;
 
-            if (!Broker.IsCompletionActive(TextView)) {
-                _currentSession = Broker.CreateCompletionSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
+            if (!CompletionBroker.IsCompletionActive(TextView)) {
+                _currentSession = CompletionBroker.CreateCompletionSession(TextView, snapshot.CreateTrackingPoint(caret, PointTrackingMode.Positive), true);
             } else {
-                _currentSession = Broker.GetSessions(TextView)[0];
+                _currentSession = CompletionBroker.GetSessions(TextView)[0];
             }
 
             _currentSession.Dismissed += (sender, args) => _currentSession = null;
