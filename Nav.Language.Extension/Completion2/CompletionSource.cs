@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
     static class TextSnaphotLineExtensions {
 
         public static SnapshotPoint GetStartOfIdentifier(this ITextSnapshotLine line, SnapshotPoint start) {
-            while (start > line.Start && char.IsLetterOrDigit((start - 1).GetChar())) {
+            while (start > line.Start && SyntaxFacts.IsIdentifierCharacter((start - 1).GetChar())) {
                 start -= 1;
             }
 
@@ -128,6 +128,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             if (prevousIdentfier == SyntaxFacts.TaskKeyword) {
                 var taskDecls = codeGenerationUnit.TaskDeclarations;
                 foreach (var decl in taskDecls) {
+
                     completions.Add(CreateSymbolCompletion(decl, "decl"));
 
                     moniker = "keyword";
@@ -153,27 +154,20 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             if (taskDefinition != null) {
 
                 // Exit Connection Points
-                var exitNodeName = "";
-
-                if (start > line.Start && (start - 1).GetChar() == ':') {
+                if (previousNonWhitespace.ToString() == SyntaxFacts.Colon) {
 
                     var exitNodeEnd   = start - 1;
                     var exitNodeStart = exitNodeEnd;
-                    while (exitNodeStart > line.Start && !char.IsWhiteSpace((exitNodeStart - 1).GetChar())) {
-                        exitNodeStart -= 1;
-                    }
 
-                    var exitNodeSpan = new SnapshotSpan(exitNodeStart, exitNodeEnd);
-                    exitNodeName = exitNodeSpan.GetText();
+                    var nodeSpan = line.GetSpanOfPreviousIdentifier(exitNodeStart);
+                    var nodeName = nodeSpan?.GetText();
 
-                    if (!String.IsNullOrEmpty(exitNodeName)) {
+                    if (!String.IsNullOrEmpty(nodeName)) {
 
-                        var exitNodeCandidate = taskDefinition.NodeDeclarations
-                                                              .OfType<ITaskNodeSymbol>()
-                                                              .FirstOrDefault(n => n.Name == exitNodeName);
+                        var exitNodeCandidate = taskDefinition.TryFindNode(nodeName) as ITaskNodeSymbol;
 
                         if (exitNodeCandidate?.Declaration != null) {
-                            // Erst die noch nicht verbundenen
+                            // Erst die noch nicht verbundenen...
                             foreach (var cp in exitNodeCandidate.GetUnconnectedExits()) {
 
                                 completions.Add(CreateSymbolCompletion(cp, cp.Name));
@@ -197,8 +191,21 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                     }
                 }
 
-                // Node Completions. Zuerst die mit den wenigsten Referenzen => Knoten ohne Referenz erscheinen ganz oben
-                foreach (var node in taskDefinition.NodeDeclarations.OrderBy(n => n.References.Count).ThenBy(n => n.Name)) {
+                // Erst alle Knoten ohne Referenzen...
+                foreach (var node in taskDefinition.NodeDeclarations
+                                                   .Where(n => n.References.Count == 0)
+                                                   .OrderBy(n => n.Name)) {
+                    var description = node.Syntax.ToString();
+
+                    completions.Add(CreateSymbolCompletion(node, description));
+
+                    moniker = "keyword";
+                }
+
+                // ...dann alle übrigen
+                foreach (var node in taskDefinition.NodeDeclarations
+                                                   .Where(n => n.References.Count != 0)
+                                                   .OrderBy(n => n.Name)) {
 
                     var description = node.Syntax.ToString();
 
@@ -252,7 +259,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                                              insertionText: symbol.Name,
                                              description: description,
                                              iconMoniker: imageMoniker,
-                                             iconAutomationText: null,
+                                             iconAutomationText: "Symbol",
                                              attributeIcons: null);
 
             completion.Properties.AddProperty(CompletionElementProvider.SymbolPropertyName, symbol);
@@ -273,6 +280,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
             return completion;
         }
+
+        //static class NavIntellisenseFilter {
+
+        //    public static IntellisenseFilter Keyword => new IntellisenseFilter(KnownMonikers.IntellisenseKeyword, "Keyword (Alt + K)", "k", automationText: "Keyword");
+        //    public static IntellisenseFilter Nodes   => new IntellisenseFilter(ImageMonikers.TaskNode,            "Tasks (Alt + T)",   "k", automationText: "Symbol");
+
+        //}
 
     }
 
