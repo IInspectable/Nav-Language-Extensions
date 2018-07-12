@@ -12,6 +12,36 @@ namespace Nav.Language.Tests {
     public class SyntaxTreeTests {
 
         [Test]
+        public void TestAllSyntaxesPresent() {
+
+            var src = Resources.AllRules;
+
+            var cgu = Syntax.ParseCodeGenerationUnit(src);
+
+            var nodeTypes = typeof(Syntax).Assembly
+                                          .GetTypes().Where(
+                                               t => typeof(SyntaxNode).IsAssignableFrom(t) &&
+                                                    !t.IsAbstract)
+                                          .ToList();
+
+            // Die Anzhal Kann/darf sich über die Zeit auch ändern.
+            // Blöd wäre nur, wenn hier keine Syntaxen gefunden würden ;-)
+            Assert.That(nodeTypes.Count, Is.EqualTo(47));
+
+            foreach (var nodeType in nodeTypes) {
+
+                var message = $"Es fehlt die Syntax {nodeType.Name}.";
+                var sample = SampleSyntax.Of(nodeType);
+                if (!String.IsNullOrEmpty(sample)) {
+                    message += $" Beispiel: '{sample}'";
+                }
+                Assert.That(
+                    cgu.DescendantNodesAndSelf().Any(t => t.GetType() == nodeType),
+                    Is.True, message);
+            }
+        }
+
+        [Test]
         public void TestEmptyText() {
             var syntaxTree = SyntaxTree.ParseText(String.Empty);
             Assert.That(syntaxTree,           Is.Not.Null);

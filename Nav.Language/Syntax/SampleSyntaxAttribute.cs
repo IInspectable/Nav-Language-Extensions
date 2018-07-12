@@ -9,6 +9,10 @@ namespace Pharmatechnik.Nav.Language {
             return SampleSyntaxAttribute.GetAttribute<T>()?.Syntax;
         }
 
+        public static string Of(Type type) {
+            return SampleSyntaxAttribute.GetAttribute(type)?.Syntax;
+        }
+
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
