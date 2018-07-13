@@ -476,6 +476,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Package.LanguageService.15.0">
       <Version>15.0.26606</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK.Analyzers">
+      <Version>15.8.33</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.15.0">
       <Version>15.7.27703</Version>
     </PackageReference>
