@@ -75,7 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (_disposed) {
-                throw new ObjectDisposedException("OokCompletionSource");
+                throw new ObjectDisposedException(nameof(CompletionSource));
             }
 
             var generationUnitAndSnapshot = SemanticModelService.UpdateSynchronously();
@@ -88,6 +88,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             }
 
             var triggerPoint = (SnapshotPoint) snapshotPoint;
+            var triggerToken = codeGenerationUnit.Syntax.FindToken(triggerPoint);
+
+            bool isInComment = triggerToken.Type == SyntaxTokenType.SingleLineComment ||
+                               triggerToken.Type == SyntaxTokenType.MultiLineComment;
+
+            // Keine Autocompletion in Kommentaren!
+            if (isInComment) {
+                return;
+            }
 
             var line         = triggerPoint.GetContainingLine();
             var linePosition = triggerPoint - line.Start;
@@ -110,9 +119,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             string moniker          = null;
             var    completions      = new List<Completion4>();
 
-            //
+            // Es gibt derzeit eigentlich nur die taskrefs wo innerhalb von "" etwas vorgeschlagen werden kann
             if (lineText.IsInQuotation(linePosition)) {
 
+                // TODO Pürüfen, ob links von uns ein taskref steht...
                 var quotExtent = lineText.QuotatedExtent(linePosition);
 
                 applicableToSpan = new SnapshotSpan(
@@ -321,7 +331,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             var directoryName = directory.FullName + Path.DirectorySeparatorChar;
             var fullPath      = file.FullName;
             var relativePath  = PathHelper.GetRelativePath(directoryName, file.FullName);
-            //var displayPath = file.Name;
             var displayPath   = CompactPath(relativePath, 50);
 
             var completion = new Completion4(displayText: displayPath,

@@ -135,6 +135,10 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
+        public SyntaxToken FindToken(int position) {
+           return SyntaxTree.Tokens.FindAtPosition(position);          
+        }
+
         public SyntaxNode FindNode(int position) {
             var token = SyntaxTree.Tokens.FindAtPosition(position);
             if (token.IsMissing) {

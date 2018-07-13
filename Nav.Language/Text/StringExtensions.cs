@@ -41,11 +41,11 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         static bool IsInQuotationImpl(this ReadOnlySpan<char> text, int position, char quotationChar, out int quotationStart) {
 
-            if (position < 0 || position >= text.Length) {
-                throw new ArgumentOutOfRangeException(nameof(position));
-            }
-
             quotationStart = -1;
+
+            if (position < 0 || position > text.Length) {
+                return false;
+            }
 
             bool inQuotation = false;
             for (int index = 0; index < position; index++) {
