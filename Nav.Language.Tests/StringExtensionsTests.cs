@@ -35,8 +35,22 @@ namespace Nav.Language.Tests {
             char quot ='\'';
 
             var text = "'Max";
-            var extent = text.QuotatedExtent(0, quot);
-            Assert.That(extent, Is.EqualTo(TextExtent.Missing));
+            // Kein Explizites Ende quot und kein terminiernedes Leerzeichen
+            // -> Extent geht bis zum Ende
+            var extent = text.QuotatedExtent(1, quot); 
+            Assert.That(extent, Is.EqualTo(new TextExtent(1, 3)));
+        }
+
+        [Test]
+        public void TestQuotationExtentMissingEndWithSpaces() {
+
+            char quot ='\'';
+
+            var text   = "'Max Foo Bar";
+            // Kein Explizites Ende quot
+            // -> Extent geht bis zum ersten Leerzeichen
+            var extent = text.QuotatedExtent(1, quot);
+            Assert.That(extent, Is.EqualTo(new TextExtent(1, 3)));
         }
 
         [Test]

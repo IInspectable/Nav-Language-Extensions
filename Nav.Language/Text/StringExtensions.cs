@@ -19,24 +19,42 @@ namespace Pharmatechnik.Nav.Language.Text {
             return IsInQuotationImpl(text, position, quotationChar, out _);
         }
 
+        /// <summary>
+        /// Liefert den gequoteten Bereich um position. Wenn der Bereich nach hinten offen ist, d.h. nicht
+        /// explizit mit dem angegebenen quotationChar abschließt, hört der Bereich mit dem ersten
+        /// Whitespace nach position auf.
+        /// Gibt es weder ein abschließendes quotationChar noch ein terminierendes Whitespace,
+        /// wird der Bereich vom Anfang der quitierung bis zum Ende der angegebenen Zeichenfolge
+        /// zurückgeliefert
+        /// </summary>
         public static TextExtent QuotatedExtent(this string text, int position, char quotationChar = '"') {
             return text.AsSpan().QuotatedExtent(position, quotationChar);
         }
 
         public static TextExtent QuotatedExtent(this ReadOnlySpan<char> text, int position, char quotationChar = '"') {
 
-            if (IsInQuotationImpl(text, position, quotationChar, out var start)) {
-                start++;
-                for (int index = start; index < text.Length; index++) {
-                    if (text[index] == quotationChar) {
+            if (!IsInQuotationImpl(text, position, quotationChar, out var start)) {
+                return TextExtent.Missing;
+            }
 
-                        return TextExtent.FromBounds(start, index);
-                    }
+            start++;
+            int firstWhiteSpace = -1;
+            for (int index = start; index < text.Length; index++) {
+                if (text[index] == quotationChar) {
 
+                    return TextExtent.FromBounds(start, index);
+                }
+
+                if (firstWhiteSpace == -1 && Char.IsWhiteSpace(text[index])) {
+                    firstWhiteSpace = index;
                 }
             }
 
-            return TextExtent.Missing;
+            if (firstWhiteSpace != -1) {
+                return TextExtent.FromBounds(start, firstWhiteSpace);
+            }
+
+            return TextExtent.FromBounds(start, text.Length);
         }
 
         static bool IsInQuotationImpl(this ReadOnlySpan<char> text, int position, char quotationChar, out int quotationStart) {

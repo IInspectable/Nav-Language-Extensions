@@ -125,10 +125,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                 // TODO Pürüfen, ob links von uns ein taskref steht...
                 var quotExtent = lineText.QuotatedExtent(linePosition);
 
-                applicableToSpan = new SnapshotSpan(
+                var typedSpan = new SnapshotSpan(
                     line.Start + quotExtent.Start,
                     triggerPoint);
+                var typed = snapshot.CreateTrackingSpan(typedSpan, SpanTrackingMode.EdgeInclusive);
 
+                applicableToSpan = new SnapshotSpan(
+                    line.Start + quotExtent.Start,
+                    line.Start + quotExtent.End);
                 applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
 
                 var fi = codeGenerationUnit.Syntax.SyntaxTree.SourceText.FileInfo;
@@ -144,11 +148,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                         completions.Add(CreateFileNameCompletion(fi.Directory, file));
                     }
                 }
-                
 
                 if (completions.Any()) {
                     moniker = "file";
-                    CreateCompletionSet(moniker, completionSets, completions, applicableTo);
+                    CreateCompletionSet(moniker, completionSets, completions, applicableTo, typed);
 
                 }
 
@@ -293,7 +296,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             _disposed = true;
         }
 
-        private static void CreateCompletionSet(string moniker, IList<CompletionSet> completionSets, List<Completion4> list, ITrackingSpan applicableTo) {
+        private static void CreateCompletionSet(string moniker,
+                                                IList<CompletionSet> completionSets,
+                                                List<Completion4> list,
+                                                ITrackingSpan applicableTo,
+                                                ITrackingSpan typed = null) {
+
+            typed = typed ?? applicableTo;
             if (list.Any()) {
                 if (moniker == "keyword") {
                     // IntellisenseFilter[] filters = new[] {
@@ -302,9 +311,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                     //     new IntellisenseFilter(KnownMonikers.DotNET,     ".NET analysis rules (Alt + D)", "d", "DotNe"),
                     // };
 
-                    completionSets.Add(new FilteredCompletionSet(moniker, applicableTo, list, Enumerable.Empty<Completion4>(), null));
+                    completionSets.Add(new FilteredCompletionSet(moniker, typed, applicableTo, list, Enumerable.Empty<Completion4>(), null));
                 } else {
-                    completionSets.Add(new FilteredCompletionSet(moniker, applicableTo, list, Enumerable.Empty<Completion4>(), null));
+                    completionSets.Add(new FilteredCompletionSet(moniker, typed, applicableTo, list, Enumerable.Empty<Completion4>(), null));
                 }
             }
         }

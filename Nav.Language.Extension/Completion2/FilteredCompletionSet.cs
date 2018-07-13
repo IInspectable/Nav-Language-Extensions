@@ -16,17 +16,23 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
     public class FilteredCompletionSet: CompletionSet2 {
 
+       
+
         readonly FilteredObservableCollection<Completion> _currentCompletions;
         readonly List<IIntellisenseFilter>                _activeFilters;
 
-        string _typed;
+        readonly ITrackingSpan _typed;
+        string _typedText;
 
         public FilteredCompletionSet(string moniker,
+                                     ITrackingSpan typed,
                                      ITrackingSpan applicableTo,
                                      IList<Completion4> completions,
                                      IEnumerable<Completion> completionBuilders,
                                      IReadOnlyList<IIntellisenseFilter> filters)
             : base(moniker, "All", applicableTo, completions, completionBuilders, filters) {
+
+            _typed = typed ?? applicableTo;
 
             var observableCollection = new BulkObservableCollection<Completion>();
             observableCollection.AddRange(completions);
@@ -45,13 +51,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
         public override void SelectBestMatch() {
 
-            _typed = ApplicableTo.GetText(ApplicableTo.TextBuffer.CurrentSnapshot);
+            _typedText = _typed.GetText(_typed.TextBuffer.CurrentSnapshot);
 
             CustomFilter();
 
             bool       isCompletionUnique = false;
             Completion completionToSelect = null;
-            if (!String.IsNullOrEmpty(_typed)) {
+            if (!String.IsNullOrEmpty(_typedText)) {
 
                 var orderedByMatch = _currentCompletions.OrderByDescending(c => GetHighlightedSpansInDisplayText(c.DisplayText).Sum(s => s.Length))
                                                  .ToList();
@@ -96,8 +102,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         }
 
         private bool DoesCompletionMatchDisplayText(Completion completion) {
-            return _typed.Length == 0 ||
-                   GetMatchedParts(completion.DisplayText, _typed).Any();
+            return _typedText.Length == 0 ||
+                   GetMatchedParts(completion.DisplayText, _typedText).Any();
         }
 
         private bool DoesCompletionMatchAutomationText(Completion completion) {
@@ -106,12 +112,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
             return matchesFilter &&
                    (CompletionController.ShowAllMembers                        ||
-                    _typed.Length                                         == 0 ||
-                    GetMatchedParts(completion.DisplayText, _typed).Count > 0);
+                    _typedText.Length                                         == 0 ||
+                    GetMatchedParts(completion.DisplayText, _typedText).Count > 0);
         }
 
         public override IReadOnlyList<Span> GetHighlightedSpansInDisplayText(string displayText) {
-            return GetHighlightedSpans(displayText, _typed);
+            return GetHighlightedSpans(displayText, _typedText);
         }
 
         static List<Span> GetHighlightedSpans(string text, string typed) {
