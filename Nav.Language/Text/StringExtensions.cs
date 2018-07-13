@@ -11,6 +11,57 @@ namespace Pharmatechnik.Nav.Language.Text {
 
     public static class StringExtensions {
 
+        public static bool IsInQuotation(this string text, int position, char quotationChar = '"') {
+            return text.AsSpan().IsInQuotation(position, quotationChar);
+        }
+
+        public static bool IsInQuotation(this ReadOnlySpan<char> text, int position, char quotationChar = '"') {
+            return IsInQuotationImpl(text, position, quotationChar, out _);
+        }
+
+        public static TextExtent QuotatedExtent(this string text, int position, char quotationChar = '"') {
+            return text.AsSpan().QuotatedExtent(position, quotationChar);
+        }
+
+        public static TextExtent QuotatedExtent(this ReadOnlySpan<char> text, int position, char quotationChar = '"') {
+
+            if (IsInQuotationImpl(text, position, quotationChar, out var start)) {
+                start++;
+                for (int index = start; index < text.Length; index++) {
+                    if (text[index] == quotationChar) {
+
+                        return TextExtent.FromBounds(start, index);
+                    }
+
+                }
+            }
+
+            return TextExtent.Missing;
+        }
+
+        static bool IsInQuotationImpl(this ReadOnlySpan<char> text, int position, char quotationChar, out int quotationStart) {
+
+            if (position < 0 || position >= text.Length) {
+                throw new ArgumentOutOfRangeException(nameof(position));
+            }
+
+            quotationStart = -1;
+
+            bool inQuotation = false;
+            for (int index = 0; index < position; index++) {
+                if (text[index] == quotationChar) {
+
+                    inQuotation ^= true;
+                    if (inQuotation) {
+                        quotationStart = index;
+                    }
+                }
+
+            }
+
+            return inQuotation;
+        }
+
         [NotNull]
         public static string ToCamelcase(this string s) {
 

@@ -8,6 +8,67 @@ namespace Nav.Language.Tests {
 
     [TestFixture]
     public class StringExtensionsTests {
+    
+        [Test]
+        public void TestInQuot() {
+
+            char quot='\'';
+
+            var text = "Hi 'Max'!";
+
+            Assert.That(text.IsInQuotation(0, quot), Is.False); // H
+            Assert.That(text.IsInQuotation(1, quot), Is.False); // i
+            Assert.That(text.IsInQuotation(2, quot), Is.False); // 
+            Assert.That(text.IsInQuotation(3, quot), Is.False); // '
+            // -
+            Assert.That(text.IsInQuotation(4, quot), Is.True); // M
+            Assert.That(text.IsInQuotation(5, quot), Is.True); // a
+            Assert.That(text.IsInQuotation(6, quot), Is.True); // x
+            Assert.That(text.IsInQuotation(7, quot), Is.True); // '
+            // -
+            Assert.That(text.IsInQuotation(8, quot), Is.False); // !
+        }
+
+        [Test]
+        public void TestQuotationExtentMissingEnd() {
+
+            char quot ='\'';
+
+            var text = "'Max";
+            var extent = text.QuotatedExtent(0, quot);
+            Assert.That(extent, Is.EqualTo(TextExtent.Missing));
+        }
+
+        [Test]
+        public void TestInQuotationExtentMissingEnd() {
+
+            char quot ='\'';
+
+            var text   = "'Max";
+            Assert.That(text.IsInQuotation(0, quot), Is.False);
+            Assert.That(text.IsInQuotation(1, quot), Is.True);
+        }
+
+        [Test]
+        public void TestQuotationExtent() {
+
+            char quot ='\'';
+
+            var text = "Hi 'Max'!";
+
+            Assert.That(text.QuotatedExtent(0, quot), Is.EqualTo(TextExtent.Missing)); // H
+            Assert.That(text.QuotatedExtent(1, quot), Is.EqualTo(TextExtent.Missing));  // i
+            Assert.That(text.QuotatedExtent(2, quot), Is.EqualTo(TextExtent.Missing)); // 
+            Assert.That(text.QuotatedExtent(3, quot), Is.EqualTo(TextExtent.Missing)); // '
+            // -
+            var expectedExtent = new TextExtent(4, 3); // Max
+            Assert.That(text.QuotatedExtent(4, quot), Is.EqualTo(expectedExtent)); // M
+            Assert.That(text.QuotatedExtent(5, quot), Is.EqualTo(expectedExtent)); // a
+            Assert.That(text.QuotatedExtent(6, quot), Is.EqualTo(expectedExtent)); // x
+            Assert.That(text.QuotatedExtent(7, quot), Is.EqualTo(expectedExtent)); // '
+            // -
+            Assert.That(text.QuotatedExtent(8, quot), Is.EqualTo(TextExtent.Missing)); // !
+        }
 
         [Test, TestCaseSource(nameof(GetMatchPartsTestCases))]
         public void Test(MatchPartsTestCase testCase) {

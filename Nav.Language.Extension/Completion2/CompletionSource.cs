@@ -2,7 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+
+using Pharmatechnik.Nav.Utilities.IO;
 
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Language.Intellisense;
@@ -10,6 +15,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 
 using Pharmatechnik.Nav.Language.Extension.Images;
+using Pharmatechnik.Nav.Language.Text;
 
 using TextExtent = Pharmatechnik.Nav.Language.Text.TextExtent;
 
@@ -56,9 +62,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
     class CompletionSource: SemanticModelServiceDependent, ICompletionSource {
 
+        private readonly NavFileCompletionCache _navFileCompletionCache;
+
         bool _disposed;
 
-        public CompletionSource(ITextBuffer buffer): base(buffer) {
+        public CompletionSource(ITextBuffer buffer, NavFileCompletionCache navFileCompletionCache): base(buffer) {
+            _navFileCompletionCache = navFileCompletionCache;
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets) {
@@ -80,8 +89,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
             var triggerPoint = (SnapshotPoint) snapshotPoint;
 
-            var line  = triggerPoint.GetContainingLine();
-            var start = line.GetStartOfIdentifier(triggerPoint);
+            var line         = triggerPoint.GetContainingLine();
+            var linePosition = triggerPoint - line.Start;
+            var lineText     = line.GetText();
+            var start        = line.GetStartOfIdentifier(triggerPoint);
 
             var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
             var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
@@ -98,6 +109,43 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             var    applicableTo     = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
             string moniker          = null;
             var    completions      = new List<Completion4>();
+
+            //
+            if (lineText.IsInQuotation(linePosition)) {
+
+                var quotExtent = lineText.QuotatedExtent(linePosition);
+
+                applicableToSpan = new SnapshotSpan(
+                    line.Start + quotExtent.Start,
+                    triggerPoint);
+
+                applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
+
+                var fi = codeGenerationUnit.Syntax.SyntaxTree.SourceText.FileInfo;
+                if (fi?.DirectoryName != null) {
+                    var files = Directory.EnumerateFiles(path: fi.DirectoryName,
+                                                         searchPattern: $"*{NavLanguageContentDefinitions.FileExtension}",
+                                                         searchOption: SearchOption.TopDirectoryOnly);
+                    foreach (var file in files) {
+                        completions.Add(CreateFileNameCompletion(fi.Directory, new FileInfo(file)));
+                    }
+
+                }
+
+                foreach (var file in _navFileCompletionCache.GetNavFiles()) {
+                    completions.Add(CreateFileNameCompletion(file.Directory, file));
+                }
+
+                if (completions.Any()) {
+                    moniker = "file";
+                    CreateCompletionSet(moniker, completionSets, completions, applicableTo);
+
+                }
+
+                // Wenn in Quotation, dann sind wir fertig...
+                return;
+
+            }
 
             // Edge Modes
             if (showEdgeModes) {
@@ -262,10 +310,39 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                                              iconAutomationText: "Symbol",
                                              attributeIcons: null,
                                              suffix: null);
-           
+
             completion.Properties.AddProperty(CompletionElementProvider.SymbolPropertyName, symbol);
 
             return completion;
+        }
+
+        Completion4 CreateFileNameCompletion(DirectoryInfo directory, FileInfo file) {
+
+            var directoryName = directory.FullName + Path.DirectorySeparatorChar;
+            var fullPath      = file.FullName;
+            var relativePath  = PathHelper.GetRelativePath(directoryName, file.FullName);
+            //var displayPath = file.Name;
+            var displayPath   = CompactPath(relativePath, 50);
+
+            var completion = new Completion4(displayText: displayPath,
+                                             insertionText: relativePath,
+                                             description: fullPath,
+                                             iconMoniker: ImageMonikers.Include,
+                                             iconAutomationText: null,
+                                             attributeIcons: null);
+
+            return completion;
+        }
+
+        [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
+        static extern bool PathCompactPathEx([Out] StringBuilder pszOut, string szPath, int cchMax, int dwFlags);
+
+        static string CompactPath(string longPathName, int wantedLength) {
+            // NOTE: You need to create the builder with the required capacity before calling function.
+            // See http://msdn.microsoft.com/en-us/library/aa446536.aspx
+            StringBuilder sb = new StringBuilder(wantedLength + 1);
+            PathCompactPathEx(sb, longPathName, wantedLength + 1, 0);
+            return sb.ToString();
         }
 
         Completion4 CreateKeywordCompletion(string keyword) {
