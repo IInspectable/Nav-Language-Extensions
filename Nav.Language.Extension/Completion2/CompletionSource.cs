@@ -140,11 +140,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                         completions.Add(CreateFileNameCompletion(fi.Directory, new FileInfo(file)));
                     }
 
+                    foreach (var file in _navFileCompletionCache.GetNavFiles()) {
+                        completions.Add(CreateFileNameCompletion(fi.Directory, file));
+                    }
                 }
-
-                foreach (var file in _navFileCompletionCache.GetNavFiles()) {
-                    completions.Add(CreateFileNameCompletion(file.Directory, file));
-                }
+                
 
                 if (completions.Any()) {
                     moniker = "file";
