@@ -165,6 +165,7 @@
     <Compile Include="Completion2\CompletionProviderNames.cs" />
     <Compile Include="Completion2\FilteredCompletionSet.cs" />
     <Compile Include="Completion2\NavFileCompletionCache.cs" />
+    <Compile Include="Completion2\TextSnaphotLineExtensions.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationCodeFileLocationInfoProvider.cs" />

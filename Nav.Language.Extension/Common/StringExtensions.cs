@@ -1,7 +1,8 @@
 ﻿#region Using Directives
 
 using System;
-using System.Collections.Generic;
+
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -64,7 +65,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
             return hasSignificantContent ? column : Int32.MaxValue;
         }
 
-        
+       
 
     }
 

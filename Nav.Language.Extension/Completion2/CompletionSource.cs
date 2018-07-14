@@ -23,43 +23,6 @@ using TextExtent = Pharmatechnik.Nav.Language.Text.TextExtent;
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
-    static class TextSnaphotLineExtensions {
-
-        public static SnapshotPoint GetStartOfIdentifier(this ITextSnapshotLine line, SnapshotPoint start) {
-            while (start > line.Start && SyntaxFacts.IsIdentifierCharacter((start - 1).GetChar())) {
-                start -= 1;
-            }
-
-            return start;
-        }
-
-        public static SnapshotPoint? GetPreviousNonWhitespace(this ITextSnapshotLine line, SnapshotPoint start) {
-
-            if (start == line.Start) {
-                return null;
-            }
-
-            do {
-                start -= 1;
-            } while (start > line.Start && char.IsWhiteSpace(start.GetChar()));
-
-            return start;
-        }
-
-        public static SnapshotSpan? GetSpanOfPreviousIdentifier(this ITextSnapshotLine line, SnapshotPoint start) {
-
-            var wordEnd = line.GetPreviousNonWhitespace(start);
-            if (wordEnd == null) {
-                return null;
-            }
-
-            var wordStart = line.GetStartOfIdentifier(wordEnd.Value);
-
-            return new SnapshotSpan(wordStart, wordEnd.Value + 1);
-        }
-
-    }
-
     class CompletionSource: SemanticModelServiceDependent, ICompletionSource {
 
         private readonly NavFileCompletionCache _navFileCompletionCache;
@@ -122,36 +85,40 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             // Es gibt derzeit eigentlich nur die taskrefs wo innerhalb von "" etwas vorgeschlagen werden kann
             if (lineText.IsInQuotation(linePosition)) {
 
-                // TODO Pürüfen, ob links von uns ein taskref steht...
-                var quotExtent = lineText.QuotatedExtent(linePosition);
+                var quotatedExtent     = lineText.QuotatedExtent(linePosition);
+                var previousIdentifier = lineText.GetPreviousIdentifier(quotatedExtent.Start - 1);
 
-                var typedSpan = new SnapshotSpan(
-                    line.Start + quotExtent.Start,
-                    triggerPoint);
-                var typed = snapshot.CreateTrackingSpan(typedSpan, SpanTrackingMode.EdgeInclusive);
+                if (previousIdentifier == SyntaxFacts.TaskrefKeyword) {
 
-                applicableToSpan = new SnapshotSpan(
-                    line.Start + quotExtent.Start,
-                    line.Start + quotExtent.End);
-                applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
+                    var typedSpan = new SnapshotSpan(
+                        line.Start + quotatedExtent.Start,
+                        triggerPoint);
+                    var typed = snapshot.CreateTrackingSpan(typedSpan, SpanTrackingMode.EdgeInclusive);
 
-                var fi = codeGenerationUnit.Syntax.SyntaxTree.SourceText.FileInfo;
-                if (fi?.DirectoryName != null) {
-                    var files = Directory.EnumerateFiles(path: fi.DirectoryName,
-                                                         searchPattern: $"*{NavLanguageContentDefinitions.FileExtension}",
-                                                         searchOption: SearchOption.TopDirectoryOnly);
-                    foreach (var file in files) {
-                        completions.Add(CreateFileNameCompletion(fi.Directory, new FileInfo(file)));
+                    applicableToSpan = new SnapshotSpan(
+                        line.Start + quotatedExtent.Start,
+                        line.Start + quotatedExtent.End);
+                    applicableTo = snapshot.CreateTrackingSpan(applicableToSpan, SpanTrackingMode.EdgeInclusive);
+
+                    var fi = codeGenerationUnit.Syntax.SyntaxTree.SourceText.FileInfo;
+                    if (fi?.DirectoryName != null) {
+                        var files = Directory.EnumerateFiles(path: fi.DirectoryName,
+                                                             searchPattern: $"*{NavLanguageContentDefinitions.FileExtension}",
+                                                             searchOption: SearchOption.TopDirectoryOnly);
+                        foreach (var file in files) {
+                            completions.Add(CreateFileNameCompletion(fi.Directory, new FileInfo(file)));
+                        }
+
+                        foreach (var file in _navFileCompletionCache.GetNavFiles()) {
+                            completions.Add(CreateFileNameCompletion(fi.Directory, file));
+                        }
                     }
 
-                    foreach (var file in _navFileCompletionCache.GetNavFiles()) {
-                        completions.Add(CreateFileNameCompletion(fi.Directory, file));
-                    }
-                }
+                    if (completions.Any()) {
+                        moniker = "file";
+                        CreateCompletionSet(moniker, completionSets, completions, applicableTo, typed);
 
-                if (completions.Any()) {
-                    moniker = "file";
-                    CreateCompletionSet(moniker, completionSets, completions, applicableTo, typed);
+                    }
 
                 }
 

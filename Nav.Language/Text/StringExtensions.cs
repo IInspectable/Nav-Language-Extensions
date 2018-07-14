@@ -11,6 +11,111 @@ namespace Pharmatechnik.Nav.Language.Text {
 
     public static class StringExtensions {
 
+        public static string Substring(this string text, TextExtent extent) {
+            if (extent.IsMissing) {
+                return String.Empty;
+            }
+
+            return text.Substring(startIndex: extent.Start, length: extent.Length);
+        }
+
+        public static ReadOnlySpan<char> Slice(this ReadOnlySpan<char> span, TextExtent extent) {
+            if (extent.IsMissing) {
+                return ReadOnlySpan<char>.Empty;
+            }
+
+            return span.Slice(start: extent.Start, length: extent.Length);
+        }
+
+        /// <summary>
+        /// Liefert den vorigen Identifier, oder String.Empty, falls es keinen vorigen Identifier gibt.
+        /// </summary>
+        public static string GetPreviousIdentifier(this string text, int position) {
+            return text.Substring(GetExtentOfPreviousIdentifier(text.AsSpan(), position));
+        }
+
+        /// <summary>
+        /// Liefert den vorigen Identifier, oder Empty, falls es keinen vorigen Identifier gibt.
+        /// </summary>
+        public static ReadOnlySpan<char> GetPreviousIdentifier(this ReadOnlySpan<char> span, int position) {
+            return span.Slice(GetExtentOfPreviousIdentifier(span, position));
+        }
+
+        /// <summary>
+        /// Liefer den Bereich des Identifiers, der vor position ist.
+        /// Identifier Foo
+        /// ------------^
+        /// Liefert den Bereich von Identifier, also [0,10( 
+        /// </summary>
+        public static TextExtent GetExtentOfPreviousIdentifier(this string text, int position) {
+            return GetExtentOfPreviousIdentifier(text.AsSpan(), position);
+        }
+
+        /// <summary>
+        /// Liefer den Bereich des Identifiers, der vor position ist.
+        /// Identifier Foo
+        /// -----------^
+        /// Liefert den Bereich von Identifier, also [0,10( 
+        /// </summary>
+        public static TextExtent GetExtentOfPreviousIdentifier(this ReadOnlySpan<char> span, int position) {
+
+            var identifierStart = GetStartOfIdentifier(span, position);
+            if (identifierStart != -1) {
+                position = identifierStart;
+            }
+
+            var previousIdentiferEnd = span.IndexOfPreviousNonWhitespace(position);
+            if (previousIdentiferEnd == -1) {
+                return TextExtent.Missing;
+            }
+
+            var previousIdentiferStart = span.GetStartOfIdentifier(previousIdentiferEnd);
+            if (previousIdentiferStart == -1) {
+                return TextExtent.Missing;
+            }
+
+            return TextExtent.FromBounds(start: previousIdentiferStart, end: previousIdentiferEnd + 1);
+        }
+
+        public static int IndexOfPreviousNonWhitespace(this string text, int position) {
+            return IndexOfPreviousNonWhitespace(text.AsSpan(), position);
+        }
+
+        public static int IndexOfPreviousNonWhitespace(this ReadOnlySpan<char> span, int position) {
+
+            if (position == 0) {
+                return -1;
+            }
+
+            do {
+                position -= 1;
+            } while (position > 0 && char.IsWhiteSpace(span[position]));
+
+            return position;
+        }
+
+        public static int GetStartOfIdentifier(this string text, int position) {
+            return GetStartOfIdentifier(text.AsSpan(), position);
+        }
+
+        public static int GetStartOfIdentifier(this ReadOnlySpan<char> span, int position) {
+
+            if (position < 0 || position >= span.Length) {
+                throw new IndexOutOfRangeException();
+            }
+
+            if (!SyntaxFacts.IsIdentifierCharacter(span[(position)])) {
+                return -1;
+            }
+
+            int start = position;
+            while (start > 0 && SyntaxFacts.IsIdentifierCharacter(span[(start - 1)])) {
+                start -= 1;
+            }
+
+            return start;
+        }
+
         public static bool IsInQuotation(this string text, int position, char quotationChar = '"') {
             return text.AsSpan().IsInQuotation(position, quotationChar);
         }
@@ -27,14 +132,19 @@ namespace Pharmatechnik.Nav.Language.Text {
         /// wird der Bereich vom Anfang der quitierung bis zum Ende der angegebenen Zeichenfolge
         /// zurückgeliefert
         /// </summary>
-        public static TextExtent QuotatedExtent(this string text, int position, char quotationChar = '"') {
-            return text.AsSpan().QuotatedExtent(position, quotationChar);
+        public static TextExtent QuotatedExtent(this string text, int position, char quotationChar = '"', bool includequotationCharInExtent = false) {
+            return text.AsSpan().QuotatedExtent(position, quotationChar, includequotationCharInExtent);
         }
 
-        public static TextExtent QuotatedExtent(this ReadOnlySpan<char> text, int position, char quotationChar = '"') {
+        public static TextExtent QuotatedExtent(this ReadOnlySpan<char> text, int position, char quotationChar = '"', bool includequotationCharInExtent = false) {
 
             if (!IsInQuotationImpl(text, position, quotationChar, out var start)) {
                 return TextExtent.Missing;
+            }
+
+            int offset = 0;
+            if (includequotationCharInExtent) {
+                offset = 1;
             }
 
             start++;
@@ -42,7 +152,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             for (int index = start; index < text.Length; index++) {
                 if (text[index] == quotationChar) {
 
-                    return TextExtent.FromBounds(start, index);
+                    return TextExtent.FromBounds(start: start - offset, end: index + offset);
                 }
 
                 if (firstWhiteSpace == -1 && Char.IsWhiteSpace(text[index])) {
@@ -51,10 +161,10 @@ namespace Pharmatechnik.Nav.Language.Text {
             }
 
             if (firstWhiteSpace != -1) {
-                return TextExtent.FromBounds(start, firstWhiteSpace);
+                return TextExtent.FromBounds(start: start - offset, end: firstWhiteSpace);
             }
 
-            return TextExtent.FromBounds(start, text.Length);
+            return TextExtent.FromBounds(start: start - offset, end: text.Length);
         }
 
         static bool IsInQuotationImpl(this ReadOnlySpan<char> text, int position, char quotationChar, out int quotationStart) {
