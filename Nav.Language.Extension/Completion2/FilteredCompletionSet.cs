@@ -6,9 +6,7 @@ using System.Linq;
 
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Text;
-
-using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Text;
+using Microsoft.VisualStudio.Text.PatternMatching;
 
 #endregion
 
@@ -16,21 +14,22 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
     public class FilteredCompletionSet: CompletionSet2 {
 
-       
-
+        readonly IPatternMatcherFactory                   _patternMatcherFactory;
         readonly FilteredObservableCollection<Completion> _currentCompletions;
         readonly List<IIntellisenseFilter>                _activeFilters;
 
         readonly ITrackingSpan _typed;
-        string _typedText;
+        string                 _typedText;
 
         public FilteredCompletionSet(string moniker,
                                      ITrackingSpan typed,
                                      ITrackingSpan applicableTo,
                                      IList<Completion4> completions,
                                      IEnumerable<Completion> completionBuilders,
-                                     IReadOnlyList<IIntellisenseFilter> filters)
+                                     IReadOnlyList<IIntellisenseFilter> filters,
+                                     IPatternMatcherFactory patternMatcherFactory)
             : base(moniker, "All", applicableTo, completions, completionBuilders, filters) {
+            _patternMatcherFactory = patternMatcherFactory;
 
             _typed = typed ?? applicableTo;
 
@@ -60,7 +59,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             if (!String.IsNullOrEmpty(_typedText)) {
 
                 var orderedByMatch = _currentCompletions.OrderByDescending(c => GetHighlightedSpansInDisplayText(c.DisplayText).Sum(s => s.Length))
-                                                 .ToList();
+                                                        .ToList();
 
                 if (orderedByMatch.Any()) {
                     isCompletionUnique = orderedByMatch.Count == 1;
@@ -120,18 +119,26 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             return GetHighlightedSpans(displayText, _typedText);
         }
 
-        static List<Span> GetHighlightedSpans(string text, string typed) {
+        List<Span> GetHighlightedSpans(string text, string typed) {
 
-            return GetMatchedParts(text, typed)
-                  .Select(part => part.ToSpan())
-                  .ToList();
+            return GetMatchedParts(text, typed);
 
         }
 
-        static List<TextExtent> GetMatchedParts(string text, string typed) {
+        List<Span> GetMatchedParts(string text, string typed) {
 
-            return PatternMatcher.Default
-                                 .GetMatchedParts(text, typed);
+            if (!String.IsNullOrEmpty(typed)) {
+
+                var patternMatcher = _patternMatcherFactory.CreatePatternMatcher(typed, new PatternMatcherCreationOptions(System.Globalization.CultureInfo.CurrentCulture, PatternMatcherCreationFlags.IncludeMatchedSpans));
+
+                var match = patternMatcher.TryMatch(text);
+
+                if (match.HasValue && match.Value.MatchedSpans.Any()) {
+                    return match.Value.MatchedSpans.ToList();
+                }
+            }
+
+            return Enumerable.Empty<Span>().ToList();
 
         }
 

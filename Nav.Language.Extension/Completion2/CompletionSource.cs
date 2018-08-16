@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Language.Intellisense;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.PatternMatching;
 
 using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Text;
@@ -26,11 +27,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
     class CompletionSource: SemanticModelServiceDependent, ICompletionSource {
 
         private readonly NavFileCompletionCache _navFileCompletionCache;
+        private readonly IPatternMatcherFactory _patternMatcherFactory;
 
         bool _disposed;
 
-        public CompletionSource(ITextBuffer buffer, NavFileCompletionCache navFileCompletionCache): base(buffer) {
+        public CompletionSource(ITextBuffer buffer,
+                                NavFileCompletionCache navFileCompletionCache,
+                                IPatternMatcherFactory patternMatcherFactory)
+            : base(buffer) {
             _navFileCompletionCache = navFileCompletionCache;
+            _patternMatcherFactory = patternMatcherFactory;
         }
 
         public void AugmentCompletionSession(ICompletionSession session, IList<CompletionSet> completionSets) {
@@ -263,7 +269,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             _disposed = true;
         }
 
-        private static void CreateCompletionSet(string moniker,
+        private void CreateCompletionSet(string moniker,
                                                 IList<CompletionSet> completionSets,
                                                 List<Completion4> list,
                                                 ITrackingSpan applicableTo,
@@ -278,9 +284,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
                     //     new IntellisenseFilter(KnownMonikers.DotNET,     ".NET analysis rules (Alt + D)", "d", "DotNe"),
                     // };
 
-                    completionSets.Add(new FilteredCompletionSet(moniker, typed, applicableTo, list, Enumerable.Empty<Completion4>(), null));
+                    completionSets.Add(new FilteredCompletionSet(moniker, typed, applicableTo, list, Enumerable.Empty<Completion4>(), null, _patternMatcherFactory));
                 } else {
-                    completionSets.Add(new FilteredCompletionSet(moniker, typed, applicableTo, list, Enumerable.Empty<Completion4>(), null));
+                    completionSets.Add(new FilteredCompletionSet(moniker, typed, applicableTo, list, Enumerable.Empty<Completion4>(), null, _patternMatcherFactory));
                 }
             }
         }
