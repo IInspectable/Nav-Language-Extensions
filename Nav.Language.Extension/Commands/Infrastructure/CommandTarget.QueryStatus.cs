@@ -36,11 +36,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             switch((VSConstants.VSStd2KCmdID) prgCmds[0].cmdID) {
                 
-                case VSConstants.VSStd2KCmdID.COMPLETEWORD:
-                    return QueryCompleteWordStatus(prgCmds);
-              
-                case VSConstants.VSStd2KCmdID.BACKTAB:
-                    return QueryBackTabStatus(prgCmds);
                 default:
                     return NextCommandTarget.QueryStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
             }
@@ -49,9 +44,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         private int QueryVisualStudio97Status(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
             ThreadHelper.ThrowIfNotOnUIThread();
             switch ((VSConstants.VSStd97CmdID)prgCmds[0].cmdID) {
-                case VSConstants.VSStd97CmdID.GotoDefn:
-                    return QueryGoToDefinitionStatus(prgCmds);
-
                 case VSConstants.VSStd97CmdID.ViewCode:
                     return QueryViewCode(ref pguidCmdGroup, commandCount, prgCmds, commandText);
 
@@ -59,13 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                     return NextCommandTarget.QueryStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
             }
         }
-
-        private int QueryGoToDefinitionStatus(OLECMD[] prgCmds) {
-            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
-            return VSConstants.S_OK;
-        }
-
+        
         private int QueryViewCode(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
             return GetCommandState(
                 createArgs   : (v, b) => new ViewCodeCommandArgs(v, b),
@@ -75,24 +61,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 commandText  : commandText);
         }
 
-        // ReSharper disable once UnusedMember.Local TODO Enablen, wenn Find References implementiert
-        private int QueryFindReferencesStatus(OLECMD[] prgCmds) {
-            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
-            return VSConstants.S_OK;
-        }       
-
-       int QueryBackTabStatus(OLECMD[] prgCmds) {
-            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
-            return VSConstants.S_OK;
-        }
-
-        int QueryCompleteWordStatus(OLECMD[] prgCmds) {
-            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
-            return VSConstants.S_OK;
-        }     
 
         int GetCommandState<T>(
             Func<IWpfTextView, ITextBuffer, T> createArgs,
