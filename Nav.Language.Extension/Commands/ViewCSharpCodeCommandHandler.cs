@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     // TODO Code Review
     [ExportCommandHandler(CommandHandlerNames.ViewCSharpCodeCommandHandler, NavLanguageContentDefinitions.ContentType)]
-    class ViewCSharpCodeCommandHandler: ICommandHandler<ViewCodeCommandArgs> {
+    class ViewCSharpCodeCommandHandler: INavCommandHandler<ViewCodeCommandArgs> {
 
         readonly GoToLocationService _goToLocationService;
 
@@ -29,8 +29,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             _goToLocationService = goToLocationService;
         }
 
-        public CommandState GetCommandState(ViewCodeCommandArgs args, Func<CommandState> nextHandler) {
-            return CommandState.Available;
+        public NavCommandState GetCommandState(ViewCodeCommandArgs args, Func<NavCommandState> nextHandler) {
+            return NavCommandState.Available;
         }
 
         public void ExecuteCommand(ViewCodeCommandArgs args, Action nextHandler) {

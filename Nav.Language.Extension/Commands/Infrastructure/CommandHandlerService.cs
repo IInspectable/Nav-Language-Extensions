@@ -9,21 +9,21 @@ using System.Collections.Generic;
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     interface ICommandHandlerService {
-        CommandState GetCommandState<T>(T args, Func<CommandState> lastHandler) where T : CommandArgs;
+        NavCommandState GetCommandState<T>(T args, Func<NavCommandState> lastHandler) where T : CommandArgs;
         void Execute<T>(T args, Action lastHandler) where T : CommandArgs;
     }
 
     class CommandHandlerService : ICommandHandlerService {
 
-        readonly IList<ICommandHandler> _commandHandlers;
+        readonly IList<INavCommandHandler> _commandHandlers;
         readonly Dictionary<Type, object> _commandHandlersByType;
 
-        public CommandHandlerService(IList<ICommandHandler> commandHandlers) {
+        public CommandHandlerService(IList<INavCommandHandler> commandHandlers) {
             _commandHandlers       = commandHandlers;
             _commandHandlersByType = new Dictionary<Type, object>();
         }
 
-        public CommandState GetCommandState<T>(T args, Func<CommandState> lastHandler) where T : CommandArgs {
+        public NavCommandState GetCommandState<T>(T args, Func<NavCommandState> lastHandler) where T : CommandArgs {
 
             var handlers = GetCommandHandlers<T>();
             return GetCommandState(handlers, args, lastHandler);
@@ -34,22 +34,22 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             ExecuteHandlers(handlers, args, lastHandler);
         }
 
-        IList<ICommandHandler<T>> GetCommandHandlers<T>() where T : CommandArgs {
+        IList<INavCommandHandler<T>> GetCommandHandlers<T>() where T : CommandArgs {
 
             var key = typeof(T);
             if(!_commandHandlersByType.TryGetValue(key, out var commandHandlerList)) {
-                var stronglyTypedHandlers = _commandHandlers.OfType<ICommandHandler<T>>().ToList();
+                var stronglyTypedHandlers = _commandHandlers.OfType<INavCommandHandler<T>>().ToList();
                 commandHandlerList = stronglyTypedHandlers;
                 _commandHandlersByType.Add(key, stronglyTypedHandlers);
             }
 
-            return (IList<ICommandHandler<T>>) commandHandlerList;
+            return (IList<INavCommandHandler<T>>) commandHandlerList;
         }
 
-        static CommandState GetCommandState<TArgs>(
-            IList<ICommandHandler<TArgs>> commandHandlers,
+        static NavCommandState GetCommandState<TArgs>(
+            IList<INavCommandHandler<TArgs>> commandHandlers,
             TArgs args,
-            Func<CommandState> lastHandler) where TArgs : CommandArgs {
+            Func<NavCommandState> lastHandler) where TArgs : CommandArgs {
 
             if(commandHandlers.Count > 0) {
                 // Build up chain of handlers.
@@ -70,10 +70,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 return lastHandler();
             }
 
-            return CommandState.Unavailable;
+            return NavCommandState.Unavailable;
         }
 
-        static void ExecuteHandlers<T>(IList<ICommandHandler<T>> commandHandlers, T args, Action lastHandler) where T : CommandArgs {
+        static void ExecuteHandlers<T>(IList<INavCommandHandler<T>> commandHandlers, T args, Action lastHandler) where T : CommandArgs {
             if(commandHandlers?.Count > 0) {
                 // Build up chain of handlers.
                 var handlerChain = lastHandler ?? delegate { };

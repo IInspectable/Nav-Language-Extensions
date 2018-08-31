@@ -1,8 +1,8 @@
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
-    struct CommandState {
+    struct NavCommandState {
 
-        public CommandState(bool isAvailable = false, bool isChecked = false, string displayText = null) {
+        public NavCommandState(bool isAvailable = false, bool isChecked = false, string displayText = null) {
             IsAvailable = isAvailable;
             IsChecked   = isChecked;
             DisplayText = displayText;
@@ -23,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         /// </summary>
         public string DisplayText { get; }
         
-        public static CommandState Available   => new CommandState(isAvailable: true);
-        public static CommandState Unavailable => new CommandState(isAvailable: false);
+        public static NavCommandState Available   => new NavCommandState(isAvailable: true);
+        public static NavCommandState Unavailable => new NavCommandState(isAvailable: false);
     }
 }

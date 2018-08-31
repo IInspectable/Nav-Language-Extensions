@@ -14,8 +14,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     partial class CommandTarget : IOleCommandTarget {
 
-       const VSConstants.VSStd2KCmdID CmdidNextHighlightedReference     = (VSConstants.VSStd2KCmdID)2400;
-       const VSConstants.VSStd2KCmdID CmdidPreviousHighlightedReference = (VSConstants.VSStd2KCmdID)2401;
 
         public virtual int Exec(ref Guid pguidCmdGroup, uint commandId, uint executeInformation, IntPtr pvaIn, IntPtr pvaOut) {
 
@@ -53,9 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             switch ((VSConstants.VSStd97CmdID) commandId) {
 
-                case VSConstants.VSStd97CmdID.GotoDefn:
-                    ExecuteGoToDefinition(subjectBuffer, contentType, ExecuteNextCommandTarget);
-                    break;
+               
                 case VSConstants.VSStd97CmdID.ViewCode:
                     ExecuteViewCode(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
@@ -89,47 +85,21 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 case VSConstants.VSStd2KCmdID.TAB:
                     ExecuteTab(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
-
-                case VSConstants.VSStd2KCmdID.RENAME:
-                    ExecuteRename(subjectBuffer, contentType, ExecuteNextCommandTarget);
-                    break;
+               
                 case VSConstants.VSStd2KCmdID.BACKTAB:
                     ExecuteBackTab(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
                     
-                case VSConstants.VSStd2KCmdID.COMMENTBLOCK:
-                case VSConstants.VSStd2KCmdID.COMMENT_BLOCK:
-                    ExecuteCommentBlock(subjectBuffer, ExecuteNextCommandTarget);
-                    break;
-
-                case VSConstants.VSStd2KCmdID.UNCOMMENTBLOCK:
-                case VSConstants.VSStd2KCmdID.UNCOMMENT_BLOCK:
-                    ExecuteUncommentBlock(subjectBuffer, ExecuteNextCommandTarget);
-                    break;
-
                 case VSConstants.VSStd2KCmdID.COMPLETEWORD:
                     ExecuteCommitUniqueCompletionItem(subjectBuffer, contentType, ExecuteNextCommandTarget);
                     break;
                     
-                case CmdidNextHighlightedReference:
-                    ExecuteNextHighlightedReference(subjectBuffer, contentType, ExecuteNextCommandTarget);
-                    break;
-
-                case CmdidPreviousHighlightedReference:
-                    ExecutePreviousHighlightedReference(subjectBuffer, contentType, ExecuteNextCommandTarget);
-                    break;
 
                 default:
                     return NextCommandTarget.Exec(ref pguidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
             }
 
             return result;
-        }
-
-        protected void ExecuteGoToDefinition(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
-            HandlerService.Execute(
-                args       : new GoToDefinitionCommandArgs(WpfTextView, subjectBuffer),
-                lastHandler: executeNextCommandTarget);
         }
 
         protected void ExecuteViewCode(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
@@ -141,12 +111,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         protected void ExecuteTab(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
             HandlerService.Execute(
                 args       : new TabKeyCommandArgs(WpfTextView, subjectBuffer),
-                lastHandler: executeNextCommandTarget);
-        }
-
-        protected void ExecuteRename(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
-            HandlerService.Execute(
-                args       : new RenameCommandArgs(WpfTextView, subjectBuffer),
                 lastHandler: executeNextCommandTarget);
         }
 
@@ -169,34 +133,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 lastHandler: executeNextCommandTarget);
         }
 
-        protected void ExecuteUncommentBlock(ITextBuffer subjectBuffer, Action executeNextCommandTarget) {
-            HandlerService.Execute(
-                args       : new UncommentSelectionCommandArgs(WpfTextView, subjectBuffer),
-                lastHandler: executeNextCommandTarget);
-        }
-
-        protected void ExecuteCommentBlock(ITextBuffer subjectBuffer, Action executeNextCommandTarget) {
-            HandlerService.Execute(
-                args       : new CommentSelectionCommandArgs(WpfTextView, subjectBuffer),
-                lastHandler: executeNextCommandTarget);
-        }
-
-        protected void ExecutePreviousHighlightedReference(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
-            HandlerService.Execute(
-                args       : new NavigateToHighlightedReferenceCommandArgs(WpfTextView, subjectBuffer, NavigateDirection.Up),
-                lastHandler: executeNextCommandTarget);
-        }
-
+        
         protected void ExecuteCommitUniqueCompletionItem(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
             HandlerService.Execute(
                 args       : new CommitUniqueCompletionListItemCommandArgs(WpfTextView, subjectBuffer),
                 lastHandler: executeNextCommandTarget);
         }
 
-        protected void ExecuteNextHighlightedReference(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {
-            HandlerService.Execute(
-                args       : new NavigateToHighlightedReferenceCommandArgs(WpfTextView, subjectBuffer, NavigateDirection.Down),
-                lastHandler: executeNextCommandTarget);
-        }
+       
     }
 }

@@ -1,10 +1,13 @@
 ﻿#region Using Directives
 
-using System;
 using System.ComponentModel.Composition;
 
+using Microsoft.VisualStudio.Commanding;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Utilities;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
@@ -13,7 +16,9 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
-    [ExportCommandHandler(CommandHandlerNames.GoToDefinitionCommandCommandHandler, NavLanguageContentDefinitions.ContentType)]
+    [Export(typeof(ICommandHandler))]
+    [ContentType(NavLanguageContentDefinitions.ContentType)]
+    [Name(CommandHandlerNames.GoToDefinitionCommandCommandHandler)]
     class GoToDefinitionCommandCommandHandler: ICommandHandler<GoToDefinitionCommandArgs> {
 
         readonly GoToLocationService              _goToLocationService;
@@ -25,17 +30,25 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             _viewTagAggregatorFactoryService = viewTagAggregatorFactoryService;
         }
 
-        public CommandState GetCommandState(GoToDefinitionCommandArgs args, Func<CommandState> nextHandler) {
-            return CommandState.Available;
+        public string DisplayName => "Go To Definition";
+
+        public CommandState GetCommandState(GoToDefinitionCommandArgs args) {
+            return args.TextView is IWpfTextView ? CommandState.Available : CommandState.Unavailable;
         }
 
-        public void ExecuteCommand(GoToDefinitionCommandArgs args, Action nextHandler) {
+        public bool ExecuteCommand(GoToDefinitionCommandArgs args, CommandExecutionContext executionContext) {
 
             ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
 
                 using (var tagAggregator = _viewTagAggregatorFactoryService.CreateTagAggregator<GoToTag>(args.TextView)) {
 
-                    var navigateToTagSpan = args.TextView.GetGoToDefinitionTagSpanAtCaretPosition(tagAggregator);
+                    var textView = args.TextView as IWpfTextView;
+
+                    if (textView == null) {
+                        return;
+                    }
+
+                    var navigateToTagSpan = textView.GetGoToDefinitionTagSpanAtCaretPosition(tagAggregator);
 
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -44,15 +57,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                         return;
                     }
 
-                    var placementRectangle = args.TextView.TextViewLines.GetTextMarkerGeometry(navigateToTagSpan.Span).Bounds;
+                    var placementRectangle = textView.TextViewLines.GetTextMarkerGeometry(navigateToTagSpan.Span).Bounds;
                     placementRectangle.Offset(-args.TextView.ViewportLeft, -args.TextView.ViewportTop);
 
                     await _goToLocationService.GoToLocationInPreviewTabAsync(
-                        originatingTextView: args.TextView,
-                        placementRectangle: placementRectangle,
-                        provider: navigateToTagSpan.Tag.Provider);
+                        originatingTextView: textView,
+                        placementRectangle : placementRectangle,
+                        provider           : navigateToTagSpan.Tag.Provider);
                 }
             });
+
+            return true;
         }
 
     }

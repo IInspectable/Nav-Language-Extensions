@@ -2,11 +2,11 @@
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
-    interface ICommandHandler {
+    interface INavCommandHandler {
     }
 
-    interface ICommandHandler<in T> : ICommandHandler where T : CommandArgs {
-        CommandState GetCommandState(T args, Func<CommandState> nextHandler);
+    interface INavCommandHandler<in T> : INavCommandHandler where T : CommandArgs {
+        NavCommandState GetCommandState(T args, Func<NavCommandState> nextHandler);
         void ExecuteCommand(T args, Action nextHandler);
     }   
 }

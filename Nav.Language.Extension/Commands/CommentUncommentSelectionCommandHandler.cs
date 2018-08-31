@@ -5,10 +5,14 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
+using Microsoft.VisualStudio.Commanding;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 using Microsoft.VisualStudio.Text.Operations;
+using Microsoft.VisualStudio.Utilities;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
@@ -16,12 +20,14 @@ using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
-    [ExportCommandHandler(CommandHandlerNames.CommentUncommentSelectionCommandHandler, NavLanguageContentDefinitions.ContentType)]
-    class CommentUncommentSelectionCommandHandler: ICommandHandler<CommentSelectionCommandArgs>, 
+    [Export(typeof(ICommandHandler))]
+    [ContentType(NavLanguageContentDefinitions.ContentType)]
+    [Name(CommandHandlerNames.CommentUncommentSelectionCommandHandler)]
+    class CommentUncommentSelectionCommandHandler: ICommandHandler<CommentSelectionCommandArgs>,
                                                    ICommandHandler<UncommentSelectionCommandArgs> {
 
-        readonly IWaitIndicator _waitIndicator;
-        readonly ITextUndoHistoryRegistry _undoHistoryRegistry;
+        readonly IWaitIndicator                  _waitIndicator;
+        readonly ITextUndoHistoryRegistry        _undoHistoryRegistry;
         readonly IEditorOperationsFactoryService _editorOperationsFactoryService;
 
         [ImportingConstructor]
@@ -35,21 +41,40 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             _editorOperationsFactoryService = editorOperationsFactoryService;
         }
 
-        public CommandState GetCommandState(CommentSelectionCommandArgs args, Func<CommandState> nextHandler) {
-            if(args.SubjectBuffer.CheckEditAccess()) {
+        public string DisplayName => "Comment/uncomment lines";
+
+        public CommandState GetCommandState(CommentSelectionCommandArgs args) {
+            if (args.SubjectBuffer.CheckEditAccess()) {
                 return CommandState.Available;
             }
-            return nextHandler();
+
+            return CommandState.Unspecified;
         }
 
-        public void ExecuteCommand(CommentSelectionCommandArgs args, Action nextHandler) {
+        public bool ExecuteCommand(CommentSelectionCommandArgs args, CommandExecutionContext executionContext) {
+
             ExecuteCommand(args.TextView, args.SubjectBuffer, Operation.Comment);
+            return true;
         }
 
-        public CommandState GetCommandState(UncommentSelectionCommandArgs args, Func<CommandState> nextHandler) {
-            if(args.SubjectBuffer.CheckEditAccess()) {
+        public CommandState GetCommandState(UncommentSelectionCommandArgs args) {
+            if (args.SubjectBuffer.CheckEditAccess()) {
                 return CommandState.Available;
             }
+
+            return CommandState.Unspecified;
+        }
+
+        public bool ExecuteCommand(UncommentSelectionCommandArgs args, CommandExecutionContext executionContext) {
+            ExecuteCommand(args.TextView, args.SubjectBuffer, Operation.Uncomment);
+            return true;
+        }
+
+        public NavCommandState GetCommandState(UncommentSelectionCommandArgs args, Func<NavCommandState> nextHandler) {
+            if (args.SubjectBuffer.CheckEditAccess()) {
+                return NavCommandState.Available;
+            }
+
             return nextHandler();
         }
 
@@ -64,7 +89,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             using (_waitIndicator.StartWait(title, message, allowCancel: false)) {
 
-                using(var undoTransaction=new TextUndoTransaction(title, textView, _undoHistoryRegistry, _editorOperationsFactoryService))
+                using (var undoTransaction = new TextUndoTransaction(title, textView, _undoHistoryRegistry, _editorOperationsFactoryService))
                 using (var textEdit = subjectBuffer.CreateEdit()) {
 
                     var spansToSelect = new List<ITrackingSpan>();
@@ -72,7 +97,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
                     textEdit.Apply();
 
-                    if(spansToSelect.Any()) {                        
+                    if (spansToSelect.Any()) {
                         textView.SetSelection(spansToSelect.First().GetSpan(subjectBuffer.CurrentSnapshot));
                     }
 
@@ -93,7 +118,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         void CommentSpan(IEditorOptions options, SnapshotSpan span, ITextEdit textEdit, List<ITrackingSpan> spansToSelect) {
             var firstAndLastLine = DetermineFirstAndLastLine(span);
-            
+
             // Keine Selection, und in die ganze Zeile ist leer
             if (span.IsEmpty && firstAndLastLine.Item1.IsEmptyOrWhitespace()) {
                 return;
@@ -106,7 +131,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             if (span.IsEmpty || string.IsNullOrWhiteSpace(span.GetText())) {
                 var firstNonWhitespaceOnLine = firstAndLastLine.Item1.GetFirstNonWhitespacePosition();
-                var insertPosition = firstNonWhitespaceOnLine ?? firstAndLastLine.Item1.Start;
+                var insertPosition           = firstNonWhitespaceOnLine ?? firstAndLastLine.Item1.Start;
 
                 // es gibt keine Selektion => ganze Zeile auskommentieren
                 textEdit.Insert(insertPosition, SyntaxFacts.SingleLineComment);
@@ -115,7 +140,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             } else {
                 // Partielle Selektion innerhalb einer Zeile
                 if (!SpanIncludesAllTextOnIncludedLines(span) &&
-                     firstAndLastLine.Item1.LineNumber == firstAndLastLine.Item2.LineNumber) {
+                    firstAndLastLine.Item1.LineNumber == firstAndLastLine.Item2.LineNumber) {
 
                     textEdit.Insert(span.Start, SyntaxFacts.BlockCommentStart);
                     textEdit.Insert(span.End,   SyntaxFacts.BlockCommentEnd);
@@ -123,7 +148,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                     spansToSelect.Add(span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeInclusive));
 
                 } else {
-                    
+
                     // Das Kommentare an der kleinsten Spalte beginnen, die nicht aus einem Leerzeichen besteht
                     // Bsp.:
                     // ...A
@@ -142,8 +167,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         bool TryUncommentSingleLineComments(SnapshotSpan span, ITextEdit textEdit, List<ITrackingSpan> spansToSelect) {
             // First see if we're selecting any lines that have the single-line comment prefix.
             // If so, then we'll just remove the single-line comment prefix from those lines.
-            bool textChanges     = false;
-            var firstAndLastLine = DetermineFirstAndLastLine(span);
+            bool textChanges      = false;
+            var  firstAndLastLine = DetermineFirstAndLastLine(span);
 
             for (int lineNumber = firstAndLastLine.Item1.LineNumber; lineNumber <= firstAndLastLine.Item2.LineNumber; ++lineNumber) {
 
@@ -163,8 +188,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             spansToSelect.Add(span.Snapshot.CreateTrackingSpan(
-                Span.FromBounds(firstAndLastLine.Item1.Start.Position, firstAndLastLine.Item2.End.Position),
-                SpanTrackingMode.EdgeExclusive));
+                                  Span.FromBounds(firstAndLastLine.Item1.Start.Position, firstAndLastLine.Item2.End.Position),
+                                  SpanTrackingMode.EdgeExclusive));
 
             return true;
         }
@@ -214,7 +239,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var line = firstAndLastLine.Item1.Snapshot.GetLineFromLineNumber(lineNumber);
                 if (!line.IsEmptyOrWhitespace()) {
 
-                    var offset=line.GetOffsetForColumn(indentToColumn, options.GetTabSize());
+                    var offset = line.GetOffsetForColumn(indentToColumn, options.GetTabSize());
                     textEdit.Insert(line.Start + offset, SyntaxFacts.SingleLineComment);
                 }
             }
@@ -230,10 +255,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         static Tuple<ITextSnapshotLine, ITextSnapshotLine> DetermineFirstAndLastLine(SnapshotSpan span) {
             var firstLine = span.Snapshot.GetLineFromPosition(span.Start.Position);
-            var lastLine = span.Snapshot.GetLineFromPosition(span.End.Position);
+            var lastLine  = span.Snapshot.GetLineFromPosition(span.End.Position);
             if (lastLine.Start == span.End.Position && !span.IsEmpty) {
                 lastLine = lastLine.GetPreviousMatchingLine(_ => true);
             }
+
             return Tuple.Create(firstLine, lastLine);
         }
 
@@ -255,7 +281,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         /// <summary> Given a set of lines, find the minimum indent of all of the non-blank, non-whitespace lines.</summary>
         static int DetermineSmallestSignificantColumn(IEditorOptions options, SnapshotSpan span, Tuple<ITextSnapshotLine, ITextSnapshotLine> firstAndLastLine) {
 
-            var tabSize = options.GetTabSize();
+            var tabSize           = options.GetTabSize();
             var indentToCommentAt = int.MaxValue;
 
             for (int lineNumber = firstAndLastLine.Item1.LineNumber; lineNumber <= firstAndLastLine.Item2.LineNumber; ++lineNumber) {
@@ -263,15 +289,19 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var line = span.Snapshot.GetLineFromLineNumber(lineNumber);
 
                 var significantColumn = line.GetSignificantColumn(tabSize);
-                indentToCommentAt     = Math.Min(indentToCommentAt, significantColumn);
+                indentToCommentAt = Math.Min(indentToCommentAt, significantColumn);
             }
 
             return indentToCommentAt;
         }
 
         enum Operation {
+
             Comment,
             Uncomment
+
         }
+
     }
+
 }
