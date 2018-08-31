@@ -4,12 +4,14 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using Microsoft.VisualStudio.Commanding;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     interface ICommandHandlerService {
-        NavCommandState GetCommandState<T>(T args, Func<NavCommandState> lastHandler) where T : CommandArgs;
+        CommandState GetCommandState<T>(T args, Func<CommandState> lastHandler) where T : CommandArgs;
         void Execute<T>(T args, Action lastHandler) where T : CommandArgs;
     }
 
@@ -23,7 +25,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             _commandHandlersByType = new Dictionary<Type, object>();
         }
 
-        public NavCommandState GetCommandState<T>(T args, Func<NavCommandState> lastHandler) where T : CommandArgs {
+        public CommandState GetCommandState<T>(T args, Func<CommandState> lastHandler) where T : CommandArgs {
 
             var handlers = GetCommandHandlers<T>();
             return GetCommandState(handlers, args, lastHandler);
@@ -46,10 +48,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             return (IList<INavCommandHandler<T>>) commandHandlerList;
         }
 
-        static NavCommandState GetCommandState<TArgs>(
+        static CommandState GetCommandState<TArgs>(
             IList<INavCommandHandler<TArgs>> commandHandlers,
             TArgs args,
-            Func<NavCommandState> lastHandler) where TArgs : CommandArgs {
+            Func<CommandState> lastHandler) where TArgs : CommandArgs {
 
             if(commandHandlers.Count > 0) {
                 // Build up chain of handlers.
@@ -70,7 +72,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 return lastHandler();
             }
 
-            return NavCommandState.Unavailable;
+            return CommandState.Unavailable;
         }
 
         static void ExecuteHandlers<T>(IList<INavCommandHandler<T>> commandHandlers, T args, Action lastHandler) where T : CommandArgs {

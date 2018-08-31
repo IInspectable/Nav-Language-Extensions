@@ -3,6 +3,7 @@
 using System;
 
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Commanding;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
@@ -73,7 +74,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
             var guidCmdGroup = pguidCmdGroup;
 
-            NavCommandState ExecuteNextCommandTarget() {
+            CommandState ExecuteNextCommandTarget() {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 result = NextCommandTarget.QueryStatus(ref guidCmdGroup, commandCount, prgCmds, commandText);
 
@@ -81,10 +82,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var isAvailable = ((OLECMDF) prgCmds[0].cmdf & OLECMDF.OLECMDF_ENABLED) == OLECMDF.OLECMDF_ENABLED;
                 var isChecked   = ((OLECMDF) prgCmds[0].cmdf & OLECMDF.OLECMDF_LATCHED) == OLECMDF.OLECMDF_LATCHED;
                 // ReSharper restore BitwiseOperatorOnEnumWithoutFlags
-                return new NavCommandState(isAvailable, isChecked, GetText(commandText));
+                return new CommandState(isAvailable, isChecked, GetText(commandText));
             }
 
-            NavCommandState commandState;
+            CommandState commandState;
             var subjectBuffer = GetSubjectBufferContainingCaret();
             if(subjectBuffer == null) {
                 commandState = ExecuteNextCommandTarget();

@@ -131,7 +131,6 @@
     <Compile Include="Commands\Infrastructure\TextViewCreationListener.cs" />
     <Compile Include="Commands\Infrastructure\ExportCommandHandlerAttribute.cs" />
     <Compile Include="Commands\Infrastructure\CommandArgs.cs" />
-    <Compile Include="Commands\Infrastructure\CommandState.cs" />
     <Compile Include="Commands\Infrastructure\ICommandHandler.cs" />
     <Compile Include="Common\BufferGraphExtensions.cs" />
     <Compile Include="Common\ComEventSink.cs" />

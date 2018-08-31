@@ -70,9 +70,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             return true;
         }
 
-        public NavCommandState GetCommandState(UncommentSelectionCommandArgs args, Func<NavCommandState> nextHandler) {
+        public CommandState GetCommandState(UncommentSelectionCommandArgs args, Func<CommandState> nextHandler) {
             if (args.SubjectBuffer.CheckEditAccess()) {
-                return NavCommandState.Available;
+                return CommandState.Available;
             }
 
             return nextHandler();

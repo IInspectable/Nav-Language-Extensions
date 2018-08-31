@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
+using Microsoft.VisualStudio.Commanding;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -29,8 +30,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             _goToLocationService = goToLocationService;
         }
 
-        public NavCommandState GetCommandState(ViewCodeCommandArgs args, Func<NavCommandState> nextHandler) {
-            return NavCommandState.Available;
+        public CommandState GetCommandState(ViewCodeCommandArgs args, Func<CommandState> nextHandler) {
+            return CommandState.Available;
         }
 
         public void ExecuteCommand(ViewCodeCommandArgs args, Action nextHandler) {
