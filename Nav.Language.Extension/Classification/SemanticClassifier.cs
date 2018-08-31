@@ -6,7 +6,6 @@ using System.Linq;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion

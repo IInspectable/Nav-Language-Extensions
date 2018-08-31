@@ -17,7 +17,6 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 using Pharmatechnik.Nav.Language.Extension.UI;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
 using Task = System.Threading.Tasks.Task;

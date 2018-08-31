@@ -6,7 +6,7 @@ using System.Text;
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
+
 using Pharmatechnik.Nav.Utilities.Logging;
 
 #endregion

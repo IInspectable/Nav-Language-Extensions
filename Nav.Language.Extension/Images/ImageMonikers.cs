@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell;
 
 using Pharmatechnik.Nav.Language.CodeFixes;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 

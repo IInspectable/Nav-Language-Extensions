@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
