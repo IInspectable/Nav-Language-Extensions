@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Threading;
+
 using JetBrains.Annotations;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Text;
@@ -33,9 +35,18 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         [CanBeNull]
         public static Project GetContainingProject(this ITextBuffer textBuffer) {
 
+            Dispatcher.CurrentDispatcher.VerifyAccess();
+
             var dteSolution = NavLanguagePackage.DTE.Solution;
             if(dteSolution == null) {
                 Logger.Warn($"{nameof(GetContainingProject)}: There's no DTE solution");
+                return null;
+            }
+
+            var filepath = textBuffer.GetTextDocument()?.FilePath;
+
+            if (string.IsNullOrEmpty(filepath)) {
+                Logger.Info($"{nameof(GetContainingProject)}: The text document has not path.");
                 return null;
             }
 
@@ -54,7 +65,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
             var projectPath = containingProject.FullName;
             if (string.IsNullOrEmpty(projectPath)) {
-                Logger.Warn($"{nameof(GetContainingProject)}: Containing project '{containingProject.Name}' for the item with the path '{textBuffer.GetTextDocument()?.FilePath}' has no full path.");
+                Logger.Info($"{nameof(GetContainingProject)}: Containing project '{containingProject.Name}' for the item with the path '{textBuffer.GetTextDocument()?.FilePath}' has no full path.");
                 return null;
             }
 
