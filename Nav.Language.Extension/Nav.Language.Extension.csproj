@@ -155,6 +155,9 @@
     <Compile Include="Completion2\FilteredCompletionSet.cs" />
     <Compile Include="Completion2\NavFileCompletionCache.cs" />
     <Compile Include="Completion2\TextSnaphotLineExtensions.cs" />
+    <Compile Include="Completion3\CompletionProviderNames.cs" />
+    <Compile Include="Completion3\CompletionSource.cs" />
+    <Compile Include="Completion3\CompletionSourceProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationCodeFileLocationInfoProvider.cs" />
@@ -453,6 +456,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Imaging">
       <Version>15.7.27703</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Language">
+      <Version>15.8.525</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Language.Intellisense">
       <Version>15.6.27740</Version>
