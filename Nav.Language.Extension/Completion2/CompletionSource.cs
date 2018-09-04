@@ -91,7 +91,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             // Es gibt derzeit eigentlich nur die taskrefs wo innerhalb von "" etwas vorgeschlagen werden kann
             if (lineText.IsInQuotation(linePosition)) {
 
-                var quotatedExtent     = lineText.QuotatedExtent(linePosition);
+                var quotatedExtent     = lineText.QuotedExtent(linePosition);
                 var previousIdentifier = lineText.GetPreviousIdentifier(quotatedExtent.Start - 1);
 
                 if (previousIdentifier == SyntaxFacts.TaskrefKeyword) {

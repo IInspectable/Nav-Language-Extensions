@@ -4,38 +4,27 @@ using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.VisualStudio.Core.Imaging;
-using Microsoft.VisualStudio.Imaging;
-using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Adornments;
 
 using Pharmatechnik.Nav.Language.Extension.Completion2;
-using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.Text;
-using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
-    class CompletionSource: IAsyncCompletionSource {
+    class CompletionSource: AsyncCompletionSource {
 
-        public CompletionSource(QuickinfoBuilderService quickinfoBuilderService) {
-            QuickinfoBuilderService = quickinfoBuilderService;
+        public CompletionSource(QuickinfoBuilderService quickinfoBuilderService): base(quickinfoBuilderService) {
 
         }
 
-        public QuickinfoBuilderService QuickinfoBuilderService { get; }
-
-        public bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
+        public override bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
 
             char edgeTrigger = '-';
 
@@ -88,20 +77,20 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             if (lineText.IsInQuotation(linePosition)) {
 
-                var quotatedExtent     = lineText.QuotatedExtent(linePosition);
-                var previousIdentifier = lineText.GetPreviousIdentifier(quotatedExtent.Start - 1);
+                var quotedExtent       = lineText.QuotedExtent(linePosition);
+                var previousIdentifier = lineText.GetPreviousIdentifier(quotedExtent.Start - 1);
 
                 if (previousIdentifier == SyntaxFacts.TaskrefKeyword) {
                     applicableToSpan = new SnapshotSpan(
-                        line.Start + quotatedExtent.Start,
-                        line.Start + quotatedExtent.End);
+                        line.Start + quotedExtent.Start,
+                        line.Start + quotedExtent.End);
                 }
             }
 
             return false;
         }
 
-        public Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+        public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
             var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
 
@@ -141,11 +130,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
 
             var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
-            
+
             // Es gibt derzeit eigentlich nur die taskrefs wo innerhalb von "" etwas vorgeschlagen werden kann
             if (lineText.IsInQuotation(linePosition)) {
 
-                var quotatedExtent     = lineText.QuotatedExtent(linePosition);
+                var quotatedExtent     = lineText.QuotedExtent(linePosition);
                 var previousIdentifier = lineText.GetPreviousIdentifier(quotatedExtent.Start - 1);
 
                 if (previousIdentifier == SyntaxFacts.TaskrefKeyword) {
@@ -191,11 +180,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             // Code Keyword
             if (previousNonWhitespace == SyntaxFacts.OpenBracket) {
 
-                foreach (var keyword in SyntaxFacts.CodeKeywords) {
-                    completionItems.Add(CreateKeywordCompletion(keyword));
-                }
-
-                return CreateCompletionContext(completionItems);
             }
 
             if (prevousIdentfier == SyntaxFacts.TaskKeyword) {
@@ -285,92 +269,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                     completionItems.Add(CreateKeywordCompletion(keyword));
                 }
             }
-            
 
             return CreateCompletionContext(completionItems);
-        }
-
-        static Task<CompletionContext> CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder) {
-            var context = new CompletionContext(itemsBuilder.ToImmutable());
-            return Task.FromResult(context);
-        }
-
-        static Task<CompletionContext> CreateEmptyCompletionContext() {
-            return Task.FromResult(new CompletionContext(ImmutableArray<CompletionItem>.Empty));
-        }
-
-        public Task<object> GetDescriptionAsync(CompletionItem item, CancellationToken token) {
-
-            if (item.Properties.TryGetProperty<ISymbol>(CompletionElementProvider.SymbolPropertyName, out var symbol)) {
-                return Task.FromResult((object) QuickinfoBuilderService.BuildSymbolQuickInfoContent(symbol));
-            }
-
-            if (item.Properties.TryGetProperty<string>(CompletionElementProvider.KeywordPropertyName, out var keyword)) {
-                return Task.FromResult((object) QuickinfoBuilderService.BuildKeywordQuickInfoContent(keyword));
-            }
-
-            return Task.FromResult((object) item.DisplayText);
-        }
-
-        CompletionItem CreateSymbolCompletion(ISymbol symbol, string description) {
-
-            var imageMoniker = ImageMonikers.FromSymbol(symbol);
-            var imageElement = new ImageElement(imageMoniker.ToImageId());
-
-            var completionItem = new CompletionItem(displayText: symbol.Name,
-                                                    source: this,
-                                                    icon: imageElement);
-
-            completionItem.Properties.AddProperty(CompletionElementProvider.SymbolPropertyName, symbol);
-
-            return completionItem;
-        }
-
-        CompletionItem CreateKeywordCompletion(string keyword) {
-
-            var imageMoniker = KnownMonikers.IntellisenseKeyword;
-            var imageElement = new ImageElement(imageMoniker.ToImageId());
-
-            var completionItem = new CompletionItem(displayText: keyword,
-                                                    source: this,
-                                                    icon: imageElement);
-
-            completionItem.Properties.AddProperty(CompletionElementProvider.KeywordPropertyName, keyword);
-
-            return completionItem;
-        }
-
-        CompletionItem CreateFileNameCompletion(DirectoryInfo directory, FileInfo file) {
-
-            var directoryName = directory.FullName + Path.DirectorySeparatorChar;
-            var relativePath  = PathHelper.GetRelativePath(fromPath: directoryName, toPath: file.FullName);
-            var displayPath   = CompactPath(relativePath, 50);
-            var imageMoniker  = ImageMonikers.Include;
-            var imageElement  = new ImageElement(imageMoniker.ToImageId());
-
-            var completionItem = new CompletionItem(displayText: displayPath,
-                                                    source: this,
-                                                    icon: imageElement,
-                                                    filters: ImmutableArray<CompletionFilter>.Empty,
-                                                    suffix: "",
-                                                    insertText: relativePath,
-                                                    sortText: file.Name,
-                                                    filterText: file.Name,
-                                                    attributeIcons: ImmutableArray<ImageElement>.Empty
-            );
-
-            return completionItem;
-        }
-
-        [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
-        static extern bool PathCompactPathEx([Out] StringBuilder pszOut, string szPath, int cchMax, int dwFlags);
-
-        static string CompactPath(string longPathName, int wantedLength) {
-            // NOTE: You need to create the builder with the required capacity before calling function.
-            // See http://msdn.microsoft.com/en-us/library/aa446536.aspx
-            StringBuilder sb = new StringBuilder(wantedLength + 1);
-            PathCompactPathEx(sb, longPathName, wantedLength + 1, 0);
-            return sb.ToString();
         }
 
     }

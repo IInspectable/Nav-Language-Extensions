@@ -140,11 +140,11 @@ namespace Pharmatechnik.Nav.Language.Text {
         /// wird der Bereich vom Anfang der quitierung bis zum Ende der angegebenen Zeichenfolge
         /// zurückgeliefert
         /// </summary>
-        public static TextExtent QuotatedExtent(this string text, int position, char quotationChar = '"', bool includequotationCharInExtent = false) {
-            return text.AsSpan().QuotatedExtent(position, quotationChar, includequotationCharInExtent);
+        public static TextExtent QuotedExtent(this string text, int position, char quotationChar = '"', bool includequotationCharInExtent = false) {
+            return text.AsSpan().QuotedExtent(position, quotationChar, includequotationCharInExtent);
         }
 
-        public static TextExtent QuotatedExtent(this ReadOnlySpan<char> text, int position, char quotationChar = '"', bool includequotationCharInExtent = false) {
+        public static TextExtent QuotedExtent(this ReadOnlySpan<char> text, int position, char quotationChar = '"', bool includequotationCharInExtent = false) {
 
             if (!IsInTextBlockImpl(text, position, quotationChar, out var start)) {
                 return TextExtent.Missing;

@@ -52,10 +52,10 @@ namespace Nav.Language.Tests {
             var text = "'Max";
             // Kein Explizites Ende quot und kein terminiernedes Leerzeichen
             // -> Extent geht bis zum Ende
-            Assert.That(text.QuotatedExtent(1, quotationChar),
+            Assert.That(text.QuotedExtent(1, quotationChar),
                         Is.EqualTo(new TextExtent(start: 1, length: 3)));
 
-            Assert.That(text.QuotatedExtent(1, quotationChar, includequotationCharInExtent: true),
+            Assert.That(text.QuotedExtent(1, quotationChar, includequotationCharInExtent: true),
                         Is.EqualTo(new TextExtent(start: 0, length: 4)));
         }
 
@@ -67,9 +67,9 @@ namespace Nav.Language.Tests {
             var text = "'Max Foo Bar";
             // Kein Explizites Ende quot
             // -> Extent geht bis zum ersten Leerzeichen
-            Assert.That(text.QuotatedExtent(1, quotationChar),
+            Assert.That(text.QuotedExtent(1, quotationChar),
                         Is.EqualTo(new TextExtent(start: 1, length: 3)));
-            Assert.That(text.QuotatedExtent(1, quotationChar, includequotationCharInExtent: true),
+            Assert.That(text.QuotedExtent(1, quotationChar, includequotationCharInExtent: true),
                         Is.EqualTo(new TextExtent(start: 0, length: 4)));
         }
 
@@ -92,32 +92,32 @@ namespace Nav.Language.Tests {
 
             var text = "Hi 'Max'!";
 
-            Assert.That(text.QuotatedExtent(0, quotationChar), Is.EqualTo(TextExtent.Missing)); // H
-            Assert.That(text.QuotatedExtent(1, quotationChar), Is.EqualTo(TextExtent.Missing)); // i
-            Assert.That(text.QuotatedExtent(2, quotationChar), Is.EqualTo(TextExtent.Missing)); // 
-            Assert.That(text.QuotatedExtent(3, quotationChar), Is.EqualTo(TextExtent.Missing)); // '
+            Assert.That(text.QuotedExtent(0, quotationChar), Is.EqualTo(TextExtent.Missing)); // H
+            Assert.That(text.QuotedExtent(1, quotationChar), Is.EqualTo(TextExtent.Missing)); // i
+            Assert.That(text.QuotedExtent(2, quotationChar), Is.EqualTo(TextExtent.Missing)); // 
+            Assert.That(text.QuotedExtent(3, quotationChar), Is.EqualTo(TextExtent.Missing)); // '
             // -
             var expectedExtent = new TextExtent(4, 3);                                      // Max
-            Assert.That(text.QuotatedExtent(4, quotationChar), Is.EqualTo(expectedExtent)); // M
-            Assert.That(text.QuotatedExtent(5, quotationChar), Is.EqualTo(expectedExtent)); // a
-            Assert.That(text.QuotatedExtent(6, quotationChar), Is.EqualTo(expectedExtent)); // x
-            Assert.That(text.QuotatedExtent(7, quotationChar), Is.EqualTo(expectedExtent)); // '
+            Assert.That(text.QuotedExtent(4, quotationChar), Is.EqualTo(expectedExtent)); // M
+            Assert.That(text.QuotedExtent(5, quotationChar), Is.EqualTo(expectedExtent)); // a
+            Assert.That(text.QuotedExtent(6, quotationChar), Is.EqualTo(expectedExtent)); // x
+            Assert.That(text.QuotedExtent(7, quotationChar), Is.EqualTo(expectedExtent)); // '
             // -
-            Assert.That(text.QuotatedExtent(8, quotationChar), Is.EqualTo(TextExtent.Missing)); // !
+            Assert.That(text.QuotedExtent(8, quotationChar), Is.EqualTo(TextExtent.Missing)); // !
 
             // Include Quotation
-            Assert.That(text.QuotatedExtent(0, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // H
-            Assert.That(text.QuotatedExtent(1, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // i
-            Assert.That(text.QuotatedExtent(2, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // 
-            Assert.That(text.QuotatedExtent(3, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // '
+            Assert.That(text.QuotedExtent(0, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // H
+            Assert.That(text.QuotedExtent(1, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // i
+            Assert.That(text.QuotedExtent(2, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // 
+            Assert.That(text.QuotedExtent(3, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // '
             // -
             var expectedFullExtent = new TextExtent(start: 3, length: 5);                             // Max
-            Assert.That(text.QuotatedExtent(4, quotationChar, true), Is.EqualTo(expectedFullExtent)); // M
-            Assert.That(text.QuotatedExtent(5, quotationChar, true), Is.EqualTo(expectedFullExtent)); // a
-            Assert.That(text.QuotatedExtent(6, quotationChar, true), Is.EqualTo(expectedFullExtent)); // x
-            Assert.That(text.QuotatedExtent(7, quotationChar, true), Is.EqualTo(expectedFullExtent)); // '
+            Assert.That(text.QuotedExtent(4, quotationChar, true), Is.EqualTo(expectedFullExtent)); // M
+            Assert.That(text.QuotedExtent(5, quotationChar, true), Is.EqualTo(expectedFullExtent)); // a
+            Assert.That(text.QuotedExtent(6, quotationChar, true), Is.EqualTo(expectedFullExtent)); // x
+            Assert.That(text.QuotedExtent(7, quotationChar, true), Is.EqualTo(expectedFullExtent)); // '
             // -
-            Assert.That(text.QuotatedExtent(8, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // !
+            Assert.That(text.QuotedExtent(8, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // !
         }
 
         [Test]
@@ -288,7 +288,7 @@ namespace Nav.Language.Tests {
             string text = "taskref 'Bl";
             //             ----------^ 10
 
-            var quotatedExtent     = text.QuotatedExtent(10, quotationChar);
+            var quotatedExtent     = text.QuotedExtent(10, quotationChar);
             var previousIdentifier = text.GetPreviousIdentifier(quotatedExtent.Start - 1);
 
             Assert.That(previousIdentifier, Is.EqualTo("taskref"));
@@ -300,7 +300,7 @@ namespace Nav.Language.Tests {
             char   quotationChar = '\'';
             string lineText      = "    Choice_WhatToDoOnButtonF12                  --> OffenePostenÜbersicht if 'Nix zu tun';";
 
-            var quotatedExtent = lineText.QuotatedExtent(79, quotationChar);
+            var quotatedExtent = lineText.QuotedExtent(79, quotationChar);
             var identifier     = lineText.GetPreviousIdentifier(quotatedExtent.Start - 1);
 
             Assert.That(identifier, Is.EqualTo("if"));
