@@ -25,10 +25,45 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             applicableToSpan = default;
 
+            bool IsTriggerChar() {
+
+                return char.IsLetter(typedChar) ||
+                       typedChar == '\0'        ||
+                       typedChar == SyntaxFacts.OpenBracket;
+            }
+
+            if (!IsTriggerChar()) {
+                return false;
+            }
+
+            return ShouldSuggestCodeKeywords(triggerLocation, out applicableToSpan);
+
+        }
+
+        public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+
+            if (ShouldSuggestCodeKeywords(triggerLocation, out _)) {
+                var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
+
+                foreach (var keyword in SyntaxFacts.CodeKeywords) {
+                    completionItems.Add(CreateKeywordCompletion(keyword));
+
+                }
+
+                return CreateCompletionContext(completionItems);
+            }
+
+            return CreateEmptyCompletionContext();
+        }
+
+        bool ShouldSuggestCodeKeywords(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {
+           
             var line                       = triggerLocation.GetContainingLine();
             var start                      = line.GetStartOfIdentifier(triggerLocation);
             var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
             var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
+
+            applicableToSpan = default;
 
             if (previousNonWhitespace == SyntaxFacts.OpenBracket) {
                 applicableToSpan = new SnapshotSpan(start, triggerLocation);
@@ -36,25 +71,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             }
 
             return false;
-        }
-
-        public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
-            var line                       = triggerLocation.GetContainingLine();
-            var start                      = line.GetStartOfIdentifier(triggerLocation);
-            var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
-            var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
-
-            if (previousNonWhitespace == SyntaxFacts.OpenBracket) {
-                var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
-
-                foreach (var keyword in SyntaxFacts.CodeKeywords) {
-                    completionItems.Add(CreateKeywordCompletion(keyword));
-                }
-
-                return CreateCompletionContext(completionItems);
-            }
-
-            return CreateEmptyCompletionContext();
         }
 
     }

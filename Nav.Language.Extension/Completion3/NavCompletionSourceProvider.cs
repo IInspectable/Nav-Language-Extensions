@@ -13,18 +13,18 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
     [Export(typeof(IAsyncCompletionSourceProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [Name(CompletionProviderNames.NavCompletionSourceProvider)]
-    class CompletionSourceProvider: AsyncCompletionSourceProvider {
+    [Name(nameof(NavCompletionSourceProvider))]
+    class NavCompletionSourceProvider: AsyncCompletionSourceProvider {
 
         [ImportingConstructor]
-        public CompletionSourceProvider(QuickinfoBuilderService quickinfoBuilderService) {
+        public NavCompletionSourceProvider(QuickinfoBuilderService quickinfoBuilderService) {
             QuickinfoBuilderService = quickinfoBuilderService;
         }
 
         public QuickinfoBuilderService QuickinfoBuilderService { get; }
 
         protected override IAsyncCompletionSource CreateCompletionSource() {
-            return new CompletionSource(QuickinfoBuilderService);
+            return new NavCompletionSource(QuickinfoBuilderService);
         }
 
     }

@@ -158,11 +158,12 @@
     <Compile Include="Completion3\AsyncCompletionSource.cs" />
     <Compile Include="Completion3\AsyncCompletionSourceProvider.cs" />
     <Compile Include="Completion3\CodeCompletionSource.cs" />
+    <Compile Include="Completion3\CodeCompletionSourceProvider.cs" />
     <Compile Include="Completion3\CompletionCommitManager.cs" />
     <Compile Include="Completion3\CompletionCommitManagerProvider.cs" />
     <Compile Include="Completion3\CompletionProviderNames.cs" />
-    <Compile Include="Completion3\CompletionSource.cs" />
-    <Compile Include="Completion3\CompletionSourceProvider.cs" />
+    <Compile Include="Completion3\NavCompletionSource.cs" />
+    <Compile Include="Completion3\NavCompletionSourceProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationCodeFileLocationInfoProvider.cs" />

@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.Utilities;
 namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
     [Export(typeof(IAsyncCompletionCommitManagerProvider))]
-    [Name(CompletionProviderNames.NavCompletionCommitManagerProvider)]
+    [Name(nameof(CompletionCommitManagerProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
     [TextViewRole(PredefinedTextViewRoles.Editable)]
     class CompletionCommitManagerProvider: IAsyncCompletionCommitManagerProvider {

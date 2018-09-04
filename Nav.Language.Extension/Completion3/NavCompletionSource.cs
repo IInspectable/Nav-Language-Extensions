@@ -18,9 +18,9 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
-    class CompletionSource: AsyncCompletionSource {
+    class NavCompletionSource: AsyncCompletionSource {
 
-        public CompletionSource(QuickinfoBuilderService quickinfoBuilderService): base(quickinfoBuilderService) {
+        public NavCompletionSource(QuickinfoBuilderService quickinfoBuilderService): base(quickinfoBuilderService) {
 
         }
 

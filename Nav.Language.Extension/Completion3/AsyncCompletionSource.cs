@@ -70,14 +70,38 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             return completionItem;
         }
 
-        protected CompletionItem CreateKeywordCompletion(string keyword) {
+        private ImageElement _keywordImage;
 
-            var imageMoniker = KnownMonikers.IntellisenseKeyword;
-            var imageElement = new ImageElement(imageMoniker.ToImageId());
+        protected ImageElement KeywordImage {
+            get {
+                if (_keywordFilter == null) {
+                    _keywordImage = new ImageElement(KnownMonikers.IntellisenseKeyword.ToImageId());
+                }
+
+                return _keywordImage;
+            }
+        }
+
+        CompletionFilter _keywordFilter;
+
+        protected CompletionFilter KeywordFilter {
+            get {
+                if (_keywordFilter == null) {
+
+                    _keywordFilter = new CompletionFilter("Keyword", "K", KeywordImage);
+                }
+
+                return _keywordFilter;
+            }
+        }
+
+        protected CompletionItem CreateKeywordCompletion(string keyword) {
 
             var completionItem = new CompletionItem(displayText: keyword,
                                                     source: this,
-                                                    icon: imageElement);
+                                                    icon: KeywordImage,
+                                                    filters: new[] {KeywordFilter}.ToImmutableArray()
+            );
 
             completionItem.Properties.AddProperty(CompletionElementProvider.KeywordPropertyName, keyword);
 
