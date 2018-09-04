@@ -147,7 +147,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             }
 
             // Code Keyword
-            if (previousNonWhitespace.ToString() == SyntaxFacts.OpenBracket) {
+            if (previousNonWhitespace == SyntaxFacts.OpenBracket) {
 
                 foreach (var keyword in SyntaxFacts.CodeKeywords) {
                     completions.Add(CreateKeywordCompletion(keyword));
@@ -188,7 +188,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             if (taskDefinition != null) {
 
                 // Exit Connection Points
-                if (previousNonWhitespace.ToString() == SyntaxFacts.Colon) {
+                if (previousNonWhitespace == SyntaxFacts.Colon) {
 
                     var exitNodeEnd   = start - 1;
                     var exitNodeStart = exitNodeEnd;

@@ -116,12 +116,20 @@ namespace Pharmatechnik.Nav.Language.Text {
             return start;
         }
 
+        public static bool IsInTextBlock(this string text, int position, char blockStartChar, char blockEndChar) {
+            return text.AsSpan().IsInTextBlock(position, blockStartChar, blockEndChar);
+        }
+
+        public static bool IsInTextBlock(this ReadOnlySpan<char> text, int position, char blockStartChar, char blockEndChar) {
+            return IsInTextBlockImpl(text, position, blockStartChar, blockEndChar, out _);
+        }
+
         public static bool IsInQuotation(this string text, int position, char quotationChar = '"') {
             return text.AsSpan().IsInQuotation(position, quotationChar);
         }
 
         public static bool IsInQuotation(this ReadOnlySpan<char> text, int position, char quotationChar = '"') {
-            return IsInQuotationImpl(text, position, quotationChar, out _);
+            return IsInTextBlockImpl(text, position, quotationChar, out _);
         }
 
         /// <summary>
@@ -138,7 +146,7 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         public static TextExtent QuotatedExtent(this ReadOnlySpan<char> text, int position, char quotationChar = '"', bool includequotationCharInExtent = false) {
 
-            if (!IsInQuotationImpl(text, position, quotationChar, out var start)) {
+            if (!IsInTextBlockImpl(text, position, quotationChar, out var start)) {
                 return TextExtent.Missing;
             }
 
@@ -167,7 +175,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             return TextExtent.FromBounds(start: start - offset, end: text.Length);
         }
 
-        static bool IsInQuotationImpl(this ReadOnlySpan<char> text, int position, char quotationChar, out int quotationStart) {
+        static bool IsInTextBlockImpl(this ReadOnlySpan<char> text, int position, char quotationChar, out int quotationStart) {
 
             quotationStart = -1;
 
@@ -188,6 +196,35 @@ namespace Pharmatechnik.Nav.Language.Text {
             }
 
             return inQuotation;
+        }
+
+        static bool IsInTextBlockImpl(this ReadOnlySpan<char> text, int position, char blockStartChar, char blockEndChar, out int quotationStart) {
+
+            if (blockStartChar == blockEndChar) {
+                return IsInTextBlockImpl(text, position, blockStartChar, out quotationStart);
+            }
+
+            quotationStart = -1;
+
+            if (position < 0 || position > text.Length) {
+                return false;
+            }
+
+            // TODO Was ist mit nested Blocks?
+
+            int blockEntered = 0;
+            for (int index = 0; index < position; index++) {
+
+                if (text[index] == blockStartChar) {
+                    blockEntered++;
+                    quotationStart = index;
+                } else if (text[index] == blockEndChar && blockEntered > 0) {
+                    blockEntered--;
+                }
+
+            }
+
+            return blockEntered > 0;
         }
 
         [NotNull]

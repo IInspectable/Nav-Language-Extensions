@@ -41,12 +41,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             bool IsTriggerChar() {
 
-                return char.IsLetter(typedChar)                        ||
-                       typedChar            == '\0'                    ||
-                       typedChar            == edgeTrigger             ||
-                       typedChar.ToString() == SyntaxFacts.OpenBracket ||
-                       typedChar.ToString() == SyntaxFacts.Colon       ||
-                       typedChar            == '"';
+                return char.IsLetter(typedChar)             ||
+                       typedChar == '\0'                    ||
+                       typedChar == edgeTrigger             ||
+                       typedChar == SyntaxFacts.OpenBracket ||
+                       typedChar == SyntaxFacts.Colon       ||
+                       typedChar == '"';
             }
 
             applicableToSpan = default;
@@ -140,6 +140,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
 
+            var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
+            
             // Es gibt derzeit eigentlich nur die taskrefs wo innerhalb von "" etwas vorgeschlagen werden kann
             if (lineText.IsInQuotation(linePosition)) {
 
@@ -187,7 +189,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             }
 
             // Code Keyword
-            if (previousNonWhitespace.ToString() == SyntaxFacts.OpenBracket) {
+            if (previousNonWhitespace == SyntaxFacts.OpenBracket) {
 
                 foreach (var keyword in SyntaxFacts.CodeKeywords) {
                     completionItems.Add(CreateKeywordCompletion(keyword));
@@ -220,10 +222,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                                                    .LastOrDefault(td => extent.Start > td.Syntax.Start);
             }
 
-            if (taskDefinition != null) {
+            if (taskDefinition != null && !isInCodeBlock) {
 
                 // Exit Connection Points
-                if (previousNonWhitespace.ToString() == SyntaxFacts.Colon) {
+                if (previousNonWhitespace == SyntaxFacts.Colon) {
 
                     var exitNodeEnd   = start - 1;
                     var exitNodeStart = exitNodeEnd;
@@ -278,10 +280,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             }
 
             // Keywords
-            foreach (var keyword in SyntaxFacts.NavKeywords.OrderBy(n => n)) {
-
-                completionItems.Add(CreateKeywordCompletion(keyword));
+            if (!isInCodeBlock) {
+                foreach (var keyword in SyntaxFacts.NavKeywords.OrderBy(n => n)) {
+                    completionItems.Add(CreateKeywordCompletion(keyword));
+                }
             }
+            
 
             return CreateCompletionContext(completionItems);
         }

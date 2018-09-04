@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.StyleFix {
             var textChanges = new List<TextChange>();
 
             foreach (var includeDirectiveSyntax in GetCanditates()) {
-                textChanges.AddRange(GetInsertChanges(includeDirectiveSyntax.End, SyntaxFacts.Semicolon));
+                textChanges.AddRange(GetInsertChanges(includeDirectiveSyntax.End, SyntaxFacts.Semicolon.ToString()));
             }
 
             return textChanges;

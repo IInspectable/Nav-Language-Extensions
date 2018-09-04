@@ -42,18 +42,18 @@ namespace Nav.Language.Tests {
             "code"
         };
 
-        static readonly string[] ExpectedPunctuations = {
-            ",",
-            ")",
-            "(",
-            ">",
-            "<",
-            ";",
-            ":",
-            "}",
-            "{",
-            "]",
-            "["
+        static readonly char[] ExpectedPunctuations = {
+            ',',
+            ')',
+            '(',
+            '>',
+            '<',
+            ';',
+            ':',
+            '}',
+            '{',
+            ']',
+            '['
         };
 
         static readonly char[] ExpectedIdentifierCharacters = {
@@ -229,57 +229,57 @@ namespace Nav.Language.Tests {
 
         [Test]
         public void OpenBraceTest() {
-            Assert.That(SyntaxFacts.OpenBrace, Is.EqualTo("{"));
+            Assert.That(SyntaxFacts.OpenBrace, Is.EqualTo('{'));
         }
 
         [Test]
         public void CloseBraceTest() {
-            Assert.That(SyntaxFacts.CloseBrace, Is.EqualTo("}"));
+            Assert.That(SyntaxFacts.CloseBrace, Is.EqualTo('}'));
         }
 
         [Test]
         public void OpenParenTest() {
-            Assert.That(SyntaxFacts.OpenParen, Is.EqualTo("("));
+            Assert.That(SyntaxFacts.OpenParen, Is.EqualTo('('));
         }
 
         [Test]
         public void CloseParenTest() {
-            Assert.That(SyntaxFacts.CloseParen, Is.EqualTo(")"));
+            Assert.That(SyntaxFacts.CloseParen, Is.EqualTo(')'));
         }
 
         [Test]
         public void OpenBracketTest() {
-            Assert.That(SyntaxFacts.OpenBracket, Is.EqualTo("["));
+            Assert.That(SyntaxFacts.OpenBracket, Is.EqualTo('['));
         }
 
         [Test]
         public void CloseBracketTest() {
-            Assert.That(SyntaxFacts.CloseBracket, Is.EqualTo("]"));
+            Assert.That(SyntaxFacts.CloseBracket, Is.EqualTo(']'));
         }
 
         [Test]
         public void LessThanTest() {
-            Assert.That(SyntaxFacts.LessThan, Is.EqualTo("<"));
+            Assert.That(SyntaxFacts.LessThan, Is.EqualTo('<'));
         }
 
         [Test]
         public void GreaterThanTest() {
-            Assert.That(SyntaxFacts.GreaterThan, Is.EqualTo(">"));
+            Assert.That(SyntaxFacts.GreaterThan, Is.EqualTo('>'));
         }
 
         [Test]
         public void SemicolonTest() {
-            Assert.That(SyntaxFacts.Semicolon, Is.EqualTo(";"));
+            Assert.That(SyntaxFacts.Semicolon, Is.EqualTo(';'));
         }
 
         [Test]
         public void CommaTest() {
-            Assert.That(SyntaxFacts.Comma, Is.EqualTo(","));
+            Assert.That(SyntaxFacts.Comma, Is.EqualTo(','));
         }
 
         [Test]
         public void ColonTest() {
-            Assert.That(SyntaxFacts.Colon, Is.EqualTo(":"));
+            Assert.That(SyntaxFacts.Colon, Is.EqualTo(':'));
         }
 
         [Test]
@@ -360,9 +360,8 @@ namespace Nav.Language.Tests {
 
         [Test]
         [TestCaseSource(nameof(ExpectedPunctuations))]
-        public void PunctuationIsNotIdentifierCharacter(string punctuation) {
-            var c = punctuation[0];
-            Assert.That(SyntaxFacts.IsIdentifierCharacter(c), Is.False, $"{c} should NOT be an identifier character");
+        public void PunctuationIsNotIdentifierCharacter(char punctuation) {            
+            Assert.That(SyntaxFacts.IsIdentifierCharacter(punctuation), Is.False, $"{punctuation} should NOT be an identifier character");
         }
     }
 }

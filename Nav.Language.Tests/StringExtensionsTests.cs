@@ -120,6 +120,54 @@ namespace Nav.Language.Tests {
             Assert.That(text.QuotatedExtent(8, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // !
         }
 
+        [Test]
+        public void TestInBlock1() {
+
+            char blockStartChar = '[';
+            char blockEndChar   = ']';
+
+            var text = "Hi [Max]!";
+
+            Assert.That(text.IsInTextBlock(0, blockStartChar, blockEndChar), Is.False); // H
+            Assert.That(text.IsInTextBlock(1, blockStartChar, blockEndChar), Is.False); // i
+            Assert.That(text.IsInTextBlock(2, blockStartChar, blockEndChar), Is.False); // 
+            Assert.That(text.IsInTextBlock(3, blockStartChar, blockEndChar), Is.False); // [
+            // -
+            Assert.That(text.IsInTextBlock(4, blockStartChar, blockEndChar), Is.True); // M
+            Assert.That(text.IsInTextBlock(5, blockStartChar, blockEndChar), Is.True); // a
+            Assert.That(text.IsInTextBlock(6, blockStartChar, blockEndChar), Is.True); // x
+            Assert.That(text.IsInTextBlock(7, blockStartChar, blockEndChar), Is.True); // ]
+            // -
+            Assert.That(text.IsInTextBlock(8, blockStartChar, blockEndChar), Is.False); // !
+            Assert.That(text.IsInTextBlock(9, blockStartChar, blockEndChar), Is.False); // Wir erlauben es auch, hinter das Ende zu gehen
+        }
+
+        [Test]
+        public void TestNestedBlocks1() {
+
+            char blockStartChar = '[';
+            char blockEndChar   = ']';
+
+            var text = "Hi[ [Max]!]";
+
+            Assert.That(text.IsInTextBlock(0, blockStartChar, blockEndChar), Is.False); // H
+            Assert.That(text.IsInTextBlock(1, blockStartChar, blockEndChar), Is.False); // i
+            Assert.That(text.IsInTextBlock(2, blockStartChar, blockEndChar), Is.False); // [
+            // -
+            Assert.That(text.IsInTextBlock(3, blockStartChar, blockEndChar), Is.True); // 
+            Assert.That(text.IsInTextBlock(4, blockStartChar, blockEndChar), Is.True); // [
+            // -
+            Assert.That(text.IsInTextBlock(5, blockStartChar, blockEndChar), Is.True); // M
+            Assert.That(text.IsInTextBlock(6, blockStartChar, blockEndChar), Is.True); // a
+            Assert.That(text.IsInTextBlock(7, blockStartChar, blockEndChar), Is.True); // x
+            Assert.That(text.IsInTextBlock(8, blockStartChar, blockEndChar), Is.True); // ]
+            // -
+            Assert.That(text.IsInTextBlock(9, blockStartChar, blockEndChar), Is.True); // !
+            Assert.That(text.IsInTextBlock(10, blockStartChar, blockEndChar), Is.True); // ]
+            // -
+            Assert.That(text.IsInTextBlock(11, blockStartChar, blockEndChar), Is.False); // Wir erlauben es auch, hinter das Ende zu gehen
+        }
+
         [Test, TestCaseSource(nameof(GetMatchPartsTestCases))]
         public void Test(MatchPartsTestCase testCase) {
 

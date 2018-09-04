@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System;
 using System.Linq;
 using System.Collections.Immutable;
 
@@ -94,19 +95,19 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         // Punctuation
-        public static readonly string OpenBrace    = GetLiteralName(NavGrammar.OpenBrace);
-        public static readonly string CloseBrace   = GetLiteralName(NavGrammar.CloseBrace);
-        public static readonly string OpenParen    = GetLiteralName(NavGrammar.OpenParen);
-        public static readonly string CloseParen   = GetLiteralName(NavGrammar.CloseParen);
-        public static readonly string OpenBracket  = GetLiteralName(NavGrammar.OpenBracket);
-        public static readonly string CloseBracket = GetLiteralName(NavGrammar.CloseBracket);
-        public static readonly string LessThan     = GetLiteralName(NavGrammar.LessThan);
-        public static readonly string GreaterThan  = GetLiteralName(NavGrammar.GreaterThan);
-        public static readonly string Semicolon    = GetLiteralName(NavGrammar.Semicolon);
-        public static readonly string Comma        = GetLiteralName(NavGrammar.Comma);
-        public static readonly string Colon        = GetLiteralName(NavGrammar.Colon);
+        public static readonly char OpenBrace    = GetLiteralNameAsChar(NavGrammar.OpenBrace);
+        public static readonly char CloseBrace   = GetLiteralNameAsChar(NavGrammar.CloseBrace);
+        public static readonly char OpenParen    = GetLiteralNameAsChar(NavGrammar.OpenParen);
+        public static readonly char CloseParen   = GetLiteralNameAsChar(NavGrammar.CloseParen);
+        public static readonly char OpenBracket  = GetLiteralNameAsChar(NavGrammar.OpenBracket);
+        public static readonly char CloseBracket = GetLiteralNameAsChar(NavGrammar.CloseBracket);
+        public static readonly char LessThan     = GetLiteralNameAsChar(NavGrammar.LessThan);
+        public static readonly char GreaterThan  = GetLiteralNameAsChar(NavGrammar.GreaterThan);
+        public static readonly char Semicolon    = GetLiteralNameAsChar(NavGrammar.Semicolon);
+        public static readonly char Comma        = GetLiteralNameAsChar(NavGrammar.Comma);
+        public static readonly char Colon        = GetLiteralNameAsChar(NavGrammar.Colon);
 
-        public static readonly ImmutableHashSet<string> Punctuations = new[] {
+        public static readonly ImmutableHashSet<char> Punctuations = new[] {
             OpenBrace,
             CloseBrace,
             OpenParen,
@@ -121,6 +122,15 @@ namespace Pharmatechnik.Nav.Language {
         }.ToImmutableHashSet();
 
         public static bool IsPunctuation(string value) {
+
+            if (value?.Length != 1) {
+                return false;
+            }
+
+            return Punctuations.Contains(value[0]);
+        }
+
+        public static bool IsPunctuation(char value) {
             return Punctuations.Contains(value);
         }
 
@@ -150,6 +160,15 @@ namespace Pharmatechnik.Nav.Language {
         public static readonly string SingleLineComment = "//";
         public static readonly string BlockCommentStart = "/*";
         public static readonly string BlockCommentEnd   = "*/";
+
+        static char GetLiteralNameAsChar(int tokenType) {
+            string name = GetLiteralName(tokenType);
+            if (name.Length != 1) {
+                throw new InvalidOperationException($"{name} has more or less than one char.");
+            }
+
+            return name[0];
+        }
 
         static string GetLiteralName(int tokenType) {
             return NavGrammar.DefaultVocabulary.GetLiteralName(tokenType).Trim('\'');
