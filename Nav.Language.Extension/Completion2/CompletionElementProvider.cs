@@ -12,7 +12,7 @@ using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
-    [Export(typeof(IUIElementProvider<Completion, ICompletionSession>))]
+   // [Export(typeof(IUIElementProvider<Completion, ICompletionSession>))]
     [Name(CompletionProviderNames.NavCompletionElementProvider)]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
     class CompletionElementProvider: IUIElementProvider<Completion, ICompletionSession> {

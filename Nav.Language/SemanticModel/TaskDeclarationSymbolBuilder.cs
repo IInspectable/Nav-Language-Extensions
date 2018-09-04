@@ -80,7 +80,7 @@ namespace Pharmatechnik.Nav.Language {
 
             try {
 
-                var filePath = includeDirectiveSyntax.StringLiteral.ToString().Trim('"');
+                var filePath = includeDirectiveSyntax.StringLiteral.ToString().Trim('"').Trim();
                 if (!Path.IsPathRooted(filePath)) {
 
                     var directory = includeDirectiveSyntax.SyntaxTree.SourceText.FileInfo?.Directory;

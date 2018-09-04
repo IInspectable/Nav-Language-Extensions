@@ -189,6 +189,7 @@
     <Compile Include="GoToLocation\Provider\TaskExitDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationLocationInfoProvider.cs" />
+    <Compile Include="Images\ImageMonikers.SymbolImageVisitor.cs" />
     <Compile Include="LanguageService\NavCodeWindowManager.cs" />
     <Compile Include="LanguageService\NavLanguageService.cs" />
     <Compile Include="LanguageService\NavLanguagePreferences.cs" />

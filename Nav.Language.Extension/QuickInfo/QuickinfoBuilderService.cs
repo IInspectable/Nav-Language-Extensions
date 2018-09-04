@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Classification;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
@@ -33,6 +34,14 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         public UIElement BuildSymbolQuickInfoContent(ISymbol source) {
             return Builder.Build(source, this);
+        }
+
+        public UIElement BuildKeywordQuickInfoContent(string keyword) {
+            var control = new SymbolQuickInfoControl {
+                CrispImage  = {Moniker = ImageMonikers.Keyword},
+                TextContent = {Content = $"keyword {keyword}"}
+            };
+            return control;
         }
 
         TextBlock ToTextBlock(string text, SyntaxTokenClassification classification) {

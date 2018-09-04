@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
-    [Export(typeof(ICompletionSourceProvider))]
+   // [Export(typeof(ICompletionSourceProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
     [Name(CompletionProviderNames.NavCompletionSourceProvider)]
     class CompletionSourceProvider : ICompletionSourceProvider {

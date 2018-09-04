@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
-    [Export(typeof(IVsTextViewCreationListener))]
+    //[Export(typeof(IVsTextViewCreationListener))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
     [TextViewRole(PredefinedTextViewRoles.Interactive)]
     class CompletionControllerProvider: IVsTextViewCreationListener {
