@@ -2,7 +2,8 @@
 
     static class CompletionProviderNames {
 
-        public const string NavCompletionSourceProvider  = nameof(NavCompletionSourceProvider);
+        public const string NavCompletionSourceProvider        = nameof(NavCompletionSourceProvider);
+        public const string NavCompletionCommitManagerProvider = nameof(NavCompletionCommitManagerProvider);
 
     }
 

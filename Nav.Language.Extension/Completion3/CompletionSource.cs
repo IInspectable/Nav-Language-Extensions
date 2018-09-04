@@ -37,18 +37,21 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
         public bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
 
-            applicableToSpan = default;
-
             char edgeTrigger = '-';
 
-            // We don't trigger completion when user typed
-            if (char.IsNumber(typedChar) // a number
-             || char.IsWhiteSpace(typedChar)
-                // || (char.IsPunctuation(typedChar) && (typedChar != edgeTrigger) // punctuation
-             || typedChar == '\b'  // backspace
-             || typedChar == '\n') // new line
-            {
+            bool IsTriggerChar() {
 
+                return char.IsLetter(typedChar)                        ||
+                       typedChar            == '\0'                    ||
+                       typedChar            == edgeTrigger             ||
+                       typedChar.ToString() == SyntaxFacts.OpenBracket ||
+                       typedChar.ToString() == SyntaxFacts.Colon       ||
+                       typedChar            == '"';
+            }
+
+            applicableToSpan = default;
+
+            if (!IsTriggerChar()) {
                 return false;
             }
 
@@ -336,7 +339,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
         CompletionItem CreateFileNameCompletion(DirectoryInfo directory, FileInfo file) {
 
             var directoryName = directory.FullName + Path.DirectorySeparatorChar;
-            var fullPath      = file.FullName;
             var relativePath  = PathHelper.GetRelativePath(fromPath: directoryName, toPath: file.FullName);
             var displayPath   = CompactPath(relativePath, 50);
             var imageMoniker  = ImageMonikers.Include;
@@ -346,10 +348,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                                                     source: this,
                                                     icon: imageElement,
                                                     filters: ImmutableArray<CompletionFilter>.Empty,
-                                                    suffix: null,
-                                                    insertText: fullPath,
-                                                    sortText: null,
-                                                    filterText: null,
+                                                    suffix: "",
+                                                    insertText: relativePath,
+                                                    sortText: file.Name,
+                                                    filterText: file.Name,
                                                     attributeIcons: ImmutableArray<ImageElement>.Empty
             );
 

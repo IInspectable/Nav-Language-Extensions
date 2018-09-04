@@ -155,6 +155,8 @@
     <Compile Include="Completion2\FilteredCompletionSet.cs" />
     <Compile Include="Completion2\NavFileCompletionCache.cs" />
     <Compile Include="Completion2\TextSnaphotLineExtensions.cs" />
+    <Compile Include="Completion3\CompletionCommitManager.cs" />
+    <Compile Include="Completion3\CompletionCommitManagerProvider.cs" />
     <Compile Include="Completion3\CompletionProviderNames.cs" />
     <Compile Include="Completion3\CompletionSource.cs" />
     <Compile Include="Completion3\CompletionSourceProvider.cs" />
