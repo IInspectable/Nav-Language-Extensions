@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Text;
 using Pharmatechnik.Nav.Language.Extension.Completion2;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.Text;
+using Pharmatechnik.Nav.Utilities.IO;
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
@@ -46,6 +47,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
         }
 
+        private const string ParentDirectoryDisplayString = "..";
+
         public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
             if (!ShouldProvideCompletions(triggerLocation, out _, out var replacementSpan)) {
@@ -76,11 +79,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
                 if (navDirectory != null) {
 
-                    // typed ist alles links vom Caret bis zum "
+                    // "typed" ist alles links vom Caret bis zum "
                     var typed = lineText.Substring(quotedExtent.Start, length: linePosition - quotedExtent.Start);
                     var parts = SplitPath(typed);
 
-                    var searchDirectory = navDirectory;
                     // Wenn der Benutzer gerade anfängt einen Dateinamen anzugeben, er aber noch keinen Pfad geschrieben hat, dann zeigen wir
                     // ALLE nav-Files, die von der Solution aus zu erreichen sind.
                     if (String.IsNullOrWhiteSpace(parts.DirPart)) {
@@ -89,88 +91,59 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                         }
                     }
 
-                    // Es wurden nicht alle Nav-Files vorgeschlagen:
+                    // Es wurden noch keine Nav-Files vorgeschlagen:
                     // - entweder der Benutzer hat schon einen Pfad angegeben, z.B. "..\
                     // - oder es gibt keine Solution
-                    // - oder es sined keine Nav-File svon der Solution aus erreichbar
+                    // - oder es sind keine Nav-File von der Solution aus erreichbar
                     if (!completionItems.Any()) {
+
+                        var searchDirectory = navDirectory;
 
                         // Der Benutzer hat schon angefangen, eine Pfad zu schreiben, als z.B. "..\
                         if (!String.IsNullOrWhiteSpace(parts.DirPart)) {
 
                             // Wenn der Pfad absolut ist (z.B. "c:\), nehmen wir direkt dieses Verzeichnis als Suchverzeichnis
-                            if (SafeIsPathRooted(parts.DirPart)) {
-                                searchDirectory = new DirectoryInfo(parts.DirPart);
+                            if (PathHelper.SafeIsPathRooted(parts.DirPart)) {
+                                PathHelper.TryGetDirectoryinfo(parts.DirPart, out searchDirectory);
                                 // Andernfalls stellen wir das Verzeichnis des aktuellen Nav-Files voran.
-                            } else if (TryCombinePath(navDirectory.FullName, parts.DirPart, out var fullPath)) {
-                                searchDirectory = new DirectoryInfo(fullPath);
+                            } else if (PathHelper.TryCombinePath(navDirectory.FullName, parts.DirPart, out var fullPath)) {
+                                PathHelper.TryGetDirectoryinfo(fullPath, out searchDirectory);
                             }
                         }
 
-                        // Sofern es das Verzeichnis ein übergeordnetes Verzeichnis hat, '..' als Auswahl anbieten.
-                        if (searchDirectory.Parent != null) {
-                            completionItems.Add(CreateDirectoryInfoCompletion(navDirectory, searchDirectory.Parent, "..",
-                                                                              replacementSpan: replacementSpan));
-                        }
+                        if (searchDirectory != null) {
 
-                        // jetzt alle Verzeichnisse anzeigen
-                        foreach (var dir in searchDirectory.EnumerateDirectories()) {
-                            completionItems.Add(CreateDirectoryInfoCompletion(navDirectory, dir, replacementSpan: replacementSpan));
-                        }
+                            // Sofern das Verzeichnis ein übergeordnetes Verzeichnis hat, '..' als erste Auswahl anbieten.
+                            if (searchDirectory.Parent != null) {
+                                completionItems.Add(CreateDirectoryInfoCompletion(navDirectory, searchDirectory.Parent,
+                                                                                  displayText: ParentDirectoryDisplayString,
+                                                                                  replacementSpan: replacementSpan));
+                            }
 
-                        // .. und am Ende die Nav-Files
-                        foreach (var file in searchDirectory.EnumerateFiles(searchPattern: $"*{NavLanguageContentDefinitions.FileExtension}",
-                                                                            searchOption: SearchOption.TopDirectoryOnly)) {
-                            completionItems.Add(CreateFileInfoCompletion(navDirectory, file, replacementSpan: replacementSpan));
+                            // jetzt alle Verzeichnisse anzeigen
+                            foreach (var dir in searchDirectory.SafeEnumerateDirectories()) {
+                                completionItems.Add(CreateDirectoryInfoCompletion(navDirectory, dir, replacementSpan: replacementSpan));
+                            }
+
+                            // .. und am Ende die Nav-Files im Verzeichnis
+                            foreach (var file in searchDirectory.SafeEnumerateFiles(searchPattern: $"*{NavLanguageContentDefinitions.FileExtension}",
+                                                                                    searchOption: SearchOption.TopDirectoryOnly)) {
+
+                                completionItems.Add(CreateFileInfoCompletion(navDirectory, file, replacementSpan: replacementSpan));
+                            }
                         }
                     }
                 }
             }
 
-            return CreateCompletionContext(completionItems);
-
-        }
-
-        static bool TryCombinePath(string path1, string path2, out string combinedPath) {
-            combinedPath = default;
-            try {
-                combinedPath = Path.Combine(path1, path2);
-                return true;
-            } catch (ArgumentException) {
-                return false;
-            }
-        }
-
-        static bool SafeIsPathRooted(string path) {
-            try {
-                return Path.IsPathRooted(path);
-            } catch (ArgumentException) {
-                return false;
-            }
-        }
-
-        (string DirPart, string FilePart) SplitPath(string path) {
-            var dirPart  = "";
-            var filePath = "";
-
-            if (!string.IsNullOrEmpty(path)) {
-
-                var index = path.Length;
-                while (index > 0) {
-
-                    char ch = path[--index];
-                    if (ch == Path.DirectorySeparatorChar || ch == Path.AltDirectorySeparatorChar) {
-
-                        dirPart = path.Substring(0, length: index + 1);
-
-                        filePath = path.Substring(index + 1, length: path.Length - index - 1);
-
-                        break;
-                    }
-                }
+            // Wenn das Parent Directory der einzige Vorschlag ist, dann entfernen wir auch diesen, das ansonsten automatisch zum übergeordneten
+            // Verzeichnis gesprungen wird, wenn die AutoCompletion z.B. mittel Ctrl + Leer getriggert wird.
+            if (completionItems.Count == 1 && completionItems[0].DisplayText == ParentDirectoryDisplayString) {
+                completionItems.Clear();
             }
 
-            return (DirPart: dirPart, FilePart: filePath);
+            return CreateCompletionContext(completionItems, InitialSelectionHint.SoftSelection);
+
         }
 
         bool ShouldProvideCompletions(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, out ITrackingSpan replacementSpan) {
@@ -189,10 +162,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
                 if (previousIdentifier == SyntaxFacts.TaskrefKeyword) {
 
-                    var start = line.GetStartOfIdentifier(triggerLocation);
+                    applicableToSpan = new SnapshotSpan(
+                        line.GetStartOfFileNamePart(triggerLocation),
+                        triggerLocation);
 
-                    applicableToSpan = new SnapshotSpan(start, triggerLocation);
-
+                    // Wir ersetzten grundsätzlich alles zwischen den ""
                     replacementSpan = applicableToSpan.Snapshot.CreateTrackingSpan(
                         new SnapshotSpan(
                             line.Start + quotedExtent.Start,
@@ -206,6 +180,32 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             return false;
 
+        }
+
+        (string DirPart, string FilePart) SplitPath(string path) {
+
+            var dirPart  = "";
+            var filePath = "";
+
+            if (!string.IsNullOrEmpty(path)) {
+
+                var index = path.Length;
+                while (index > 0) {
+
+                    char ch = path[--index];
+
+                    if (ch == Path.DirectorySeparatorChar ||
+                        ch == Path.AltDirectorySeparatorChar) {
+
+                        dirPart  = path.Substring(0, length: index + 1);
+                        filePath = path.Substring(index            + 1, length: path.Length - index - 1);
+
+                        break;
+                    }
+                }
+            }
+
+            return (DirPart: dirPart, FilePart: filePath);
         }
 
     }

@@ -1,4 +1,7 @@
-﻿using Microsoft.VisualStudio.Text;
+﻿using System.IO;
+using System.Linq;
+
+using Microsoft.VisualStudio.Text;
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
@@ -35,6 +38,18 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             var wordStart = line.GetStartOfIdentifier(wordEnd.Value);
 
             return new SnapshotSpan(wordStart, wordEnd.Value + 1);
+        }
+
+        public static SnapshotPoint GetStartOfFileNamePart(this ITextSnapshotLine line, SnapshotPoint start) {
+            while (start > line.Start && IsFileNameChar((start - 1).GetChar())) {
+                start -= 1;
+            }
+
+            return start;
+        }
+
+        static bool IsFileNameChar(this char ch) {
+            return Path.GetInvalidFileNameChars().All(c => ch != c);
         }
 
     }

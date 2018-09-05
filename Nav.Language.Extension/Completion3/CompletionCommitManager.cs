@@ -15,7 +15,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
     class CompletionCommitManager: IAsyncCompletionCommitManager {
 
-        readonly ImmutableArray<char> _commitChars = new[] {' ', '\'', '"', ',', '.', ';', ':'}.ToImmutableArray();
+        // TODO PotentialCommitCharacters aud Sinnhaftigkeit prüfen
+        readonly ImmutableArray<char> _commitChars = new[] {' ', '\'', '"', ',', ';', ':'}.ToImmutableArray(); //, '.'
 
         public IEnumerable<char> PotentialCommitCharacters => _commitChars;
 
