@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,18 +23,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
         }
 
-        public override bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
+        char edgeTrigger = '-';
 
-            char edgeTrigger = '-';
+        public override bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
 
             bool IsTriggerChar() {
 
-                return char.IsLetter(typedChar)             ||
-                       typedChar == '\0'                    ||
-                       typedChar == edgeTrigger             ||
-                       typedChar == SyntaxFacts.OpenBracket ||
-                       typedChar == SyntaxFacts.Colon       ||
-                       typedChar == '"';
+                return char.IsLetter(typedChar) ||
+                       typedChar == '\0'        ||
+                       typedChar == edgeTrigger ||
+                       typedChar == SyntaxFacts.Colon;
             }
 
             applicableToSpan = default;
@@ -44,50 +41,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                 return false;
             }
 
-            var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
-
-            var generationUnitAndSnapshot = semanticModelService.UpdateSynchronously();
-            var codeGenerationUnit        = generationUnitAndSnapshot.CodeGenerationUnit;
-
-            var triggerToken = codeGenerationUnit.Syntax.FindToken(triggerLocation);
-
-            bool isInComment = triggerToken.Type == SyntaxTokenType.SingleLineComment ||
-                               triggerToken.Type == SyntaxTokenType.MultiLineComment;
-
-            // Keine Autocompletion in Kommentaren!
-            if (isInComment) {
-                return false;
-            }
-
-            var line         = triggerLocation.GetContainingLine();
-            var linePosition = triggerLocation - line.Start;
-            var lineText     = line.GetText();
-            var start        = line.GetStartOfIdentifier(triggerLocation);
-
-            var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
-            var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
-
-            bool showEdgeModes = previousNonWhitespace == edgeTrigger;
-
-            if (showEdgeModes) {
-                start -= 1;
-            }
-
-            applicableToSpan = new SnapshotSpan(start, triggerLocation);
-
-            if (lineText.IsInQuotation(linePosition)) {
-
-                var quotedExtent       = lineText.QuotedExtent(linePosition);
-                var previousIdentifier = lineText.GetPreviousIdentifier(quotedExtent.Start - 1);
-
-                if (previousIdentifier == SyntaxFacts.TaskrefKeyword) {
-                    applicableToSpan = new SnapshotSpan(
-                        line.Start + quotedExtent.Start,
-                        line.Start + quotedExtent.End);
-                }
-            }
-
-            return false;
+            return ShouldProvideCompletions(triggerLocation, out applicableToSpan);
         }
 
         public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
@@ -100,13 +54,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             }
 
             var codeGenerationUnit = generationUnitAndSnapshot.CodeGenerationUnit;
-            var snapshot           = generationUnitAndSnapshot.Snapshot;
             var triggerToken       = codeGenerationUnit.Syntax.FindToken(triggerLocation);
 
             bool isInComment = triggerToken.Type == SyntaxTokenType.SingleLineComment ||
                                triggerToken.Type == SyntaxTokenType.MultiLineComment;
 
-            // Keine Autocompletion in Kommentaren!
+            // Keine Auto Completion in Kommentaren!
             if (isInComment) {
                 return CreateEmptyCompletionContext();
             }
@@ -114,59 +67,30 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             var line         = triggerLocation.GetContainingLine();
             var linePosition = triggerLocation - line.Start;
             var lineText     = line.GetText();
-            var start        = line.GetStartOfIdentifier(triggerLocation);
+
+            // Kein Auto Completion in ""
+            if (lineText.IsInQuotation(linePosition)) {
+                return CreateEmptyCompletionContext();
+            }
+
+            // Kein Auto Completion in in Code Blöcken
+            var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
+            if (isInCodeBlock) {
+                return CreateEmptyCompletionContext();
+            }
+
+            var start = line.GetStartOfIdentifier(triggerLocation);
 
             var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
             var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
             var previousWordSpan           = line.GetSpanOfPreviousIdentifier(start);
 
-            var  prevousIdentfier = previousWordSpan?.GetText() ?? "";
-            bool showEdgeModes    = previousNonWhitespace == '-';
-
-            if (showEdgeModes) {
-                start -= 1;
-            }
+            var prevousIdentfier = previousWordSpan?.GetText() ?? "";
 
             var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
 
-            var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
-
-            // Es gibt derzeit eigentlich nur die taskrefs wo innerhalb von "" etwas vorgeschlagen werden kann
-            if (lineText.IsInQuotation(linePosition)) {
-
-                var quotatedExtent     = lineText.QuotedExtent(linePosition);
-                var previousIdentifier = lineText.GetPreviousIdentifier(quotatedExtent.Start - 1);
-
-                if (previousIdentifier == SyntaxFacts.TaskrefKeyword) {
-
-                    var typedSpan = new SnapshotSpan(
-                        line.Start + quotatedExtent.Start,
-                        triggerLocation);
-
-                    var unused = snapshot.CreateTrackingSpan(typedSpan, SpanTrackingMode.EdgeInclusive);
-
-                    var fi = codeGenerationUnit.Syntax.SyntaxTree.SourceText.FileInfo;
-                    if (fi?.DirectoryName != null) {
-                        var files = Directory.EnumerateFiles(path: fi.DirectoryName,
-                                                             searchPattern: $"*{NavLanguageContentDefinitions.FileExtension}",
-                                                             searchOption: SearchOption.TopDirectoryOnly);
-                        foreach (var file in files) {
-                            completionItems.Add(CreateFileNameCompletion(fi.Directory, new FileInfo(file)));
-                        }
-
-                        //foreach (var file in _navFileCompletionCache.GetNavFiles()) {
-                        //    itemsBuilder.Add(CreateFileNameCompletion(fi.Directory, file));
-                        //}
-                    }
-
-                }
-
-                // Wenn in Quotation, dann sind wir fertig...
-                return CreateCompletionContext(completionItems);
-
-            }
-
             // Edge Modes
+            bool showEdgeModes = previousNonWhitespace == '-';
             if (showEdgeModes) {
 
                 completionItems.Add(CreateKeywordCompletion(SyntaxFacts.GoToEdgeKeyword));
@@ -175,11 +99,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                 if (completionItems.Any()) {
                     return CreateCompletionContext(completionItems);
                 }
-            }
-
-            // Code Keyword
-            if (previousNonWhitespace == SyntaxFacts.OpenBracket) {
-
             }
 
             if (prevousIdentfier == SyntaxFacts.TaskKeyword) {
@@ -206,7 +125,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                                                    .LastOrDefault(td => extent.Start > td.Syntax.Start);
             }
 
-            if (taskDefinition != null && !isInCodeBlock) {
+            if (taskDefinition != null) {
 
                 // Exit Connection Points
                 if (previousNonWhitespace == SyntaxFacts.Colon) {
@@ -264,13 +183,61 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             }
 
             // Keywords
-            if (!isInCodeBlock) {
-                foreach (var keyword in SyntaxFacts.NavKeywords.OrderBy(n => n)) {
-                    completionItems.Add(CreateKeywordCompletion(keyword));
-                }
+            foreach (var keyword in SyntaxFacts.NavKeywords.OrderBy(n => n)) {
+                completionItems.Add(CreateKeywordCompletion(keyword));
             }
 
             return CreateCompletionContext(completionItems);
+        }
+
+        bool ShouldProvideCompletions(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {
+
+            applicableToSpan = default;
+
+            var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
+
+            var generationUnitAndSnapshot = semanticModelService.UpdateSynchronously();
+            var codeGenerationUnit        = generationUnitAndSnapshot.CodeGenerationUnit;
+
+            var triggerToken = codeGenerationUnit.Syntax.FindToken(triggerLocation);
+
+            bool isInComment = triggerToken.Type == SyntaxTokenType.SingleLineComment ||
+                               triggerToken.Type == SyntaxTokenType.MultiLineComment;
+
+            // Keine Autocompletion in Kommentaren!
+            if (isInComment) {
+                return false;
+            }
+
+            // Kein Auto Completion in ""
+            var line         = triggerLocation.GetContainingLine();
+            var linePosition = triggerLocation - line.Start;
+            var lineText     = line.GetText();
+
+            if (lineText.IsInQuotation(linePosition)) {
+                return false;
+            }
+
+            // Kein Auto Completion in in Code Blöcken
+            var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
+            if (isInCodeBlock) {
+                return false;
+            }
+
+            var start = line.GetStartOfIdentifier(triggerLocation);
+
+            var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
+            var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
+
+            bool showEdgeModes = previousNonWhitespace == edgeTrigger;
+
+            if (showEdgeModes) {
+                start -= 1;
+            }
+
+            applicableToSpan = new SnapshotSpan(start, triggerLocation);
+
+            return true;
         }
 
     }

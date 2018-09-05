@@ -14,8 +14,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
     public static partial class ImageMonikers {
 
         static readonly Guid CustomMonikerGuid = new Guid("{11e9628b-b9e6-45d6-ae8d-b4440be46fa6}");
-        
-        public static ImageMoniker ProjectNode => KnownMonikers.CSProjectNode;
+
+        public static ImageMoniker ProjectNode  => KnownMonikers.CSProjectNode;
+        public static ImageMoniker FolderClosed => KnownMonikers.FolderClosed;
+        public static ImageMoniker NavFile      => KnownMonikers.ClassFile;
 
         // CodeFixImpact
 
@@ -38,7 +40,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         public static ImageMoniker AnalysisOK         => KnownMonikers.StatusOK;
         public static ImageMoniker AnalysisWarning    => KnownMonikers.StatusWarning;
         public static ImageMoniker AnalysisError      => KnownMonikers.StatusError;
-        
+
         // GoTo
 
         /// <summary>
@@ -51,7 +53,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         /// </summary>
         public static ImageMoniker GoToDefinition => KnownMonikers.GoToDeclaration;
 
-        public static ImageMoniker Include             => KnownMonikers.ClassFile;
+        public static ImageMoniker Include             => NavFile;
         public static ImageMoniker GoToNodeDeclaration => KnownMonikers.GoToReference;
         public static ImageMoniker GoToMethodPublic    => KnownMonikers.MethodPublic;
         public static ImageMoniker GoToClassPublic     => KnownMonikers.ClassPublic;
@@ -92,7 +94,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         public static ImageMoniker FromSymbol(ISymbol symbol) {
             return SymbolImageVisitor.FindImageMoniker(symbol);
-        }        
+        }
 
     }
 

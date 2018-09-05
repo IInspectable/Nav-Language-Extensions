@@ -2,10 +2,10 @@
 
 using System.Collections.Immutable;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
+using JetBrains.Annotations;
 
 using Microsoft.VisualStudio.Core.Imaging;
 using Microsoft.VisualStudio.Imaging;
@@ -14,7 +14,6 @@ using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 
-using Pharmatechnik.Nav.Language.Extension.Completion2;
 using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Utilities.IO;
@@ -36,19 +35,27 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
         public abstract Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token);
 
         public virtual Task<object> GetDescriptionAsync(CompletionItem item, CancellationToken token) {
-            if (item.Properties.TryGetProperty<ISymbol>(CompletionElementProvider.SymbolPropertyName, out var symbol)) {
+            if (item.Properties.TryGetProperty<ISymbol>(SymbolPropertyName, out var symbol)) {
                 return Task.FromResult((object) QuickinfoBuilderService.BuildSymbolQuickInfoContent(symbol));
             }
 
-            if (item.Properties.TryGetProperty<string>(CompletionElementProvider.KeywordPropertyName, out var keyword)) {
+            if (item.Properties.TryGetProperty<string>(KeywordPropertyName, out var keyword)) {
                 return Task.FromResult((object) QuickinfoBuilderService.BuildKeywordQuickInfoContent(keyword));
+            }
+
+            if (item.Properties.TryGetProperty<DirectoryInfo>(DirectoryInfoPropertyName, out var dirInfo)) {
+                return Task.FromResult((object) QuickinfoBuilderService.BuildDirectoryInfoQuickInfoContent(dirInfo));
+            }
+
+            if (item.Properties.TryGetProperty<FileInfo>(NavFileInfoPropertyName, out var fileInfo)) {
+                return Task.FromResult((object) QuickinfoBuilderService.BuildNavFileInfoQuickInfoContent(fileInfo));
             }
 
             return Task.FromResult((object) item.DisplayText);
         }
-
-        protected static Task<CompletionContext> CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder) {
-            var context = new CompletionContext(itemsBuilder.ToImmutable());
+            
+        protected static Task<CompletionContext> CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder, InitialSelectionHint? initialSelectionHint = null) {
+            var context = new CompletionContext(itemsBuilder.ToImmutable(), null, initialSelectionHint ?? InitialSelectionHint.RegularSelection);
             return Task.FromResult(context);
         }
 
@@ -65,7 +72,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                                                     source: this,
                                                     icon: imageElement);
 
-            completionItem.Properties.AddProperty(CompletionElementProvider.SymbolPropertyName, symbol);
+            completionItem.Properties.AddProperty(SymbolPropertyName, symbol);
 
             return completionItem;
         }
@@ -79,6 +86,32 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                 }
 
                 return _keywordImage;
+            }
+        }
+
+        private ImageElement _folderImage;
+
+        private ImageElement FolderImage {
+            get {
+
+                if (_folderImage == null) {
+                    _folderImage = new ImageElement(ImageMonikers.FolderClosed.ToImageId());
+                }
+
+                return _folderImage;
+            }
+        }
+
+        private ImageElement _navFileImage;
+
+        private ImageElement NavFileImage {
+            get {
+
+                if (_navFileImage == null) {
+                    _navFileImage = new ImageElement(ImageMonikers.Include.ToImageId());
+                }
+
+                return _navFileImage;
             }
         }
 
@@ -103,43 +136,72 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                                                     filters: new[] {KeywordFilter}.ToImmutableArray()
             );
 
-            completionItem.Properties.AddProperty(CompletionElementProvider.KeywordPropertyName, keyword);
+            completionItem.Properties.AddProperty(KeywordPropertyName, keyword);
 
             return completionItem;
         }
 
-        protected CompletionItem CreateFileNameCompletion(DirectoryInfo directory, FileInfo file) {
+        protected CompletionItem CreateDirectoryInfoCompletion(DirectoryInfo directory,
+                                                               DirectoryInfo dir,
+                                                               [CanBeNull] string displayText = null,
+                                                               [CanBeNull] ITrackingSpan replacementSpan = null) {
 
             var directoryName = directory.FullName + Path.DirectorySeparatorChar;
-            var relativePath  = PathHelper.GetRelativePath(fromPath: directoryName, toPath: file.FullName);
-            var displayPath   = CompactPath(relativePath, 50);
-            var imageMoniker  = ImageMonikers.Include;
-            var imageElement  = new ImageElement(imageMoniker.ToImageId());
+            var relativePath  = PathHelper.GetRelativePath(fromPath: directoryName, toPath: dir.FullName + Path.DirectorySeparatorChar);
 
-            var completionItem = new CompletionItem(displayText: displayPath,
+            displayText = displayText ?? dir.Name;
+
+            var completionItem = new CompletionItem(displayText: displayText,
                                                     source: this,
-                                                    icon: imageElement,
+                                                    icon: FolderImage,
                                                     filters: ImmutableArray<CompletionFilter>.Empty,
                                                     suffix: "",
                                                     insertText: relativePath,
-                                                    sortText: file.Name,
-                                                    filterText: file.Name,
-                                                    attributeIcons: ImmutableArray<ImageElement>.Empty
-            );
+                                                    sortText: $"__{displayText}",
+                                                    filterText: displayText,
+                                                    attributeIcons: ImmutableArray<ImageElement>.Empty);
+
+            completionItem.Properties.AddProperty(DirectoryInfoPropertyName, dir);
+            if (replacementSpan != null) {
+                completionItem.Properties.AddProperty(ReplacementTrackingSpanProperty, replacementSpan);
+            }
 
             return completionItem;
         }
 
-        [DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
-        static extern bool PathCompactPathEx([Out] StringBuilder pszOut, string szPath, int cchMax, int dwFlags);
+        protected CompletionItem CreateFileInfoCompletion(DirectoryInfo directory,
+                                                          FileInfo file,
+                                                          [CanBeNull] string displayText = null,
+                                                          [CanBeNull] ITrackingSpan replacementSpan = null) {
 
-        static string CompactPath(string longPathName, int wantedLength) {
-            // NOTE: You need to create the builder with the required capacity before calling function.
-            // See http://msdn.microsoft.com/en-us/library/aa446536.aspx
-            StringBuilder sb = new StringBuilder(wantedLength + 1);
-            PathCompactPathEx(sb, longPathName, wantedLength + 1, 0);
-            return sb.ToString();
+            var directoryName = directory.FullName + Path.DirectorySeparatorChar;
+            var relativePath  = PathHelper.GetRelativePath(fromPath: directoryName, toPath: file.FullName);
+
+            displayText = displayText ?? file.Name;
+
+            var completionItem = new CompletionItem(displayText: displayText,
+                                                    source: this,
+                                                    icon: NavFileImage,
+                                                    filters: ImmutableArray<CompletionFilter>.Empty,
+                                                    suffix: "",
+                                                    insertText: relativePath,
+                                                    sortText: $"_{displayText}",
+                                                    filterText: file.Name,
+                                                    attributeIcons: ImmutableArray<ImageElement>.Empty);
+
+            completionItem.Properties.AddProperty(NavFileInfoPropertyName, file);
+            if (replacementSpan != null) {
+                completionItem.Properties.AddProperty(ReplacementTrackingSpanProperty, replacementSpan);
+            }
+
+            return completionItem;
         }
+
+        public static string SymbolPropertyName              => nameof(SymbolPropertyName);
+        public static string KeywordPropertyName             => nameof(KeywordPropertyName);
+        public static string DirectoryInfoPropertyName       => nameof(DirectoryInfoPropertyName);
+        public static string NavFileInfoPropertyName         => nameof(NavFileInfoPropertyName);
+        public static string ReplacementTrackingSpanProperty => nameof(ReplacementTrackingSpanProperty);
 
     }
 

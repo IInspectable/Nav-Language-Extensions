@@ -36,13 +36,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                 return false;
             }
 
-            return ShouldSuggestCodeKeywords(triggerLocation, out applicableToSpan);
+            return ShouldProvideCompletions(triggerLocation, out applicableToSpan);
 
         }
 
         public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
-            if (ShouldSuggestCodeKeywords(triggerLocation, out _)) {
+            if (ShouldProvideCompletions(triggerLocation, out _)) {
                 var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
 
                 foreach (var keyword in SyntaxFacts.CodeKeywords) {
@@ -56,7 +56,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             return CreateEmptyCompletionContext();
         }
 
-        bool ShouldSuggestCodeKeywords(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {
+        bool ShouldProvideCompletions(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {
            
             var line                       = triggerLocation.GetContainingLine();
             var start                      = line.GetStartOfIdentifier(triggerLocation);

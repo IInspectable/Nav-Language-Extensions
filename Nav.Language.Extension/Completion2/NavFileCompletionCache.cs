@@ -33,50 +33,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             _fileCache = ImmutableList<FileInfo>.Empty;
             _cts       = new CancellationTokenSource();
 
-            SolutionEvents.OnAfterCloseSolution += OnAfterCloseSolution;
-            SolutionEvents.OnAfterOpenSolution  += OnAfterOpenSolution;
-          //  SolutionEvents.OnBeforeOpenSolution += (o, e) => RefreshCache();
-           // SolutionEvents.OnBeforeBackgroundSolutionLoadBegins += (o, e) => RefreshCache();
-           
+            SolutionEvents.OnAfterCloseSolution                  += OnAfterCloseSolution;
+            SolutionEvents.OnAfterOpenSolution                   += OnAfterOpenSolution;
+            SolutionEvents.OnAfterBackgroundSolutionLoadComplete += OnAfterBackgroundSolutionLoadComplete;
+
             RefreshCache();
-        }
 
-        private void RefreshCache() {
-            _cts.Cancel();
-            _cts       = new CancellationTokenSource();
-            ClearCache();
-            _cacheTask = RefreshCacheAsync(_cts.Token);
-        }
-
-        Task RefreshCacheAsync(CancellationToken cancellationToken) {
-
-            string directory = GetSolutionDirectory();
-
-            if (string.IsNullOrEmpty(directory)) {
-                return Task.CompletedTask;
-            }
-
-            return Task.Run(() => {
-                    _fileCache = Directory.EnumerateFiles(
-                                               directory, 
-                                               $"*{NavLanguageContentDefinitions.FileExtension}", 
-                                               SearchOption.AllDirectories)
-                                          .Select(f => new FileInfo(f))
-                                          .ToImmutableList();
-                }, cancellationToken
-            );
-        }
-
-        private void ClearCache() {
-            _fileCache = ImmutableList<FileInfo>.Empty;
-        }
-
-        private void OnAfterOpenSolution(object sender, OpenSolutionEventArgs e) {
-            RefreshCache();
-        }
-
-        private void OnAfterCloseSolution(object sender, System.EventArgs e) {
-            ClearCache();
+            // TODO FileSystemWatcher
+            //FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
+            //fileSystemWatcher.
         }
 
         public bool IsBuilding() {
@@ -84,11 +49,42 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         }
 
         public ImmutableList<FileInfo> GetNavFiles() {
-
             return _fileCache;
         }
 
-        private bool IsSolutionOpen {
+        void ClearCache() {
+            _fileCache = ImmutableList<FileInfo>.Empty;
+        }
+
+        void RefreshCache() {
+            _cts.Cancel();
+            _cts = new CancellationTokenSource();
+            ClearCache();
+            _cacheTask = RefreshCacheAsync(_cts.Token);
+        }
+
+        async Task RefreshCacheAsync(CancellationToken cancellationToken) {
+
+            //   await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            string directory = GetSolutionDirectory();
+
+            if (string.IsNullOrEmpty(directory)) {
+                return;
+            }
+
+            await Task.Run(() => {
+                    _fileCache = Directory.EnumerateFiles(
+                                               directory,
+                                               $"*{NavLanguageContentDefinitions.FileExtension}",
+                                               SearchOption.AllDirectories)
+                                          .Select(f => new FileInfo(f))
+                                          .ToImmutableList();
+                }, cancellationToken
+            );
+        }
+
+        bool IsSolutionOpen {
             get {
                 ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -110,6 +106,18 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             }
 
             return string.Empty;
+        }
+
+        void OnAfterOpenSolution(object sender, OpenSolutionEventArgs e) {
+            RefreshCache();
+        }
+
+        void OnAfterCloseSolution(object sender, System.EventArgs e) {
+            ClearCache();
+        }
+
+        void OnAfterBackgroundSolutionLoadComplete(object sender, System.EventArgs e) {
+            RefreshCache();
         }
 
     }

@@ -27,21 +27,19 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
         public CommitResult TryCommit(ITextView view, ITextBuffer buffer, CompletionItem item, ITrackingSpan applicableToSpan, char typedChar, CancellationToken token) {
 
-            //using (var edit = buffer.CreateEdit())
-            //{                
-            //    edit.Replace(applicableToSpan.GetSpan(buffer.CurrentSnapshot), item.InsertText);
-            //    edit.Apply();
-            //}
+            if (item.Properties.TryGetProperty<ITrackingSpan>(AsyncCompletionSource.ReplacementTrackingSpanProperty, out var replacementSpan)) {
 
-            //using (var edit = buffer.CreateEdit())
-            //{                
-            //    edit.Insert(applicableToSpan.GetStartPoint(buffer.CurrentSnapshot) + item.InsertText.Length, "]");
-            //    edit.Apply();
-            //    view.Caret.MoveTo(applicableToSpan.GetStartPoint(buffer.CurrentSnapshot) + item.InsertText.Length);
-            //    return CommitResult.Handled;
-            //}
+                using (var edit = buffer.CreateEdit()) {
+
+                    edit.Replace(replacementSpan.GetSpan(buffer.CurrentSnapshot), item.InsertText);
+                    edit.Apply();
+
+                    return CommitResult.Handled;
+                }
+            }
 
             return CommitResult.Unhandled; // use default commit mechanism.
+
         }
 
     }

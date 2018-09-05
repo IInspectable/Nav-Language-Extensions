@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
 
 using Microsoft.VisualStudio.Text.Classification;
 
@@ -40,6 +41,22 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             var control = new SymbolQuickInfoControl {
                 CrispImage  = {Moniker = ImageMonikers.Keyword},
                 TextContent = {Content = $"keyword {keyword}"}
+            };
+            return control;
+        }
+
+        public UIElement BuildNavFileInfoQuickInfoContent(FileInfo fileInfo) {
+            var control = new SymbolQuickInfoControl {
+                CrispImage  = {Moniker = ImageMonikers.NavFile},
+                TextContent = {Content = $"{fileInfo.FullName}"}
+            };
+            return control;
+        }
+
+        public UIElement BuildDirectoryInfoQuickInfoContent(DirectoryInfo dirInfo) {
+            var control = new SymbolQuickInfoControl {
+                CrispImage  = {Moniker = ImageMonikers.FolderClosed},
+                TextContent = {Content = $"{dirInfo.FullName}"}
             };
             return control;
         }
