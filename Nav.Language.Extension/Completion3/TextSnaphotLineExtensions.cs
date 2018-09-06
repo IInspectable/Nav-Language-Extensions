@@ -1,9 +1,13 @@
-﻿using System.IO;
+﻿#region Using Directives
+
+using System.IO;
 using System.Linq;
 
 using Microsoft.VisualStudio.Text;
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
+#endregion
+
+namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
     static class TextSnaphotLineExtensions {
 

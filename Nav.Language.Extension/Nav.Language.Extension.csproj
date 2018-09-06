@@ -153,8 +153,8 @@
     <Compile Include="Completion2\CompletionElementProvider.cs" />
     <Compile Include="Completion2\CompletionProviderNames.cs" />
     <Compile Include="Completion2\FilteredCompletionSet.cs" />
-    <Compile Include="Completion2\NavFileCompletionCache.cs" />
-    <Compile Include="Completion2\TextSnaphotLineExtensions.cs" />
+    <Compile Include="Completion3\NavFileCompletionCache.cs" />
+    <Compile Include="Completion3\TextSnaphotLineExtensions.cs" />
     <Compile Include="Completion3\AsyncCompletionSource.cs" />
     <Compile Include="Completion3\AsyncCompletionSourceProvider.cs" />
     <Compile Include="Completion3\CodeCompletionSource.cs" />

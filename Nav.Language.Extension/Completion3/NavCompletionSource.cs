@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 
-using Pharmatechnik.Nav.Language.Extension.Completion2;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.Text;
 

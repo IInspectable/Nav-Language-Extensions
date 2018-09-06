@@ -5,7 +5,6 @@ using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Utilities;
 
-using Pharmatechnik.Nav.Language.Extension.Completion2;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion

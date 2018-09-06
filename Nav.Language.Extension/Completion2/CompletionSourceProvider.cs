@@ -7,6 +7,8 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.PatternMatching;
 using Microsoft.VisualStudio.Utilities;
 
+using Pharmatechnik.Nav.Language.Extension.Completion3;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion2 {

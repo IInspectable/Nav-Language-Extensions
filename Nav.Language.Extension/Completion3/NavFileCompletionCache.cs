@@ -15,7 +15,7 @@ using Task = System.Threading.Tasks.Task;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
+namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
     [Export]
     class NavFileCompletionCache {

@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.PatternMatching;
 
+using Pharmatechnik.Nav.Language.Extension.Completion3;
 using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Text;
 

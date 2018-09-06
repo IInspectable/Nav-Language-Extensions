@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Microsoft.VisualStudio.Text;
 
-using Pharmatechnik.Nav.Language.Extension.Completion2;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
