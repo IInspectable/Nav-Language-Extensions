@@ -23,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
         }
 
-        char edgeTrigger = '-';
+        const char EdgeTriggerChar = '-';
 
         public override bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
 
@@ -31,7 +31,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
                 return char.IsLetter(typedChar) ||
                        typedChar == '\0'        ||
-                       typedChar == edgeTrigger ||
+                       typedChar == EdgeTriggerChar ||
                        typedChar == SyntaxFacts.Colon;
             }
 
@@ -46,6 +46,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
         public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
+            if (!ShouldProvideCompletions(triggerLocation, out _)) {
+                return CreateEmptyCompletionContext();
+            }
+
             var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
 
             var generationUnitAndSnapshot = semanticModelService.CodeGenerationUnitAndSnapshot;
@@ -54,43 +58,20 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             }
 
             var codeGenerationUnit = generationUnitAndSnapshot.CodeGenerationUnit;
-            var triggerToken       = codeGenerationUnit.Syntax.FindToken(triggerLocation);
 
-            bool isInComment = triggerToken.Type == SyntaxTokenType.SingleLineComment ||
-                               triggerToken.Type == SyntaxTokenType.MultiLineComment;
+            var triggerLine       = triggerLocation.GetContainingLine();
+            var startOfIdentifier = triggerLine.GetStartOfIdentifier(triggerLocation);
 
-            // Keine Auto Completion in Kommentaren!
-            if (isInComment) {
-                return CreateEmptyCompletionContext();
-            }
-
-            var line         = triggerLocation.GetContainingLine();
-            var linePosition = triggerLocation - line.Start;
-            var lineText     = line.GetText();
-
-            // Kein Auto Completion in ""
-            if (lineText.IsInQuotation(linePosition)) {
-                return CreateEmptyCompletionContext();
-            }
-
-            // Kein Auto Completion in in Code Blöcken
-            var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
-            if (isInCodeBlock) {
-                return CreateEmptyCompletionContext();
-            }
-
-            var start = line.GetStartOfIdentifier(triggerLocation);
-
-            var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
+            var previousNonWhitespacePoint = triggerLine.GetPreviousNonWhitespace(startOfIdentifier);
             var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
-            var previousWordSpan           = line.GetSpanOfPreviousIdentifier(start);
+            var previousWordSpan           = triggerLine.GetSpanOfPreviousIdentifier(startOfIdentifier);
 
             var prevousIdentfier = previousWordSpan?.GetText() ?? "";
 
             var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
 
             // Edge Modes
-            bool showEdgeModes = previousNonWhitespace == '-';
+            bool showEdgeModes = previousNonWhitespace == EdgeTriggerChar;
             if (showEdgeModes) {
 
                 completionItems.Add(CreateKeywordCompletion(SyntaxFacts.GoToEdgeKeyword));
@@ -101,6 +82,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                 }
             }
 
+            // Task Nodes
             if (prevousIdentfier == SyntaxFacts.TaskKeyword) {
                 var taskDecls = codeGenerationUnit.TaskDeclarations;
                 foreach (var decl in taskDecls) {
@@ -130,10 +112,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                 // Exit Connection Points
                 if (previousNonWhitespace == SyntaxFacts.Colon) {
 
-                    var exitNodeEnd   = start - 1;
+                    var exitNodeEnd   = startOfIdentifier - 1;
                     var exitNodeStart = exitNodeEnd;
 
-                    var nodeSpan = line.GetSpanOfPreviousIdentifier(exitNodeStart);
+                    var nodeSpan = triggerLine.GetSpanOfPreviousIdentifier(exitNodeStart);
                     var nodeName = nodeSpan?.GetText();
 
                     if (!String.IsNullOrEmpty(nodeName)) {
@@ -219,6 +201,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             }
 
             // Kein Auto Completion in in Code Blöcken
+            // TODO Nicht vollständig, da nur aktuelle Zeile betrachtet wird
             var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
             if (isInCodeBlock) {
                 return false;
@@ -229,7 +212,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
             var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
 
-            bool showEdgeModes = previousNonWhitespace == edgeTrigger;
+            bool showEdgeModes = previousNonWhitespace == EdgeTriggerChar;
 
             if (showEdgeModes) {
                 start -= 1;
@@ -238,7 +221,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             applicableToSpan = new SnapshotSpan(start, triggerLocation);
 
             return true;
-        }
+        }       
 
     }
 
