@@ -54,8 +54,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             return Task.FromResult((object) item.DisplayText);
         }
             
-        protected static Task<CompletionContext> CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder, InitialSelectionHint? initialSelectionHint = null) {
-            var context = new CompletionContext(itemsBuilder.ToImmutable(), null, initialSelectionHint ?? InitialSelectionHint.RegularSelection);
+        protected static Task<CompletionContext> CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder, 
+                                                                         InitialSelectionHint initialSelectionHint = InitialSelectionHint.SoftSelection) {
+            var context = new CompletionContext(itemsBuilder.ToImmutable(), null, initialSelectionHint );
             return Task.FromResult(context);
         }
 

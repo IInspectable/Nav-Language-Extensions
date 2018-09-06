@@ -142,7 +142,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                 completionItems.Clear();
             }
 
-            return CreateCompletionContext(completionItems, InitialSelectionHint.RegularSelection);
+            return CreateCompletionContext(completionItems);
 
         }
 

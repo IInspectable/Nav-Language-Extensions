@@ -24,9 +24,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             //'.',
             ',',
             ';',
-            ':',
+            SyntaxFacts.Colon,
             Path.DirectorySeparatorChar,
-            Path.AltDirectorySeparatorChar
+            Path.AltDirectorySeparatorChar,
+            SyntaxFacts.OpenBracket,
+            SyntaxFacts.CloseBracket
         }.ToImmutableArray();
 
         public IEnumerable<char> PotentialCommitCharacters => _commitChars;
