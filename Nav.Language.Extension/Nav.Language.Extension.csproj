@@ -148,11 +148,6 @@
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
     <Compile Include="Common\TextViewExtensions.cs" />
     <Compile Include="Common\TextUndoTransaction.cs" />
-    <Compile Include="Completion2\CompletionController.cs" />
-    <Compile Include="Completion2\CompletionControllerProvider.cs" />
-    <Compile Include="Completion2\CompletionElementProvider.cs" />
-    <Compile Include="Completion2\CompletionProviderNames.cs" />
-    <Compile Include="Completion2\FilteredCompletionSet.cs" />
     <Compile Include="Completion3\NavFileCompletionCache.cs" />
     <Compile Include="Completion3\TextSnaphotLineExtensions.cs" />
     <Compile Include="Completion3\AsyncCompletionSource.cs" />
@@ -218,8 +213,6 @@
     <Compile Include="QuickInfo\EdgeQuickInfoControl.xaml.cs">
       <DependentUpon>EdgeQuickInfoControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Completion2\CompletionSource.cs" />
-    <Compile Include="Completion2\CompletionSourceProvider.cs" />
     <Compile Include="BraceMatching\BraceMatchingTagger.cs" />
     <Compile Include="BraceMatching\BraceMatchingTaggerProvider.cs" />
     <Compile Include="BraceMatching\BraceMatchingTypeNames.cs" />
