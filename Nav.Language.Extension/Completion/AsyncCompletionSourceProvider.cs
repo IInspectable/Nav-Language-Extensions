@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Text.Editor;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
+namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     abstract class AsyncCompletionSourceProvider: IAsyncCompletionSourceProvider {
 

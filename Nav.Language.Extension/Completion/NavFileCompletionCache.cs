@@ -15,7 +15,7 @@ using Task = System.Threading.Tasks.Task;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
+namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     [Export]
     class NavFileCompletionCache {
@@ -52,7 +52,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
         }
 
         void OnFileSystemChanged() {
+            #pragma warning disable 219
             int i = 0;
+            #pragma warning restore 219
         }
 
         public bool IsBuilding() {

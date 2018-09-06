@@ -1,17 +1,17 @@
 ﻿#region Using Directives
 
-using System.Collections.Immutable;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Immutable;
 
-using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
+namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     class CodeCompletionSource: AsyncCompletionSource {
 

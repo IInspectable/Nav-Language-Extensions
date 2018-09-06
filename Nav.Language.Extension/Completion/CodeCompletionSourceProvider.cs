@@ -9,24 +9,22 @@ using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
+namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     [Export(typeof(IAsyncCompletionSourceProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [Name(nameof(PathCompletionSourceProvider))]
-    class PathCompletionSourceProvider: AsyncCompletionSourceProvider {
+    [Name(nameof(CodeCompletionSourceProvider))]
+    class CodeCompletionSourceProvider: AsyncCompletionSourceProvider {
 
         [ImportingConstructor]
-        public PathCompletionSourceProvider(QuickinfoBuilderService quickinfoBuilderService, NavFileCompletionCache navFileCompletionCache) {
+        public CodeCompletionSourceProvider(QuickinfoBuilderService quickinfoBuilderService) {
             QuickinfoBuilderService = quickinfoBuilderService;
-            NavFileCompletionCache = navFileCompletionCache;
         }
 
         public QuickinfoBuilderService QuickinfoBuilderService { get; }
-        public NavFileCompletionCache NavFileCompletionCache { get; }
 
         protected override IAsyncCompletionSource CreateCompletionSource() {
-            return new PathCompletionSource(QuickinfoBuilderService, NavFileCompletionCache);
+            return new CodeCompletionSource(QuickinfoBuilderService);
         }
 
     }

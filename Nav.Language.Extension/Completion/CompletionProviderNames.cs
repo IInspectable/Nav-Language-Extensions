@@ -1,4 +1,4 @@
-﻿namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
+﻿namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     static class CompletionProviderNames {
 

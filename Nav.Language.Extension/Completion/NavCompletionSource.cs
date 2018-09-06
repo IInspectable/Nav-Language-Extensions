@@ -17,7 +17,7 @@ using Task = System.Threading.Tasks.Task;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
+namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     class NavCompletionSource: AsyncCompletionSource {
 

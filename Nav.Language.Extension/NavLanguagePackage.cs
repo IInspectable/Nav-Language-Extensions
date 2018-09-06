@@ -24,7 +24,7 @@ using Microsoft.VisualStudio.Text.Outlining;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.Completion3;
+using Pharmatechnik.Nav.Language.Extension.Completion;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Utilities.Logging;
 

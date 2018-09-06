@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
+namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     static class CompletionFilters {
 

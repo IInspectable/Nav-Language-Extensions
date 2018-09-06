@@ -7,7 +7,7 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
+namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     static class CompletionImages {
 

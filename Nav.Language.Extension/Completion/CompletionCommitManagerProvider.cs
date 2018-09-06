@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
+namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     [Export(typeof(IAsyncCompletionCommitManagerProvider))]
     [Name(nameof(CompletionCommitManagerProvider))]
