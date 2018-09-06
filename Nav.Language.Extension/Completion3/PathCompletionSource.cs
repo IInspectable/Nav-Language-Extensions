@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -12,6 +14,8 @@ using Pharmatechnik.Nav.Language.Extension.Completion2;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.Text;
 using Pharmatechnik.Nav.Utilities.IO;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
@@ -52,13 +56,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
         public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
             if (!ShouldProvideCompletions(triggerLocation, out _, out var replacementSpan)) {
-                return CreateEmptyCompletionContext();
+                return CreateEmptyCompletionContextTask();
             }
 
             var semanticModelService      = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
             var generationUnitAndSnapshot = semanticModelService.CodeGenerationUnitAndSnapshot;
             if (generationUnitAndSnapshot == null) {
-                return CreateEmptyCompletionContext();
+                return CreateEmptyCompletionContextTask();
             }
 
             var codeGenerationUnit = generationUnitAndSnapshot.CodeGenerationUnit;
@@ -142,7 +146,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                 completionItems.Clear();
             }
 
-            return CreateCompletionContext(completionItems);
+            return CreateCompletionContextTask(completionItems);
 
         }
 

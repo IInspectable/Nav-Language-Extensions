@@ -20,8 +20,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
     [Export]
     class NavFileCompletionCache {
 
-        ImmutableList<FileInfo>      _fileCache;
-        private readonly IVsSolution _solution;
+        ImmutableList<FileInfo>            _fileCache;
+        private readonly IVsSolution       _solution;
+        readonly         FileSystemWatcher _fileSystemWatcher;
 
         Task                    _cacheTask;
         CancellationTokenSource _cts;
@@ -32,16 +33,26 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
             _solution  = NavLanguagePackage.GetGlobalService<SVsSolution, IVsSolution>();
             _fileCache = ImmutableList<FileInfo>.Empty;
             _cts       = new CancellationTokenSource();
+            
+            _fileSystemWatcher = new FileSystemWatcher {
+                IncludeSubdirectories = true,
+                Filter                = "*.{NavLanguageContentDefinitions.FileExtension}",
+                NotifyFilter          = NotifyFilters.FileName | NotifyFilters.DirectoryName
+            };
+
+            _fileSystemWatcher.Renamed += (o, e) => OnFileSystemChanged();
+            _fileSystemWatcher.Deleted += (o, e) => OnFileSystemChanged();
+
+            RefreshCache();
 
             SolutionEvents.OnAfterCloseSolution                  += OnAfterCloseSolution;
             SolutionEvents.OnAfterOpenSolution                   += OnAfterOpenSolution;
             SolutionEvents.OnAfterBackgroundSolutionLoadComplete += OnAfterBackgroundSolutionLoadComplete;
 
-            RefreshCache();
+        }
 
-            // TODO FileSystemWatcher
-            //FileSystemWatcher fileSystemWatcher = new FileSystemWatcher();
-            //fileSystemWatcher.
+        void OnFileSystemChanged() {
+            int i = 0;
         }
 
         public bool IsBuilding() {
@@ -53,7 +64,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
         }
 
         void ClearCache() {
-            _fileCache = ImmutableList<FileInfo>.Empty;
+            _fileCache                             = ImmutableList<FileInfo>.Empty;
+            _fileSystemWatcher.EnableRaisingEvents = false;
         }
 
         void RefreshCache() {
@@ -65,12 +77,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion2 {
 
         async Task RefreshCacheAsync(CancellationToken cancellationToken) {
 
-            //   await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-
             string directory = GetSolutionDirectory();
 
             if (string.IsNullOrEmpty(directory)) {
                 return;
+            }
+
+            if (_fileSystemWatcher.Path != directory) {
+                _fileSystemWatcher.Path                = directory;
+                _fileSystemWatcher.EnableRaisingEvents = true;
             }
 
             await Task.Run(() => {

@@ -50,10 +50,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
                 }
 
-                return CreateCompletionContext(completionItems);
+                return CreateCompletionContextTask(completionItems);
             }
 
-            return CreateEmptyCompletionContext();
+            return CreateEmptyCompletionContextTask();
         }
 
         bool ShouldProvideCompletions(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {

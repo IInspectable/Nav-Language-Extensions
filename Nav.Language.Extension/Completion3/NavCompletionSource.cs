@@ -6,12 +6,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 
 using Pharmatechnik.Nav.Language.Extension.Completion2;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Language.Text;
+
+using Task = System.Threading.Tasks.Task;
 
 #endregion
 
@@ -29,8 +32,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             bool IsTriggerChar() {
 
-                return char.IsLetter(typedChar) ||
-                       typedChar == '\0'        ||
+                return char.IsLetter(typedChar)     ||
+                       typedChar == '\0'            ||
                        typedChar == EdgeTriggerChar ||
                        typedChar == SyntaxFacts.Colon;
             }
@@ -41,24 +44,23 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
                 return false;
             }
 
-            return ShouldProvideCompletions(triggerLocation, out applicableToSpan);
+            var codeGenerationUnit = GetCodeGenerationUnit(triggerLocation);
+
+            return ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out applicableToSpan);
         }
 
-        public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+        public override async Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
-            if (!ShouldProvideCompletions(triggerLocation, out _)) {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            
+            var codeGenerationUnit = GetCodeGenerationUnit(triggerLocation);
+
+            if (!ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out _)) {
                 return CreateEmptyCompletionContext();
             }
 
-            var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
-
-            var generationUnitAndSnapshot = semanticModelService.CodeGenerationUnitAndSnapshot;
-            if (generationUnitAndSnapshot == null) {
-                return CreateEmptyCompletionContext();
-            }
-
-            var codeGenerationUnit = generationUnitAndSnapshot.CodeGenerationUnit;
-
+            await Task.Yield();
+           
             var triggerLine       = triggerLocation.GetContainingLine();
             var startOfIdentifier = triggerLine.GetStartOfIdentifier(triggerLocation);
 
@@ -172,14 +174,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             return CreateCompletionContext(completionItems);
         }
 
-        bool ShouldProvideCompletions(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {
+        bool ShouldProvideCompletions(SnapshotPoint triggerLocation, CodeGenerationUnit codeGenerationUnit, out SnapshotSpan applicableToSpan) {
 
             applicableToSpan = default;
-
-            var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
-
-            var generationUnitAndSnapshot = semanticModelService.UpdateSynchronously();
-            var codeGenerationUnit        = generationUnitAndSnapshot.CodeGenerationUnit;
 
             var triggerToken = codeGenerationUnit.Syntax.FindToken(triggerLocation);
 
@@ -221,7 +218,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             applicableToSpan = new SnapshotSpan(start, triggerLocation);
 
             return true;
-        }       
+        }
+
+        private static CodeGenerationUnit GetCodeGenerationUnit(SnapshotPoint triggerLocation) {
+
+            var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
+
+            var generationUnitAndSnapshot = semanticModelService.UpdateSynchronously();
+            var codeGenerationUnit        = generationUnitAndSnapshot.CodeGenerationUnit;
+
+            return codeGenerationUnit;
+        }
 
     }
 

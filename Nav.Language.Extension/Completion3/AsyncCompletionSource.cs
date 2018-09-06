@@ -53,15 +53,28 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             return Task.FromResult((object) item.DisplayText);
         }
-            
-        protected static Task<CompletionContext> CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder, 
-                                                                         InitialSelectionHint initialSelectionHint = InitialSelectionHint.SoftSelection) {
-            var context = new CompletionContext(itemsBuilder.ToImmutable(), null, initialSelectionHint );
+
+        protected void Foo(SnapshotPoint triggerLocation, bool update) {
+
+        }
+
+        protected static Task<CompletionContext> CreateCompletionContextTask(ImmutableArray<CompletionItem>.Builder itemsBuilder,
+                                                                             InitialSelectionHint initialSelectionHint = InitialSelectionHint.SoftSelection) {
+            var context = CreateCompletionContext(itemsBuilder, initialSelectionHint);
             return Task.FromResult(context);
         }
 
-        protected static Task<CompletionContext> CreateEmptyCompletionContext() {
-            return Task.FromResult(new CompletionContext(ImmutableArray<CompletionItem>.Empty));
+        protected static CompletionContext CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder, 
+                                                                   InitialSelectionHint initialSelectionHint= InitialSelectionHint.SoftSelection) {
+            return new CompletionContext(itemsBuilder.ToImmutable(), null, initialSelectionHint);
+        }
+
+        protected static Task<CompletionContext> CreateEmptyCompletionContextTask() {
+            return Task.FromResult(CreateEmptyCompletionContext());
+        }
+
+        protected static CompletionContext CreateEmptyCompletionContext() {
+            return new CompletionContext(ImmutableArray<CompletionItem>.Empty);
         }
 
         protected CompletionItem CreateSymbolCompletion(ISymbol symbol, string description) {

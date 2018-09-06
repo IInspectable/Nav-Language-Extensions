@@ -11,6 +11,8 @@ using Microsoft.VisualStudio.Text;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 
+using ThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension {
@@ -80,6 +82,9 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
         public CodeGenerationUnitAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default) {
 
+            // Muss im UI Thread sein, da sonst die Events nicht ind er UI gefeuert werden, und TrySetResult muss um UI Thrtead ausgeführt werden.
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var codeGenerationUnitAndSnapshot = CodeGenerationUnitAndSnapshot;
             if(codeGenerationUnitAndSnapshot != null && codeGenerationUnitAndSnapshot.IsCurrent(TextBuffer)) {
                 return codeGenerationUnitAndSnapshot;
@@ -144,6 +149,8 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
         void TrySetResult(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Dieser Fall kann eintreten, da wir im Ctor "blind" ein Invalidate aufrufen. Möglicherweise gibt es aber noch kein SyntaxTreeAndSnapshot,
             // welches aber noch folgen wird und im Zuge eines OnParseResultChanging abgerbeitet wird.
