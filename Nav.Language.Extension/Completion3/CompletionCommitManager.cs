@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
 using System.Threading;
 
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
@@ -16,7 +17,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
     class CompletionCommitManager: IAsyncCompletionCommitManager {
 
         // TODO PotentialCommitCharacters aud Sinnhaftigkeit prüfen
-        readonly ImmutableArray<char> _commitChars = new[] {' ', '\'', '"', ',', ';', ':'}.ToImmutableArray(); //, '.'
+        readonly ImmutableArray<char> _commitChars = new[] {
+            ' ',
+            '\'',
+            '"',
+            //'.',
+            ',',
+            ';',
+            ':',
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar
+        }.ToImmutableArray();
 
         public IEnumerable<char> PotentialCommitCharacters => _commitChars;
 
