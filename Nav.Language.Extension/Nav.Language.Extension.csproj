@@ -170,6 +170,8 @@
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskDeclarationCodeFileLocationInfoProvider.cs" />
     <Compile Include="HighlightReferences\ReferenceRootFinder.cs" />
+    <Compile Include="Completion3\CompletionFilters.cs" />
+    <Compile Include="Completion3\CompletionImages.cs" />
     <Compile Include="Images\ImageMonikerImageList.cs" />
     <Compile Include="Common\ServiceProviderExtensions.cs" />
     <Compile Include="CSharp\GoTo\IntraTextGoToAdornment.cs" />

@@ -51,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
         }
 
-        private const string ParentDirectoryDisplayString = "..";
+        private const string ParentFolderDisplayString = "..";
 
         public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
@@ -117,19 +117,20 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
                         if (searchDirectory != null) {
 
-                            // Sofern das Verzeichnis ein übergeordnetes Verzeichnis hat, '..' als erste Auswahl anbieten.
+                            // 1. Sofern das Verzeichnis ein übergeordnetes Verzeichnis hat, '..' als erste Auswahl anbieten.
                             if (searchDirectory.Parent != null) {
                                 completionItems.Add(CreateDirectoryInfoCompletion(navDirectory, searchDirectory.Parent,
-                                                                                  displayText: ParentDirectoryDisplayString,
+                                                                                  displayText: ParentFolderDisplayString,
+                                                                                  icon: CompletionImages.ParentFolder,
                                                                                   replacementSpan: replacementSpan));
                             }
 
-                            // jetzt alle Verzeichnisse anzeigen
+                            // 2. jetzt alle Verzeichnisse anzeigen
                             foreach (var dir in searchDirectory.SafeEnumerateDirectories()) {
                                 completionItems.Add(CreateDirectoryInfoCompletion(navDirectory, dir, replacementSpan: replacementSpan));
                             }
 
-                            // .. und am Ende die Nav-Files im Verzeichnis
+                            // 3. und am Ende die Nav-Files im Suchverzeichnis
                             foreach (var file in searchDirectory.SafeEnumerateFiles(searchPattern: $"*{NavLanguageContentDefinitions.FileExtension}",
                                                                                     searchOption: SearchOption.TopDirectoryOnly)) {
 
@@ -142,7 +143,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             // Wenn das Parent Directory der einzige Vorschlag ist, dann entfernen wir auch diesen, das ansonsten automatisch zum übergeordneten
             // Verzeichnis gesprungen wird, wenn die AutoCompletion z.B. mittel Ctrl + Leer getriggert wird.
-            if (completionItems.Count == 1 && completionItems[0].DisplayText == ParentDirectoryDisplayString) {
+            if (completionItems.Count == 1 && completionItems[0].DisplayText == ParentFolderDisplayString) {
                 completionItems.Clear();
             }
 

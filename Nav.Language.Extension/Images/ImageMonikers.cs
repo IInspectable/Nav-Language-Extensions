@@ -17,7 +17,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         public static ImageMoniker ProjectNode  => KnownMonikers.CSProjectNode;
         public static ImageMoniker FolderClosed => KnownMonikers.FolderClosed;
-        public static ImageMoniker NavFile      => KnownMonikers.ClassFile;
+        public static ImageMoniker ParentFolder => KnownMonikers.MoveUp;
+        public static ImageMoniker NavFile      => KnownMonikers.ActivityDiagram; //KnownMonikers.ClassFile;
 
         // CodeFixImpact
 

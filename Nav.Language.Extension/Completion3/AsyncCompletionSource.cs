@@ -7,14 +7,11 @@ using System.Threading.Tasks;
 
 using JetBrains.Annotations;
 
-using Microsoft.VisualStudio.Core.Imaging;
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 
-using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Utilities.IO;
 
@@ -64,8 +61,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
             return Task.FromResult(context);
         }
 
-        protected static CompletionContext CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder, 
-                                                                   InitialSelectionHint initialSelectionHint= InitialSelectionHint.SoftSelection) {
+        protected static CompletionContext CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder,
+                                                                   InitialSelectionHint initialSelectionHint = InitialSelectionHint.SoftSelection) {
             return new CompletionContext(itemsBuilder.ToImmutable(), null, initialSelectionHint);
         }
 
@@ -79,75 +76,21 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
         protected CompletionItem CreateSymbolCompletion(ISymbol symbol, string description) {
 
-            var imageMoniker = ImageMonikers.FromSymbol(symbol);
-            var imageElement = new ImageElement(imageMoniker.ToImageId());
-
             var completionItem = new CompletionItem(displayText: symbol.Name,
                                                     source: this,
-                                                    icon: imageElement);
+                                                    icon: CompletionImages.FromSymbol(symbol));
 
             completionItem.Properties.AddProperty(SymbolPropertyName, symbol);
 
             return completionItem;
         }
 
-        private ImageElement _keywordImage;
-
-        protected ImageElement KeywordImage {
-            get {
-                if (_keywordFilter == null) {
-                    _keywordImage = new ImageElement(KnownMonikers.IntellisenseKeyword.ToImageId());
-                }
-
-                return _keywordImage;
-            }
-        }
-
-        private ImageElement _folderImage;
-
-        private ImageElement FolderImage {
-            get {
-
-                if (_folderImage == null) {
-                    _folderImage = new ImageElement(ImageMonikers.FolderClosed.ToImageId());
-                }
-
-                return _folderImage;
-            }
-        }
-
-        private ImageElement _navFileImage;
-
-        private ImageElement NavFileImage {
-            get {
-
-                if (_navFileImage == null) {
-                    _navFileImage = new ImageElement(ImageMonikers.Include.ToImageId());
-                }
-
-                return _navFileImage;
-            }
-        }
-
-        CompletionFilter _keywordFilter;
-
-        protected CompletionFilter KeywordFilter {
-            get {
-                if (_keywordFilter == null) {
-
-                    _keywordFilter = new CompletionFilter("Keyword", "K", KeywordImage);
-                }
-
-                return _keywordFilter;
-            }
-        }
-
         protected CompletionItem CreateKeywordCompletion(string keyword) {
 
             var completionItem = new CompletionItem(displayText: keyword,
                                                     source: this,
-                                                    icon: KeywordImage,
-                                                    filters: new[] {KeywordFilter}.ToImmutableArray()
+                                                    icon: CompletionImages.Keyword,
+                                                    filters: new[] {CompletionFilters.Keyword}.ToImmutableArray()
             );
 
             completionItem.Properties.AddProperty(KeywordPropertyName, keyword);
@@ -158,6 +101,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
         protected CompletionItem CreateDirectoryInfoCompletion(DirectoryInfo directory,
                                                                DirectoryInfo dir,
                                                                [CanBeNull] string displayText = null,
+                                                               [CanBeNull] ImageElement icon = null,
                                                                [CanBeNull] ITrackingSpan replacementSpan = null) {
 
             var directoryName = directory.FullName + Path.DirectorySeparatorChar;
@@ -167,7 +111,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             var completionItem = new CompletionItem(displayText: displayText,
                                                     source: this,
-                                                    icon: FolderImage,
+                                                    icon: icon ?? CompletionImages.Folder,
                                                     filters: ImmutableArray<CompletionFilter>.Empty,
                                                     suffix: "",
                                                     insertText: relativePath,
@@ -195,7 +139,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion3 {
 
             var completionItem = new CompletionItem(displayText: displayText,
                                                     source: this,
-                                                    icon: NavFileImage,
+                                                    icon: CompletionImages.NavFile,
                                                     filters: ImmutableArray<CompletionFilter>.Empty,
                                                     suffix: "",
                                                     insertText: relativePath,
