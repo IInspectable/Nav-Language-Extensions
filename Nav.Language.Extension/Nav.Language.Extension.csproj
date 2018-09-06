@@ -120,6 +120,7 @@
     <Compile Include="Commands\Infrastructure\CommandHandlerService.cs" />
     <Compile Include="Commands\Infrastructure\CommandHandlerServiceProvider.cs" />
     <Compile Include="Commands\Infrastructure\ViewCodeCommandArgs.cs" />
+    <Compile Include="Commands\PasteCommandHandler.cs" />
     <Compile Include="Commands\RenameCommandHandler.cs" />
     <Compile Include="Commands\ViewCSharpCodeCommandHandler.cs" />
     <Compile Include="Common\AbstractNotifyPropertyChanged.cs" />
