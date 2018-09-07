@@ -14,6 +14,26 @@ namespace Pharmatechnik.Nav.Utilities.IO {
 
     public static class PathHelper {
 
+        [ContractAnnotation("=> true, fileInfo: notnull; => false, fileInfo: null")]
+        public static bool TryGetFileInfo(string candidate, out FileInfo fileInfo) {
+            fileInfo = default;
+
+            if (String.IsNullOrEmpty(candidate)) {
+                return false;
+            }
+
+            candidate = candidate.Trim('"', '\'');
+
+            try {
+                fileInfo = new FileInfo(candidate);
+                return fileInfo.Exists;
+            } catch (ArgumentException) {
+            } catch (IOException) {
+            }
+
+            return false;
+        }
+
         [ContractAnnotation("=> true, directoryInfo: notnull; => false, directoryInfo: null")]
         public static bool TryGetDirectoryinfo(string path, out DirectoryInfo directoryInfo) {
             directoryInfo = default;
@@ -40,15 +60,15 @@ namespace Pharmatechnik.Nav.Utilities.IO {
             }
         }
 
-        public static bool SafeIsPathRooted(string path) {
+        public static bool? TryGetIsPathRooted(string path) {
             try {
                 return Path.IsPathRooted(path);
             } catch (ArgumentException) {
-                return false;
+                return null;
             }
         }
 
-        public static IEnumerable<FileInfo> SafeEnumerateFiles(this DirectoryInfo directoryInfo, string searchPattern, SearchOption searchOption) {
+        public static IEnumerable<FileInfo> TryEnumerateFiles(this DirectoryInfo directoryInfo, string searchPattern, SearchOption searchOption) {
             try {
                 return directoryInfo.EnumerateFiles(searchPattern, searchOption);
             } catch (IOException) {
@@ -58,7 +78,7 @@ namespace Pharmatechnik.Nav.Utilities.IO {
             return Enumerable.Empty<FileInfo>();
         }
 
-        public static IEnumerable<DirectoryInfo> SafeEnumerateDirectories(this DirectoryInfo directoryInfo) {
+        public static IEnumerable<DirectoryInfo> TryEnumerateDirectories(this DirectoryInfo directoryInfo) {
             try {
                 return directoryInfo.EnumerateDirectories();
             } catch (IOException) {

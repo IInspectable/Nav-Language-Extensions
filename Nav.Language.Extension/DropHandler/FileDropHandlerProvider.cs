@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.DragDrop;
 using Microsoft.VisualStudio.Utilities;
 
+using Pharmatechnik.Nav.Language.Extension.Commands;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.DropHandler {
@@ -18,8 +20,16 @@ namespace Pharmatechnik.Nav.Language.Extension.DropHandler {
     [Order(Before = "DefaultFileDropHandler")]
     class FileDropHandlerProvider: IDropHandlerProvider {
 
+        readonly NavEditorOperationsProvider _navEditorOperationsProvider;
+
+        [ImportingConstructor]
+        public FileDropHandlerProvider(NavEditorOperationsProvider navEditorOperationsProvider) {
+            _navEditorOperationsProvider = navEditorOperationsProvider;
+
+        }
+
         public IDropHandler GetAssociatedDropHandler(IWpfTextView view) {
-            return view.Properties.GetOrCreateSingletonProperty(() => new FileDropHandler(view));
+            return view.Properties.GetOrCreateSingletonProperty(() => new FileDropHandler(view, _navEditorOperationsProvider));
         }
 
     }

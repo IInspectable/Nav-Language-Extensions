@@ -106,7 +106,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                         if (!String.IsNullOrWhiteSpace(parts.DirPart)) {
 
                             // Wenn der Pfad absolut ist (z.B. "c:\), nehmen wir direkt dieses Verzeichnis als Suchverzeichnis
-                            if (PathHelper.SafeIsPathRooted(parts.DirPart)) {
+                            if (PathHelper.TryGetIsPathRooted(parts.DirPart) == true) {
                                 PathHelper.TryGetDirectoryinfo(parts.DirPart, out searchDirectory);
                                 // Andernfalls stellen wir das Verzeichnis des aktuellen Nav-Files voran.
                             } else if (PathHelper.TryCombinePath(navDirectory.FullName, parts.DirPart, out var fullPath)) {
@@ -125,13 +125,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                             }
 
                             // 2. jetzt alle Verzeichnisse anzeigen
-                            foreach (var dir in searchDirectory.SafeEnumerateDirectories()) {
+                            foreach (var dir in searchDirectory.TryEnumerateDirectories()) {
                                 completionItems.Add(CreateDirectoryInfoCompletion(navDirectory, dir, replacementSpan: replacementSpan));
                             }
 
                             // 3. und am Ende die Nav-Files im Suchverzeichnis
-                            foreach (var file in searchDirectory.SafeEnumerateFiles(searchPattern: $"*{NavLanguageContentDefinitions.FileExtension}",
-                                                                                    searchOption: SearchOption.TopDirectoryOnly)) {
+                            foreach (var file in searchDirectory.TryEnumerateFiles(searchPattern: $"*{NavLanguageContentDefinitions.FileExtension}",
+                                                                                   searchOption: SearchOption.TopDirectoryOnly)) {
 
                                 completionItems.Add(CreateFileInfoCompletion(navDirectory, file, replacementSpan: replacementSpan));
                             }
