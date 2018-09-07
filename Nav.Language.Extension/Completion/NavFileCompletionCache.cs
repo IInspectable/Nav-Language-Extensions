@@ -36,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             
             _fileSystemWatcher = new FileSystemWatcher {
                 IncludeSubdirectories = true,
-                Filter                = "*.{NavLanguageContentDefinitions.FileExtension}",
+                Filter                = "*{NavLanguageContentDefinitions.FileExtension}",
                 NotifyFilter          = NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
 
@@ -52,9 +52,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
         }
 
         void OnFileSystemChanged() {
-            #pragma warning disable 219
-            int i = 0;
-            #pragma warning restore 219
+           // RefreshCache();
         }
 
         public bool IsBuilding() {
@@ -85,10 +83,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                 return;
             }
 
-            if (_fileSystemWatcher.Path != directory) {
-                _fileSystemWatcher.Path                = directory;
-                _fileSystemWatcher.EnableRaisingEvents = true;
-            }
+            _fileSystemWatcher.Path = directory;
+            _fileSystemWatcher.EnableRaisingEvents=true;
 
             await Task.Run(() => {
                     _fileCache = Directory.EnumerateFiles(
