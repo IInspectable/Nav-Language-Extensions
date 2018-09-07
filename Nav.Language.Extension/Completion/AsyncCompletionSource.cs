@@ -76,9 +76,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         protected CompletionItem CreateSymbolCompletion(ISymbol symbol, string description) {
 
+            var filter = CompletionFilters.TryGetFromSymbol(symbol);
+
+            var filters = filter != null ? new[] {filter}.ToImmutableArray() : ImmutableArray<CompletionFilter>.Empty;
+
             var completionItem = new CompletionItem(displayText: symbol.Name,
                                                     source: this,
-                                                    icon: CompletionImages.FromSymbol(symbol));
+                                                    icon: CompletionImages.FromSymbol(symbol),
+                                                    filters: filters);
 
             completionItem.Properties.AddProperty(SymbolPropertyName, symbol);
 
@@ -112,7 +117,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var completionItem = new CompletionItem(displayText: displayText,
                                                     source: this,
                                                     icon: icon ?? CompletionImages.Folder,
-                                                    filters: ImmutableArray<CompletionFilter>.Empty,
+                                                    filters: new[] {CompletionFilters.Folder}.ToImmutableArray(),
                                                     suffix: "",
                                                     insertText: relativePath,
                                                     sortText: $"__{displayText}",
@@ -140,7 +145,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var completionItem = new CompletionItem(displayText: displayText,
                                                     source: this,
                                                     icon: CompletionImages.NavFile,
-                                                    filters: ImmutableArray<CompletionFilter>.Empty,
+                                                    filters: new[] {CompletionFilters.File}.ToImmutableArray(),
                                                     suffix: "",
                                                     insertText: relativePath,
                                                     sortText: $"_{displayText}",
