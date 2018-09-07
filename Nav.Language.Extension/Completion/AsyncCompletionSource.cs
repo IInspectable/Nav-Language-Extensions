@@ -78,7 +78,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             var filter = CompletionFilters.TryGetFromSymbol(symbol);
 
-            var filters = filter != null ? new[] {filter}.ToImmutableArray() : ImmutableArray<CompletionFilter>.Empty;
+            var filters = filter != null ? ImmutableArray.Create(filter) : ImmutableArray<CompletionFilter>.Empty;
 
             var completionItem = new CompletionItem(displayText: symbol.Name,
                                                     source: this,
@@ -95,7 +95,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var completionItem = new CompletionItem(displayText: keyword,
                                                     source: this,
                                                     icon: CompletionImages.Keyword,
-                                                    filters: new[] {CompletionFilters.Keywords}.ToImmutableArray()
+                                                    filters: ImmutableArray.Create(CompletionFilters.Keywords)
             );
 
             completionItem.Properties.AddProperty(KeywordPropertyName, keyword);
@@ -117,7 +117,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var completionItem = new CompletionItem(displayText: displayText,
                                                     source: this,
                                                     icon: icon ?? CompletionImages.Folder,
-                                                    filters: new[] {CompletionFilters.Folders}.ToImmutableArray(),
+                                                    filters: ImmutableArray.Create(CompletionFilters.Folders),
                                                     suffix: "",
                                                     insertText: relativePath,
                                                     sortText: $"__{displayText}",
@@ -145,7 +145,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var completionItem = new CompletionItem(displayText: displayText,
                                                     source: this,
                                                     icon: CompletionImages.NavFile,
-                                                    filters: new[] {CompletionFilters.Files}.ToImmutableArray(),
+                                                    filters: ImmutableArray.Create(CompletionFilters.Files),
                                                     suffix: "",
                                                     insertText: relativePath,
                                                     sortText: $"_{displayText}",
