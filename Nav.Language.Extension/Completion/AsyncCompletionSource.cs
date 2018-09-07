@@ -95,7 +95,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var completionItem = new CompletionItem(displayText: keyword,
                                                     source: this,
                                                     icon: CompletionImages.Keyword,
-                                                    filters: new[] {CompletionFilters.Keyword}.ToImmutableArray()
+                                                    filters: new[] {CompletionFilters.Keywords}.ToImmutableArray()
             );
 
             completionItem.Properties.AddProperty(KeywordPropertyName, keyword);
@@ -117,13 +117,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var completionItem = new CompletionItem(displayText: displayText,
                                                     source: this,
                                                     icon: icon ?? CompletionImages.Folder,
-                                                    filters: new[] {CompletionFilters.Folder}.ToImmutableArray(),
+                                                    filters: new[] {CompletionFilters.Folders}.ToImmutableArray(),
                                                     suffix: "",
                                                     insertText: relativePath,
                                                     sortText: $"__{displayText}",
                                                     filterText: displayText,
                                                     attributeIcons: ImmutableArray<ImageElement>.Empty);
-
+            
             completionItem.Properties.AddProperty(DirectoryInfoPropertyName, dir);
             if (replacementSpan != null) {
                 completionItem.Properties.AddProperty(ReplacementTrackingSpanProperty, replacementSpan);
@@ -145,7 +145,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var completionItem = new CompletionItem(displayText: displayText,
                                                     source: this,
                                                     icon: CompletionImages.NavFile,
-                                                    filters: new[] {CompletionFilters.File}.ToImmutableArray(),
+                                                    filters: new[] {CompletionFilters.Files}.ToImmutableArray(),
                                                     suffix: "",
                                                     insertText: relativePath,
                                                     sortText: $"_{displayText}",
