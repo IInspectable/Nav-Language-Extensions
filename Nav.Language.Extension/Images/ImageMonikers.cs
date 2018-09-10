@@ -76,15 +76,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
         // Symbols
 
-        public static ImageMoniker TaskDeclaration     => KnownMonikers.WorkflowInterop;
+        public static ImageMoniker TaskDeclaration     => KnownMonikers.Interface; //KnownMonikers.WorkflowInterop;
         public static ImageMoniker InitConnectionPoint => KnownMonikers.InputPin;
         public static ImageMoniker ExitConnectionPoint => KnownMonikers.OutputPin;
         public static ImageMoniker EndConnectionPoint  => KnownMonikers.ActivityFinalNode;
-        public static ImageMoniker TaskDefinition      => KnownMonikers.CSWorkflow;
+        public static ImageMoniker TaskDefinition      => KnownMonikers.Task; //KnownMonikers.CSWorkflow;
         public static ImageMoniker InitNode            => KnownMonikers.InputPin;
         public static ImageMoniker ExitNode            => KnownMonikers.OutputPin;
         public static ImageMoniker EndNode             => KnownMonikers.ActivityFinalNode;
-        public static ImageMoniker TaskNode            => KnownMonikers.CSWorkflow;
+        public static ImageMoniker TaskNode            => KnownMonikers.Task; //KnownMonikers.CSWorkflow;
         public static ImageMoniker ChoiceNode          => KnownMonikers.DecisionNode;
         public static ImageMoniker ViewNode            => KnownMonikers.WindowsForm;
         public static ImageMoniker DialogNode          => KnownMonikers.Dialog;
