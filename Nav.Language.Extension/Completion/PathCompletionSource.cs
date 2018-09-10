@@ -89,7 +89,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                     // Wenn der Benutzer gerade anfängt einen Dateinamen anzugeben, er aber noch keinen Pfad geschrieben hat, dann zeigen wir
                     // ALLE nav-Files, die von der Solution aus zu erreichen sind.
                     if (String.IsNullOrWhiteSpace(parts.DirPart)) {
-                        foreach (var file in _navFileCompletionCache.GetNavFiles()) {
+                        foreach (var file in _navFileCompletionCache.GetNavFiles(token)) {
                             completionItems.Add(CreateFileInfoCompletion(navDirectory, file, replacementSpan: replacementSpan));
                         }
                     }

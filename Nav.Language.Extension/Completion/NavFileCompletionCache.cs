@@ -3,7 +3,6 @@
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Linq;
 using System.Threading;
 
 using Microsoft.VisualStudio;
@@ -11,39 +10,23 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Events;
 using Microsoft.VisualStudio.Shell.Interop;
 
-using Task = System.Threading.Tasks.Task;
-
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
+    // TODO Naming...
     [Export]
     class NavFileCompletionCache {
 
-        ImmutableList<FileInfo>            _fileCache;
-        private readonly IVsSolution       _solution;
-        readonly         FileSystemWatcher _fileSystemWatcher;
-
-        Task                    _cacheTask;
-        CancellationTokenSource _cts;
+        readonly IVsSolution _solution;
+        string               _directory;
 
         [ImportingConstructor]
         public NavFileCompletionCache() {
 
-            _solution  = NavLanguagePackage.GetGlobalService<SVsSolution, IVsSolution>();
-            _fileCache = ImmutableList<FileInfo>.Empty;
-            _cts       = new CancellationTokenSource();
-            
-            _fileSystemWatcher = new FileSystemWatcher {
-                IncludeSubdirectories = true,
-                Filter                = "*{NavLanguageContentDefinitions.FileExtension}",
-                NotifyFilter          = NotifyFilters.FileName | NotifyFilters.DirectoryName
-            };
+            _solution = NavLanguagePackage.GetGlobalService<SVsSolution, IVsSolution>();
 
-            _fileSystemWatcher.Renamed += (o, e) => OnFileSystemChanged();
-            _fileSystemWatcher.Deleted += (o, e) => OnFileSystemChanged();
-
-            RefreshCache();
+            UpdateSearchDirectory();
 
             SolutionEvents.OnAfterCloseSolution                  += OnAfterCloseSolution;
             SolutionEvents.OnAfterOpenSolution                   += OnAfterOpenSolution;
@@ -51,50 +34,34 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         }
 
-        void OnFileSystemChanged() {
-           // RefreshCache();
-        }
+        public ImmutableArray<FileInfo> GetNavFiles(CancellationToken cancellationToken) {
 
-        public bool IsBuilding() {
-            return !_cacheTask.IsCompleted;
-        }
-
-        public ImmutableList<FileInfo> GetNavFiles() {
-            return _fileCache;
-        }
-
-        void ClearCache() {
-            _fileCache                             = ImmutableList<FileInfo>.Empty;
-            _fileSystemWatcher.EnableRaisingEvents = false;
-        }
-
-        void RefreshCache() {
-            _cts.Cancel();
-            _cts = new CancellationTokenSource();
-            ClearCache();
-            _cacheTask = RefreshCacheAsync(_cts.Token);
-        }
-
-        async Task RefreshCacheAsync(CancellationToken cancellationToken) {
-
-            string directory = GetSolutionDirectory();
-
-            if (string.IsNullOrEmpty(directory)) {
-                return;
+            if (string.IsNullOrEmpty(_directory)) {
+                return ImmutableArray<FileInfo>.Empty;
             }
 
-            _fileSystemWatcher.Path = directory;
-            _fileSystemWatcher.EnableRaisingEvents=true;
+            var itemBuilder = ImmutableArray.CreateBuilder<FileInfo>();
 
-            await Task.Run(() => {
-                    _fileCache = Directory.EnumerateFiles(
-                                               directory,
-                                               $"*{NavLanguageContentDefinitions.FileExtension}",
-                                               SearchOption.AllDirectories)
-                                          .Select(f => new FileInfo(f))
-                                          .ToImmutableList();
-                }, cancellationToken
-            );
+            foreach (var file in Directory.EnumerateFiles(
+                _directory,
+                $"*{NavLanguageContentDefinitions.FileExtension}",
+                SearchOption.AllDirectories)) {
+
+                if (cancellationToken.IsCancellationRequested) {
+                    return ImmutableArray<FileInfo>.Empty;
+                }
+
+                var fileInfo = new FileInfo(file);
+                itemBuilder.Add(fileInfo);
+
+            }
+
+            return itemBuilder.ToImmutableArray();
+        }
+
+        void UpdateSearchDirectory() {
+
+            _directory = GetSolutionDirectory();
         }
 
         bool IsSolutionOpen {
@@ -111,26 +78,26 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (!IsSolutionOpen) {
-                return string.Empty;
+                return null;
             }
 
             if (ErrorHandler.Succeeded(_solution.GetSolutionInfo(out var solutionDirectory, out _, out _))) {
                 return solutionDirectory;
             }
 
-            return string.Empty;
+            return null;
         }
 
         void OnAfterOpenSolution(object sender, OpenSolutionEventArgs e) {
-            RefreshCache();
+            UpdateSearchDirectory();
         }
 
         void OnAfterCloseSolution(object sender, System.EventArgs e) {
-            ClearCache();
+            UpdateSearchDirectory();
         }
 
         void OnAfterBackgroundSolutionLoadComplete(object sender, System.EventArgs e) {
-            RefreshCache();
+            UpdateSearchDirectory();
         }
 
     }
