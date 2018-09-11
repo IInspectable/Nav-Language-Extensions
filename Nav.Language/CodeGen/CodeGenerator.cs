@@ -39,7 +39,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public interface ICodeGenerator: IDisposable {
 
-        IImmutableList<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit);
+        ImmutableArray<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit);
 
     }
 
@@ -57,7 +57,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         [NotNull]
         public IPathProviderFactory PathProviderFactory { get; }
 
-        public IImmutableList<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit) {
+        public ImmutableArray<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit) {
 
             if (codeGenerationUnit == null) {
                 throw new ArgumentNullException(nameof(codeGenerationUnit));
@@ -78,7 +78,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return codeGenerationUnit.TaskDefinitions
                                      .Select(GenerateCodeModel)
                                      .Select(GenerateCode)
-                                     .ToImmutableList();
+                                     .ToImmutableArray();
 
             string FormatDiagnostics(IEnumerable<Diagnostic> diagnostics) {
                 return diagnostics.Aggregate(new StringBuilder(), (sb, d) => sb.AppendLine(FormatDiagnostic(d)), sb => sb.ToString());

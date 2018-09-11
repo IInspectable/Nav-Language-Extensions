@@ -41,7 +41,7 @@ namespace Nav.Language.Tests {
 
             var results = codeGenerator.Generate(codeGenerationUnit);
 
-            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results.Length, Is.EqualTo(1));
 
             var codeGenResult = results[0];
 
