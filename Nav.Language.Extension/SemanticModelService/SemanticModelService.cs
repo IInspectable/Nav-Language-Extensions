@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             _observable = Observable.FromEventPattern<EventArgs>(
                                               handler => RebuildTriggered += handler,
                                               handler => RebuildTriggered -= handler)
-                                  .Throttle(ServiceProperties.SemanticModelServiceThrottleTime)
+                                 // .Throttle(ServiceProperties.SemanticModelServiceThrottleTime)
                                   .Select(_ => Observable.DeferAsync(async token =>
                                       {
                                           var codeGenerationUnitAndSnapshot = await BuildAsync(ParserService.SyntaxTreeAndSnapshot, token).ConfigureAwait(false);
