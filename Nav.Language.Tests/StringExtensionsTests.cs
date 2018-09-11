@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using NUnit.Framework;
 
@@ -97,7 +96,7 @@ namespace Nav.Language.Tests {
             Assert.That(text.QuotedExtent(2, quotationChar), Is.EqualTo(TextExtent.Missing)); // 
             Assert.That(text.QuotedExtent(3, quotationChar), Is.EqualTo(TextExtent.Missing)); // '
             // -
-            var expectedExtent = new TextExtent(4, 3);                                      // Max
+            var expectedExtent = new TextExtent(4, 3);                                    // Max
             Assert.That(text.QuotedExtent(4, quotationChar), Is.EqualTo(expectedExtent)); // M
             Assert.That(text.QuotedExtent(5, quotationChar), Is.EqualTo(expectedExtent)); // a
             Assert.That(text.QuotedExtent(6, quotationChar), Is.EqualTo(expectedExtent)); // x
@@ -111,7 +110,7 @@ namespace Nav.Language.Tests {
             Assert.That(text.QuotedExtent(2, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // 
             Assert.That(text.QuotedExtent(3, quotationChar, true), Is.EqualTo(TextExtent.Missing)); // '
             // -
-            var expectedFullExtent = new TextExtent(start: 3, length: 5);                             // Max
+            var expectedFullExtent = new TextExtent(start: 3, length: 5);                           // Max
             Assert.That(text.QuotedExtent(4, quotationChar, true), Is.EqualTo(expectedFullExtent)); // M
             Assert.That(text.QuotedExtent(5, quotationChar, true), Is.EqualTo(expectedFullExtent)); // a
             Assert.That(text.QuotedExtent(6, quotationChar, true), Is.EqualTo(expectedFullExtent)); // x
@@ -162,69 +161,10 @@ namespace Nav.Language.Tests {
             Assert.That(text.IsInTextBlock(7, blockStartChar, blockEndChar), Is.True); // x
             Assert.That(text.IsInTextBlock(8, blockStartChar, blockEndChar), Is.True); // ]
             // -
-            Assert.That(text.IsInTextBlock(9, blockStartChar, blockEndChar), Is.True); // !
+            Assert.That(text.IsInTextBlock(9,  blockStartChar, blockEndChar), Is.True); // !
             Assert.That(text.IsInTextBlock(10, blockStartChar, blockEndChar), Is.True); // ]
             // -
             Assert.That(text.IsInTextBlock(11, blockStartChar, blockEndChar), Is.False); // Wir erlauben es auch, hinter das Ende zu gehen
-        }
-
-        [Test, TestCaseSource(nameof(GetMatchPartsTestCases))]
-        public void Test(MatchPartsTestCase testCase) {
-
-            var parts = PatternMatcher.Default.GetMatchedParts(testCase.Input, testCase.Pattern);
-
-            Assert.That(parts, Is.EqualTo(testCase.Expected));
-        }
-
-        public static IEnumerable<MatchPartsTestCase> GetMatchPartsTestCases() {
-            yield return new MatchPartsTestCase {
-                Input    = "InputString",
-                Pattern  = "is",
-                Expected = {E(0, 1), E(5, 1)}
-            };
-
-            yield return new MatchPartsTestCase {
-                Input    = "inputstring",
-                Pattern  = "is",
-                Expected = {E(0, 1), E(5, 1)}
-            };
-
-            yield return new MatchPartsTestCase {
-                Input    = "InputString",
-                Pattern  = "InSt",
-                Expected = {E(0, 2), E(5, 2)}
-            };
-
-            // Kein Match
-            yield return new MatchPartsTestCase {
-                Input   = "InputString",
-                Pattern = "Foo",
-            };
-
-            // TODO Dieser Test verhält sich nicht ideal. Eigentlich sollten vorzugsweise
-            // die Großbuchstaben selektiert werden. Im Falle des "t" wird jedoch bereits
-            // das erste Vorkommen ("Parts") als match gewertet.
-            yield return new MatchPartsTestCase {
-                Input    = "MatchPartsTestCase",
-                Pattern  = "mptc",
-                Expected = {E(0, 1), E(5, 1), E(8, 1), E(13, 2)}
-            };
-
-            TextExtent E(int start, int length) {
-                return new TextExtent(start, length);
-            }
-        }
-
-        public class MatchPartsTestCase {
-
-            public string           Input    { get; set; }
-            public string           Pattern  { get; set; }
-            public List<TextExtent> Expected { get; } = new List<TextExtent>();
-
-            public override string ToString() {
-                return $"{Input} ({Pattern})";
-            }
-
         }
 
         [Test]
