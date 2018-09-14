@@ -18,7 +18,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
     class FindReferencesContext: IFindReferencesContext, ITableDataSource, ITableEntriesSnapshotFactory {
 
-        private readonly object _objectLock = new object();
+        readonly object _objectLock = new object();
 
         readonly CancellationTokenSource  _cancellationTokenSource;
         readonly IFindAllReferencesWindow _findReferencesWindow;
@@ -28,7 +28,9 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         ImmutableArray<ReferenceEntry> _entries = ImmutableArray<ReferenceEntry>.Empty;
 
-        public FindReferencesContext(IFindAllReferencesWindow findReferencesWindow) {
+        public FindReferencesContext(FindReferencesPresenter presenter, IFindAllReferencesWindow findReferencesWindow) {
+
+            Presenter = presenter;
 
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -43,7 +45,8 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         }
 
-        public string Message { get; private set; }
+        public FindReferencesPresenter Presenter { get; }
+        public string                  Message   { get; private set; }
 
         public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 

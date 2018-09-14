@@ -3,7 +3,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.IO;
 
@@ -22,8 +22,8 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
     [Export]
     sealed partial class QuickinfoBuilderService {
 
-        readonly IClassificationFormatMapService                            _classificationFormatMapService;
-        readonly Dictionary<TextClassification, IClassificationType> _classificationMap;
+        readonly IClassificationFormatMapService                              _classificationFormatMapService;
+        readonly ImmutableDictionary<TextClassification, IClassificationType> _classificationMap;
 
         [ImportingConstructor]
         public QuickinfoBuilderService(IClassificationFormatMapService classificationFormatMapService,

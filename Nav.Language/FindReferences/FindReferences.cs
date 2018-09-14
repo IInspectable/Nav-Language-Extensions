@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                     ClassifiedText.TaskName(definitionRoot.Name)
                 };
                 
-                var definition = new DefinitionEntry(parts.ToImmutableArray());
+                var definition = new DefinitionEntry(definitionRoot, parts.ToImmutableArray());
 
                 foreach (var reference in FindReferencesVisitor.Invoke(definitionRoot)) {
                     if (context.CancellationToken.IsCancellationRequested) {

@@ -25,6 +25,8 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             VersionNumber = versionNumber;
         }
 
+        public FindReferencesPresenter Presenter => _context.Presenter;
+
         public override int VersionNumber { get; }
 
         public override int Count => _entries.Length;
@@ -44,7 +46,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         private object GetValue(ReferenceEntry entry, string keyName) {
             switch (keyName) {
                 case StandardTableKeyNames2.Definition:
-                    return new NavDefinitionBucket(entry.Definition, _context.SourceTypeIdentifier, _context.Identifier);
+                    return new NavDefinitionBucket(Presenter, entry.Definition, _context.SourceTypeIdentifier, _context.Identifier);
 
                 case StandardTableKeyNames2.DefinitionIcon:
                     return ImageMonikers.TaskDefinition;

@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Pharmatechnik.Nav.Language.Extension.Common;
@@ -13,7 +15,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
     sealed class SyntaxClassifier : ParserServiceDependent, IClassifier {
 
-        readonly Dictionary<TextClassification, IClassificationType> _classificationMap;
+        readonly ImmutableDictionary<TextClassification, IClassificationType> _classificationMap;
 
         SyntaxClassifier(IClassificationTypeRegistryService registry, ITextBuffer textBuffer) : base(textBuffer) {
 

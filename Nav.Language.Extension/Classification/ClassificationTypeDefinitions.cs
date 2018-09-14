@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Language.StandardClassification;
@@ -324,7 +325,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
         #endregion
 
-        public static Dictionary<TextClassification, IClassificationType> GetSyntaxTokenClassificationMap(IClassificationTypeRegistryService registry) {
+        public static ImmutableDictionary<TextClassification, IClassificationType> GetSyntaxTokenClassificationMap(IClassificationTypeRegistryService registry) {
 
             var classificationMap = new Dictionary<TextClassification, IClassificationType> {
                 {TextClassification.Skiped             , registry.GetClassificationType(ClassificationTypeNames.Unknown)},
@@ -341,7 +342,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                 {TextClassification.PreprocessorText   , registry.GetClassificationType(ClassificationTypeNames.PreprocessorText)},
             };
 
-            return classificationMap;
+            return classificationMap.ToImmutableDictionary();
         }
 
     }
