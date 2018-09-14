@@ -57,6 +57,7 @@
     <Compile Include="FindReferences\ReferenceEntry.cs" />
     <Compile Include="FindReferences\FindReferencesVisitor.cs" />
     <Compile Include="Text\ClassifiedText.cs" />
+    <Compile Include="Text\ClassifiedTextExtensions.cs" />
     <Compile Include="Text\SourceTextExtensions.cs" />
     <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />
