@@ -1,15 +1,24 @@
-namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
+﻿using System.Collections.Generic;
 
-    sealed class ReferenceRootFinder : SymbolVisitor<ISymbol> {
-        
-        ReferenceRootFinder(ISymbol originatingSymbol) {
+using JetBrains.Annotations;
+
+namespace Pharmatechnik.Nav.Language.FindReferences {
+
+    class FindRootDefinitionVisitor: SymbolVisitor<ISymbol> {
+
+        FindRootDefinitionVisitor(ISymbol originatingSymbol) {
             OriginatingSymbol = originatingSymbol;
         }
 
         public ISymbol OriginatingSymbol { get; }
 
-        public static ISymbol FindRoot(ISymbol symbol) {
-            var finder = new ReferenceRootFinder(symbol);
+        [CanBeNull]
+        public static ISymbol Invoke(ISymbol symbol) {
+            if (symbol == null) {
+                return null;
+            }
+
+            var finder = new FindRootDefinitionVisitor(symbol);
             return finder.Visit(symbol);
         }
 
@@ -23,6 +32,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             if (taskDeclaration?.IsIncluded == false) {
                 return Visit(taskDeclaration);
             }
+
             return DefaultVisit(taskDefinitionSymbol);
         }
 
@@ -35,6 +45,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             if ((OriginatingSymbol == taskNodeSymbol || taskNodeSymbol.Alias == null) && taskNodeSymbol.Declaration?.IsIncluded == false) {
                 return Visit(taskNodeSymbol.Declaration);
             }
+
             return DefaultVisit(taskNodeSymbol);
         }
 
@@ -43,11 +54,18 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             if (nodeReferenceSymbol.Declaration != null) {
                 return Visit(nodeReferenceSymbol.Declaration);
             }
+
             return DefaultVisit(nodeReferenceSymbol);
         }
 
         public override ISymbol VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
             return Visit(taskNodeAliasSymbol.TaskNode);
-        }        
+        }
+
     }
+
+    //class ReferenceFinder: SymbolVisitor<IEnumerable<ReferenceEntry> {
+
+    //}
+
 }

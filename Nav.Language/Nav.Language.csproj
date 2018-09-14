@@ -50,6 +50,12 @@
     <Compile Include="CodeFixes\ErrorFix\ErrorCodeFix.cs" />
     <Compile Include="CodeFixes\Refactoring\RefactoringCodeFix.cs" />
     <Compile Include="CodeFixes\StyleFix\StyleCodeFix.cs" />
+    <Compile Include="FindReferences\DefinitionEntry.cs" />
+    <Compile Include="FindReferences\DefinitionRootFinder.cs" />
+    <Compile Include="FindReferences\FindReferences.cs" />
+    <Compile Include="FindReferences\IFindReferencesContext.cs" />
+    <Compile Include="FindReferences\ReferenceEntry.cs" />
+    <Compile Include="FindReferences\FindReferencesVisitor.cs" />
     <Compile Include="Text\SourceTextExtensions.cs" />
     <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />

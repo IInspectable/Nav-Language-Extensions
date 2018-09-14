@@ -22,15 +22,14 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             Assumes.Present(_vsFindAllReferencesService);
         }
 
-        public bool StartSearch() {
+        private const string Title = "Find References";
 
-            var window = _vsFindAllReferencesService.StartSearch("Foo");
+        public FindReferencesContext StartSearch() {
 
-            window.Title = "Test ";
+            var window = _vsFindAllReferencesService.StartSearch(Title);
+            var context = new FindReferencesContext(window);
 
-            var _ = new FindUsagesContext(window);
-
-            return true;
+            return context;
         }
 
     }

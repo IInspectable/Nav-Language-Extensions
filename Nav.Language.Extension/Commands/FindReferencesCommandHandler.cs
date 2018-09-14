@@ -1,13 +1,17 @@
 ﻿#region Using Directives
 
 using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Commanding;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using Microsoft.VisualStudio.Utilities;
 
+using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.FindReferences;
+using Pharmatechnik.Nav.Language.FindReferences;
 
 #endregion
 
@@ -15,7 +19,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
     [Export(typeof(ICommandHandler))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [TextViewRole(PredefinedTextViewRoles.Editable)]
     [Name(CommandHandlerNames.FindReferencesCommandHandler)]
     class FindReferencesCommandHandler: ICommandHandler<FindReferencesCommandArgs> {
 
@@ -35,7 +38,30 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         public bool ExecuteCommand(FindReferencesCommandArgs args, CommandExecutionContext executionContext) {
 
-            return _referencesPresenter.StartSearch();
+            var codeGenerationUnitAndSnapshot = GetCodeGenerationUnit(args.SubjectBuffer);
+            var symbol                        = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
+
+            var _ = FindAllReferencesAsync(symbol);
+
+            return false;
+
+        }
+
+        async Task FindAllReferencesAsync(ISymbol symbol) {
+
+            var context = _referencesPresenter.StartSearch();
+
+            await ReferenceFinder.FindReferences(symbol, context);
+            await context.OnCompletedAsync();
+
+        }
+
+        static CodeGenerationUnitAndSnapshot GetCodeGenerationUnit(ITextBuffer textBuffer) {
+
+            var semanticModelService      = SemanticModelService.GetOrCreateSingelton(textBuffer);
+            var generationUnitAndSnapshot = semanticModelService.UpdateSynchronously();
+
+            return generationUnitAndSnapshot;
         }
 
     }

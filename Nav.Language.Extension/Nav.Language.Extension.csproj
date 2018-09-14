@@ -169,7 +169,7 @@
     <Compile Include="DropHandler\ClipBoardFormats.cs" />
     <Compile Include="DropHandler\FileDropHandler.cs" />
     <Compile Include="DropHandler\FileDropHandlerProvider.cs" />
-    <Compile Include="FindReferences\FindUsagesContext.cs" />
+    <Compile Include="FindReferences\FindReferencesContext.cs" />
     <Compile Include="FindReferences\NavDefinitionBucket.cs" />
     <Compile Include="FindReferences\TableEntriesSnapshot.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider.cs" />

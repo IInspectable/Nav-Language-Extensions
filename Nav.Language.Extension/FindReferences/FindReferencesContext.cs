@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,11 +10,13 @@ using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 
+using Pharmatechnik.Nav.Language.FindReferences;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
-    class FindUsagesContext: ITableDataSource, ITableEntriesSnapshotFactory {
+    class FindReferencesContext: IFindReferencesContext, ITableDataSource, ITableEntriesSnapshotFactory {
 
         private readonly object _objectLock = new object();
 
@@ -23,8 +26,9 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         TableEntriesSnapshot _lastSnapshot;
         ITableDataSink       _tableDataSink;
 
-        public FindUsagesContext(
-            IFindAllReferencesWindow findReferencesWindow) {
+        ImmutableArray<ReferenceEntry> _entries = ImmutableArray<ReferenceEntry>.Empty;
+
+        public FindReferencesContext(IFindAllReferencesWindow findReferencesWindow) {
 
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -37,14 +41,39 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
             _findReferencesWindow.Manager.AddSource(this);
 
-            var _ = Task.Run(async () => {
-                await Task.Delay(500);
+        }
 
-                NotifyChange();
+        public string Message { get; private set; }
 
-                _tableDataSink.IsStable = true;
+        public CancellationToken CancellationToken => _cancellationTokenSource.Token;
 
-            });
+        public Task ReportMessageAsync(string message) {
+            Message = message;
+            return Task.CompletedTask;
+        }
+
+        public Task OnReferenceFoundAsync(ReferenceEntry entry) {
+
+            lock (_objectLock) {
+                _entries = _entries.Add(entry);
+                CurrentVersionNumber++;
+            }
+
+            NotifyChange();
+
+            return Task.CompletedTask;
+        }
+
+        public Task OnCompletedAsync() {
+
+            _tableDataSink.IsStable = true;
+
+            return Task.CompletedTask;
+        }
+
+        public Task SetSearchTitleAsync(string title) {
+            _findReferencesWindow.Title = title;
+            return Task.CompletedTask;
         }
 
         protected readonly IWpfTableControl2 TableControl;
@@ -71,12 +100,12 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             return this;
         }
 
-        public string SourceTypeIdentifier => NavFindUsagesTableDataSourceSourceTypeIdentifier;
-        public string Identifier           => NavFindUsagesTableDataSourceIdentifier;
+        public string SourceTypeIdentifier => FindAllReferencesSourceTypeIdentifier;
+        public string Identifier           => FindAllReferencesIdentifier;
         public string DisplayName          => "Nav Data Source";
 
-        public const string NavFindUsagesTableDataSourceSourceTypeIdentifier = nameof(NavFindUsagesTableDataSourceSourceTypeIdentifier);
-        public const string NavFindUsagesTableDataSourceIdentifier           = nameof(NavFindUsagesTableDataSourceIdentifier);
+        public const string FindAllReferencesSourceTypeIdentifier = StandardTableDataSources2.FindAllReferencesTableDataSource;
+        public const string FindAllReferencesIdentifier           = nameof(FindAllReferencesIdentifier);
 
         public void Dispose() {
             _findReferencesWindow.Manager.RemoveSource(this);
@@ -98,7 +127,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                     //        ? EntriesWhenGroupingByDefinition
                     //        : EntriesWhenNotGroupingByDefinition;
 
-                    _lastSnapshot = new TableEntriesSnapshot(this, CurrentVersionNumber);
+                    _lastSnapshot = new TableEntriesSnapshot(this, CurrentVersionNumber, _entries);
                 }
 
                 return _lastSnapshot;
