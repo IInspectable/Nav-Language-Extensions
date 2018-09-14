@@ -75,10 +75,10 @@ namespace Pharmatechnik.Nav.Language {
             return SyntaxToken.Missing;
         }
 
-        internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, SyntaxTokenClassification tokenClassification, bool nextToken) {
+        internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, TextClassification classification, bool nextToken) {
             SyntaxToken token = currentToken;
             while (!(token = NextOrPrevious(node, token, nextToken)).IsMissing) {
-                if (token.Classification == tokenClassification) {
+                if (token.Classification == classification) {
                     return token;
                 }
             }

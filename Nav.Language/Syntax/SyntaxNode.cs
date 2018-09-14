@@ -200,8 +200,8 @@ namespace Pharmatechnik.Nav.Language {
             return TextExtent.FromBounds(End, end);
         }
 
-        static Func<SyntaxTokenClassification, bool> GetIsTriviaFunc(bool onlyWhiteSpace = false) {
-            return onlyWhiteSpace ? (c => c == SyntaxTokenClassification.Whitespace) : new Func<SyntaxTokenClassification, bool>(SyntaxFacts.IsTrivia);
+        static Func<TextClassification, bool> GetIsTriviaFunc(bool onlyWhiteSpace = false) {
+            return onlyWhiteSpace ? (c => c == TextClassification.Whitespace) : new Func<TextClassification, bool>(SyntaxFacts.IsTrivia);
         }
 
         [NotNull]

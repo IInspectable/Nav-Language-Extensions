@@ -1,6 +1,6 @@
-﻿namespace Pharmatechnik.Nav.Language {
+﻿namespace Pharmatechnik.Nav.Language.Text {
 
-    public enum SyntaxTokenClassification {
+    public enum TextClassification {
 
         Unknown,
         Skiped,

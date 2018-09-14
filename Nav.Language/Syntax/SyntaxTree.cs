@@ -129,24 +129,24 @@ namespace Pharmatechnik.Nav.Language {
                 }
 
                 // Das Token existiert noch nicht, da es der Parser/Visitor offensichtlich nicht "erwischt hat" (t, u)
-                SyntaxTokenClassification tokenClassification;
+                TextClassification classification;
                 switch (candidate.Channel) {
                     case NavTokens.TriviaChannel:
                         switch (candidate.Type) {
                             case NavTokens.NewLine:
-                                tokenClassification = SyntaxTokenClassification.Whitespace;
+                                classification = TextClassification.Whitespace;
                                 break;
                             case NavTokens.Whitespace:
-                                tokenClassification = SyntaxTokenClassification.Whitespace;
+                                classification = TextClassification.Whitespace;
                                 break;
                             case NavTokens.SingleLineComment:
-                                tokenClassification = SyntaxTokenClassification.Comment;
+                                classification = TextClassification.Comment;
                                 break;
                             case NavTokens.MultiLineComment:
-                                tokenClassification = SyntaxTokenClassification.Comment;
+                                classification = TextClassification.Comment;
                                 break;
                             case NavTokens.Unknown:
-                                tokenClassification = SyntaxTokenClassification.Skiped;
+                                classification = TextClassification.Skiped;
                                 break;
                             default:
                                 // Wir haben sonst eigentlich nix im Trivia Channel
@@ -155,16 +155,16 @@ namespace Pharmatechnik.Nav.Language {
 
                         break;
                     case NavTokens.DefaultTokenChannel:
-                        tokenClassification = SyntaxTokenClassification.Skiped;
+                        classification = TextClassification.Skiped;
                         break;
                     case NavTokens.PreprocessorChannel:
                         switch (candidate.Type) {
                             case NavTokens.HashToken:
                             case NavTokens.PreprocessorKeyword:
-                                tokenClassification = SyntaxTokenClassification.PreprocessorKeyword;
+                                classification = TextClassification.PreprocessorKeyword;
                                 break;
                             default:
-                                tokenClassification = SyntaxTokenClassification.PreprocessorText;
+                                classification = TextClassification.PreprocessorText;
                                 break;
                         }
 
@@ -183,7 +183,7 @@ namespace Pharmatechnik.Nav.Language {
                     }
                 } else {
 
-                    finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
+                    finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, classification, parent));
 
                     if (candidate.Type == NavTokens.Unknown) {
                         diagnostics.Add(
@@ -228,10 +228,10 @@ namespace Pharmatechnik.Nav.Language {
                 var tokenExtent   = TextExtent.FromBounds(candidate.StartIndex, candidate.StartIndex + newLineIndex);
                 var newLineExtent = TextExtent.FromBounds(candidate.StartIndex                       + newLineIndex, candidate.StopIndex + 1);
 
-                yield return SyntaxTokenFactory.CreateToken(tokenExtent,   SyntaxTokenType.SingleLineComment, SyntaxTokenClassification.Comment,    parent);
-                yield return SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine,           SyntaxTokenClassification.Whitespace, parent);
+                yield return SyntaxTokenFactory.CreateToken(tokenExtent,   SyntaxTokenType.SingleLineComment, TextClassification.Comment,    parent);
+                yield return SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine,           TextClassification.Whitespace, parent);
             } else {
-                yield return SyntaxTokenFactory.CreateToken(candidate, SyntaxTokenClassification.Comment, parent);
+                yield return SyntaxTokenFactory.CreateToken(candidate, TextClassification.Comment, parent);
             }
         }
 

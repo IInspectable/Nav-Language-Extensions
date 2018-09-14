@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
     sealed class SyntaxClassifier : ParserServiceDependent, IClassifier {
 
-        readonly Dictionary<SyntaxTokenClassification, IClassificationType> _classificationMap;
+        readonly Dictionary<TextClassification, IClassificationType> _classificationMap;
 
         SyntaxClassifier(IClassificationTypeRegistryService registry, ITextBuffer textBuffer) : base(textBuffer) {
 

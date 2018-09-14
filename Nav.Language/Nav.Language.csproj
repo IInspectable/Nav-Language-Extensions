@@ -56,6 +56,7 @@
     <Compile Include="FindReferences\IFindReferencesContext.cs" />
     <Compile Include="FindReferences\ReferenceEntry.cs" />
     <Compile Include="FindReferences\FindReferencesVisitor.cs" />
+    <Compile Include="Text\ClassifiedText.cs" />
     <Compile Include="Text\SourceTextExtensions.cs" />
     <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />
@@ -341,7 +342,7 @@
     <Compile Include="Syntax\SyntaxToken.cs" />
     <Compile Include="Syntax\SyntaxTokenExtensions.cs" />
     <Compile Include="Internal\SyntaxTokenFactory.cs" />
-    <Compile Include="Syntax\SyntaxTokenClassification.cs" />
+    <Compile Include="Text\SyntaxTokenClassification.cs" />
     <Compile Include="Internal\NavParserErrorListener.cs" />
     <Compile Include="Text\TextChange.cs" />
     <Compile Include="Text\TextChangeWriter.cs" />

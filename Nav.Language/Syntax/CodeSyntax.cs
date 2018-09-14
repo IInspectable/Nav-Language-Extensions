@@ -14,7 +14,7 @@ namespace Pharmatechnik.Nav.Language {
         public SyntaxToken OpenBracket => ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBracket);
 
         [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
-        public SyntaxToken Keyword => ChildTokens().FirstOrMissing(SyntaxTokenClassification.Keyword);
+        public SyntaxToken Keyword => ChildTokens().FirstOrMissing(TextClassification.Keyword);
 
         public SyntaxToken CloseBracket => ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBracket);
 

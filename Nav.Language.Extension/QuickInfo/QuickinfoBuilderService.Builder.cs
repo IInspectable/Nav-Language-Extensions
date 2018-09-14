@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Imaging.Interop;
 
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Images;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -105,7 +106,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
                 var control = new SymbolQuickInfoControl {
                     CrispImage  = {Moniker = ImageMonikers.FromSymbol(includeSymbol)},
-                    TextContent = {Content = QuickinfoBuilderService.ToTextBlock(includeSymbol.FileName, SyntaxTokenClassification.Identifier)}
+                    TextContent = {Content = QuickinfoBuilderService.ToTextBlock(includeSymbol.FileName, TextClassification.Identifier)}
                 };
 
                 panel.Children.Add(control);
@@ -229,9 +230,9 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
                                          .OrderBy(call => call.Node.Name)
                                          .Select(call => new CallViewModel(
                                                      edgeModeMoniker: ImageMonikers.FromSymbol(call.EdgeMode),
-                                                     verb: QuickinfoBuilderService.ToTextBlock(GetVerb(call.EdgeMode), SyntaxTokenClassification.Keyword),
+                                                     verb: QuickinfoBuilderService.ToTextBlock(GetVerb(call.EdgeMode), TextClassification.Keyword),
                                                      nodeMoniker: ImageMonikers.FromSymbol(call.Node),
-                                                     node: QuickinfoBuilderService.ToTextBlock(call.Node.Name, SyntaxTokenClassification.Identifier
+                                                     node: QuickinfoBuilderService.ToTextBlock(call.Node.Name, TextClassification.Identifier
                                                      ))));
 
                 var control = new EdgeQuickInfoControl {

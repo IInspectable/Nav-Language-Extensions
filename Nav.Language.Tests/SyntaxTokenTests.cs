@@ -168,7 +168,7 @@ task B;
             Assert.That(empty.SyntaxTree      , Is.Null);
 
             Assert.That(empty.Type            , Is.EqualTo(SyntaxTokenType.Unknown));
-            Assert.That(empty.Classification  , Is.EqualTo(SyntaxTokenClassification.Unknown));
+            Assert.That(empty.Classification  , Is.EqualTo(TextClassification.Unknown));
         }
 
         [Test]
@@ -182,7 +182,7 @@ task B;
             Assert.That(missing.SyntaxTree      , Is.Null);
 
             Assert.That(missing.Type            , Is.EqualTo(SyntaxTokenType.Unknown));
-            Assert.That(missing.Classification  , Is.EqualTo(SyntaxTokenClassification.Unknown));
+            Assert.That(missing.Classification  , Is.EqualTo(TextClassification.Unknown));
         }
 
         [Test]

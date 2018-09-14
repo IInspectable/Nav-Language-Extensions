@@ -11,11 +11,11 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
     static class SyntaxTokenFactory {
 
-        public static SyntaxToken CreateToken(ITerminalNode node, SyntaxTokenClassification classification, SyntaxNode parent) {
+        public static SyntaxToken CreateToken(ITerminalNode node, TextClassification classification, SyntaxNode parent) {
             return CreateToken(node.Symbol, classification, parent);
         }
 
-        public static SyntaxToken CreateToken(IToken t, SyntaxTokenClassification classification, SyntaxNode parent) {
+        public static SyntaxToken CreateToken(IToken t, TextClassification classification, SyntaxNode parent) {
 
             SyntaxTokenType type = (SyntaxTokenType)t.Type;
             
@@ -23,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return CreateToken(extend, type, classification, parent);
         }
 
-        public static SyntaxToken CreateToken(TextExtent extend, SyntaxTokenType type, SyntaxTokenClassification classification, SyntaxNode parent) {
+        public static SyntaxToken CreateToken(TextExtent extend, SyntaxTokenType type, TextClassification classification, SyntaxNode parent) {
 
             if (extend.IsMissing) {
                 return SyntaxToken.Missing;

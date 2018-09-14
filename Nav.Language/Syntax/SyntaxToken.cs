@@ -17,15 +17,15 @@ namespace Pharmatechnik.Nav.Language {
 
         readonly int _classificationAndType;
 
-        internal SyntaxToken(SyntaxNode parent, SyntaxTokenType type, SyntaxTokenClassification classification, TextExtent extent) {
+        internal SyntaxToken(SyntaxNode parent, SyntaxTokenType type, TextClassification classification, TextExtent extent) {
             Extent = extent;
             Parent = parent;
 
             _classificationAndType = ((int) type << TypeBitShift) | ((int) classification << ClassificationBitShift);
         }
 
-        public static readonly SyntaxToken Missing = new SyntaxToken(null, SyntaxTokenType.Unknown, SyntaxTokenClassification.Unknown, TextExtent.Missing);
-        public static readonly SyntaxToken Empty   = new SyntaxToken(null, SyntaxTokenType.Unknown, SyntaxTokenClassification.Unknown, TextExtent.Empty);
+        public static readonly SyntaxToken Missing = new SyntaxToken(null, SyntaxTokenType.Unknown, TextClassification.Unknown, TextExtent.Missing);
+        public static readonly SyntaxToken Empty   = new SyntaxToken(null, SyntaxTokenType.Unknown, TextClassification.Unknown, TextExtent.Empty);
 
         public TextExtent Extent { get; }
 
@@ -34,7 +34,7 @@ namespace Pharmatechnik.Nav.Language {
             return SyntaxTree?.SourceText.GetLocation(Extent);
         }
 
-        public SyntaxTokenClassification Classification => (SyntaxTokenClassification) ((_classificationAndType >> ClassificationBitShift) & BitMask);
+        public TextClassification Classification => (TextClassification) ((_classificationAndType >> ClassificationBitShift) & BitMask);
 
         public SyntaxTokenType Type => (SyntaxTokenType) ((_classificationAndType >> TypeBitShift) & BitMask);
 
@@ -57,7 +57,7 @@ namespace Pharmatechnik.Nav.Language {
             return SyntaxTree?.Tokens.NextOrPrevious(Parent, this, type, nextToken: true) ?? Missing;
         }
 
-        public SyntaxToken NextToken(SyntaxTokenClassification tokenClassification) {
+        public SyntaxToken NextToken(TextClassification tokenClassification) {
             return SyntaxTree?.Tokens.NextOrPrevious(Parent, this, tokenClassification, nextToken: true) ?? Missing;
         }
 
@@ -69,7 +69,7 @@ namespace Pharmatechnik.Nav.Language {
             return SyntaxTree?.Tokens.NextOrPrevious(Parent, this, type, nextToken: false) ?? Missing;
         }
 
-        public SyntaxToken PreviousToken(SyntaxTokenClassification tokenClassification) {
+        public SyntaxToken PreviousToken(TextClassification tokenClassification) {
             return SyntaxTree?.Tokens.NextOrPrevious(Parent, this, tokenClassification, nextToken: false) ?? Missing;
         }
 

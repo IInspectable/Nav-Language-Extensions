@@ -174,8 +174,8 @@ namespace Pharmatechnik.Nav.Language {
             return NavGrammar.DefaultVocabulary.GetLiteralName(tokenType).Trim('\'');
         }
 
-        public static bool IsTrivia(SyntaxTokenClassification classification) {
-            return classification == SyntaxTokenClassification.Comment || classification == SyntaxTokenClassification.Whitespace;
+        public static bool IsTrivia(TextClassification classification) {
+            return classification == TextClassification.Comment || classification == TextClassification.Whitespace;
         }
 
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
+using Pharmatechnik.Nav.Language.Text;
 
 // ReSharper disable PossibleNullReferenceException => Dann soll es so sein. Test wird dann eh rot
 
@@ -67,12 +68,12 @@ namespace Nav.Language.Tests {
         public void TestCommentTokens() {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
 
-            Assert.That(syntaxTree.Tokens.OfClassification(SyntaxTokenClassification.Comment).Count(), Is.EqualTo(2));
+            Assert.That(syntaxTree.Tokens.OfClassification(TextClassification.Comment).Count(), Is.EqualTo(2));
 
-            var firstComment = syntaxTree.Tokens.OfClassification(SyntaxTokenClassification.Comment).First();
+            var firstComment = syntaxTree.Tokens.OfClassification(TextClassification.Comment).First();
             Assert.That(firstComment.Parent, Is.EqualTo(syntaxTree.Root));
             Assert.That(firstComment.Type, Is.EqualTo(SyntaxTokenType.SingleLineComment));
-            Assert.That(firstComment.Classification, Is.EqualTo(SyntaxTokenClassification.Comment));
+            Assert.That(firstComment.Classification, Is.EqualTo(TextClassification.Comment));
         }
         
         [Test]
@@ -90,7 +91,7 @@ namespace Nav.Language.Tests {
 
             Assert.That(codeNamespaceDeclaration.NamespaceprefixKeyword.ToString(), Is.EqualTo("namespaceprefix"));
             Assert.That(codeNamespaceDeclaration.NamespaceprefixKeyword.Type, Is.EqualTo(SyntaxTokenType.NamespaceprefixKeyword));
-            Assert.That(codeNamespaceDeclaration.NamespaceprefixKeyword.Classification, Is.EqualTo(SyntaxTokenClassification.Keyword));
+            Assert.That(codeNamespaceDeclaration.NamespaceprefixKeyword.Classification, Is.EqualTo(TextClassification.Keyword));
 
             Assert.That(codeNamespaceDeclaration.Namespace.Text, Is.EqualTo("NS.1"));
 
@@ -115,7 +116,7 @@ namespace Nav.Language.Tests {
 
             Assert.That(codeUsingDirective.UsingKeyword.ToString(), Is.EqualTo("using"));
             Assert.That(codeUsingDirective.UsingKeyword.Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
-            Assert.That(codeUsingDirective.UsingKeyword.Classification, Is.EqualTo(SyntaxTokenClassification.Keyword));
+            Assert.That(codeUsingDirective.UsingKeyword.Classification, Is.EqualTo(TextClassification.Keyword));
 
 
             Assert.That(codeUsingDirective.Namespace.Text, Is.EqualTo("U1"));
@@ -135,11 +136,11 @@ namespace Nav.Language.Tests {
 
             Assert.That(includeDirective.TaskrefKeyword.ToString(), Is.EqualTo("taskref"));
             Assert.That(includeDirective.TaskrefKeyword.Type, Is.EqualTo(SyntaxTokenType.TaskrefKeyword));
-            Assert.That(includeDirective.TaskrefKeyword.Classification, Is.EqualTo(SyntaxTokenClassification.Keyword));
+            Assert.That(includeDirective.TaskrefKeyword.Classification, Is.EqualTo(TextClassification.Keyword));
 
             Assert.That(includeDirective.StringLiteral.ToString(), Is.EqualTo("\"F1\""));
             Assert.That(includeDirective.StringLiteral.Type, Is.EqualTo(SyntaxTokenType.StringLiteral));
-            Assert.That(includeDirective.StringLiteral.Classification, Is.EqualTo(SyntaxTokenClassification.StringLiteral));
+            Assert.That(includeDirective.StringLiteral.Classification, Is.EqualTo(TextClassification.StringLiteral));
 
             Assert.That(includeDirective.Semicolon.ToString(), Is.EqualTo(";"));
             Assert.That(includeDirective.Semicolon.Type, Is.EqualTo(SyntaxTokenType.Semicolon));

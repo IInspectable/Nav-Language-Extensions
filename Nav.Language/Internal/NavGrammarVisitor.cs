@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .ToReadOnlyList(expectedCapacity: context.memberDeclaration().Length)
             );
 
-            CreateToken(node, context.Eof(), SyntaxTokenClassification.Whitespace);
+            CreateToken(node, context.Eof(), TextClassification.Whitespace);
 
             return node;
         }
@@ -78,9 +78,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<IdentifierOrStringSyntax>()
             );
 
-            CreateToken(node, context.OpenBracket(),            SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.NamespaceprefixKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(),           SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),            TextClassification.Punctuation);
+            CreateToken(node, context.NamespaceprefixKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),           TextClassification.Punctuation);
 
             return node;
         }
@@ -99,9 +99,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<IdentifierOrStringSyntax>()
             );
 
-            CreateToken(node, context.OpenBracket(),  SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.UsingKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),  TextClassification.Punctuation);
+            CreateToken(node, context.UsingKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
@@ -115,9 +115,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
             var node = new IncludeDirectiveSyntax(
                 CreateExtent(context));
 
-            CreateToken(node, context.TaskrefKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.StringLiteral(),  SyntaxTokenClassification.StringLiteral);
-            CreateToken(node, context.Semicolon(),      SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.TaskrefKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.StringLiteral(),  TextClassification.StringLiteral);
+            CreateToken(node, context.Semicolon(),      TextClassification.Punctuation);
 
             return node;
         }
@@ -149,10 +149,10 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .ToReadOnlyList(expectedCapacity: context.connectionPointNodeDeclaration().Length)
             );
 
-            CreateToken(node, context.TaskrefKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(),     SyntaxTokenClassification.TaskName);
-            CreateToken(node, context.OpenBrace(),      SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseBrace(),     SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.TaskrefKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),     TextClassification.TaskName);
+            CreateToken(node, context.OpenBrace(),      TextClassification.Punctuation);
+            CreateToken(node, context.CloseBrace(),     TextClassification.Punctuation);
 
             return node;
         }
@@ -211,10 +211,10 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<TransitionDefinitionBlockSyntax>()
             );
 
-            CreateToken(node, context.TaskKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(),  SyntaxTokenClassification.TaskName);
-            CreateToken(node, context.OpenBrace(),   SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseBrace(),  SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.TaskKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),  TextClassification.TaskName);
+            CreateToken(node, context.OpenBrace(),   TextClassification.Punctuation);
+            CreateToken(node, context.CloseBrace(),  TextClassification.Punctuation);
 
             return node;
         }
@@ -278,9 +278,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
                                                             .OfSyntaxType<DoClauseSyntax>()
             );
 
-            CreateToken(node, context.InitKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(),  SyntaxTokenClassification.Identifier); // Name der Initfunktion
-            CreateToken(node, context.Semicolon(),   SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.InitKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),  TextClassification.Identifier); // Name der Initfunktion
+            CreateToken(node, context.Semicolon(),   TextClassification.Punctuation);
 
             return node;
         }
@@ -289,9 +289,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new ExitNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.ExitKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(),  SyntaxTokenClassification.Identifier);
-            CreateToken(node, context.Semicolon(),   SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.ExitKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),  TextClassification.Identifier);
+            CreateToken(node, context.Semicolon(),   TextClassification.Punctuation);
 
             return node;
         }
@@ -300,8 +300,8 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new EndNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.EndKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Semicolon(),  SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.EndKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Semicolon(),  TextClassification.Punctuation);
 
             return node;
         }
@@ -319,10 +319,10 @@ namespace Pharmatechnik.Nav.Language.Internal {
                                                             .OfSyntaxType<CodeAbstractMethodDeclarationSyntax>()
             );
 
-            CreateToken(node, context.TaskKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(0), SyntaxTokenClassification.TaskName);
-            CreateToken(node, context.Identifier(1), SyntaxTokenClassification.Identifier);
-            CreateToken(node, context.Semicolon(),   SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.TaskKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(0), TextClassification.TaskName);
+            CreateToken(node, context.Identifier(1), TextClassification.Identifier);
+            CreateToken(node, context.Semicolon(),   TextClassification.Punctuation);
 
             return node;
         }
@@ -331,9 +331,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new ChoiceNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.ChoiceKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(),    SyntaxTokenClassification.Identifier);
-            CreateToken(node, context.Semicolon(),     SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.ChoiceKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),    TextClassification.Identifier);
+            CreateToken(node, context.Semicolon(),     TextClassification.Punctuation);
 
             return node;
         }
@@ -342,9 +342,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new DialogNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.DialogKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(),    SyntaxTokenClassification.FormName);
-            CreateToken(node, context.Semicolon(),     SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.DialogKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),    TextClassification.FormName);
+            CreateToken(node, context.Semicolon(),     TextClassification.Punctuation);
 
             return node;
         }
@@ -353,9 +353,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new ViewNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.ViewKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(),  SyntaxTokenClassification.FormName);
-            CreateToken(node, context.Semicolon(),   SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.ViewKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),  TextClassification.FormName);
+            CreateToken(node, context.Semicolon(),   TextClassification.Punctuation);
 
             return node;
         }
@@ -414,7 +414,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<DoClauseSyntax>()
             );
 
-            CreateToken(node, context.Semicolon(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.Semicolon(), TextClassification.Punctuation);
 
             return node;
         }
@@ -434,13 +434,13 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         public override SyntaxNode VisitInitSourceNode(NavGrammar.InitSourceNodeContext context) {
             var node = new InitSourceNodeSyntax(CreateExtent(context));
-            CreateToken(node, context.InitKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.InitKeyword(), TextClassification.Keyword);
             return node;
         }
 
         public override SyntaxNode VisitIdentifierSourceNode(NavGrammar.IdentifierSourceNodeContext context) {
             var node = new IdentifierSourceNodeSyntax(CreateExtent(context));
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier);
             return node;
         }
 
@@ -459,7 +459,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         public override SyntaxNode VisitEndTargetNode(NavGrammar.EndTargetNodeContext context) {
             var node = new EndTargetNodeSyntax(extent: CreateExtent(context));
-            CreateToken(node, context.EndKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.EndKeyword(), TextClassification.Keyword);
             return node;
         }
 
@@ -473,9 +473,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<IdentifierOrStringListSyntax>()
             );
 
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
-            CreateToken(node, context.OpenParen(),  SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseParen(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier);
+            CreateToken(node, context.OpenParen(),  TextClassification.Punctuation);
+            CreateToken(node, context.CloseParen(), TextClassification.Punctuation);
 
             return node;
         }
@@ -498,8 +498,8 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 CreateExtent(context)
             );
 
-            CreateToken(node, context.SpontKeyword(),       SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.SpontaneousKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.SpontKeyword(),       TextClassification.Keyword);
+            CreateToken(node, context.SpontaneousKeyword(), TextClassification.Keyword);
 
             return node;
         }
@@ -515,7 +515,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<IdentifierOrStringListSyntax>()
             );
 
-            CreateToken(node, context.OnKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.OnKeyword(), TextClassification.Keyword);
 
             return node;
         }
@@ -545,7 +545,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .Optional(VisitIdentifierOrString)
                        .OfSyntaxType<IdentifierOrStringSyntax>());
 
-            CreateToken(node, context.IfKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.IfKeyword(), TextClassification.Keyword);
 
             return node;
         }
@@ -553,7 +553,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
         public override SyntaxNode VisitElseConditionClause(NavGrammar.ElseConditionClauseContext context) {
             var node = new ElseConditionClauseSyntax(extent: CreateExtent(context));
 
-            CreateToken(node, context.ElseKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.ElseKeyword(), TextClassification.Keyword);
 
             return node;
         }
@@ -584,7 +584,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<IdentifierOrStringSyntax>()
             );
 
-            CreateToken(node, context.DoKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.DoKeyword(), TextClassification.Keyword);
 
             return node;
         }
@@ -616,9 +616,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<DoClauseSyntax>()
             );
 
-            CreateToken(node, context.Colon(),      SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier); // ExitNode:Exit
-            CreateToken(node, context.Semicolon(),  SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.Colon(),      TextClassification.Punctuation);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier); // ExitNode:Exit
+            CreateToken(node, context.Semicolon(),  TextClassification.Punctuation);
 
             return node;
         }
@@ -650,7 +650,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new ModalEdgeSyntax(CreateExtent(context));
 
-            CreateToken(node, context.ModalEdgeKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.ModalEdgeKeyword(), TextClassification.Keyword);
 
             return node;
         }
@@ -659,7 +659,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new GoToEdgeSyntax(CreateExtent(context));
 
-            CreateToken(node, context.GoToEdgeKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.GoToEdgeKeyword(), TextClassification.Keyword);
 
             return node;
         }
@@ -668,7 +668,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new NonModalEdgeSyntax(CreateExtent(context));
 
-            CreateToken(node, context.NonModalEdgeKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.NonModalEdgeKeyword(), TextClassification.Keyword);
 
             return node;
         }
@@ -683,9 +683,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new CodeNotImplementedDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(),           SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.NotimplementedKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(),          SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),           TextClassification.Punctuation);
+            CreateToken(node, context.NotimplementedKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),          TextClassification.Punctuation);
 
             return node;
         }
@@ -698,9 +698,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new CodeDoNotInjectDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(),        SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.DonotinjectKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(),       SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),        TextClassification.Punctuation);
+            CreateToken(node, context.DonotinjectKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),       TextClassification.Punctuation);
 
             return node;
         }
@@ -713,9 +713,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new CodeAbstractMethodDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(),           SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.AbstractmethodKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(),          SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),           TextClassification.Punctuation);
+            CreateToken(node, context.AbstractmethodKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),          TextClassification.Punctuation);
 
             return node;
         }
@@ -728,10 +728,10 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new CodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CodeKeyword(), SyntaxTokenClassification.Keyword);
-            CreateTokens(node, context.StringLiteral(), SyntaxTokenClassification.StringLiteral);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(), TextClassification.Punctuation);
+            CreateToken(node, context.CodeKeyword(), TextClassification.Keyword);
+            CreateTokens(node, context.StringLiteral(), TextClassification.StringLiteral);
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
@@ -749,11 +749,11 @@ namespace Pharmatechnik.Nav.Language.Internal {
                                                             .ToReadOnlyList(expectedCapacity: context.codeType().Length)
             );
 
-            CreateToken(node, context.OpenBracket(),  SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.BaseKeyword(),  SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Colon(),        SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.Comma(),        SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),  TextClassification.Punctuation);
+            CreateToken(node, context.BaseKeyword(),  TextClassification.Keyword);
+            CreateToken(node, context.Colon(),        TextClassification.Punctuation);
+            CreateToken(node, context.Comma(),        TextClassification.Punctuation);
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
@@ -765,10 +765,10 @@ namespace Pharmatechnik.Nav.Language.Internal {
         public override SyntaxNode VisitCodeGenerateToDeclaration(NavGrammar.CodeGenerateToDeclarationContext context) {
             var node = new CodeGenerateToDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(),       SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.GeneratetoKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.StringLiteral(),     SyntaxTokenClassification.StringLiteral);
-            CreateToken(node, context.CloseBracket(),      SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),       TextClassification.Punctuation);
+            CreateToken(node, context.GeneratetoKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.StringLiteral(),     TextClassification.StringLiteral);
+            CreateToken(node, context.CloseBracket(),      TextClassification.Punctuation);
 
             return node;
         }
@@ -786,10 +786,10 @@ namespace Pharmatechnik.Nav.Language.Internal {
                                                               .OfSyntaxType<ParameterListSyntax>()
             );
 
-            CreateToken(node, context.OpenBracket(),   SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.ParamsKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.OpenBracket(),   TextClassification.Punctuation);
+            CreateToken(node, context.ParamsKeyword(), TextClassification.Keyword);
 
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
@@ -808,7 +808,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                                                       .ToReadOnlyList(expectedCapacity: context.parameter().Length)
             );
 
-            CreateTokens(node, context.Comma(), SyntaxTokenClassification.Punctuation);
+            CreateTokens(node, context.Comma(), TextClassification.Punctuation);
 
             return node;
         }
@@ -826,7 +826,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<CodeTypeSyntax>()
             );
 
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier);
 
             return node;
         }
@@ -842,9 +842,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
                                                                       .Optional(VisitParameter)
                                                                       .OfSyntaxType<ParameterSyntax>());
 
-            CreateToken(node, context.OpenBracket(),   SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.ResultKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(),  SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),   TextClassification.Punctuation);
+            CreateToken(node, context.ResultKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),  TextClassification.Punctuation);
 
             return node;
         }
@@ -874,7 +874,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             var node = new SimpleTypeSyntax(CreateExtent(context));
 
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.TypeName);
+            CreateToken(node, context.Identifier(), TextClassification.TypeName);
 
             return node;
         }
@@ -904,8 +904,8 @@ namespace Pharmatechnik.Nav.Language.Internal {
         public override SyntaxNode VisitArrayRankSpecifier(NavGrammar.ArrayRankSpecifierContext context) {
             var node = new ArrayRankSpecifierSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(),  SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),  TextClassification.Punctuation);
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
@@ -922,10 +922,10 @@ namespace Pharmatechnik.Nav.Language.Internal {
                                                     .ToReadOnlyList(expectedCapacity: context.codeType().Length)
             );
 
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.TypeName);
-            CreateToken(node, context.LessThan(),   SyntaxTokenClassification.Punctuation);
-            CreateTokens(node, context.Comma(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.GreaterThan(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.Identifier(), TextClassification.TypeName);
+            CreateToken(node, context.LessThan(),   TextClassification.Punctuation);
+            CreateTokens(node, context.Comma(), TextClassification.Punctuation);
+            CreateToken(node, context.GreaterThan(), TextClassification.Punctuation);
 
             return node;
         }
@@ -944,7 +944,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                                                                .ToReadOnlyList(expectedCapacity: context.identifierOrString().Length)
             );
 
-            CreateTokens(node, context.Comma(), SyntaxTokenClassification.Punctuation);
+            CreateTokens(node, context.Comma(), TextClassification.Punctuation);
 
             return node;
         }
@@ -963,13 +963,13 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         public override SyntaxNode VisitIdentifier(NavGrammar.IdentifierContext context) {
             var node = new IdentifierSyntax(CreateExtent(context));
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier);
             return node;
         }
 
         public override SyntaxNode VisitStringLiteral(NavGrammar.StringLiteralContext context) {
             var node = new StringLiteralSyntax(CreateExtent(context));
-            CreateToken(node, context.StringLiteral(), SyntaxTokenClassification.StringLiteral);
+            CreateToken(node, context.StringLiteral(), TextClassification.StringLiteral);
             return node;
         }
 
@@ -981,13 +981,13 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return TextExtentFactory.CreateExtent(context);
         }
 
-        void CreateTokens(SyntaxNode parent, IReadOnlyList<ITerminalNode> nodes, SyntaxTokenClassification classification) {
+        void CreateTokens(SyntaxNode parent, IReadOnlyList<ITerminalNode> nodes, TextClassification classification) {
             foreach (var node in nodes) {
                 CreateToken(parent, node, classification);
             }
         }
 
-        void CreateToken(SyntaxNode parent, ITerminalNode node, SyntaxTokenClassification classification) {
+        void CreateToken(SyntaxNode parent, ITerminalNode node, TextClassification classification) {
             if (node == null) {
                 return;
             }

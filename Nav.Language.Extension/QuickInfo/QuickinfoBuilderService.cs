@@ -13,6 +13,7 @@ using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Classification;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -22,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
     sealed partial class QuickinfoBuilderService {
 
         readonly IClassificationFormatMapService                            _classificationFormatMapService;
-        readonly Dictionary<SyntaxTokenClassification, IClassificationType> _classificationMap;
+        readonly Dictionary<TextClassification, IClassificationType> _classificationMap;
 
         [ImportingConstructor]
         public QuickinfoBuilderService(IClassificationFormatMapService classificationFormatMapService,
@@ -61,7 +62,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             return control;
         }
 
-        TextBlock ToTextBlock(string text, SyntaxTokenClassification classification) {
+        TextBlock ToTextBlock(string text, TextClassification classification) {
 
             var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
 
@@ -102,16 +103,16 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             //var nsRun = ToRun(codeModel.WflNamespace+".", SyntaxTokenClassification.Identifier, formatMap);
             //textBlock.Inlines.Add(nsRun);
 
-            var typeRun = ToRun(codeInfo.Task.WfsTypeName, SyntaxTokenClassification.TaskName, formatMap);
+            var typeRun = ToRun(codeInfo.Task.WfsTypeName, TextClassification.TaskName, formatMap);
             textBlock.Inlines.Add(typeRun);
 
-            var methodRun = ToRun("." + codeInfo.TriggerLogicMethodName + "()", SyntaxTokenClassification.Identifier, formatMap);
+            var methodRun = ToRun("." + codeInfo.TriggerLogicMethodName + "()", TextClassification.Identifier, formatMap);
             textBlock.Inlines.Add(methodRun);
 
             return textBlock;
         }
 
-        Run ToRun(string text, SyntaxTokenClassification classification, IClassificationFormatMap formatMap) {
+        Run ToRun(string text, TextClassification classification, IClassificationFormatMap formatMap) {
             var run = new Run(text);
 
             _classificationMap.TryGetValue(classification, out var ct);

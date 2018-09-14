@@ -1,6 +1,8 @@
 using System.Linq;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
+using Pharmatechnik.Nav.Language.Text;
+
 // ReSharper disable PossibleNullReferenceException
 
 namespace Nav.Language.Tests {
@@ -117,10 +119,10 @@ namespace Nav.Language.Tests {
 
             Assert.That(task.ChildTokens().Count(), Is.EqualTo(4));
 
-            var comments = task.ChildTokens().OfClassification(SyntaxTokenClassification.Comment).ToList();
+            var comments = task.ChildTokens().OfClassification(TextClassification.Comment).ToList();
             Assert.That(comments.Count, Is.EqualTo(1));
             Assert.That(comments[0].ToString(), Is.EqualTo("/* Kommentar*/"));
-            Assert.That(comments[0].Classification, Is.EqualTo(SyntaxTokenClassification.Comment));
+            Assert.That(comments[0].Classification, Is.EqualTo(TextClassification.Comment));
         }
 
         [Test]
@@ -131,14 +133,14 @@ namespace Nav.Language.Tests {
 
             var taskKeywordToken = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First().TaskKeyword;
 
-            Assert.That(taskKeywordToken.Classification, Is.EqualTo(SyntaxTokenClassification.Keyword));
+            Assert.That(taskKeywordToken.Classification, Is.EqualTo(TextClassification.Keyword));
 
-            var nameToken = taskKeywordToken.NextToken(SyntaxTokenClassification.TaskName);
-            Assert.That(nameToken.Classification, Is.EqualTo(SyntaxTokenClassification.TaskName));
+            var nameToken = taskKeywordToken.NextToken(TextClassification.TaskName);
+            Assert.That(nameToken.Classification, Is.EqualTo(TextClassification.TaskName));
             Assert.That(nameToken.ToString(), Is.EqualTo("Test"));
 
-            var prevToken = nameToken.PreviousToken(SyntaxTokenClassification.Keyword);
-            Assert.That(prevToken.Classification, Is.EqualTo(SyntaxTokenClassification.Keyword));
+            var prevToken = nameToken.PreviousToken(TextClassification.Keyword);
+            Assert.That(prevToken.Classification, Is.EqualTo(TextClassification.Keyword));
             Assert.That(prevToken.ToString(), Is.EqualTo("task"));
         }
     }
