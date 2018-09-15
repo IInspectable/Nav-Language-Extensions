@@ -47,10 +47,8 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             switch (keyName) {
                 case StandardTableKeyNames2.Definition:
                     return new NavDefinitionBucket(Presenter, entry.Definition, _context.SourceTypeIdentifier, _context.Identifier);
-
                 case StandardTableKeyNames2.DefinitionIcon:
                     return ImageMonikers.TaskDefinition;
-
                 case StandardTableColumnDefinitions.DocumentName:
                     return entry.Location.FilePath;
                 case StandardTableKeyNames.Line:

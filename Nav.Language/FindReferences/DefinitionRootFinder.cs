@@ -1,10 +1,16 @@
-﻿using System.Collections.Generic;
+﻿#region Using Directives
+
+using System.Collections.Immutable;
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
+#endregion
+
 namespace Pharmatechnik.Nav.Language.FindReferences {
 
-    class FindRootDefinitionVisitor: SymbolVisitor<ISymbol> {
+    class FindRootDefinitionVisitor: SymbolVisitor<DefinitionEntry> {
 
         FindRootDefinitionVisitor(ISymbol originatingSymbol) {
             OriginatingSymbol = originatingSymbol;
@@ -13,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         public ISymbol OriginatingSymbol { get; }
 
         [CanBeNull]
-        public static ISymbol Invoke(ISymbol symbol) {
+        public static DefinitionEntry Invoke(ISymbol symbol) {
             if (symbol == null) {
                 return null;
             }
@@ -22,34 +28,73 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             return finder.Visit(symbol);
         }
 
-        protected override ISymbol DefaultVisit(ISymbol symbol) {
-            return symbol;
+        protected override DefinitionEntry DefaultVisit(ISymbol symbol) {
+            return null;
         }
 
-        public override ISymbol VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
+        public override DefinitionEntry VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
 
-            var taskDeclaration = taskDefinitionSymbol.AsTaskDeclaration;
-            if (taskDeclaration?.IsIncluded == false) {
-                return Visit(taskDeclaration);
-            }
+            return CreateDefinitionEntry(taskDefinitionSymbol,
+                                         ClassifiedText.Keyword(SyntaxFacts.TaskKeyword),
+                                         ClassifiedText.Space,
+                                         ClassifiedText.TaskName(taskDefinitionSymbol.Name)
+            );
 
-            return DefaultVisit(taskDefinitionSymbol);
         }
 
-        public override ISymbol VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+        public override DefinitionEntry VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
+
+            return CreateDefinitionEntry(taskDeclarationSymbol,
+                                         ClassifiedText.Keyword(SyntaxFacts.TaskrefKeyword),
+                                         ClassifiedText.Space,
+                                         ClassifiedText.TaskName(taskDeclarationSymbol.Name)
+            );
+
+        }
+
+        public override DefinitionEntry VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
             return Visit(initNodeAliasSymbol.InitNode);
         }
 
-        public override ISymbol VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
-            // Wenn die Tasknode selbst der Ursprung ist, oder es keinen Alias gibt, dann laufen wir hoch zur Deklaration - sofern sie in unserem File liegt
-            if ((OriginatingSymbol == taskNodeSymbol || taskNodeSymbol.Alias == null) && taskNodeSymbol.Declaration?.IsIncluded == false) {
-                return Visit(taskNodeSymbol.Declaration);
+        public override DefinitionEntry VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+
+            if (initNodeSymbol.Alias?.Name == null) {
+                return CreateDefinitionEntry(initNodeSymbol,
+                                             ClassifiedText.Keyword(SyntaxFacts.InitKeyword));
             }
 
-            return DefaultVisit(taskNodeSymbol);
+            return CreateDefinitionEntry(initNodeSymbol,
+                                         ClassifiedText.Keyword(SyntaxFacts.InitKeyword),
+                                         ClassifiedText.Space,
+                                         ClassifiedText.Identifier(initNodeSymbol.Alias.Name)
+            );
         }
 
-        public override ISymbol VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
+        public override DefinitionEntry VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
+
+            if (taskNodeSymbol.Declaration?.Name == null) {
+                return DefaultVisit(taskNodeSymbol);
+            }
+
+            if (taskNodeSymbol.Alias != null) {
+                return CreateDefinitionEntry(taskNodeSymbol,
+                                             ClassifiedText.Keyword(SyntaxFacts.TaskKeyword),
+                                             ClassifiedText.Space,
+                                             ClassifiedText.TaskName(taskNodeSymbol.Declaration.Name),
+                                             ClassifiedText.Space,
+                                             ClassifiedText.Identifier(taskNodeSymbol.Name)
+                );
+            }
+
+            return CreateDefinitionEntry(taskNodeSymbol,
+                                         ClassifiedText.Keyword(SyntaxFacts.TaskKeyword),
+                                         ClassifiedText.Space,
+                                         ClassifiedText.TaskName(taskNodeSymbol.Declaration.Name)
+            );
+
+        }
+
+        public override DefinitionEntry VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
 
             if (nodeReferenceSymbol.Declaration != null) {
                 return Visit(nodeReferenceSymbol.Declaration);
@@ -58,14 +103,14 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             return DefaultVisit(nodeReferenceSymbol);
         }
 
-        public override ISymbol VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
+        public override DefinitionEntry VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
             return Visit(taskNodeAliasSymbol.TaskNode);
         }
 
+        static DefinitionEntry CreateDefinitionEntry(ISymbol symbol, params ClassifiedText[] parts) {
+            return new DefinitionEntry(symbol, parts.ToImmutableArray());
+        }
+
     }
-
-    //class ReferenceFinder: SymbolVisitor<IEnumerable<ReferenceEntry> {
-
-    //}
 
 }

@@ -19,6 +19,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         public ISymbol                        Symbol       { get; }
         public ImmutableArray<ClassifiedText> DisplayParts { get; }
         public string                         FullText     => DisplayParts.JoinText();
+        public Location                       Location     => Symbol.Location;
 
     }
 

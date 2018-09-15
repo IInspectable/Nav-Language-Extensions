@@ -1,9 +1,6 @@
 ﻿#region Using Directives
 
-using System.Collections.Immutable;
 using System.Threading.Tasks;
-
-using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -19,20 +16,12 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             return Task.Run(async () => {
 
-                var definitionRoot = FindRootDefinitionVisitor.Invoke(symbol);
-                if (definitionRoot == null) {
+                var definition = FindRootDefinitionVisitor.Invoke(symbol);
+                if (definition == null) {
                     return;
                 }
 
-                var parts = new[] {
-                    ClassifiedText.Keyword(SyntaxFacts.TaskKeyword),
-                    ClassifiedText.Space,
-                    ClassifiedText.TaskName(definitionRoot.Name)
-                };
-                
-                var definition = new DefinitionEntry(definitionRoot, parts.ToImmutableArray());
-
-                foreach (var reference in FindReferencesVisitor.Invoke(definitionRoot)) {
+                foreach (var reference in FindReferencesVisitor.Invoke(definition)) {
                     if (context.CancellationToken.IsCancellationRequested) {
                         return;
                     }
