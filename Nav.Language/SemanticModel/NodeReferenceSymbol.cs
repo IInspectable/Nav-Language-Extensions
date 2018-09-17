@@ -9,16 +9,20 @@ namespace Pharmatechnik.Nav.Language {
 
         // ReSharper disable once NotNullMemberIsNotInitialized Transition wird im Ctor der Transition während der Initialisierung gesetzt 
         // In der "freien" Wildbahn" darf hingegen der Null Fall nicht auftreten
-        public NodeReferenceSymbol(string name, Location location, INodeSymbol declaration, NodeReferenceType nodeReferenceType): base(name, location) {
+        public NodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, INodeSymbol declaration, NodeReferenceType nodeReferenceType)
+            : base(name, location) {
+            SyntaxTree        = syntaxTree;
             NodeReferenceType = nodeReferenceType;
             Declaration       = declaration;
         }
+
+        public override SyntaxTree SyntaxTree { get; }
 
         [CanBeNull]
         public INodeSymbol Declaration { get; }
 
         public NodeReferenceType NodeReferenceType { get; }
-        public IEdge             Edge              { get; set; }
+        public IEdge             Edge              { get; internal set; }
 
     }
 

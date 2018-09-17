@@ -61,6 +61,8 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                     return Guid.NewGuid();
                 case StandardTableKeyNames.Text:
                     return entry.Text;
+                case StandardTableKeyNames2.TextInlines:
+                    return Presenter.ToInlines(entry.DisplayParts);
             }
 
             return null;

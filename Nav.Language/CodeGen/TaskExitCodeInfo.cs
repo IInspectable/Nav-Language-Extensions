@@ -22,13 +22,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         public string AfterMethodName              { get; }
         public string AfterLogicMethodName         { get; }
 
-        public static TaskExitCodeInfo FromConnectionPointReference(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
+        public static TaskExitCodeInfo FromConnectionPointReference(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
 
-            if (connectionPointReferenceSymbol == null) {
-                throw new ArgumentNullException(nameof(connectionPointReferenceSymbol));
+            if (exitConnectionPointReferenceSymbol == null) {
+                throw new ArgumentNullException(nameof(exitConnectionPointReferenceSymbol));
             }
 
-            var exitTransition = connectionPointReferenceSymbol.ExitTransition;
+            var exitTransition = exitConnectionPointReferenceSymbol.ExitTransition;
 
             var containingTaskCodeInfo = TaskCodeInfo.FromTaskDefinition(exitTransition.ContainingTask);
 

@@ -1,5 +1,9 @@
+#region Using Directives
+
 using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language {
 
@@ -17,6 +21,8 @@ namespace Pharmatechnik.Nav.Language {
             TriggerTransitions = new List<TriggerTransition>();
             ExitTransitions    = new List<ExitTransition>();
         }
+
+        public override SyntaxTree SyntaxTree => Syntax.SyntaxTree;
 
         public TaskDefinitionSyntax          Syntax            { get; }
         public ITaskDeclarationSymbol        AsTaskDeclaration { get; }

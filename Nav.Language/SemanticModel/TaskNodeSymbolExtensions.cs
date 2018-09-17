@@ -17,7 +17,7 @@ namespace Pharmatechnik.Nav.Language {
 
             var expectedExitConnectionPoints = taskNode.Declaration.Exits();
             var actualExitConnectionPoints = taskNode.Outgoings
-                                                     .Select(et => et.ConnectionPointReference)
+                                                     .Select(et => et.ExitConnectionPointReference)
                                                      .Where(cp => cp != null)
                                                      .ToList();
 
@@ -67,7 +67,7 @@ namespace Pharmatechnik.Nav.Language {
             if (taskNode.Declaration != null) {
 
                 var actualExits = taskNode.Outgoings
-                                          .Select(et => et?.ConnectionPointReference?.Declaration)
+                                          .Select(et => et?.ExitConnectionPointReference?.Declaration)
                                           .Where(cps => cps != null);
 
                 return actualExits;

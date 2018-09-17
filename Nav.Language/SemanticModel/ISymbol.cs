@@ -16,6 +16,13 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         Location Location { get; }
 
+        /// <summary>
+        /// Liefert den Syntaxbaum, aus dem dieses Symbol entstanden ist.
+        /// Kann bei importierten TaskDeclarations null sein!
+        /// </summary>
+        [CanBeNull]
+        SyntaxTree SyntaxTree { get; }
+
     }
 
 }

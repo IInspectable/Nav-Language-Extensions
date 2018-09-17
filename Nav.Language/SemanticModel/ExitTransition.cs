@@ -14,16 +14,16 @@ namespace Pharmatechnik.Nav.Language {
         internal ExitTransition(ExitTransitionDefinitionSyntax syntax,
                                 TaskDefinitionSymbol containingTask,
                                 [CanBeNull] TaskNodeReferenceSymbol taskNodeReference,
-                                [CanBeNull] ConnectionPointReferenceSymbol connectionPointReference,
+                                [CanBeNull] ExitConnectionPointReferenceSymbol exitConnectionPointReference,
                                 [CanBeNull] EdgeModeSymbol edgeMode,
                                 [CanBeNull] NodeReferenceSymbol targetReference) {
 
-            Syntax                   = syntax         ?? throw new ArgumentNullException(nameof(syntax));
-            ContainingTask           = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
-            TaskNodeSourceReference  = taskNodeReference;
-            ConnectionPointReference = connectionPointReference;
-            EdgeMode                 = edgeMode;
-            TargetReference          = targetReference;
+            Syntax                       = syntax         ?? throw new ArgumentNullException(nameof(syntax));
+            ContainingTask               = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
+            TaskNodeSourceReference      = taskNodeReference;
+            ExitConnectionPointReference = exitConnectionPointReference;
+            EdgeMode                     = edgeMode;
+            TargetReference              = targetReference;
 
             if (taskNodeReference != null) {
                 taskNodeReference.Edge = this;
@@ -37,8 +37,8 @@ namespace Pharmatechnik.Nav.Language {
                 targetReference.Edge = this;
             }
 
-            if (connectionPointReference != null) {
-                connectionPointReference.ExitTransition = this;
+            if (exitConnectionPointReference != null) {
+                exitConnectionPointReference.ExitTransition = this;
             }
         }
 
@@ -58,7 +58,7 @@ namespace Pharmatechnik.Nav.Language {
         public ITaskNodeReferenceSymbol TaskNodeSourceReference { get; }
 
         [CanBeNull]
-        public IConnectionPointReferenceSymbol ConnectionPointReference { get; }
+        public IExitConnectionPointReferenceSymbol ExitConnectionPointReference { get; }
 
         [CanBeNull]
         public IEdgeModeSymbol EdgeMode { get; }
@@ -73,8 +73,8 @@ namespace Pharmatechnik.Nav.Language {
                 yield return SourceReference;
             }
 
-            if (ConnectionPointReference != null) {
-                yield return ConnectionPointReference;
+            if (ExitConnectionPointReference != null) {
+                yield return ExitConnectionPointReference;
             }
 
             if (EdgeMode != null) {

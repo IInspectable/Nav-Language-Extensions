@@ -24,6 +24,8 @@ namespace Pharmatechnik.Nav.Language {
             TaskDeklarations = taskDeklarations ?? new SymbolCollection<TaskDeclarationSymbol>();
         }
 
+        public override SyntaxTree SyntaxTree => Syntax.SyntaxTree;
+
         public string                                  FileName         { get; }
         public Location                                FileLocation     { get; }
         public IncludeDirectiveSyntax                  Syntax           { get; }

@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System.Collections.Immutable;
 using System.Threading.Tasks;
 using System.Linq;
 
@@ -35,9 +36,22 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                         return;
                     }
 
+
+                    var displayParts = ImmutableArray<ClassifiedText>.Empty;
+                    
+                    // TODO Klassifizieren
+                    if (reference.SyntaxTree != null) {
+                        var line = reference.SyntaxTree.SourceText.GetTextLineAtPosition(reference.Location.Start);
+                        // TODO Line Endings..
+                        displayParts = displayParts.Add(ClassifiedTexts.Keyword("Max "));
+                        displayParts = displayParts.Add(ClassifiedTexts.Identifier(line.ToString().TrimEnd('\r', '\n')));
+                    } else {
+                        displayParts = displayParts.Add(ClassifiedTexts.Identifier(reference.Name));
+                    }
+
                     var item = new ReferenceEntry(definitionEntry,
                                                   reference.Location,
-                                                  reference.Name);
+                                                  displayParts);
 
                     await context.OnReferenceFoundAsync(item);
 

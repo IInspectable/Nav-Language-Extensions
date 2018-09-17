@@ -47,12 +47,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
 
             #region ConnectionPoints
 
-            public override ImageMoniker VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
-                if (connectionPointReferenceSymbol.Declaration == null) {
-                    return DefaultVisit(connectionPointReferenceSymbol);
+            public override ImageMoniker VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+                if (exitConnectionPointReferenceSymbol.Declaration == null) {
+                    return DefaultVisit(exitConnectionPointReferenceSymbol);
                 }
 
-                return Visit(connectionPointReferenceSymbol.Declaration);
+                return Visit(exitConnectionPointReferenceSymbol.Declaration);
             }
 
             public override ImageMoniker VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {

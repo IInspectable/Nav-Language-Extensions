@@ -59,17 +59,17 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
         [NotNull]
         public static IEnumerable<TextChange> GetRenameSourceChanges(this SyntaxTree syntaxTree, IExitTransition transition, string newSourceName, TextEditorSettings textEditorSettings) {
 
-            if (transition?.SourceReference == null || transition.ConnectionPointReference == null) {
+            if (transition?.SourceReference == null || transition.ExitConnectionPointReference == null) {
                 yield break;
             }
 
-            var replaceText = $"{newSourceName}{SyntaxFacts.Colon}{transition.ConnectionPointReference.Name}";
+            var replaceText = $"{newSourceName}{SyntaxFacts.Colon}{transition.ExitConnectionPointReference.Name}";
             var replaceLocation = new Location(
-                extent: TextExtent.FromBounds(transition.SourceReference.Start, transition.ConnectionPointReference.End),
+                extent: TextExtent.FromBounds(transition.SourceReference.Start, transition.ExitConnectionPointReference.End),
                 lineRange: new LineRange(
                     start: transition.SourceReference.Location.StartLinePosition,
-                    end: transition.ConnectionPointReference.Location.EndLinePosition),
-                filePath: transition.ConnectionPointReference.Location.FilePath);
+                    end: transition.ExitConnectionPointReference.Location.EndLinePosition),
+                filePath: transition.ExitConnectionPointReference.Location.FilePath);
 
             var replaceExtent = replaceLocation.Extent;
             if (transition.EdgeMode != null && transition.SourceReference.Location.EndLine == transition.EdgeMode.Location.StartLine) {

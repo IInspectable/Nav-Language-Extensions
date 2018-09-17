@@ -217,7 +217,7 @@
     <Compile Include="Diagnostic\DiagnosticId.cs" />
     <Compile Include="Diagnostic\DiagnosticSeverity.cs" />
     <Compile Include="SemanticModel\CodeGenerationUnitExtensions.cs" />
-    <Compile Include="SemanticModel\ConnectionPointReferenceSymbol.cs" />
+    <Compile Include="SemanticModel\ExitConnectionPointReferenceSymbol.cs" />
     <Compile Include="SemanticModel\ConnectionPointSymbol.cs" />
     <Compile Include="CodeGen\CSharp.cs" />
     <Compile Include="SemanticModel\EdgeModeSymbol.cs" />
@@ -227,7 +227,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SymbolVisitor.tt</DependentUpon>
     </Compile>
-    <Compile Include="SemanticModel\IConnectionPointReferenceSymbol.cs" />
+    <Compile Include="SemanticModel\IExitConnectionPointReferenceSymbol.cs" />
     <Compile Include="SemanticModel\IEdge.cs" />
     <Compile Include="SemanticModel\IEdgeModeSymbol.cs" />
     <Compile Include="SemanticModel\IIncludeSymbol.cs" />

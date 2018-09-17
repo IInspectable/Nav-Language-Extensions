@@ -18,6 +18,8 @@ namespace Pharmatechnik.Nav.Language {
             References     = new List<INodeReferenceSymbol>();
         }
 
+        public override SyntaxTree SyntaxTree => Syntax.SyntaxTree;
+
         [NotNull]
         public T Syntax { get; }
 

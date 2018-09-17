@@ -49,9 +49,9 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.ErrorFix {
 
             // 2. Es darf noch keine ExitTransition mit dem Verbindungspunkt geben
             return TaskNode.Outgoings
-                           .Where(trans => trans.ConnectionPointReference != null)
+                           .Where(trans => trans.ExitConnectionPointReference != null)
                             // ReSharper disable once PossibleNullReferenceException
-                           .All(o => o.ConnectionPointReference.Declaration != ConnectionPoint);
+                           .All(o => o.ExitConnectionPointReference.Declaration != ConnectionPoint);
         }
 
         public IList<TextChange> GetTextChanges() {
@@ -80,7 +80,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes.ErrorFix {
 
             var taskDef    = codegenerationUnit?.TryFindTaskDefinition(TargetNodeRef.Declaration?.ContainingTask.Name);
             var taskNode   = taskDef.TryFindNode<ITaskNodeSymbol>(TaskNode.Name);
-            var exitEdge   = taskNode?.Outgoings.FirstOrDefault(e => e.ConnectionPointReference?.Name == ConnectionPoint.Name);
+            var exitEdge   = taskNode?.Outgoings.FirstOrDefault(e => e.ExitConnectionPointReference?.Name == ConnectionPoint.Name);
             var targetNode = exitEdge?.TargetReference;
 
             return targetNode?.Location.Extent ?? TextExtent.Missing;

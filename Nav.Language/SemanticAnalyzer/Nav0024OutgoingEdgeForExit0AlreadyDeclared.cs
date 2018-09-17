@@ -16,7 +16,7 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
                 if (taskNode.References.Any() && taskNode.Declaration != null) {
 
                     var actualExits = taskNode.Outgoings
-                                              .Select(et => et.ConnectionPointReference)
+                                              .Select(et => et.ExitConnectionPointReference)
                                               .Where(cp => cp != null)
                                               .ToList();
 

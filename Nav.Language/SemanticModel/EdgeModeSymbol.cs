@@ -4,9 +4,14 @@ namespace Pharmatechnik.Nav.Language {
 
         // ReSharper disable once NotNullMemberIsNotInitialized Transition wird im Ctor der Transition während der Initialisierung gesetzt 
         // In der "freien" Wildbahn" darf hingegen der Null Fall nicht auftreten
-        public EdgeModeSymbol(string name, Location location, EdgeMode edgeMode): base(name, location) {
-            EdgeMode = edgeMode;
+        public EdgeModeSymbol(SyntaxTree syntaxTree, string name, Location location, EdgeMode edgeMode)
+            : base(name, location) {
+
+            SyntaxTree = syntaxTree;
+            EdgeMode   = edgeMode;
         }
+
+        public override SyntaxTree SyntaxTree { get; }
 
         public EdgeMode EdgeMode { get; }
         public IEdge    Edge     { get; set; }

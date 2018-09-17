@@ -137,8 +137,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             var exitTransitions = task.ExitTransitions
                 .Where(et => et.SourceReference?.Name == exitAnnotation.ExitTaskName)
-                .Where(et => et.ConnectionPointReference != null)
-                .Select(et => new AmbiguousLocation(et.ConnectionPointReference?.Location, et.ConnectionPointReference.Name))
+                .Where(et => et.ExitConnectionPointReference != null)
+                .Select(et => new AmbiguousLocation(et.ExitConnectionPointReference?.Location, et.ExitConnectionPointReference.Name))
                 .ToList();
 
             if (!exitTransitions.Any()) {

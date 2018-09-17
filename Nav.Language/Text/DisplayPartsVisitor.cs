@@ -21,12 +21,12 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         #region ConnectionPoints
 
-        public override ImmutableArray<ClassifiedText> VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
-            if (connectionPointReferenceSymbol.Declaration == null) {
+        public override ImmutableArray<ClassifiedText> VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+            if (exitConnectionPointReferenceSymbol.Declaration == null) {
                 return default;
             }
 
-            return Visit(connectionPointReferenceSymbol.Declaration);
+            return Visit(exitConnectionPointReferenceSymbol.Declaration);
         }
 
         public override ImmutableArray<ClassifiedText> VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
