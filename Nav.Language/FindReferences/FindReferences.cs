@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System.Threading.Tasks;
+using System.Linq;
 
 #endregion
 
@@ -21,7 +22,10 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                     return;
                 }
 
-                foreach (var reference in FindReferencesVisitor.Invoke(definition)) {
+                foreach (var reference in FindReferencesVisitor.Invoke(definition)
+                                                               .OrderBy(d => d.Location.StartLine)
+                                                               .ThenBy(d => d.Location.StartCharacter)) {
+
                     if (context.CancellationToken.IsCancellationRequested) {
                         return;
                     }

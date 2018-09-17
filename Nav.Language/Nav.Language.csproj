@@ -51,11 +51,12 @@
     <Compile Include="CodeFixes\Refactoring\RefactoringCodeFix.cs" />
     <Compile Include="CodeFixes\StyleFix\StyleCodeFix.cs" />
     <Compile Include="FindReferences\DefinitionEntry.cs" />
-    <Compile Include="FindReferences\DefinitionRootFinder.cs" />
     <Compile Include="FindReferences\FindReferences.cs" />
+    <Compile Include="FindReferences\FindRootDefinitionVisitor.cs" />
     <Compile Include="FindReferences\IFindReferencesContext.cs" />
     <Compile Include="FindReferences\ReferenceEntry.cs" />
     <Compile Include="FindReferences\FindReferencesVisitor.cs" />
+    <Compile Include="Text\DisplayPartsVisitor.cs" />
     <Compile Include="Text\ClassifiedText.cs" />
     <Compile Include="Text\ClassifiedTextExtensions.cs" />
     <Compile Include="Text\SourceTextExtensions.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="CodeFixes\CodeFixContext.cs" />
     <Compile Include="CodeFixes\CodeFixImpact.cs" />
     <Compile Include="CodeFixes\CodeFixPrio.cs" />
+    <Compile Include="Text\SymbolExtensions.cs" />
     <Compile Include="Text\TextEditorSettings.cs" />
     <Compile Include="CodeFixes\StyleFix\RemoveUnusedIncludeDirectiveCodeFix.cs" />
     <Compile Include="CodeFixes\StyleFix\RemoveUnusedTaskDeclarationCodeFix.cs" />
