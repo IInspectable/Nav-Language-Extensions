@@ -92,7 +92,6 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         [CanBeNull]
         TextBlock ToTextBlock(params ClassifiedText[] parts) {
-
             return ToTextBlock(parts.ToImmutableArray());
         }
 

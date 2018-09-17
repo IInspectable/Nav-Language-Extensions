@@ -76,7 +76,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             return CreateClassifiedText(
                 ClassifiedText.Keyword(SyntaxFacts.TaskrefKeyword),
                 ClassifiedText.Space,
-                ClassifiedText.Identifier(includeSymbol.FileName) // Sieh als Identifier besser aus...
+                ClassifiedText.Identifier(includeSymbol.FileName) // Sieht als Identifier besser aus...
             );
         }
 
