@@ -25,8 +25,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                     return;
                 }
 
-                var definitionEntry= new DefinitionEntry(definition, definition.ToDisplayParts());
-               
+                var definitionEntry = new DefinitionEntry(definition, definition.ToDisplayParts());
 
                 foreach (var reference in FindReferencesVisitor.Invoke(definitionEntry)
                                                                .OrderBy(d => d.Location.StartLine)
@@ -36,22 +35,25 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                         return;
                     }
 
-
-                    var displayParts = ImmutableArray<ClassifiedText>.Empty;
-                    
-                    // TODO Klassifizieren
-                    if (reference.SyntaxTree != null) {
-                        var line = reference.SyntaxTree.SourceText.GetTextLineAtPosition(reference.Location.Start);
-                        // TODO Line Endings..
-                        displayParts = displayParts.Add(ClassifiedTexts.Keyword("Max "));
-                        displayParts = displayParts.Add(ClassifiedTexts.Identifier(line.ToString().TrimEnd('\r', '\n')));
-                    } else {
-                        displayParts = displayParts.Add(ClassifiedTexts.Identifier(reference.Name));
+                    if (reference.SyntaxTree == null) {
+                        continue;
                     }
+
+                    var line = reference.SyntaxTree.SourceText.GetTextLineAtPosition(reference.Location.Start);
+
+                    // TODO Line Endings..
+                    var end = line.End;
+                    if (line.End - 2 >= line.Start) {
+                        end -= 2;
+                    }
+
+                    var classifiedText = reference.SyntaxTree
+                                                  .GetClassifiedText(TextExtent.FromBounds(line.Start, end))
+                                                  .ToImmutableArray();
 
                     var item = new ReferenceEntry(definitionEntry,
                                                   reference.Location,
-                                                  displayParts);
+                                                  classifiedText);
 
                     await context.OnReferenceFoundAsync(item);
 
