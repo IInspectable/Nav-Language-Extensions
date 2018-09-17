@@ -1,8 +1,11 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Windows;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
@@ -20,10 +23,14 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         readonly ImmutableArray<ReferenceEntry> _entries;
 
         public TableEntriesSnapshot(FindReferencesContext context, int versionNumber, ImmutableArray<ReferenceEntry> entries) {
-            _context      = context;
-            _entries      = entries;
-            VersionNumber = versionNumber;
+            _context       = context;
+            _entries       = entries;
+            VersionNumber  = versionNumber;
+            HighlightBrush = Presenter.HighlightBackgroundBrush;
+
         }
+
+        Brush HighlightBrush { get; }
 
         public FindReferencesPresenter Presenter => _context.Presenter;
 
@@ -62,7 +69,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                 case StandardTableKeyNames.Text:
                     return entry.Text;
                 case StandardTableKeyNames2.TextInlines:
-                    return Presenter.ToInlines(entry.DisplayParts);
+                    return ToInline(entry);
             }
 
             return null;
@@ -73,6 +80,21 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             content = null;
 
             return false;
+        }
+
+        IEnumerable<Inline> ToInline(ReferenceEntry entry) {
+
+            return Presenter.ToInlines(entry.DisplayParts, (run, part, position) => {
+
+                if (position       == entry.HighlightExtent.Start &&
+                    HighlightBrush != null) {
+
+                    run.SetValue(
+                        TextElement.BackgroundProperty,
+                        HighlightBrush);
+                }
+
+            });
         }
 
     }

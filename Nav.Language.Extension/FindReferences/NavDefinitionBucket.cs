@@ -1,6 +1,8 @@
 ﻿#region Using Directives
 
 using System;
+using System.Windows;
+using System.Windows.Documents;
 
 using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Shell.TableControl;
@@ -37,7 +39,8 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                     content = ImageMonikers.FromSymbol(DefinitionEntry.Symbol);
                     break;
                 case StandardTableKeyNames2.TextInlines:
-                    content = Presenter.ToInlines(DefinitionEntry.DisplayParts, true);
+                    content = Presenter.ToInlines(DefinitionEntry.DisplayParts,
+                                                  (run, _, __) => run.SetValue(TextElement.FontWeightProperty, FontWeights.Bold));
                     break;
                 case StandardTableKeyNames.DocumentName:
                     content = DefinitionEntry.Location.FilePath;

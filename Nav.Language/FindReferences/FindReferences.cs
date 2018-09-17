@@ -51,9 +51,13 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                                                   .GetClassifiedText(TextExtent.FromBounds(line.Start, end))
                                                   .ToImmutableArray();
 
+                    var highlightExtent = new TextExtent(start: reference.Start - line.Start,
+                                                         length: reference.Location.Length);
+
                     var item = new ReferenceEntry(definitionEntry,
                                                   reference.Location,
-                                                  classifiedText);
+                                                  classifiedText,
+                                                  highlightExtent);
 
                     await context.OnReferenceFoundAsync(item);
 
