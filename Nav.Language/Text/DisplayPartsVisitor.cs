@@ -1,23 +1,17 @@
 ﻿#region Using Directives
 
-using Pharmatechnik.Nav.Language.Text;
-
 using System.Collections.Immutable;
+
+using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language.Text {
 
     class DisplayPartsVisitor: SymbolVisitor<ImmutableArray<ClassifiedText>> {
 
-        DisplayPartsVisitor(ISymbol originatingSymbol) {
-            OriginatingSymbol = originatingSymbol;
-        }
-
-        ISymbol OriginatingSymbol { get; }
-
         public static ImmutableArray<ClassifiedText> Invoke(ISymbol source) {
-            var builder = new DisplayPartsVisitor(source);
+            var builder = new DisplayPartsVisitor();
             return builder.Visit(source);
         }
 
@@ -82,11 +76,19 @@ namespace Pharmatechnik.Nav.Language {
             return CreateClassifiedText(
                 ClassifiedText.Keyword(SyntaxFacts.TaskrefKeyword),
                 ClassifiedText.Space,
-                ClassifiedText.StringLiteral(includeSymbol.FileName)
+                ClassifiedText.Identifier(includeSymbol.FileName) // Sieh als Identifier besser aus...
             );
         }
 
         #region Nodes
+
+        public override ImmutableArray<ClassifiedText> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
+            if (nodeReferenceSymbol.Declaration != null) {
+                return Visit(nodeReferenceSymbol.Declaration);
+            }
+
+            return DefaultVisit(nodeReferenceSymbol);
+        }
 
         public override ImmutableArray<ClassifiedText> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
             return Visit(initNodeAliasSymbol.InitNode);
@@ -105,6 +107,10 @@ namespace Pharmatechnik.Nav.Language {
                 ClassifiedText.Space,
                 ClassifiedText.Identifier(initNodeSymbol.Alias.Name)
             );
+        }
+
+        public override ImmutableArray<ClassifiedText> VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAlias) {
+            return Visit(taskNodeAlias.TaskNode);
         }
 
         public override ImmutableArray<ClassifiedText> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
@@ -170,6 +176,18 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         #endregion
+
+        public override ImmutableArray<ClassifiedText> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
+
+            var codeInfo = SignalTriggerCodeInfo.FromSignalTrigger(signalTriggerSymbol);
+
+            return CreateClassifiedText(
+                ClassifiedText.TaskName(codeInfo.Task.WfsTypeName),
+                ClassifiedText.Punctuation("."),
+                ClassifiedText.Identifier(codeInfo.TriggerLogicMethodName),
+                ClassifiedText.Punctuation("()")
+            );
+        }
 
         ImmutableArray<ClassifiedText> CreateClassifiedText(params ClassifiedText[] parts) {
             return parts.ToImmutableArray();

@@ -7,9 +7,10 @@ using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.IO;
 
+using JetBrains.Annotations;
+
 using Microsoft.VisualStudio.Text.Classification;
 
-using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Extension.Classification;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Images;
@@ -34,8 +35,10 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         }
 
+        public IClassificationFormatMap ClassificationFormatMap => _classificationFormatMapService.GetClassificationFormatMap("tooltip");
+
         public UIElement BuildSymbolQuickInfoContent(ISymbol source) {
-            return Builder.Build(source, this);
+            return SymbolQuickInfoVisitor.Build(source, this);
         }
 
         public UIElement BuildKeywordQuickInfoContent(string keyword) {
@@ -62,57 +65,57 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             return control;
         }
 
-        TextBlock ToTextBlock(string text, TextClassification classification) {
+        [CanBeNull]
+        SymbolQuickInfoControl CreateDefaultSymbolQuickInfoControl(ISymbol symbol) {
 
-            var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
+            var displayParts = symbol.ToDisplayParts();
+            if (displayParts.IsDefaultOrEmpty) {
+                return null;
+            }
 
-            var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
-            textBlock.SetDefaultTextProperties(formatMap);
+            var imageMoniker = ImageMonikers.FromSymbol(symbol);
+            var content      = ToTextBlock(symbol.ToDisplayParts());
 
-            var run = ToRun(text, classification, formatMap);
+            var control = new SymbolQuickInfoControl {
+                CrispImage  = {Moniker = imageMoniker},
+                TextContent = {Content = content}
+            };
 
-            textBlock.Inlines.Add(run);
+            return control;
 
-            return textBlock;
         }
 
-        TextBlock ToTextBlock(SyntaxTree syntaxTree) {
+        [CanBeNull]
+        TextBlock ToTextBlock(string text, TextClassification classification) {
+            return ToTextBlock(new ClassifiedText(text, classification));
+        }
+
+        [CanBeNull]
+        TextBlock ToTextBlock(params ClassifiedText[] parts) {
+
+            return ToTextBlock(parts.ToImmutableArray());
+        }
+
+        [CanBeNull]
+        TextBlock ToTextBlock(ImmutableArray<ClassifiedText> parts) {
+
+            if (parts.IsDefaultOrEmpty) {
+                return null;
+            }
 
             var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
-            var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
 
-            textBlock.SetDefaultTextProperties(formatMap);
+            textBlock.SetDefaultTextProperties(ClassificationFormatMap);
 
-            foreach (var token in syntaxTree.Tokens) {
-
-                var run = ToRun(token.ToString(), token.Classification, formatMap);
-
-                textBlock.Inlines.Add(run);
+            foreach (var part in parts) {
+                var inline = ToInline(part.Text, part.Classification, ClassificationFormatMap);
+                textBlock.Inlines.Add(inline);
             }
 
             return textBlock;
         }
 
-        TextBlock ToTextBlock(SignalTriggerCodeInfo codeInfo) {
-
-            var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
-            var formatMap = _classificationFormatMapService.GetClassificationFormatMap("tooltip");
-
-            textBlock.SetDefaultTextProperties(formatMap);
-
-            //var nsRun = ToRun(codeModel.WflNamespace+".", SyntaxTokenClassification.Identifier, formatMap);
-            //textBlock.Inlines.Add(nsRun);
-
-            var typeRun = ToRun(codeInfo.Task.WfsTypeName, TextClassification.TaskName, formatMap);
-            textBlock.Inlines.Add(typeRun);
-
-            var methodRun = ToRun("." + codeInfo.TriggerLogicMethodName + "()", TextClassification.Identifier, formatMap);
-            textBlock.Inlines.Add(methodRun);
-
-            return textBlock;
-        }
-
-        Run ToRun(string text, TextClassification classification, IClassificationFormatMap formatMap) {
+        Run ToInline(string text, TextClassification classification, IClassificationFormatMap formatMap) {
             var run = new Run(text);
 
             _classificationMap.TryGetValue(classification, out var ct);
