@@ -3,6 +3,8 @@
 using System.Threading.Tasks;
 using System.Linq;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.FindReferences {
@@ -17,12 +19,15 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             return Task.Run(async () => {
 
-                var definition = FindRootDefinitionVisitor.Invoke(symbol);
+                var definition = FindDefinitionVisitor.Invoke(symbol);
                 if (definition == null) {
                     return;
                 }
 
-                foreach (var reference in FindReferencesVisitor.Invoke(definition)
+                var definitionEntry= new DefinitionEntry(definition, definition.ToDisplayParts());
+               
+
+                foreach (var reference in FindReferencesVisitor.Invoke(definitionEntry)
                                                                .OrderBy(d => d.Location.StartLine)
                                                                .ThenBy(d => d.Location.StartCharacter)) {
 
@@ -30,7 +35,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                         return;
                     }
 
-                    var item = new ReferenceEntry(definition,
+                    var item = new ReferenceEntry(definitionEntry,
                                                   reference.Location,
                                                   reference.Name);
 
