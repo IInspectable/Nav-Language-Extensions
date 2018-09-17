@@ -27,6 +27,23 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
+        public string Verb {
+            get {
+                // TODO Evtl. Strings wo anders hinpacken
+                switch (EdgeMode) {
+
+                    case EdgeMode.Modal:
+                        return "modal";
+                    case EdgeMode.NonModal:
+                        return "non-modal";
+                    case EdgeMode.Goto:
+                        return "go to";
+                    default:
+                        return "";
+                }
+            }
+        }
+
     }
 
 }

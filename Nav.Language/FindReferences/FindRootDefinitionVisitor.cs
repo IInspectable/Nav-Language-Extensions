@@ -1,7 +1,5 @@
 ﻿#region Using Directives
 
-using System.Collections.Immutable;
-
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;

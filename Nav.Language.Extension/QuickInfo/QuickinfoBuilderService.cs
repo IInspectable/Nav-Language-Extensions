@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -68,11 +69,6 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         [CanBeNull]
         SymbolQuickInfoControl CreateDefaultSymbolQuickInfoControl(ISymbol symbol) {
 
-            var displayParts = symbol.ToDisplayParts();
-            if (displayParts.IsDefaultOrEmpty) {
-                return null;
-            }
-
             var imageMoniker = ImageMonikers.FromSymbol(symbol);
             var content      = ToTextBlock(symbol.ToDisplayParts());
 
@@ -96,9 +92,9 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         }
 
         [CanBeNull]
-        TextBlock ToTextBlock(ImmutableArray<ClassifiedText> parts) {
+        TextBlock ToTextBlock(IReadOnlyCollection<ClassifiedText> parts) {
 
-            if (parts.IsDefaultOrEmpty) {
+            if (parts.Count == 0) {
                 return null;
             }
 
@@ -115,15 +111,16 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         }
 
         Run ToInline(string text, TextClassification classification, IClassificationFormatMap formatMap) {
-            var run = new Run(text);
+           
+            var inline = new Run(text);
 
             _classificationMap.TryGetValue(classification, out var ct);
             if (ct != null) {
                 var props = formatMap.GetTextProperties(ct);
-                run.SetTextProperties(props);
+                inline.SetTextProperties(props);
             }
 
-            return run;
+            return inline;
         }
 
     }

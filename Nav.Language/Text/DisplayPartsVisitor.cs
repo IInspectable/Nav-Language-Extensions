@@ -15,6 +15,10 @@ namespace Pharmatechnik.Nav.Language.Text {
             return builder.Visit(source);
         }
 
+        protected override ImmutableArray<ClassifiedText> DefaultVisit(ISymbol symbol) {
+            return ImmutableArray<ClassifiedText>.Empty;
+        }
+
         #region ConnectionPoints
 
         public override ImmutableArray<ClassifiedText> VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
@@ -28,9 +32,9 @@ namespace Pharmatechnik.Nav.Language.Text {
         public override ImmutableArray<ClassifiedText> VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
 
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.InitKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.Identifier(initConnectionPointSymbol.Syntax.Identifier.ToString())
+                ClassifiedTexts.Keyword(SyntaxFacts.InitKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.Identifier(initConnectionPointSymbol.Syntax.Identifier.ToString())
             );
 
         }
@@ -38,16 +42,16 @@ namespace Pharmatechnik.Nav.Language.Text {
         public override ImmutableArray<ClassifiedText> VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol) {
 
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.ExitKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.Identifier(exitConnectionPointSymbol.Syntax.Identifier.ToString())
+                ClassifiedTexts.Keyword(SyntaxFacts.ExitKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.Identifier(exitConnectionPointSymbol.Syntax.Identifier.ToString())
             );
         }
 
         public override ImmutableArray<ClassifiedText> VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol) {
 
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.EndKeyword)
+                ClassifiedTexts.Keyword(SyntaxFacts.EndKeyword)
             );
         }
 
@@ -56,9 +60,9 @@ namespace Pharmatechnik.Nav.Language.Text {
         public override ImmutableArray<ClassifiedText> VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
 
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.TaskrefKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.TaskName(taskDeclarationSymbol.Name)
+                ClassifiedTexts.Keyword(SyntaxFacts.TaskrefKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.TaskName(taskDeclarationSymbol.Name)
             );
 
         }
@@ -66,17 +70,17 @@ namespace Pharmatechnik.Nav.Language.Text {
         public override ImmutableArray<ClassifiedText> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
 
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.TaskKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.TaskName(taskDefinitionSymbol.Name)
+                ClassifiedTexts.Keyword(SyntaxFacts.TaskKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.TaskName(taskDefinitionSymbol.Name)
             );
         }
 
         public override ImmutableArray<ClassifiedText> VisitIncludeSymbol(IIncludeSymbol includeSymbol) {
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.TaskrefKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.Identifier(includeSymbol.FileName) // Sieht als Identifier besser aus...
+                ClassifiedTexts.Keyword(SyntaxFacts.TaskrefKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.Identifier(includeSymbol.FileName) // Sieht als Identifier besser aus...
             );
         }
 
@@ -98,14 +102,14 @@ namespace Pharmatechnik.Nav.Language.Text {
 
             if (initNodeSymbol.Alias?.Name == null) {
                 return CreateClassifiedText(
-                    ClassifiedText.Keyword(SyntaxFacts.InitKeyword)
+                    ClassifiedTexts.Keyword(SyntaxFacts.InitKeyword)
                 );
             }
 
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.InitKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.Identifier(initNodeSymbol.Alias.Name)
+                ClassifiedTexts.Keyword(SyntaxFacts.InitKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.Identifier(initNodeSymbol.Alias.Name)
             );
         }
 
@@ -121,71 +125,83 @@ namespace Pharmatechnik.Nav.Language.Text {
 
             if (taskNodeSymbol.Alias != null) {
                 return CreateClassifiedText(
-                    ClassifiedText.Keyword(SyntaxFacts.TaskKeyword),
-                    ClassifiedText.Space,
-                    ClassifiedText.TaskName(taskNodeSymbol.Declaration.Name),
-                    ClassifiedText.Space,
-                    ClassifiedText.Identifier(taskNodeSymbol.Name)
+                    ClassifiedTexts.Keyword(SyntaxFacts.TaskKeyword),
+                    ClassifiedTexts.Space,
+                    ClassifiedTexts.TaskName(taskNodeSymbol.Declaration.Name),
+                    ClassifiedTexts.Space,
+                    ClassifiedTexts.Identifier(taskNodeSymbol.Name)
                 );
             }
 
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.TaskKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.TaskName(taskNodeSymbol.Declaration.Name)
+                ClassifiedTexts.Keyword(SyntaxFacts.TaskKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.TaskName(taskNodeSymbol.Declaration.Name)
             );
 
         }
 
         public override ImmutableArray<ClassifiedText> VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.ChoiceKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.Identifier(choiceNodeSymbol.Name)
+                ClassifiedTexts.Keyword(SyntaxFacts.ChoiceKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.Identifier(choiceNodeSymbol.Name)
             );
         }
 
         public override ImmutableArray<ClassifiedText> VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.DialogKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.FormName(dialogNodeSymbol.Name)
+                ClassifiedTexts.Keyword(SyntaxFacts.DialogKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.FormName(dialogNodeSymbol.Name)
             );
         }
 
         public override ImmutableArray<ClassifiedText> VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.ViewKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.FormName(viewNodeSymbol.Name)
+                ClassifiedTexts.Keyword(SyntaxFacts.ViewKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.FormName(viewNodeSymbol.Name)
             );
         }
 
         public override ImmutableArray<ClassifiedText> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.ExitKeyword),
-                ClassifiedText.Space,
-                ClassifiedText.Identifier(exitNodeSymbol.Name)
+                ClassifiedTexts.Keyword(SyntaxFacts.ExitKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.Identifier(exitNodeSymbol.Name)
             );
         }
 
         public override ImmutableArray<ClassifiedText> VisitEndNodeSymbol(IEndNodeSymbol endNodeSymbol) {
             return CreateClassifiedText(
-                ClassifiedText.Keyword(SyntaxFacts.EndKeyword)
+                ClassifiedTexts.Keyword(SyntaxFacts.EndKeyword)
             );
         }
 
         #endregion
+
+        public override ImmutableArray<ClassifiedText> VisitEdgeModeSymbol(IEdgeModeSymbol edgeModeSymbol) {
+            return CreateClassifiedText(
+                ClassifiedTexts.Keyword(edgeModeSymbol.Verb)
+            );
+        }
+
+        public override ImmutableArray<ClassifiedText> VisitSpontaneousTriggerSymbol(ISpontaneousTriggerSymbol spontaneousTriggerSymbol) {
+            return CreateClassifiedText(
+                ClassifiedTexts.Keyword(SyntaxFacts.SpontaneousKeyword)
+            );
+        }
 
         public override ImmutableArray<ClassifiedText> VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
 
             var codeInfo = SignalTriggerCodeInfo.FromSignalTrigger(signalTriggerSymbol);
 
             return CreateClassifiedText(
-                ClassifiedText.TaskName(codeInfo.Task.WfsTypeName),
-                ClassifiedText.Punctuation("."),
-                ClassifiedText.Identifier(codeInfo.TriggerLogicMethodName),
-                ClassifiedText.Punctuation("()")
+                ClassifiedTexts.TaskName(codeInfo.Task.WfsTypeName),
+                ClassifiedTexts.Punctuation("."),
+                ClassifiedTexts.Identifier(codeInfo.TriggerLogicMethodName),
+                ClassifiedTexts.Punctuation("()")
             );
         }
 

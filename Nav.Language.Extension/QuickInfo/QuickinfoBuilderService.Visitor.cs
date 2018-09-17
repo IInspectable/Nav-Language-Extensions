@@ -59,7 +59,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
                                          .OrderBy(call => call.Node.Name)
                                          .Select(call => new CallViewModel(
                                                      edgeModeMoniker: ImageMonikers.FromSymbol(call.EdgeMode),
-                                                     verb: QuickinfoBuilderService.ToTextBlock(GetVerb(call.EdgeMode), TextClassification.Keyword),
+                                                     verb: QuickinfoBuilderService.ToTextBlock(call.EdgeMode.Verb, TextClassification.Keyword),
                                                      nodeMoniker: ImageMonikers.FromSymbol(call.Node),
                                                      node: QuickinfoBuilderService.ToTextBlock(call.Node.Name, TextClassification.Identifier
                                                      ))));
@@ -69,20 +69,6 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
                 };
 
                 return control;
-            }
-
-            string GetVerb(IEdgeModeSymbol callEdgeMode) {
-                switch (callEdgeMode.EdgeMode) {
-
-                    case EdgeMode.Modal:
-                        return "modal";
-                    case EdgeMode.NonModal:
-                        return "non-modal";
-                    case EdgeMode.Goto:
-                        return "go to";
-                    default:
-                        return "";
-                }
             }
 
         }

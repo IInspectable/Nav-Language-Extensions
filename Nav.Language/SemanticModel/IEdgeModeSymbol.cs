@@ -14,6 +14,7 @@ namespace Pharmatechnik.Nav.Language {
         IEdge Edge { get; }
 
         string DisplayName { get; }
+        string Verb        { get; }
 
     }
 
