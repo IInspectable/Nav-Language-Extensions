@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 
 using Microsoft;
+using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Text.Classification;
@@ -28,8 +29,9 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         readonly IEditorFormatMapService         _editorFormatMapService;
         readonly IClassificationFormatMapService _classificationFormatMapService;
+        readonly IFindAllReferencesService       _vsFindAllReferencesService;
 
-        readonly IFindAllReferencesService _vsFindAllReferencesService;
+        readonly ImmutableDictionary<TextClassification, IClassificationType> _classificationMap;
 
         [ImportingConstructor]
         public FindReferencesPresenter(SVsServiceProvider serviceProvider,
@@ -39,33 +41,53 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
             _editorFormatMapService         = editorFormatMapService;
             _classificationFormatMapService = classificationFormatMapService;
-            ClassificationMap               = ClassificationTypeDefinitions.GetSyntaxTokenClassificationMap(classificationTypeRegistryService);
+            _classificationMap              = ClassificationTypeDefinitions.GetSyntaxTokenClassificationMap(classificationTypeRegistryService);
             _vsFindAllReferencesService     = (IFindAllReferencesService) serviceProvider.GetService(typeof(SVsFindAllReferences));
             Assumes.Present(_vsFindAllReferencesService);
         }
 
-        private const string Title = "Find References";
+        IClassificationFormatMap FormatMap    => _classificationFormatMapService.GetClassificationFormatMap("tooltip");
+        IEditorFormatMap         EditorFormat => _editorFormatMapService.GetEditorFormatMap("text");
+
+        Brush HighlightBackgroundBrush {
+            get {
+                var properties     = EditorFormat.GetProperties(MarkerFormatDefinitionNames.ReferenceHighlight);
+                var highlightBrush = properties["Background"] as Brush;
+
+                return highlightBrush;
+            }
+        }
+
+        Brush ToolWindowBackgroundBrush => (Brush) Application.Current.Resources[EnvironmentColors.ToolWindowBackgroundBrushKey];
 
         public FindReferencesContext StartSearch() {
 
-            var window  = _vsFindAllReferencesService.StartSearch(Title);
+            var window  = _vsFindAllReferencesService.StartSearch("Find References");
             var context = new FindReferencesContext(this, window);
 
             return context;
         }
 
-        public ImmutableDictionary<TextClassification, IClassificationType> ClassificationMap;
+        public void HighlightBackground(Run run) {
 
-        public IClassificationFormatMap FormatMap    => _classificationFormatMapService.GetClassificationFormatMap("tooltip");
-        public IEditorFormatMap         EditorFormat => _editorFormatMapService.GetEditorFormatMap("text");
+            var highlightBrush = HighlightBackgroundBrush;
 
-        public Brush HighlightBackgroundBrush {
-            get {
-                var properties = EditorFormat
-                   .GetProperties(MarkerFormatDefinitionNames.ReferenceHighlight);
-                var highlightBrush = properties["Background"] as Brush;
-                return highlightBrush;
+            if (highlightBrush == null) {
+                return;
             }
+
+            run.SetValue(
+                TextElement.BackgroundProperty,
+                HighlightBackgroundBrush);
+
+        }
+
+        public ToolTip CreateToolTip(object content) {
+
+            return new ToolTip {
+                Background = ToolWindowBackgroundBrush,
+                Content    = content
+            };
         }
 
         public TextBlock ToTextBlock(IEnumerable<ClassifiedText> parts, Action<Run, ClassifiedText, int> runAction = null) {
@@ -103,7 +125,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
             var run = new Run(text);
 
-            ClassificationMap.TryGetValue(classification, out var ct);
+            _classificationMap.TryGetValue(classification, out var ct);
 
             if (ct != null) {
                 var props = FormatMap.GetTextProperties(ct);

@@ -56,14 +56,6 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             return content != null;
         }
 
-        //public override bool TryCreateColumnContent(out FrameworkElement content) {
-        //    content = Presenter.ToTextBlock(DefinitionEntry.DisplayParts);
-        //    if (content != null) {
-        //        return true;
-        //    }
-        //    return base.TryCreateColumnContent(out content);
-        //}
-
     }
 
 }

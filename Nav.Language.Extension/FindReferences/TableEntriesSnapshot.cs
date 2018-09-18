@@ -4,10 +4,7 @@ using System;
 using System.Collections.Immutable;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
 
-using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 
@@ -24,14 +21,11 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         readonly ImmutableArray<ReferenceEntry> _entries;
 
         public TableEntriesSnapshot(FindReferencesContext context, int versionNumber, ImmutableArray<ReferenceEntry> entries) {
-            _context       = context;
-            _entries       = entries;
-            VersionNumber  = versionNumber;
-            HighlightBrush = Presenter.HighlightBackgroundBrush;
+            _context      = context;
+            _entries      = entries;
+            VersionNumber = versionNumber;
 
         }
-
-        Brush HighlightBrush { get; }
 
         public FindReferencesPresenter Presenter => _context.Presenter;
 
@@ -55,8 +49,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             switch (keyName) {
                 case StandardTableKeyNames2.Definition:
                     return new NavDefinitionBucket(Presenter, entry.Definition, _context.SourceTypeIdentifier, _context.Identifier);
-                case StandardTableKeyNames2.DefinitionIcon:
-                    return ImageMonikers.TaskDefinition;
+
                 case StandardTableColumnDefinitions.DocumentName:
                     return entry.Location.FilePath;
                 case StandardTableKeyNames.Line:
@@ -68,6 +61,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                 case StandardTableKeyNames.ProjectGuid:
                     return Guid.NewGuid();
                 case StandardTableKeyNames.Text:
+                    // Wird für die Suche verwendet
                     return entry.LineText;
             }
 
@@ -82,7 +76,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
                 content = LinePartsToTextBlock(entry);
                 LazyTooltip.AttachTo(content, () => CreateToolTip(entry));
-                
+
                 return true;
             }
 
@@ -90,39 +84,32 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         }
 
-        ToolTip CreateToolTip(ReferenceEntry entry) {
-
-            return new ToolTip {
-                Background = (Brush) Application.Current.Resources[EnvironmentColors.ToolWindowBackgroundBrushKey],
-                Content    = PreviewPartsToTextBlock(entry)
-            };
-        }
-
         TextBlock LinePartsToTextBlock(ReferenceEntry entry) {
 
             return Presenter.ToTextBlock(entry.LineParts, (run, part, position) => {
 
-                if (position       == entry.LineHighlightExtent.Start &&
-                    HighlightBrush != null) {
+                if (position == entry.LineHighlightExtent.Start) {
 
-                    run.SetValue(
-                        TextElement.BackgroundProperty,
-                        HighlightBrush);
+                    Presenter.HighlightBackground(run);
                 }
 
             });
+        }
+
+        ToolTip CreateToolTip(ReferenceEntry entry) {
+
+            return Presenter.CreateToolTip(PreviewPartsToTextBlock(entry));
+
         }
 
         TextBlock PreviewPartsToTextBlock(ReferenceEntry entry) {
 
             return Presenter.ToTextBlock(entry.PreviewParts, (run, part, position) => {
 
-                if (position       == entry.PreviewHighlightExtent.Start &&
-                    HighlightBrush != null) {
+                if (position == entry.PreviewHighlightExtent.Start) {
 
-                    run.SetValue(
-                        TextElement.BackgroundProperty,
-                        HighlightBrush);
+                    Presenter.HighlightBackground(run);
+
                 }
 
             });
