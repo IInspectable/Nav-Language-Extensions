@@ -1,9 +1,8 @@
 ﻿#region Using Directives
 
-using System;
+using System.Linq;
 using System.Collections.Immutable;
 using System.Windows;
-using System.Windows.Controls;
 
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
@@ -14,14 +13,15 @@ using Pharmatechnik.Nav.Language.FindReferences;
 
 namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
-    partial class TableEntriesSnapshot: WpfTableEntriesSnapshotBase {
+    class TableEntriesSnapshot: WpfTableEntriesSnapshotBase {
 
-        readonly FindReferencesContext         _context;
-        readonly ImmutableArray<ReferenceItem> _entries;
+        readonly FindReferencesContext          _context;
+        readonly ImmutableArray<ReferenceEntry> _entries;
 
-        public TableEntriesSnapshot(FindReferencesContext context, int versionNumber, ImmutableArray<ReferenceItem> entries) {
-            _context      = context;
-            _entries      = entries;
+        public TableEntriesSnapshot(FindReferencesContext context, int versionNumber, ImmutableArray<ReferenceItem> items) {
+            _context = context;
+            _entries = items.Select(item => new ReferenceEntry(Presenter, item))
+                            .ToImmutableArray();
             VersionNumber = versionNumber;
 
         }
@@ -39,77 +39,21 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         }
 
         public override bool TryGetValue(int index, string keyName, out object content) {
-            content = GetValue(_entries[index], keyName);
+            content = _entries[index].GetValue(keyName);
             return content != null;
-        }
-
-        private object GetValue(ReferenceItem item, string keyName) {
-            switch (keyName) {
-                case StandardTableKeyNames2.Definition:
-                    return new DefinitionEntry(Presenter, item.Definition, _context.SourceTypeIdentifier, _context.Identifier);
-                case StandardTableColumnDefinitions.DocumentName:
-                    return item.Location.FilePath;
-                case StandardTableKeyNames.Line:
-                    return item.Location.StartLine;
-                case StandardTableKeyNames.Column:
-                    return item.Location.StartCharacter;
-                case StandardTableKeyNames.ProjectName:
-                    return NavLanguagePackage.GetContainingProject(item.Location.FilePath)?.Name ?? "Miscellaneous Files";
-                case StandardTableKeyNames.ProjectGuid:
-                    return Guid.NewGuid();
-                case StandardTableKeyNames.Text:
-                    // Wird für die Suche verwendet
-                    return item.LineText;
-            }
-
-            return null;
         }
 
         public override bool TryCreateColumnContent(int index, string columnName, bool singleColumnView, out FrameworkElement content) {
 
             if (columnName == StandardTableColumnDefinitions2.LineText) {
 
-                var entry = _entries[index];
-
-                content = LinePartsToTextBlock(entry);
-                LazyTooltip.AttachTo(content, () => CreateToolTip(entry));
+                content = _entries[index].CreatLineContent(singleColumnView);
 
                 return true;
             }
 
             return base.TryCreateColumnContent(index, columnName, singleColumnView, out content);
 
-        }
-
-        TextBlock LinePartsToTextBlock(ReferenceItem item) {
-
-            return Presenter.ToTextBlock(item.LineParts, (run, part, position) => {
-
-                if (position == item.LineHighlightExtent.Start) {
-
-                    Presenter.HighlightBackground(run);
-                }
-
-            });
-        }
-
-        ToolTip CreateToolTip(ReferenceItem item) {
-
-            return Presenter.CreateToolTip(PreviewPartsToTextBlock(item));
-
-        }
-
-        TextBlock PreviewPartsToTextBlock(ReferenceItem item) {
-
-            return Presenter.ToTextBlock(item.PreviewParts, (run, part, position) => {
-
-                if (position == item.PreviewHighlightExtent.Start) {
-
-                    Presenter.HighlightBackground(run);
-
-                }
-
-            });
         }
 
     }

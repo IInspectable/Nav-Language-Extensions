@@ -11,27 +11,17 @@ using Pharmatechnik.Nav.Language.FindReferences;
 
 namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
-    class ReferenceEntry {
-
-        public ReferenceEntry(FindReferencesPresenter presenter, ReferenceItem referenceItem) {
-            Presenter     = presenter;
-            ReferenceItem = referenceItem;
-
-        }
-
-        public FindReferencesPresenter Presenter     { get; }
-        public ReferenceItem           ReferenceItem { get; }
-
-    }
-
     class DefinitionEntry: DefinitionBucket {
 
         public DefinitionEntry(FindReferencesPresenter presenter,
                                DefinitionItem definitionItem,
-                               string sourceTypeIdentifier,
-                               string identifier,
                                bool expandedByDefault = true)
-            : base(definitionItem.FullText, sourceTypeIdentifier, identifier, tooltip: null, comparer: null, expandedByDefault: expandedByDefault) {
+            : base(definitionItem.FullText,
+                   FindReferencesContext.FindAllReferencesSourceTypeIdentifier,
+                   FindReferencesContext.FindAllReferencesIdentifier,
+                   tooltip: null,
+                   comparer: null,
+                   expandedByDefault: expandedByDefault) {
 
             Presenter      = presenter;
             DefinitionItem = definitionItem;
