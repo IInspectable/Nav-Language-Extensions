@@ -63,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
     [ProvideService(typeof(NavLanguageService))]
     [ProvideService(typeof(NavLanguagePackage))]
     sealed partial class NavLanguagePackage: Package {
-        
+
         static readonly Logger Logger = Logger.Create<NavLanguagePackage>();
 
         public NavLanguagePackage() {
@@ -237,11 +237,11 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
         public static Project GetContainingProject(string filePath) {
-            
+
             Dispatcher.CurrentDispatcher.VerifyAccess();
 
             var dteSolution = DTE.Solution;
-            if(dteSolution == null) {
+            if (dteSolution == null) {
                 Logger.Warn($"{nameof(GetContainingProject)}: There's no DTE solution");
                 return null;
             }
@@ -285,7 +285,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             return project;
 
             string ProjectPaths(IEnumerable<Project> projects) {
-                return projects.Aggregate(new StringBuilder(), (sb, p) => sb.AppendLine(p.FilePath), sb=>sb.ToString());
+                return projects.Aggregate(new StringBuilder(), (sb, p) => sb.AppendLine(p.FilePath), sb => sb.ToString());
             }
         }
 
@@ -422,6 +422,39 @@ namespace Pharmatechnik.Nav.Language.Extension {
             }
 
             return imageAttributes;
+        }
+
+        public static bool IsSolutionOpen {
+            get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                var solution = GetGlobalService<SVsSolution, IVsSolution>();
+                solution.GetProperty((int) __VSPROPID.VSPROPID_IsSolutionOpen, out object value);
+
+                return value is bool isSolOpen && isSolOpen;
+            }
+        }
+
+        [CanBeNull]
+        public static DirectoryInfo SearchDirectory => SolutionDirectory;
+
+        [CanBeNull]
+        public static DirectoryInfo SolutionDirectory {
+            get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                var solution = GetGlobalService<SVsSolution, IVsSolution>();
+
+                if (!IsSolutionOpen) {
+                    return null;
+                }
+
+                if (ErrorHandler.Succeeded(solution.GetSolutionInfo(out var solutionDirectory, out _, out _))) {
+                    return new DirectoryInfo(solutionDirectory);
+                }
+
+                return null;
+            }
         }
 
     }

@@ -13,15 +13,11 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
     public class ReferenceFinder {
 
-        public static Task FindReferences(ISymbol symbol, IFindReferencesContext context) {
-
-            if (symbol == null) {
-                return Task.CompletedTask;
-            }
+        public static Task FindReferences(FindReferencesArgs args, IFindReferencesContext context) {
 
             return Task.Run(async () => {
 
-                var definition = FindDefinitionVisitor.Invoke(symbol);
+                var definition = FindDefinitionVisitor.Invoke(args.Symbol);
                 if (definition == null) {
                     return;
                 }

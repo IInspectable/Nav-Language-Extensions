@@ -53,6 +53,7 @@
     <Compile Include="FindReferences\DefinitionEntry.cs" />
     <Compile Include="FindReferences\FindReferences.cs" />
     <Compile Include="FindReferences\FindDefinitionVisitor.cs" />
+    <Compile Include="FindReferences\FindReferencesArgs.cs" />
     <Compile Include="FindReferences\IFindReferencesContext.cs" />
     <Compile Include="FindReferences\ReferenceEntry.cs" />
     <Compile Include="FindReferences\FindReferencesVisitor.cs" />

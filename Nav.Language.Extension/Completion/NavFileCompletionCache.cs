@@ -5,10 +5,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading;
 
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Events;
-using Microsoft.VisualStudio.Shell.Interop;
 
 #endregion
 
@@ -18,13 +15,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
     [Export]
     class NavFileCompletionCache {
 
-        readonly IVsSolution _solution;
-        string               _directory;
+        string _directory;
 
         [ImportingConstructor]
         public NavFileCompletionCache() {
-
-            _solution = NavLanguagePackage.GetGlobalService<SVsSolution, IVsSolution>();
 
             UpdateSearchDirectory();
 
@@ -60,32 +54,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
         }
 
         void UpdateSearchDirectory() {
-
-            _directory = GetSolutionDirectory();
-        }
-
-        bool IsSolutionOpen {
-            get {
-                ThreadHelper.ThrowIfNotOnUIThread();
-
-                _solution.GetProperty((int) __VSPROPID.VSPROPID_IsSolutionOpen, out object value);
-
-                return value is bool isSolOpen && isSolOpen;
-            }
-        }
-
-        string GetSolutionDirectory() {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            if (!IsSolutionOpen) {
-                return null;
-            }
-
-            if (ErrorHandler.Succeeded(_solution.GetSolutionInfo(out var solutionDirectory, out _, out _))) {
-                return solutionDirectory;
-            }
-
-            return null;
+            _directory = NavLanguagePackage.SearchDirectory?.FullName;
         }
 
         void OnAfterOpenSolution(object sender, OpenSolutionEventArgs e) {

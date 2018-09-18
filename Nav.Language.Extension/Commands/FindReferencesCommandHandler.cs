@@ -49,9 +49,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         async Task FindAllReferencesAsync(ISymbol symbol) {
 
+            if (symbol == null) {
+                return;
+            }
+
+            var args    = new FindReferencesArgs(symbol, NavLanguagePackage.SearchDirectory);
             var context = _referencesPresenter.StartSearch();
 
-            await ReferenceFinder.FindReferences(symbol, context);
+            await ReferenceFinder.FindReferences(args, context);
             await context.OnCompletedAsync();
 
         }
