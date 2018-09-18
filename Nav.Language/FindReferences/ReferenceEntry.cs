@@ -11,20 +11,29 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
     public class ReferenceEntry {
 
-        public ReferenceEntry(DefinitionEntry definition, Location location, ImmutableArray<ClassifiedText> displayParts, TextExtent highlightExtent) {
-            Definition      = definition ?? throw new ArgumentNullException(nameof(definition));
-            Location        = location   ?? throw new ArgumentNullException(nameof(location));
-            DisplayParts    = displayParts;
-            HighlightExtent = highlightExtent;
+        public ReferenceEntry(DefinitionEntry definition, Location location,
+                              ImmutableArray<ClassifiedText> lineParts,
+                              TextExtent lineHighlightExtent,
+                              ImmutableArray<ClassifiedText> previewParts,
+                              TextExtent previewHighlightExtent) {
+
+            Definition             = definition ?? throw new ArgumentNullException(nameof(definition));
+            Location               = location   ?? throw new ArgumentNullException(nameof(location));
+            LineParts              = lineParts;
+            LineHighlightExtent    = lineHighlightExtent;
+            PreviewParts           = previewParts;
+            PreviewHighlightExtent = previewHighlightExtent;
 
         }
 
-        public DefinitionEntry                Definition      { get; }
-        public ImmutableArray<ClassifiedText> DisplayParts    { get; }
-        public Location                       Location        { get; }
-        public TextExtent                     HighlightExtent { get; }
+        public DefinitionEntry                Definition             { get; }
+        public TextExtent                     LineHighlightExtent    { get; }
+        public ImmutableArray<ClassifiedText> LineParts              { get; }
+        public Location                       Location               { get; }
+        public ImmutableArray<ClassifiedText> PreviewParts           { get; }
+        public TextExtent                     PreviewHighlightExtent { get; }
 
-        public string Text => DisplayParts.JoinText();
+        public string LineText => LineParts.JoinText();
 
     }
 

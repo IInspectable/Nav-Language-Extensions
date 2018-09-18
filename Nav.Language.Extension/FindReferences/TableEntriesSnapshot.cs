@@ -1,12 +1,13 @@
 ﻿#region Using Directives
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
+using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 
@@ -17,7 +18,7 @@ using Pharmatechnik.Nav.Language.FindReferences;
 
 namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
-    class TableEntriesSnapshot: WpfTableEntriesSnapshotBase {
+    partial class TableEntriesSnapshot: WpfTableEntriesSnapshotBase {
 
         readonly FindReferencesContext          _context;
         readonly ImmutableArray<ReferenceEntry> _entries;
@@ -67,26 +68,56 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                 case StandardTableKeyNames.ProjectGuid:
                     return Guid.NewGuid();
                 case StandardTableKeyNames.Text:
-                    return entry.Text;
-                case StandardTableKeyNames2.TextInlines:
-                    return ToInline(entry);
+                    return entry.LineText;
             }
 
             return null;
         }
 
-        public override bool TryCreateColumnContent(
-            int index, string columnName, bool singleColumnView, out FrameworkElement content) {
-            content = null;
+        public override bool TryCreateColumnContent(int index, string columnName, bool singleColumnView, out FrameworkElement content) {
 
-            return false;
+            if (columnName == StandardTableColumnDefinitions2.LineText) {
+
+                var entry = _entries[index];
+
+                content = LinePartsToTextBlock(entry);
+                LazyTooltip.AttachTo(content, () => CreateToolTip(entry));
+                
+                return true;
+            }
+
+            return base.TryCreateColumnContent(index, columnName, singleColumnView, out content);
+
         }
 
-        IEnumerable<Inline> ToInline(ReferenceEntry entry) {
+        ToolTip CreateToolTip(ReferenceEntry entry) {
 
-            return Presenter.ToInlines(entry.DisplayParts, (run, part, position) => {
+            return new ToolTip {
+                Background = (Brush) Application.Current.Resources[EnvironmentColors.ToolWindowBackgroundBrushKey],
+                Content    = PreviewPartsToTextBlock(entry)
+            };
+        }
 
-                if (position       == entry.HighlightExtent.Start &&
+        TextBlock LinePartsToTextBlock(ReferenceEntry entry) {
+
+            return Presenter.ToTextBlock(entry.LineParts, (run, part, position) => {
+
+                if (position       == entry.LineHighlightExtent.Start &&
+                    HighlightBrush != null) {
+
+                    run.SetValue(
+                        TextElement.BackgroundProperty,
+                        HighlightBrush);
+                }
+
+            });
+        }
+
+        TextBlock PreviewPartsToTextBlock(ReferenceEntry entry) {
+
+            return Presenter.ToTextBlock(entry.PreviewParts, (run, part, position) => {
+
+                if (position       == entry.PreviewHighlightExtent.Start &&
                     HighlightBrush != null) {
 
                     run.SetValue(

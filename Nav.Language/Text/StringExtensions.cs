@@ -344,6 +344,35 @@ namespace Pharmatechnik.Nav.Language.Text {
             return lineStarts.ToImmutable();
         }
 
+        /// <summary>
+        /// Liefert die Anzahl an Zeichen des Zeilenvorschubs, oder 0, falls der Text nicht mit einem Zeilenvorschub endet.
+        /// </summary>
+        public static int GetNewLineCharCount(this string text) {
+            return GetNewLineCharCount(text.AsSpan());
+        }
+
+        /// <summary>
+        /// Liefert die Anzahl an Zeichen des Zeilenvorschubs, oder 0, falls der Text nicht mit einem Zeilenvorschub endet.
+        /// </summary>
+        public static int GetNewLineCharCount(this ReadOnlySpan<char> text) {
+
+            if (text.Length >= 1) {
+                if (text[text.Length - 1] == '\n') {
+
+                    if (text.Length >= 2 && text[text.Length - 2] == '\r') {
+                        // \r\n
+                        return 2;
+                    }
+
+                    // \n
+                    return 1;
+                }
+
+            }
+
+            return 0;
+        }
+
     }
 
 }

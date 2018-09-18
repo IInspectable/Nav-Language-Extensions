@@ -68,16 +68,13 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             }
         }
 
-        public TextBlock ToTextBlock(IEnumerable<ClassifiedText> parts) {
+        public TextBlock ToTextBlock(IEnumerable<ClassifiedText> parts, Action<Run, ClassifiedText, int> runAction = null) {
 
             var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
+            var inlines   = ToInlines(parts, runAction);
 
             textBlock.SetDefaultTextProperties(FormatMap);
-
-            foreach (var part in parts) {
-                var run = ToInline(part);
-                textBlock.Inlines.Add(run);
-            }
+            textBlock.Inlines.AddRange(inlines);
 
             return textBlock;
         }

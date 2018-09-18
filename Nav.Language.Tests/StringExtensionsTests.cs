@@ -261,6 +261,15 @@ namespace Nav.Language.Tests {
             Assert.That(text.IndexOfPreviousNonWhitespace(7), Is.EqualTo(6));
         }
 
+        [Test]
+        public void TestGetNewLineCharCount() {
+
+            Assert.That("".GetNewLineCharCount(), Is.EqualTo(0));
+            Assert.That("Foo".GetNewLineCharCount(), Is.EqualTo(0));
+            Assert.That("Foo\n".GetNewLineCharCount(), Is.EqualTo(1));
+            Assert.That("Foo\r\n".GetNewLineCharCount(), Is.EqualTo(2));
+            Assert.That("Foo\r\nNeue".GetNewLineCharCount(), Is.EqualTo(0));
+        }
     }
 
 }

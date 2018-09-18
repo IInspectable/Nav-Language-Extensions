@@ -44,7 +44,7 @@ namespace Pharmatechnik.Nav.Language.Text {
         public ReadOnlySpan<char> Span => SourceText.Slice(Extent);
 
         public ReadOnlySpan<char> Slice(int charPositionInLine, int length) => SourceText.Slice(Start + charPositionInLine, length);
-        
+
         [NotNull]
         public Location Location => SourceText.GetLocation(Extent);
 
@@ -64,6 +64,11 @@ namespace Pharmatechnik.Nav.Language.Text {
         /// The extent of the line.
         /// </summary>
         public TextExtent Extent => TextExtent.FromBounds(Start, End);
+
+        /// <summary>
+        /// The extent of the line excluding the line ending
+        /// </summary>
+        public TextExtent ExtentWithoutLineEndings => new TextExtent(Extent.Start, Extent.Length - Span.GetNewLineCharCount());
 
         public int Start { get; }
         public int End   { get; }
