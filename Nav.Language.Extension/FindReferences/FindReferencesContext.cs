@@ -26,7 +26,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         TableEntriesSnapshot _lastSnapshot;
         ITableDataSink       _tableDataSink;
 
-        ImmutableArray<ReferenceEntry> _entries = ImmutableArray<ReferenceEntry>.Empty;
+        ImmutableArray<ReferenceItem> _referenceItems = ImmutableArray<ReferenceItem>.Empty;
 
         public FindReferencesContext(FindReferencesPresenter presenter, IFindAllReferencesWindow findReferencesWindow) {
 
@@ -55,10 +55,10 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             return Task.CompletedTask;
         }
 
-        public Task OnReferenceFoundAsync(ReferenceEntry entry) {
+        public Task OnReferenceFoundAsync(ReferenceItem item) {
 
             lock (_objectLock) {
-                _entries = _entries.Add(entry);
+                _referenceItems = _referenceItems.Add(item);
                 CurrentVersionNumber++;
             }
 
@@ -130,7 +130,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                     //        ? EntriesWhenGroupingByDefinition
                     //        : EntriesWhenNotGroupingByDefinition;
 
-                    _lastSnapshot = new TableEntriesSnapshot(this, CurrentVersionNumber, _entries);
+                    _lastSnapshot = new TableEntriesSnapshot(this, CurrentVersionNumber, _referenceItems);
                 }
 
                 return _lastSnapshot;

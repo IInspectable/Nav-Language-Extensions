@@ -82,6 +82,11 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         }
 
+        public void SetBold(Run run) {
+            run.SetValue(TextElement.FontWeightProperty, FontWeights.Bold);
+
+        }
+
         public ToolTip CreateToolTip(object content) {
 
             return new ToolTip {

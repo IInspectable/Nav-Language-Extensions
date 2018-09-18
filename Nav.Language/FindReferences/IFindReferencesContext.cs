@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         Task SetSearchTitleAsync(string title);
         Task ReportMessageAsync(string message);
-        Task OnReferenceFoundAsync(ReferenceEntry entry);
+        Task OnReferenceFoundAsync(ReferenceItem item);
         
 
     }

@@ -9,13 +9,14 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.FindReferences {
 
-    public class ReferenceEntry {
+    public class ReferenceItem {
 
-        public ReferenceEntry(DefinitionEntry definition, Location location,
-                              ImmutableArray<ClassifiedText> lineParts,
-                              TextExtent lineHighlightExtent,
-                              ImmutableArray<ClassifiedText> previewParts,
-                              TextExtent previewHighlightExtent) {
+        public ReferenceItem(DefinitionItem definition,
+                             Location location,
+                             ImmutableArray<ClassifiedText> lineParts,
+                             TextExtent lineHighlightExtent,
+                             ImmutableArray<ClassifiedText> previewParts,
+                             TextExtent previewHighlightExtent) {
 
             Definition             = definition ?? throw new ArgumentNullException(nameof(definition));
             Location               = location   ?? throw new ArgumentNullException(nameof(location));
@@ -26,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         }
 
-        public DefinitionEntry                Definition             { get; }
+        public DefinitionItem                 Definition             { get; }
         public TextExtent                     LineHighlightExtent    { get; }
         public ImmutableArray<ClassifiedText> LineParts              { get; }
         public Location                       Location               { get; }

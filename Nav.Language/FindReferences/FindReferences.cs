@@ -22,9 +22,9 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                     return;
                 }
 
-                var definitionEntry = new DefinitionEntry(definition, definition.ToDisplayParts());
+                var definitionItem = new DefinitionItem(definition, definition.ToDisplayParts());
 
-                foreach (var reference in FindReferencesVisitor.Invoke(definitionEntry)
+                foreach (var reference in FindReferencesVisitor.Invoke(definitionItem)
                                                                .OrderBy(d => d.Location.StartLine)
                                                                .ThenBy(d => d.Location.StartCharacter)) {
 
@@ -56,14 +56,14 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                     var previewHighlightExtent = new TextExtent(start: reference.Start - previewExtent.Start,
                                                                 length: reference.Location.Length);
 
-                    var item = new ReferenceEntry(definition: definitionEntry,
-                                                  location: reference.Location,
-                                                  lineParts: lineParts,
-                                                  lineHighlightExtent: lineHighlightExtent,
-                                                  previewParts: previewParts,
-                                                  previewHighlightExtent: previewHighlightExtent);
+                    var referenceItem = new ReferenceItem(definition: definitionItem,
+                                                 location: reference.Location,
+                                                 lineParts: lineParts,
+                                                 lineHighlightExtent: lineHighlightExtent,
+                                                 previewParts: previewParts,
+                                                 previewHighlightExtent: previewHighlightExtent);
 
-                    await context.OnReferenceFoundAsync(item);
+                    await context.OnReferenceFoundAsync(referenceItem);
 
                 }
 

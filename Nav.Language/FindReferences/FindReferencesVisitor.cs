@@ -9,7 +9,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
     sealed class FindReferencesVisitor: SymbolVisitor<IEnumerable<ISymbol>> {
 
-        public static IEnumerable<ISymbol> Invoke(DefinitionEntry definition) {
+        public static IEnumerable<ISymbol> Invoke(DefinitionItem definition) {
 
             if (definition?.Symbol == null) {
                 return Enumerable.Empty<ISymbol>();

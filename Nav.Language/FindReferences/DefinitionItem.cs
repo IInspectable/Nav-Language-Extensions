@@ -9,9 +9,9 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.FindReferences {
 
-    public class DefinitionEntry {
+    public class DefinitionItem {
 
-        public DefinitionEntry(ISymbol symbol, ImmutableArray<ClassifiedText> displayParts) {
+        public DefinitionItem(ISymbol symbol, ImmutableArray<ClassifiedText> displayParts) {
             Symbol       = symbol ?? throw new ArgumentNullException(nameof(symbol));
             DisplayParts = displayParts;
         }

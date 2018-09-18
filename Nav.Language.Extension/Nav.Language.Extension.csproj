@@ -171,7 +171,7 @@
     <Compile Include="DropHandler\FileDropHandlerProvider.cs" />
     <Compile Include="FindReferences\FindReferencesContext.cs" />
     <Compile Include="FindReferences\TableEntriesSnapshot.LazyTooltip.cs" />
-    <Compile Include="FindReferences\NavDefinitionBucket.cs" />
+    <Compile Include="FindReferences\DefinitionEntry.cs" />
     <Compile Include="FindReferences\TableEntriesSnapshot.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider.cs" />
     <Compile Include="GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />

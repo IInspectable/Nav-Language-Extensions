@@ -2,37 +2,46 @@
 
 namespace Pharmatechnik.Nav.Language.Dependencies {
 
-    public sealed class DependencyItem : IEquatable<DependencyItem> {
+    public abstract class DependencyItem: IEquatable<DependencyItem> {
 
-        DependencyItem(string taskName, Location location) {
-            TaskName = taskName;
-            Location = location;
-        }
-        
         public static DependencyItem FromSymbol(ISymbol symbol) {
-            return new DependencyItem(symbol.Name, symbol.Location);
+            return new SymbolDependencyItem(symbol);
         }
-        
-        public string TaskName { get; }
-        public Location Location { get; }
-        
+
+        public abstract string   Name     { get; }
+        public abstract Location Location { get; }
+
         #region Equality members
 
-        public bool Equals(DependencyItem other) {
-            if (ReferenceEquals(null, other)) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return string.Equals(TaskName, other.TaskName) && Equals(Location, other.Location);
+        public virtual bool Equals(DependencyItem other) {
+
+            if (ReferenceEquals(null, other)) {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other)) {
+                return true;
+            }
+
+            return string.Equals(Name, other.Name) && Equals(Location, other.Location);
         }
 
         public override bool Equals(object obj) {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
+
+            if (ReferenceEquals(null, obj)) {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj)) {
+                return true;
+            }
+
             return obj is DependencyItem item && Equals(item);
         }
 
         public override int GetHashCode() {
             unchecked {
-                return ((TaskName != null ? TaskName.GetHashCode() : 0) * 397) ^ (Location != null ? Location.GetHashCode() : 0);
+                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ (Location != null ? Location.GetHashCode() : 0);
             }
         }
 
@@ -44,6 +53,20 @@ namespace Pharmatechnik.Nav.Language.Dependencies {
             return !Equals(left, right);
         }
 
-        #endregion       
+        #endregion
+
     }
+
+    class SymbolDependencyItem: DependencyItem {
+
+        public SymbolDependencyItem(ISymbol symbol) {
+            Name     = symbol.Name;
+            Location = symbol.Location;
+        }
+
+        public override string   Name     { get; }
+        public override Location Location { get; }
+
+    }
+
 }

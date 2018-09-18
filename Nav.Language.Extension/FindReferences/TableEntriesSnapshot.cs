@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 
-using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.FindReferences;
 
 #endregion
@@ -17,10 +16,10 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
     partial class TableEntriesSnapshot: WpfTableEntriesSnapshotBase {
 
-        readonly FindReferencesContext          _context;
-        readonly ImmutableArray<ReferenceEntry> _entries;
+        readonly FindReferencesContext         _context;
+        readonly ImmutableArray<ReferenceItem> _entries;
 
-        public TableEntriesSnapshot(FindReferencesContext context, int versionNumber, ImmutableArray<ReferenceEntry> entries) {
+        public TableEntriesSnapshot(FindReferencesContext context, int versionNumber, ImmutableArray<ReferenceItem> entries) {
             _context      = context;
             _entries      = entries;
             VersionNumber = versionNumber;
@@ -41,28 +40,26 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         public override bool TryGetValue(int index, string keyName, out object content) {
             content = GetValue(_entries[index], keyName);
-
             return content != null;
         }
 
-        private object GetValue(ReferenceEntry entry, string keyName) {
+        private object GetValue(ReferenceItem item, string keyName) {
             switch (keyName) {
                 case StandardTableKeyNames2.Definition:
-                    return new NavDefinitionBucket(Presenter, entry.Definition, _context.SourceTypeIdentifier, _context.Identifier);
-
+                    return new DefinitionEntry(Presenter, item.Definition, _context.SourceTypeIdentifier, _context.Identifier);
                 case StandardTableColumnDefinitions.DocumentName:
-                    return entry.Location.FilePath;
+                    return item.Location.FilePath;
                 case StandardTableKeyNames.Line:
-                    return entry.Location.StartLine;
+                    return item.Location.StartLine;
                 case StandardTableKeyNames.Column:
-                    return entry.Location.StartCharacter;
+                    return item.Location.StartCharacter;
                 case StandardTableKeyNames.ProjectName:
-                    return NavLanguagePackage.GetContainingProject(entry.Location.FilePath)?.Name ?? "Miscellaneous Files";
+                    return NavLanguagePackage.GetContainingProject(item.Location.FilePath)?.Name ?? "Miscellaneous Files";
                 case StandardTableKeyNames.ProjectGuid:
                     return Guid.NewGuid();
                 case StandardTableKeyNames.Text:
                     // Wird für die Suche verwendet
-                    return entry.LineText;
+                    return item.LineText;
             }
 
             return null;
@@ -84,11 +81,11 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         }
 
-        TextBlock LinePartsToTextBlock(ReferenceEntry entry) {
+        TextBlock LinePartsToTextBlock(ReferenceItem item) {
 
-            return Presenter.ToTextBlock(entry.LineParts, (run, part, position) => {
+            return Presenter.ToTextBlock(item.LineParts, (run, part, position) => {
 
-                if (position == entry.LineHighlightExtent.Start) {
+                if (position == item.LineHighlightExtent.Start) {
 
                     Presenter.HighlightBackground(run);
                 }
@@ -96,17 +93,17 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             });
         }
 
-        ToolTip CreateToolTip(ReferenceEntry entry) {
+        ToolTip CreateToolTip(ReferenceItem item) {
 
-            return Presenter.CreateToolTip(PreviewPartsToTextBlock(entry));
+            return Presenter.CreateToolTip(PreviewPartsToTextBlock(item));
 
         }
 
-        TextBlock PreviewPartsToTextBlock(ReferenceEntry entry) {
+        TextBlock PreviewPartsToTextBlock(ReferenceItem item) {
 
-            return Presenter.ToTextBlock(entry.PreviewParts, (run, part, position) => {
+            return Presenter.ToTextBlock(item.PreviewParts, (run, part, position) => {
 
-                if (position == entry.PreviewHighlightExtent.Start) {
+                if (position == item.PreviewHighlightExtent.Start) {
 
                     Presenter.HighlightBackground(run);
 
