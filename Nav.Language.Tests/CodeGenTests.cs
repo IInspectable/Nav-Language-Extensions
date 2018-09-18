@@ -175,22 +175,25 @@ namespace Nav.Language.Tests {
         [Test, TestCaseSource(nameof(CompileTestCases))]
         public void CompileTest(TestCase testCase) {
 
-            var syntaxProvider = new TestSyntaxProvider();
+            var syntaxProvider         = new TestSyntaxProvider();
+            var semenaticModelProvider = SemanticModelProviderFactory.Default.CreateProvider(syntaxProvider);
+
             // Dateien bekanntgeben - wir haben hier keine echten Dateien zur Hand!
             foreach (var navFile in testCase.NavFiles) {
                 syntaxProvider.RegisterFile(navFile);
             }
 
             var syntaxTrees = new List<RoslynSyntaxTree>();
+
             foreach (var navFile in testCase.NavFiles) {
 
                 // 1. Syntaxbaum aus Nav-File erstellen
-                var codeGenerationUnitSyntax = syntaxProvider.FromFile(navFile.FilePath);
+                var codeGenerationUnitSyntax = syntaxProvider.GetSyntax(navFile.FilePath);
                 Assert.That(codeGenerationUnitSyntax, Is.Not.Null, $"File '{navFile.FilePath}' not found");
                 AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics, codeGenerationUnitSyntax.SyntaxTree.SourceText);
 
                 // 2. Semantic Model erstellen aus Syntax erstellen
-                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, syntaxProvider: syntaxProvider);
+                var codeGenerationUnit = semenaticModelProvider.GetSemanticModel(codeGenerationUnitSyntax);
                 AssertNoDiagnosticErrors(codeGenerationUnit.Diagnostics, codeGenerationUnitSyntax.SyntaxTree.SourceText);
 
                 var options       = GenerationOptions.Default;

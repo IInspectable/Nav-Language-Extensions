@@ -450,6 +450,10 @@ namespace Pharmatechnik.Nav.Language.Extension {
                 }
 
                 if (ErrorHandler.Succeeded(solution.GetSolutionInfo(out var solutionDirectory, out _, out _))) {
+                    if (String.IsNullOrWhiteSpace(solutionDirectory)) {
+                        return null;
+                    }
+
                     return new DirectoryInfo(solutionDirectory);
                 }
 

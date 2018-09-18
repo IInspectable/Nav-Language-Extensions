@@ -10,6 +10,6 @@ namespace Pharmatechnik.Nav.Language {
 
     public interface ISyntaxProvider : IDisposable {
         [CanBeNull]
-        CodeGenerationUnitSyntax FromFile(string filePath, CancellationToken cancellationToken = default);
+        CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default);
     }
 }

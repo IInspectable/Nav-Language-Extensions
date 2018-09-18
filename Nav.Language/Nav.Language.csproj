@@ -57,6 +57,10 @@
     <Compile Include="FindReferences\IFindReferencesContext.cs" />
     <Compile Include="FindReferences\ReferenceEntry.cs" />
     <Compile Include="FindReferences\FindReferencesVisitor.cs" />
+    <Compile Include="Provider\ISemanticModelProvider.cs" />
+    <Compile Include="Provider\ISemanticModelProviderFactory.cs" />
+    <Compile Include="Provider\SemanticModelProvider.cs" />
+    <Compile Include="Provider\SemanticModelProviderFactory.cs" />
     <Compile Include="Text\ClassifiedTexts.cs" />
     <Compile Include="Text\DisplayPartsVisitor.cs" />
     <Compile Include="Text\ClassifiedText.cs" />

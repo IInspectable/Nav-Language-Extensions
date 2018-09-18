@@ -28,7 +28,7 @@ namespace Pharmatechnik.Nav.Language.Analyzer {
                 foreach (var file in files) {
                     analyzer.CurrentFile = file;
                     // 1. SyntaxTree
-                    var syntax = syntaxProvider.FromFile(file.FilePath);
+                    var syntax = syntaxProvider.GetSyntax(file.FilePath);
                     if (syntax == null) {
                          _logger?.LogError(String.Format(DiagnosticDescriptors.Semantic.Nav0004File0NotFound.MessageFormat, file));
                         continue;

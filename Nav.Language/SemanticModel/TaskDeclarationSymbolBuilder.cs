@@ -109,7 +109,7 @@ namespace Pharmatechnik.Nav.Language {
                     return;
                 }
 
-                var includeFileSyntax = _syntaxProvider.FromFile(filePath, cancellationToken);
+                var includeFileSyntax = _syntaxProvider.GetSyntax(filePath, cancellationToken);
                 if (includeFileSyntax == null) {
                     _diagnostics.Add(new Diagnostic(
                                          location,

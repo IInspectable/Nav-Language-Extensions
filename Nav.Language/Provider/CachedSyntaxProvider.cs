@@ -29,7 +29,7 @@ namespace Pharmatechnik.Nav.Language {
             _cacheStatistic = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         }
 
-        public override CodeGenerationUnitSyntax FromFile(string filePath, CancellationToken cancellationToken = default) {
+        public override CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default) {
 
             if (_cache.TryGetValue(filePath, out var syntax)) {
                 if (_cacheStatistic.ContainsKey(filePath)) {
@@ -41,7 +41,7 @@ namespace Pharmatechnik.Nav.Language {
                 return syntax;
             }
 
-            syntax = base.FromFile(filePath, cancellationToken);
+            syntax = base.GetSyntax(filePath, cancellationToken);
             Cache(filePath, syntax);
 
             return syntax;
