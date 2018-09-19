@@ -53,10 +53,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 return;
             }
 
-            var args    = new FindReferencesArgs(symbol, NavLanguagePackage.SearchDirectory);
             var context = _referencesPresenter.StartSearch();
+            var args    = new FindReferencesArgs(symbol, context, NavLanguagePackage.SearchDirectory);
 
-            await ReferenceFinder.FindReferences(args, context);
+            await ReferenceFinder.FindReferences(args);
             await context.OnCompletedAsync();
 
         }

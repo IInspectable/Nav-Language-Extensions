@@ -15,7 +15,11 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
     public class ReferenceFinder {
 
-        public static Task FindReferences(FindReferencesArgs args, IFindReferencesContext context) {
+        public static Task FindReferences(FindReferencesArgs args) {
+
+            if (args == null) {
+                throw new ArgumentNullException(nameof(args));
+            }
 
             return Task.Run(async () => {
 
@@ -26,11 +30,11 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
                 var definitionItem = new DefinitionItem(definition, definition.ToDisplayParts());
 
-                foreach (var reference in FindReferencesVisitor.Invoke(definitionItem)
+                foreach (var reference in FindReferencesVisitor.Invoke(args, definitionItem)
                                                                .OrderBy(d => d.Location.StartLine)
                                                                .ThenBy(d => d.Location.StartCharacter)) {
 
-                    if (context.CancellationToken.IsCancellationRequested) {
+                    if (args.Context.CancellationToken.IsCancellationRequested) {
                         return;
                     }
 
@@ -40,7 +44,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                         continue;
                     }
 
-                    await context.OnReferenceFoundAsync(referenceItem);
+                    await args.Context.OnReferenceFoundAsync(referenceItem);
 
                 }
 

@@ -1,7 +1,10 @@
 #region Using Directives
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+
+using JetBrains.Annotations;
 
 #endregion
 
@@ -9,13 +12,30 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
     sealed class FindReferencesVisitor: SymbolVisitor<IEnumerable<ISymbol>> {
 
-        public static IEnumerable<ISymbol> Invoke(DefinitionItem definition) {
+        public DefinitionItem Definition { get; }
+
+        FindReferencesVisitor(FindReferencesArgs args, DefinitionItem definition) {
+            _args      = args;
+            Definition = definition;
+
+        }
+
+        [NotNull]
+        readonly FindReferencesArgs _args;
+
+        [NotNull]
+        public IFindReferencesContext Context => _args.Context;
+
+        [CanBeNull]
+        public DirectoryInfo SearchDirectory => _args.SearchDirectory;
+
+        public static IEnumerable<ISymbol> Invoke(FindReferencesArgs args, DefinitionItem definition) {
 
             if (definition?.Symbol == null) {
                 return Enumerable.Empty<ISymbol>();
             }
 
-            var finder = new FindReferencesVisitor();
+            var finder = new FindReferencesVisitor(args, definition);
             return finder.Visit(definition.Symbol);
         }
 
@@ -24,10 +44,52 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         }
 
         // TODO der eigentlich wichtige Part...
-        //public override IEnumerable<ISymbol> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
+        public override IEnumerable<ISymbol> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
 
-        //    return base.VisitTaskDefinitionSymbol(taskDefinitionSymbol);
-        //}
+            // TODO Review and refactoring, Cancellation
+            if (SearchDirectory != null) {
+
+                foreach (var file in Directory.EnumerateFiles(SearchDirectory.FullName, "*.nav", SearchOption.AllDirectories)) {
+                    
+                    if (Context.CancellationToken.IsCancellationRequested) {
+                        break;
+                    }
+
+                    var syntax  = SyntaxProvider.Default.GetSyntax(file, Context.CancellationToken);
+                    var codeGen = SemanticModelProvider.Default.GetSemanticModel(syntax);
+
+                    foreach (var taskNode in FindTaskReference(codeGen)) {
+                        yield return taskNode;
+                    }
+                }
+            } else {
+                foreach (var taskNode in FindTaskReference(taskDefinitionSymbol.CodeGenerationUnit)) {
+                    yield return taskNode;
+                }
+            }
+
+        }
+
+        IEnumerable<ISymbol> FindTaskReference(CodeGenerationUnit codeGeneration) {
+
+            foreach (var taskDefinition in codeGeneration.TaskDefinitions) {
+
+                foreach (var taskNode in FindTaskReference(taskDefinition)) {
+                    if (Context.CancellationToken.IsCancellationRequested) {
+                        break;
+                    }
+
+                    yield return taskNode;
+                }
+            }
+        }
+
+        IEnumerable<ISymbol> FindTaskReference(ITaskDefinitionSymbol taskDefinition) {
+
+            return taskDefinition.NodeDeclarations
+                                 .OfType<ITaskNodeSymbol>()
+                                 .Where(tn => tn.Declaration?.Location == Definition.Symbol.Location);
+        }
 
         public override IEnumerable<ISymbol> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
 

@@ -11,9 +11,10 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
     public class FindReferencesArgs {
 
-        public FindReferencesArgs(ISymbol symbol, DirectoryInfo searchDirectory) {
+        public FindReferencesArgs(ISymbol symbol, IFindReferencesContext context, DirectoryInfo searchDirectory) {
             Symbol          = symbol ?? throw new ArgumentNullException(nameof(symbol));
             SearchDirectory = searchDirectory;
+            Context         = context ?? throw new ArgumentNullException(nameof(context));
 
         }
 
@@ -22,6 +23,9 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         [CanBeNull]
         public DirectoryInfo SearchDirectory { get; }
+
+        [NotNull]
+        public IFindReferencesContext Context { get; }
 
     }
 

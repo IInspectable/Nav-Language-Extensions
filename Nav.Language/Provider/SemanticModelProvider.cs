@@ -14,6 +14,8 @@ namespace Pharmatechnik.Nav.Language {
             _syntaxProvider = syntaxProvider ?? throw new ArgumentNullException(nameof(syntaxProvider));
         }
 
+        public static readonly ISemanticModelProvider Default = new SemanticModelProvider(SyntaxProvider.Default);
+
         public CodeGenerationUnit GetSemanticModel(CodeGenerationUnitSyntax syntax) {
             return CodeGenerationUnit.FromCodeGenerationUnitSyntax(syntax, syntaxProvider: _syntaxProvider);
         }
