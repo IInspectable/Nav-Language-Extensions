@@ -31,8 +31,9 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                 var definitionItem = new DefinitionItem(definition, definition.ToDisplayParts());
 
                 foreach (var reference in FindReferencesVisitor.Invoke(args, definitionItem)
-                                                               .OrderBy(d => d.Location.StartLine)
-                                                               .ThenBy(d => d.Location.StartCharacter)) {
+                                                               //.OrderBy(d => d.Location.StartLine)
+                                                               //.ThenBy(d => d.Location.StartCharacter)
+                                                                ) {
 
                     if (args.Context.CancellationToken.IsCancellationRequested) {
                         return;

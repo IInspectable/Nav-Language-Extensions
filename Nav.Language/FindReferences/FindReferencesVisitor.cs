@@ -10,6 +10,7 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language.FindReferences {
 
+    // TODO Perfomante Sortierung!
     sealed class FindReferencesVisitor: SymbolVisitor<IEnumerable<ISymbol>> {
 
         public DefinitionItem Definition { get; }
