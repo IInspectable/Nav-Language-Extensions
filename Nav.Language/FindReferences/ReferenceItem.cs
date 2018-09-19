@@ -34,8 +34,9 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         public ImmutableArray<ClassifiedText> PreviewParts           { get; }
         public TextExtent                     PreviewHighlightExtent { get; }
 
-        public string Text    => TextParts.JoinText();
-        public string Preview => PreviewParts.JoinText();
+        public string Text        => TextParts.JoinText();
+        public string Preview     => PreviewParts.JoinText();
+        public string ProjectName => Definition.SearchRoot;
 
     }
 

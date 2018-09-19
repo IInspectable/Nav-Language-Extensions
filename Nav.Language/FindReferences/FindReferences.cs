@@ -28,7 +28,8 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                     return;
                 }
 
-                var definitionItem = new DefinitionItem(definition, definition.ToDisplayParts());
+                var searchRoot = args.SearchDirectory?.FullName ?? definition.SyntaxTree?.SourceText?.FileInfo?.FullName ??"";
+                var definitionItem = new DefinitionItem(searchRoot, definition, definition.ToDisplayParts());
 
                 foreach (var reference in FindReferencesVisitor.Invoke(args, definitionItem)
                                                                //.OrderBy(d => d.Location.StartLine)
