@@ -38,7 +38,8 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                 case StandardTableKeyNames.Column:
                     return ReferenceItem.Location.StartCharacter;
                 case StandardTableKeyNames.ProjectName:
-                    return NavLanguagePackage.GetContainingProject(ReferenceItem.Location.FilePath)?.Name ?? "Miscellaneous Files";
+                    return "Miscellaneous Files";
+                    //return NavLanguagePackage.GetContainingProject(ReferenceItem.Location.FilePath)?.Name ?? "Miscellaneous Files";
                 //case StandardTableKeyNames.ProjectGuid:
                 //    return Guid.NewGuid(); // Brauchen wir die? Evtl. zum Gruppieren?
 
