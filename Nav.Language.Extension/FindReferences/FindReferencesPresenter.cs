@@ -95,10 +95,10 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             };
         }
 
-        public TextBlock ToTextBlock(IEnumerable<ClassifiedText> parts, Action<Run, ClassifiedText, int> runAction = null) {
+        public TextBlock ToTextBlock(IEnumerable<ClassifiedText> parts, Action<Run, ClassifiedText, int> runAction = null, bool consolidateWhitespace = true) {
 
             var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
-            var inlines   = ToInlines(parts, runAction);
+            var inlines   = ToInlines(parts, runAction, consolidateWhitespace);
 
             textBlock.SetDefaultTextProperties(FormatMap);
             textBlock.Inlines.AddRange(inlines);
@@ -106,12 +106,12 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             return textBlock;
         }
 
-        public IEnumerable<Inline> ToInlines(IEnumerable<ClassifiedText> parts, Action<Run, ClassifiedText, int> runAction = null) {
+        public IEnumerable<Inline> ToInlines(IEnumerable<ClassifiedText> parts, Action<Run, ClassifiedText, int> runAction = null, bool consolidateWhitespace = true) {
 
             var position = 0;
             foreach (var part in parts) {
 
-                var inline = ToInline(part);
+                var inline = ToInline(part, consolidateWhitespace);
 
                 runAction?.Invoke(inline, part, position);
 
@@ -122,11 +122,20 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         }
 
-        Run ToInline(ClassifiedText classifiedText) {
-            return ToInline(classifiedText.Text, classifiedText.Classification);
+        Run ToInline(ClassifiedText classifiedText, bool consolidateWhitespace) {
+            return ToInline(classifiedText.Text, classifiedText.Classification, consolidateWhitespace);
         }
 
-        Run ToInline(string text, TextClassification classification) {
+        Run ToInline(string text, TextClassification classification, bool consolidateWhitespace) {
+
+            // Es nervt in der Vorschau, wenn Tabluatoren den Text unnötig in die Länge ziehen. Deswegen dampfen wir
+            // Whitepaces auf ein Leerzeichen respektive NL ein.
+            if (consolidateWhitespace &&
+                classification == TextClassification.Whitespace) {
+                
+                // NL dürfen wir nicht einfach wegwerfen.
+                text = text.GetNewLineCharCount() == 0 ? " " : Environment.NewLine;
+            }
 
             var run = new Run(text);
 
