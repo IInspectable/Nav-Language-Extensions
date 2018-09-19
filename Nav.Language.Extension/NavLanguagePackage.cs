@@ -192,18 +192,10 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
             using (Logger.LogBlock(nameof(OpenFileInPreviewTab))) {
 
-                IVsNewDocumentStateContext newDocumentStateContext = null;
-
-                try {
-                    var openDoc3 = GetGlobalService<SVsUIShellOpenDocument, IVsUIShellOpenDocument3>();
-
-                    Guid reason = VSConstants.NewDocumentStateReason.Navigation;
-                    newDocumentStateContext = openDoc3?.SetNewDocumentState((uint) __VSNEWDOCUMENTSTATE.NDS_Provisional, ref reason);
-
+                var state = __VSNEWDOCUMENTSTATE.NDS_Provisional; // | __VSNEWDOCUMENTSTATE.NDS_NoActivate;
+                using (new NewDocumentStateScope(state, VSConstants.NewDocumentStateReason.Navigation))
+                {
                     return OpenFile(file);
-
-                } finally {
-                    newDocumentStateContext?.Restore();
                 }
             }
         }

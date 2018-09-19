@@ -28,6 +28,7 @@ namespace Pharmatechnik.Nav.Utilities.IO {
                 fileInfo = new FileInfo(candidate);
                 return fileInfo.Exists;
             } catch (ArgumentException) {
+            } catch (NotSupportedException) {
             } catch (IOException) {
             }
 

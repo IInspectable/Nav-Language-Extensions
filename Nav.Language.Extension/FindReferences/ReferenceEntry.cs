@@ -26,6 +26,9 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         public object GetValue(string keyName) {
             switch (keyName) {
+                case StandardTableKeyNames.Text:
+                    // Wird für die Suche verwendet...
+                    return ReferenceItem.Text;
                 case StandardTableKeyNames2.Definition:
                     return Definition;
                 case StandardTableColumnDefinitions.DocumentName:
@@ -38,9 +41,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                     return NavLanguagePackage.GetContainingProject(ReferenceItem.Location.FilePath)?.Name ?? "Miscellaneous Files";
                 //case StandardTableKeyNames.ProjectGuid:
                 //    return Guid.NewGuid(); // Brauchen wir die? Evtl. zum Gruppieren?
-                case StandardTableKeyNames.Text:
-                    // Wird für die Suche verwendet...
-                    return ReferenceItem.LineText;
+
             }
 
             return null;
@@ -56,9 +57,9 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         TextBlock LinePartsToTextBlock() {
 
-            return Presenter.ToTextBlock(ReferenceItem.LineParts, (run, part, position) => {
+            return Presenter.ToTextBlock(ReferenceItem.TextParts, (run, part, position) => {
 
-                if (position == ReferenceItem.LineHighlightExtent.Start) {
+                if (position == ReferenceItem.TextHighlightExtent.Start) {
 
                     Presenter.HighlightBackground(run);
                 }

@@ -13,28 +13,29 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         public ReferenceItem(DefinitionItem definition,
                              Location location,
-                             ImmutableArray<ClassifiedText> lineParts,
-                             TextExtent lineHighlightExtent,
+                             ImmutableArray<ClassifiedText> textParts,
+                             TextExtent textHighlightExtent,
                              ImmutableArray<ClassifiedText> previewParts,
                              TextExtent previewHighlightExtent) {
 
             Definition             = definition ?? throw new ArgumentNullException(nameof(definition));
             Location               = location   ?? throw new ArgumentNullException(nameof(location));
-            LineParts              = lineParts;
-            LineHighlightExtent    = lineHighlightExtent;
+            TextParts              = textParts;
+            TextHighlightExtent    = textHighlightExtent;
             PreviewParts           = previewParts;
             PreviewHighlightExtent = previewHighlightExtent;
 
         }
 
         public DefinitionItem                 Definition             { get; }
-        public TextExtent                     LineHighlightExtent    { get; }
-        public ImmutableArray<ClassifiedText> LineParts              { get; }
         public Location                       Location               { get; }
+        public ImmutableArray<ClassifiedText> TextParts              { get; }
+        public TextExtent                     TextHighlightExtent    { get; }
         public ImmutableArray<ClassifiedText> PreviewParts           { get; }
         public TextExtent                     PreviewHighlightExtent { get; }
 
-        public string LineText => LineParts.JoinText();
+        public string Text    => TextParts.JoinText();
+        public string Preview => PreviewParts.JoinText();
 
     }
 

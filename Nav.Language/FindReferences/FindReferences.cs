@@ -55,19 +55,20 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                 return null;
             }
 
-            var line = reference.SyntaxTree.SourceText.GetTextLineAtPosition(reference.Location.Start);
+            var referenceLine = reference.SyntaxTree.SourceText.GetTextLineAtPosition(reference.Location.Start);
 
-            var lineExtent = line.ExtentWithoutLineEndings;
+            // Text
+            var textExtent = referenceLine.ExtentWithoutLineEndings;
 
-            var lineParts = reference.SyntaxTree
-                                     .GetClassifiedText(lineExtent)
+            var textParts = reference.SyntaxTree
+                                     .GetClassifiedText(textExtent)
                                      .ToImmutableArray();
 
-            var lineHighlightExtent = new TextExtent(start : reference.Start - line.Start,
+            var textHighlightExtent = new TextExtent(start : reference.Start - referenceLine.Start,
                                                      length: reference.Location.Length);
 
-            var previewExtent = GetPreviewExtent(line);
-
+            // Preview
+            var previewExtent = GetPreviewExtent(referenceLine);
             var previewParts = reference.SyntaxTree
                                         .GetClassifiedText(previewExtent)
                                         .ToImmutableArray();
@@ -77,8 +78,8 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             var referenceItem = new ReferenceItem(definition            : definitionItem,
                                                   location              : reference.Location,
-                                                  lineParts             : lineParts,
-                                                  lineHighlightExtent   : lineHighlightExtent,
+                                                  textParts             : textParts,
+                                                  textHighlightExtent   : textHighlightExtent,
                                                   previewParts          : previewParts,
                                                   previewHighlightExtent: previewHighlightExtent);
             return referenceItem;
@@ -86,14 +87,14 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         const int PreviewLinesOnOneSide = 3;
 
-        static TextExtent GetPreviewExtent(SourceTextLine line) {
+        static TextExtent GetPreviewExtent(SourceTextLine referenceLine) {
 
-            var sourceText = line.SourceText;
+            var sourceText = referenceLine.SourceText;
             if (sourceText.TextLines.Count <= 1) {
-                return line.ExtentWithoutLineEndings;
+                return referenceLine.ExtentWithoutLineEndings;
             }
 
-            var lineNumber = line.Line;
+            var lineNumber = referenceLine.Line;
 
             var firstLine = sourceText.TextLines[Math.Max(lineNumber - PreviewLinesOnOneSide, 0)];
             var lastLine  = sourceText.TextLines[Math.Min(lineNumber + PreviewLinesOnOneSide, sourceText.TextLines.Count - 1)];

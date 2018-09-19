@@ -16,7 +16,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         public DefinitionEntry(FindReferencesPresenter presenter,
                                DefinitionItem definitionItem,
                                bool expandedByDefault = true)
-            : base(definitionItem.FullText,
+            : base(definitionItem.Text,
                    FindReferencesContext.FindAllReferencesSourceTypeIdentifier,
                    FindReferencesContext.FindAllReferencesIdentifier,
                    tooltip: null,
@@ -37,10 +37,13 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         public object GetValue(string key) {
             switch (key) {
+                case StandardTableKeyNames.Text:
+                    // Wird für die Suche verwendet...
+                    return DefinitionItem.Text;
                 case StandardTableKeyNames2.DefinitionIcon:
                     return ImageMonikers.FromSymbol(DefinitionItem.Symbol);
                 case StandardTableKeyNames2.TextInlines:
-                    return Presenter.ToInlines(DefinitionItem.DisplayParts, (run, _, __) => Presenter.SetBold(run));
+                    return Presenter.ToInlines(DefinitionItem.TextParts, (run, _, __) => Presenter.SetBold(run));
                 case StandardTableKeyNames.DocumentName:
                     return DefinitionItem.Location.FilePath;
                 case StandardTableKeyNames.Line:
