@@ -31,10 +31,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                 var searchRoot     = args.SearchDirectory?.FullName ?? definition.SyntaxTree?.SourceText.FileInfo?.FullName ?? "";
                 var definitionItem = new DefinitionItem(searchRoot, definition, definition.ToDisplayParts());
 
-                foreach (var reference in FindReferencesVisitor.Invoke(args, definitionItem)
-                    //.OrderBy(d => d.Location.StartLine)
-                    //.ThenBy(d => d.Location.StartCharacter)
-                ) {
+                foreach (var reference in FindReferencesVisitor.Invoke(args, definitionItem)) {
 
                     if (args.Context.CancellationToken.IsCancellationRequested) {
                         return;
@@ -66,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             // Text
             var textExtent = referenceLine.ExtentWithoutLineEndings;
 
-            var prefixParts          = ImmutableArray<ClassifiedText>.Empty;
+            var prefixParts = ImmutableArray<ClassifiedText>.Empty;
 
             if (reference is INodeSymbol node) {
 
