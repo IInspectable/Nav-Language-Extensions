@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading.Tasks;
 
 using JetBrains.Annotations;
@@ -65,28 +66,35 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             // Text
             var textExtent = referenceLine.ExtentWithoutLineEndings;
 
-            var prefix               = "";
-            var prefixClassification = TextClassification.Text;
+            var prefixParts          = ImmutableArray<ClassifiedText>.Empty;
+
             if (reference is INodeSymbol node) {
-                prefix               = $"{node.ContainingTask.Name} \u220B";
-                prefixClassification = TextClassification.TaskName;
+
+                prefixParts = new[] {
+                    new ClassifiedText($"{node.ContainingTask.Name}", TextClassification.TaskName),
+                    new ClassifiedText(" \u220B",                     TextClassification.Text)
+
+                }.ToImmutableArray();
             }
 
             if (reference is INodeReferenceSymbol nodeReference && nodeReference.Declaration is INodeSymbol nodeSymbol) {
-                prefix               = $"{nodeSymbol.ContainingTask.Name} \u220B";
-                prefixClassification = TextClassification.TaskName;
+                prefixParts = new[] {
+                    new ClassifiedText($"{nodeSymbol.ContainingTask.Name}", TextClassification.TaskName),
+                    new ClassifiedText(" \u220B",                           TextClassification.Text)
+
+                }.ToImmutableArray();
             }
 
             var textParts = reference.SyntaxTree
                                      .GetClassifiedText(textExtent)
                                      .ToImmutableArray();
 
-            if (!String.IsNullOrEmpty(prefix)) {
-                textParts = textParts.Insert(0, new ClassifiedText(prefix, prefixClassification));
+            if (prefixParts.Any()) {
+                textParts = prefixParts.AddRange(textParts);
 
             }
 
-            var textHighlightExtent = new TextExtent(start: reference.Start - referenceLine.Start + prefix.Length,
+            var textHighlightExtent = new TextExtent(start: reference.Start - referenceLine.Start + prefixParts.JoinText().Length,
                                                      length: reference.Location.Length);
 
             // Preview
