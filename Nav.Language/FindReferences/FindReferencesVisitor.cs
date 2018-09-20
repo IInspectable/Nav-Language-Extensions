@@ -47,6 +47,8 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         // TODO der eigentlich wichtige Part...
         public override IEnumerable<ISymbol> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
 
+            var syntaxProvider=new CachedSyntaxProvider();
+            var semanticmodelProvider = new SemanticModelProvider(syntaxProvider);
             // TODO Review and refactoring, Cancellation
             if (SearchDirectory != null) {
 
@@ -56,8 +58,8 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                         break;
                     }
 
-                    var syntax  = SyntaxProvider.Default.GetSyntax(file, Context.CancellationToken);
-                    var codeGen = SemanticModelProvider.Default.GetSemanticModel(syntax);
+                    var syntax  = syntaxProvider.GetSyntax(file, Context.CancellationToken);
+                    var codeGen = semanticmodelProvider.GetSemanticModel(syntax);
 
                     foreach (var taskNode in FindTaskReference(codeGen)) {
                         yield return taskNode;
