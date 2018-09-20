@@ -89,6 +89,10 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             return base.VisitNodeReferenceSymbol(nodeReferenceSymbol);
         }
 
+        public override ImmutableArray<ClassifiedText> VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+            return BuildTaskDefinitionMemberPrefix(exitConnectionPointReferenceSymbol.ExitTransition.ContainingTask);
+        }
+
         ImmutableArray<ClassifiedText> BuildTaskDefinitionMemberPrefix(ITaskDeclarationSymbol taskDeclaration) {
             return taskDeclaration != null ? BuildMemberPrefix(taskDeclaration.Name) : ImmutableArray<ClassifiedText>.Empty;
         }

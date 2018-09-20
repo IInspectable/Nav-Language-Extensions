@@ -43,6 +43,27 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             yield break;
         }
 
+        public override IEnumerable<ISymbol> VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
+
+            return initConnectionPointSymbol.TaskDeclaration
+                                            .References
+                                            .SelectMany(tn => tn.Incomings)
+                                            .Select(edge => edge.TargetReference);
+        }
+
+        public override IEnumerable<ISymbol> VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol) {
+            return exitConnectionPointSymbol.TaskDeclaration
+                                            .References
+                                            .SelectMany(tn => tn.Outgoings)
+                                            .Select(exitTrans => exitTrans.ExitConnectionPointReference)
+                                            .Where(ep => ep?.Declaration == exitConnectionPointSymbol);
+        }
+
+        public override IEnumerable<ISymbol> VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol) {
+            // Hat keine Referenzen...
+            yield break;
+        }
+
         public override IEnumerable<ISymbol> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
 
             var semanticModelProvider = new SemanticModelProvider(new CachedSyntaxProvider());

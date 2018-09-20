@@ -15,7 +15,7 @@ namespace Pharmatechnik.Nav.Language.Text {
         }
 
         public static int Length(this IEnumerable<ClassifiedText> parts) {
-            return parts.Aggregate(0, (acc, ct) => acc + ct.Text.Length, length => length);
+            return parts.Aggregate(0, (acc, ct) => acc + ct.Text.Length);
         }
 
         public static IEnumerable<ClassifiedText> GetClassifiedText(this SyntaxTree syntaxTree, TextExtent extent) {

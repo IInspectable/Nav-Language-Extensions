@@ -45,6 +45,15 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             return Visit(taskNodeAliasSymbol.TaskNode);
         }
 
+        public override ISymbol VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+            if (exitConnectionPointReferenceSymbol.Declaration != null) {
+
+                return Visit(exitConnectionPointReferenceSymbol.Declaration);
+            }
+
+            return DefaultVisit(exitConnectionPointReferenceSymbol);
+        }
+
     }
 
 }

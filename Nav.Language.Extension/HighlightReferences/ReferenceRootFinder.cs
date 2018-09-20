@@ -1,7 +1,7 @@
 namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
-    sealed class ReferenceRootFinder : SymbolVisitor<ISymbol> {
-        
+    sealed class ReferenceRootFinder: SymbolVisitor<ISymbol> {
+
         ReferenceRootFinder(ISymbol originatingSymbol) {
             OriginatingSymbol = originatingSymbol;
         }
@@ -23,6 +23,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             if (taskDeclaration?.IsIncluded == false) {
                 return Visit(taskDeclaration);
             }
+
             return DefaultVisit(taskDefinitionSymbol);
         }
 
@@ -35,6 +36,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             if ((OriginatingSymbol == taskNodeSymbol || taskNodeSymbol.Alias == null) && taskNodeSymbol.Declaration?.IsIncluded == false) {
                 return Visit(taskNodeSymbol.Declaration);
             }
+
             return DefaultVisit(taskNodeSymbol);
         }
 
@@ -43,11 +45,24 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             if (nodeReferenceSymbol.Declaration != null) {
                 return Visit(nodeReferenceSymbol.Declaration);
             }
+
             return DefaultVisit(nodeReferenceSymbol);
         }
 
         public override ISymbol VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
             return Visit(taskNodeAliasSymbol.TaskNode);
-        }        
+        }
+
+        public override ISymbol VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+
+            if (exitConnectionPointReferenceSymbol.Declaration?.TaskDeclaration.IsIncluded == false) {
+
+                return Visit(exitConnectionPointReferenceSymbol.Declaration);
+            }
+
+            return DefaultVisit(exitConnectionPointReferenceSymbol);
+        }
+
     }
+
 }

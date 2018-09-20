@@ -34,6 +34,8 @@ namespace Pharmatechnik.Nav.Language.Text {
             return CreateClassifiedText(
                 ClassifiedTexts.Keyword(SyntaxFacts.InitKeyword),
                 ClassifiedTexts.Space,
+                ClassifiedTexts.TaskName(initConnectionPointSymbol.TaskDeclaration.Name),
+                ClassifiedTexts.Colon,
                 ClassifiedTexts.Identifier(initConnectionPointSymbol.Syntax.Identifier.ToString())
             );
 
@@ -44,6 +46,8 @@ namespace Pharmatechnik.Nav.Language.Text {
             return CreateClassifiedText(
                 ClassifiedTexts.Keyword(SyntaxFacts.ExitKeyword),
                 ClassifiedTexts.Space,
+                ClassifiedTexts.TaskName(exitConnectionPointSymbol.TaskDeclaration.Name),
+                ClassifiedTexts.Colon,
                 ClassifiedTexts.Identifier(exitConnectionPointSymbol.Syntax.Identifier.ToString())
             );
         }
@@ -51,6 +55,8 @@ namespace Pharmatechnik.Nav.Language.Text {
         public override ImmutableArray<ClassifiedText> VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol) {
 
             return CreateClassifiedText(
+                ClassifiedTexts.TaskName(endConnectionPointSymbol.TaskDeclaration.Name),
+                ClassifiedTexts.Colon,
                 ClassifiedTexts.Keyword(SyntaxFacts.EndKeyword)
             );
         }
