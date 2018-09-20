@@ -14,7 +14,8 @@
         FormName,
         TypeName,
         PreprocessorText,
-        PreprocessorKeyword
+        PreprocessorKeyword,
+        Text
 
     }
 

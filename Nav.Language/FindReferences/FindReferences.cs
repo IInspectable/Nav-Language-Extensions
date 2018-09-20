@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Immutable;
 using System.Threading.Tasks;
-using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -28,13 +27,13 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                     return;
                 }
 
-                var searchRoot = args.SearchDirectory?.FullName ?? definition.SyntaxTree?.SourceText?.FileInfo?.FullName ??"";
+                var searchRoot     = args.SearchDirectory?.FullName ?? definition.SyntaxTree?.SourceText.FileInfo?.FullName ?? "";
                 var definitionItem = new DefinitionItem(searchRoot, definition, definition.ToDisplayParts());
 
                 foreach (var reference in FindReferencesVisitor.Invoke(args, definitionItem)
-                                                               //.OrderBy(d => d.Location.StartLine)
-                                                               //.ThenBy(d => d.Location.StartCharacter)
-                                                                ) {
+                    //.OrderBy(d => d.Location.StartLine)
+                    //.ThenBy(d => d.Location.StartCharacter)
+                ) {
 
                     if (args.Context.CancellationToken.IsCancellationRequested) {
                         return;
@@ -66,11 +65,28 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             // Text
             var textExtent = referenceLine.ExtentWithoutLineEndings;
 
+            var prefix               = "";
+            var prefixClassification = TextClassification.Text;
+            if (reference is INodeSymbol node) {
+                prefix               = $"{node.ContainingTask.Name} \u220B";
+                prefixClassification = TextClassification.TaskName;
+            }
+
+            if (reference is INodeReferenceSymbol nodeReference && nodeReference.Declaration is INodeSymbol nodeSymbol) {
+                prefix               = $"{nodeSymbol.ContainingTask.Name} \u220B";
+                prefixClassification = TextClassification.TaskName;
+            }
+
             var textParts = reference.SyntaxTree
                                      .GetClassifiedText(textExtent)
                                      .ToImmutableArray();
 
-            var textHighlightExtent = new TextExtent(start : reference.Start - referenceLine.Start,
+            if (!String.IsNullOrEmpty(prefix)) {
+                textParts = textParts.Insert(0, new ClassifiedText(prefix, prefixClassification));
+
+            }
+
+            var textHighlightExtent = new TextExtent(start: reference.Start - referenceLine.Start + prefix.Length,
                                                      length: reference.Location.Length);
 
             // Preview
@@ -79,14 +95,14 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                                         .GetClassifiedText(previewExtent)
                                         .ToImmutableArray();
 
-            var previewHighlightExtent = new TextExtent(start : reference.Start - previewExtent.Start,
+            var previewHighlightExtent = new TextExtent(start: reference.Start - previewExtent.Start,
                                                         length: reference.Location.Length);
 
-            var referenceItem = new ReferenceItem(definition            : definitionItem,
-                                                  location              : reference.Location,
-                                                  textParts             : textParts,
-                                                  textHighlightExtent   : textHighlightExtent,
-                                                  previewParts          : previewParts,
+            var referenceItem = new ReferenceItem(definition: definitionItem,
+                                                  location: reference.Location,
+                                                  textParts: textParts,
+                                                  textHighlightExtent: textHighlightExtent,
+                                                  previewParts: previewParts,
                                                   previewHighlightExtent: previewHighlightExtent);
             return referenceItem;
         }
