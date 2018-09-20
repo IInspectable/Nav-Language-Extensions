@@ -14,6 +14,10 @@ namespace Pharmatechnik.Nav.Language.Text {
             return parts.Aggregate(new StringBuilder(), (sb, p) => sb.Append(p.Text), sb => sb.ToString());
         }
 
+        public static int Length(this IEnumerable<ClassifiedText> parts) {
+            return parts.Aggregate(0, (acc, ct) => acc + ct.Text.Length, length => length);
+        }
+
         public static IEnumerable<ClassifiedText> GetClassifiedText(this SyntaxTree syntaxTree, TextExtent extent) {
 
             foreach (var token in syntaxTree.Tokens[extent, includeOverlapping: true]) {

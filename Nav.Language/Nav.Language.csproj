@@ -55,8 +55,10 @@
     <Compile Include="FindReferences\FindDefinitionVisitor.cs" />
     <Compile Include="FindReferences\FindReferencesArgs.cs" />
     <Compile Include="FindReferences\IFindReferencesContext.cs" />
+    <Compile Include="FindReferences\PrefixPartsBuilder.cs" />
     <Compile Include="FindReferences\ReferenceItem.cs" />
     <Compile Include="FindReferences\FindReferencesVisitor.cs" />
+    <Compile Include="FindReferences\ReferenceItemBuilder.cs" />
     <Compile Include="Provider\ISemanticModelProvider.cs" />
     <Compile Include="Provider\ISemanticModelProviderFactory.cs" />
     <Compile Include="Provider\SemanticModelProvider.cs" />
