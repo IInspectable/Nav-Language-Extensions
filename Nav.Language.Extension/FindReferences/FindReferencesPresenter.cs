@@ -97,10 +97,14 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         public TextBlock ToTextBlock(IEnumerable<ClassifiedText> parts, Action<Run, ClassifiedText, int> runAction = null, bool consolidateWhitespace = true) {
 
-            var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
-            var inlines   = ToInlines(parts, runAction, consolidateWhitespace);
+            var textBlock = new TextBlock {
+                TextWrapping = TextWrapping.NoWrap,
+                TextTrimming = TextTrimming.CharacterEllipsis
+            };
 
             textBlock.SetDefaultTextProperties(FormatMap);
+
+            var inlines = ToInlines(parts, runAction, consolidateWhitespace);
             textBlock.Inlines.AddRange(inlines);
 
             return textBlock;
@@ -132,7 +136,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             // Whitepaces auf ein Leerzeichen respektive NL ein.
             if (consolidateWhitespace &&
                 classification == TextClassification.Whitespace) {
-                
+
                 // NL dürfen wir nicht einfach wegwerfen.
                 text = text.GetNewLineCharCount() == 0 ? " " : Environment.NewLine;
             }
