@@ -17,6 +17,9 @@ namespace Pharmatechnik.Nav.Language {
         CodeGenerationUnit CodeGenerationUnit { get; }
 
         [NotNull]
+        string CodeNamespace{get;}
+
+        [NotNull]
         TaskDefinitionSyntax Syntax { get; }
 
         [CanBeNull]

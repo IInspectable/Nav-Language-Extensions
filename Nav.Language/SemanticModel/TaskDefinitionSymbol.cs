@@ -1,5 +1,6 @@
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,6 +35,8 @@ namespace Pharmatechnik.Nav.Language {
         public List<ExitTransition>    ExitTransitions    { get; }
 
         public CodeGenerationUnit CodeGenerationUnit { get; private set; }
+
+        public string CodeNamespace => (Syntax.SyntaxTree.Root as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString() ?? String.Empty;
 
         IReadOnlySymbolCollection<INodeSymbol> ITaskDefinitionSymbol.NodeDeclarations   => NodeDeclarations;
         IReadOnlyList<IInitTransition> ITaskDefinitionSymbol.        InitTransitions    => InitTransitions;

@@ -40,14 +40,14 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var taskName              = taskDefinition.Name;
-            var baseNamespace         = (taskDefinition.Syntax.SyntaxTree.Root as CodeGenerationUnitSyntax)?.CodeNamespace?.Namespace?.ToString() ?? String.Empty;
-            var wfsBaseBaseClassName  = taskDefinition.Syntax.CodeBaseDeclaration?.WfsBaseType?.ToString()                                             ?? CodeGenFacts.DefaultWfsBaseClass;
-            var iBeginWfsBaseTypeName = taskDefinition.Syntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString()                                       ?? CodeGenFacts.DefaultIBeginWfsBaseType;
+            var baseNamespace         = taskDefinition.CodeNamespace;
+            var wfsBaseBaseClassName  = taskDefinition.Syntax.CodeBaseDeclaration?.WfsBaseType?.ToString()       ?? CodeGenFacts.DefaultWfsBaseClass;
+            var iBeginWfsBaseTypeName = taskDefinition.Syntax.CodeBaseDeclaration?.IBeginWfsBaseType?.ToString() ?? CodeGenFacts.DefaultIBeginWfsBaseType;
 
             return new TaskCodeInfo(
-                taskName: taskName,
-                baseNamespace: baseNamespace,
-                wfsBaseBaseClassName: wfsBaseBaseClassName,
+                taskName              : taskName,
+                baseNamespace         : baseNamespace,
+                wfsBaseBaseClassName  : wfsBaseBaseClassName,
                 iIBeginWfsBaseTypeName: iBeginWfsBaseTypeName);
         }
 

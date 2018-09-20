@@ -51,7 +51,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             if (SearchDirectory != null) {
 
                 foreach (var file in Directory.EnumerateFiles(SearchDirectory.FullName, "*.nav", SearchOption.AllDirectories)) {
-                    
+
                     if (Context.CancellationToken.IsCancellationRequested) {
                         break;
                     }
@@ -84,6 +84,21 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
                     yield return taskNode;
                 }
+            }
+
+            var taskDefinitionSymbol = Definition.Symbol as ITaskDefinitionSymbol;
+            if (taskDefinitionSymbol == null) {
+                yield break;
+            }
+
+            foreach (var taskDeclaration in codeGeneration.TaskDeclarations
+                                                          .Where(td => td.Origin == TaskDeclarationOrigin.TaskDeclaration)) {
+
+                if (taskDeclaration.Name          == Definition.Symbol.Name &&
+                    taskDeclaration.CodeNamespace == taskDefinitionSymbol.CodeNamespace) {
+                    yield return taskDeclaration;
+                }
+
             }
         }
 
