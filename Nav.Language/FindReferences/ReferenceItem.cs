@@ -27,6 +27,19 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         }
 
+        public static ReferenceItem NoReferencesFoundTo(DefinitionItem definition) {
+            return new ReferenceItem(
+                definition: definition,
+                location: definition.Location,
+                textParts: new[] {
+                    ClassifiedTexts.Text($"No references found to '{definition.Text}'")
+                }.ToImmutableArray(),
+                textHighlightExtent: TextExtent.Empty,
+                previewParts: ImmutableArray<ClassifiedText>.Empty,
+                previewHighlightExtent: TextExtent.Empty
+            );
+        }
+
         public DefinitionItem                 Definition             { get; }
         public Location                       Location               { get; }
         public ImmutableArray<ClassifiedText> TextParts              { get; }

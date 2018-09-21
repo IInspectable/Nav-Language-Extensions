@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
     class FindReferencesContext: IFindReferencesContext, ITableDataSource, ITableEntriesSnapshotFactory {
 
-        readonly object _objectLock = new object();
+        readonly object _gate = new object();
 
         readonly CancellationTokenSource  _cancellationTokenSource;
         readonly IFindAllReferencesWindow _findReferencesWindow;
@@ -26,7 +27,8 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         TableEntriesSnapshot _lastSnapshot;
         ITableDataSink       _tableDataSink;
 
-        ImmutableArray<ReferenceItem> _referenceItems = ImmutableArray<ReferenceItem>.Empty;
+        ImmutableArray<DefinitionItem> _definitionItems = ImmutableArray<DefinitionItem>.Empty;
+        ImmutableArray<ReferenceItem>  _referenceItems  = ImmutableArray<ReferenceItem>.Empty;
 
         public FindReferencesContext(FindReferencesPresenter presenter, IFindAllReferencesWindow findReferencesWindow) {
 
@@ -55,10 +57,19 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             return Task.CompletedTask;
         }
 
-        public Task OnReferenceFoundAsync(ReferenceItem item) {
+        public Task OnDefinitionFoundAsync(DefinitionItem definitionItem) {
 
-            lock (_objectLock) {
-                _referenceItems = _referenceItems.Add(item);
+            lock (_gate) {
+                _definitionItems = _definitionItems.Add(definitionItem);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task OnReferenceFoundAsync(ReferenceItem referenceItem) {
+
+            lock (_gate) {
+                _referenceItems = _referenceItems.Add(referenceItem);
                 CurrentVersionNumber++;
             }
 
@@ -67,11 +78,24 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             return Task.CompletedTask;
         }
 
-        public Task OnCompletedAsync() {
+        public async Task OnCompletedAsync() {
+
+            await AddReferenceNotFoundMessagesAsync();
 
             _tableDataSink.IsStable = true;
 
-            return Task.CompletedTask;
+        }
+
+        async Task AddReferenceNotFoundMessagesAsync() {
+
+            foreach (var definition in _definitionItems.Where(definition => !HasReferences(definition))) {
+
+                await OnReferenceFoundAsync(ReferenceItem.NoReferencesFoundTo(definition));
+            }
+
+            bool HasReferences(DefinitionItem definition) {
+                return _referenceItems.Any(r => r.Definition == definition);
+            }
         }
 
         public Task SetSearchTitleAsync(string title) {
@@ -116,7 +140,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         public ITableEntriesSnapshot GetCurrentSnapshot() {
 
-            lock (_objectLock) {
+            lock (_gate) {
                 // If our last cached snapshot matches our current version number, then we
                 // can just return it.  Otherwise, we need to make a snapshot that matches
                 // our version.
@@ -138,7 +162,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         }
 
         public ITableEntriesSnapshot GetSnapshot(int versionNumber) {
-            lock (_objectLock) {
+            lock (_gate) {
                 if (_lastSnapshot?.VersionNumber == versionNumber) {
                     return _lastSnapshot;
                 }

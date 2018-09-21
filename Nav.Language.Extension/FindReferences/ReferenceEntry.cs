@@ -33,9 +33,9 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                     return Definition;
                 case StandardTableColumnDefinitions.DocumentName:
                     return ReferenceItem.Location.FilePath;
-                case StandardTableKeyNames.Line:
+                case StandardTableKeyNames.Line when ReferenceItem.Location.StartLine > 0:
                     return ReferenceItem.Location.StartLine;
-                case StandardTableKeyNames.Column:
+                case StandardTableKeyNames.Column when ReferenceItem.Location.StartCharacter > 0:
                     return ReferenceItem.Location.StartCharacter;
                 case StandardTableKeyNames.ProjectName:
                     return ReferenceItem.ProjectName;

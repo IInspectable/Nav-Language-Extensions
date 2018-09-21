@@ -27,6 +27,8 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                 var searchRoot     = args.SearchDirectory?.FullName ?? definition.SyntaxTree?.SourceText.FileInfo?.FullName ?? "";
                 var definitionItem = new DefinitionItem(searchRoot, definition, definition.ToDisplayParts());
 
+                await args.Context.OnDefinitionFoundAsync(definitionItem);
+
                 foreach (var reference in FindReferencesVisitor.Invoke(args, definitionItem)) {
 
                     if (args.Context.CancellationToken.IsCancellationRequested) {
