@@ -1,17 +1,19 @@
 ﻿#region Using Directives
 
 using System.ComponentModel.Composition;
-using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Commanding;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Utilities;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.FindReferences;
 using Pharmatechnik.Nav.Language.FindReferences;
+
+using Task = System.Threading.Tasks.Task;
 
 #endregion
 
@@ -41,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var codeGenerationUnitAndSnapshot = GetCodeGenerationUnit(args.SubjectBuffer);
             var symbol                        = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
 
-            var _ = FindAllReferencesAsync(symbol);
+            FindAllReferencesAsync(symbol).FileAndForget(DisplayName);
 
             return false;
 
@@ -54,10 +56,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             }
 
             var context = _referencesPresenter.StartSearch();
-            var args    = new FindReferencesArgs(symbol, context, NavLanguagePackage.SearchDirectory);
+            try {
 
-            await ReferenceFinder.FindReferences(args);
-            await context.OnCompletedAsync();
+                var args = new FindReferencesArgs(symbol, context, NavLanguagePackage.SearchDirectory);
+
+                await ReferenceFinder.FindReferences(args).ConfigureAwait(false);
+
+            } finally {
+                await context.OnCompletedAsync();
+            }
 
         }
 
