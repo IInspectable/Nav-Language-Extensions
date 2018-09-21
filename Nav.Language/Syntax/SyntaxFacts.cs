@@ -94,6 +94,18 @@ namespace Pharmatechnik.Nav.Language {
             return Keywords.Contains(value);
         }
 
+        public static readonly ImmutableHashSet<string> HiddenKeywords = new[] {
+            SpontaneousKeyword,
+            SpontKeyword,
+            GeneratetoKeyword,
+            NotimplementedKeyword,
+
+        }.ToImmutableHashSet();
+
+        public static bool IsHiddenKeyword(string value) {
+            return HiddenKeywords.Contains(value);
+        }
+
         // Punctuation
         public static readonly char OpenBrace    = GetLiteralNameAsChar(NavGrammar.OpenBrace);
         public static readonly char CloseBrace   = GetLiteralNameAsChar(NavGrammar.CloseBrace);

@@ -166,7 +166,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             }
 
             // Keywords
-            foreach (var keyword in SyntaxFacts.NavKeywords.OrderBy(n => n)) {
+            foreach (var keyword in SyntaxFacts.NavKeywords
+                                               .Where(k => !SyntaxFacts.IsHiddenKeyword(k))
+                                               .OrderBy(k => k)) {
+
                 completionItems.Add(CreateKeywordCompletion(keyword));
             }
 

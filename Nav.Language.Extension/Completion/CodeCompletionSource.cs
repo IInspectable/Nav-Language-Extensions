@@ -3,6 +3,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Immutable;
+using System.Linq;
 
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
@@ -44,7 +45,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             if (ShouldProvideCompletions(triggerLocation, out _)) {
                 var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
 
-                foreach (var keyword in SyntaxFacts.CodeKeywords) {
+                foreach (var keyword in SyntaxFacts.CodeKeywords
+                                                   .Where(k => !SyntaxFacts.IsHiddenKeyword(k))
+                                                   .OrderBy(k => k)) {
+
                     completionItems.Add(CreateKeywordCompletion(keyword));
 
                 }

@@ -5,6 +5,8 @@
         public static readonly ClassifiedText Space = new ClassifiedText(" ", TextClassification.Whitespace);
         public static readonly ClassifiedText Colon = Punctuation(SyntaxFacts.Colon.ToString());
 
+        public static ClassifiedText Text(char c) => Text(c.ToString());
+        public static ClassifiedText Text(string text) => new ClassifiedText(text,                            TextClassification.Text);
         public static ClassifiedText Keyword(string keyword) => new ClassifiedText(keyword,                   TextClassification.Keyword);
         public static ClassifiedText TaskName(string taskName) => new ClassifiedText(taskName,                TextClassification.TaskName);
         public static ClassifiedText FormName(string formName) => new ClassifiedText(formName,                TextClassification.FormName);

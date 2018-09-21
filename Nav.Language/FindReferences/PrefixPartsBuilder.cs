@@ -10,15 +10,17 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
     class PrefixPartsBuilder: SymbolVisitor<ImmutableArray<ClassifiedText>> {
 
-        private const char ContainsAMemberChar = '\u220B';
+        private const char ContainsMemberChar = '\u220B';
 
         public static ImmutableArray<ClassifiedText> Invoke(ISymbol reference) {
             var visitor = new PrefixPartsBuilder();
             return visitor.Visit(reference);
         }
 
+        private static readonly ImmutableArray<ClassifiedText> DefaultPrefix = ImmutableArray<ClassifiedText>.Empty;
+
         protected override ImmutableArray<ClassifiedText> DefaultVisit(ISymbol symbol) {
-            return ImmutableArray<ClassifiedText>.Empty;
+            return DefaultPrefix;
         }
 
         public override ImmutableArray<ClassifiedText> VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
@@ -82,11 +84,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         }
 
         public override ImmutableArray<ClassifiedText> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
-            if (nodeReferenceSymbol.Declaration != null) {
-                return Visit(nodeReferenceSymbol.Declaration);
-            }
-
-            return base.VisitNodeReferenceSymbol(nodeReferenceSymbol);
+            return BuildTaskDefinitionMemberPrefix(nodeReferenceSymbol.Edge.ContainingTask);
         }
 
         public override ImmutableArray<ClassifiedText> VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
@@ -94,17 +92,18 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         }
 
         ImmutableArray<ClassifiedText> BuildTaskDefinitionMemberPrefix(ITaskDeclarationSymbol taskDeclaration) {
-            return taskDeclaration != null ? BuildMemberPrefix(taskDeclaration.Name) : ImmutableArray<ClassifiedText>.Empty;
+            return taskDeclaration != null ? BuildTaskMemberPrefix(taskDeclaration.Name) : DefaultPrefix;
         }
 
         ImmutableArray<ClassifiedText> BuildTaskDefinitionMemberPrefix(ITaskDefinitionSymbol taskDefinition) {
-            return taskDefinition != null ? BuildMemberPrefix(taskDefinition.Name) : ImmutableArray<ClassifiedText>.Empty;
+            return taskDefinition != null ? BuildTaskMemberPrefix(taskDefinition.Name) : DefaultPrefix;
         }
 
-        ImmutableArray<ClassifiedText> BuildMemberPrefix(string containingName) {
+        ImmutableArray<ClassifiedText> BuildTaskMemberPrefix(string containingName) {
             return new[] {
-                new ClassifiedText($"{containingName}",       TextClassification.TaskName),
-                new ClassifiedText($" {ContainsAMemberChar}", TextClassification.Text)
+
+                ClassifiedTexts.TaskName(containingName),
+                ClassifiedTexts.Text(ContainsMemberChar)
 
             }.ToImmutableArray();
 
