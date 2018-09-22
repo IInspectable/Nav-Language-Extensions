@@ -24,7 +24,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                     return;
                 }
 
-                var searchRoot     = args.SearchDirectory?.FullName ?? definition.SyntaxTree?.SourceText.FileInfo?.FullName ?? "";
+                var searchRoot     = args.SearchDirectory?.FullName ?? definition.SyntaxTree?.SourceText.FileInfo?.DirectoryName ?? "";
                 var definitionItem = new DefinitionItem(searchRoot, definition, definition.ToDisplayParts());
 
                 await args.Context.OnDefinitionFoundAsync(definitionItem);
