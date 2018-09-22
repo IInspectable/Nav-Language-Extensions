@@ -57,7 +57,10 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
             return Presenter.ToTextBlock(ReferenceItem.TextParts, (run, part, position) => {
 
-                if (position == ReferenceItem.TextHighlightExtent.Start) {
+                var highlightExtent = ReferenceItem.TextHighlightExtent;
+
+                if (!highlightExtent.IsMissing &&
+                    position == highlightExtent.Start) {
 
                     Presenter.HighlightBackground(run);
                 }
@@ -67,15 +70,18 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         ToolTip CreateToolTip() {
 
-            return Presenter.CreateToolTip(PreviewPartsToTextBlock());
+            return Presenter.CreateToolTip(ToolTipPartsToTextBlock());
 
         }
 
-        TextBlock PreviewPartsToTextBlock() {
+        TextBlock ToolTipPartsToTextBlock() {
 
-            return Presenter.ToTextBlock(ReferenceItem.PreviewParts, (run, part, position) => {
+            return Presenter.ToTextBlock(ReferenceItem.ToolTipParts, (run, part, position) => {
 
-                if (position == ReferenceItem.PreviewHighlightExtent.Start) {
+                var highlightExtent = ReferenceItem.ToolTipHighlightExtent;
+
+                if (!highlightExtent.IsMissing &&
+                    position == highlightExtent.Start) {
 
                     Presenter.HighlightBackground(run);
 

@@ -15,28 +15,28 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                              Location location,
                              ImmutableArray<ClassifiedText> textParts,
                              TextExtent textHighlightExtent,
-                             ImmutableArray<ClassifiedText> previewParts,
-                             TextExtent previewHighlightExtent) {
+                             ImmutableArray<ClassifiedText> toolTipParts,
+                             TextExtent toolTipHighlightExtent) {
 
             Definition             = definition ?? throw new ArgumentNullException(nameof(definition));
             Location               = location   ?? throw new ArgumentNullException(nameof(location));
             TextParts              = textParts;
             TextHighlightExtent    = textHighlightExtent;
-            PreviewParts           = previewParts;
-            PreviewHighlightExtent = previewHighlightExtent;
+            ToolTipParts           = toolTipParts;
+            ToolTipHighlightExtent = toolTipHighlightExtent;
 
         }
 
         public static ReferenceItem NoReferencesFoundTo(DefinitionItem definition) {
             return new ReferenceItem(
-                definition: definition,
-                location: definition.Location,
-                textParts: new[] {
-                    ClassifiedTexts.Text($"No references found to '{definition.Text}'")
+                definition            : definition,
+                location              : definition.Location,
+                textParts             : new[] {
+                    ClassifiedTexts.Text($"No references found to '{definition.Text}'.")
                 }.ToImmutableArray(),
-                textHighlightExtent: TextExtent.Empty,
-                previewParts: ImmutableArray<ClassifiedText>.Empty,
-                previewHighlightExtent: TextExtent.Empty
+                textHighlightExtent   : TextExtent.Missing,
+                toolTipParts          : ImmutableArray<ClassifiedText>.Empty,
+                toolTipHighlightExtent: TextExtent.Missing
             );
         }
 
@@ -44,11 +44,11 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         public Location                       Location               { get; }
         public ImmutableArray<ClassifiedText> TextParts              { get; }
         public TextExtent                     TextHighlightExtent    { get; }
-        public ImmutableArray<ClassifiedText> PreviewParts           { get; }
-        public TextExtent                     PreviewHighlightExtent { get; }
+        public ImmutableArray<ClassifiedText> ToolTipParts           { get; }
+        public TextExtent                     ToolTipHighlightExtent { get; }
 
         public string Text        => TextParts.JoinText();
-        public string Preview     => PreviewParts.JoinText();
+        public string ToolTip     => ToolTipParts.JoinText();
         public string ProjectName => Definition.SearchRoot;
 
     }
