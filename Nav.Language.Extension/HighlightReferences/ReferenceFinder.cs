@@ -50,12 +50,10 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
         public override IEnumerable<ISymbol> VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol) {
 
-            if (exitConnectionPointSymbol.TaskDeclaration.IsIncluded) {
-                yield break;
+            if (!exitConnectionPointSymbol.TaskDeclaration.IsIncluded) {
+                yield return exitConnectionPointSymbol;
             }
-
-            yield return exitConnectionPointSymbol;
-
+            
             foreach (var exitConnectionPointReference in exitConnectionPointSymbol.TaskDeclaration
                                                                                   .References
                                                                                   .SelectMany(tn => tn.Outgoings)

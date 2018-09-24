@@ -55,13 +55,14 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
 
         public override ISymbol VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
 
-            if (exitConnectionPointReferenceSymbol.Declaration?.TaskDeclaration.IsIncluded == false) {
+            if (exitConnectionPointReferenceSymbol.Declaration !=null) {
 
                 return Visit(exitConnectionPointReferenceSymbol.Declaration);
             }
 
             return DefaultVisit(exitConnectionPointReferenceSymbol);
         }
+       
 
     }
 
