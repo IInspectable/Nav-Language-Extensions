@@ -22,14 +22,10 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         }
 
-        [NotNull]
-        readonly FindReferencesArgs _args;
+        [NotNull] readonly FindReferencesArgs _args;
 
         [NotNull]
         public IFindReferencesContext Context => _args.Context;
-
-        [CanBeNull]
-        public DirectoryInfo SearchDirectory => _args.SolutionRoot;
 
         public static IEnumerable<ISymbol> Invoke(FindReferencesArgs args, DefinitionItem definition) {
 
@@ -276,7 +272,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             // 3. Zu guter letzt durchsuchen wir alle übrigen Files de "Solution", was mittlerweil ~1400 Dateien sind, und
             //    entsprechend lange dauert.
-            foreach (var file in _args.SolutionFiles) {
+            foreach (var file in _args.Solution.SolutionFiles) {
 
                 if (cancellationToken.IsCancellationRequested) {
                     break;

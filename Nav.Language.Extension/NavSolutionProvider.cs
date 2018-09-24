@@ -6,70 +6,44 @@ using System.ComponentModel.Composition;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
+using JetBrains.Annotations;
+
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Events;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Threading;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion {
+namespace Pharmatechnik.Nav.Language.Extension {
 
-    class FileInfoSnapshot {
-
-        FileInfoSnapshot() {
-            CreationTime = DateTime.MinValue;
-            FileInfos    = ImmutableArray<FileInfo>.Empty;
-            Directory    = null;
-        }
-
-        public FileInfoSnapshot(DirectoryInfo directoryInfo, DateTime creationTime, ImmutableArray<FileInfo> fileInfos) {
-            CreationTime = creationTime;
-            Directory    = directoryInfo ?? throw new ArgumentNullException(nameof(directoryInfo));
-            FileInfos    = fileInfos;
-        }
-
-        public static readonly FileInfoSnapshot Empty = new FileInfoSnapshot();
-
-        public DirectoryInfo            Directory    { get; }
-        public DateTime                 CreationTime { get; }
-        public ImmutableArray<FileInfo> FileInfos    { get; }
-
-        public bool IsCurrent(DirectoryInfo directory, DateTime lastFileSystemChange) {
-
-            if (directory == null || Directory == null) {
-                return false;
-            }
-
-            return directory.FullName   == Directory.FullName &&
-                   lastFileSystemChange <= CreationTime;
-        }
-
-    }
-
-    //  TODO Sollt wohl in Zukunft irgendwie mehr so etwas wie ein VsNavWorkspace werden!?
     [Export]
-    class NavFileProvider {
+    class NavSolutionProvider {
 
         DirectoryInfo _directory;
 
         private DateTime _lastChanged = DateTime.Now;
 
-        private FileInfoSnapshot _fileInfoSnapshot;
+        private NavSolutionSnapshot _navSolutionSnapshot;
 
         readonly FileSystemWatcher _fileSystemWatcher;
 
         static string SearchFilter => $"*{NavLanguageContentDefinitions.FileExtension}";
 
         [ImportingConstructor]
-        public NavFileProvider() {
+        public NavSolutionProvider() {
 
-            _fileInfoSnapshot = FileInfoSnapshot.Empty;
+            _navSolutionSnapshot = NavSolutionSnapshot.Empty;
 
             SolutionEvents.OnAfterCloseSolution                  += OnAfterCloseSolution;
             SolutionEvents.OnAfterOpenSolution                   += OnAfterOpenSolution;
             SolutionEvents.OnAfterBackgroundSolutionLoadComplete += OnAfterBackgroundSolutionLoadComplete;
 
             _fileSystemWatcher = new FileSystemWatcher {
-                Filter                = SearchFilter,
+                Filter                = NavSolution.SearchFilter,
                 IncludeSubdirectories = true,
                 NotifyFilter          = NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
@@ -84,8 +58,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             Observable.FromEventPattern<EventArgs>(handler => Invalidated += handler,
                                                    handler => Invalidated -= handler)
                       .Throttle(TimeSpan.FromSeconds(2))
-                      .Select(_ => CreateFileInfoSnapshot(_directory, CancellationToken.None))
-                      .Subscribe(TrySetFileInfoSnapshot);
+                      .Select(_ => Observable.FromAsync(async () => await CreateSolutionSnapshotAsync(_directory, CancellationToken.None)))
+                      .Concat()
+                      .Subscribe(TrySetSolutionSnapshot);
         }
 
         private event EventHandler<EventArgs> Invalidated;
@@ -104,7 +79,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         void UpdateSearchDirectory() {
 
-            _directory = NavLanguagePackage.SearchDirectory;
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            _directory = SolutionDirectory;
 
             if (_directory == null) {
                 _fileSystemWatcher.EnableRaisingEvents = false;
@@ -130,7 +107,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         void Invalidate() {
 
-            _lastChanged = DateTime.Now;
+            lock (_gate) {
+                _lastChanged         = DateTime.Now;
+                _navSolutionSnapshot = NavSolutionSnapshot.Empty;
+            }
 
             OnInvalidated();
         }
@@ -139,23 +119,25 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             Invalidated?.Invoke(this, EventArgs.Empty);
         }
 
-        public ImmutableArray<FileInfo> GetNavFiles(CancellationToken cancellationToken) {
+        public async Task<NavSolution> GetSolutionAsync(CancellationToken cancellationToken) {
 
-            if (_fileInfoSnapshot.IsCurrent(_directory, _lastChanged)) {
-                return _fileInfoSnapshot.FileInfos;
+            if (_navSolutionSnapshot.IsCurrent(_directory, _lastChanged)) {
+                return _navSolutionSnapshot.Solution;
             }
 
-            var fileInfoSnapshot = CreateFileInfoSnapshot(_directory, cancellationToken);
+            var solutionSnapshot = await CreateSolutionSnapshotAsync(_directory, cancellationToken);
 
-            TrySetFileInfoSnapshot(fileInfoSnapshot);
+            TrySetSolutionSnapshot(solutionSnapshot);
 
-            return _fileInfoSnapshot.FileInfos;
+            return solutionSnapshot.Solution;
         }
 
-        static FileInfoSnapshot CreateFileInfoSnapshot(DirectoryInfo directory, CancellationToken cancellationToken) {
+        static async Task<NavSolutionSnapshot> CreateSolutionSnapshotAsync(DirectoryInfo directory, CancellationToken cancellationToken) {
+
+            await TaskScheduler.Default;
 
             if (String.IsNullOrEmpty(directory?.FullName)) {
-                return FileInfoSnapshot.Empty;
+                return NavSolutionSnapshot.Empty;
             }
 
             var creationTime = DateTime.Now;
@@ -167,7 +149,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                 SearchOption.AllDirectories)) {
 
                 if (cancellationToken.IsCancellationRequested) {
-                    return FileInfoSnapshot.Empty;
+                    return NavSolutionSnapshot.Empty;
                 }
 
                 var fileInfo = new FileInfo(file);
@@ -175,22 +157,58 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             }
 
-            return new FileInfoSnapshot(directory, creationTime, itemBuilder.ToImmutableArray());
+            var solution = await NavSolution.FromDirectoryAsync(directory, cancellationToken);
+
+            return new NavSolutionSnapshot(creationTime, solution);
         }
 
         private readonly object _gate = new object();
 
-        void TrySetFileInfoSnapshot(FileInfoSnapshot fileInfoSnapshot) {
+        void TrySetSolutionSnapshot(NavSolutionSnapshot navSolutionSnapshot) {
 
             lock (_gate) {
 
-                if (!fileInfoSnapshot.IsCurrent(_directory, _lastChanged)) {
+                if (!navSolutionSnapshot.IsCurrent(_directory, _lastChanged)) {
                     return;
                 }
 
-                _fileInfoSnapshot = fileInfoSnapshot;
+                _navSolutionSnapshot = navSolutionSnapshot;
             }
 
+        }
+
+        static bool IsSolutionOpen {
+            get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                var solution = NavLanguagePackage.GetGlobalService<SVsSolution, IVsSolution>();
+                solution.GetProperty((int) __VSPROPID.VSPROPID_IsSolutionOpen, out object value);
+
+                return value is bool isSolOpen && isSolOpen;
+            }
+        }
+
+        [CanBeNull]
+        static DirectoryInfo SolutionDirectory {
+            get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                var solution = NavLanguagePackage.GetGlobalService<SVsSolution, IVsSolution>();
+
+                if (!IsSolutionOpen) {
+                    return null;
+                }
+
+                if (ErrorHandler.Succeeded(solution.GetSolutionInfo(out var solutionDirectory, out _, out _))) {
+                    if (String.IsNullOrWhiteSpace(solutionDirectory)) {
+                        return null;
+                    }
+
+                    return new DirectoryInfo(solutionDirectory);
+                }
+
+                return null;
+            }
         }
 
     }

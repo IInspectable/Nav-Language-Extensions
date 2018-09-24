@@ -19,12 +19,9 @@ using Pharmatechnik.Nav.Utilities.IO;
 namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     class PathCompletionSource: AsyncCompletionSource {
-
-        private readonly NavFileProvider _navFileProvider;
-
-        public PathCompletionSource(QuickinfoBuilderService quickinfoBuilderService, NavFileProvider navFileProvider)
+        
+        public PathCompletionSource(QuickinfoBuilderService quickinfoBuilderService)
             : base(quickinfoBuilderService) {
-            _navFileProvider = navFileProvider;
 
         }
 
@@ -52,16 +49,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         private const string ParentFolderDisplayString = "..";
 
-        public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+        public override async Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
             if (!ShouldProvideCompletions(triggerLocation, out _, out var replacementSpan)) {
-                return CreateEmptyCompletionContextTask();
+                return CreateEmptyCompletionContext();
             }
 
             var semanticModelService      = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
             var generationUnitAndSnapshot = semanticModelService.CodeGenerationUnitAndSnapshot;
             if (generationUnitAndSnapshot == null) {
-                return CreateEmptyCompletionContextTask();
+                return CreateEmptyCompletionContext();
             }
 
             var codeGenerationUnit = generationUnitAndSnapshot.CodeGenerationUnit;
@@ -86,10 +83,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                     var typed = lineText.Substring(quotedExtent.Start, length: linePosition - quotedExtent.Start);
                     var parts = SplitPath(typed);
 
+                    var solution = await NavLanguagePackage.GetSolutionAsync(token);
                     // Wenn der Benutzer gerade anfängt einen Dateinamen anzugeben, er aber noch keinen Pfad geschrieben hat, dann zeigen wir
                     // ALLE nav-Files, die von der Solution aus zu erreichen sind.
                     if (String.IsNullOrWhiteSpace(parts.DirPart)) {
-                        foreach (var file in _navFileProvider.GetNavFiles(token)) {
+                        foreach (var file in solution.SolutionFiles) {
                             completionItems.Add(CreateFileInfoCompletion(navDirectory, file, replacementSpan: replacementSpan));
                         }
                     }
@@ -146,7 +144,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                 completionItems.Clear();
             }
 
-            return CreateCompletionContextTask(completionItems);
+            return CreateCompletionContext(completionItems);
 
         }
 

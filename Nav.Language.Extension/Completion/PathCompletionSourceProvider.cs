@@ -17,16 +17,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
     class PathCompletionSourceProvider: AsyncCompletionSourceProvider {
 
         [ImportingConstructor]
-        public PathCompletionSourceProvider(QuickinfoBuilderService quickinfoBuilderService, NavFileProvider navFileProvider) {
-            QuickinfoBuilderService = quickinfoBuilderService;
-            NavFileProvider = navFileProvider;
+        public PathCompletionSourceProvider(QuickinfoBuilderService quickInfoBuilderService) {
+            QuickInfoBuilderService = quickInfoBuilderService;
         }
 
-        public QuickinfoBuilderService QuickinfoBuilderService { get; }
-        public NavFileProvider NavFileProvider { get; }
+        public QuickinfoBuilderService QuickInfoBuilderService { get; }
 
         protected override IAsyncCompletionSource CreateCompletionSource() {
-            return new PathCompletionSource(QuickinfoBuilderService, NavFileProvider);
+            return new PathCompletionSource(QuickInfoBuilderService);
         }
 
     }

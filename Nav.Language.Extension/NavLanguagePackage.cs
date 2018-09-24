@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -26,9 +28,9 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Outlining;
 using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.Threading;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.Completion;
 using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Utilities.Logging;
 
@@ -79,7 +81,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             serviceContainer.AddService(typeof(NavLanguagePackage), OnCreateService, true);
 
             // Cache schon mal vorwärmen...
-            GetServiceProvider().GetMefService<NavFileProvider>();
+            GetServiceProvider().GetMefService<NavSolutionProvider>();
         }
 
         object OnCreateService(IServiceContainer container, Type serviceType) {
@@ -193,8 +195,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             using (Logger.LogBlock(nameof(OpenFileInPreviewTab))) {
 
                 var state = __VSNEWDOCUMENTSTATE.NDS_Provisional; // | __VSNEWDOCUMENTSTATE.NDS_NoActivate;
-                using (new NewDocumentStateScope(state, VSConstants.NewDocumentStateReason.Navigation))
-                {
+                using (new NewDocumentStateScope(state, VSConstants.NewDocumentStateReason.Navigation)) {
                     return OpenFile(file);
                 }
             }
@@ -416,41 +417,18 @@ namespace Pharmatechnik.Nav.Language.Extension {
             return imageAttributes;
         }
 
-        public static bool IsSolutionOpen {
-            get {
-                ThreadHelper.ThrowIfNotOnUIThread();
+        public static async Task<NavSolution> GetSolutionAsync(CancellationToken cancellationToken) {
 
-                var solution = GetGlobalService<SVsSolution, IVsSolution>();
-                solution.GetProperty((int) __VSPROPID.VSPROPID_IsSolutionOpen, out object value);
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                return value is bool isSolOpen && isSolOpen;
-            }
-        }
+            var solutionProvider = GetServiceProvider().GetMefService<NavSolutionProvider>();
 
-        [CanBeNull]
-        public static DirectoryInfo SearchDirectory => SolutionDirectory;
+            await TaskScheduler.Default;
 
-        [CanBeNull]
-        public static DirectoryInfo SolutionDirectory {
-            get {
-                ThreadHelper.ThrowIfNotOnUIThread();
+            var solution = await solutionProvider.GetSolutionAsync(cancellationToken);
 
-                var solution = GetGlobalService<SVsSolution, IVsSolution>();
+            return solution;
 
-                if (!IsSolutionOpen) {
-                    return null;
-                }
-
-                if (ErrorHandler.Succeeded(solution.GetSolutionInfo(out var solutionDirectory, out _, out _))) {
-                    if (String.IsNullOrWhiteSpace(solutionDirectory)) {
-                        return null;
-                    }
-
-                    return new DirectoryInfo(solutionDirectory);
-                }
-
-                return null;
-            }
         }
 
     }

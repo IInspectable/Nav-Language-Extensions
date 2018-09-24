@@ -358,6 +358,7 @@
     <Compile Include="Text\TextChange.cs" />
     <Compile Include="Text\TextChangeWriter.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
+    <Compile Include="Workspace\NavSolution.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagnostic\DiagnosticDescriptors.DeadCode.cs" />
