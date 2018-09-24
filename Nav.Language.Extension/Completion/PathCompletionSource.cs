@@ -20,11 +20,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     class PathCompletionSource: AsyncCompletionSource {
 
-        private readonly NavFileCompletionCache _navFileCompletionCache;
+        private readonly NavFileProvider _navFileProvider;
 
-        public PathCompletionSource(QuickinfoBuilderService quickinfoBuilderService, NavFileCompletionCache navFileCompletionCache)
+        public PathCompletionSource(QuickinfoBuilderService quickinfoBuilderService, NavFileProvider navFileProvider)
             : base(quickinfoBuilderService) {
-            _navFileCompletionCache = navFileCompletionCache;
+            _navFileProvider = navFileProvider;
 
         }
 
@@ -89,7 +89,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                     // Wenn der Benutzer gerade anfängt einen Dateinamen anzugeben, er aber noch keinen Pfad geschrieben hat, dann zeigen wir
                     // ALLE nav-Files, die von der Solution aus zu erreichen sind.
                     if (String.IsNullOrWhiteSpace(parts.DirPart)) {
-                        foreach (var file in _navFileCompletionCache.GetNavFiles(token)) {
+                        foreach (var file in _navFileProvider.GetNavFiles(token)) {
                             completionItems.Add(CreateFileInfoCompletion(navDirectory, file, replacementSpan: replacementSpan));
                         }
                     }

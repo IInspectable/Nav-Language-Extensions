@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Utilities;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Extension.Completion;
 using Pharmatechnik.Nav.Language.Extension.FindReferences;
 using Pharmatechnik.Nav.Language.FindReferences;
 
@@ -24,11 +25,13 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
     [Name(CommandHandlerNames.FindReferencesCommandHandler)]
     class FindReferencesCommandHandler: ICommandHandler<FindReferencesCommandArgs> {
 
-        private readonly FindReferencesPresenter _referencesPresenter;
+        readonly FindReferencesPresenter _referencesPresenter;
+        readonly NavFileProvider         _navFileProvider;
 
         [ImportingConstructor]
-        public FindReferencesCommandHandler(FindReferencesPresenter referencesPresenter) {
+        public FindReferencesCommandHandler(FindReferencesPresenter referencesPresenter, NavFileProvider navFileProvider) {
             _referencesPresenter = referencesPresenter;
+            _navFileProvider     = navFileProvider;
 
         }
 
@@ -58,7 +61,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var context = _referencesPresenter.StartSearch();
             try {
 
-                var args = new FindReferencesArgs(symbol, context, NavLanguagePackage.SearchDirectory);
+                // TODO Eher so etwas wie einen NavWorkspace /NavSolution mitgeben
+                var args = new FindReferencesArgs(symbol, context, NavLanguagePackage.SearchDirectory, _navFileProvider.GetNavFiles(context.CancellationToken));
 
                 await ReferenceFinder.FindReferences(args).ConfigureAwait(false);
 

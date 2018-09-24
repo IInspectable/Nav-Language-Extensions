@@ -153,7 +153,7 @@
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
     <Compile Include="Common\TextViewExtensions.cs" />
     <Compile Include="Common\TextUndoTransaction.cs" />
-    <Compile Include="Completion\NavFileCompletionCache.cs" />
+    <Compile Include="Completion\NavFileProvider.cs" />
     <Compile Include="Completion\TextSnaphotLineExtensions.cs" />
     <Compile Include="Completion\AsyncCompletionSource.cs" />
     <Compile Include="Completion\AsyncCompletionSourceProvider.cs" />

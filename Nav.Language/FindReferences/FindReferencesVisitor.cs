@@ -27,7 +27,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         public IFindReferencesContext Context => _args.Context;
 
         [CanBeNull]
-        public DirectoryInfo SearchDirectory => _args.SearchDirectory;
+        public DirectoryInfo SearchDirectory => _args.SolutionRoot;
 
         public static IEnumerable<ISymbol> Invoke(FindReferencesArgs args, DefinitionItem definition) {
 
@@ -68,15 +68,15 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             var semanticModelProvider = new SemanticModelProvider(new CachedSyntaxProvider());
             // TODO Review and refactoring, Cancellation
-            if (SearchDirectory != null) {
+            if (_args.SolutionFiles.Any()) {
 
-                foreach (var file in Directory.EnumerateFiles(SearchDirectory.FullName, "*.nav", SearchOption.AllDirectories)) {
+                foreach (var file in _args.SolutionFiles) {
 
                     if (Context.CancellationToken.IsCancellationRequested) {
                         break;
                     }
 
-                    var codeGen = semanticModelProvider.GetSemanticModel(file, Context.CancellationToken);
+                    var codeGen = semanticModelProvider.GetSemanticModel(file.FullName, Context.CancellationToken);
                     if (codeGen == null) {
                         continue;
                     }

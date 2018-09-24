@@ -6,6 +6,7 @@
   &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.visualstudio.text.ui\15.6.27740\lib\net46\Microsoft.VisualStudio.Text.UI.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.visualstudio.text.ui\15.8.525\lib\net46\Microsoft.VisualStudio.Text.UI.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.visualstudio.text.ui.wpf\15.6.27740\lib\net46\Microsoft.VisualStudio.Text.UI.Wpf.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\rx-linq\2.2.5\lib\net45\System.Reactive.Linq.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:Int64 x:Key="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue">20</s:Int64>
 	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndex/@EntryValue">9</s:Int64>

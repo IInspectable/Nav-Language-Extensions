@@ -4,6 +4,7 @@ using System;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Reactive.Linq;
 using System.Threading;
 
 using Microsoft.VisualStudio.Shell.Events;
@@ -44,9 +45,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     }
 
-    // TODO Naming...
+    //  TODO Sollt wohl in Zukunft irgendwie mehr so etwas wie ein VsNavWorkspace werden!?
     [Export]
-    class NavFileCompletionCache {
+    class NavFileProvider {
 
         DirectoryInfo _directory;
 
@@ -56,8 +57,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         readonly FileSystemWatcher _fileSystemWatcher;
 
+        static string SearchFilter => $"*{NavLanguageContentDefinitions.FileExtension}";
+
         [ImportingConstructor]
-        public NavFileCompletionCache() {
+        public NavFileProvider() {
 
             _fileInfoSnapshot = FileInfoSnapshot.Empty;
 
@@ -66,7 +69,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             SolutionEvents.OnAfterBackgroundSolutionLoadComplete += OnAfterBackgroundSolutionLoadComplete;
 
             _fileSystemWatcher = new FileSystemWatcher {
-                Filter                = "*.nav",
+                Filter                = SearchFilter,
                 IncludeSubdirectories = true,
                 NotifyFilter          = NotifyFilters.CreationTime | NotifyFilters.FileName | NotifyFilters.DirectoryName
             };
@@ -77,60 +80,26 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             UpdateSearchDirectory();
 
+            // TODO Dispose beim Beenden von Studio
+            Observable.FromEventPattern<EventArgs>(handler => Invalidated += handler,
+                                                   handler => Invalidated -= handler)
+                      .Throttle(TimeSpan.FromSeconds(2))
+                      .Select(_ => CreateFileInfoSnapshot(_directory, CancellationToken.None))
+                      .Subscribe(TrySetFileInfoSnapshot);
         }
 
-        private void OnFileSystemDeleted(object sender, FileSystemEventArgs e) {
-            Invalidate();
+        private event EventHandler<EventArgs> Invalidated;
+
+        void OnAfterOpenSolution(object sender, OpenSolutionEventArgs e) {
+            UpdateSearchDirectory();
         }
 
-        private void OnFileSystemCreated(object sender, FileSystemEventArgs e) {
-            Invalidate();
+        void OnAfterCloseSolution(object sender, EventArgs e) {
+            UpdateSearchDirectory();
         }
 
-        private void OnFileSystemRenamed(object sender, RenamedEventArgs e) {
-            Invalidate();
-        }
-
-        void Invalidate() {
-            _lastChanged      = DateTime.Now;
-            _fileInfoSnapshot = FileInfoSnapshot.Empty;
-        }
-
-        public ImmutableArray<FileInfo> GetNavFiles(CancellationToken cancellationToken) {
-
-            if (_directory == null) {
-                return ImmutableArray<FileInfo>.Empty;
-            }
-
-            if (_fileInfoSnapshot.IsCurrent(_directory, _lastChanged)) {
-                return _fileInfoSnapshot.FileInfos;
-            }
-
-            _fileInfoSnapshot = CreateFileInfoSnapshot(_directory, cancellationToken);
-
-            return _fileInfoSnapshot.FileInfos;
-        }
-
-        static FileInfoSnapshot CreateFileInfoSnapshot(DirectoryInfo directory, CancellationToken cancellationToken) {
-
-            var creationTime = DateTime.Now;
-            var itemBuilder  = ImmutableArray.CreateBuilder<FileInfo>();
-
-            foreach (var file in Directory.EnumerateFiles(
-                directory.FullName,
-                $"*{NavLanguageContentDefinitions.FileExtension}",
-                SearchOption.AllDirectories)) {
-
-                if (cancellationToken.IsCancellationRequested) {
-                    return FileInfoSnapshot.Empty;
-                }
-
-                var fileInfo = new FileInfo(file);
-                itemBuilder.Add(fileInfo);
-
-            }
-
-            return new FileInfoSnapshot(directory, creationTime, itemBuilder.ToImmutableArray());
+        void OnAfterBackgroundSolutionLoadComplete(object sender, EventArgs e) {
+            UpdateSearchDirectory();
         }
 
         void UpdateSearchDirectory() {
@@ -147,16 +116,81 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             Invalidate();
         }
 
-        void OnAfterOpenSolution(object sender, OpenSolutionEventArgs e) {
-            UpdateSearchDirectory();
+        void OnFileSystemDeleted(object sender, FileSystemEventArgs e) {
+            Invalidate();
         }
 
-        void OnAfterCloseSolution(object sender, EventArgs e) {
-            UpdateSearchDirectory();
+        void OnFileSystemCreated(object sender, FileSystemEventArgs e) {
+            Invalidate();
         }
 
-        void OnAfterBackgroundSolutionLoadComplete(object sender, EventArgs e) {
-            UpdateSearchDirectory();
+        void OnFileSystemRenamed(object sender, RenamedEventArgs e) {
+            Invalidate();
+        }
+
+        void Invalidate() {
+
+            _lastChanged = DateTime.Now;
+
+            OnInvalidated();
+        }
+
+        void OnInvalidated() {
+            Invalidated?.Invoke(this, EventArgs.Empty);
+        }
+
+        public ImmutableArray<FileInfo> GetNavFiles(CancellationToken cancellationToken) {
+
+            if (_fileInfoSnapshot.IsCurrent(_directory, _lastChanged)) {
+                return _fileInfoSnapshot.FileInfos;
+            }
+
+            var fileInfoSnapshot = CreateFileInfoSnapshot(_directory, cancellationToken);
+
+            TrySetFileInfoSnapshot(fileInfoSnapshot);
+
+            return _fileInfoSnapshot.FileInfos;
+        }
+
+        static FileInfoSnapshot CreateFileInfoSnapshot(DirectoryInfo directory, CancellationToken cancellationToken) {
+
+            if (String.IsNullOrEmpty(directory?.FullName)) {
+                return FileInfoSnapshot.Empty;
+            }
+
+            var creationTime = DateTime.Now;
+            var itemBuilder  = ImmutableArray.CreateBuilder<FileInfo>();
+
+            foreach (var file in Directory.EnumerateFiles(
+                directory.FullName,
+                SearchFilter,
+                SearchOption.AllDirectories)) {
+
+                if (cancellationToken.IsCancellationRequested) {
+                    return FileInfoSnapshot.Empty;
+                }
+
+                var fileInfo = new FileInfo(file);
+                itemBuilder.Add(fileInfo);
+
+            }
+
+            return new FileInfoSnapshot(directory, creationTime, itemBuilder.ToImmutableArray());
+        }
+
+        private readonly object _gate = new object();
+
+        void TrySetFileInfoSnapshot(FileInfoSnapshot fileInfoSnapshot) {
+
+            lock (_gate) {
+
+                if (!fileInfoSnapshot.IsCurrent(_directory, _lastChanged)) {
+                    return;
+                }
+
+                _fileInfoSnapshot = fileInfoSnapshot;
+            }
+
         }
 
     }

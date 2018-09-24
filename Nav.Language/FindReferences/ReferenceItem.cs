@@ -49,7 +49,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         public string Text        => TextParts.JoinText();
         public string ToolTip     => ToolTipParts.JoinText();
-        public string ProjectName => Definition.SearchRoot;
+        public string ProjectName => Definition.SolutionRoot;
 
     }
 

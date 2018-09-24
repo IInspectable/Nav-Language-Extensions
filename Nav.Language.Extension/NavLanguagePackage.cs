@@ -79,7 +79,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             serviceContainer.AddService(typeof(NavLanguagePackage), OnCreateService, true);
 
             // Cache schon mal vorwärmen...
-            GetServiceProvider().GetMefService<NavFileCompletionCache>();
+            GetServiceProvider().GetMefService<NavFileProvider>();
         }
 
         object OnCreateService(IServiceContainer container, Type serviceType) {
