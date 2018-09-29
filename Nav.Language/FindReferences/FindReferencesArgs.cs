@@ -10,15 +10,15 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
     public class FindReferencesArgs {
 
-        public FindReferencesArgs(ISymbol symbol, IFindReferencesContext context, NavSolution solution) {
-            Symbol   = symbol   ?? throw new ArgumentNullException(nameof(symbol));
-            Context  = context  ?? throw new ArgumentNullException(nameof(context));
-            Solution = solution ?? throw new ArgumentNullException(nameof(solution));
+        public FindReferencesArgs(ISymbol originatingSymbol, IFindReferencesContext context, NavSolution solution) {
+            OriginatingSymbol = originatingSymbol ?? throw new ArgumentNullException(nameof(originatingSymbol));
+            Context           = context           ?? throw new ArgumentNullException(nameof(context));
+            Solution          = solution          ?? throw new ArgumentNullException(nameof(solution));
 
         }
 
         [NotNull]
-        public ISymbol Symbol { get; }
+        public ISymbol OriginatingSymbol { get; }
 
         [NotNull]
         public IFindReferencesContext Context { get; }

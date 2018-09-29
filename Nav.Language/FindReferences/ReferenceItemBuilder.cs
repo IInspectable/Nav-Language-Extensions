@@ -22,9 +22,9 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             }
 
             var referenceLine = reference.SyntaxTree.SourceText.GetTextLineAtPosition(reference.Location.Start);
-
-            // Prefix
-            var prefixParts = PrefixPartsBuilder.Invoke(reference);
+            
+            // TODO Mache Prefixe Sinn??
+            var prefixParts = PrefixPartsBuilder.DefaultPrefix;// .Invoke(reference);
 
             // Text
             var textExtent = referenceLine.ExtentWithoutLineEndings;

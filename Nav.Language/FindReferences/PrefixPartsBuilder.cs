@@ -17,7 +17,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             return visitor.Visit(reference);
         }
 
-        private static readonly ImmutableArray<ClassifiedText> DefaultPrefix = ImmutableArray<ClassifiedText>.Empty;
+        public static readonly ImmutableArray<ClassifiedText> DefaultPrefix = ImmutableArray<ClassifiedText>.Empty;
 
         protected override ImmutableArray<ClassifiedText> DefaultVisit(ISymbol symbol) {
             return DefaultPrefix;

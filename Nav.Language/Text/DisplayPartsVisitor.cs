@@ -36,7 +36,7 @@ namespace Pharmatechnik.Nav.Language.Text {
                 ClassifiedTexts.Space,
                 ClassifiedTexts.TaskName(initConnectionPointSymbol.TaskDeclaration.Name),
                 ClassifiedTexts.Colon,
-                ClassifiedTexts.Identifier(initConnectionPointSymbol.Syntax.Identifier.ToString())
+                ClassifiedTexts.Identifier(initConnectionPointSymbol.Name)
             );
 
         }
@@ -48,7 +48,7 @@ namespace Pharmatechnik.Nav.Language.Text {
                 ClassifiedTexts.Space,
                 ClassifiedTexts.TaskName(exitConnectionPointSymbol.TaskDeclaration.Name),
                 ClassifiedTexts.Colon,
-                ClassifiedTexts.Identifier(exitConnectionPointSymbol.Syntax.Identifier.ToString())
+                ClassifiedTexts.Identifier(exitConnectionPointSymbol.Name)
             );
         }
 
@@ -106,6 +106,7 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         public override ImmutableArray<ClassifiedText> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
 
+           // TODO Sollte nicht evtl der Taskname vorangestellt werden? Siehe VisitInitConnectionPointSymbol
             if (initNodeSymbol.Alias?.Name == null) {
                 return CreateClassifiedText(
                     ClassifiedTexts.Keyword(SyntaxFacts.InitKeyword)

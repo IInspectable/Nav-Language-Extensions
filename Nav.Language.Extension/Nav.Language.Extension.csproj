@@ -112,6 +112,8 @@
     <Compile Include="CodeFixes\RemoveUnusedNodesSuggestedActionProvider.cs" />
     <Compile Include="Commands\CommandHandlerNames.cs" />
     <Compile Include="Commands\FindReferencesCommandHandler.cs" />
+    <Compile Include="Utilities\TaskStatus.cs" />
+    <Compile Include="Utilities\TaskStatusProvider.cs" />
     <Compile Include="FindReferences\FindReferencesPresenter.cs" />
     <Compile Include="Commands\GoToDefinitionCommandCommandHandler.cs" />
     <Compile Include="Commands\Infrastructure\CommandTarget.Exec.cs" />

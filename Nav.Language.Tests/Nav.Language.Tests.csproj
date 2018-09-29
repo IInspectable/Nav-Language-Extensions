@@ -96,7 +96,9 @@
     <Compile Include="TextChangeWriterTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="CustomBuild.targets">
       <SubType>Designer</SubType>
     </None>
@@ -235,10 +237,17 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4">
-      <Version>4.6.4</Version>
+      <Version>4.6.5</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Antlr4.CodeGenerator">
-      <Version>4.6.5-rc002</Version>
+      <Version>4.6.5</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Antlr4.Runtime">
+      <Version>4.6.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis">
       <Version>2.8.0</Version>

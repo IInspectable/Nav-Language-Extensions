@@ -1,121 +1,282 @@
-#region Using Directives
+﻿#region Using Directives
 
-using System;
-using System.IO;
-using System.Linq;
 using System.Collections.Generic;
-using System.Threading;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Threading.Tasks;
 
 using JetBrains.Annotations;
+
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.FindReferences {
 
-    sealed class FindReferencesVisitor: SymbolVisitor<IEnumerable<ISymbol>> {
+    class FindReferencesVisitor: SymbolVisitor<Task> {
 
-        public DefinitionItem Definition { get; }
+        readonly FindReferencesArgs _args;
 
-        FindReferencesVisitor(FindReferencesArgs args, DefinitionItem definition) {
-            _args      = args;
-            Definition = definition;
+        FindReferencesVisitor(FindReferencesArgs args) {
+            _args = args;
 
         }
 
-        [NotNull] readonly FindReferencesArgs _args;
+        private IFindReferencesContext Context => _args.Context;
 
-        [NotNull]
-        public IFindReferencesContext Context => _args.Context;
+        public static Task Invoke(FindReferencesArgs args) {
+            var finder = new FindReferencesVisitor(args);
 
-        public static IEnumerable<ISymbol> Invoke(FindReferencesArgs args, DefinitionItem definition) {
+            return finder.Visit(args.OriginatingSymbol);
+        }
 
-            if (definition?.Symbol == null) {
-                return Enumerable.Empty<ISymbol>();
+        protected override Task DefaultVisit(ISymbol symbol) {
+            return Task.CompletedTask;
+        }
+
+        #region Task Declaration
+
+        public override async Task VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
+
+            var initReferences = initConnectionPointSymbol.TaskDeclaration
+                                                          .References
+                                                          .SelectMany(tn => tn.Incomings)
+                                                          .Select(edge => edge.TargetReference)
+                                                          .Where(nodeRef => nodeRef != null)
+                                                          .OrderByLocation();
+
+            var definitionItem = CreateInitConnectionPointDefinition(initConnectionPointSymbol, expandedByDefault: true);
+
+            await Context.OnDefinitionFoundAsync(definitionItem);
+
+            foreach (var reference in initReferences) {
+
+                var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
+                await Context.OnReferenceFoundAsync(referenceItem);
+
+            }
+        }
+
+        public override async Task VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol) {
+
+            var exitReferences = exitConnectionPointSymbol.TaskDeclaration
+                                                          .References
+                                                          .SelectMany(tn => tn.Outgoings)
+                                                          .Select(exitTrans => exitTrans.ExitConnectionPointReference)
+                                                          .Where(ep => ep?.Declaration == exitConnectionPointSymbol);
+
+            var definitionItem = CreateExitConnectionPointDefinition(exitConnectionPointSymbol, expandedByDefault: true);
+
+            await Context.OnDefinitionFoundAsync(definitionItem);
+
+            foreach (var reference in exitReferences) {
+
+                var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
+                await Context.OnReferenceFoundAsync(referenceItem);
+
             }
 
-            var finder = new FindReferencesVisitor(args, definition);
-            return finder.Visit(definition.Symbol);
         }
 
-        protected override IEnumerable<ISymbol> DefaultVisit(ISymbol symbol) {
-            yield break;
-        }
-
-        public override IEnumerable<ISymbol> VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
-
-            return initConnectionPointSymbol.TaskDeclaration
-                                            .References
-                                            .SelectMany(tn => tn.Incomings)
-                                            .Select(edge => edge.TargetReference);
-        }
-
-        public override IEnumerable<ISymbol> VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol) {
-            return exitConnectionPointSymbol.TaskDeclaration
-                                            .References
-                                            .SelectMany(tn => tn.Outgoings)
-                                            .Select(exitTrans => exitTrans.ExitConnectionPointReference)
-                                            .Where(ep => ep?.Declaration == exitConnectionPointSymbol);
-        }
-
-        public override IEnumerable<ISymbol> VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol) {
+        public override Task VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol) {
             // Hat keine Referenzen...
-            yield break;
+            return Task.CompletedTask;
         }
 
-        public override IEnumerable<ISymbol> VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
+        public override async Task VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclaration) {
 
-            return FindAllReferences(taskDefinitionSymbol.CodeGenerationUnit, FindAllTaskReferences);
+            // TODO Sortiereihenfolge für die Definitionen: Tasks, Inits, Exits
+            var taskrefDefinition              = CreateTaskDeclarationItem(taskDeclaration);
+            var initConnectionPointDefinition  = CreateInitConnectionPointDefinition(taskDeclaration, expandedByDefault: false);
+            var exitConnectionPointDefinitions = CreateExitConnectionPointDefinitions(taskDeclaration, expandedByDefault: false);
+
+            // Auch wenn wir keine Referenzen auf den Task finden sollten, soll zumindest
+            // Ein Eintrag "No References found..." für erscheinen.
+            await Context.OnDefinitionFoundAsync(taskrefDefinition);
+
+            await FindReferencesAsync(taskDeclaration,
+                                      taskDeclaration.CodeGenerationUnit,
+                                      taskrefDefinition,
+                                      initConnectionPointDefinition,
+                                      exitConnectionPointDefinitions,
+                                      Context);
 
         }
 
-        IEnumerable<ISymbol> FindAllTaskReferences(CodeGenerationUnit codeGeneration) {
+        #endregion
 
-            return OrderSymbols(FindReferences());
+        public override async Task VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinition) {
 
-            IEnumerable<ISymbol> FindReferences() {
+            // TODO Sortiereihenfolge für die Definitionen: Tasks, Inits, Exits
+            var nodeDefinition                 = CreateTaskDefinitionItem(taskDefinition);
+            var initConnectionPointDefinition  = CreateInitConnectionPointDefinition(taskDefinition, expandedByDefault: false);
+            var exitConnectionPointDefinitions = CreateExitConnectionPointDefinitions(taskDefinition, expandedByDefault: false);
 
-                foreach (var taskDefinition in codeGeneration.TaskDefinitions) {
+            // Auch wenn wir keine Referenzen auf den Task finden sollten, soll zumindest
+            // Ein Eintrag "No References found..." für erscheinen.
+            await Context.OnDefinitionFoundAsync(nodeDefinition);
 
-                    foreach (var taskNode in FindAllTaskReferences(taskDefinition)) {
-                        if (Context.CancellationToken.IsCancellationRequested) {
-                            break;
-                        }
+            await SolutionCrawler.StartAsync(
+                _args.Solution,
+                taskDefinition.CodeGenerationUnit, // TODO Hier muss die CGU des Originating Symbols rein!
+                codeGenerationUnit => FindReferencesAsync(taskDefinition.AsTaskDeclaration,
+                                                          codeGenerationUnit,
+                                                          nodeDefinition,
+                                                          initConnectionPointDefinition,
+                                                          exitConnectionPointDefinitions,
+                                                          Context),
+                Context.CancellationToken);
 
-                        yield return taskNode;
+        }
 
-                        foreach (var nodeReference in taskNode.References) {
-                            yield return nodeReference;
-                        }
+        // TODO find taskref "Pfad zum file"?
+        static async Task FindReferencesAsync(ITaskDeclarationSymbol taskDeclaration,
+                                              CodeGenerationUnit codeGenerationUnit,
+                                              DefinitionItem taskDefinitionItem,
+                                              DefinitionItem initConnectionPointDefinitionItem,
+                                              ImmutableDictionary<Location, DefinitionItem> exitConnectionPointDefinitionsItems,
+                                              IFindReferencesContext context) {
+
+            var taskNodeReferences = FindTaskNodeReferences(taskDeclaration, codeGenerationUnit, taskDefinitionItem);
+            var initNodeReferences = FindInitNodeReferences(taskDeclaration, codeGenerationUnit, initConnectionPointDefinitionItem);
+            var exitNodeReferences = FindExitNodeReferences(taskDeclaration, codeGenerationUnit, exitConnectionPointDefinitionsItems);
+
+            var referenceItems = taskNodeReferences.Concat(initNodeReferences).Concat(exitNodeReferences).OrderByLocation();
+
+            foreach (var referenceItem in referenceItems) {
+
+                if (context.CancellationToken.IsCancellationRequested) {
+                    break;
+                }
+
+                await context.OnReferenceFoundAsync(referenceItem);
+            }
+
+            // Taskrefs aufsammeln wäre schön, ist aber komplett unvollständig, und praktisch unmöglich
+            //foreach (var taskDeclaration in codeGeneration.TaskDeclarations
+            //                                              .Where(td => td.Origin == TaskDeclarationOrigin.TaskDeclaration)) {
+
+            //    if (taskDeclaration.Name          == TaskDefinition.Name &&
+            //        taskDeclaration.CodeNamespace == TaskDefinition.CodeNamespace) {
+            //        yield return taskDeclaration;
+            //    }
+
+            //}
+
+        }
+
+        static IEnumerable<ReferenceItem> FindTaskNodeReferences(ITaskDeclarationSymbol taskDeclaration,
+                                                                 CodeGenerationUnit codeGenerationUnit,
+                                                                 DefinitionItem taskDefinitionItem) {
+
+            if (taskDefinitionItem == null) {
+                yield break;
+            }
+
+            foreach (var task in codeGenerationUnit.TaskDefinitions.OrderByLocation()) {
+
+                foreach (var taskNode in task.NodeDeclarations
+                                             .OfType<ITaskNodeSymbol>()
+                                             .Where(taskNode => taskNode.Declaration?.Location == taskDeclaration.Location)
+                                             .OrderByLocation()) {
+
+                    var referenceItem = ReferenceItemBuilder.Invoke(taskDefinitionItem, taskNode);
+                    yield return referenceItem;
+                }
+            }
+        }
+
+        static IEnumerable<ReferenceItem> FindInitNodeReferences(ITaskDeclarationSymbol taskDeclaration,
+                                                                 CodeGenerationUnit codeGenerationUnit,
+                                                                 DefinitionItem initConnectionPointDefinitionItem) {
+
+            if (initConnectionPointDefinitionItem == null) {
+                yield break;
+            }
+
+            // Init Calls aufsammeln 
+            foreach (var task in codeGenerationUnit.TaskDefinitions.OrderByLocation()) {
+
+                foreach (var taskNode in task.NodeDeclarations
+                                             .OfType<ITaskNodeSymbol>()
+                                             .Where(taskNode => taskNode.Declaration?.Location == taskDeclaration.Location)
+                                             .OrderByLocation()) {
+
+                    foreach (var targetReference in taskNode.Incomings
+                                                            .Select(edge => edge.TargetReference)
+                                                            .Where(targetReference => targetReference != null)
+                                                            .OrderByLocation()) {
+
+                        var initReference = ReferenceItemBuilder.Invoke(initConnectionPointDefinitionItem, targetReference);
+
+                        yield return initReference;
                     }
                 }
+            }
+        }
 
-                var taskDefinitionSymbol = Definition.Symbol as ITaskDefinitionSymbol;
-                if (taskDefinitionSymbol == null) {
-                    yield break;
-                }
+        static IEnumerable<ReferenceItem> FindExitNodeReferences(ITaskDeclarationSymbol taskDeclaration,
+                                                                 CodeGenerationUnit codeGenerationUnit,
+                                                                 ImmutableDictionary<Location, DefinitionItem> exitConnectionPointDefinitionsItems) {
 
-                foreach (var taskDeclaration in codeGeneration.TaskDeclarations
-                                                              .Where(td => td.Origin == TaskDeclarationOrigin.TaskDeclaration)) {
+            if (!exitConnectionPointDefinitionsItems.Any()) {
+                yield break;
+            }
 
-                    if (taskDeclaration.Name          == Definition.Symbol.Name &&
-                        taskDeclaration.CodeNamespace == taskDefinitionSymbol.CodeNamespace) {
-                        yield return taskDeclaration;
+            // Exits in Exit Transitions aufsammeln
+            foreach (var task in codeGenerationUnit.TaskDefinitions.OrderByLocation()) {
+
+                foreach (var taskNode in task.NodeDeclarations
+                                             .OfType<ITaskNodeSymbol>()
+                                             .Where(taskNode => taskNode.Declaration?.Location == taskDeclaration.Location)
+                                             .OrderByLocation()) {
+
+                    foreach (var exitConnectionPointReference in taskNode.Outgoings
+                                                                         .Select(edge => edge.ExitConnectionPointReference)
+                                                                         .Where(exitConnectionPointReference => exitConnectionPointReference != null)
+                                                                         .OrderByLocation()) {
+
+                        var exitConnectionPoint = exitConnectionPointReference?.Declaration;
+                        if (exitConnectionPoint == null) {
+                            continue;
+                        }
+
+                        if (exitConnectionPointDefinitionsItems.TryGetValue(exitConnectionPoint.Location, out var exitConnectionPointDefinition)) {
+                            var exitReference = ReferenceItemBuilder.Invoke(exitConnectionPointDefinition, exitConnectionPointReference);
+
+                            yield return exitReference;
+                        }
+
                     }
 
                 }
             }
-
-            IEnumerable<ITaskNodeSymbol> FindAllTaskReferences(ITaskDefinitionSymbol taskDefinition) {
-
-                return taskDefinition.NodeDeclarations
-                                     .OfType<ITaskNodeSymbol>()
-                                     .Where(tn => tn.Declaration?.Location == Definition.Symbol.Location);
-            }
         }
 
-        public override IEnumerable<ISymbol> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+        #region Nodes
 
-            return OrderSymbols(FindReferences());
+        public override Task VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
+            return VisitInitNodeSymbol(initNodeAliasSymbol.InitNode);
+        }
+
+        public override async Task VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
+
+            var initReferences = FindReferences().Where(nodeRef => nodeRef != null)
+                                                 .OrderByLocation();
+
+            var definitionItem = new DefinitionItem(
+                GetSolutionRoot(),
+                initNodeSymbol,
+                initNodeSymbol.ToDisplayParts());
+
+            await Context.OnDefinitionFoundAsync(definitionItem).ConfigureAwait(false);
+
+            foreach (var reference in initReferences) {
+
+                var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
+                await Context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
+
+            }
 
             IEnumerable<ISymbol> FindReferences() {
                 foreach (var transition in initNodeSymbol.Outgoings) {
@@ -124,13 +285,80 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             }
         }
 
-        public override IEnumerable<ISymbol> VisitInitNodeAliasSymbol(IInitNodeAliasSymbol initNodeAliasSymbol) {
-            return Visit(initNodeAliasSymbol.InitNode);
+        public override async Task VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
+
+            var exitReferences = FindReferences().Where(nodeRef => nodeRef != null)
+                                                 .OrderByLocation();
+
+            var definitionItem = new DefinitionItem(
+                GetSolutionRoot(),
+                exitNodeSymbol,
+                exitNodeSymbol.ToDisplayParts());
+
+            await Context.OnDefinitionFoundAsync(definitionItem).ConfigureAwait(false);
+
+            foreach (var reference in exitReferences) {
+
+                var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
+                await Context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
+
+            }
+
+            IEnumerable<ISymbol> FindReferences() {
+                foreach (var edge in exitNodeSymbol.Incomings) {
+                    yield return edge.TargetReference;
+                }
+            }
         }
 
-        public override IEnumerable<ISymbol> VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
+        public override async Task VisitEndNodeSymbol(IEndNodeSymbol endNodeSymbol) {
 
-            return OrderSymbols(FindReferences());
+            var endReferences = FindReferences().Where(nodeRef => nodeRef != null)
+                                                .OrderByLocation();
+
+            var definitionItem = new DefinitionItem(
+                GetSolutionRoot(),
+                endNodeSymbol,
+                endNodeSymbol.ToDisplayParts());
+
+            await Context.OnDefinitionFoundAsync(definitionItem).ConfigureAwait(false);
+
+            foreach (var reference in endReferences) {
+
+                var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
+                await Context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
+
+            }
+
+            IEnumerable<ISymbol> FindReferences() {
+                foreach (var edge in endNodeSymbol.Incomings) {
+                    yield return edge.TargetReference;
+                }
+            }
+        }
+
+        public override Task VisitTaskNodeAliasSymbol(ITaskNodeAliasSymbol taskNodeAliasSymbol) {
+            return Visit(taskNodeAliasSymbol.TaskNode);
+        }
+
+        public override async Task VisitTaskNodeSymbol(ITaskNodeSymbol taskNodeSymbol) {
+
+            var taskReferences = FindReferences().Where(nodeRef => nodeRef != null)
+                                                 .OrderByLocation();
+
+            var definitionItem = new DefinitionItem(
+                GetSolutionRoot(),
+                taskNodeSymbol,
+                taskNodeSymbol.ToDisplayParts());
+
+            await Context.OnDefinitionFoundAsync(definitionItem).ConfigureAwait(false);
+
+            foreach (var reference in taskReferences) {
+
+                var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
+                await Context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
+
+            }
 
             IEnumerable<ISymbol> FindReferences() {
 
@@ -144,31 +372,24 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             }
         }
 
-        public override IEnumerable<ISymbol> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
+        public override async Task VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
 
-            return OrderSymbols(FindReferences());
+            var dialogReferences = FindReferences().Where(nodeRef => nodeRef != null)
+                                                   .OrderByLocation();
 
-            IEnumerable<ISymbol> FindReferences() {
-                foreach (var edge in exitNodeSymbol.Incomings) {
-                    yield return edge.TargetReference;
-                }
+            var definitionItem = new DefinitionItem(
+                GetSolutionRoot(),
+                dialogNodeSymbol,
+                dialogNodeSymbol.ToDisplayParts());
+
+            await Context.OnDefinitionFoundAsync(definitionItem).ConfigureAwait(false);
+
+            foreach (var reference in dialogReferences) {
+
+                var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
+                await Context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
+
             }
-        }
-
-        public override IEnumerable<ISymbol> VisitEndNodeSymbol(IEndNodeSymbol endNodeSymbol) {
-
-            return OrderSymbols(FindReferences());
-
-            IEnumerable<ISymbol> FindReferences() {
-                foreach (var edge in endNodeSymbol.Incomings) {
-                    yield return edge.TargetReference;
-                }
-            }
-        }
-
-        public override IEnumerable<ISymbol> VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
-
-            return OrderSymbols(FindReferences());
 
             IEnumerable<ISymbol> FindReferences() {
 
@@ -182,9 +403,24 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             }
         }
 
-        public override IEnumerable<ISymbol> VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
+        public override async Task VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
 
-            return OrderSymbols(FindReferences());
+            var viewReferences = FindReferences().Where(nodeRef => nodeRef != null)
+                                                 .OrderByLocation();
+
+            var definitionItem = new DefinitionItem(
+                GetSolutionRoot(),
+                viewNodeSymbol,
+                viewNodeSymbol.ToDisplayParts());
+
+            await Context.OnDefinitionFoundAsync(definitionItem).ConfigureAwait(false);
+
+            foreach (var reference in viewReferences) {
+
+                var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
+                await Context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
+
+            }
 
             IEnumerable<ISymbol> FindReferences() {
 
@@ -198,9 +434,24 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             }
         }
 
-        public override IEnumerable<ISymbol> VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
+        public override async Task VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
 
-            return OrderSymbols(FindReferences());
+            var viewReferences = FindReferences().Where(nodeRef => nodeRef != null)
+                                                 .OrderByLocation();
+
+            var definitionItem = new DefinitionItem(
+                GetSolutionRoot(),
+                choiceNodeSymbol,
+                choiceNodeSymbol.ToDisplayParts());
+
+            await Context.OnDefinitionFoundAsync(definitionItem).ConfigureAwait(false);
+
+            foreach (var reference in viewReferences) {
+
+                var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
+                await Context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
+
+            }
 
             IEnumerable<ISymbol> FindReferences() {
 
@@ -214,90 +465,114 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             }
         }
 
-        public override IEnumerable<ISymbol> VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
+        #endregion
 
-            return OrderSymbols(FindReferences());
+        #region Node References
 
-            IEnumerable<ISymbol> FindReferences() {
-                foreach (var taskNode in taskDeclarationSymbol.References) {
-                    yield return taskNode;
-                }
+        public override Task VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
+
+            if (nodeReferenceSymbol.Declaration != null) {
+                return Visit(nodeReferenceSymbol.Declaration);
             }
+
+            return DefaultVisit(nodeReferenceSymbol);
+        }
+
+        public override Task VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+            if (exitConnectionPointReferenceSymbol.Declaration != null) {
+                return Visit(exitConnectionPointReferenceSymbol.Declaration);
+            }
+
+            return DefaultVisit(exitConnectionPointReferenceSymbol);
+        }
+
+        #endregion
+
+        string GetSolutionRoot() {
+            return _args.Solution.SolutionDirectory?.FullName ?? "Miscellaneous Files";
+        }
+
+        private const string TaskDeclarationSortKey     = "a";
+        private const string InitConnectionPointSortKey = "b";
+        private const string ExitConnectionPointSortKey = "c";
+
+        DefinitionItem CreateTaskDefinitionItem(ITaskDefinitionSymbol taskDefinition) {
+            return new DefinitionItem(
+                GetSolutionRoot(),
+                taskDefinition,
+                taskDefinition.ToDisplayParts(),
+                sortKey: TaskDeclarationSortKey);
+        }
+
+        DefinitionItem CreateTaskDeclarationItem(ITaskDeclarationSymbol taskDeclaration) {
+            return new DefinitionItem(
+                GetSolutionRoot(),
+                taskDeclaration,
+                taskDeclaration.ToDisplayParts(),
+                sortKey: TaskDeclarationSortKey);
+        }
+
+        [CanBeNull]
+        DefinitionItem CreateInitConnectionPointDefinition(ITaskDefinitionSymbol taskDefinition, bool expandedByDefault = true) {
+            return CreateInitConnectionPointDefinition(taskDefinition.AsTaskDeclaration, expandedByDefault);
 
         }
 
-        static IOrderedEnumerable<ISymbol> OrderSymbols(IEnumerable<ISymbol> symbols) {
-            return symbols.OrderBy(s => s.Location.StartLine).ThenBy(s => s.Location.StartCharacter);
+        [CanBeNull]
+        DefinitionItem CreateInitConnectionPointDefinition(ITaskDeclarationSymbol taskDeclaration, bool expandedByDefault = true) {
+
+            var initConnectionPoint = taskDeclaration?.Inits().OfType<IInitConnectionPointSymbol>().FirstOrDefault();
+            if (initConnectionPoint == null) {
+                return null;
+            }
+
+            return CreateInitConnectionPointDefinition(initConnectionPoint, expandedByDefault);
 
         }
 
-        IEnumerable<ISymbol> FindAllReferences(CodeGenerationUnit definitionUnit,
-                                               Func<CodeGenerationUnit, IEnumerable<ISymbol>> findReferences) {
+        [NotNull]
+        DefinitionItem CreateInitConnectionPointDefinition(IInitConnectionPointSymbol initConnectionPoint, bool expandedByDefault = true) {
 
-            CancellationToken cancellationToken = Context.CancellationToken;
+            return new DefinitionItem(
+                GetSolutionRoot(),
+                initConnectionPoint,
+                // TODO Hier sollte die "neitrale Form eines Inits", also ohne alias, da eh nicht eindeutig
+                initConnectionPoint.ToDisplayParts(),
+                expandedByDefault,
+                sortKey: InitConnectionPointSortKey);
 
-            // TODO Review and refactoring, Cancellation
-            var semanticModelProvider = new SemanticModelProvider(new CachedSyntaxProvider());
+        }
 
-            var seenFiles = new HashSet<string>();
-            var navFile   = definitionUnit.Syntax.SyntaxTree.SourceText.FileInfo;
-            var navDir    = navFile?.Directory;
+        ImmutableDictionary<Location, DefinitionItem> CreateExitConnectionPointDefinitions(ITaskDefinitionSymbol taskDefinition, bool expandedByDefault = true) {
+            return CreateExitConnectionPointDefinitions(taskDefinition.AsTaskDeclaration, expandedByDefault);
 
-            // 1. In dem File anfangen, in dem sich auch die Definition befindet, deren Referenzen gesucht werden
-            foreach (var reference in findReferences(definitionUnit)) {
-                yield return reference;
+        }
+
+        ImmutableDictionary<Location, DefinitionItem> CreateExitConnectionPointDefinitions(ITaskDeclarationSymbol taskDeclaration, bool expandedByDefault = true) {
+
+            var defs = ImmutableDictionary<Location, DefinitionItem>.Empty;
+
+            if (taskDeclaration == null) {
+                return defs;
             }
 
-            if (navFile != null) {
-                // Wenn das Definitionsfile einen Dateinamen hat, dann zu den bereits gesehenen hinzuf�gen.
-                seenFiles.Add(navFile.FullName);
+            foreach (var exitConnectionPoint in taskDeclaration.Exits()) {
+                var exitDefinition = CreateExitConnectionPointDefinition(exitConnectionPoint, expandedByDefault);
+                defs = defs.Add(exitDefinition.Location, exitDefinition);
             }
 
-            // 2. Wir suchen in dem Verzeichnis, in dem sich auch das Nav File der Definition befindet. Die Wahscheinlichkeit ist recht gro�,
-            //    dass hier bereits erste Treffer ermittelt werden.
-            if (navDir != null) {
+            return defs;
+        }
 
-                foreach (var fileName in Directory.EnumerateFiles(navDir.FullName, "*.nav")) {
+        private DefinitionItem CreateExitConnectionPointDefinition(IConnectionPointSymbol exitConnectionPoint, bool expandedByDefault = true) {
 
-                    if (cancellationToken.IsCancellationRequested) {
-                        break;
-                    }
-
-                    foreach (var symbol in FindAllReferences(fileName)) {
-                        yield return symbol;
-                    }
-                }
-
-            }
-
-            // 3. Zu guter letzt durchsuchen wir alle �brigen Files de "Solution", was mittlerweil ~1400 Dateien sind, und
-            //    entsprechend lange dauert.
-            foreach (var file in _args.Solution.SolutionFiles) {
-
-                if (cancellationToken.IsCancellationRequested) {
-                    break;
-                }
-
-                foreach (var taskNode in FindAllReferences(file.FullName)) {
-                    yield return taskNode;
-                }
-            }
-
-            IEnumerable<ISymbol> FindAllReferences(string fileName) {
-
-                if (!seenFiles.Add(fileName)) {
-                    yield break;
-                }
-
-                var codeGen = semanticModelProvider.GetSemanticModel(fileName, cancellationToken);
-                if (codeGen == null) {
-                    yield break;
-                }
-
-                foreach (var taskNode in findReferences(codeGen)) {
-                    yield return taskNode;
-                }
-            }
+            var exitDefinition = new DefinitionItem(
+                GetSolutionRoot(),
+                exitConnectionPoint,
+                exitConnectionPoint.ToDisplayParts(),
+                expandedByDefault,
+                sortKey: ExitConnectionPointSortKey);
+            return exitDefinition;
         }
 
     }

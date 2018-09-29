@@ -43,25 +43,28 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var codeGenerationUnitAndSnapshot = GetCodeGenerationUnit(args.SubjectBuffer);
             var symbol                        = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
 
-            FindAllReferencesAsync(symbol).FileAndForget(DisplayName);
+            var task = FindAllReferencesAsync(symbol);
+
+            task.FileAndForget("nav/extension/findreferences");
 
             return false;
 
         }
 
-        async Task FindAllReferencesAsync(ISymbol symbol) {
-
-            if (symbol == null) {
-                return;
-            }
-
+        async Task FindAllReferencesAsync(ISymbol originatingSymbol) {
+            
             var context = _referencesPresenter.StartSearch();
             try {
 
-                var solution = await NavLanguagePackage.GetSolutionAsync(context.CancellationToken);
-                var args     = new FindReferencesArgs(symbol, context, solution);
+                if (originatingSymbol == null) {
+                    // Search found no results.
+                    return;
+                }
 
-                await ReferenceFinder.FindReferences(args).ConfigureAwait(false);
+                var solution = await NavLanguagePackage.GetSolutionAsync(context.CancellationToken);
+                var args     = new FindReferencesArgs(originatingSymbol, context, solution);
+
+                await ReferenceFinder.FindReferencesAsync(args).ConfigureAwait(false);
 
             } finally {
                 await context.OnCompletedAsync();

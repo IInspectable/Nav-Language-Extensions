@@ -16,12 +16,16 @@ using Microsoft.VisualStudio.Shell.Events;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Threading;
 
+using Pharmatechnik.Nav.Language.Extension.Utilities;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension {
 
     [Export]
     class NavSolutionProvider {
+
+        private readonly TaskStatusProvider _taskStatusProvider;
 
         DirectoryInfo _directory;
 
@@ -34,7 +38,8 @@ namespace Pharmatechnik.Nav.Language.Extension {
         static string SearchFilter => $"*{NavLanguageContentDefinitions.FileExtension}";
 
         [ImportingConstructor]
-        public NavSolutionProvider() {
+        public NavSolutionProvider(TaskStatusProvider taskStatusProvider) {
+            _taskStatusProvider = taskStatusProvider;
 
             _navSolutionSnapshot = NavSolutionSnapshot.Empty;
 
@@ -58,7 +63,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             Observable.FromEventPattern<EventArgs>(handler => Invalidated += handler,
                                                    handler => Invalidated -= handler)
                       .Throttle(TimeSpan.FromSeconds(2))
-                      .Select(_ => Observable.FromAsync(async () => await CreateSolutionSnapshotAsync(_directory, CancellationToken.None)))
+                      .Select(_ => Observable.FromAsync(async () => await CreateSolutionSnapshotAsync(_taskStatusProvider, _directory, CancellationToken.None)))
                       .Concat()
                       .Subscribe(TrySetSolutionSnapshot);
         }
@@ -125,14 +130,14 @@ namespace Pharmatechnik.Nav.Language.Extension {
                 return _navSolutionSnapshot.Solution;
             }
 
-            var solutionSnapshot = await CreateSolutionSnapshotAsync(_directory, cancellationToken);
+            var solutionSnapshot = await CreateSolutionSnapshotAsync(_taskStatusProvider, _directory, cancellationToken);
 
             TrySetSolutionSnapshot(solutionSnapshot);
 
             return solutionSnapshot.Solution;
         }
 
-        static async Task<NavSolutionSnapshot> CreateSolutionSnapshotAsync(DirectoryInfo directory, CancellationToken cancellationToken) {
+        static async Task<NavSolutionSnapshot> CreateSolutionSnapshotAsync(TaskStatusProvider taskStatusProvider, DirectoryInfo directory, CancellationToken cancellationToken) {
 
             await TaskScheduler.Default;
 
@@ -143,23 +148,29 @@ namespace Pharmatechnik.Nav.Language.Extension {
             var creationTime = DateTime.Now;
             var itemBuilder  = ImmutableArray.CreateBuilder<FileInfo>();
 
-            foreach (var file in Directory.EnumerateFiles(
-                directory.FullName,
-                SearchFilter,
-                SearchOption.AllDirectories)) {
+            using (var taskStatus = taskStatusProvider.CreateTaskStatus("Nav Solution Provider")) {
 
-                if (cancellationToken.IsCancellationRequested) {
-                    return NavSolutionSnapshot.Empty;
+                await taskStatus.OnProgressChangedAsync("Searching for the edge of eternity");
+
+                foreach (var file in Directory.EnumerateFiles(directory.FullName,
+                                                              SearchFilter,
+                                                              SearchOption.AllDirectories)) {
+
+                    if (cancellationToken.IsCancellationRequested) {
+                        return NavSolutionSnapshot.Empty;
+                    }
+
+                    var fileInfo = new FileInfo(file);
+                    
+                    itemBuilder.Add(fileInfo);
+
                 }
 
-                var fileInfo = new FileInfo(file);
-                itemBuilder.Add(fileInfo);
+                var solution = await NavSolution.FromDirectoryAsync(directory, cancellationToken);
 
+                return new NavSolutionSnapshot(creationTime, solution);
             }
 
-            var solution = await NavSolution.FromDirectoryAsync(directory, cancellationToken);
-
-            return new NavSolutionSnapshot(creationTime, solution);
         }
 
         private readonly object _gate = new object();

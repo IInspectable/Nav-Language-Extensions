@@ -81,6 +81,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         public async Task OnCompletedAsync() {
 
             await AddReferenceNotFoundMessagesAsync();
+            // TODO Search found no results.
 
             _tableDataSink.IsStable = true;
 

@@ -16,7 +16,9 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         public DefinitionEntry(FindReferencesPresenter presenter,
                                DefinitionItem definitionItem,
                                bool expandedByDefault = true)
-            : base(definitionItem.Text,
+            // Es wird nach Name sortiert. Expandierte Definitionen sollen immer vor den übrigen stehen
+            // TODO Evtl. Hashcode für stabile Sortierung einbauen?
+            : base(definitionItem.SortText,
                    FindReferencesContext.FindAllReferencesSourceTypeIdentifier,
                    FindReferencesContext.FindAllReferencesIdentifier,
                    tooltip: null,

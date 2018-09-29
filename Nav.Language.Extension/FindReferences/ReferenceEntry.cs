@@ -17,7 +17,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         public ReferenceEntry(FindReferencesPresenter presenter, ReferenceItem referenceItem) {
             Presenter     = presenter;
             ReferenceItem = referenceItem;
-            Definition    = new DefinitionEntry(Presenter, ReferenceItem.Definition);
+            Definition    = new DefinitionEntry(Presenter, ReferenceItem.Definition, ReferenceItem.Definition.ExpandedByDefault);
         }
 
         public FindReferencesPresenter Presenter     { get; }
