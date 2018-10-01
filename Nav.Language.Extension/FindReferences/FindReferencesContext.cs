@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 
+using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.FindReferences;
 
 #endregion
@@ -23,6 +24,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         readonly CancellationTokenSource  _cancellationTokenSource;
         readonly IFindAllReferencesWindow _findReferencesWindow;
+        readonly ProjectMapper            _projectMapper;
 
         TableEntriesSnapshot _lastSnapshot;
         ITableDataSink       _tableDataSink;
@@ -30,13 +32,14 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         ImmutableArray<DefinitionItem> _definitionItems = ImmutableArray<DefinitionItem>.Empty;
         ImmutableArray<ReferenceItem>  _referenceItems  = ImmutableArray<ReferenceItem>.Empty;
 
-        public FindReferencesContext(FindReferencesPresenter presenter, IFindAllReferencesWindow findReferencesWindow) {
+        public FindReferencesContext(FindReferencesPresenter presenter, IFindAllReferencesWindow findReferencesWindow, ProjectMapper projectMapper) {
 
             Presenter = presenter;
 
             _cancellationTokenSource = new CancellationTokenSource();
 
             _findReferencesWindow = findReferencesWindow;
+            _projectMapper        = projectMapper;
 
             TableControl = (IWpfTableControl2) findReferencesWindow.TableControl;
             //TableControl.GroupingsChanged += OnTableControlGroupingsChanged;
@@ -67,6 +70,10 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         }
 
         public Task OnReferenceFoundAsync(ReferenceItem referenceItem) {
+
+            var projectName = _projectMapper.GetContainingProjectName(referenceItem.Location.FilePath);
+
+            referenceItem = referenceItem.With(projectName: projectName);
 
             lock (_gate) {
                 _referenceItems = _referenceItems.Add(referenceItem);

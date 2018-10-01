@@ -112,6 +112,10 @@
     <Compile Include="CodeFixes\RemoveUnusedNodesSuggestedActionProvider.cs" />
     <Compile Include="Commands\CommandHandlerNames.cs" />
     <Compile Include="Commands\FindReferencesCommandHandler.cs" />
+    <Compile Include="Utilities\ProjectEntry.cs" />
+    <Compile Include="Utilities\ProjectMapper.cs" />
+    <Compile Include="Utilities\ProjectService.cs" />
+    <Compile Include="Utilities\Hierarchy.cs" />
     <Compile Include="Utilities\TaskStatus.cs" />
     <Compile Include="Utilities\TaskStatusProvider.cs" />
     <Compile Include="FindReferences\FindReferencesPresenter.cs" />
@@ -329,6 +333,7 @@
     <Compile Include="Underlining\UnderlineTaggerProvider.cs" />
     <Compile Include="Utilities\IWaitContext.cs" />
     <Compile Include="Utilities\IWaitIndicator.cs" />
+    <Compile Include="Utilities\UriBuilder.cs" />
     <Compile Include="Utilities\VisualStudioWaitContext.Callback.cs" />
     <Compile Include="Utilities\VisualStudioWaitContext.cs" />
     <Compile Include="Utilities\VisualStudioWaitIndicator.cs" />

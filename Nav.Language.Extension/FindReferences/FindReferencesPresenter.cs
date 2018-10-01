@@ -18,6 +18,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Pharmatechnik.Nav.Language.Extension.Classification;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.HighlightReferences;
+using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -27,18 +28,21 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
     [Export(typeof(FindReferencesPresenter))]
     class FindReferencesPresenter {
 
-        readonly IEditorFormatMapService         _editorFormatMapService;
-        readonly IClassificationFormatMapService _classificationFormatMapService;
-        readonly IFindAllReferencesService       _vsFindAllReferencesService;
+        private readonly ProjectService                  _projectService;
+        readonly         IEditorFormatMapService         _editorFormatMapService;
+        readonly         IClassificationFormatMapService _classificationFormatMapService;
+        readonly         IFindAllReferencesService       _vsFindAllReferencesService;
 
         readonly ImmutableDictionary<TextClassification, IClassificationType> _classificationMap;
 
         [ImportingConstructor]
         public FindReferencesPresenter(SVsServiceProvider serviceProvider,
+                                       ProjectService projectService,
                                        IEditorFormatMapService editorFormatMapService,
                                        IClassificationFormatMapService classificationFormatMapService,
                                        IClassificationTypeRegistryService classificationTypeRegistryService) {
 
+            _projectService                 = projectService;
             _editorFormatMapService         = editorFormatMapService;
             _classificationFormatMapService = classificationFormatMapService;
             _classificationMap              = ClassificationTypeDefinitions.GetSyntaxTokenClassificationMap(classificationTypeRegistryService);
@@ -62,8 +66,9 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         public FindReferencesContext StartSearch() {
 
-            var window  = _vsFindAllReferencesService.StartSearch("Find References");
-            var context = new FindReferencesContext(this, window);
+            var window        = _vsFindAllReferencesService.StartSearch("Find References");
+            var projectMapper = _projectService.GetProjectMapper();
+            var context       = new FindReferencesContext(this, window, projectMapper);
 
             return context;
         }
