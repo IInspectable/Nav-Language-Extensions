@@ -40,19 +40,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         public bool ExecuteCommand(FindReferencesCommandArgs args, CommandExecutionContext executionContext) {
 
-            var codeGenerationUnitAndSnapshot = GetCodeGenerationUnit(args.SubjectBuffer);
-            var symbol                        = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
-
-            var task = FindAllReferencesAsync(symbol);
-
-            task.FileAndForget("nav/extension/findreferences");
+            FindAllReferencesAsync(args).FileAndForget("nav/extension/findreferences");
 
             return false;
 
         }
 
-        async Task FindAllReferencesAsync(ISymbol originatingSymbol) {
-            
+        async Task FindAllReferencesAsync(FindReferencesCommandArgs args) {
+
+            var codeGenerationUnitAndSnapshot = GetCodeGenerationUnit(args.SubjectBuffer);
+            var originatingSymbol             = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
+
             var context = _referencesPresenter.StartSearch();
             try {
 
@@ -62,9 +60,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 }
 
                 var solution = await NavLanguagePackage.GetSolutionAsync(context.CancellationToken);
-                var args     = new FindReferencesArgs(originatingSymbol, context, solution);
+                var fra      = new FindReferencesArgs(originatingSymbol, codeGenerationUnitAndSnapshot.CodeGenerationUnit, solution, context);
 
-                await ReferenceFinder.FindReferencesAsync(args).ConfigureAwait(false);
+                await ReferenceFinder.FindReferencesAsync(fra).ConfigureAwait(false);
 
             } finally {
                 await context.OnCompletedAsync();

@@ -85,7 +85,6 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         public override async Task VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclaration) {
 
-            // TODO Sortiereihenfolge für die Definitionen: Tasks, Inits, Exits
             var taskrefDefinition              = CreateTaskDeclarationItem(taskDeclaration);
             var initConnectionPointDefinition  = CreateInitConnectionPointDefinition(taskDeclaration, expandedByDefault: false);
             var exitConnectionPointDefinitions = CreateExitConnectionPointDefinitions(taskDeclaration, expandedByDefault: false);
@@ -107,18 +106,17 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         public override async Task VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinition) {
 
-            // TODO Sortiereihenfolge für die Definitionen: Tasks, Inits, Exits
             var nodeDefinition                 = CreateTaskDefinitionItem(taskDefinition);
             var initConnectionPointDefinition  = CreateInitConnectionPointDefinition(taskDefinition, expandedByDefault: false);
             var exitConnectionPointDefinitions = CreateExitConnectionPointDefinitions(taskDefinition, expandedByDefault: false);
 
             // Auch wenn wir keine Referenzen auf den Task finden sollten, soll zumindest
-            // Ein Eintrag "No References found..." für erscheinen.
+            // Ein Eintrag "No References found..." erscheinen.
             await Context.OnDefinitionFoundAsync(nodeDefinition);
 
             await SolutionCrawler.StartAsync(
                 _args.Solution,
-                taskDefinition.CodeGenerationUnit, // TODO Hier muss die CGU des Originating Symbols rein!
+                _args.OriginatingCodeGenerationUnit,
                 codeGenerationUnit => FindReferencesAsync(taskDefinition.AsTaskDeclaration,
                                                           codeGenerationUnit,
                                                           nodeDefinition,
@@ -536,8 +534,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             return new DefinitionItem(
                 GetSolutionRoot(),
                 initConnectionPoint,
-                // TODO Hier sollte die "neitrale Form eines Inits", also ohne alias, da eh nicht eindeutig
-                initConnectionPoint.ToDisplayParts(),
+                DisplayPartsBuilder.BuildInitConnectionPointSymbol(initConnectionPoint, neutralName: true),
                 expandedByDefault,
                 sortKey: InitConnectionPointSortKey);
 

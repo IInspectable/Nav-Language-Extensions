@@ -8,10 +8,10 @@ using Pharmatechnik.Nav.Language.CodeGen;
 
 namespace Pharmatechnik.Nav.Language.Text {
 
-    class DisplayPartsVisitor: SymbolVisitor<ImmutableArray<ClassifiedText>> {
+    class DisplayPartsBuilder: SymbolVisitor<ImmutableArray<ClassifiedText>> {
 
         public static ImmutableArray<ClassifiedText> Invoke(ISymbol source) {
-            var builder = new DisplayPartsVisitor();
+            var builder = new DisplayPartsBuilder();
             return builder.Visit(source);
         }
 
@@ -30,13 +30,20 @@ namespace Pharmatechnik.Nav.Language.Text {
         }
 
         public override ImmutableArray<ClassifiedText> VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
+            return BuildInitConnectionPointSymbol(initConnectionPointSymbol);
+
+        }
+
+        public static ImmutableArray<ClassifiedText> BuildInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol, bool neutralName = false) {
+
+            var initName = neutralName ? SyntaxFacts.InitKeywordAlt : initConnectionPointSymbol.Name;
 
             return CreateClassifiedText(
                 ClassifiedTexts.Keyword(SyntaxFacts.InitKeyword),
                 ClassifiedTexts.Space,
                 ClassifiedTexts.TaskName(initConnectionPointSymbol.TaskDeclaration.Name),
                 ClassifiedTexts.Colon,
-                ClassifiedTexts.Identifier(initConnectionPointSymbol.Name)
+                ClassifiedTexts.Identifier(initName)
             );
 
         }
@@ -53,7 +60,7 @@ namespace Pharmatechnik.Nav.Language.Text {
         }
 
         public override ImmutableArray<ClassifiedText> VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol) {
-
+            // Eingentlich dürfte es gar keine end Verbindungspunkte in der Task Declaration geben. Wozu auch?
             return CreateClassifiedText(
                 ClassifiedTexts.TaskName(endConnectionPointSymbol.TaskDeclaration.Name),
                 ClassifiedTexts.Colon,
@@ -106,17 +113,30 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         public override ImmutableArray<ClassifiedText> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
 
-           // TODO Sollte nicht evtl der Taskname vorangestellt werden? Siehe VisitInitConnectionPointSymbol
-            if (initNodeSymbol.Alias?.Name == null) {
-                return CreateClassifiedText(
-                    ClassifiedTexts.Keyword(SyntaxFacts.InitKeyword)
-                );
-            }
-
             return CreateClassifiedText(
                 ClassifiedTexts.Keyword(SyntaxFacts.InitKeyword),
                 ClassifiedTexts.Space,
-                ClassifiedTexts.Identifier(initNodeSymbol.Alias.Name)
+                ClassifiedTexts.TaskName(initNodeSymbol.ContainingTask.Name),
+                ClassifiedTexts.Colon,
+                ClassifiedTexts.Identifier(initNodeSymbol.Name)
+            );
+        }
+
+        public override ImmutableArray<ClassifiedText> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
+            return CreateClassifiedText(
+                ClassifiedTexts.Keyword(SyntaxFacts.ExitKeyword),
+                ClassifiedTexts.Space,
+                ClassifiedTexts.TaskName(exitNodeSymbol.ContainingTask.Name),
+                ClassifiedTexts.Colon,
+                ClassifiedTexts.Identifier(exitNodeSymbol.Name)
+            );
+        }
+
+        public override ImmutableArray<ClassifiedText> VisitEndNodeSymbol(IEndNodeSymbol endNodeSymbol) {
+            // Der "end Knoten" ist nicht von außen erreichbar, und wird deshalb als "privater Knoten" gesehen,
+            // d.h. es wird nicht der Taskname wie bei den Inits und Exits vorangestellt.
+            return CreateClassifiedText(
+                ClassifiedTexts.Keyword(SyntaxFacts.EndKeyword)
             );
         }
 
@@ -170,21 +190,7 @@ namespace Pharmatechnik.Nav.Language.Text {
                 ClassifiedTexts.Space,
                 ClassifiedTexts.FormName(viewNodeSymbol.Name)
             );
-        }
-
-        public override ImmutableArray<ClassifiedText> VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
-            return CreateClassifiedText(
-                ClassifiedTexts.Keyword(SyntaxFacts.ExitKeyword),
-                ClassifiedTexts.Space,
-                ClassifiedTexts.Identifier(exitNodeSymbol.Name)
-            );
-        }
-
-        public override ImmutableArray<ClassifiedText> VisitEndNodeSymbol(IEndNodeSymbol endNodeSymbol) {
-            return CreateClassifiedText(
-                ClassifiedTexts.Keyword(SyntaxFacts.EndKeyword)
-            );
-        }
+        }       
 
         #endregion
 
@@ -212,7 +218,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             );
         }
 
-        ImmutableArray<ClassifiedText> CreateClassifiedText(params ClassifiedText[] parts) {
+        static ImmutableArray<ClassifiedText> CreateClassifiedText(params ClassifiedText[] parts) {
             return parts.ToImmutableArray();
         }
 

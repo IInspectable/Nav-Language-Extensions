@@ -15,6 +15,7 @@ namespace Pharmatechnik.Nav.Language {
 
     }
 
+    // TODO wo ist der Alias?
     public interface IInitConnectionPointSymbol: IConnectionPointSymbol {
 
         InitNodeDeclarationSyntax Syntax { get; }

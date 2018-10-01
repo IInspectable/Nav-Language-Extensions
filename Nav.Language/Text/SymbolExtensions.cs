@@ -9,7 +9,7 @@ namespace Pharmatechnik.Nav.Language.Text {
     public static class SymbolExtensions {
 
         public static ImmutableArray<ClassifiedText> ToDisplayParts(this ISymbol symbol) {
-            return DisplayPartsVisitor.Invoke(symbol);
+            return DisplayPartsBuilder.Invoke(symbol);
         }
 
     }
