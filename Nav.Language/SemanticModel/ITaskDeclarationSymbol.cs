@@ -34,9 +34,9 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         IReadOnlySymbolCollection<IConnectionPointSymbol> ConnectionPoints { get; }
 
-        IReadOnlySymbolCollection<IConnectionPointSymbol> Inits();
-        IReadOnlySymbolCollection<IConnectionPointSymbol> Exits();
-        IReadOnlySymbolCollection<IConnectionPointSymbol> Ends();
+        IReadOnlySymbolCollection<IInitConnectionPointSymbol> Inits();
+        IReadOnlySymbolCollection<IExitConnectionPointSymbol> Exits();
+        IReadOnlySymbolCollection<IEndConnectionPointSymbol> Ends();
 
         [NotNull]
         IReadOnlyList<ITaskNodeSymbol> References { get; }

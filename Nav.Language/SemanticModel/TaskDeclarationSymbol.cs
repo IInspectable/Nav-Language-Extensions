@@ -38,16 +38,16 @@ namespace Pharmatechnik.Nav.Language {
 
         IReadOnlySymbolCollection<IConnectionPointSymbol> ITaskDeclarationSymbol.ConnectionPoints => ConnectionPoints;
 
-        IReadOnlySymbolCollection<IConnectionPointSymbol> ITaskDeclarationSymbol.Inits() {
-            return new SymbolCollection<IConnectionPointSymbol>(ConnectionPoints.Where(cp => cp.Kind == ConnectionPointKind.Init));
+        IReadOnlySymbolCollection<IInitConnectionPointSymbol> ITaskDeclarationSymbol.Inits() {
+            return new SymbolCollection<IInitConnectionPointSymbol>(ConnectionPoints.OfType<IInitConnectionPointSymbol>());
         }
 
-        IReadOnlySymbolCollection<IConnectionPointSymbol> ITaskDeclarationSymbol.Exits() {
-            return new SymbolCollection<IConnectionPointSymbol>(ConnectionPoints.Where(cp => cp.Kind == ConnectionPointKind.Exit));
+        IReadOnlySymbolCollection<IExitConnectionPointSymbol> ITaskDeclarationSymbol.Exits() {
+            return new SymbolCollection<IExitConnectionPointSymbol>(ConnectionPoints.OfType<IExitConnectionPointSymbol>());
         }
 
-        IReadOnlySymbolCollection<IConnectionPointSymbol> ITaskDeclarationSymbol.Ends() {
-            return new SymbolCollection<IConnectionPointSymbol>(ConnectionPoints.Where(cp => cp.Kind == ConnectionPointKind.End));
+        IReadOnlySymbolCollection<IEndConnectionPointSymbol> ITaskDeclarationSymbol.Ends() {
+            return new SymbolCollection<IEndConnectionPointSymbol>(ConnectionPoints.OfType<IEndConnectionPointSymbol>());
         }
 
         IReadOnlyList<ITaskNodeSymbol> ITaskDeclarationSymbol.References => References;
