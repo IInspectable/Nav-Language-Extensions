@@ -519,7 +519,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         [CanBeNull]
         DefinitionItem CreateInitConnectionPointDefinition(ITaskDeclarationSymbol taskDeclaration, bool expandedByDefault = true) {
 
-            var initConnectionPoint = taskDeclaration?.Inits().OfType<IInitConnectionPointSymbol>().FirstOrDefault();
+            var initConnectionPoint = taskDeclaration?.Inits().FirstOrDefault();
             if (initConnectionPoint == null) {
                 return null;
             }
