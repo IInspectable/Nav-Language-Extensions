@@ -115,7 +115,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
             var position = 0;
             foreach (var part in parts) {
 
-                var inline = ToInline(part, consolidateWhitespace);
+                var inline = ToInline(part, consolidateWhitespace, isLineStart: position == 0);
 
                 runAction?.Invoke(inline, part, position);
 
@@ -126,19 +126,23 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         }
 
-        Run ToInline(ClassifiedText classifiedText, bool consolidateWhitespace) {
-            return ToInline(classifiedText.Text, classifiedText.Classification, consolidateWhitespace);
+        Run ToInline(ClassifiedText classifiedText, bool consolidateWhitespace, bool isLineStart) {
+            return ToInline(classifiedText.Text, classifiedText.Classification, consolidateWhitespace, isLineStart);
         }
 
-        Run ToInline(string text, TextClassification classification, bool consolidateWhitespace) {
+        Run ToInline(string text, TextClassification classification, bool consolidateWhitespace, bool isLineStart) {
 
             // Es nervt in der Vorschau, wenn Tabluatoren den Text unnötig in die Länge ziehen. Deswegen dampfen wir
             // Whitepaces auf ein Leerzeichen respektive NL ein.
             if (consolidateWhitespace &&
                 classification == TextClassification.Whitespace) {
 
+                var ws = " ";
+                if (isLineStart) {
+                    ws = String.Empty;
+                }
                 // NL dürfen wir nicht einfach wegwerfen.
-                text = text.GetNewLineCharCount() == 0 ? " " : Environment.NewLine;
+                text = text.GetNewLineCharCount() == 0 ? ws : Environment.NewLine;
             }
 
             var run = new Run(text);
