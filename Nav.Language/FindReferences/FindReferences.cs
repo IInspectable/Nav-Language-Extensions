@@ -15,7 +15,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                 throw new ArgumentNullException(nameof(args));
             }
 
-            return Task.Run(async () => { await FindReferencesVisitor.Invoke(args); });
+            return FindReferencesVisitor.Invoke(args);
 
         }
 

@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Utilities</ProductName>
-    <ProductVersion>4.0.17</ProductVersion>
+    <ProductVersion>4.0.20</ProductVersion>
   </PropertyGroup>
   <Import Project="..\_build\WriteThisAssemblyFile.targets" />
 </Project>

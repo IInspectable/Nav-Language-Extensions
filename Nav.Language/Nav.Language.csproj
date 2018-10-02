@@ -57,10 +57,8 @@
     <Compile Include="FindReferences\ReferenceItemOderer.cs" />
     <Compile Include="FindReferences\SymbolOrderer.cs" />
     <Compile Include="FindReferences\IFindReferencesContext.cs" />
-    <Compile Include="FindReferences\PrefixPartsBuilder.cs" />
     <Compile Include="FindReferences\ReferenceItem.cs" />
     <Compile Include="FindReferences\ReferenceItemBuilder.cs" />
-    <Compile Include="FindReferences\SolutionCrawler.cs" />
     <Compile Include="Provider\ISemanticModelProvider.cs" />
     <Compile Include="Provider\ISemanticModelProviderFactory.cs" />
     <Compile Include="Provider\SemanticModelProvider.cs" />

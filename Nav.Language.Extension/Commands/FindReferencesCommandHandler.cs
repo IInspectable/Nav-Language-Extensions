@@ -1,12 +1,15 @@
 ﻿#region Using Directives
 
+using System;
 using System.ComponentModel.Composition;
+using System.Threading.Tasks;
 
 using Microsoft.VisualStudio.Commanding;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
@@ -59,11 +62,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                     return;
                 }
 
+                // switch to a background thread
+                await TaskScheduler.Default;
+
                 var solution = await NavLanguagePackage.GetSolutionAsync(context.CancellationToken);
                 var fra      = new FindReferencesArgs(originatingSymbol, codeGenerationUnitAndSnapshot.CodeGenerationUnit, solution, context);
 
                 await ReferenceFinder.FindReferencesAsync(fra).ConfigureAwait(false);
 
+            } catch (OperationCanceledException) {
             } finally {
                 await context.OnCompletedAsync();
             }

@@ -53,10 +53,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
                 }
 
-                return CreateCompletionContextTask(completionItems);
+                return CreateCompletionContextTaskAsync(completionItems);
             }
 
-            return CreateEmptyCompletionContextTask();
+            return CreateEmptyCompletionContextTaskAsync();
         }
 
         bool ShouldProvideCompletions(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {

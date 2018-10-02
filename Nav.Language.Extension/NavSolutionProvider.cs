@@ -42,7 +42,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             _taskStatusProvider = taskStatusProvider;
 
             _navSolutionSnapshot = NavSolutionSnapshot.Empty;
-
+            // TODO Solution Save Event!?
             SolutionEvents.OnAfterCloseSolution                  += OnAfterCloseSolution;
             SolutionEvents.OnAfterOpenSolution                   += OnAfterOpenSolution;
             SolutionEvents.OnAfterBackgroundSolutionLoadComplete += OnAfterBackgroundSolutionLoadComplete;

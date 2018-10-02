@@ -18,22 +18,19 @@ using Task = System.Threading.Tasks.Task;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion {
-
+    
     class NavCompletionSource: AsyncCompletionSource {
 
         public NavCompletionSource(QuickinfoBuilderService quickinfoBuilderService): base(quickinfoBuilderService) {
 
         }
-
-        const char EdgeTriggerChar = '-';
-
+        
         public override bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
 
             bool IsTriggerChar() {
 
                 return char.IsLetter(typedChar)     ||
                        typedChar == '\0'            ||
-                       typedChar == EdgeTriggerChar ||
                        typedChar == SyntaxFacts.Colon;
             }
 
@@ -70,19 +67,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var prevousIdentfier = previousWordSpan?.GetText() ?? "";
 
             var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
-
-            // Edge Modes
-            bool showEdgeModes = previousNonWhitespace == EdgeTriggerChar;
-            if (showEdgeModes) {
-
-                completionItems.Add(CreateKeywordCompletion(SyntaxFacts.GoToEdgeKeyword));
-                completionItems.Add(CreateKeywordCompletion(SyntaxFacts.ModalEdgeKeyword));
-
-                if (completionItems.Any()) {
-                    return CreateCompletionContext(completionItems);
-                }
-            }
-
+            
             // Task Nodes
             if (prevousIdentfier == SyntaxFacts.TaskKeyword) {
                 var taskDecls = codeGenerationUnit.TaskDeclarations;
@@ -165,9 +150,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             }
 
-            // Keywords
+            // Nav Keywords ohne Edges
             foreach (var keyword in SyntaxFacts.NavKeywords
-                                               .Where(k => !SyntaxFacts.IsHiddenKeyword(k))
+                                               .Where(k => !SyntaxFacts.IsHiddenKeyword(k) && !SyntaxFacts.IsEdgeKeyword(k))
                                                .OrderBy(k => k)) {
 
                 completionItems.Add(CreateKeywordCompletion(keyword));
@@ -199,7 +184,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                 return false;
             }
 
-            // Kein Auto Completion in in Code Blöcken
+            // Kein Auto Completion in Code Blöcken
             // TODO Nicht vollständig, da nur aktuelle Zeile betrachtet wird
             var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
             if (isInCodeBlock) {
@@ -207,30 +192,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             }
 
             var start = line.GetStartOfIdentifier(triggerLocation);
-
-            var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
-            var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
-
-            bool showEdgeModes = previousNonWhitespace == EdgeTriggerChar;
-
-            if (showEdgeModes) {
-                start -= 1;
+            if (start == triggerLocation) {
+                return false;
             }
-
+            
             applicableToSpan = new SnapshotSpan(start, triggerLocation);
 
             return true;
         }
 
-        private static CodeGenerationUnit GetCodeGenerationUnit(SnapshotPoint triggerLocation) {
-
-            var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
-
-            var generationUnitAndSnapshot = semanticModelService.UpdateSynchronously();
-            var codeGenerationUnit        = generationUnitAndSnapshot.CodeGenerationUnit;
-
-            return codeGenerationUnit;
-        }
+        
 
     }
 

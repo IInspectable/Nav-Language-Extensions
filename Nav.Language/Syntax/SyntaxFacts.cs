@@ -99,11 +99,25 @@ namespace Pharmatechnik.Nav.Language {
             SpontKeyword,
             GeneratetoKeyword,
             NotimplementedKeyword,
+            ModalEdgeKeywordAlt,
+            NonModalEdgeKeyword
 
         }.ToImmutableHashSet();
 
         public static bool IsHiddenKeyword(string value) {
             return HiddenKeywords.Contains(value);
+        }
+
+        public static readonly ImmutableHashSet<string> EdgeKeywords = new[] {
+            GoToEdgeKeyword,
+            NonModalEdgeKeyword,
+            ModalEdgeKeyword,
+            ModalEdgeKeywordAlt
+
+        }.ToImmutableHashSet();
+
+        public static bool IsEdgeKeyword(string value) {
+            return EdgeKeywords.Contains(value);
         }
 
         // Punctuation

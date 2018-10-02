@@ -50,15 +50,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             return Task.FromResult((object) item.DisplayText);
         }
-
-        protected void Foo(SnapshotPoint triggerLocation, bool update) {
-
-        }
-
-        protected static Task<CompletionContext> CreateCompletionContextTask(ImmutableArray<CompletionItem>.Builder itemsBuilder,
+        
+        protected static Task<CompletionContext> CreateCompletionContextTaskAsync(ImmutableArray<CompletionItem>.Builder itemsBuilder,
                                                                              InitialSelectionHint initialSelectionHint = InitialSelectionHint.SoftSelection) {
-            var context = CreateCompletionContext(itemsBuilder, initialSelectionHint);
-            return Task.FromResult(context);
+            return Task.FromResult(CreateCompletionContext(itemsBuilder, initialSelectionHint));
         }
 
         protected static CompletionContext CreateCompletionContext(ImmutableArray<CompletionItem>.Builder itemsBuilder,
@@ -66,7 +61,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             return new CompletionContext(itemsBuilder.ToImmutable(), null, initialSelectionHint);
         }
 
-        protected static Task<CompletionContext> CreateEmptyCompletionContextTask() {
+        protected static Task<CompletionContext> CreateEmptyCompletionContextTaskAsync() {
             return Task.FromResult(CreateEmptyCompletionContext());
         }
 
@@ -114,14 +109,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             displayText = displayText ?? dir.Name;
 
-            var completionItem = new CompletionItem(displayText: displayText,
-                                                    source: this,
-                                                    icon: icon ?? CompletionImages.Folder,
-                                                    filters: ImmutableArray.Create(CompletionFilters.Folders),
-                                                    suffix: "",
-                                                    insertText: relativePath,
-                                                    sortText: $"__{displayText}",
-                                                    filterText: displayText,
+            var completionItem = new CompletionItem(displayText   : displayText,
+                                                    source        : this,
+                                                    icon          : icon ?? CompletionImages.Folder,
+                                                    filters       : ImmutableArray.Create(CompletionFilters.Folders),
+                                                    suffix        : "",
+                                                    insertText    : relativePath,
+                                                    sortText      : $"__{displayText}",
+                                                    filterText    : displayText,
                                                     attributeIcons: ImmutableArray<ImageElement>.Empty);
             
             completionItem.Properties.AddProperty(DirectoryInfoPropertyName, dir);
@@ -142,14 +137,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             displayText = displayText ?? file.Name;
 
-            var completionItem = new CompletionItem(displayText: displayText,
-                                                    source: this,
-                                                    icon: CompletionImages.NavFile,
-                                                    filters: ImmutableArray.Create(CompletionFilters.Files),
-                                                    suffix: "",
-                                                    insertText: relativePath,
-                                                    sortText: $"_{displayText}",
-                                                    filterText: file.Name,
+            var completionItem = new CompletionItem(displayText   : displayText,
+                                                    source        : this,
+                                                    icon          : CompletionImages.NavFile,
+                                                    filters       : ImmutableArray.Create(CompletionFilters.Files),
+                                                    suffix        : "",
+                                                    insertText    : relativePath,
+                                                    sortText      : $"_{displayText}",
+                                                    filterText    : file.Name,
                                                     attributeIcons: ImmutableArray<ImageElement>.Empty);
 
             completionItem.Properties.AddProperty(NavFileInfoPropertyName, file);
@@ -166,6 +161,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
         public static string NavFileInfoPropertyName         => nameof(NavFileInfoPropertyName);
         public static string ReplacementTrackingSpanProperty => nameof(ReplacementTrackingSpanProperty);
 
+        protected static CodeGenerationUnit GetCodeGenerationUnit(SnapshotPoint triggerLocation) {
+
+            var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
+
+            var generationUnitAndSnapshot = semanticModelService.UpdateSynchronously();
+            var codeGenerationUnit        = generationUnitAndSnapshot.CodeGenerationUnit;
+
+            return codeGenerationUnit;
+        }
     }
 
 }

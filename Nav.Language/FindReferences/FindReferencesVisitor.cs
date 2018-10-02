@@ -114,20 +114,20 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             // Ein Eintrag "No References found..." erscheinen.
             await Context.OnDefinitionFoundAsync(nodeDefinition);
 
-            await SolutionCrawler.StartAsync(
-                _args.Solution,
-                _args.OriginatingCodeGenerationUnit,
+            await _args.Solution.ProcessCodeGenerationUnitsAsync(
                 codeGenerationUnit => FindReferencesAsync(taskDefinition.AsTaskDeclaration,
                                                           codeGenerationUnit,
                                                           nodeDefinition,
                                                           initConnectionPointDefinition,
                                                           exitConnectionPointDefinitions,
                                                           Context),
-                Context.CancellationToken);
+                _args.OriginatingCodeGenerationUnit, Context.CancellationToken);
 
         }
 
         // TODO find taskref "Pfad zum file"?
+
+        // WICHTIG: Diese Methode muss Thread safe sein!
         static async Task FindReferencesAsync(ITaskDeclarationSymbol taskDeclaration,
                                               CodeGenerationUnit codeGenerationUnit,
                                               DefinitionItem taskDefinitionItem,

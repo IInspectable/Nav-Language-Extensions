@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
 using System;
-using System.Linq;
 using System.Collections.Immutable;
 
 using JetBrains.Annotations;
@@ -23,9 +22,6 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             var referenceLine = reference.SyntaxTree.SourceText.GetTextLineAtPosition(reference.Location.Start);
             
-            // TODO Mache Prefixe Sinn??
-            var prefixParts = PrefixPartsBuilder.DefaultPrefix;// .Invoke(reference);
-
             // Text
             var textExtent = referenceLine.ExtentWithoutLineEndings;
 
@@ -33,12 +29,8 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                                      .GetClassifiedText(textExtent)
                                      .ToImmutableArray();
 
-            if (prefixParts.Any()) {
-                textParts = prefixParts.AddRange(textParts);
-
-            }
-
-            var textHighlightExtent = new TextExtent(start: prefixParts.Length() + reference.Start - referenceLine.Start,
+          
+            var textHighlightExtent = new TextExtent(start:  reference.Start - referenceLine.Start,
                                                      length: reference.Location.Length);
 
             // ToolTip

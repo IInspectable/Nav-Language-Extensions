@@ -112,6 +112,8 @@
     <Compile Include="CodeFixes\RemoveUnusedNodesSuggestedActionProvider.cs" />
     <Compile Include="Commands\CommandHandlerNames.cs" />
     <Compile Include="Commands\FindReferencesCommandHandler.cs" />
+    <Compile Include="Completion\EdgeCompletionSource.cs" />
+    <Compile Include="Completion\EdgeCompletionSourceProvider.cs" />
     <Compile Include="Utilities\ProjectEntry.cs" />
     <Compile Include="Utilities\ProjectMapper.cs" />
     <Compile Include="Utilities\ProjectService.cs" />

@@ -1,8 +1,8 @@
 #region Using Directives
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
-using System.Collections.Generic;
 
 #endregion
 
@@ -30,8 +30,10 @@ namespace Pharmatechnik.Nav.Language {
 
     public class CachedSyntaxProvider: ISyntaxProvider {
 
-        readonly Dictionary<string, CodeGenerationUnitSyntax> _cache;
-        readonly ISyntaxProvider                              _syntaxProvider;
+        readonly ConcurrentDictionary<string, CodeGenerationUnitSyntax> _cache;
+        readonly ISyntaxProvider                                        _syntaxProvider;
+
+        private readonly object _gate = new object();
 
         public CachedSyntaxProvider(): this(null) {
 
@@ -40,7 +42,7 @@ namespace Pharmatechnik.Nav.Language {
         public CachedSyntaxProvider(ISyntaxProvider syntaxProvider) {
 
             _syntaxProvider = syntaxProvider ?? SyntaxProvider.Default;
-            _cache          = new Dictionary<string, CodeGenerationUnitSyntax>(StringComparer.OrdinalIgnoreCase);
+            _cache          = new ConcurrentDictionary<string, CodeGenerationUnitSyntax>(StringComparer.OrdinalIgnoreCase);
             Statistic       = default;
         }
 
@@ -48,14 +50,14 @@ namespace Pharmatechnik.Nav.Language {
 
             if (_cache.TryGetValue(filePath, out var syntax)) {
 
-                Statistic = Statistic.WithCacheHit();
-
+                CacheHit();
                 return syntax;
             }
 
-            Statistic = Statistic.WithCacheFail();
+            CacheFail();
 
             syntax = _syntaxProvider.GetSyntax(filePath, cancellationToken);
+
             Cache(filePath, syntax);
 
             return syntax;
@@ -67,13 +69,29 @@ namespace Pharmatechnik.Nav.Language {
             ClearCache();
         }
 
+        void CacheFail() {
+
+            lock (_gate) {
+                Statistic = Statistic.WithCacheFail();
+            }
+        }
+
+        void CacheHit() {
+
+            lock (_gate) {
+                Statistic = Statistic.WithCacheHit();
+            }
+        }
+
         void Cache(string filePath, CodeGenerationUnitSyntax syntax) {
             _cache[filePath] = syntax;
         }
 
         void ClearCache() {
-            _cache.Clear();
-            Statistic = default;
+            lock (_gate) {
+                _cache.Clear();
+                Statistic = default;
+            }
         }
 
     }
