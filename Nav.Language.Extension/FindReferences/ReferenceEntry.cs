@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
 
+using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.FindReferences;
 
 #endregion
@@ -14,20 +15,27 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
     class ReferenceEntry: Entry {
 
-        ReferenceEntry(FindReferencesPresenter presenter, ReferenceItem referenceItem, DefinitionEntry definitionEntry):
+        ReferenceEntry(FindReferencesPresenter presenter,
+                       ReferenceItem referenceItem,
+                       DefinitionEntry definitionEntry,
+                       ProjectInfo projectInfo):
             base(presenter, definitionEntry) {
 
             ReferenceItem = referenceItem;
+            ProjectInfo   = projectInfo;
         }
 
         public static ReferenceEntry Create(FindReferencesPresenter presenter,
                                             DefinitionEntry definitionEntry,
-                                            ReferenceItem referenceItem) {
+                                            ReferenceItem referenceItem,
+                                            ProjectInfo projectInfo
+        ) {
 
-            return new ReferenceEntry(presenter, referenceItem, definitionEntry);
+            return new ReferenceEntry(presenter, referenceItem, definitionEntry, projectInfo);
         }
 
         public ReferenceItem ReferenceItem { get; }
+        public ProjectInfo   ProjectInfo   { get; }
 
         public override string Text => ReferenceItem.Text;
 
@@ -41,7 +49,10 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                 case StandardTableKeyNames.Column when ReferenceItem.Location.StartCharacter > 0:
                     return ReferenceItem.Location.StartCharacter;
                 case StandardTableKeyNames.ProjectName:
-                    return ReferenceItem.ProjectName;
+                    return ProjectInfo.ProjectName;
+                // Wird zum Filtern nach z.B. "Current Project" benötigt
+                case StandardTableKeyNames.ProjectGuid:
+                    return ProjectInfo.ProjectGuid;
 
             }
 

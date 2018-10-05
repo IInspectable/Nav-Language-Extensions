@@ -117,7 +117,7 @@
     <Compile Include="FindReferences\Entry.cs" />
     <Compile Include="FindReferences\SimpleTextEntry.cs" />
     <Compile Include="NavSolutionProvider.HierarchyEvents.cs" />
-    <Compile Include="Utilities\ProjectEntry.cs" />
+    <Compile Include="Utilities\ProjectInfo.cs" />
     <Compile Include="Utilities\ProjectMapper.cs" />
     <Compile Include="Utilities\ProjectService.cs" />
     <Compile Include="Utilities\Hierarchy.cs" />

@@ -54,7 +54,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         public string GetCanonicalName() {
 
             ThreadHelper.ThrowIfNotOnUIThread();
-            
+
             string cn = null;
             if (ErrorHandler.Succeeded(_vsHierarchy?.GetCanonicalName(ItemId, out cn) ?? VSConstants.S_OK)) {
                 return cn;
@@ -64,6 +64,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         public string Name => GetProperty<string>(__VSHPROPID.VSHPROPID_Name);
+
+        public Guid ProjectGuid {
+            get {
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                _vsHierarchy.GetGuidProperty(ItemId, (int) __VSHPROPID.VSHPROPID_ProjectIDGuid, out var projectGuid);
+               
+                return projectGuid;
+            }
+        }
 
         T GetProperty<T>(__VSHPROPID propId, T defaultValue = default(T)) {
 

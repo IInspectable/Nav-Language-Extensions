@@ -86,12 +86,10 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         public Task OnReferenceFoundAsync(ReferenceItem referenceItem) {
 
-            var projectName = _projectMapper.GetContainingProjectName(referenceItem.Location.FilePath);
-
-            referenceItem = referenceItem.With(projectName: projectName);
-
+            var projectInfo     = _projectMapper.GetProjectInfo(referenceItem.Location.FilePath);
             var definitionEntry = EnsureDefinitionEntry(referenceItem.Definition);
-            var referenceEntry  = ReferenceEntry.Create(Presenter, definitionEntry, referenceItem);
+            var referenceEntry  = ReferenceEntry.Create(Presenter, definitionEntry, referenceItem, projectInfo);
+
             return OnEntryFoundAsync(referenceEntry);
 
         }

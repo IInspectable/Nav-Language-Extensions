@@ -19,7 +19,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
 
         [ImportingConstructor]
         public ProjectService(SVsServiceProvider serviceProvider) {
-            
+
             ThreadHelper.ThrowIfNotOnUIThread();
 
             _vsSolution1 = (IVsSolution) serviceProvider.GetService(typeof(SVsSolution)) ?? throw new InvalidOperationException();
@@ -29,7 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            var entries = ImmutableArray.CreateBuilder<ProjectEntry>();
+            var entries = ImmutableArray.CreateBuilder<ProjectInfo>();
 
             Guid ignored = Guid.Empty;
             var  flags   = __VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION | __VSENUMPROJFLAGS.EPF_UNLOADEDINSOLUTION;
@@ -42,13 +42,15 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
 
                 var hierarchy = new Hierarchy(hier[0]);
 
-                var directory = UriBuilder.BuildDirectoryUriFromFile(hierarchy.FullPath);
-                var name      = hierarchy.Name;
+                var directory   = UriBuilder.BuildDirectoryUriFromFile(hierarchy.FullPath);
+                var name        = hierarchy.Name;
+                var projectGuid = hierarchy.ProjectGuid;
+
                 if (directory == null || name == null) {
                     continue;
                 }
 
-                entries.Add(new ProjectEntry(directory, name));
+                entries.Add(new ProjectInfo(directory, name, projectGuid));
 
             }
 

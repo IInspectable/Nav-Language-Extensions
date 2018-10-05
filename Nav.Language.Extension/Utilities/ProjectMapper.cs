@@ -9,25 +9,28 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
 
     class ProjectMapper {
 
-        private readonly ImmutableArray<ProjectEntry> _projectEntries;
+        private readonly ImmutableArray<ProjectInfo> _projectEntries;
 
-        public ProjectMapper(ImmutableArray<ProjectEntry> projectEntries) {
+        public ProjectMapper(ImmutableArray<ProjectInfo> projectEntries) {
             _projectEntries = projectEntries;
 
         }
 
         public static string MiscellaneousFiles = "Miscellaneous Files";
 
-        public static readonly ProjectMapper Empty = new ProjectMapper(ImmutableArray<ProjectEntry>.Empty);
+        public static readonly ProjectMapper Empty = new ProjectMapper(ImmutableArray<ProjectInfo>.Empty);
 
-        public string GetContainingProjectName(string fileName) {
+        public ProjectInfo GetProjectInfo(string fileName) {
 
             var uri = UriBuilder.BuildDirectoryUriFromFile(fileName);
             if (uri == null) {
-                return MiscellaneousFiles;
+                return default;
             }
 
-            return _projectEntries.FirstOrDefault(pe => pe.ProjectDirectory.IsBaseOf(uri)).Name ?? MiscellaneousFiles;
+            var projectEntry = _projectEntries.FirstOrDefault(pe => pe.ProjectDirectory.IsBaseOf(uri));
+
+            return projectEntry;
+
         }
 
     }
