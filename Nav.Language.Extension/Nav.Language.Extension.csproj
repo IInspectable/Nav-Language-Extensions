@@ -116,6 +116,7 @@
     <Compile Include="Completion\EdgeCompletionSourceProvider.cs" />
     <Compile Include="FindReferences\Entry.cs" />
     <Compile Include="FindReferences\SimpleTextEntry.cs" />
+    <Compile Include="NavSolutionProvider.HierarchyEvents.cs" />
     <Compile Include="Utilities\ProjectEntry.cs" />
     <Compile Include="Utilities\ProjectMapper.cs" />
     <Compile Include="Utilities\ProjectService.cs" />

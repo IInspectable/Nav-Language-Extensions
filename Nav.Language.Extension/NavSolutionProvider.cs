@@ -23,7 +23,9 @@ using Pharmatechnik.Nav.Language.Extension.Utilities;
 namespace Pharmatechnik.Nav.Language.Extension {
 
     [Export]
-    class NavSolutionProvider {
+    partial class NavSolutionProvider {
+
+        public SVsServiceProvider ServiceProvider { get; }
 
         private readonly TaskStatusProvider _taskStatusProvider;
 
@@ -38,13 +40,16 @@ namespace Pharmatechnik.Nav.Language.Extension {
         static string SearchFilter => $"*{NavLanguageContentDefinitions.FileExtension}";
 
         [ImportingConstructor]
-        public NavSolutionProvider(TaskStatusProvider taskStatusProvider) {
+        public NavSolutionProvider(TaskStatusProvider taskStatusProvider, SVsServiceProvider serviceProvider) {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            ServiceProvider = serviceProvider;
+            
             _taskStatusProvider = taskStatusProvider;
 
             _navSolutionSnapshot = NavSolutionSnapshot.Empty;
-            // TODO IVsSolution ist ein IVsHierarchy -> AdviseHierarchyEvents 
-            // TODO OnPropertyChanged  -> VSHPROPID_SaveName?
-            // TODO Solution Save Event!?
+           
             SolutionEvents.OnAfterCloseSolution                  += OnAfterCloseSolution;
             SolutionEvents.OnAfterOpenSolution                   += OnAfterOpenSolution;
             SolutionEvents.OnAfterBackgroundSolutionLoadComplete += OnAfterBackgroundSolutionLoadComplete;
@@ -68,6 +73,8 @@ namespace Pharmatechnik.Nav.Language.Extension {
                       .Select(_ => Observable.FromAsync(async () => await CreateSolutionSnapshotAsync(_taskStatusProvider, _directory, CancellationToken.None)))
                       .Concat()
                       .Subscribe(TrySetSolutionSnapshot);
+
+            ConnectHierarchyEvents();
         }
 
         private event EventHandler<EventArgs> Invalidated;
