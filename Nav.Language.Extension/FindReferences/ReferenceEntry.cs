@@ -12,25 +12,28 @@ using Pharmatechnik.Nav.Language.FindReferences;
 
 namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
-    class ReferenceEntry {
+    class ReferenceEntry: Entry {
 
-        public ReferenceEntry(FindReferencesPresenter presenter, ReferenceItem referenceItem) {
-            Presenter     = presenter;
+        ReferenceEntry(FindReferencesPresenter presenter, ReferenceItem referenceItem, DefinitionEntry definitionEntry):
+            base(presenter, definitionEntry) {
+
             ReferenceItem = referenceItem;
-            Definition    = new DefinitionEntry(Presenter, ReferenceItem.Definition, ReferenceItem.Definition.ExpandedByDefault);
         }
 
-        public FindReferencesPresenter Presenter     { get; }
-        public ReferenceItem           ReferenceItem { get; }
-        public DefinitionEntry         Definition    { get; }
+        public static ReferenceEntry Create(FindReferencesPresenter presenter,
+                                            DefinitionEntry definitionEntry,
+                                            ReferenceItem referenceItem) {
 
-        public object GetValue(string keyName) {
+            return new ReferenceEntry(presenter, referenceItem, definitionEntry);
+        }
+
+        public ReferenceItem ReferenceItem { get; }
+
+        public override string Text => ReferenceItem.Text;
+
+        public override object GetValue(string keyName) {
             switch (keyName) {
-                case StandardTableKeyNames.Text:
-                    // Wird für die Suche verwendet...
-                    return ReferenceItem.Text;
-                case StandardTableKeyNames2.Definition:
-                    return Definition;
+
                 case StandardTableColumnDefinitions.DocumentName:
                     return ReferenceItem.Location.FilePath;
                 case StandardTableKeyNames.Line when ReferenceItem.Location.StartLine > 0:
@@ -42,10 +45,10 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
             }
 
-            return null;
+            return base.GetValue(keyName);
         }
 
-        public FrameworkElement CreatLineContent(bool singleColumnView) {
+        public override FrameworkElement TryCreateColumnContent() {
 
             var content = LinePartsToTextBlock();
             LazyTooltip.AttachTo(content, CreateToolTip);

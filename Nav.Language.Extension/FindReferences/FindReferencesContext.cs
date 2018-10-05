@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell.FindAllReferences;
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
+using Microsoft.VisualStudio.Imaging.Interop;
 
+using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 using Pharmatechnik.Nav.Language.FindReferences;
 
@@ -29,8 +31,8 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
         TableEntriesSnapshot _lastSnapshot;
         ITableDataSink       _tableDataSink;
 
-        ImmutableArray<DefinitionItem> _definitionItems = ImmutableArray<DefinitionItem>.Empty;
-        ImmutableArray<ReferenceItem>  _referenceItems  = ImmutableArray<ReferenceItem>.Empty;
+        ImmutableArray<DefinitionEntry> _definitionEntries = ImmutableArray<DefinitionEntry>.Empty;
+        ImmutableArray<Entry>           _entries           = ImmutableArray<Entry>.Empty;
 
         public FindReferencesContext(FindReferencesPresenter presenter, IFindAllReferencesWindow findReferencesWindow, ProjectMapper projectMapper) {
 
@@ -62,11 +64,24 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         public Task OnDefinitionFoundAsync(DefinitionItem definitionItem) {
 
-            lock (_gate) {
-                _definitionItems = _definitionItems.Add(definitionItem);
-            }
+            EnsureDefinitionEntry(definitionItem);
 
             return Task.CompletedTask;
+        }
+
+        DefinitionEntry EnsureDefinitionEntry(DefinitionItem definitionItem, ImageMoniker? imageMoniker = null) {
+
+            lock (_gate) {
+
+                var definitionEntry = _definitionEntries.FirstOrDefault(de => de.DefinitionItem == definitionItem);
+
+                if (definitionEntry == null) {
+                    definitionEntry    = DefinitionEntry.Create(Presenter, definitionItem, imageMoniker);
+                    _definitionEntries = _definitionEntries.Add(definitionEntry);
+                }
+
+                return definitionEntry;
+            }
         }
 
         public Task OnReferenceFoundAsync(ReferenceItem referenceItem) {
@@ -75,35 +90,58 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
             referenceItem = referenceItem.With(projectName: projectName);
 
+            var definitionEntry = EnsureDefinitionEntry(referenceItem.Definition);
+            var referenceEntry  = ReferenceEntry.Create(Presenter, definitionEntry, referenceItem);
+            return OnEntryFoundAsync(referenceEntry);
+
+        }
+
+        Task OnEntryFoundAsync(Entry entry) {
             lock (_gate) {
-                _referenceItems = _referenceItems.Add(referenceItem);
+                _entries = _entries.Add(entry);
                 CurrentVersionNumber++;
             }
 
             NotifyChange();
-
             return Task.CompletedTask;
         }
 
         public async Task OnCompletedAsync() {
 
-            await AddReferenceNotFoundMessagesAsync();
-            // TODO Search found no results.
+            await CreateMissingReferenceEntriesIfNecessaryAsync().ConfigureAwait(false);
+            await CreateNoResultsFoundEntryIfNecessaryAsync().ConfigureAwait(false);
 
             _tableDataSink.IsStable = true;
-
         }
 
-        async Task AddReferenceNotFoundMessagesAsync() {
+        // No references found to
+        async Task CreateMissingReferenceEntriesIfNecessaryAsync() {
 
-            foreach (var definition in _definitionItems.Where(definition => !HasReferences(definition))) {
+            foreach (var definition in _definitionEntries.Where(definition => !HasReferences(definition))) {
 
-                await OnReferenceFoundAsync(ReferenceItem.NoReferencesFoundTo(definition));
+                await OnReferenceFoundAsync(ReferenceItem.NoReferencesFoundTo(definition.DefinitionItem));
             }
 
-            bool HasReferences(DefinitionItem definition) {
-                return _referenceItems.Any(r => r.Definition == definition);
+            bool HasReferences(DefinitionEntry definitionEntry) {
+                return _entries.Any(r => Equals(r.Definition, definitionEntry));
             }
+        }
+
+        // search found no results
+        async Task CreateNoResultsFoundEntryIfNecessaryAsync() {
+
+            if (_definitionEntries.Length > 0) {
+                return;
+            }
+
+            var msg             = "Search found no results";
+            var definition      = DefinitionItem.CreateSimpleItem(msg);
+            var definitionEntry = EnsureDefinitionEntry(definition, ImageMonikers.Information);
+
+            var entry = SimpleTextEntry.Create(Presenter, definitionEntry, msg);
+
+            await OnEntryFoundAsync(entry);
+
         }
 
         public Task SetSearchTitleAsync(string title) {
@@ -162,7 +200,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                     //        ? EntriesWhenGroupingByDefinition
                     //        : EntriesWhenNotGroupingByDefinition;
 
-                    _lastSnapshot = new TableEntriesSnapshot(this, CurrentVersionNumber, _referenceItems);
+                    _lastSnapshot = new TableEntriesSnapshot(this, CurrentVersionNumber, _entries);
                 }
 
                 return _lastSnapshot;

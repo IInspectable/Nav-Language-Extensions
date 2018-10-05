@@ -20,6 +20,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images {
         public static ImageMoniker ParentFolder => KnownMonikers.MoveUp;
         public static ImageMoniker NavFile      => KnownMonikers.ActivityDiagram; //KnownMonikers.ClassFile;
         public static ImageMoniker File         => KnownMonikers.TextFile;
+        public static ImageMoniker Information  => KnownMonikers.StatusInformation;
 
         // CodeFixImpact
 

@@ -114,6 +114,8 @@
     <Compile Include="Commands\FindReferencesCommandHandler.cs" />
     <Compile Include="Completion\EdgeCompletionSource.cs" />
     <Compile Include="Completion\EdgeCompletionSourceProvider.cs" />
+    <Compile Include="FindReferences\Entry.cs" />
+    <Compile Include="FindReferences\SimpleTextEntry.cs" />
     <Compile Include="Utilities\ProjectEntry.cs" />
     <Compile Include="Utilities\ProjectMapper.cs" />
     <Compile Include="Utilities\ProjectService.cs" />

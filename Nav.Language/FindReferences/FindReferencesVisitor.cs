@@ -216,7 +216,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         static IEnumerable<ReferenceItem> FindExitNodeReferences(ITaskDeclarationSymbol taskDeclaration,
                                                                  CodeGenerationUnit codeGenerationUnit,
                                                                  ImmutableDictionary<Location, DefinitionItem> exitConnectionPointDefinitionsItems) {
-
+           
             if (!exitConnectionPointDefinitionsItems.Any()) {
                 yield break;
             }
@@ -240,6 +240,8 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                         }
 
                         if (exitConnectionPointDefinitionsItems.TryGetValue(exitConnectionPoint.Location, out var exitConnectionPointDefinition)) {
+
+                            // TODO Hier wird je das falsche Symbol ge "highlightet"
                             var exitReference = ReferenceItemBuilder.Invoke(exitConnectionPointDefinition, exitConnectionPointReference);
 
                             yield return exitReference;
@@ -262,8 +264,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             var initReferences = FindReferences().Where(nodeRef => nodeRef != null)
                                                  .OrderByLocation();
 
-            var definitionItem = new DefinitionItem(
-                GetSolutionRoot(),
+            var definitionItem = DefinitionItem.Create(
                 initNodeSymbol,
                 initNodeSymbol.ToDisplayParts());
 
@@ -288,8 +289,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             var exitReferences = FindReferences().Where(nodeRef => nodeRef != null)
                                                  .OrderByLocation();
 
-            var definitionItem = new DefinitionItem(
-                GetSolutionRoot(),
+            var definitionItem = DefinitionItem.Create(
                 exitNodeSymbol,
                 exitNodeSymbol.ToDisplayParts());
 
@@ -314,8 +314,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             var endReferences = FindReferences().Where(nodeRef => nodeRef != null)
                                                 .OrderByLocation();
 
-            var definitionItem = new DefinitionItem(
-                GetSolutionRoot(),
+            var definitionItem = DefinitionItem.Create(
                 endNodeSymbol,
                 endNodeSymbol.ToDisplayParts());
 
@@ -344,8 +343,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             var taskReferences = FindReferences().Where(nodeRef => nodeRef != null)
                                                  .OrderByLocation();
 
-            var definitionItem = new DefinitionItem(
-                GetSolutionRoot(),
+            var definitionItem = DefinitionItem.Create(
                 taskNodeSymbol,
                 taskNodeSymbol.ToDisplayParts());
 
@@ -375,8 +373,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             var dialogReferences = FindReferences().Where(nodeRef => nodeRef != null)
                                                    .OrderByLocation();
 
-            var definitionItem = new DefinitionItem(
-                GetSolutionRoot(),
+            var definitionItem = DefinitionItem.Create(
                 dialogNodeSymbol,
                 dialogNodeSymbol.ToDisplayParts());
 
@@ -406,8 +403,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             var viewReferences = FindReferences().Where(nodeRef => nodeRef != null)
                                                  .OrderByLocation();
 
-            var definitionItem = new DefinitionItem(
-                GetSolutionRoot(),
+            var definitionItem = DefinitionItem.Create(
                 viewNodeSymbol,
                 viewNodeSymbol.ToDisplayParts());
 
@@ -437,8 +433,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             var viewReferences = FindReferences().Where(nodeRef => nodeRef != null)
                                                  .OrderByLocation();
 
-            var definitionItem = new DefinitionItem(
-                GetSolutionRoot(),
+            var definitionItem = DefinitionItem.Create(
                 choiceNodeSymbol,
                 choiceNodeSymbol.ToDisplayParts());
 
@@ -486,25 +481,19 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         #endregion
 
-        string GetSolutionRoot() {
-            return _args.Solution.SolutionDirectory?.FullName ?? "Miscellaneous Files";
-        }
-
         private const string TaskDeclarationSortKey     = "a";
         private const string InitConnectionPointSortKey = "b";
         private const string ExitConnectionPointSortKey = "c";
 
         DefinitionItem CreateTaskDefinitionItem(ITaskDefinitionSymbol taskDefinition) {
-            return new DefinitionItem(
-                GetSolutionRoot(),
+            return DefinitionItem.Create(
                 taskDefinition,
                 taskDefinition.ToDisplayParts(),
                 sortKey: TaskDeclarationSortKey);
         }
 
         DefinitionItem CreateTaskDeclarationItem(ITaskDeclarationSymbol taskDeclaration) {
-            return new DefinitionItem(
-                GetSolutionRoot(),
+            return DefinitionItem.Create(
                 taskDeclaration,
                 taskDeclaration.ToDisplayParts(),
                 sortKey: TaskDeclarationSortKey);
@@ -531,8 +520,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         [NotNull]
         DefinitionItem CreateInitConnectionPointDefinition(IInitConnectionPointSymbol initConnectionPoint, bool expandedByDefault = true) {
 
-            return new DefinitionItem(
-                GetSolutionRoot(),
+            return DefinitionItem.Create(
                 initConnectionPoint,
                 DisplayPartsBuilder.BuildInitConnectionPointSymbol(initConnectionPoint, neutralName: true),
                 expandedByDefault,
@@ -563,8 +551,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         private DefinitionItem CreateExitConnectionPointDefinition(IConnectionPointSymbol exitConnectionPoint, bool expandedByDefault = true) {
 
-            var exitDefinition = new DefinitionItem(
-                GetSolutionRoot(),
+            var exitDefinition = DefinitionItem.Create(
                 exitConnectionPoint,
                 exitConnectionPoint.ToDisplayParts(),
                 expandedByDefault,

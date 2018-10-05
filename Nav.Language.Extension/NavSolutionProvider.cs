@@ -42,6 +42,8 @@ namespace Pharmatechnik.Nav.Language.Extension {
             _taskStatusProvider = taskStatusProvider;
 
             _navSolutionSnapshot = NavSolutionSnapshot.Empty;
+            // TODO IVsSolution ist ein IVsHierarchy -> AdviseHierarchyEvents 
+            // TODO OnPropertyChanged  -> VSHPROPID_SaveName?
             // TODO Solution Save Event!?
             SolutionEvents.OnAfterCloseSolution                  += OnAfterCloseSolution;
             SolutionEvents.OnAfterOpenSolution                   += OnAfterOpenSolution;

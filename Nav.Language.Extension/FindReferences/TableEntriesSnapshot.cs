@@ -1,13 +1,10 @@
 ﻿#region Using Directives
 
-using System.Linq;
 using System.Collections.Immutable;
 using System.Windows;
 
 using Microsoft.VisualStudio.Shell.TableControl;
 using Microsoft.VisualStudio.Shell.TableManager;
-
-using Pharmatechnik.Nav.Language.FindReferences;
 
 #endregion
 
@@ -15,13 +12,12 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
     class TableEntriesSnapshot: WpfTableEntriesSnapshotBase {
 
-        readonly FindReferencesContext          _context;
-        readonly ImmutableArray<ReferenceEntry> _entries;
+        readonly FindReferencesContext _context;
+        readonly ImmutableArray<Entry> _entries;
 
-        public TableEntriesSnapshot(FindReferencesContext context, int versionNumber, ImmutableArray<ReferenceItem> items) {
-            _context = context;
-            _entries = items.Select(item => new ReferenceEntry(Presenter, item))
-                            .ToImmutableArray();
+        public TableEntriesSnapshot(FindReferencesContext context, int versionNumber, ImmutableArray<Entry> items) {
+            _context      = context;
+            _entries      = items;
             VersionNumber = versionNumber;
 
         }
@@ -47,9 +43,9 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
             if (columnName == StandardTableColumnDefinitions2.LineText) {
 
-                content = _entries[index].CreatLineContent(singleColumnView);
+                content = _entries[index].TryCreateColumnContent();
 
-                return true;
+                return content != null;
             }
 
             return base.TryCreateColumnContent(index, columnName, singleColumnView, out content);
