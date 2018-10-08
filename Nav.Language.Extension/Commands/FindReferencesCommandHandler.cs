@@ -69,6 +69,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var fra      = new FindReferencesArgs(originatingSymbol, codeGenerationUnitAndSnapshot.CodeGenerationUnit, solution, context);
 
                 await ReferenceFinder.FindReferencesAsync(fra).ConfigureAwait(false);
+                
+                // TODO In KasseWFS suchen?
 
             } catch (OperationCanceledException) {
             } finally {

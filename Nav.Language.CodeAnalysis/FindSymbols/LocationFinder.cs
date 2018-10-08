@@ -65,6 +65,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             return FindNavLocationsAsync(sourceText, annotation, GetTriggerLocations, cancellationToken);
         }
 
+        // TODO Hier sollte bereits eine CodeGenerationUnit an Stelle des Source Texts rein. Alternativ eine "echte "SourceText" Implementierung
         /// <exception cref="LocationNotFoundException"/>
         static Task<IEnumerable<TLocation>> FindNavLocationsAsync<TAnnotation, TLocation>(
             string sourceText,

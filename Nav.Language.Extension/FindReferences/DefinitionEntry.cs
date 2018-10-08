@@ -30,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
                    FindReferencesContext.FindAllReferencesIdentifier,
                    tooltip: null,
                    comparer: null,
-                   expandedByDefault: definitionItem.ExpandedByDefault) {
+                   expandedByDefault: true /* TODO check definitionItem.ExpandedByDefault*/) {
 
             Presenter      = presenter;
             DefinitionItem = definitionItem;

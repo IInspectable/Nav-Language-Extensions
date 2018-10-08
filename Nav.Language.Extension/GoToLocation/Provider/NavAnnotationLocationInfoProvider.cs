@@ -33,6 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 sourceText = textBuffer.CurrentSnapshot.GetText();
             } else {
                 try {
+                    // TODO true sync read!
                     sourceText = await Task.Run(() => File.ReadAllText(Annotation.NavFileName), cancellationToken).ConfigureAwait(false);
                 } catch(Exception ex) when(
                     ex is FileNotFoundException ||
