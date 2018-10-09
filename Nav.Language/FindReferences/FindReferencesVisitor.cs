@@ -47,12 +47,12 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             var definitionItem = DefinitionItem.CreateInitConnectionPointDefinition(initConnectionPointSymbol, true);
 
-            await Context.OnDefinitionFoundAsync(definitionItem);
+            await Context.OnDefinitionFoundAsync(definitionItem).ConfigureAwait(false);
 
             foreach (var reference in initReferences) {
 
                 var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
-                await Context.OnReferenceFoundAsync(referenceItem);
+                await Context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
 
             }
         }
@@ -67,12 +67,12 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             var definitionItem = DefinitionItem.CreateExitConnectionPointDefinition(exitConnectionPointSymbol, true);
 
-            await Context.OnDefinitionFoundAsync(definitionItem);
+            await Context.OnDefinitionFoundAsync(definitionItem).ConfigureAwait(false);
 
             foreach (var reference in exitReferences) {
 
                 var referenceItem = ReferenceItemBuilder.Invoke(definitionItem, reference);
-                await Context.OnReferenceFoundAsync(referenceItem);
+                await Context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
 
             }
 
@@ -91,14 +91,14 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             // Auch wenn wir keine Referenzen auf den Task finden sollten, soll zumindest
             // Ein Eintrag "No References found..." für erscheinen.
-            await Context.OnDefinitionFoundAsync(taskrefDefinition);
+            await Context.OnDefinitionFoundAsync(taskrefDefinition).ConfigureAwait(false);
 
             await FindReferencesAsync(taskDeclaration,
                                       taskDeclaration.CodeGenerationUnit,
                                       taskrefDefinition,
                                       initConnectionPointDefinition,
                                       exitConnectionPointDefinitions,
-                                      Context);
+                                      Context).ConfigureAwait(false);
 
         }
 
@@ -112,7 +112,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
             // Auch wenn wir keine Referenzen auf den Task finden sollten, soll zumindest
             // Ein Eintrag "No References found..." erscheinen.
-            await Context.OnDefinitionFoundAsync(nodeDefinition);
+            await Context.OnDefinitionFoundAsync(nodeDefinition).ConfigureAwait(false);
 
             await _args.Solution.ProcessCodeGenerationUnitsAsync(
                 codeGenerationUnit => FindReferencesAsync(taskDefinition.AsTaskDeclaration,
@@ -121,7 +121,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                                                           initConnectionPointDefinition,
                                                           exitConnectionPointDefinitions,
                                                           Context),
-                _args.OriginatingCodeGenerationUnit, Context.CancellationToken);
+                _args.OriginatingCodeGenerationUnit, Context.CancellationToken).ConfigureAwait(false);
 
         }
 
@@ -147,7 +147,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                     break;
                 }
 
-                await context.OnReferenceFoundAsync(referenceItem);
+                await context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
             }
 
             // Taskrefs aufsammeln wäre schön, ist aber komplett unvollständig, und praktisch unmöglich

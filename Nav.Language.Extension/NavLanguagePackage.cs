@@ -425,7 +425,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
             await TaskScheduler.Default;
 
-            var solution = await solutionProvider.GetSolutionAsync(cancellationToken);
+            var solution = await solutionProvider.GetSolutionAsync(cancellationToken).ConfigureAwait(false);
 
             return solution;
 

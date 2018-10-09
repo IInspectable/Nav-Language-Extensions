@@ -66,7 +66,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 // switch to a background thread
                 await TaskScheduler.Default;
 
-                var solution = await NavLanguagePackage.GetSolutionAsync(context.CancellationToken);
+                var solution = await NavLanguagePackage.GetSolutionAsync(context.CancellationToken).ConfigureAwait(false);
                 var fra      = new FindReferencesArgs(originatingSymbol, codeGenerationUnitAndSnapshot.CodeGenerationUnit, solution, context);
 
                 await ReferenceFinder.FindReferencesAsync(fra).ConfigureAwait(false);

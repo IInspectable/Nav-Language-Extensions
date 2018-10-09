@@ -71,7 +71,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                                              ImmutableArray<IFieldSymbol> fields,
                                              DefinitionItem nodeDefinition) {
 
-            foreach (var referenceItem in (await FindReferences()).OrderByLocation()) {
+            foreach (var referenceItem in (await FindReferences().ConfigureAwait(false)).OrderByLocation()) {
                 await context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
             }
 
@@ -135,7 +135,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                                              ImmutableArray<IFieldSymbol> fields,
                                              DefinitionItem initDefinitionItem) {
 
-            foreach (var referenceItem in (await FindReferences()).OrderByLocation()) {
+            foreach (var referenceItem in (await FindReferences().ConfigureAwait(false)).OrderByLocation()) {
                 await context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
             }
 
