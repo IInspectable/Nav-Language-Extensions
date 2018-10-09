@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                                                           .Where(nodeRef => nodeRef != null)
                                                           .OrderByLocation();
 
-            var definitionItem = CreateInitConnectionPointDefinition(initConnectionPointSymbol, expandedByDefault: true);
+            var definitionItem = DefinitionItem.CreateInitConnectionPointDefinition(initConnectionPointSymbol, true);
 
             await Context.OnDefinitionFoundAsync(definitionItem);
 
@@ -65,7 +65,7 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
                                                           .Select(exitTrans => exitTrans.ExitConnectionPointReference)
                                                           .Where(ep => ep?.Declaration == exitConnectionPointSymbol);
 
-            var definitionItem = CreateExitConnectionPointDefinition(exitConnectionPointSymbol, expandedByDefault: true);
+            var definitionItem = DefinitionItem.CreateExitConnectionPointDefinition(exitConnectionPointSymbol, true);
 
             await Context.OnDefinitionFoundAsync(definitionItem);
 
@@ -85,9 +85,9 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         public override async Task VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclaration) {
 
-            var taskrefDefinition              = CreateTaskDeclarationItem(taskDeclaration);
-            var initConnectionPointDefinition  = CreateInitConnectionPointDefinition(taskDeclaration, expandedByDefault: false);
-            var exitConnectionPointDefinitions = CreateExitConnectionPointDefinitions(taskDeclaration, expandedByDefault: false);
+            var taskrefDefinition              = DefinitionItem.CreateTaskDeclarationItem(taskDeclaration);
+            var initConnectionPointDefinition  = DefinitionItem.CreateInitConnectionPointDefinition(taskDeclaration, false);
+            var exitConnectionPointDefinitions = DefinitionItem.CreateExitConnectionPointDefinitions(taskDeclaration, false);
 
             // Auch wenn wir keine Referenzen auf den Task finden sollten, soll zumindest
             // Ein Eintrag "No References found..." für erscheinen.
@@ -106,9 +106,9 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
 
         public override async Task VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinition) {
 
-            var nodeDefinition                 = CreateTaskDefinitionItem(taskDefinition);
-            var initConnectionPointDefinition  = CreateInitConnectionPointDefinition(taskDefinition, expandedByDefault: false);
-            var exitConnectionPointDefinitions = CreateExitConnectionPointDefinitions(taskDefinition, expandedByDefault: false);
+            var nodeDefinition                 = DefinitionItem.CreateTaskDefinitionItem(taskDefinition);
+            var initConnectionPointDefinition  = DefinitionItem.CreateInitConnectionPointDefinition(taskDefinition, false);
+            var exitConnectionPointDefinitions = DefinitionItem.CreateExitConnectionPointDefinitions(taskDefinition, false);
 
             // Auch wenn wir keine Referenzen auf den Task finden sollten, soll zumindest
             // Ein Eintrag "No References found..." erscheinen.
@@ -480,84 +480,6 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         }
 
         #endregion
-
-        private const string TaskDeclarationSortKey     = "a";
-        private const string InitConnectionPointSortKey = "b";
-        private const string ExitConnectionPointSortKey = "c";
-
-        DefinitionItem CreateTaskDefinitionItem(ITaskDefinitionSymbol taskDefinition) {
-            return DefinitionItem.Create(
-                taskDefinition,
-                taskDefinition.ToDisplayParts(),
-                sortKey: TaskDeclarationSortKey);
-        }
-
-        DefinitionItem CreateTaskDeclarationItem(ITaskDeclarationSymbol taskDeclaration) {
-            return DefinitionItem.Create(
-                taskDeclaration,
-                taskDeclaration.ToDisplayParts(),
-                sortKey: TaskDeclarationSortKey);
-        }
-
-        [CanBeNull]
-        DefinitionItem CreateInitConnectionPointDefinition(ITaskDefinitionSymbol taskDefinition, bool expandedByDefault = true) {
-            return CreateInitConnectionPointDefinition(taskDefinition.AsTaskDeclaration, expandedByDefault);
-
-        }
-
-        [CanBeNull]
-        DefinitionItem CreateInitConnectionPointDefinition(ITaskDeclarationSymbol taskDeclaration, bool expandedByDefault = true) {
-
-            var initConnectionPoint = taskDeclaration?.Inits().FirstOrDefault();
-            if (initConnectionPoint == null) {
-                return null;
-            }
-
-            return CreateInitConnectionPointDefinition(initConnectionPoint, expandedByDefault);
-
-        }
-
-        [NotNull]
-        DefinitionItem CreateInitConnectionPointDefinition(IInitConnectionPointSymbol initConnectionPoint, bool expandedByDefault = true) {
-
-            return DefinitionItem.Create(
-                initConnectionPoint,
-                DisplayPartsBuilder.BuildInitConnectionPointSymbol(initConnectionPoint, neutralName: true),
-                expandedByDefault,
-                sortKey: InitConnectionPointSortKey);
-
-        }
-
-        ImmutableDictionary<Location, DefinitionItem> CreateExitConnectionPointDefinitions(ITaskDefinitionSymbol taskDefinition, bool expandedByDefault = true) {
-            return CreateExitConnectionPointDefinitions(taskDefinition.AsTaskDeclaration, expandedByDefault);
-
-        }
-
-        ImmutableDictionary<Location, DefinitionItem> CreateExitConnectionPointDefinitions(ITaskDeclarationSymbol taskDeclaration, bool expandedByDefault = true) {
-
-            var defs = ImmutableDictionary<Location, DefinitionItem>.Empty;
-
-            if (taskDeclaration == null) {
-                return defs;
-            }
-
-            foreach (var exitConnectionPoint in taskDeclaration.Exits()) {
-                var exitDefinition = CreateExitConnectionPointDefinition(exitConnectionPoint, expandedByDefault);
-                defs = defs.Add(exitDefinition.Location, exitDefinition);
-            }
-
-            return defs;
-        }
-
-        private DefinitionItem CreateExitConnectionPointDefinition(IConnectionPointSymbol exitConnectionPoint, bool expandedByDefault = true) {
-
-            var exitDefinition = DefinitionItem.Create(
-                exitConnectionPoint,
-                exitConnectionPoint.ToDisplayParts(),
-                expandedByDefault,
-                sortKey: ExitConnectionPointSortKey);
-            return exitDefinition;
-        }
 
     }
 

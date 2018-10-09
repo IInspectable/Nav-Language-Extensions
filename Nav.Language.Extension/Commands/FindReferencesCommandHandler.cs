@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.VisualStudio.Utilities;
 
+using Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.FindReferences;
 using Pharmatechnik.Nav.Language.FindReferences;
@@ -69,8 +70,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 var fra      = new FindReferencesArgs(originatingSymbol, codeGenerationUnitAndSnapshot.CodeGenerationUnit, solution, context);
 
                 await ReferenceFinder.FindReferencesAsync(fra).ConfigureAwait(false);
-                
-                // TODO In KasseWFS suchen?
+                await WfsReferenceFinder.FindReferencesAsync(NavLanguagePackage.Workspace.CurrentSolution, fra).ConfigureAwait(false);
 
             } catch (OperationCanceledException) {
             } finally {

@@ -10,7 +10,7 @@ using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language.FindReferences {
 
-    public class DefinitionItem {
+    public partial class DefinitionItem {
 
         DefinitionItem([CanBeNull] ISymbol symbol,
                        ImmutableArray<ClassifiedText> textParts,
@@ -23,19 +23,6 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
             SortKey           = sortKey ?? "";
         }
 
-        public static DefinitionItem Create(ISymbol symbol,
-                                            ImmutableArray<ClassifiedText> textParts,
-                                            bool expandedByDefault = true,
-                                            string sortKey = null) {
-
-            return new DefinitionItem(symbol, textParts, expandedByDefault, sortKey);
-
-        }
-
-        public static DefinitionItem CreateSimpleItem(string text) {
-            return SimpleTextDefinition.Create(text);
-        }
-
         [CanBeNull]
         public ISymbol Symbol { get; }
 
@@ -43,26 +30,11 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         public Location Location => Symbol?.Location;
 
         public ImmutableArray<ClassifiedText> TextParts         { get; }
-        public bool                           ExpandedByDefault { get; } // TODO In etwas allgemeineres umbenennen?
+        public bool                           ExpandedByDefault { get; } // TODO In etwas allgemeineres umbenennen, oder ganz weglassen?
         public string                         SortKey           { get; }
 
         public string Text     => TextParts.JoinText();
         public string SortText => SortKey + Text;
-
-        class SimpleTextDefinition: DefinitionItem {
-
-            SimpleTextDefinition(ImmutableArray<ClassifiedText> textParts):
-                base(null, textParts: textParts, expandedByDefault: true, sortKey: null) {
-            }
-
-            public static SimpleTextDefinition Create(string text) {
-
-                var textParts = new[] {ClassifiedTexts.Text(text)}.ToImmutableArray();
-
-                return new SimpleTextDefinition(textParts);
-            }
-
-        }
 
     }
 

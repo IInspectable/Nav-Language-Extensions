@@ -11,6 +11,7 @@
         public static ClassifiedText TaskName(string taskName) => new ClassifiedText(taskName,                TextClassification.TaskName);
         public static ClassifiedText FormName(string formName) => new ClassifiedText(formName,                TextClassification.FormName);
         public static ClassifiedText Identifier(string identifier) => new ClassifiedText(identifier,          TextClassification.Identifier);
+        public static ClassifiedText Whitespace(string whitespace) => new ClassifiedText(whitespace,          TextClassification.Whitespace);
         public static ClassifiedText Punctuation(string punctuation) => new ClassifiedText(punctuation,       TextClassification.Punctuation);
         public static ClassifiedText StringLiteral(string stringLiteral) => new ClassifiedText(stringLiteral, TextClassification.StringLiteral);
 

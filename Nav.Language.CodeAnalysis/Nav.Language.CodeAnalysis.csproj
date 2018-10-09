@@ -54,6 +54,8 @@
     <Compile Include="Annotation\NavTaskAnnotation.cs" />
     <Compile Include="Annotation\NavTriggerAnnotation.cs" />
     <Compile Include="Common\LinePositionExtensions.cs" />
+    <Compile Include="FindReferences\WfsReferenceFinder.ClassInfo.cs" />
+    <Compile Include="FindReferences\WfsReferenceFinder.cs" />
     <Compile Include="FindSymbols\AmbiguousLocation.cs" />
     <Compile Include="FindSymbols\LocationFinder.cs" />
     <Compile Include="FindSymbols\LocationNotFoundException.cs" />

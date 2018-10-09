@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Pharmatechnik.Nav.Language.FindReferences {
 
-    static class ReferenceItemOderer {
+    public static class ReferenceItemExtensions {
 
         public static IOrderedEnumerable<ReferenceItem> OrderByLocation(this IEnumerable<ReferenceItem> referenceItems) {
             return referenceItems.OrderBy(s => s.Location.StartLine).ThenBy(s => s.Location.StartCharacter);
