@@ -1,7 +1,6 @@
 ﻿#region Using Directives
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 using Pharmatechnik.Nav.Language.Text;
 
@@ -23,10 +22,5 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Common {
         }
     }
 
-    public static class TextSpanExtensions {
-
-        public static TextExtent ToTextExtent(this TextSpan span) {
-            return new TextExtent(start: span.Start, length: span.Length);
-        }
-    }
+   
 }

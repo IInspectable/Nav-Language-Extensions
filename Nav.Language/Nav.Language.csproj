@@ -50,6 +50,7 @@
     <Compile Include="CodeFixes\ErrorFix\ErrorCodeFix.cs" />
     <Compile Include="CodeFixes\Refactoring\RefactoringCodeFix.cs" />
     <Compile Include="CodeFixes\StyleFix\StyleCodeFix.cs" />
+    <Compile Include="Common\IntExtensions.cs" />
     <Compile Include="FindReferences\DefinitionItem.Factory.cs" />
     <Compile Include="FindReferences\DefinitionItem.cs" />
     <Compile Include="FindReferences\FindReferences.cs" />

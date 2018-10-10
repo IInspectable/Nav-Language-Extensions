@@ -53,9 +53,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
                         var fields = GetReferencingFields(wfsClass, taskDeclarationCodeInfo);
 
-                        await FindTaskReferences(args.Context, solution, compilation, taskDefinition, fields, nodeDefinition).ConfigureAwait(false);
-                        await FindInitReferences(args.Context, solution, compilation, taskDefinition, fields, initConnectionPointDefinition).ConfigureAwait(false);
-                        await FindExitReferences(args.Context, solution, compilation, taskDefinition, fields, exitConnectionPointDefinitions).ConfigureAwait(false);
+                        await FindTaskReferences(args.Context, solution, fields, nodeDefinition).ConfigureAwait(false);
+                        await FindInitReferences(args.Context, solution, fields, initConnectionPointDefinition).ConfigureAwait(false);
+                        await FindExitReferences(args.Context, solution, fields, exitConnectionPointDefinitions).ConfigureAwait(false);
 
                     }
 
@@ -66,8 +66,6 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
         static async Task FindTaskReferences(IFindReferencesContext context,
                                              Solution solution,
-                                             Compilation compilation,
-                                             ITaskDefinitionSymbol taskDefinition,
                                              ImmutableArray<IFieldSymbol> fields,
                                              DefinitionItem nodeDefinition) {
 
@@ -84,7 +82,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                     foreach (var syntaxReference in field.DeclaringSyntaxReferences) {
 
                         var variableDeclarator = await syntaxReference.GetSyntaxAsync(context.CancellationToken).ConfigureAwait(false) as VariableDeclaratorSyntax;
-                        
+
                         if (!TryFindTypeSyntax(variableDeclarator, out var typeSyntax)) {
                             continue;
                         }
@@ -93,10 +91,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                             continue;
                         }
 
-                        var referenceItem = await CreateReferenceItemAsync(definition       : nodeDefinition,
+                        var referenceItem = await CreateReferenceItemAsync(definition: nodeDefinition,
                                                                            referenceLocation: location,
-                                                                           solution         : solution,
-                                                                           syntaxTree       : typeSyntax.SyntaxTree, 
+                                                                           solution: solution,
+                                                                           syntaxTree: typeSyntax.SyntaxTree,
                                                                            cancellationToken: context.CancellationToken).ConfigureAwait(false);
 
                         referenceItems.Add(referenceItem);
@@ -127,11 +125,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                 return false;
             }
         }
-       
+
         static async Task FindInitReferences(IFindReferencesContext context,
                                              Solution solution,
-                                             Compilation compilation,
-                                             ITaskDefinitionSymbol taskDefinition,
                                              ImmutableArray<IFieldSymbol> fields,
                                              DefinitionItem initDefinitionItem) {
 
@@ -169,10 +165,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                                 continue;
                             }
 
-                            var referenceItem = await CreateReferenceItemAsync(definition       : initDefinitionItem,
+                            var referenceItem = await CreateReferenceItemAsync(definition: initDefinitionItem,
                                                                                referenceLocation: location,
-                                                                               solution         : solution,
-                                                                               syntaxTree       : syntaxTree,
+                                                                               solution: solution,
+                                                                               syntaxTree: syntaxTree,
                                                                                cancellationToken: context.CancellationToken).ConfigureAwait(false);
 
                             referenceItems.Add(referenceItem);
@@ -189,8 +185,6 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
         private static Task FindExitReferences(IFindReferencesContext context,
                                                Solution solution,
-                                               Compilation compilation,
-                                               ITaskDefinitionSymbol taskDefinition,
                                                ImmutableArray<IFieldSymbol> fields,
                                                ImmutableDictionary<Location, DefinitionItem> exitDefinitionItems) {
             return Task.CompletedTask;
@@ -206,8 +200,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                            .ToImmutableArray();
 
         }
-        
-                static async Task<ReferenceItem> CreateReferenceItemAsync(DefinitionItem definition,
+
+        static async Task<ReferenceItem> CreateReferenceItemAsync(DefinitionItem definition,
                                                                   Location referenceLocation,
                                                                   Solution solution,
                                                                   Microsoft.CodeAnalysis.SyntaxTree syntaxTree,
@@ -249,18 +243,21 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
         }
 
-        static async Task<ImmutableArray<ClassifiedText>> ToClassifiedTextAsync(Document document, TextSpan span, CancellationToken cancellationToken) {
-            
-            var builder         = ImmutableArray.CreateBuilder<ClassifiedText>();
-            var sourceText      = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
+        static async Task<ImmutableArray<ClassifiedText>> ToClassifiedTextAsync(Document document,
+                                                                                TextSpan span,
+                                                                                CancellationToken cancellationToken) {
+
+            var builder    = ImmutableArray.CreateBuilder<ClassifiedText>();
+            var sourceText = await document.GetTextAsync(cancellationToken).ConfigureAwait(false);
 
             var firstLine = sourceText.Lines.GetLineFromPosition(span.Start).LineNumber;
-            var lastLine=sourceText.Lines.GetLineFromPosition(span.End).LineNumber;
+            var lastLine  = sourceText.Lines.GetLineFromPosition(span.End).LineNumber;
 
             int currentLine = firstLine;
             while (currentLine <= lastLine) {
 
                 var lineSpan = currentLine == lastLine ? sourceText.Lines[currentLine].Span : sourceText.Lines[currentLine].SpanIncludingLineBreak;
+                lineSpan = lineSpan.Trim(span);
 
                 currentLine++;
 
@@ -269,8 +266,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                 int currentEnd = lineSpan.Start;
                 foreach (var classifiedSpan in classifiedSpans) {
 
-                    // TODO auf lineSpan eindampfen. Es schein, als würde der Classifier den Span verbreitern (z.B. bei über mehrere Zeilen gehenden Verbatim Strings)
-                    var textSpan = classifiedSpan.TextSpan;
+                    // Es kann sein, dass der Classifier den Span vergrößert (z.B. bei über mehrere Zeilen gehenden Verbatim Strings)
+                    var textSpan = classifiedSpan.TextSpan.Trim(range: span);
 
                     if (textSpan.Start > currentEnd) {
                         ProcessUnclassifiedSpan(TextSpan.FromBounds(currentEnd, textSpan.Start));
@@ -301,8 +298,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                     builder.Add(ClassifiedTexts.Text(ws));
                 }
             }
-        }
 
+        }
+        
 
         // Nicht vollständig. Haupsache die Vorschau sieht hübsch aus
         static TextClassification GetClassification(string c) {
@@ -337,9 +335,9 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
             return TextClassification.Text;
         }
-        
+
         private static bool TryGetLocation(Microsoft.CodeAnalysis.Location loc, out Location location) {
-            
+
             location = default;
 
             if (loc == null) {
