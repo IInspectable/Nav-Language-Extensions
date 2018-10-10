@@ -28,11 +28,25 @@ namespace Pharmatechnik.Nav.Language.FindReferences {
         }
 
         public static ReferenceItem NoReferencesFoundTo(DefinitionItem definition) {
+            //return new ReferenceItem(
+            //    definition            : definition,
+            //    location              : definition.Location,
+            //    textParts             : new[] {
+            //        ClassifiedTexts.Text($"No references found to '{definition.Text}'.")
+            //    }.ToImmutableArray(),
+            //    textHighlightExtent   : TextExtent.Missing,
+            //    toolTipParts          : ImmutableArray<ClassifiedText>.Empty,
+            //    toolTipHighlightExtent: TextExtent.Missing
+            //);
+            return CreateSimpleMessage(definition, $"No references found to '{definition.Text}'.");
+        }
+
+        public static ReferenceItem CreateSimpleMessage(DefinitionItem definition, string message) {
             return new ReferenceItem(
                 definition            : definition,
                 location              : definition.Location,
                 textParts             : new[] {
-                    ClassifiedTexts.Text($"No references found to '{definition.Text}'.")
+                    ClassifiedTexts.Text(message)
                 }.ToImmutableArray(),
                 textHighlightExtent   : TextExtent.Missing,
                 toolTipParts          : ImmutableArray<ClassifiedText>.Empty,

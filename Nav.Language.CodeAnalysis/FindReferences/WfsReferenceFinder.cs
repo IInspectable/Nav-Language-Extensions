@@ -43,19 +43,26 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                 foreach (var project in solution.Projects) {
 
                     foreach (var classInfo in NavlessClasses.Where(ci => ci.ProjectName == project.Name)) {
+                        try {
+                            
+                            var compilation = await project.GetCompilationAsync(args.Context.CancellationToken).ConfigureAwait(false);
 
-                        var compilation = await project.GetCompilationAsync(args.Context.CancellationToken).ConfigureAwait(false);
+                            var wfsClass = compilation.GetTypeByMetadataName(classInfo.ClassName);
+                            if (wfsClass == null) {
+                                continue;
+                            }
 
-                        var wfsClass = compilation.GetTypeByMetadataName(classInfo.ClassName);
-                        if (wfsClass == null) {
-                            continue;
+                            var fields = GetReferencingFields(wfsClass, taskDeclarationCodeInfo);
+
+                            await FindTaskReferences(args.Context, solution, fields, nodeDefinition).ConfigureAwait(false);
+                            await FindInitReferences(args.Context, solution, fields, initConnectionPointDefinition).ConfigureAwait(false);
+                            await FindExitReferences(args.Context, solution, fields, exitConnectionPointDefinitions).ConfigureAwait(false);
+
+                        } catch (Exception e) {
+                            // TODO Error Handling
+                            var messageItem=ReferenceItem.CreateSimpleMessage(nodeDefinition, e.Message);
+                            await args.Context.OnReferenceFoundAsync(messageItem);
                         }
-
-                        var fields = GetReferencingFields(wfsClass, taskDeclarationCodeInfo);
-
-                        await FindTaskReferences(args.Context, solution, fields, nodeDefinition).ConfigureAwait(false);
-                        await FindInitReferences(args.Context, solution, fields, initConnectionPointDefinition).ConfigureAwait(false);
-                        await FindExitReferences(args.Context, solution, fields, exitConnectionPointDefinitions).ConfigureAwait(false);
 
                     }
 
@@ -309,7 +316,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                 c == ClassificationTypeNames.InterfaceName ||
                 c == ClassificationTypeNames.EnumName      ||
                 c == ClassificationTypeNames.StructName) {
-                return TextClassification.TaskName;
+                return TextClassification.TypeName;
             }
 
             if (c == ClassificationTypeNames.Keyword) {
