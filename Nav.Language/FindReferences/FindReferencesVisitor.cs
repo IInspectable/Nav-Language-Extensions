@@ -5,8 +5,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading.Tasks;
 
-using JetBrains.Annotations;
-
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion

@@ -51,6 +51,8 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         public string FilePath { get; }
 
+        public string NormalizedFilePath => FilePath.NullIfEmpty()?.ToLowerInvariant();
+
         /// <summary>
         /// Gets the starting index of the location [0..n].
         /// -1 if the is unknown/missing
@@ -106,7 +108,7 @@ namespace Pharmatechnik.Nav.Language {
             return Extent.Equals(other.Extent)                       &&
                    StartLinePosition.Equals(other.StartLinePosition) &&
                    EndLinePosition.Equals(other.EndLinePosition)     &&
-                   string.Equals(FilePath, other.FilePath);
+                   string.Equals(NormalizedFilePath, other.NormalizedFilePath);
         }
 
         public override bool Equals(object obj) {
@@ -126,7 +128,7 @@ namespace Pharmatechnik.Nav.Language {
                 var hashCode = Extent.GetHashCode();
                 hashCode = (hashCode * 397) ^ StartLinePosition.GetHashCode();
                 hashCode = (hashCode * 397) ^ EndLinePosition.GetHashCode();
-                hashCode = (hashCode * 397) ^ (FilePath?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (NormalizedFilePath?.GetHashCode() ?? 0);
                 return hashCode;
             }
         }
@@ -140,6 +142,8 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         #endregion
+
+        
 
     }
 

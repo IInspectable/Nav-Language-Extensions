@@ -11,6 +11,39 @@ namespace Pharmatechnik.Nav.Language.Text {
 
     public static class StringExtensions {
 
+        [ContractAnnotation("null=>false")]
+        public static bool IsEmpty([NotNull] this string value) {
+            return value.Length == 0;
+        }
+
+        [ContractAnnotation("null=>true")]
+        public static bool IsNullOrEmpty([CanBeNull] this string value) {
+            return String.IsNullOrEmpty(value);
+        }
+
+        [ContractAnnotation("null=>true")]
+        public static bool IsNullOrWhiteSpace([CanBeNull] this string value) {
+            return String.IsNullOrWhiteSpace(value);
+        }
+
+        /// <summary>
+        /// Liefert null, wenn die angegebene Zeichenfolge null oder String.Empty ist;
+        /// andernfalls wird die angegebene Zeichenfolge zurückgegeben.
+        /// </summary>
+        [CanBeNull]
+        public static string NullIfEmpty([CanBeNull] this string value) {
+            return value.IsNullOrEmpty() ? null : value;
+        }
+
+        /// <summary>
+        /// Liefert null, wenn die angegebene Zeichenfolge null oder String.Empty ist, oder nur aus Whitespaces besteht;
+        /// andernfalls wird die angegebene Zeichenfolge zurückgegeben.
+        /// </summary>
+        [CanBeNull]
+        public static string NullIfWhiteSpace([CanBeNull] this string value) {
+            return value.IsNullOrWhiteSpace() ? null : value;
+        }
+
         public static string Substring(this string text, TextExtent extent) {
             if (extent.IsMissing) {
                 return String.Empty;
