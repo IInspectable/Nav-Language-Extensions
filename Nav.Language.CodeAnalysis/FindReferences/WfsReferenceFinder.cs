@@ -44,7 +44,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
                     foreach (var classInfo in NavlessClasses.Where(ci => ci.ProjectName == project.Name)) {
                         try {
-                            
+
                             var compilation = await project.GetCompilationAsync(args.Context.CancellationToken).ConfigureAwait(false);
 
                             var wfsClass = compilation.GetTypeByMetadataName(classInfo.ClassName);
@@ -52,15 +52,16 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                                 continue;
                             }
 
-                            var fields = GetReferencingFields(wfsClass, taskDeclarationCodeInfo);
+                            var beginInterfaceFields = await GetBeginInterfaceFieldsAsync(wfsClass, taskDeclarationCodeInfo).ConfigureAwait(false);
+                            var beginInvocations     = await GetBeginInvocationsAsync(args.Context, solution, beginInterfaceFields).ConfigureAwait(false);
 
-                            await FindTaskReferences(args.Context, solution, fields, nodeDefinition).ConfigureAwait(false);
-                            await FindInitReferences(args.Context, solution, fields, initConnectionPointDefinition).ConfigureAwait(false);
-                            await FindExitReferences(args.Context, solution, fields, exitConnectionPointDefinitions).ConfigureAwait(false);
+                            await FindTaskFields(args.Context, solution, beginInterfaceFields, nodeDefinition).ConfigureAwait(false);
+                            await FindInitMethods(args.Context, solution, beginInvocations, initConnectionPointDefinition).ConfigureAwait(false);
+                            await FindTaskExitMethods(args.Context, solution, beginInvocations, exitConnectionPointDefinitions, compilation).ConfigureAwait(false);
 
                         } catch (Exception e) {
                             // TODO Error Handling
-                            var messageItem=ReferenceItem.CreateSimpleMessage(nodeDefinition, e.Message);
+                            var messageItem = ReferenceItem.CreateSimpleMessage(nodeDefinition, e.Message);
                             await args.Context.OnReferenceFoundAsync(messageItem);
                         }
 
@@ -71,20 +72,20 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
         }
 
-        static async Task FindTaskReferences(IFindReferencesContext context,
+        static async Task FindTaskFields(IFindReferencesContext context,
                                              Solution solution,
-                                             ImmutableArray<IFieldSymbol> fields,
+                                             ImmutableArray<IFieldSymbol> beginInterfaceFields,
                                              DefinitionItem nodeDefinition) {
 
-            foreach (var referenceItem in (await FindReferences().ConfigureAwait(false)).OrderByLocation()) {
+            foreach (var referenceItem in (await GetReferenceItems().ConfigureAwait(false)).OrderByLocation()) {
                 await context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
             }
 
-            async Task<ImmutableArray<ReferenceItem>> FindReferences() {
+            async Task<ImmutableArray<ReferenceItem>> GetReferenceItems() {
 
                 var referenceItems = ImmutableArray.CreateBuilder<ReferenceItem>();
 
-                foreach (var field in fields) {
+                foreach (var field in beginInterfaceFields) {
 
                     foreach (var syntaxReference in field.DeclaringSyntaxReferences) {
 
@@ -98,10 +99,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                             continue;
                         }
 
-                        var referenceItem = await CreateReferenceItemAsync(definition: nodeDefinition,
+                        var referenceItem = await CreateReferenceItemAsync(definition       : nodeDefinition,
                                                                            referenceLocation: location,
-                                                                           solution: solution,
-                                                                           syntaxTree: typeSyntax.SyntaxTree,
+                                                                           solution         : solution,
+                                                                           syntaxTree       : typeSyntax.SyntaxTree,
                                                                            cancellationToken: context.CancellationToken).ConfigureAwait(false);
 
                         referenceItems.Add(referenceItem);
@@ -133,55 +134,38 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
             }
         }
 
-        static async Task FindInitReferences(IFindReferencesContext context,
+        static async Task FindInitMethods(IFindReferencesContext context,
                                              Solution solution,
-                                             ImmutableArray<IFieldSymbol> fields,
+                                             ImmutableArray<InvocationExpressionSyntax> beginInvocations,
                                              DefinitionItem initDefinitionItem) {
 
-            foreach (var referenceItem in (await FindReferences().ConfigureAwait(false)).OrderByLocation()) {
+            foreach (var referenceItem in (await GetReferenceItems().ConfigureAwait(false)).OrderByLocation()) {
                 await context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
             }
 
-            async Task<ImmutableArray<ReferenceItem>> FindReferences() {
+            async Task<ImmutableArray<ReferenceItem>> GetReferenceItems() {
 
                 var referenceItems = ImmutableArray.CreateBuilder<ReferenceItem>();
 
-                foreach (var field in fields) {
-
-                    var references = await SymbolFinder.FindReferencesAsync(field, solution, context.CancellationToken)
-                                                       .ConfigureAwait(false);
-
-                    foreach (var reference in references) {
-
-                        foreach (var referenceLocation in reference.Locations) {
-
-                            if (!referenceLocation.Document.TryGetSyntaxTree(out var syntaxTree)) {
-                                continue;
-                            }
-
-                            var syntaxNode = syntaxTree.GetRoot().FindNode(referenceLocation.Location.SourceSpan);
-
-                            // Sicherstellen, dass die Referenz ein Methodenaufruf darstellt
-                            // node.Parent => MemberAccessExpressionSyntax
-                            // node.Parent.Parent => InvocationExpressionSyntax
-                            if (!(syntaxNode?.Parent?.Parent is InvocationExpressionSyntax)) {
-                                continue;
-                            }
-
-                            if (!TryGetLocation(syntaxNode.GetLocation(), out var location)) {
-                                continue;
-                            }
-
-                            var referenceItem = await CreateReferenceItemAsync(definition: initDefinitionItem,
-                                                                               referenceLocation: location,
-                                                                               solution: solution,
-                                                                               syntaxTree: syntaxTree,
-                                                                               cancellationToken: context.CancellationToken).ConfigureAwait(false);
-
-                            referenceItems.Add(referenceItem);
-
-                        }
+                foreach (var beginInvocation in beginInvocations) {
+                    // _beginItfField.Begin()...)
+                    // ^---------------------^ => MemberAccessExpressionSyntax
+                    var methodName = (beginInvocation.Expression as MemberAccessExpressionSyntax)?.Name;
+                    if (methodName == null) {
+                        continue;
                     }
+
+                    if (!TryGetLocation(methodName.GetLocation(), out var location)) {
+                        continue;
+                    }
+
+                    var referenceItem = await CreateReferenceItemAsync(definition       : initDefinitionItem,
+                                                                       referenceLocation: location,
+                                                                       solution         : solution,
+                                                                       syntaxTree       : methodName.SyntaxTree,
+                                                                       cancellationToken: context.CancellationToken).ConfigureAwait(false);
+
+                    referenceItems.Add(referenceItem);
 
                 }
 
@@ -190,22 +174,161 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
         }
 
-        private static Task FindExitReferences(IFindReferencesContext context,
-                                               Solution solution,
-                                               ImmutableArray<IFieldSymbol> fields,
-                                               ImmutableDictionary<Location, DefinitionItem> exitDefinitionItems) {
-            return Task.CompletedTask;
-        }
+        static async Task FindTaskExitMethods(IFindReferencesContext context,
+                                             Solution solution,
+                                             ImmutableArray<InvocationExpressionSyntax> beginInvocations,
+                                             ImmutableDictionary<Location, DefinitionItem> exitConnectionPointDefinitions,
+                                             Compilation compilation) {
 
-        static ImmutableArray<IFieldSymbol> GetReferencingFields(INamedTypeSymbol wfsClass, TaskDeclarationCodeInfo taskDeclarationCodeInfo) {
+
+            if (!exitConnectionPointDefinitions.Any()) {
+                return;
+            }
+
+            foreach (var referenceItem in (await GetReferenceItems().ConfigureAwait(false)).OrderByLocation()) {
+                await context.OnReferenceFoundAsync(referenceItem).ConfigureAwait(false);
+            }
+
+            async Task<ImmutableArray<ReferenceItem>> GetReferenceItems() {
+
+                var referenceItems = ImmutableArray.CreateBuilder<ReferenceItem>();
+
+                var afterMethodDeclarations = await GetAfterMethodDeclarationsAsync(compilation, beginInvocations, context.CancellationToken).ConfigureAwait(false);
+                
+                foreach (var methodDeclaration in afterMethodDeclarations) {
+                  
+                    if (!TryGetLocation(methodDeclaration.Identifier.GetLocation(), out var location)) {
+                        continue;
+                    }
+
+                    foreach (var exitDefinition in exitConnectionPointDefinitions) {
+
+                        var referenceItem = await CreateReferenceItemAsync(definition       : exitDefinition.Value,
+                                                                           referenceLocation: location,
+                                                                           solution         : solution,
+                                                                           syntaxTree       : methodDeclaration.SyntaxTree,
+                                                                           cancellationToken: context.CancellationToken).ConfigureAwait(false);
+
+                        referenceItems.Add(referenceItem);
+                    }
+                }
+
+                return referenceItems.ToImmutableArray();
+            }        
+
+        }
+        
+        static Task<ImmutableArray<IFieldSymbol>> GetBeginInterfaceFieldsAsync(INamedTypeSymbol wfsClass, TaskDeclarationCodeInfo taskDeclarationCodeInfo) {
 
             var fullyQualifiedFormat = SymbolDisplayFormat.FullyQualifiedFormat.WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted);
 
-            return wfsClass.GetMembers()
-                           .OfType<IFieldSymbol>()
-                           .Where(f => f.Type.ToDisplayString(fullyQualifiedFormat) == taskDeclarationCodeInfo.FullyQualifiedBeginInterfaceName)
-                           .ToImmutableArray();
+            var fields = wfsClass.GetMembers()
+                                 .OfType<IFieldSymbol>()
+                                 .Where(f => f.Type.ToDisplayString(fullyQualifiedFormat) == taskDeclarationCodeInfo.FullyQualifiedBeginInterfaceName)
+                                 .ToImmutableArray();
 
+            return Task.FromResult(fields);
+        }
+
+        static async Task<ImmutableArray<InvocationExpressionSyntax>> GetBeginInvocationsAsync(IFindReferencesContext context,
+                                                                                        Solution solution,
+                                                                                        ImmutableArray<IFieldSymbol> fields) {
+            var invocations = ImmutableArray.CreateBuilder<InvocationExpressionSyntax>();
+            foreach (var field in fields) {
+
+                var references = await SymbolFinder.FindReferencesAsync(field, solution, context.CancellationToken)
+                                                   .ConfigureAwait(false);
+
+                foreach (var reference in references) {
+
+                    foreach (var referenceLocation in reference.Locations) {
+
+                        if (!referenceLocation.Document.TryGetSyntaxTree(out var syntaxTree)) {
+                            continue;
+                        }
+
+                        var syntaxNode = syntaxTree.GetRoot().FindNode(referenceLocation.Location.SourceSpan);
+
+                        // Sicherstellen, dass die Referenz ein Methodenaufruf darstellt
+                        // node.Parent => MemberAccessExpressionSyntax
+                        // node.Parent.Parent => InvocationExpressionSyntax
+                        if (syntaxNode?.Parent?.Parent is InvocationExpressionSyntax ies) {
+                            invocations.Add(ies);
+                        }
+
+                    }
+                }
+            }
+
+            return invocations.ToImmutableArray();
+        }
+
+        static async Task<ImmutableArray<MethodDeclarationSyntax>> GetAfterMethodDeclarationsAsync(Compilation compilation, ImmutableArray<InvocationExpressionSyntax> beginInvocations, CancellationToken cancellationToken) {
+
+            var afterMethods = ImmutableArray.CreateBuilder<MethodDeclarationSyntax>();
+            var transitions  = GetTransitionInvocations();
+
+            foreach (var transition in transitions) {
+
+                var afterMethodName   = transition.ArgumentList.Arguments[1].Expression;
+                var model             = compilation.GetSemanticModel(afterMethodName.SyntaxTree);
+                var afterMethodSymbol = model.GetSymbolInfo(afterMethodName, cancellationToken).Symbol as IMethodSymbol;
+
+                if (afterMethodSymbol == null) {
+                    continue;
+                }
+
+                foreach (var syntaxReference in afterMethodSymbol.DeclaringSyntaxReferences) {
+
+                    var methodDeclaration = await syntaxReference.GetSyntaxAsync(cancellationToken).ConfigureAwait(false) as MethodDeclarationSyntax;
+
+                    if (methodDeclaration == null) {
+                        continue;
+                    }
+
+                    afterMethods.Add(methodDeclaration);
+
+                }
+            }
+
+            return afterMethods.ToImmutableArray();
+
+            ImmutableArray<InvocationExpressionSyntax> GetTransitionInvocations() {
+
+                var transisionCalls = ImmutableArray.CreateBuilder<InvocationExpressionSyntax>();
+
+                foreach (var beginInvocation in beginInvocations) {
+
+                    if (TryFindOuterInvocation(beginInvocation, out var outer) &&
+                        outer.ArgumentList.Arguments.Count == 2) {
+
+                        transisionCalls.Add(outer);
+                    }
+
+                }
+
+                return transisionCalls.ToImmutable();
+
+                bool TryFindOuterInvocation(InvocationExpressionSyntax ies, out InvocationExpressionSyntax outerIes) {
+
+                    outerIes = default;
+
+                    Microsoft.CodeAnalysis.SyntaxNode node = ies;
+
+                    while (node?.Parent != null) {
+
+                        if (node.Parent is InvocationExpressionSyntax fds) {
+                            outerIes = fds;
+                            return true;
+                        }
+
+                        node = node.Parent;
+                    }
+
+                    return false;
+                }
+
+            }
         }
 
         static async Task<ReferenceItem> CreateReferenceItemAsync(DefinitionItem definition,

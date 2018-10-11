@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Service Host </ProductName>
-    <ProductVersion>4.0.30</ProductVersion>
+    <ProductVersion>4.0.31</ProductVersion>
   </PropertyGroup>
   <Import Project="..\_build\WriteThisAssemblyFile.targets" />
 </Project>
