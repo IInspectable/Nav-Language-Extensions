@@ -5,6 +5,7 @@ using System;
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;
+using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
@@ -51,7 +52,8 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         public string FilePath { get; }
 
-        public string NormalizedFilePath => FilePath.NullIfEmpty()?.ToLowerInvariant();
+        [CanBeNull]
+        public string NormalizedFilePath => PathHelper.NormalizePath(FilePath);
 
         /// <summary>
         /// Gets the starting index of the location [0..n].

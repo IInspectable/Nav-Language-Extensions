@@ -4,6 +4,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
+using Pharmatechnik.Nav.Utilities.IO;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
@@ -42,13 +44,19 @@ namespace Pharmatechnik.Nav.Language {
         public CachedSyntaxProvider(ISyntaxProvider syntaxProvider) {
 
             _syntaxProvider = syntaxProvider ?? SyntaxProvider.Default;
-            _cache          = new ConcurrentDictionary<string, CodeGenerationUnitSyntax>(StringComparer.OrdinalIgnoreCase);
+            _cache          = new ConcurrentDictionary<string, CodeGenerationUnitSyntax>();
             Statistic       = default;
         }
 
         public virtual CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default) {
 
-            if (_cache.TryGetValue(filePath, out var syntax)) {
+            var normalizedFilePath = PathHelper.NormalizePath(filePath);
+
+            if (normalizedFilePath == null) {
+                throw new ArgumentNullException();
+            }
+
+            if (_cache.TryGetValue(normalizedFilePath, out var syntax)) {
 
                 CacheHit();
                 return syntax;
@@ -58,7 +66,7 @@ namespace Pharmatechnik.Nav.Language {
 
             syntax = _syntaxProvider.GetSyntax(filePath, cancellationToken);
 
-            Cache(filePath, syntax);
+            _cache[normalizedFilePath] = syntax;
 
             return syntax;
         }
@@ -81,10 +89,6 @@ namespace Pharmatechnik.Nav.Language {
             lock (_gate) {
                 Statistic = Statistic.WithCacheHit();
             }
-        }
-
-        void Cache(string filePath, CodeGenerationUnitSyntax syntax) {
-            _cache[filePath] = syntax;
         }
 
         void ClearCache() {

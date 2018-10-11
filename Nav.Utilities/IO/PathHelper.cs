@@ -14,6 +14,21 @@ namespace Pharmatechnik.Nav.Utilities.IO {
 
     public static class PathHelper {
 
+        [CanBeNull]
+        [ContractAnnotation("path:null => null")]
+        public static string NormalizePath(string path) {
+
+            if (String.IsNullOrWhiteSpace(path)) {
+                return null;
+            }
+
+            try {
+                return GetFullPathNoThrow(new Uri(path).LocalPath).ToLowerInvariant();
+            } catch (UriFormatException) {
+                return path;
+            }
+        }
+
         [ContractAnnotation("=> true, fileInfo: notnull; => false, fileInfo: null")]
         public static bool TryGetFileInfo(string candidate, out FileInfo fileInfo) {
             fileInfo = default;
