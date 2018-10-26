@@ -1,36 +1,32 @@
 ﻿using System;
+
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language {
+
     [Serializable]
     [SampleSyntax("task Task { };")]
-    public partial class TaskDefinitionSyntax : MemberDeclarationSyntax {
+    public partial class TaskDefinitionSyntax: MemberDeclarationSyntax {
 
-        readonly CodeDeclarationSyntax           _codeDeclaration;
-        readonly CodeBaseDeclarationSyntax       _codeBaseDeclaration;
-        readonly CodeGenerateToDeclarationSyntax _codeGenerateToDeclaration;
-        readonly CodeParamsDeclarationSyntax     _codeParamsDeclaration;
-        readonly CodeResultDeclarationSyntax     _codeResultDeclaration;
-        readonly NodeDeclarationBlockSyntax      _nodeDeclarationBlock;
-        readonly TransitionDefinitionBlockSyntax _transitionDefinitionBlock;
-
-        internal TaskDefinitionSyntax(TextExtent extent, 
-                                      CodeDeclarationSyntax codeDeclaration, 
+        internal TaskDefinitionSyntax(TextExtent extent,
+                                      CodeDeclarationSyntax codeDeclaration,
                                       CodeBaseDeclarationSyntax codeBaseDeclaration,
-                                      CodeGenerateToDeclarationSyntax codeGenerateToDeclaration, 
+                                      CodeGenerateToDeclarationSyntax codeGenerateToDeclaration,
                                       CodeParamsDeclarationSyntax codeParamsDeclaration,
-                                      CodeResultDeclarationSyntax codeResultDeclaration, 
+                                      CodeResultDeclarationSyntax codeResultDeclaration,
                                       NodeDeclarationBlockSyntax nodeDeclarationBlock,
                                       TransitionDefinitionBlockSyntax transitionDefinitionBlock)
-                : base(extent) {
+            : base(extent) {
 
-            AddChildNode(_codeDeclaration           = codeDeclaration);
-            AddChildNode(_codeBaseDeclaration       = codeBaseDeclaration);
-            AddChildNode(_codeGenerateToDeclaration = codeGenerateToDeclaration);
-            AddChildNode(_codeParamsDeclaration     = codeParamsDeclaration);
-            AddChildNode(_codeResultDeclaration     = codeResultDeclaration);
-            AddChildNode(_nodeDeclarationBlock      = nodeDeclarationBlock);
-            AddChildNode(_transitionDefinitionBlock = transitionDefinitionBlock);
+            AddChildNode(CodeDeclaration           = codeDeclaration);
+            AddChildNode(CodeBaseDeclaration       = codeBaseDeclaration);
+            AddChildNode(CodeGenerateToDeclaration = codeGenerateToDeclaration);
+            AddChildNode(CodeParamsDeclaration     = codeParamsDeclaration);
+            AddChildNode(CodeResultDeclaration     = codeResultDeclaration);
+            AddChildNode(NodeDeclarationBlock      = nodeDeclarationBlock);
+            AddChildNode(TransitionDefinitionBlock = transitionDefinitionBlock);
         }
 
         public SyntaxToken TaskKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.TaskKeyword);
@@ -39,26 +35,28 @@ namespace Pharmatechnik.Nav.Language {
         public SyntaxToken CloseBrace  => ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBrace);
 
         [CanBeNull]
-        public CodeDeclarationSyntax CodeDeclaration => _codeDeclaration;
+        public CodeDeclarationSyntax CodeDeclaration { get; }
 
         [CanBeNull]
-        public CodeBaseDeclarationSyntax CodeBaseDeclaration => _codeBaseDeclaration;
+        public CodeBaseDeclarationSyntax CodeBaseDeclaration { get; }
 
         [CanBeNull]
-        public CodeGenerateToDeclarationSyntax CodeGenerateToDeclaration => _codeGenerateToDeclaration;
+        public CodeGenerateToDeclarationSyntax CodeGenerateToDeclaration { get; }
 
         [CanBeNull]
-        public CodeParamsDeclarationSyntax CodeParamsDeclaration => _codeParamsDeclaration;
+        public CodeParamsDeclarationSyntax CodeParamsDeclaration { get; }
 
         [CanBeNull]
-        public CodeResultDeclarationSyntax CodeResultDeclaration => _codeResultDeclaration;
+        public CodeResultDeclarationSyntax CodeResultDeclaration { get; }
 
         [CanBeNull]
-        public NodeDeclarationBlockSyntax NodeDeclarationBlock => _nodeDeclarationBlock;
+        public NodeDeclarationBlockSyntax NodeDeclarationBlock { get; }
 
         [CanBeNull]
-        public TransitionDefinitionBlockSyntax TransitionDefinitionBlock => _transitionDefinitionBlock;
+        public TransitionDefinitionBlockSyntax TransitionDefinitionBlock { get; }
 
         private protected override bool PromiseNoDescendantNodeOfSameType => true;
+
     }
+
 }

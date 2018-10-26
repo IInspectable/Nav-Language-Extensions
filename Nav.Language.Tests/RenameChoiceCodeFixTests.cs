@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.CodeFixes;
-using Pharmatechnik.Nav.Language.CodeFixes.Rename;
+using Pharmatechnik.Nav.Language.CodeFixes.Refactoring;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -286,8 +286,8 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
             return writer.ApplyTextChanges(text, textChanges);
         }
 
-        EditorSettings GetEditorSettings() {
-            return new EditorSettings(4, "\r\n");
+        TextEditorSettings GetEditorSettings() {
+            return new TextEditorSettings(4, "\r\n");
         }
 
         private static T FindNodeSymbol<T>(CodeGenerationUnit unit, string taskName, string nodeName)where T : INodeSymbol {
@@ -299,7 +299,7 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
         CodeGenerationUnit GetCodeGenerationUnit(string text) {
 
             var tree=SyntaxTree.ParseText(text);
-            return CodeGenerationUnit.FromCodeGenerationUnitSyntax(tree.GetRoot() as CodeGenerationUnitSyntax);
+            return CodeGenerationUnit.FromCodeGenerationUnitSyntax(tree.Root as CodeGenerationUnitSyntax);
         }
 
         #endregion

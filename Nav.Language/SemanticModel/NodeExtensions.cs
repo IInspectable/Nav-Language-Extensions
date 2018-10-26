@@ -16,6 +16,7 @@ namespace Pharmatechnik.Nav.Language {
         public static IEnumerable<Call> GetReachableCalls(this IInitNodeSymbol node) {
             return node.Outgoings.SelectMany(edge => edge.GetReachableCalls()).Distinct(CallComparer.Default);
         }
+
     }
 
 }

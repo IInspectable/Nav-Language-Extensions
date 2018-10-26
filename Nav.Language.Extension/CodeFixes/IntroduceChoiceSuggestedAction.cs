@@ -4,7 +4,8 @@ using System;
 using System.Threading;
 
 using Microsoft.VisualStudio.Imaging.Interop;
-using Pharmatechnik.Nav.Language.CodeFixes;
+
+using Pharmatechnik.Nav.Language.CodeFixes.Refactoring;
 using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion

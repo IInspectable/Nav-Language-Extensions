@@ -11,6 +11,8 @@ using Microsoft.VisualStudio.Text;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 
+using ThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension {
@@ -28,7 +30,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             _observable = Observable.FromEventPattern<EventArgs>(
                                               handler => RebuildTriggered += handler,
                                               handler => RebuildTriggered -= handler)
-                                  .Throttle(ServiceProperties.SemanticModelServiceThrottleTime)
+                                 // .Throttle(ServiceProperties.SemanticModelServiceThrottleTime)
                                   .Select(_ => Observable.DeferAsync(async token =>
                                       {
                                           var codeGenerationUnitAndSnapshot = await BuildAsync(ParserService.SyntaxTreeAndSnapshot, token).ConfigureAwait(false);
@@ -78,7 +80,10 @@ namespace Pharmatechnik.Nav.Language.Extension {
             OnRebuildTriggered(EventArgs.Empty);
         }
 
-        public CodeGenerationUnitAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default(CancellationToken)) {
+        public CodeGenerationUnitAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default) {
+
+            // Muss im UI Thread sein, da sonst die Events nicht ind er UI gefeuert werden, und TrySetResult muss um UI Thrtead ausgeführt werden.
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var codeGenerationUnitAndSnapshot = CodeGenerationUnitAndSnapshot;
             if(codeGenerationUnitAndSnapshot != null && codeGenerationUnitAndSnapshot.IsCurrent(TextBuffer)) {
@@ -133,7 +138,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             var syntaxTree = syntaxTreeAndSnapshot.SyntaxTree;
             var snapshot   = syntaxTreeAndSnapshot.Snapshot;
 
-            if(!(syntaxTree.GetRoot() is CodeGenerationUnitSyntax codeGenerationUnitSyntax)) {
+            if(!(syntaxTree.Root is CodeGenerationUnitSyntax codeGenerationUnitSyntax)) {
                 Logger.Debug($"Der SyntaxRoot ist nicht vom Typ {typeof(CodeGenerationUnitSyntax)}. Der Vorgang wird abgebrochen.");
                 return null;
             }
@@ -144,6 +149,8 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
         void TrySetResult(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Dieser Fall kann eintreten, da wir im Ctor "blind" ein Invalidate aufrufen. Möglicherweise gibt es aber noch kein SyntaxTreeAndSnapshot,
             // welches aber noch folgen wird und im Zuge eines OnParseResultChanging abgerbeitet wird.

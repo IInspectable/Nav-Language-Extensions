@@ -3,7 +3,9 @@
 using System;
 
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Commanding;
 using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 
@@ -14,6 +16,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
     partial class CommandTarget : IOleCommandTarget {
         
         public int QueryStatus(ref Guid pguidCmdGroup, uint cCmds, OLECMD[] prgCmds, IntPtr pCmdText) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (pguidCmdGroup == VSConstants.VSStd2K)
             {
@@ -28,55 +32,27 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
         
         int QueryVisualStudio2000Status(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             switch((VSConstants.VSStd2KCmdID) prgCmds[0].cmdID) {
-                case VSConstants.VSStd2KCmdID.COMMENT_BLOCK:
-                case VSConstants.VSStd2KCmdID.COMMENTBLOCK:
-                    return QueryCommentBlockStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
-
-                case VSConstants.VSStd2KCmdID.UNCOMMENT_BLOCK:
-                case VSConstants.VSStd2KCmdID.UNCOMMENTBLOCK:
-                    return QueryUncommentBlockStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
-
-                case CmdidNextHighlightedReference:
-                    return QueryNavigateHighlightedReferenceStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText, NavigateDirection.Down);
-                case CmdidPreviousHighlightedReference:
-                    return QueryNavigateHighlightedReferenceStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText, NavigateDirection.Up);
-
-                case VSConstants.VSStd2KCmdID.COMPLETEWORD:
-                    return QueryCompleteWordStatus(prgCmds);
-
-                case VSConstants.VSStd2KCmdID.RENAME:
-                    return QueryRenameStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
-
-                case VSConstants.VSStd2KCmdID.BACKTAB:
-                    return QueryBackTabStatus(prgCmds);
+                
                 default:
                     return NextCommandTarget.QueryStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
             }
         }
 
         private int QueryVisualStudio97Status(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             switch ((VSConstants.VSStd97CmdID)prgCmds[0].cmdID) {
-                case VSConstants.VSStd97CmdID.GotoDefn:
-                    return QueryGoToDefinitionStatus(prgCmds);
-
                 case VSConstants.VSStd97CmdID.ViewCode:
                     return QueryViewCode(ref pguidCmdGroup, commandCount, prgCmds, commandText);
-
-                //case VSConstants.VSStd97CmdID.FindReferences:
-                //    return QueryFindReferencesStatus(prgCmds);
 
                 default:
                     return NextCommandTarget.QueryStatus(ref pguidCmdGroup, commandCount, prgCmds, commandText);
             }
         }
-
-        private int QueryGoToDefinitionStatus(OLECMD[] prgCmds) {
-            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
-            return VSConstants.S_OK;
-        }
-
+        
         private int QueryViewCode(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
             return GetCommandState(
                 createArgs   : (v, b) => new ViewCodeCommandArgs(v, b),
@@ -86,58 +62,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
                 commandText  : commandText);
         }
 
-        // ReSharper disable once UnusedMember.Local TODO Enablen, wenn Find References implementiert
-        private int QueryFindReferencesStatus(OLECMD[] prgCmds) {
-            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
-            return VSConstants.S_OK;
-        }
-
-        int QueryUncommentBlockStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
-            return GetCommandState(
-                createArgs   : (v, b) => new UncommentSelectionCommandArgs(v, b),
-                pguidCmdGroup: ref pguidCmdGroup,
-                commandCount : commandCount,
-                prgCmds      : prgCmds,
-                commandText  : commandText);
-        }
-
-        int QueryCommentBlockStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
-            return GetCommandState(
-                createArgs   : (v, b) => new CommentSelectionCommandArgs(v, b),
-                pguidCmdGroup: ref pguidCmdGroup,
-                commandCount : commandCount,
-                prgCmds      : prgCmds,
-                commandText  : commandText);
-        }
-
-        int QueryNavigateHighlightedReferenceStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText, NavigateDirection navigateDirection) {
-
-            return GetCommandState(
-                createArgs   : (v, b) => new NavigateToHighlightedReferenceCommandArgs(v, b, navigateDirection),
-                pguidCmdGroup: ref pguidCmdGroup,
-                commandCount : commandCount,
-                prgCmds      : prgCmds,
-                commandText  : commandText);
-        }
-
-        int QueryBackTabStatus(OLECMD[] prgCmds) {
-            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
-            return VSConstants.S_OK;
-        }
-
-        int QueryCompleteWordStatus(OLECMD[] prgCmds) {
-            // ReSharper disable once BitwiseOperatorOnEnumWithoutFlags
-            prgCmds[0].cmdf = (uint)(OLECMDF.OLECMDF_ENABLED | OLECMDF.OLECMDF_SUPPORTED);
-            return VSConstants.S_OK;
-        }
-
-        int QueryRenameStatus(ref Guid pguidCmdGroup, uint commandCount, OLECMD[] prgCmds, IntPtr commandText) {
-            return GetCommandState(
-                (v, b) => new RenameCommandArgs(v, b),
-                ref pguidCmdGroup, commandCount, prgCmds, commandText);
-        }
 
         int GetCommandState<T>(
             Func<IWpfTextView, ITextBuffer, T> createArgs,
@@ -151,6 +75,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var guidCmdGroup = pguidCmdGroup;
 
             CommandState ExecuteNextCommandTarget() {
+                ThreadHelper.ThrowIfNotOnUIThread();
                 result = NextCommandTarget.QueryStatus(ref guidCmdGroup, commandCount, prgCmds, commandText);
 
                 // ReSharper disable BitwiseOperatorOnEnumWithoutFlags

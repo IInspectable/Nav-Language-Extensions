@@ -2,15 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language {
+
     [Serializable]
     [SampleSyntax("Identifier, \"StringLiteral\"")]
-    public sealed partial class IdentifierOrStringListSyntax : SyntaxNode, IReadOnlyList<IdentifierOrStringSyntax> {
+    public sealed partial class IdentifierOrStringListSyntax: SyntaxNode, IReadOnlyList<IdentifierOrStringSyntax> {
 
         readonly IReadOnlyList<IdentifierOrStringSyntax> _identifierOrStrings;
 
-        internal IdentifierOrStringListSyntax(TextExtent extent, 
-            IReadOnlyList<IdentifierOrStringSyntax> identifierOrStrings) : base(extent) {
+        internal IdentifierOrStringListSyntax(TextExtent extent,
+                                              IReadOnlyList<IdentifierOrStringSyntax> identifierOrStrings): base(extent) {
             AddChildNodes(_identifierOrStrings = identifierOrStrings);
         }
 
@@ -25,5 +28,7 @@ namespace Pharmatechnik.Nav.Language {
         public int Count => _identifierOrStrings.Count;
 
         public IdentifierOrStringSyntax this[int index] => _identifierOrStrings[index];
+
     }
+
 }

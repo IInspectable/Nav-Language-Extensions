@@ -1,6 +1,7 @@
 #region Using Directives
 
 using System.Collections.Generic;
+
 using JetBrains.Annotations;
 
 #endregion
@@ -8,11 +9,13 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language {
 
     public enum TaskDeclarationOrigin {
+
         TaskDeclaration,
         TaskDefinition
+
     }
 
-    public interface ITaskDeclarationSymbol : ISymbol {
+    public interface ITaskDeclarationSymbol: ISymbol {
 
         /// <summary>
         /// Ist nur dann null, wenn IsIncluded true, da wir keine Syntaxbäume von anderen nav-Dateien 
@@ -31,16 +34,18 @@ namespace Pharmatechnik.Nav.Language {
         [NotNull]
         IReadOnlySymbolCollection<IConnectionPointSymbol> ConnectionPoints { get; }
 
-        IReadOnlySymbolCollection<IConnectionPointSymbol> Inits();
-        IReadOnlySymbolCollection<IConnectionPointSymbol> Exits();
-        IReadOnlySymbolCollection<IConnectionPointSymbol> Ends();
-        
+        IReadOnlySymbolCollection<IInitConnectionPointSymbol> Inits();
+        IReadOnlySymbolCollection<IExitConnectionPointSymbol> Exits();
+        IReadOnlySymbolCollection<IEndConnectionPointSymbol> Ends();
+
         [NotNull]
         IReadOnlyList<ITaskNodeSymbol> References { get; }
+
         /// <summary>
         /// Gibt an, ob die Deklaration aus eine inkludierten nav-Datei stammt.
         /// </summary>
         bool IsIncluded { get; }
+
         /// <summary>
         /// Gibt an, ob die Deklaration aus einer reinen Deklaration (taskref ...) oder einer Definition (task ...) entstammt.
         /// </summary>
@@ -48,8 +53,12 @@ namespace Pharmatechnik.Nav.Language {
 
         [NotNull]
         string CodeNamespace { get; }
+
         bool CodeNotImplemented { get; }
+
         [CanBeNull]
         ICodeParameter CodeTaskResult { get; }
+
     }
+
 }

@@ -13,7 +13,7 @@ namespace Nav.Language.Tests {
         public void TestSyntaxErrors() {
             var syntaxErrors = SyntaxTree.ParseText(Resources.AllRules)
                                          .Diagnostics;
-            Assert.That(syntaxErrors.Count, Is.EqualTo(0));
+            Assert.That(syntaxErrors.Length, Is.EqualTo(0));
         }
 
         [Test]

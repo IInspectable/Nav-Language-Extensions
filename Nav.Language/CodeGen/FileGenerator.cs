@@ -4,43 +4,72 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+
 using JetBrains.Annotations;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
-    public class FileGenerator: Generator {
+
+    public interface IFileGeneratorProvider {
+
+        IFileGenerator Create(GenerationOptions options);
+
+    }
+
+    public interface IFileGenerator: IDisposable {
+
+        ImmutableArray<FileGeneratorResult> Generate(CodeGenerationResult codeGenerationResult);
+
+    }
+
+    public sealed class FileGeneratorProvider: IFileGeneratorProvider {
+
+        FileGeneratorProvider() {
+
+        }
+
+        public static readonly IFileGeneratorProvider Default = new FileGeneratorProvider();
+
+        public IFileGenerator Create(GenerationOptions options) {
+            return new FileGenerator(options);
+        }
+
+    }
+
+    public class FileGenerator: Generator, IFileGenerator {
 
         public FileGenerator(GenerationOptions options): base(options) {
         }
-        
-        public IImmutableList<FileGeneratorResult> Generate(CodeGenerationResult codeGenerationResult) {
+
+        public ImmutableArray<FileGeneratorResult> Generate(CodeGenerationResult codeGenerationResult) {
 
             if (codeGenerationResult == null) {
                 throw new ArgumentNullException(nameof(codeGenerationResult));
             }
 
             var results = new List<FileGeneratorResult> {
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCodeSpec,      OverwriteCondition.ContentChanged),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCodeSpec, OverwriteCondition.ContentChanged),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCodeSpec,   OverwriteCondition.ContentChanged),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCodeSpec,       OverwriteCondition.Never, legacyFileName: codeGenerationResult.PathProvider.LegacyWfsFileName)
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCodeSpec,      OverwritePolicy.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCodeSpec, OverwritePolicy.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCodeSpec,   OverwritePolicy.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCodeSpec,       OverwritePolicy.Never)
             };
 
-            foreach(var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
-                results.Add(WriteFile(codeGenerationResult.TaskDefinition, toCodeSpec, OverwriteCondition.Never));
+            foreach (var toCodeSpec in codeGenerationResult.ToCodeSpecs) {
+                results.Add(WriteFile(codeGenerationResult.TaskDefinition, toCodeSpec, OverwritePolicy.Never));
             }
 
-            return results.ToImmutableList();
+            return results.ToImmutableArray();
         }
 
         [NotNull]
-        FileGeneratorResult WriteFile(ITaskDefinitionSymbol taskDefinition, CodeGenerationSpec codeGenerationSpec, OverwriteCondition condition, string legacyFileName = null) {
+        FileGeneratorResult WriteFile(ITaskDefinitionSymbol taskDefinition, CodeGenerationSpec codeGenerationSpec, OverwritePolicy overwritePolicy) {
 
             EnsureDirectory(codeGenerationSpec.FilePath);
 
             var action = FileGeneratorAction.Skiped;
-            if (ShouldWrite(codeGenerationSpec, condition, legacyFileName)) {
+
+            if (ShouldWrite(codeGenerationSpec, overwritePolicy)) {
                 File.WriteAllText(codeGenerationSpec.FilePath, codeGenerationSpec.Content, Options.Encoding);
                 action = FileGeneratorAction.Updated;
             }
@@ -51,17 +80,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         static void EnsureDirectory(string fileName) {
             var dir = Path.GetDirectoryName(fileName);
             // ReSharper disable once AssignNullToNotNullAttribute Lass krachen
-            Directory.CreateDirectory(dir);            
+            Directory.CreateDirectory(dir);
         }
 
-        bool ShouldWrite(CodeGenerationSpec codeGenerationSpec, OverwriteCondition condition, string legacyFileName) {
-
-            // Die legacy Datei wird niemals überschrieben/ersetzt.
-            var legacyFileExists = legacyFileName != null && File.Exists(legacyFileName);
-            if (legacyFileExists) {
-                // TODO Gibt es überhaupt noch legacy files?
-                return false;
-            }
+        bool ShouldWrite(CodeGenerationSpec codeGenerationSpec, OverwritePolicy overwritePolicy) {
 
             // Wenn die Datei nicht existiert, wird sie neu geschrieben
             if (!File.Exists(codeGenerationSpec.FilePath)) {
@@ -69,15 +91,15 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             // Eine Datei mit der Größe 0 gilt als nicht existent, und wird neu geschrieben 
-            if (condition == OverwriteCondition.Never) {
-                
+            if (overwritePolicy == OverwritePolicy.Never) {
+
                 var fileInfo = new FileInfo(codeGenerationSpec.FilePath);
                 // Wenn z.B. in Visual Studio der Inhalt einer Datei gelöscht wird, dann hat die Datei auf Grund der 
                 // trotzdem geschriebenen BOM eine Länge von bis zu 4 Byte.
-                // Es dürfte super unwahrscheinlich sein, dass es eine Datei ohne BOM, dafür aber sinnvollen Inhalt
-                // existiert. Deshalb gehen wir hier davon aus, dass jede Datei mit einer Länge kleiner als 4 Bytes
-                // de facto leer ist.
-                return fileInfo.Length<=4;
+                // Es dürfte super unwahrscheinlich sein, dass eine Datei ohne BOM, aber troztzdem mit sinnvollen 4
+                // Byte Inhalt existiert.
+                // Deshalb gehen wir hier davon aus, dass jede Datei mit einer Länge kleiner als 4 Bytes de facto leer ist.
+                return fileInfo.Length <= 4;
             }
 
             // => condition == OverwriteCondition.ContentChanged
@@ -93,9 +115,13 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return !String.Equals(fileContent, codeGenerationSpec.Content, StringComparison.Ordinal);
         }
 
-        enum OverwriteCondition {
+        enum OverwritePolicy {
+
             Never,
             ContentChanged
+
         }
+
     }
+
 }

@@ -22,10 +22,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
     [Export(typeof(ICommandHandlerServiceProvider))]
     class CommandHandlerServiceProvider : ICommandHandlerServiceProvider {
 
-        readonly IEnumerable<Lazy<ICommandHandler, CommandHandlerMetadata>> _commandHandlers;
+        readonly IEnumerable<Lazy<INavCommandHandler, CommandHandlerMetadata>> _commandHandlers;
 
         [ImportingConstructor]
-        public CommandHandlerServiceProvider([ImportMany] IEnumerable<Lazy<ICommandHandler, CommandHandlerMetadata>> commandHandlers) {
+        public CommandHandlerServiceProvider([ImportMany] IEnumerable<Lazy<INavCommandHandler, CommandHandlerMetadata>> commandHandlers) {
             _commandHandlers = commandHandlers;
         }
 
@@ -40,11 +40,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             return new CommandHandlerService(commandHandlers);
         }
 
-        IList<ICommandHandler> SelectCommandHandler(params IContentType[] contentTypes) {
+        IList<INavCommandHandler> SelectCommandHandler(params IContentType[] contentTypes) {
             return SelectCommandHandler((IEnumerable<IContentType>) contentTypes);
         }
 
-        IList<ICommandHandler> SelectCommandHandler(IEnumerable<IContentType> contentTypes) {
+        IList<INavCommandHandler> SelectCommandHandler(IEnumerable<IContentType> contentTypes) {
 
             var extensions = _commandHandlers.Where(h => contentTypes.Any(d => d.MatchesAny(h.Metadata.ContentTypes)));
                 

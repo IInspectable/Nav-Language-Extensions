@@ -5,7 +5,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
-using Pharmatechnik.Nav.Language.CodeFixes;
+using Pharmatechnik.Nav.Language.CodeFixes.Refactoring;
 
 #endregion
 

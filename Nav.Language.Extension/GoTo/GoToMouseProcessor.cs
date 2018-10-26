@@ -5,6 +5,7 @@ using System.Windows.Input;
 
 using JetBrains.Annotations;
 
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 
@@ -18,18 +19,17 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
     sealed class GoToMouseProcessor: MouseProcessorBase {
 
-        readonly IWpfTextView _textView;
-        readonly GoToLocationService _goToLocationService;
+        readonly IWpfTextView            _textView;
+        readonly GoToLocationService     _goToLocationService;
         readonly ITagAggregator<GoToTag> _tagAggregator;
-        readonly ModifierKeyState _keyState;
+        readonly ModifierKeyState        _keyState;
 
         Cursor _overriddenCursor;
 
-        [CanBeNull]
-        ITagSpan<GoToTag> _navigateToTagSpan;
+        [CanBeNull] ITagSpan<GoToTag> _navigateToTagSpan;
 
-        GoToMouseProcessor(IWpfTextView textView, 
-                           TextViewConnectionListener textViewConnectionListener, 
+        GoToMouseProcessor(IWpfTextView textView,
+                           TextViewConnectionListener textViewConnectionListener,
                            IViewTagAggregatorFactoryService viewTagAggregatorFactoryService,
                            GoToLocationService goToLocationService) {
             _textView            = textView;
@@ -37,13 +37,13 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _tagAggregator       = viewTagAggregatorFactoryService.CreateTagAggregator<GoToTag>(textView);
             _keyState            = ModifierKeyState.GetStateForView(textView, textViewConnectionListener);
 
-            _textView.LostAggregateFocus += OnTextViewLostAggregateFocus; 
+            _textView.LostAggregateFocus += OnTextViewLostAggregateFocus;
             _keyState.KeyStateChanged    += OnKeyStateChanged;
 
             textViewConnectionListener.AddDisconnectAction(textView, RemoveMouseProcessorForView);
         }
 
-        public static GoToMouseProcessor GetMouseProcessorForView(IWpfTextView textView, 
+        public static GoToMouseProcessor GetMouseProcessorForView(IWpfTextView textView,
                                                                   TextViewConnectionListener textViewConnectionListener,
                                                                   IViewTagAggregatorFactoryService viewTagAggregatorFactoryService,
                                                                   GoToLocationService goToLocationService) {
@@ -59,13 +59,16 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
         }
 
         public override void PostprocessMouseMove(MouseEventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             UpdateNavigateToTagSpan();
         }
-        
+
+        #pragma warning disable VSTHRD010
         public override void PostprocessMouseLeftButtonUp(MouseButtonEventArgs e) {
             NavigateToTagSpan();
         }
-        
+        #pragma warning restore VSTHRD010
+
         void OnTextViewLostAggregateFocus(object sender, EventArgs e) {
             RemoveNavigateToTagSpan();
         }
@@ -76,14 +79,14 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         void UpdateNavigateToTagSpan() {
 
-            if(!_keyState.IsOnlyModifierKeyControlPressed) {
+            if (!_keyState.IsOnlyModifierKeyControlPressed) {
                 RemoveNavigateToTagSpan();
                 return;
             }
 
             var navigateToTagSpan = _textView.GetGoToDefinitionTagSpanAtMousePosition(_tagAggregator);
 
-            if(navigateToTagSpan!=null) {                
+            if (navigateToTagSpan != null) {
                 UpdateNavigateToTagSpan(navigateToTagSpan);
             } else {
                 RemoveNavigateToTagSpan();
@@ -92,7 +95,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
 
         void UpdateNavigateToTagSpan(ITagSpan<GoToTag> navigateToTagSpan) {
 
-            if(navigateToTagSpan.Span == _navigateToTagSpan?.Span) {
+            if (navigateToTagSpan.Span == _navigateToTagSpan?.Span) {
                 // Theoretisch könnten sich die Tags dennoch unterscheiden...
                 _navigateToTagSpan = navigateToTagSpan;
                 return;
@@ -103,7 +106,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _navigateToTagSpan = navigateToTagSpan;
             UnderlineTagger.GetOrCreateSingelton(_textView.TextBuffer)?.AddUnderlineSpan(navigateToTagSpan.Span);
 
-            _overriddenCursor = _textView.VisualElement.Cursor;
+            _overriddenCursor              = _textView.VisualElement.Cursor;
             _textView.VisualElement.Cursor = Cursors.Hand;
         }
 
@@ -119,25 +122,32 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             _textView.VisualElement.Cursor = _overriddenCursor;
         }
 
-        async void NavigateToTagSpan() {
+        void NavigateToTagSpan() {
 
-            if (_navigateToTagSpan == null) {
-                return;
-            }
+            ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
 
-            _textView.Selection.Clear();
+                if (_navigateToTagSpan == null) {
+                    return;
+                }
 
-            var tagSpan = _navigateToTagSpan;
-            RemoveNavigateToTagSpan();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var placementRectangle = _textView.TextViewLines.GetTextMarkerGeometry(tagSpan.Span).Bounds;
+                _textView.Selection.Clear();
 
-            placementRectangle.Offset(-_textView.ViewportLeft, -_textView.ViewportTop);
+                var tagSpan = _navigateToTagSpan;
+                RemoveNavigateToTagSpan();
 
-            await _goToLocationService.GoToLocationInPreviewTabAsync(
-                _textView,
-                placementRectangle,
-                tagSpan.Tag.Provider);
+                var placementRectangle = _textView.TextViewLines.GetTextMarkerGeometry(tagSpan.Span).Bounds;
+
+                placementRectangle.Offset(-_textView.ViewportLeft, -_textView.ViewportTop);
+
+                await _goToLocationService.GoToLocationInPreviewTabAsync(
+                    _textView,
+                    placementRectangle,
+                    tagSpan.Tag.Provider);
+            });
         }
+
     }
+
 }

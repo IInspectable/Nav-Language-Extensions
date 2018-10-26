@@ -1,10 +1,15 @@
 using System;
 
-namespace Pharmatechnik.Nav.Language {
-    [Serializable]
-    public abstract class ConnectionPointNodeSyntax : NodeDeclarationSyntax {
+using Pharmatechnik.Nav.Language.Text;
 
-        protected ConnectionPointNodeSyntax(TextExtent extent) : base(extent) {
-        }        
+namespace Pharmatechnik.Nav.Language {
+
+    [Serializable]
+    public abstract class ConnectionPointNodeSyntax: NodeDeclarationSyntax {
+
+        protected ConnectionPointNodeSyntax(TextExtent extent): base(extent) {
+        }
+
     }
+
 }

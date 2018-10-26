@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props" Condition="Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props')" />
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -41,40 +40,39 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Antlr3.Runtime.3.5.1\lib\net40-client\Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
-      <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr4.StringTemplate, Version=4.0.7.0, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <HintPath>..\packages\StringTemplate4.4.0.8\lib\net35-client\Antlr4.StringTemplate.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Linq">
-      <HintPath>..\packages\System.Linq.4.3.0\lib\net463\System.Linq.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime">
-      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Runtime.Extensions">
-      <HintPath>..\packages\System.Runtime.Extensions.4.3.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\_shared\GobalAssemblyInfo.cs">
+    <Compile Include="..\_build\GobalAssemblyInfo.cs">
       <Link>Properties\GobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="CodeFixes\CodeFixCategory.cs" />
+    <Compile Include="CodeFixes\ErrorFix\ErrorCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\RefactoringCodeFix.cs" />
+    <Compile Include="CodeFixes\StyleFix\StyleCodeFix.cs" />
+    <Compile Include="Common\IntExtensions.cs" />
+    <Compile Include="FindReferences\DefinitionItem.Factory.cs" />
+    <Compile Include="FindReferences\DefinitionItem.cs" />
+    <Compile Include="FindReferences\FindReferences.cs" />
+    <Compile Include="FindReferences\FindReferencesArgs.cs" />
+    <Compile Include="FindReferences\FindReferencesVisitor.cs" />
+    <Compile Include="FindReferences\ReferenceItemExtensions.cs" />
+    <Compile Include="FindReferences\SymbolOrderer.cs" />
+    <Compile Include="FindReferences\IFindReferencesContext.cs" />
+    <Compile Include="FindReferences\ReferenceItem.cs" />
+    <Compile Include="FindReferences\ReferenceItemBuilder.cs" />
+    <Compile Include="Provider\ISemanticModelProvider.cs" />
+    <Compile Include="Provider\ISemanticModelProviderFactory.cs" />
+    <Compile Include="Provider\SemanticModelProvider.cs" />
+    <Compile Include="Provider\SemanticModelProviderFactory.cs" />
+    <Compile Include="Text\ClassifiedTexts.cs" />
+    <Compile Include="Text\DisplayPartsBuilder.cs" />
+    <Compile Include="Text\ClassifiedText.cs" />
+    <Compile Include="Text\ClassifiedTextExtensions.cs" />
+    <Compile Include="Text\SourceTextExtensions.cs" />
+    <Compile Include="Common\VersionStamp.cs" />
     <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />
+    <Compile Include="Internal\NavLexerErrorListener.cs" />
     <Compile Include="SemanticAnalyzer\Nav0010CannotResolveTask0.cs" />
     <Compile Include="SemanticAnalyzer\Nav0011CannotResolveNode0.cs" />
     <Compile Include="SemanticAnalyzer\Nav0012CannotResolveExit0.cs" />
@@ -102,35 +100,36 @@
     <Compile Include="SemanticAnalyzer\Nav1005TaskDeclaration0NotRequired.cs" />
     <Compile Include="SemanticAnalyzer\Nav1010TaskNode0HasNoIncomingEdges.cs" />
     <Compile Include="SemanticAnalyzer\Nav1012TaskNode0NotRequired.cs" />
-    <Compile Include="CodeFixes\AddMissingExitTransitionCodeFix.cs" />
-    <Compile Include="CodeFixes\AddMissingExitTransitionCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesCodeFix.cs" />
-    <Compile Include="CodeFixes\AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\ErrorFix\AddMissingExitTransitionCodeFix.cs" />
+    <Compile Include="CodeFixes\ErrorFix\AddMissingExitTransitionCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\StyleFix\AddMissingSemicolonsOnIncludeDirectivesCodeFix.cs" />
+    <Compile Include="CodeFixes\StyleFix\AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.cs" />
     <Compile Include="CodeFixes\CodeFix.cs" />
     <Compile Include="CodeFixes\CodeFixContext.cs" />
     <Compile Include="CodeFixes\CodeFixImpact.cs" />
     <Compile Include="CodeFixes\CodeFixPrio.cs" />
-    <Compile Include="CodeFixes\EditorSettings.cs" />
-    <Compile Include="CodeFixes\RemoveUnusedIncludeDirectiveCodeFix.cs" />
-    <Compile Include="CodeFixes\RemoveUnusedTaskDeclarationCodeFix.cs" />
-    <Compile Include="CodeFixes\RemoveUnusedNodesCodeFix.cs" />
-    <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksCodeFix.cs" />
-    <Compile Include="CodeFixes\IntroduceChoiceCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\IntroduceChoiceCodeFix.cs" />
-    <Compile Include="CodeFixes\RemoveSignalTriggerQuotationMarksCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\RemoveUnusedNodesCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\RemoveUnusedIncludeDirectiveCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\RemoveUnusedTaskDeclarationCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\Rename\DialogNodeRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\ExitNodeRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\RenameCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\Rename\RenameNodeCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\TaskDeclarationRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\TaskNodeRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\InitNodeRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\ChoiceRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\RenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Rename\ViewNodeRenameCodeFix.cs" />
+    <Compile Include="Text\SymbolExtensions.cs" />
+    <Compile Include="Text\TextEditorSettings.cs" />
+    <Compile Include="CodeFixes\StyleFix\RemoveUnusedIncludeDirectiveCodeFix.cs" />
+    <Compile Include="CodeFixes\StyleFix\RemoveUnusedTaskDeclarationCodeFix.cs" />
+    <Compile Include="CodeFixes\StyleFix\RemoveUnusedNodesCodeFix.cs" />
+    <Compile Include="CodeFixes\StyleFix\RemoveSignalTriggerQuotationMarksCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\IntroduceChoiceCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\Refactoring\IntroduceChoiceCodeFix.cs" />
+    <Compile Include="CodeFixes\StyleFix\RemoveSignalTriggerQuotationMarksCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\StyleFix\RemoveUnusedNodesCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\StyleFix\RemoveUnusedIncludeDirectiveCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\StyleFix\RemoveUnusedTaskDeclarationCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\Refactoring\DialogNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\ExitNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\RenameCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\Refactoring\RenameNodeCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\TaskDeclarationRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\TaskNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\InitNodeRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\ChoiceRenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\RenameCodeFix.cs" />
+    <Compile Include="CodeFixes\Refactoring\ViewNodeRenameCodeFix.cs" />
     <Compile Include="CodeFixes\TaskDefinitionSymbolExtensions.cs" />
     <Compile Include="Diagnostic\DiagnosticDescriptors.Syntax.cs" />
     <Compile Include="Generator\FileSpec.cs" />
@@ -209,10 +208,12 @@
     <Compile Include="Provider\PathProviderFactory.cs" />
     <Compile Include="CodeGen\Templates\Resources.cs" />
     <Compile Include="Common\EnumerableExtensions.cs" />
-    <Compile Include="Common\StringExtensions.cs" />
-    <Compile Include="Common\TextLineExtent.cs" />
-    <Compile Include="Common\LinePosition.cs" />
-    <Compile Include="Common\LinePositionExtent.cs" />
+    <Compile Include="Text\StringExtensions.cs" />
+    <Compile Include="Syntax\SourceTextCharStream.cs" />
+    <Compile Include="Text\SourceText.cs" />
+    <Compile Include="Text\SourceTextLine.cs" />
+    <Compile Include="Text\LinePosition.cs" />
+    <Compile Include="Text\LineRange.cs" />
     <Compile Include="Common\Location.cs" />
     <Compile Include="Dependencies\DependencyAnalyzer.cs" />
     <Compile Include="Dependencies\DependencyExtensions.cs" />
@@ -225,7 +226,7 @@
     <Compile Include="Diagnostic\DiagnosticId.cs" />
     <Compile Include="Diagnostic\DiagnosticSeverity.cs" />
     <Compile Include="SemanticModel\CodeGenerationUnitExtensions.cs" />
-    <Compile Include="SemanticModel\ConnectionPointReferenceSymbol.cs" />
+    <Compile Include="SemanticModel\ExitConnectionPointReferenceSymbol.cs" />
     <Compile Include="SemanticModel\ConnectionPointSymbol.cs" />
     <Compile Include="CodeGen\CSharp.cs" />
     <Compile Include="SemanticModel\EdgeModeSymbol.cs" />
@@ -235,7 +236,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SymbolVisitor.tt</DependentUpon>
     </Compile>
-    <Compile Include="SemanticModel\IConnectionPointReferenceSymbol.cs" />
+    <Compile Include="SemanticModel\IExitConnectionPointReferenceSymbol.cs" />
     <Compile Include="SemanticModel\IEdge.cs" />
     <Compile Include="SemanticModel\IEdgeModeSymbol.cs" />
     <Compile Include="SemanticModel\IIncludeSymbol.cs" />
@@ -285,7 +286,6 @@
       <DependentUpon>Syntax.Generated.tt</DependentUpon>
     </Compile>
     <Compile Include="Internal\ExtentExtensions.cs" />
-    <Compile Include="Internal\NavGrammarLexer.cs" />
     <Compile Include="Internal\SyntaxBuildingExtension.cs" />
     <Compile Include="Internal\TextExtentFactory.cs" />
     <Compile Include="Syntax\ArrayRankSpecifierSyntax.cs" />
@@ -304,7 +304,7 @@
     <Compile Include="Syntax\ExitTransitionDefinitionSyntax.cs" />
     <Compile Include="Syntax\GenericTypeSyntax.cs" />
     <Compile Include="Syntax\IdentifierOrStringSyntax.cs" />
-    <Compile Include="Common\IExtent.cs" />
+    <Compile Include="Text\IExtent.cs" />
     <Compile Include="Syntax\SyntaxFacts.cs" />
     <Compile Include="Syntax\SyntaxTokenComparer.cs" />
     <Compile Include="CodeFixes\SyntaxTreeExtensions.cs" />
@@ -330,7 +330,10 @@
     <Compile Include="Syntax\DialogNodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\EndNodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\ExitNodeDeclarationSyntax.cs" />
-    <Compile Include="Common\TextExtent.cs" />
+    <Compile Include="Text\SourceTextLineExtensions.cs" />
+    <Compile Include="Text\SourceTextLineList.cs" />
+    <Compile Include="Text\StringSourceText.cs" />
+    <Compile Include="Text\TextExtent.cs" />
     <Compile Include="Syntax\InitNodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\NodeDeclarationSyntax.cs" />
     <Compile Include="Syntax\NodeDeclarationBlockSyntax.cs" />
@@ -352,11 +355,12 @@
     <Compile Include="Syntax\SyntaxToken.cs" />
     <Compile Include="Syntax\SyntaxTokenExtensions.cs" />
     <Compile Include="Internal\SyntaxTokenFactory.cs" />
-    <Compile Include="Syntax\SyntaxTokenClassification.cs" />
-    <Compile Include="Internal\NavErrorListener.cs" />
+    <Compile Include="Text\SyntaxTokenClassification.cs" />
+    <Compile Include="Internal\NavParserErrorListener.cs" />
     <Compile Include="Text\TextChange.cs" />
     <Compile Include="Text\TextChangeWriter.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
+    <Compile Include="Workspace\NavSolution.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Diagnostic\DiagnosticDescriptors.DeadCode.cs" />
@@ -370,13 +374,12 @@
       <CustomToolNamespace>Pharmatechnik.Nav.Language.CodeGen</CustomToolNamespace>
     </ExportStringTemplates>
     <None Include="CodeGen\ClassDiagram1.cd" />
-    <None Include="Grammar\NavTokens.g4" />
+    <Antlr4 Include="Grammar\NavTokens.g4">
+      <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
+    </Antlr4>
     <Antlr4 Include="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
     </Antlr4>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="CustomBuild.targets">
       <SubType>Designer</SubType>
     </None>
@@ -417,17 +420,58 @@
       <Name>Nav.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Antlr4">
+      <Version>4.6.5</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Antlr4.CodeGenerator">
+      <Version>4.6.5</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Antlr4.Runtime">
+      <Version>4.6.5</Version>
+    </PackageReference>
+    <PackageReference Include="StringTemplate4">
+      <Version>4.0.8</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>1.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Diagnostics.Debug">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Globalization">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Memory">
+      <Version>4.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Resources.ResourceManager">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.Extensions">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading">
+      <Version>4.3.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="CustomBuild.targets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.props'))" />
-    <Error Condition="!Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets'))" />
-  </Target>
-  <Import Project="..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets" Condition="Exists('..\packages\Antlr4.CodeGenerator.4.6.4\build\Antlr4.CodeGenerator.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

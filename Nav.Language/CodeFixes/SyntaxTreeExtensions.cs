@@ -15,27 +15,27 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
     static class SyntaxTreeExtensions {
 
         [NotNull]
-        public static IEnumerable<TextChange> GetRemoveSyntaxNodeChanges(this SyntaxTree syntaxTree, SyntaxNode syntaxNode, EditorSettings editorSettings) {
+        public static IEnumerable<TextChange> GetRemoveSyntaxNodeChanges(this SyntaxTree syntaxTree, SyntaxNode syntaxNode, TextEditorSettings textEditorSettings) {
 
             var fullExtent = syntaxNode.GetFullExtent(onlyWhiteSpace: true);
-            yield return new TextChange(fullExtent, String.Empty);
+            yield return TextChange.NewRemove(fullExtent);
 
-            var lineExtent = syntaxTree.GetTextLineExtentAtPosition(fullExtent.End - 1).Extent;
+            var lineExtent = syntaxTree.SourceText.GetTextLineAtPosition(fullExtent.End - 1).Extent;
             // Prinzipiell enthalten die TrailingTrivia auch das NL Token. Wenn wir aber nicht die einzige Syntax in der Zeile sind,
             // soll das NL erhalten bleiben. Deswegen schieben wir das durch den fullExtent gelöschte NL hier wieder ein.
             if (fullExtent.Start > lineExtent.Start && fullExtent.End == lineExtent.End) {
-                yield return new TextChange(TextExtent.FromBounds(lineExtent.End, lineExtent.End), editorSettings.NewLine);
+                yield return TextChange.NewInsert(lineExtent.End, textEditorSettings.NewLine);
             }
         }
 
         [NotNull]
-        public static IEnumerable<TextChange> GetRenameSourceChanges(this SyntaxTree syntaxTree, ITransition transition, string newSourceName, EditorSettings editorSettings) {
+        public static IEnumerable<TextChange> GetRenameSourceChanges(this SyntaxTree syntaxTree, ITransition transition, string newSourceName, TextEditorSettings textEditorSettings) {
 
             if (transition?.SourceReference == null) {
                 yield break;
             }
 
-            var replaceText = newSourceName;
+            var replaceText     = newSourceName;
             var replaceLocation = transition.SourceReference.Location;
 
             var replaceExtent = replaceLocation.Extent;
@@ -43,7 +43,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 // Find the First non-Whitespace Token after Source Edge
                 var firstNoneWhitespaceToken = syntaxTree.FirstNoneWhitespaceToken(TextExtent.FromBounds(replaceLocation.End, transition.EdgeMode.End));
                 if (!firstNoneWhitespaceToken.IsMissing) {
-                    var availableSpace = replaceLocation.Length + syntaxTree.ColumnsBetweenLocations(replaceLocation, firstNoneWhitespaceToken.GetLocation(), editorSettings);
+                    var availableSpace = replaceLocation.Length + syntaxTree.SourceText.ColumnsBetweenLocations(replaceLocation, firstNoneWhitespaceToken.GetLocation(), textEditorSettings);
 
                     replaceExtent = TextExtent.FromBounds(replaceLocation.Start, firstNoneWhitespaceToken.Start);
 
@@ -53,23 +53,23 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 }
             }
 
-            yield return new TextChange(replaceExtent, replaceText);
+            yield return TextChange.NewReplace(replaceExtent, replaceText);
         }
 
         [NotNull]
-        public static IEnumerable<TextChange> GetRenameSourceChanges(this SyntaxTree syntaxTree, IExitTransition transition, string newSourceName, EditorSettings editorSettings) {
+        public static IEnumerable<TextChange> GetRenameSourceChanges(this SyntaxTree syntaxTree, IExitTransition transition, string newSourceName, TextEditorSettings textEditorSettings) {
 
-            if (transition?.SourceReference == null || transition.ConnectionPointReference == null) {
+            if (transition?.SourceReference == null || transition.ExitConnectionPointReference == null) {
                 yield break;
             }
 
-            var replaceText = $"{newSourceName}{SyntaxFacts.Colon}{transition.ConnectionPointReference.Name}";
+            var replaceText = $"{newSourceName}{SyntaxFacts.Colon}{transition.ExitConnectionPointReference.Name}";
             var replaceLocation = new Location(
-                extent: TextExtent.FromBounds(transition.SourceReference.Start, transition.ConnectionPointReference.End),
-                linePositionExtent: new LinePositionExtent(
+                extent: TextExtent.FromBounds(transition.SourceReference.Start, transition.ExitConnectionPointReference.End),
+                lineRange: new LineRange(
                     start: transition.SourceReference.Location.StartLinePosition,
-                    end: transition.ConnectionPointReference.Location.EndLinePosition),
-                filePath: transition.ConnectionPointReference.Location.FilePath);
+                    end: transition.ExitConnectionPointReference.Location.EndLinePosition),
+                filePath: transition.ExitConnectionPointReference.Location.FilePath);
 
             var replaceExtent = replaceLocation.Extent;
             if (transition.EdgeMode != null && transition.SourceReference.Location.EndLine == transition.EdgeMode.Location.StartLine) {
@@ -77,7 +77,7 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 var firstNoneWhitespaceToken = syntaxTree.FirstNoneWhitespaceToken(TextExtent.FromBounds(replaceLocation.End, transition.EdgeMode.End));
                 if (!firstNoneWhitespaceToken.IsMissing) {
 
-                    var availableSpace = replaceLocation.Length + syntaxTree.ColumnsBetweenLocations(replaceLocation, firstNoneWhitespaceToken.GetLocation(), editorSettings);
+                    var availableSpace = replaceLocation.Length + syntaxTree.SourceText.ColumnsBetweenLocations(replaceLocation, firstNoneWhitespaceToken.GetLocation(), textEditorSettings);
 
                     replaceExtent = TextExtent.FromBounds(replaceLocation.Start, firstNoneWhitespaceToken.Start);
 
@@ -87,101 +87,47 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 }
             }
 
-            yield return new TextChange(replaceExtent, replaceText);
+            yield return TextChange.NewReplace(replaceExtent, replaceText);
         }
 
-        public static string ComposeEdge(this SyntaxTree syntaxTree, IEdge templateEdge, string sourceName, string edgeKeyword, string targetName, EditorSettings editorSettings) {
+        public static string ComposeEdge(this SyntaxTree syntaxTree, IEdge templateEdge, string sourceName, string edgeKeyword, string targetName, TextEditorSettings textEditorSettings) {
 
-            string indent = new string(' ', editorSettings.TabSize);
+            string indent = new string(' ', textEditorSettings.TabSize);
             if (templateEdge.SourceReference != null) {
-                var templateEdgeLine = syntaxTree.GetTextLineExtentAtPosition(templateEdge.SourceReference.Start);
-                indent = syntaxTree.GetLineIndent(templateEdgeLine, editorSettings);
+                var templateEdgeLine = syntaxTree.SourceText.GetTextLineAtPosition(templateEdge.SourceReference.Start);
+                indent = templateEdgeLine.GetIndentAsSpaces(textEditorSettings.TabSize);
             }
 
-            var whiteSpaceBetweenSourceAndEdgeMode = syntaxTree.WhiteSpaceBetweenSourceAndEdgeMode(templateEdge, sourceName, editorSettings);
-            var whiteSpaceBetweenEdgeModeAndTarget = syntaxTree.WhiteSpaceBetweenEdgeModeAndTarget(templateEdge, editorSettings);
+            var whiteSpaceBetweenSourceAndEdgeMode = syntaxTree.WhiteSpaceBetweenSourceAndEdgeMode(templateEdge, sourceName, textEditorSettings);
+            var whiteSpaceBetweenEdgeModeAndTarget = syntaxTree.WhiteSpaceBetweenEdgeModeAndTarget(templateEdge, textEditorSettings);
 
             var exitTransition = $"{indent}{sourceName}{whiteSpaceBetweenSourceAndEdgeMode}{edgeKeyword}{whiteSpaceBetweenEdgeModeAndTarget}{targetName}{SyntaxFacts.Semicolon}";
             return exitTransition;
         }
 
-        public static string WhiteSpaceBetweenSourceAndEdgeMode(this SyntaxTree syntaxTree, IEdge edge, string newSourceName, EditorSettings editorSettings) {
+        public static string WhiteSpaceBetweenSourceAndEdgeMode(this SyntaxTree syntaxTree, IEdge edge, string newSourceName, TextEditorSettings textEditorSettings) {
 
             if (edge.SourceReference == null || edge.EdgeMode == null) {
                 return " ";
             }
 
-            var oldOffset = syntaxTree.ColumnsBetweenLocations(edge.SourceReference.Location, edge.EdgeMode.Location, editorSettings);
+            var oldOffset = syntaxTree.SourceText.ColumnsBetweenLocations(edge.SourceReference.Location, edge.EdgeMode.Location, textEditorSettings);
 
             var oldLength = edge.SourceReference.Location.Length;
             var newLength = newSourceName.Length;
-            var offset = Math.Max(1, oldOffset + oldLength - newLength);
+            var offset    = Math.Max(1, oldOffset + oldLength - newLength);
 
             return new String(' ', offset);
         }
 
-        public static string WhiteSpaceBetweenEdgeModeAndTarget(this SyntaxTree syntaxTree, IEdge edge, EditorSettings editorSettings) {
+        public static string WhiteSpaceBetweenEdgeModeAndTarget(this SyntaxTree syntaxTree, IEdge edge, TextEditorSettings textEditorSettings) {
 
             if (edge.EdgeMode == null || edge.TargetReference == null) {
                 return " ";
             }
-            var offset = syntaxTree.ColumnsBetweenLocations(edge.EdgeMode.Location, edge.TargetReference.Location, editorSettings);
+
+            var offset = syntaxTree.SourceText.ColumnsBetweenLocations(edge.EdgeMode.Location, edge.TargetReference.Location, textEditorSettings);
             return new String(' ', offset);
-        }
-
-        public static int ColumnsBetweenLocations(this SyntaxTree syntaxTree, Location location1, Location location2, EditorSettings editorSettings) {
-
-            if (location1 == null || location2 == null) {
-                return 0;
-            }
-   
-            int spaceCount;
-            if (location1.EndLine != location2.StartLine) {
-                // Locations in unterschiedliche Zeilen
-                var column = syntaxTree.GetStartColumn(location2, editorSettings);
-                spaceCount = column;
-            }
-            else {
-                // Locations in selber Zeile
-                var startColumn = syntaxTree.GetEndColumn(location1, editorSettings);
-                var endColumn = syntaxTree.GetStartColumn(location2, editorSettings);
-
-                spaceCount = Math.Max(1, endColumn - startColumn);
-            }
-
-            return Math.Max(1, spaceCount);
-        }
-
-        public static int GetEndColumn(this SyntaxTree syntaxTree, Location location, EditorSettings editorSettings) {
-            var endLineExtent = syntaxTree.GetTextLineExtentAtPosition(location.End);
-            var lineStartIndex = endLineExtent.Extent.Start;
-            var length = location.EndLinePosition.Character;
-
-            var text = syntaxTree.SourceText.Substring(lineStartIndex, length);
-            var column = text.GetColumnForOffset(editorSettings.TabSize, length);
-
-            return column;
-        }
-
-        public static int GetStartColumn(this SyntaxTree syntaxTree, Location location, EditorSettings editorSettings) {
-
-            var startLineExtent = syntaxTree.GetTextLineExtentAtPosition(location.Start);
-            var lineStartIndex = startLineExtent.Extent.Start;
-            var length = location.StartLinePosition.Character;
-
-            var text = syntaxTree.SourceText.Substring(lineStartIndex, length);
-            var column = text.GetColumnForOffset(editorSettings.TabSize, length);
-
-            return column;
-        }
-
-        public static string GetLineIndent(this SyntaxTree syntaxTree, TextLineExtent lineExtent, EditorSettings editorSettings) {
-
-            var line = syntaxTree.SourceText.Substring(lineExtent.Extent.Start, lineExtent.Extent.Length);
-
-            var startColumn = line.GetSignificantColumn(editorSettings.TabSize);
-
-            return new String(' ', startColumn);
         }
 
         public static SyntaxToken FirstNoneWhitespaceToken(this SyntaxTree syntaxTree, TextExtent extent) {
@@ -190,23 +136,23 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                              .FirstOrDefault();
         }
 
-        public static int ColumnsBetweenKeywordAndIdentifier(this SyntaxTree syntaxTree, INodeSymbol node, string newKeyword, EditorSettings editorSettings) {
+        public static int ColumnsBetweenKeywordAndIdentifier(this SyntaxTree syntaxTree, INodeSymbol node, string newKeyword, TextEditorSettings textEditorSettings) {
 
             var locations = KeywordAndIdentifierFinder.Find(node.Syntax);
             if (locations == null) {
                 return 1;
             }
 
-            var oldOffset = syntaxTree.ColumnsBetweenLocations(locations.Item1, locations.Item2, editorSettings);
+            var oldOffset = syntaxTree.SourceText.ColumnsBetweenLocations(locations.Item1, locations.Item2, textEditorSettings);
 
-            var oldLength = locations.Item1.Length;
-            var newLength = newKeyword?.Length ?? oldLength;
+            var oldLength  = locations.Item1.Length;
+            var newLength  = newKeyword?.Length ?? oldLength;
             var spaceCount = Math.Max(1, oldOffset + oldLength - newLength);
 
             return spaceCount;
         }
 
-        sealed class KeywordAndIdentifierFinder : SyntaxNodeVisitor<Tuple<Location, Location>> {
+        sealed class KeywordAndIdentifierFinder: SyntaxNodeVisitor<Tuple<Location, Location>> {
 
             public static Tuple<Location, Location> Find(NodeDeclarationSyntax nodeDeclaration) {
 
@@ -247,8 +193,12 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                 if (token1.IsMissing || token2.IsMissing) {
                     return null;
                 }
+
                 return new Tuple<Location, Location>(token1.GetLocation(), token2.GetLocation());
             }
+
         }
+
     }
+
 }

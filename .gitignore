@@ -37,5 +37,9 @@
 
 /.vs
 /**/*.generated.cs
+/**/*.nuget.cache
+/**/*.nuget.g.props
+/**/*.nuget.g.targets
+/**/project.assets.json
 TestResult.xml
 

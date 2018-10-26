@@ -1,30 +1,22 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-	
-	
-	
+	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=C88AACD6_002D6973_002D430B_002DA94B_002D4CC45B37F32D_002Fd_003ACommands_002Ff_003APasteCommandHandler_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
+	<s:Boolean x:Key="/Default/CodeStyle/EncapsulateField/UseAutoProperty/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
-  &lt;Assembly Path="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\PrivateAssemblies\Microsoft.VisualStudio.Text.Internal.dll" /&gt;&#xD;
-  &lt;Assembly Path="C:\ws\git\Nav.Language.Extensions\packages\Microsoft.VisualStudio.Shell.15.0.15.0.26201\lib\Microsoft.VisualStudio.Shell.15.0.dll" /&gt;&#xD;
-  &lt;Assembly Path="C:\ws\Nav.Language.Extensions\packages\Microsoft.VisualStudio.ImageCatalog.14.3.25407\lib\net45\Microsoft.VisualStudio.ImageCatalog.dll" /&gt;&#xD;
-  &lt;Assembly Path="C:\ws\git\Nav.Language.Extensions\packages\System.Collections.Immutable.1.3.1\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll" /&gt;&#xD;
-  &lt;Assembly Path="C:\ws\git\Nav.Language.Extensions\packages\System.Reflection.Metadata.1.4.2\lib\portable-net45+win8\System.Reflection.Metadata.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\antlr4.runtime\4.6.4\lib\net45\Antlr4.Runtime.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.visualstudio.text.ui\15.6.27740\lib\net46\Microsoft.VisualStudio.Text.UI.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.visualstudio.text.ui\15.8.525\lib\net46\Microsoft.VisualStudio.Text.UI.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.visualstudio.text.ui.wpf\15.6.27740\lib\net46\Microsoft.VisualStudio.Text.UI.Wpf.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\rx-linq\2.2.5\lib\net45\System.Reactive.Linq.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
-	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndex/@EntryValue">2</s:Int64>
-	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">03/23/2018 09:26:46</s:String>
-	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialogView/Position/@EntryValue">[44,0](1315,870)</s:String>
-	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/RefactoringWizardWindow/Location/@EntryValue">-34,-404</s:String>
-	<s:String x:Key="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue">CodeAnnotations</s:String>
-	<s:Double x:Key="/Default/Housekeeping/TreeModelBrowserPanelPersistence/PreviewSplitterVerticalProportion/=UnitTestSessionDescriptor/@EntryIndexedValue">1.7439598915755208</s:Double>
+	<s:Int64 x:Key="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue">20</s:Int64>
+	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndex/@EntryValue">9</s:Int64>
+	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">09/28/2018 07:56:53</s:String>
+	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialogView/Position/@EntryValue">[0,0](1280,688.666666666667)</s:String>
+	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/RefactoringWizardWindow/Location/@EntryValue">-704,-338</s:String>
+	<s:String x:Key="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue">ReSpellerSettings</s:String>
+	<s:Double x:Key="/Default/Housekeeping/TreeModelBrowserPanelPersistence/PreviewSplitterVerticalProportion/=UnitTestSessionDescriptor/@EntryIndexedValue">1.0480069305779998</s:Double>
 	
 	
 	
 	
-	
-	
-	
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/@KeyIndexDefined">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/Color/@EntryValue">Blue</s:String>
-	<s:Boolean x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/MatchComments/@EntryValue">True</s:Boolean>
-	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/Name/@EntryValue">Hack</s:String>
-	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/Pattern/@EntryValue">(?&lt;=\W|^)(?&lt;TAG&gt;Haxk)(\W|$)(.*)</s:String>
-	<s:String x:Key="/Default/PatternsAndTemplates/Todo/TodoPatterns/=B5FD67307342E64F9A129859B76759DC/TodoIconStyle/@EntryValue">Edit</s:String></wpf:ResourceDictionary>
+	</wpf:ResourceDictionary>

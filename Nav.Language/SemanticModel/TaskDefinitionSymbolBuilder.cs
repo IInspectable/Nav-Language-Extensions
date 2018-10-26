@@ -6,7 +6,7 @@ using System.Collections.Generic;
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-    
+
     sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
 
         readonly IReadOnlySymbolCollection<TaskDeclarationSymbol> _taskDeklarations;
@@ -64,7 +64,7 @@ namespace Pharmatechnik.Nav.Language {
             if (!taskAlias.IsMissing) {
                 var aliasName     = taskAlias.ToString();
                 var aliasLocation = taskAlias.GetLocation();
-                initNodeAlias = new InitNodeAliasSymbol(aliasName, aliasLocation);
+                initNodeAlias = new InitNodeAliasSymbol(initNodeDeclarationSyntax.SyntaxTree, aliasName, aliasLocation);
             }
 
             var location = identifier.GetLocation();
@@ -122,7 +122,7 @@ namespace Pharmatechnik.Nav.Language {
             if (!taskAlias.IsMissing) {
                 var aliasName     = taskAlias.ToString();
                 var aliasLocation = taskAlias.GetLocation();
-                taskNodeAlias = new TaskNodeAliasSymbol(aliasName, aliasLocation);
+                taskNodeAlias = new TaskNodeAliasSymbol(taskNodeDeclarationSyntax.SyntaxTree, aliasName, aliasLocation);
             }
 
             var taskName        = taskIdentifier.ToString();
@@ -213,7 +213,7 @@ namespace Pharmatechnik.Nav.Language {
 
                 var edgeLocation = edgeSyntax.GetLocation();
                 if (edgeLocation != null) {
-                    edgeMode = new EdgeModeSymbol(edgeSyntax.ToString(), edgeLocation, edgeSyntax.Mode);
+                    edgeMode = new EdgeModeSymbol(transitionDefinitionSyntax.SyntaxTree, edgeSyntax.ToString(), edgeLocation, edgeSyntax.Mode);
                 }
             }
 
@@ -239,10 +239,10 @@ namespace Pharmatechnik.Nav.Language {
 
             switch (sourceNode) {
                 case null:
-                   _diagnostics.Add(new Diagnostic(
-                                        sourceNodeLocation,
-                                        DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0,
-                                        sourceNodeSyntax.Name));
+                    _diagnostics.Add(new Diagnostic(
+                                         sourceNodeLocation,
+                                         DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0,
+                                         sourceNodeSyntax.Name));
                     break;
                 case TaskNodeSymbol _:
                     _diagnostics.Add(new Diagnostic(
@@ -261,42 +261,42 @@ namespace Pharmatechnik.Nav.Language {
                                          DiagnosticDescriptors.Semantic.Nav0102EndNodeMustNotContainLeavingEdges));
                     break;
                 case InitNodeSymbol initNode:
-                    AddInitTransition(initNode                     : initNode,
-                                      transitionDefinitionSyntax   : transitionDefinitionSyntax,
-                                      sourceNodeSyntax             : sourceNodeSyntax,
-                                      sourceNodeLocation           : sourceNodeLocation,
-                                      edgeMode                     : edgeMode,
-                                      targetNodeReference          : targetNodeReference);
+                    AddInitTransition(initNode                  : initNode,
+                                      transitionDefinitionSyntax: transitionDefinitionSyntax,
+                                      sourceNodeSyntax          : sourceNodeSyntax,
+                                      sourceNodeLocation        : sourceNodeLocation,
+                                      edgeMode                  : edgeMode,
+                                      targetNodeReference       : targetNodeReference);
                     break;
-                case ChoiceNodeSymbol choiceNode                   :
-                    AddChoiceTransition(choiceNode                 : choiceNode,
-                                        transitionDefinitionSyntax : transitionDefinitionSyntax, 
-                                        sourceNodeSyntax           : sourceNodeSyntax, 
-                                        sourceNodelocation         : sourceNodeLocation, 
-                                        edgeMode                   : edgeMode, 
-                                        targetNodeReference        : targetNodeReference);
+                case ChoiceNodeSymbol choiceNode:
+                    AddChoiceTransition(choiceNode                : choiceNode,
+                                        transitionDefinitionSyntax: transitionDefinitionSyntax,
+                                        sourceNodeSyntax          : sourceNodeSyntax,
+                                        sourceNodelocation        : sourceNodeLocation,
+                                        edgeMode                  : edgeMode,
+                                        targetNodeReference       : targetNodeReference);
                     break;
-                case DialogNodeSymbol dialogNode                   :
+                case DialogNodeSymbol dialogNode:
                     AddTriggerTransition(guiNode                   : dialogNode,
-                                         transitionDefinitionSyntax: transitionDefinitionSyntax, 
-                                         sourceNodeSyntax          : sourceNodeSyntax, 
-                                         sourceNodelocation        : sourceNodeLocation, 
-                                         edgeMode                  : edgeMode, 
+                                         transitionDefinitionSyntax: transitionDefinitionSyntax,
+                                         sourceNodeSyntax          : sourceNodeSyntax,
+                                         sourceNodelocation        : sourceNodeLocation,
+                                         edgeMode                  : edgeMode,
                                          targetNodeReference       : targetNodeReference);
                     break;
-                case ViewNodeSymbol viewNodeNode                   :
+                case ViewNodeSymbol viewNodeNode:
                     AddTriggerTransition(guiNode                   : viewNodeNode,
-                                         transitionDefinitionSyntax: transitionDefinitionSyntax, 
-                                         sourceNodeSyntax          : sourceNodeSyntax, 
-                                         sourceNodelocation        : sourceNodeLocation, 
-                                         edgeMode                  : edgeMode, 
+                                         transitionDefinitionSyntax: transitionDefinitionSyntax,
+                                         sourceNodeSyntax          : sourceNodeSyntax,
+                                         sourceNodelocation        : sourceNodeLocation,
+                                         edgeMode                  : edgeMode,
                                          targetNodeReference       : targetNodeReference);
                     break;
             }
         }
-        
+
         public override void VisitExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax) {
-            
+
             // Source
             ITaskNodeSymbol            sourceTaskNodeSymbol = null;
             TaskNodeReferenceSymbol    sourceNodeReference  = null;
@@ -308,12 +308,12 @@ namespace Pharmatechnik.Nav.Language {
                 var sourceNodeLocation = sourceNodeSyntax.GetLocation();
 
                 if (sourceNodeLocation != null) {
-                    sourceNodeReference = new TaskNodeReferenceSymbol(sourceNodeSyntax.Name, sourceNodeLocation, sourceTaskNodeSymbol, NodeReferenceType.Source);
+                    sourceNodeReference = new TaskNodeReferenceSymbol(exitTransitionDefinitionSyntax.SyntaxTree, sourceNodeSyntax.Name, sourceNodeLocation, sourceTaskNodeSymbol, NodeReferenceType.Source);
                 }
             }
 
             // ConnectionPoint
-            ConnectionPointReferenceSymbol connectionPointReference = null;
+            ExitConnectionPointReferenceSymbol exitConnectionPointReference = null;
             var                            exitIdentifier           = exitTransitionDefinitionSyntax.ExitIdentifier;
             if (!exitIdentifier.IsMissing && sourceTaskNodeSymbol != null) {
 
@@ -322,7 +322,7 @@ namespace Pharmatechnik.Nav.Language {
                 var location            = exitIdentifier.GetLocation();
 
                 if (location != null) {
-                    connectionPointReference = new ConnectionPointReferenceSymbol(exitIdentifierName, location, exitConnectionPoint);
+                    exitConnectionPointReference = new ExitConnectionPointReferenceSymbol(exitTransitionDefinitionSyntax.SyntaxTree, exitIdentifierName, location, exitConnectionPoint);
                 }
             }
 
@@ -337,16 +337,16 @@ namespace Pharmatechnik.Nav.Language {
                 var location = edgeSyntax.GetLocation();
 
                 if (location != null) {
-                    edgeMode = new EdgeModeSymbol(edgeSyntax.ToString(), location, edgeSyntax.Mode);
+                    edgeMode = new EdgeModeSymbol(exitTransitionDefinitionSyntax.SyntaxTree, edgeSyntax.ToString(), location, edgeSyntax.Mode);
                 }
             }
 
-            AddExitTransition(exitTransitionDefinitionSyntax, sourceNodeReference, connectionPointReference, edgeMode, targetNodeReference);
+            AddExitTransition(exitTransitionDefinitionSyntax, sourceNodeReference, exitConnectionPointReference, edgeMode, targetNodeReference);
         }
 
-        private void AddExitTransition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax, TaskNodeReferenceSymbol sourceNodeReference, ConnectionPointReferenceSymbol connectionPointReference, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
+        private void AddExitTransition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax, TaskNodeReferenceSymbol sourceNodeReference, ExitConnectionPointReferenceSymbol exitConnectionPointReference, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
-            var exitTransition = new ExitTransition(exitTransitionDefinitionSyntax, _taskDefinition, sourceNodeReference, connectionPointReference, edgeMode, targetNodeReference);
+            var exitTransition = new ExitTransition(exitTransitionDefinitionSyntax, _taskDefinition, sourceNodeReference, exitConnectionPointReference, edgeMode, targetNodeReference);
             var taskNode       = exitTransition.TaskNodeSourceReference?.Declaration as TaskNodeSymbol;
 
             _taskDefinition.ExitTransitions.Add(exitTransition);
@@ -359,20 +359,20 @@ namespace Pharmatechnik.Nav.Language {
 
         private void AddInitTransition(InitNodeSymbol initNode, TransitionDefinitionSyntax transitionDefinitionSyntax, SourceNodeSyntax sourceNodeSyntax, Location sourceNodeLocation, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
-            var initNodeReference = new InitNodeReferenceSymbol(sourceNodeSyntax.Name, sourceNodeLocation, initNode, NodeReferenceType.Source);
+            var initNodeReference = new InitNodeReferenceSymbol(sourceNodeSyntax.SyntaxTree, sourceNodeSyntax.Name, sourceNodeLocation, initNode, NodeReferenceType.Source);
             var initTransition    = new InitTransition(transitionDefinitionSyntax, _taskDefinition, initNodeReference, edgeMode, targetNodeReference);
 
             _taskDefinition.InitTransitions.Add(initTransition);
 
             initNode.Outgoings.Add(initTransition);
             initNode.References.Add(initTransition.SourceReference);
-            
+
             WireTargetNodeReferences(initTransition);
         }
 
         private void AddChoiceTransition(ChoiceNodeSymbol choiceNode, TransitionDefinitionSyntax transitionDefinitionSyntax, SourceNodeSyntax sourceNodeSyntax, Location sourceNodelocation, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
-            var choiceNodeReference = new ChoiceNodeReferenceSymbol(sourceNodeSyntax.Name, sourceNodelocation, choiceNode, NodeReferenceType.Source);
+            var choiceNodeReference = new ChoiceNodeReferenceSymbol(sourceNodeSyntax.SyntaxTree, sourceNodeSyntax.Name, sourceNodelocation, choiceNode, NodeReferenceType.Source);
             var choiceTransition    = new ChoiceTransition(transitionDefinitionSyntax, _taskDefinition, choiceNodeReference, edgeMode, targetNodeReference);
 
             _taskDefinition.ChoiceTransitions.Add(choiceTransition);
@@ -385,11 +385,11 @@ namespace Pharmatechnik.Nav.Language {
 
         private void AddTriggerTransition(IGuiNodeSymbolConstruction guiNode, TransitionDefinitionSyntax transitionDefinitionSyntax, SourceNodeSyntax sourceNodeSyntax, Location sourceNodelocation, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
-            (var triggers, var diagnostics) = TriggerSymbolBuilder.Build(transitionDefinitionSyntax);
+            var (triggers, diagnostics) = TriggerSymbolBuilder.Build(transitionDefinitionSyntax);
 
             _diagnostics.AddRange(diagnostics);
 
-            var guiNodeReference  = new GuiNodeReferenceSymbol(sourceNodeSyntax.Name, sourceNodelocation, guiNode, NodeReferenceType.Source);
+            var guiNodeReference  = new GuiNodeReferenceSymbol(sourceNodeSyntax.SyntaxTree, sourceNodeSyntax.Name, sourceNodelocation, guiNode, NodeReferenceType.Source);
             var triggerTransition = new TriggerTransition(transitionDefinitionSyntax, _taskDefinition, guiNodeReference, edgeMode, targetNodeReference, triggers);
 
             _taskDefinition.TriggerTransitions.Add(triggerTransition);
@@ -413,34 +413,34 @@ namespace Pharmatechnik.Nav.Language {
                 return null;
             }
 
-            NodeReferenceSymbol targetNodeReference=null;
+            NodeReferenceSymbol targetNodeReference;
             switch (targetNodeDeclaration) {
                 case IInitNodeSymbol initNode:
-                    targetNodeReference = new InitNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, initNode, NodeReferenceType.Target);
+                    targetNodeReference = new InitNodeReferenceSymbol(targetNodeSyntax.SyntaxTree, targetNodeSyntax.Name, targetNodeLocation, initNode, NodeReferenceType.Target);
                     break;
                 case IChoiceNodeSymbol choiceNode:
-                    targetNodeReference = new ChoiceNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, choiceNode, NodeReferenceType.Target);
+                    targetNodeReference = new ChoiceNodeReferenceSymbol(targetNodeSyntax.SyntaxTree, targetNodeSyntax.Name, targetNodeLocation, choiceNode, NodeReferenceType.Target);
                     break;
                 case ITaskNodeSymbol taskNode:
-                    targetNodeReference = new TaskNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, taskNode, NodeReferenceType.Target);
+                    targetNodeReference = new TaskNodeReferenceSymbol(targetNodeSyntax.SyntaxTree, targetNodeSyntax.Name, targetNodeLocation, taskNode, NodeReferenceType.Target);
                     break;
                 case IGuiNodeSymbol guiNode:
-                    targetNodeReference = new GuiNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, guiNode, NodeReferenceType.Target);
+                    targetNodeReference = new GuiNodeReferenceSymbol(targetNodeSyntax.SyntaxTree, targetNodeSyntax.Name, targetNodeLocation, guiNode, NodeReferenceType.Target);
                     break;
                 case IExitNodeSymbol exitNode:
-                    targetNodeReference = new ExitNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, exitNode, NodeReferenceType.Target);
+                    targetNodeReference = new ExitNodeReferenceSymbol(targetNodeSyntax.SyntaxTree, targetNodeSyntax.Name, targetNodeLocation, exitNode, NodeReferenceType.Target);
                     break;
                 case IEndNodeSymbol endNode:
-                    targetNodeReference = new EndNodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, endNode, NodeReferenceType.Target);
+                    targetNodeReference = new EndNodeReferenceSymbol(targetNodeSyntax.SyntaxTree, targetNodeSyntax.Name, targetNodeLocation, endNode, NodeReferenceType.Target);
                     break;
                 default:
-                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.Name, targetNodeLocation, targetNodeDeclaration, NodeReferenceType.Target);
+                    targetNodeReference = new NodeReferenceSymbol(targetNodeSyntax.SyntaxTree, targetNodeSyntax.Name, targetNodeLocation, targetNodeDeclaration, NodeReferenceType.Target);
                     break;
             }
-            
+
             return targetNodeReference;
         }
-        
+
         private static void WireTargetNodeReferences(IEdge edge) {
 
             //==============================
@@ -486,7 +486,7 @@ namespace Pharmatechnik.Nav.Language {
 
         public static (
             TaskDefinitionSymbol TaskDefinition,
-            List<Diagnostic>     Diagnostics)
+            List<Diagnostic> Diagnostics)
             Build(TaskDefinitionSyntax taskDefinitionSyntax, IReadOnlySymbolCollection<TaskDeclarationSymbol> taskDeklarations) {
 
             var builder = new TaskDefinitionSymbolBuilder(taskDeklarations);

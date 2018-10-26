@@ -1,10 +1,15 @@
 using System;
 
-namespace Pharmatechnik.Nav.Language {
-    [Serializable]
-    public abstract class CodeTypeSyntax : SyntaxNode {
+using Pharmatechnik.Nav.Language.Text;
 
-        protected CodeTypeSyntax(TextExtent extent) : base(extent) {
+namespace Pharmatechnik.Nav.Language {
+
+    [Serializable]
+    public abstract class CodeTypeSyntax: SyntaxNode {
+
+        protected CodeTypeSyntax(TextExtent extent): base(extent) {
         }
+
     }
+
 }

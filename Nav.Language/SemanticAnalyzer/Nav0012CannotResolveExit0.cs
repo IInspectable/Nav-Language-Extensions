@@ -12,11 +12,11 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
             //==============================
             foreach (var exitTransition in taskDefinition.ExitTransitions) {
 
-                if (exitTransition.ConnectionPointReference != null && exitTransition.ConnectionPointReference.Declaration == null) {
+                if (exitTransition.ExitConnectionPointReference != null && exitTransition.ExitConnectionPointReference.Declaration == null) {
                     yield return new Diagnostic(
-                        exitTransition.ConnectionPointReference.Location,
+                        exitTransition.ExitConnectionPointReference.Location,
                         Descriptor,
-                        exitTransition.ConnectionPointReference.Name);
+                        exitTransition.ExitConnectionPointReference.Name);
 
                 }
             }

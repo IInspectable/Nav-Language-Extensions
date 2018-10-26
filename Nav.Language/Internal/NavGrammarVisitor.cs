@@ -7,58 +7,60 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 
 using Pharmatechnik.Nav.Language.Generated;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Internal {
 
-    sealed class NavGrammarVisitor : NavGrammarBaseVisitor<SyntaxNode> {
-
-        readonly List<SyntaxToken> _tokens;
+    sealed class NavGrammarVisitor: NavGrammarBaseVisitor<SyntaxNode> {
 
         public NavGrammarVisitor(int expectedTokenCount) {
-            _tokens = new List<SyntaxToken>(capacity: expectedTokenCount);
+            Tokens = new List<SyntaxToken>(capacity: expectedTokenCount);
         }
-        
-        public List<SyntaxToken> Tokens => _tokens;
+
+        public List<SyntaxToken> Tokens { get; }
 
         #region CodeGenerationUnit
 
-        public override SyntaxNode VisitCodeGenerationUnit([NotNull] NavGrammarParser.CodeGenerationUnitContext context) {
+        public override SyntaxNode VisitCodeGenerationUnit([NotNull] NavGrammar.CodeGenerationUnitContext context) {
 
             var node = new CodeGenerationUnitSyntax(
                 CreateExtent(context),
-                codeNamespaceDeclaration: 
+                codeNamespaceDeclaration:
                 context.codeNamespaceDeclaration()
                        .Optional(VisitCodeNamespaceDeclaration)
                        .OfSyntaxType<CodeNamespaceDeclarationSyntax>(),
-                codeUsingDeclarations: 
+                codeUsingDeclarations:
                 context.codeUsingDeclaration()
                        .ZeroOrMore(VisitCodeUsingDeclaration)
                        .OfSyntaxType<CodeUsingDeclarationSyntax>()
                        .ToReadOnlyList(expectedCapacity: context.codeUsingDeclaration().Length),
-                memberDeclarations:                
+                memberDeclarations:
                 context.memberDeclaration()
                        .ZeroOrMore(VisitMemberDeclaration)
                        .OfSyntaxType<MemberDeclarationSyntax>()
                        .ToReadOnlyList(expectedCapacity: context.memberDeclaration().Length)
-              );
+            );
 
-            CreateToken(node, context.Eof(), SyntaxTokenClassification.Whitespace);
+            CreateToken(node, context.Eof(), TextClassification.Whitespace);
 
             return node;
         }
 
-        public override SyntaxNode VisitMemberDeclaration(NavGrammarParser.MemberDeclarationContext context) {
+        public override SyntaxNode VisitMemberDeclaration(NavGrammar.MemberDeclarationContext context) {
             if (context.includeDirective() != null) {
                 return VisitIncludeDirective(context.includeDirective());
             }
+
             if (context.taskDeclaration() != null) {
                 return VisitTaskDeclaration(context.taskDeclaration());
             }
+
             if (context.taskDefinition() != null) {
                 return VisitTaskDefinition(context.taskDefinition());
             }
+
             return null;
         }
 
@@ -66,19 +68,19 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeNamespaceDeclaration
 
-        public override SyntaxNode VisitCodeNamespaceDeclaration([NotNull] NavGrammarParser.CodeNamespaceDeclarationContext context) {
-            
+        public override SyntaxNode VisitCodeNamespaceDeclaration([NotNull] NavGrammar.CodeNamespaceDeclarationContext context) {
+
             var node = new CodeNamespaceDeclarationSyntax(
-                extent:CreateExtent(context),
+                extent: CreateExtent(context),
                 namespaceSyntax:
                 context.identifierOrString()
                        .Optional(VisitIdentifierOrString)
                        .OfSyntaxType<IdentifierOrStringSyntax>()
-                       );
+            );
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.NamespaceprefixKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),            TextClassification.Punctuation);
+            CreateToken(node, context.NamespaceprefixKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),           TextClassification.Punctuation);
 
             return node;
         }
@@ -87,19 +89,19 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeUsingDeclaration
 
-        public override SyntaxNode VisitCodeUsingDeclaration(NavGrammarParser.CodeUsingDeclarationContext context) {
-            
+        public override SyntaxNode VisitCodeUsingDeclaration(NavGrammar.CodeUsingDeclarationContext context) {
+
             var node = new CodeUsingDeclarationSyntax(
-                extent:CreateExtent(context),
+                extent: CreateExtent(context),
                 namespaceSyntax:
                 context.identifierOrString()
                        .Optional(VisitIdentifierOrString)
                        .OfSyntaxType<IdentifierOrStringSyntax>()
-                       );
+            );
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.UsingKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),  TextClassification.Punctuation);
+            CreateToken(node, context.UsingKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
@@ -108,14 +110,14 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region IncludeDirective
 
-        public override SyntaxNode VisitIncludeDirective(NavGrammarParser.IncludeDirectiveContext context) {
-            
+        public override SyntaxNode VisitIncludeDirective(NavGrammar.IncludeDirectiveContext context) {
+
             var node = new IncludeDirectiveSyntax(
                 CreateExtent(context));
 
-            CreateToken(node, context.TaskrefKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.StringLiteral(), SyntaxTokenClassification.StringLiteral);
-            CreateToken(node, context.Semicolon(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.TaskrefKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.StringLiteral(),  TextClassification.StringLiteral);
+            CreateToken(node, context.Semicolon(),      TextClassification.Punctuation);
 
             return node;
         }
@@ -124,47 +126,50 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region TaskDeclaration
 
-        public override SyntaxNode VisitTaskDeclaration(NavGrammarParser.TaskDeclarationContext context) {
-            
+        public override SyntaxNode VisitTaskDeclaration(NavGrammar.TaskDeclarationContext context) {
+
             var node = new TaskDeclarationSyntax(
                 CreateExtent(context),
-                codeNamespaceDeclaration: 
+                codeNamespaceDeclaration:
                 context.codeNamespaceDeclaration()
                        .Optional(VisitCodeNamespaceDeclaration)
                        .OfSyntaxType<CodeNamespaceDeclarationSyntax>(),
-                codeNotImplementedDeclaration: 
+                codeNotImplementedDeclaration:
                 context.codeNotImplementedDeclaration()
                        .Optional(VisitCodeNotImplementedDeclaration)
                        .OfSyntaxType<CodeNotImplementedDeclarationSyntax>(),
-                codeResultDeclaration: 
+                codeResultDeclaration:
                 context.codeResultDeclaration()
                        .Optional(VisitCodeResultDeclaration)
                        .OfSyntaxType<CodeResultDeclarationSyntax>(),
-                connectionPointNodeDeclarations: 
+                connectionPoints:
                 context.connectionPointNodeDeclaration()
                        .ZeroOrMore(VisitConnectionPointNodeDeclaration)
                        .OfSyntaxType<ConnectionPointNodeSyntax>()
                        .ToReadOnlyList(expectedCapacity: context.connectionPointNodeDeclaration().Length)
-                );
+            );
 
-            CreateToken(node, context.TaskrefKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(),     SyntaxTokenClassification.TaskName);
-            CreateToken(node, context.OpenBrace(),      SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseBrace(),     SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.TaskrefKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),     TextClassification.TaskName);
+            CreateToken(node, context.OpenBrace(),      TextClassification.Punctuation);
+            CreateToken(node, context.CloseBrace(),     TextClassification.Punctuation);
 
             return node;
         }
 
-        public override SyntaxNode VisitConnectionPointNodeDeclaration(NavGrammarParser.ConnectionPointNodeDeclarationContext context) {
+        public override SyntaxNode VisitConnectionPointNodeDeclaration(NavGrammar.ConnectionPointNodeDeclarationContext context) {
             if (context.initNodeDeclaration() != null) {
                 return VisitInitNodeDeclaration(context.initNodeDeclaration());
             }
+
             if (context.exitNodeDeclaration() != null) {
                 return VisitExitNodeDeclaration(context.exitNodeDeclaration());
             }
+
             if (context.endNodeDeclaration() != null) {
                 return VisitEndNodeDeclaration(context.endNodeDeclaration());
             }
+
             return null;
         }
 
@@ -172,15 +177,15 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region TaskDefinition
 
-        public override SyntaxNode VisitTaskDefinition(NavGrammarParser.TaskDefinitionContext context) {
-            
+        public override SyntaxNode VisitTaskDefinition(NavGrammar.TaskDefinitionContext context) {
+
             var node = new TaskDefinitionSyntax(
                 CreateExtent(context),
-                codeDeclaration: 
+                codeDeclaration:
                 context.codeDeclaration()
                        .Optional(VisitCodeDeclaration)
                        .OfSyntaxType<CodeDeclarationSyntax>(),
-                codeBaseDeclaration: 
+                codeBaseDeclaration:
                 context.codeBaseDeclaration()
                        .Optional(VisitCodeBaseDeclaration)
                        .OfSyntaxType<CodeBaseDeclarationSyntax>(),
@@ -188,11 +193,11 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.codeGenerateToDeclaration()
                        .Optional(VisitCodeGenerateToDeclaration)
                        .OfSyntaxType<CodeGenerateToDeclarationSyntax>(),
-                codeParamsDeclaration: 
+                codeParamsDeclaration:
                 context.codeParamsDeclaration()
                        .Optional(VisitCodeParamsDeclaration)
                        .OfSyntaxType<CodeParamsDeclarationSyntax>(),
-                codeResultDeclaration: 
+                codeResultDeclaration:
                 context.codeResultDeclaration()
                        .Optional(VisitCodeResultDeclaration)
                        .OfSyntaxType<CodeResultDeclarationSyntax>(),
@@ -204,148 +209,153 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 context.transitionDefinitionBlock()
                        .Optional(VisitTransitionDefinitionBlock)
                        .OfSyntaxType<TransitionDefinitionBlockSyntax>()
-                );
+            );
 
-            CreateToken(node, context.TaskKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier() , SyntaxTokenClassification.TaskName);
-            CreateToken(node, context.OpenBrace()  , SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseBrace() , SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.TaskKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),  TextClassification.TaskName);
+            CreateToken(node, context.OpenBrace(),   TextClassification.Punctuation);
+            CreateToken(node, context.CloseBrace(),  TextClassification.Punctuation);
 
             return node;
         }
 
         #endregion
-        
+
         #region Node Declarations
 
-        public override SyntaxNode VisitNodeDeclarationBlock(NavGrammarParser.NodeDeclarationBlockContext context) {
-            
-            var node= new NodeDeclarationBlockSyntax(
+        public override SyntaxNode VisitNodeDeclarationBlock(NavGrammar.NodeDeclarationBlockContext context) {
+
+            var node = new NodeDeclarationBlockSyntax(
                 CreateExtent(context),
-                nodeDeclarations: 
+                nodeDeclarations:
                 context.nodeDeclaration()
                        .ZeroOrMore(VisitNodeDeclaration)
                        .OfSyntaxType<NodeDeclarationSyntax>()
                        .ToReadOnlyList(expectedCapacity: context.nodeDeclaration().Length)
-                );
+            );
 
             return node;
         }
 
-        public override SyntaxNode VisitNodeDeclaration(NavGrammarParser.NodeDeclarationContext context) {
+        public override SyntaxNode VisitNodeDeclaration(NavGrammar.NodeDeclarationContext context) {
             if (context.connectionPointNodeDeclaration() != null) {
                 return VisitConnectionPointNodeDeclaration(context.connectionPointNodeDeclaration());
             }
+
             if (context.taskNodeDeclaration() != null) {
                 return VisitTaskNodeDeclaration(context.taskNodeDeclaration());
             }
+
             if (context.choiceNodeDeclaration() != null) {
                 return VisitChoiceNodeDeclaration(context.choiceNodeDeclaration());
             }
+
             if (context.dialogNodeDeclaration() != null) {
                 return VisitDialogNodeDeclaration(context.dialogNodeDeclaration());
             }
+
             if (context.viewNodeDeclaration() != null) {
                 return VisitViewNodeDeclaration(context.viewNodeDeclaration());
             }
+
             return null;
         }
 
-        public override SyntaxNode VisitInitNodeDeclaration(NavGrammarParser.InitNodeDeclarationContext context) {
+        public override SyntaxNode VisitInitNodeDeclaration(NavGrammar.InitNodeDeclarationContext context) {
 
-            var node = new InitNodeDeclarationSyntax(CreateExtent(context),  
-                    codeAbstractMethodDeclaration: 
-                    context.codeAbstractMethodDeclaration()
-                           .Optional(VisitCodeAbstractMethodDeclaration)
-                           .OfSyntaxType<CodeAbstractMethodDeclarationSyntax>(),
-                    codeParamsDeclaration: 
-                    context.codeParamsDeclaration()
-                           .Optional(VisitCodeParamsDeclaration)
-                           .OfSyntaxType<CodeParamsDeclarationSyntax>(),
-                    doClause:
-                    context.doClause()
-                           .Optional(VisitDoClause)
-                           .OfSyntaxType<DoClauseSyntax>()
-                );
+            var node = new InitNodeDeclarationSyntax(CreateExtent(context),
+                                                     codeAbstractMethodDeclaration:
+                                                     context.codeAbstractMethodDeclaration()
+                                                            .Optional(VisitCodeAbstractMethodDeclaration)
+                                                            .OfSyntaxType<CodeAbstractMethodDeclarationSyntax>(),
+                                                     codeParamsDeclaration:
+                                                     context.codeParamsDeclaration()
+                                                            .Optional(VisitCodeParamsDeclaration)
+                                                            .OfSyntaxType<CodeParamsDeclarationSyntax>(),
+                                                     doClause:
+                                                     context.doClause()
+                                                            .Optional(VisitDoClause)
+                                                            .OfSyntaxType<DoClauseSyntax>()
+            );
 
-            CreateToken(node, context.InitKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier); // Name der Initfunktion
-            CreateToken(node, context.Semicolon(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.InitKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),  TextClassification.Identifier); // Name der Initfunktion
+            CreateToken(node, context.Semicolon(),   TextClassification.Punctuation);
 
             return node;
         }
 
-        public override SyntaxNode VisitExitNodeDeclaration(NavGrammarParser.ExitNodeDeclarationContext context) {
-            
+        public override SyntaxNode VisitExitNodeDeclaration(NavGrammar.ExitNodeDeclarationContext context) {
+
             var node = new ExitNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.ExitKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
-            CreateToken(node, context.Semicolon(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.ExitKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),  TextClassification.Identifier);
+            CreateToken(node, context.Semicolon(),   TextClassification.Punctuation);
 
             return node;
         }
 
-        public override SyntaxNode VisitEndNodeDeclaration(NavGrammarParser.EndNodeDeclarationContext context) {
-            
+        public override SyntaxNode VisitEndNodeDeclaration(NavGrammar.EndNodeDeclarationContext context) {
+
             var node = new EndNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.EndKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Semicolon(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.EndKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Semicolon(),  TextClassification.Punctuation);
 
             return node;
         }
 
-        public override SyntaxNode VisitTaskNodeDeclaration(NavGrammarParser.TaskNodeDeclarationContext context) {
-            
-            var node = new TaskNodeDeclarationSyntax(CreateExtent(context), 
-                    codeDoNotInjectDeclaration: 
-                    context.codeDoNotInjectDeclaration()
-                           .Optional(VisitCodeDoNotInjectDeclaration)
-                           .OfSyntaxType<CodeDoNotInjectDeclarationSyntax>(),
-                    codeAbstractMethodDeclaration: 
-                    context.codeAbstractMethodDeclaration()
-                           .Optional(VisitCodeAbstractMethodDeclaration)
-                           .OfSyntaxType<CodeAbstractMethodDeclarationSyntax>()
-                );
+        public override SyntaxNode VisitTaskNodeDeclaration(NavGrammar.TaskNodeDeclarationContext context) {
 
-            CreateToken(node, context.TaskKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(0), SyntaxTokenClassification.TaskName);
-            CreateToken(node, context.Identifier(1), SyntaxTokenClassification.Identifier);
-            CreateToken(node, context.Semicolon()  , SyntaxTokenClassification.Punctuation);
+            var node = new TaskNodeDeclarationSyntax(CreateExtent(context),
+                                                     codeDoNotInjectDeclaration:
+                                                     context.codeDoNotInjectDeclaration()
+                                                            .Optional(VisitCodeDoNotInjectDeclaration)
+                                                            .OfSyntaxType<CodeDoNotInjectDeclarationSyntax>(),
+                                                     codeAbstractMethodDeclaration:
+                                                     context.codeAbstractMethodDeclaration()
+                                                            .Optional(VisitCodeAbstractMethodDeclaration)
+                                                            .OfSyntaxType<CodeAbstractMethodDeclarationSyntax>()
+            );
+
+            CreateToken(node, context.TaskKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(0), TextClassification.TaskName);
+            CreateToken(node, context.Identifier(1), TextClassification.Identifier);
+            CreateToken(node, context.Semicolon(),   TextClassification.Punctuation);
 
             return node;
         }
 
-        public override SyntaxNode VisitChoiceNodeDeclaration(NavGrammarParser.ChoiceNodeDeclarationContext context) {
-            
+        public override SyntaxNode VisitChoiceNodeDeclaration(NavGrammar.ChoiceNodeDeclarationContext context) {
+
             var node = new ChoiceNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.ChoiceKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
-            CreateToken(node, context.Semicolon(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.ChoiceKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),    TextClassification.Identifier);
+            CreateToken(node, context.Semicolon(),     TextClassification.Punctuation);
 
             return node;
         }
 
-        public override SyntaxNode VisitDialogNodeDeclaration(NavGrammarParser.DialogNodeDeclarationContext context) {
-            
+        public override SyntaxNode VisitDialogNodeDeclaration(NavGrammar.DialogNodeDeclarationContext context) {
+
             var node = new DialogNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.DialogKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier()   , SyntaxTokenClassification.FormName);
-            CreateToken(node, context.Semicolon()    , SyntaxTokenClassification.Punctuation);
-            
+            CreateToken(node, context.DialogKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),    TextClassification.FormName);
+            CreateToken(node, context.Semicolon(),     TextClassification.Punctuation);
+
             return node;
         }
 
-        public override SyntaxNode VisitViewNodeDeclaration(NavGrammarParser.ViewNodeDeclarationContext context) {
+        public override SyntaxNode VisitViewNodeDeclaration(NavGrammar.ViewNodeDeclarationContext context) {
 
             var node = new ViewNodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.ViewKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Identifier() , SyntaxTokenClassification.FormName);
-            CreateToken(node, context.Semicolon()  , SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.ViewKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.Identifier(),  TextClassification.FormName);
+            CreateToken(node, context.Semicolon(),   TextClassification.Punctuation);
 
             return node;
         }
@@ -354,62 +364,62 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region TransitionDefinitionBlock
 
-        public override SyntaxNode VisitTransitionDefinitionBlock(NavGrammarParser.TransitionDefinitionBlockContext context) {
+        public override SyntaxNode VisitTransitionDefinitionBlock(NavGrammar.TransitionDefinitionBlockContext context) {
             var node = new TransitionDefinitionBlockSyntax(
-                    extent: 
-                    CreateExtent(context),
-                    transitionDefinitions:
-                            context.transitionDefinition()
-                                    .ZeroOrMore(VisitTransitionDefinition)
-                                    .OfSyntaxType<TransitionDefinitionSyntax>()
-                                    .ToReadOnlyList(expectedCapacity: context.transitionDefinition().Length),
-                    exitTransitionDefinitions:
-                    context.exitTransitionDefinition()
-                                    .ZeroOrMore(VisitExitTransitionDefinition)
-                                    .OfSyntaxType<ExitTransitionDefinitionSyntax>()
-                                    .ToReadOnlyList(expectedCapacity: context.exitTransitionDefinition().Length)
-                    );
+                extent:
+                CreateExtent(context),
+                transitionDefinitions:
+                context.transitionDefinition()
+                       .ZeroOrMore(VisitTransitionDefinition)
+                       .OfSyntaxType<TransitionDefinitionSyntax>()
+                       .ToReadOnlyList(expectedCapacity: context.transitionDefinition().Length),
+                exitTransitionDefinitions:
+                context.exitTransitionDefinition()
+                       .ZeroOrMore(VisitExitTransitionDefinition)
+                       .OfSyntaxType<ExitTransitionDefinitionSyntax>()
+                       .ToReadOnlyList(expectedCapacity: context.exitTransitionDefinition().Length)
+            );
 
             return node;
         }
 
-        public override SyntaxNode VisitTransitionDefinition(NavGrammarParser.TransitionDefinitionContext context) {
-            
+        public override SyntaxNode VisitTransitionDefinition(NavGrammar.TransitionDefinitionContext context) {
+
             var node = new TransitionDefinitionSyntax(
-                    extent:
-                    CreateExtent(context),
-                    sourceNode:
-                        context.sourceNode()
-                               .Optional(VisitSourceNode)
-                               .OfSyntaxType<SourceNodeSyntax>(),
-                    edgeSyntax: 
-                        context.edge()
-                               .Optional(VisitEdge)
-                               .OfSyntaxType<EdgeSyntax>(),
-                    targetNode:
-                        context.targetNode()
-                               .Optional(VisitTargetNode)
-                               .OfSyntaxType<TargetNodeSyntax>(),
-                    trigger:
-                        context.trigger()
-                               .Optional(VisitTrigger)
-                               .OfSyntaxType<TriggerSyntax>(),
-                    conditionClause:
-                        context.conditionClause()
-                               .Optional(VisitConditionClause)
-                               .OfSyntaxType<ConditionClauseSyntax>(),
-                    doClause:
-                        context.doClause()
-                               .Optional(VisitDoClause)
-                               .OfSyntaxType<DoClauseSyntax>()
-                    );
+                extent:
+                CreateExtent(context),
+                sourceNode:
+                context.sourceNode()
+                       .Optional(VisitSourceNode)
+                       .OfSyntaxType<SourceNodeSyntax>(),
+                edgeSyntax:
+                context.edge()
+                       .Optional(VisitEdge)
+                       .OfSyntaxType<EdgeSyntax>(),
+                targetNode:
+                context.targetNode()
+                       .Optional(VisitTargetNode)
+                       .OfSyntaxType<TargetNodeSyntax>(),
+                trigger:
+                context.trigger()
+                       .Optional(VisitTrigger)
+                       .OfSyntaxType<TriggerSyntax>(),
+                conditionClause:
+                context.conditionClause()
+                       .Optional(VisitConditionClause)
+                       .OfSyntaxType<ConditionClauseSyntax>(),
+                doClause:
+                context.doClause()
+                       .Optional(VisitDoClause)
+                       .OfSyntaxType<DoClauseSyntax>()
+            );
 
-            CreateToken(node, context.Semicolon(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.Semicolon(), TextClassification.Punctuation);
 
             return node;
         }
 
-        public override SyntaxNode VisitSourceNode(NavGrammarParser.SourceNodeContext context) {
+        public override SyntaxNode VisitSourceNode(NavGrammar.SourceNodeContext context) {
 
             if (context.initSourceNode() != null) {
                 return VisitInitSourceNode(context.initSourceNode());
@@ -418,236 +428,247 @@ namespace Pharmatechnik.Nav.Language.Internal {
             if (context.identifierSourceNode() != null) {
                 return VisitIdentifierSourceNode(context.identifierSourceNode());
             }
+
             return null;
         }
 
-        public override SyntaxNode VisitInitSourceNode(NavGrammarParser.InitSourceNodeContext context) {
+        public override SyntaxNode VisitInitSourceNode(NavGrammar.InitSourceNodeContext context) {
             var node = new InitSourceNodeSyntax(CreateExtent(context));
-            CreateToken(node, context.InitKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.InitKeyword(), TextClassification.Keyword);
             return node;
         }
 
-        public override SyntaxNode VisitIdentifierSourceNode(NavGrammarParser.IdentifierSourceNodeContext context) {
+        public override SyntaxNode VisitIdentifierSourceNode(NavGrammar.IdentifierSourceNodeContext context) {
             var node = new IdentifierSourceNodeSyntax(CreateExtent(context));
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier);
             return node;
         }
-        
-        public override SyntaxNode VisitTargetNode(NavGrammarParser.TargetNodeContext context) {
+
+        public override SyntaxNode VisitTargetNode(NavGrammar.TargetNodeContext context) {
 
             if (context.endTargetNode() != null) {
                 return VisitEndTargetNode(context.endTargetNode());
             }
+
             if (context.identifierTargetNode() != null) {
                 return VisitIdentifierTargetNode(context.identifierTargetNode());
             }
+
             return null;
         }
 
-        public override SyntaxNode VisitEndTargetNode(NavGrammarParser.EndTargetNodeContext context) {
-            var node = new EndTargetNodeSyntax(extent:CreateExtent(context));
-            CreateToken(node, context.EndKeyword(), SyntaxTokenClassification.Keyword);
+        public override SyntaxNode VisitEndTargetNode(NavGrammar.EndTargetNodeContext context) {
+            var node = new EndTargetNodeSyntax(extent: CreateExtent(context));
+            CreateToken(node, context.EndKeyword(), TextClassification.Keyword);
             return node;
         }
 
-        public override SyntaxNode VisitIdentifierTargetNode(NavGrammarParser.IdentifierTargetNodeContext context) {
+        public override SyntaxNode VisitIdentifierTargetNode(NavGrammar.IdentifierTargetNodeContext context) {
             var node = new IdentifierTargetNodeSyntax(
-                 extent:
-                 CreateExtent(context),
-                 identifierOrStringList:
-                    context.identifierOrStringList()
-                           .Optional(VisitIdentifierOrStringList)
-                           .OfSyntaxType<IdentifierOrStringListSyntax>()
+                extent:
+                CreateExtent(context),
+                identifierOrStringList:
+                context.identifierOrStringList()
+                       .Optional(VisitIdentifierOrStringList)
+                       .OfSyntaxType<IdentifierOrStringListSyntax>()
             );
 
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
-            CreateToken(node, context.OpenParen(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseParen(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier);
+            CreateToken(node, context.OpenParen(),  TextClassification.Punctuation);
+            CreateToken(node, context.CloseParen(), TextClassification.Punctuation);
 
             return node;
         }
 
-        public override SyntaxNode VisitTrigger(NavGrammarParser.TriggerContext context) {
+        public override SyntaxNode VisitTrigger(NavGrammar.TriggerContext context) {
             if (context.signalTrigger() != null) {
                 return VisitSignalTrigger(context.signalTrigger());
             }
+
             if (context.spontaneousTrigger() != null) {
                 return VisitSpontaneousTrigger(context.spontaneousTrigger());
             }
+
             return null;
         }
 
-        public override SyntaxNode VisitSpontaneousTrigger(NavGrammarParser.SpontaneousTriggerContext context) {
+        public override SyntaxNode VisitSpontaneousTrigger(NavGrammar.SpontaneousTriggerContext context) {
             var node = new SpontaneousTriggerSyntax(
-                     extent:
-                     CreateExtent(context)                    
-                 );
-            
-            CreateToken(node, context.SpontKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.SpontaneousKeyword(), SyntaxTokenClassification.Keyword);
+                extent:
+                CreateExtent(context)
+            );
+
+            CreateToken(node, context.SpontKeyword(),       TextClassification.Keyword);
+            CreateToken(node, context.SpontaneousKeyword(), TextClassification.Keyword);
 
             return node;
         }
 
-        public override SyntaxNode VisitSignalTrigger(NavGrammarParser.SignalTriggerContext context) {
-            
+        public override SyntaxNode VisitSignalTrigger(NavGrammar.SignalTriggerContext context) {
+
             var node = new SignalTriggerSyntax(
-                    extent:
-                    CreateExtent(context),
-                    identifierOrStringList:
-                    context.identifierOrStringList()
-                               .Optional(VisitIdentifierOrStringList)
-                               .OfSyntaxType<IdentifierOrStringListSyntax>()
-                );
+                extent:
+                CreateExtent(context),
+                identifierOrStringList:
+                context.identifierOrStringList()
+                       .Optional(VisitIdentifierOrStringList)
+                       .OfSyntaxType<IdentifierOrStringListSyntax>()
+            );
 
-            CreateToken(node, context.OnKeyword(), SyntaxTokenClassification.Keyword);
-            
+            CreateToken(node, context.OnKeyword(), TextClassification.Keyword);
+
             return node;
         }
 
-        public override SyntaxNode VisitConditionClause([NotNull] NavGrammarParser.ConditionClauseContext context) {
+        public override SyntaxNode VisitConditionClause([NotNull] NavGrammar.ConditionClauseContext context) {
 
             if (context.ifConditionClause() != null) {
                 return VisitIfConditionClause(context.ifConditionClause());
             }
+
             if (context.elseIfConditionClause() != null) {
                 return VisitElseIfConditionClause(context.elseIfConditionClause());
             }
+
             if (context.elseConditionClause() != null) {
                 return VisitElseConditionClause(context.elseConditionClause());
             }
-            return null;         
+
+            return null;
         }
 
-        public override SyntaxNode VisitIfConditionClause(NavGrammarParser.IfConditionClauseContext context) {
+        public override SyntaxNode VisitIfConditionClause(NavGrammar.IfConditionClauseContext context) {
             var node = new IfConditionClauseSyntax(
-                    extent:CreateExtent(context),
-                    identifierOrString:
-                    context.identifierOrString()
-                           .Optional(VisitIdentifierOrString)
-                           .OfSyntaxType<IdentifierOrStringSyntax>());
+                extent: CreateExtent(context),
+                identifierOrString:
+                context.identifierOrString()
+                       .Optional(VisitIdentifierOrString)
+                       .OfSyntaxType<IdentifierOrStringSyntax>());
 
-            CreateToken(node, context.IfKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.IfKeyword(), TextClassification.Keyword);
 
             return node;
         }
 
-        public override SyntaxNode VisitElseConditionClause(NavGrammarParser.ElseConditionClauseContext context) {
+        public override SyntaxNode VisitElseConditionClause(NavGrammar.ElseConditionClauseContext context) {
             var node = new ElseConditionClauseSyntax(extent: CreateExtent(context));
 
-            CreateToken(node, context.ElseKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.ElseKeyword(), TextClassification.Keyword);
 
             return node;
         }
 
-        public override SyntaxNode VisitElseIfConditionClause(NavGrammarParser.ElseIfConditionClauseContext context) {
+        public override SyntaxNode VisitElseIfConditionClause(NavGrammar.ElseIfConditionClauseContext context) {
             var node = new ElseIfConditionClauseSyntax(
-                    extent: CreateExtent(context),
-                    elseCondition:
-                    context.elseConditionClause()
-                           .Optional(VisitElseConditionClause)
-                           .OfSyntaxType<ElseConditionClauseSyntax>(),
-                    ifCondition:
-                    context.ifConditionClause()
-                           .Optional(VisitIfConditionClause)
-                           .OfSyntaxType<IfConditionClauseSyntax>());
+                extent: CreateExtent(context),
+                elseCondition:
+                context.elseConditionClause()
+                       .Optional(VisitElseConditionClause)
+                       .OfSyntaxType<ElseConditionClauseSyntax>(),
+                ifCondition:
+                context.ifConditionClause()
+                       .Optional(VisitIfConditionClause)
+                       .OfSyntaxType<IfConditionClauseSyntax>());
 
             return node;
         }
 
-        public override SyntaxNode VisitDoClause(NavGrammarParser.DoClauseContext context) {
-            
+        public override SyntaxNode VisitDoClause(NavGrammar.DoClauseContext context) {
+
             var node = new DoClauseSyntax(
-                    extent:
-                    CreateExtent(context),
-                    identifierOrString:
-                    context.identifierOrString()
-                               .Optional(VisitIdentifierOrString)
-                               .OfSyntaxType<IdentifierOrStringSyntax>()
-                    );
+                extent:
+                CreateExtent(context),
+                identifierOrString:
+                context.identifierOrString()
+                       .Optional(VisitIdentifierOrString)
+                       .OfSyntaxType<IdentifierOrStringSyntax>()
+            );
 
-            CreateToken(node, context.DoKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.DoKeyword(), TextClassification.Keyword);
 
             return node;
         }
-        
-        public override SyntaxNode VisitExitTransitionDefinition(NavGrammarParser.ExitTransitionDefinitionContext context) {
+
+        public override SyntaxNode VisitExitTransitionDefinition(NavGrammar.ExitTransitionDefinitionContext context) {
 
             var node = new ExitTransitionDefinitionSyntax(
                 extent:
-                    CreateExtent(context),
+                CreateExtent(context),
                 sourceNode:
-                    context.identifierSourceNode()
-                           .Optional(VisitIdentifierSourceNode)
-                           .OfSyntaxType<IdentifierSourceNodeSyntax>(),
+                context.identifierSourceNode()
+                       .Optional(VisitIdentifierSourceNode)
+                       .OfSyntaxType<IdentifierSourceNodeSyntax>(),
                 edge:
-                    context.edge()
-                           .Optional(VisitEdge)
-                           .OfSyntaxType<EdgeSyntax>(),
+                context.edge()
+                       .Optional(VisitEdge)
+                       .OfSyntaxType<EdgeSyntax>(),
                 targetNode:
-                    context.targetNode()
-                           .Optional(VisitTargetNode)
-                           .OfSyntaxType<TargetNodeSyntax>(),
+                context.targetNode()
+                       .Optional(VisitTargetNode)
+                       .OfSyntaxType<TargetNodeSyntax>(),
                 conditionClause:
-                    context.conditionClause()
-                           .Optional(VisitConditionClause)
-                           .OfSyntaxType<ConditionClauseSyntax>(),
+                context.conditionClause()
+                       .Optional(VisitConditionClause)
+                       .OfSyntaxType<ConditionClauseSyntax>(),
                 doClause:
-                    context.doClause()
-                           .Optional(VisitDoClause)
-                           .OfSyntaxType<DoClauseSyntax>()
-                );
-            
-            CreateToken(node, context.Colon(),      SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier); // ExitNode:Exit
-            CreateToken(node, context.Semicolon(),  SyntaxTokenClassification.Punctuation);
+                context.doClause()
+                       .Optional(VisitDoClause)
+                       .OfSyntaxType<DoClauseSyntax>()
+            );
+
+            CreateToken(node, context.Colon(),      TextClassification.Punctuation);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier); // ExitNode:Exit
+            CreateToken(node, context.Semicolon(),  TextClassification.Punctuation);
 
             return node;
         }
 
-        #endregion   
+        #endregion
 
         #region Edge
 
-        public override SyntaxNode VisitEdge(NavGrammarParser.EdgeContext context) {
+        public override SyntaxNode VisitEdge(NavGrammar.EdgeContext context) {
 
             if (context.nonModalEdge() != null) {
                 return VisitNonModalEdge(context.nonModalEdge());
             }
+
             if (context.goToEdge() != null) {
                 return VisitGoToEdge(context.goToEdge());
             }
+
             if (context.modalEdge() != null) {
                 return VisitModalEdge(context.modalEdge());
             }
+
             return null;
         }
 
         #region Overrides of NavGrammarBaseVisitor<SyntaxNode>
 
-        public override SyntaxNode VisitModalEdge(NavGrammarParser.ModalEdgeContext context) {
+        public override SyntaxNode VisitModalEdge(NavGrammar.ModalEdgeContext context) {
 
             var node = new ModalEdgeSyntax(CreateExtent(context));
 
-            CreateToken(node, context.ModalEdgeKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.ModalEdgeKeyword(), TextClassification.Keyword);
 
             return node;
         }
 
-        public override SyntaxNode VisitGoToEdge(NavGrammarParser.GoToEdgeContext context) {
+        public override SyntaxNode VisitGoToEdge(NavGrammar.GoToEdgeContext context) {
 
             var node = new GoToEdgeSyntax(CreateExtent(context));
 
-            CreateToken(node, context.GoToEdgeKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.GoToEdgeKeyword(), TextClassification.Keyword);
 
             return node;
         }
 
-        public override SyntaxNode VisitNonModalEdge(NavGrammarParser.NonModalEdgeContext context) {
+        public override SyntaxNode VisitNonModalEdge(NavGrammar.NonModalEdgeContext context) {
 
             var node = new NonModalEdgeSyntax(CreateExtent(context));
 
-            CreateToken(node, context.NonModalEdgeKeyword(), SyntaxTokenClassification.Keyword);
+            CreateToken(node, context.NonModalEdgeKeyword(), TextClassification.Keyword);
 
             return node;
         }
@@ -658,13 +679,13 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeNotImplementedDeclaration
 
-        public override SyntaxNode VisitCodeNotImplementedDeclaration(NavGrammarParser.CodeNotImplementedDeclarationContext context) {
-            
-            var node= new CodeNotImplementedDeclarationSyntax(CreateExtent(context));
+        public override SyntaxNode VisitCodeNotImplementedDeclaration(NavGrammar.CodeNotImplementedDeclarationContext context) {
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.NotimplementedKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            var node = new CodeNotImplementedDeclarationSyntax(CreateExtent(context));
+
+            CreateToken(node, context.OpenBracket(),           TextClassification.Punctuation);
+            CreateToken(node, context.NotimplementedKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),          TextClassification.Punctuation);
 
             return node;
         }
@@ -673,13 +694,13 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeDoNotInjectDeclaration
 
-        public override SyntaxNode VisitCodeDoNotInjectDeclaration(NavGrammarParser.CodeDoNotInjectDeclarationContext context) {
-            
-            var node= new CodeDoNotInjectDeclarationSyntax(CreateExtent(context));
+        public override SyntaxNode VisitCodeDoNotInjectDeclaration(NavGrammar.CodeDoNotInjectDeclarationContext context) {
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.DonotinjectKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            var node = new CodeDoNotInjectDeclarationSyntax(CreateExtent(context));
+
+            CreateToken(node, context.OpenBracket(),        TextClassification.Punctuation);
+            CreateToken(node, context.DonotinjectKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),       TextClassification.Punctuation);
 
             return node;
         }
@@ -688,13 +709,13 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeAbstractMethodDeclaration
 
-        public override SyntaxNode VisitCodeAbstractMethodDeclaration(NavGrammarParser.CodeAbstractMethodDeclarationContext context) {
-            
+        public override SyntaxNode VisitCodeAbstractMethodDeclaration(NavGrammar.CodeAbstractMethodDeclarationContext context) {
+
             var node = new CodeAbstractMethodDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.AbstractmethodKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),           TextClassification.Punctuation);
+            CreateToken(node, context.AbstractmethodKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),          TextClassification.Punctuation);
 
             return node;
         }
@@ -703,14 +724,14 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeDeclaration
 
-        public override SyntaxNode VisitCodeDeclaration(NavGrammarParser.CodeDeclarationContext context) {
+        public override SyntaxNode VisitCodeDeclaration(NavGrammar.CodeDeclarationContext context) {
 
             var node = new CodeDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CodeKeyword(), SyntaxTokenClassification.Keyword);
-            CreateTokens(node, context.StringLiteral(), SyntaxTokenClassification.StringLiteral);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(), TextClassification.Punctuation);
+            CreateToken(node, context.CodeKeyword(), TextClassification.Keyword);
+            CreateTokens(node, context.StringLiteral(), TextClassification.StringLiteral);
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
@@ -719,20 +740,20 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeBaseDeclaration
 
-        public override SyntaxNode VisitCodeBaseDeclaration(NavGrammarParser.CodeBaseDeclarationContext context) {
+        public override SyntaxNode VisitCodeBaseDeclaration(NavGrammar.CodeBaseDeclarationContext context) {
 
             var node = new CodeBaseDeclarationSyntax(CreateExtent(context),
-                context.codeType()
-                    .ZeroOrMore(VisitCodeType)
-                    .OfSyntaxType<CodeTypeSyntax>()
-                    .ToReadOnlyList(expectedCapacity: context.codeType().Length)
-                );
+                                                     context.codeType()
+                                                            .ZeroOrMore(VisitCodeType)
+                                                            .OfSyntaxType<CodeTypeSyntax>()
+                                                            .ToReadOnlyList(expectedCapacity: context.codeType().Length)
+            );
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.BaseKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.Colon(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.Comma(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),  TextClassification.Punctuation);
+            CreateToken(node, context.BaseKeyword(),  TextClassification.Keyword);
+            CreateToken(node, context.Colon(),        TextClassification.Punctuation);
+            CreateToken(node, context.Comma(),        TextClassification.Punctuation);
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
@@ -741,13 +762,13 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeGenerateToDeclaration
 
-        public override SyntaxNode VisitCodeGenerateToDeclaration(NavGrammarParser.CodeGenerateToDeclarationContext context) {
-            var node= new CodeGenerateToDeclarationSyntax(CreateExtent(context));
+        public override SyntaxNode VisitCodeGenerateToDeclaration(NavGrammar.CodeGenerateToDeclarationContext context) {
+            var node = new CodeGenerateToDeclarationSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.GeneratetoKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.StringLiteral(), SyntaxTokenClassification.StringLiteral);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),       TextClassification.Punctuation);
+            CreateToken(node, context.GeneratetoKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.StringLiteral(),     TextClassification.StringLiteral);
+            CreateToken(node, context.CloseBracket(),      TextClassification.Punctuation);
 
             return node;
         }
@@ -756,19 +777,19 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeParamsDeclaration
 
-        public override SyntaxNode VisitCodeParamsDeclaration(NavGrammarParser.CodeParamsDeclarationContext context) {
+        public override SyntaxNode VisitCodeParamsDeclaration(NavGrammar.CodeParamsDeclarationContext context) {
 
             var node = new CodeParamsDeclarationSyntax(CreateExtent(context),
-                 parameterList:
-                    context.parameterList()
-                        .Optional(VisitParameterList)
-                        .OfSyntaxType<ParameterListSyntax>()
-                    );
+                                                       parameterList:
+                                                       context.parameterList()
+                                                              .Optional(VisitParameterList)
+                                                              .OfSyntaxType<ParameterListSyntax>()
+            );
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.ParamsKeyword(), SyntaxTokenClassification.Keyword);
-            
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),   TextClassification.Punctuation);
+            CreateToken(node, context.ParamsKeyword(), TextClassification.Keyword);
+
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
@@ -777,17 +798,17 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region ParameterList
 
-        public override SyntaxNode VisitParameterList(NavGrammarParser.ParameterListContext context) {
+        public override SyntaxNode VisitParameterList(NavGrammar.ParameterListContext context) {
 
-            var node = new ParameterListSyntax(CreateExtent(context), 
-                parameters: 
-                context.parameter()
-                       .ZeroOrMore(VisitParameter)
-                       .OfSyntaxType<ParameterSyntax>()
-                       .ToReadOnlyList(expectedCapacity: context.parameter().Length)
-                );
+            var node = new ParameterListSyntax(CreateExtent(context),
+                                               parameters:
+                                               context.parameter()
+                                                      .ZeroOrMore(VisitParameter)
+                                                      .OfSyntaxType<ParameterSyntax>()
+                                                      .ToReadOnlyList(expectedCapacity: context.parameter().Length)
+            );
 
-            CreateTokens(node, context.Comma(), SyntaxTokenClassification.Punctuation);
+            CreateTokens(node, context.Comma(), TextClassification.Punctuation);
 
             return node;
         }
@@ -796,16 +817,16 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region Parameter
 
-        public override SyntaxNode VisitParameter([NotNull] NavGrammarParser.ParameterContext context) {
+        public override SyntaxNode VisitParameter([NotNull] NavGrammar.ParameterContext context) {
             var node = new ParameterSyntax(
                 CreateExtent(context),
                 type:
-                    context.codeType()
-                        .Optional(VisitCodeType)
-                        .OfSyntaxType<CodeTypeSyntax>()
-                );
+                context.codeType()
+                       .Optional(VisitCodeType)
+                       .OfSyntaxType<CodeTypeSyntax>()
+            );
 
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier);
 
             return node;
         }
@@ -814,16 +835,16 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeResultDeclaration
 
-        public override SyntaxNode VisitCodeResultDeclaration(NavGrammarParser.CodeResultDeclarationContext context) {
+        public override SyntaxNode VisitCodeResultDeclaration(NavGrammar.CodeResultDeclarationContext context) {
 
             var node = new CodeResultDeclarationSyntax(CreateExtent(context),
-                result: context.parameter()
-                    .Optional(VisitParameter)
-                    .OfSyntaxType<ParameterSyntax>());
+                                                       result: context.parameter()
+                                                                      .Optional(VisitParameter)
+                                                                      .OfSyntaxType<ParameterSyntax>());
 
-            CreateToken(node, context.OpenBracket(), SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.ResultKeyword(), SyntaxTokenClassification.Keyword);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),   TextClassification.Punctuation);
+            CreateToken(node, context.ResultKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.CloseBracket(),  TextClassification.Punctuation);
 
             return node;
         }
@@ -832,15 +853,16 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region CodeType
 
-        public override SyntaxNode VisitCodeType(NavGrammarParser.CodeTypeContext context) {
-
+        public override SyntaxNode VisitCodeType(NavGrammar.CodeTypeContext context) {
 
             if (context.simpleType() != null) {
                 return VisitSimpleType(context.simpleType());
             }
+
             if (context.genericType() != null) {
                 return VisitGenericType(context.genericType());
             }
+
             if (context.arrayType() != null) {
                 return VisitArrayType(context.arrayType());
             }
@@ -848,62 +870,62 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return null;
         }
 
-
-        public override SyntaxNode VisitSimpleType(NavGrammarParser.SimpleTypeContext context) {
+        public override SyntaxNode VisitSimpleType(NavGrammar.SimpleTypeContext context) {
 
             var node = new SimpleTypeSyntax(CreateExtent(context));
 
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.TypeName);
+            CreateToken(node, context.Identifier(), TextClassification.TypeName);
 
             return node;
         }
 
-        public override SyntaxNode VisitArrayType(NavGrammarParser.ArrayTypeContext context) {
+        public override SyntaxNode VisitArrayType(NavGrammar.ArrayTypeContext context) {
 
             CodeTypeSyntax type = null;
             if (context.simpleType() != null) {
-                type = (CodeTypeSyntax)VisitSimpleType(context.simpleType());
+                type = (CodeTypeSyntax) VisitSimpleType(context.simpleType());
             }
+
             if (context.genericType() != null) {
-                type = (CodeTypeSyntax)VisitGenericType(context.genericType());
+                type = (CodeTypeSyntax) VisitGenericType(context.genericType());
             }
 
             var node = new ArrayTypeSyntax(CreateExtent(context), type,
-                context.arrayRankSpecifier()
-                    .ZeroOrMore(VisitArrayRankSpecifier)
-                    .OfSyntaxType<ArrayRankSpecifierSyntax>()
-                    .ToReadOnlyList(expectedCapacity: context.arrayRankSpecifier().Length));
+                                           context.arrayRankSpecifier()
+                                                  .ZeroOrMore(VisitArrayRankSpecifier)
+                                                  .OfSyntaxType<ArrayRankSpecifierSyntax>()
+                                                  .ToReadOnlyList(expectedCapacity: context.arrayRankSpecifier().Length));
 
             return node;
         }
 
         #region Overrides of NavGrammarBaseVisitor<SyntaxNode>
 
-        public override SyntaxNode VisitArrayRankSpecifier(NavGrammarParser.ArrayRankSpecifierContext context) {
+        public override SyntaxNode VisitArrayRankSpecifier(NavGrammar.ArrayRankSpecifierContext context) {
             var node = new ArrayRankSpecifierSyntax(CreateExtent(context));
 
-            CreateToken(node, context.OpenBracket(),  SyntaxTokenClassification.Punctuation);
-            CreateToken(node, context.CloseBracket(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.OpenBracket(),  TextClassification.Punctuation);
+            CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
         }
 
         #endregion
 
-        public override SyntaxNode VisitGenericType(NavGrammarParser.GenericTypeContext context) {
+        public override SyntaxNode VisitGenericType(NavGrammar.GenericTypeContext context) {
 
-            var node = new GenericTypeSyntax(CreateExtent(context), 
-                genericArguments: 
-                context.codeType()
-                       .ZeroOrMore(VisitCodeType)
-                       .OfSyntaxType<CodeTypeSyntax>()
-                       .ToReadOnlyList(expectedCapacity: context.codeType().Length)
-                );
+            var node = new GenericTypeSyntax(CreateExtent(context),
+                                             genericArguments:
+                                             context.codeType()
+                                                    .ZeroOrMore(VisitCodeType)
+                                                    .OfSyntaxType<CodeTypeSyntax>()
+                                                    .ToReadOnlyList(expectedCapacity: context.codeType().Length)
+            );
 
-            CreateToken(node , context.Identifier() , SyntaxTokenClassification.TypeName);
-            CreateToken(node , context.LessThan()   , SyntaxTokenClassification.Punctuation);
-            CreateTokens(node, context.Comma()      , SyntaxTokenClassification.Punctuation);
-            CreateToken(node , context.GreaterThan(), SyntaxTokenClassification.Punctuation);
+            CreateToken(node, context.Identifier(), TextClassification.TypeName);
+            CreateToken(node, context.LessThan(),   TextClassification.Punctuation);
+            CreateTokens(node, context.Comma(), TextClassification.Punctuation);
+            CreateToken(node, context.GreaterThan(), TextClassification.Punctuation);
 
             return node;
         }
@@ -912,43 +934,45 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         #region IdentifierOrString
 
-        public override SyntaxNode VisitIdentifierOrStringList(NavGrammarParser.IdentifierOrStringListContext context) {
+        public override SyntaxNode VisitIdentifierOrStringList(NavGrammar.IdentifierOrStringListContext context) {
 
             var node = new IdentifierOrStringListSyntax(CreateExtent(context),
-                identifierOrStrings:
-                context.identifierOrString()
-                       .ZeroOrMore(VisitIdentifierOrString)
-                       .OfSyntaxType<IdentifierOrStringSyntax>()
-                       .ToReadOnlyList(expectedCapacity: context.identifierOrString().Length)
-                );
+                                                        identifierOrStrings:
+                                                        context.identifierOrString()
+                                                               .ZeroOrMore(VisitIdentifierOrString)
+                                                               .OfSyntaxType<IdentifierOrStringSyntax>()
+                                                               .ToReadOnlyList(expectedCapacity: context.identifierOrString().Length)
+            );
 
-            CreateTokens(node, context.Comma(), SyntaxTokenClassification.Punctuation);
+            CreateTokens(node, context.Comma(), TextClassification.Punctuation);
 
             return node;
         }
 
-        public override SyntaxNode VisitIdentifierOrString(NavGrammarParser.IdentifierOrStringContext context) {
-            if (context.identifier() != null) {     
+        public override SyntaxNode VisitIdentifierOrString(NavGrammar.IdentifierOrStringContext context) {
+            if (context.identifier() != null) {
                 return VisitIdentifier(context.identifier());
             }
+
             if (context.stringLiteral() != null) {
                 return VisitStringLiteral(context.stringLiteral());
             }
+
             return null;
         }
 
-        public override SyntaxNode VisitIdentifier(NavGrammarParser.IdentifierContext context) {
+        public override SyntaxNode VisitIdentifier(NavGrammar.IdentifierContext context) {
             var node = new IdentifierSyntax(CreateExtent(context));
-            CreateToken(node, context.Identifier(), SyntaxTokenClassification.Identifier);
+            CreateToken(node, context.Identifier(), TextClassification.Identifier);
             return node;
         }
 
-        public override SyntaxNode VisitStringLiteral(NavGrammarParser.StringLiteralContext context) {
+        public override SyntaxNode VisitStringLiteral(NavGrammar.StringLiteralContext context) {
             var node = new StringLiteralSyntax(CreateExtent(context));
-            CreateToken(node, context.StringLiteral(), SyntaxTokenClassification.StringLiteral);
+            CreateToken(node, context.StringLiteral(), TextClassification.StringLiteral);
             return node;
         }
-        
+
         #endregion
 
         #region Helper
@@ -957,22 +981,25 @@ namespace Pharmatechnik.Nav.Language.Internal {
             return TextExtentFactory.CreateExtent(context);
         }
 
-        void CreateTokens(SyntaxNode parent, IReadOnlyList<ITerminalNode> nodes, SyntaxTokenClassification classification) {
+        void CreateTokens(SyntaxNode parent, IReadOnlyList<ITerminalNode> nodes, TextClassification classification) {
             foreach (var node in nodes) {
                 CreateToken(parent, node, classification);
             }
         }
 
-        void CreateToken(SyntaxNode parent, ITerminalNode node, SyntaxTokenClassification classification) {
+        void CreateToken(SyntaxNode parent, ITerminalNode node, TextClassification classification) {
             if (node == null) {
                 return;
             }
+
             var token = SyntaxTokenFactory.CreateToken(node, classification, parent);
             if (!token.IsMissing) {
-                _tokens.Add(token);
+                Tokens.Add(token);
             }
         }
 
         #endregion
+
     }
+
 }

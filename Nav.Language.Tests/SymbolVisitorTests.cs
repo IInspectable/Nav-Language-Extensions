@@ -10,7 +10,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void SymbolVisitorOfTVisitNodeReferenceSymbolFallBack() {
 
-            var visitor = new SymbolVisitorOfBool();
+            var visitor = new SymbolVisitorVisitNodeReferenceSymbolReturnsTrue();
 
             Assert.That(visitor.VisitChoiceNodeSymbol(null), Is.False);
 
@@ -23,7 +23,7 @@ namespace Nav.Language.Tests {
             Assert.That(visitor.VisitEndNodeReferenceSymbol(null),    Is.True);
         }
 
-        class SymbolVisitorOfBool: SymbolVisitor<bool> {
+        class SymbolVisitorVisitNodeReferenceSymbolReturnsTrue: SymbolVisitor<bool> {
 
             protected override bool DefaultVisit(ISymbol symbol) {
                 return false;

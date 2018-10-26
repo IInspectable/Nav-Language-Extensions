@@ -1,5 +1,9 @@
-﻿using System.ComponentModel.Composition;
+﻿#region Using Directives
+
+using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Utilities;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.Extension
 {

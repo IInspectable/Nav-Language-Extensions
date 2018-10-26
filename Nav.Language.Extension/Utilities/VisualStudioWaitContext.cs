@@ -1,23 +1,27 @@
 #region Using Directives
 
 using System.Threading;
+
+using Microsoft.VisualStudio.Shell;
+
 using System.Runtime.InteropServices;
+
 using Microsoft.VisualStudio.Shell.Interop;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Utilities {
 
-    sealed partial class VisualStudioWaitContext : IWaitContext {
+    sealed partial class VisualStudioWaitContext: IWaitContext {
 
         const int DelayToShowDialogSecs = 1;
 
-        readonly IVsThreadedWaitDialog3 _dialog;
+        readonly IVsThreadedWaitDialog3  _dialog;
         readonly CancellationTokenSource _cancellationTokenSource;
-        readonly string _title;
+        readonly string                  _title;
 
         string _message;
-        bool _allowCancel;
+        bool   _allowCancel;
 
         public VisualStudioWaitContext(IVsThreadedWaitDialogFactory dialogFactory,
                                        string title,
@@ -31,6 +35,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         IVsThreadedWaitDialog3 CreateDialog(IVsThreadedWaitDialogFactory dialogFactory) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             Marshal.ThrowExceptionForHR(dialogFactory.CreateInstance(out var dialog2));
 
             var dialog3 = (IVsThreadedWaitDialog3) dialog2;
@@ -38,17 +45,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
             var callback = new Callback(this);
 
             dialog3.StartWaitDialogWithCallback(
-                szWaitCaption     : _title,
-                szWaitMessage     : _message,
-                szProgressText    : null,
-                varStatusBmpAnim  : null,
-                szStatusBarText   : null,
-                fIsCancelable     : _allowCancel,
+                szWaitCaption: _title,
+                szWaitMessage: _message,
+                szProgressText: null,
+                varStatusBmpAnim: null,
+                szStatusBarText: null,
+                fIsCancelable: _allowCancel,
                 iDelayToShowDialog: DelayToShowDialogSecs,
-                fShowProgress     : false,
-                iTotalSteps       : 0,
-                iCurrentStep      : 0,
-                pCallback         : callback);
+                fShowProgress: false,
+                iTotalSteps: 0,
+                iCurrentStep: 0,
+                pCallback: callback);
 
             return dialog3;
         }
@@ -78,27 +85,38 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
         }
 
         void UpdateDialog() {
-            _dialog.UpdateProgress(
-                szUpdatedWaitMessage: _message,
-                szProgressText      : null,
-                szStatusBarText     : null,
-                iCurrentStep        : 0,
-                iTotalSteps         : 0,
-                fDisableCancel      : !_allowCancel,
-                pfCanceled          : out bool _);
+
+            ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
+
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+                _dialog.UpdateProgress(
+                    szUpdatedWaitMessage: _message,
+                    szProgressText: null,
+                    szStatusBarText: null,
+                    iCurrentStep: 0,
+                    iTotalSteps: 0,
+                    fDisableCancel: !_allowCancel,
+                    pfCanceled: out bool _);
+            });
         }
 
         public void UpdateProgress() {
         }
 
         public void Dispose() {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             _dialog.EndWaitDialog(out int _);
         }
 
         void OnCanceled() {
-            if(_allowCancel) {
+            if (_allowCancel) {
                 _cancellationTokenSource.Cancel();
             }
         }
+
     }
+
 }

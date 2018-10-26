@@ -11,33 +11,30 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
     abstract class SemanticModelServiceDependent: IDisposable {
 
-        readonly SemanticModelService _semanticModelService;
-
         protected SemanticModelServiceDependent(ITextBuffer textBuffer) {
 
-            TextBuffer = textBuffer;
+            TextBuffer           = textBuffer;
+            SemanticModelService = SemanticModelService.GetOrCreateSingelton(textBuffer);
 
-            _semanticModelService = SemanticModelService.GetOrCreateSingelton(textBuffer);
-
-            WeakEventManager<SemanticModelService, EventArgs>.AddHandler(_semanticModelService, nameof(SemanticModelService.SemanticModelChanging), OnSemanticModelChanging);
-            WeakEventManager<SemanticModelService, SnapshotSpanEventArgs>.AddHandler(_semanticModelService, nameof(SemanticModelService.SemanticModelChanged),  OnSemanticModelChanged);
+            WeakEventManager<SemanticModelService, EventArgs>.AddHandler(SemanticModelService, nameof(SemanticModelService.SemanticModelChanging), OnSemanticModelChanging);
+            WeakEventManager<SemanticModelService, SnapshotSpanEventArgs>.AddHandler(SemanticModelService, nameof(SemanticModelService.SemanticModelChanged), OnSemanticModelChanged);
         }
-        
+
         public virtual void Dispose() {
-            WeakEventManager<SemanticModelService, EventArgs>.RemoveHandler(_semanticModelService, nameof(SemanticModelService.SemanticModelChanging), OnSemanticModelChanging);
-            WeakEventManager<SemanticModelService, SnapshotSpanEventArgs>.RemoveHandler(_semanticModelService, nameof(SemanticModelService.SemanticModelChanged), OnSemanticModelChanged);
+            WeakEventManager<SemanticModelService, EventArgs>.RemoveHandler(SemanticModelService, nameof(SemanticModelService.SemanticModelChanging), OnSemanticModelChanging);
+            WeakEventManager<SemanticModelService, SnapshotSpanEventArgs>.RemoveHandler(SemanticModelService, nameof(SemanticModelService.SemanticModelChanged), OnSemanticModelChanged);
         }
 
-        protected ITextBuffer TextBuffer { get; }
+        public ITextBuffer TextBuffer { get; }
 
-        protected SemanticModelService SemanticModelService {
-            get { return _semanticModelService; }
-        }
+        public SemanticModelService SemanticModelService { get; }
 
         protected virtual void OnSemanticModelChanging(object sender, EventArgs e) {
         }
 
-        protected virtual void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {            
-        }        
+        protected virtual void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
+        }
+
     }
+
 }

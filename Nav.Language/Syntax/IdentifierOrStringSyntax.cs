@@ -1,23 +1,30 @@
 ﻿using System;
+
 using JetBrains.Annotations;
+
+using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language {
 
-    [Serializable]   
-    public abstract class IdentifierOrStringSyntax : SyntaxNode {
+    [Serializable]
+    public abstract class IdentifierOrStringSyntax: SyntaxNode {
+
         internal IdentifierOrStringSyntax(TextExtent extent)
-            : base(extent) {}
-        
+            : base(extent) {
+        }
+
         [CanBeNull]
         public abstract string Text { get; }
 
         public abstract Location GetTextLocation();
+
     }
 
     [Serializable]
     [SampleSyntax("Identifier")]
-    public sealed partial class IdentifierSyntax : IdentifierOrStringSyntax {
-        internal IdentifierSyntax(TextExtent extent) : base(extent) {            
+    public sealed partial class IdentifierSyntax: IdentifierOrStringSyntax {
+
+        internal IdentifierSyntax(TextExtent extent): base(extent) {
         }
 
         public override string Text => Identifier.ToString();
@@ -27,27 +34,31 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+
     }
 
     [Serializable]
     [SampleSyntax("\"StringLiteral\"")]
-    public sealed partial class StringLiteralSyntax : IdentifierOrStringSyntax {
-        internal StringLiteralSyntax(TextExtent extent) : base(extent) {            
+    public sealed partial class StringLiteralSyntax: IdentifierOrStringSyntax {
+
+        internal StringLiteralSyntax(TextExtent extent): base(extent) {
         }
 
         public override string Text => StringLiteral.ToString().Trim('"');
 
         public override Location GetTextLocation() {
 
-            if(Extent.IsEmpty || Extent.IsMissing) {
+            if (Extent.IsEmpty || Extent.IsMissing) {
                 return GetLocation();
             }
-            
+
             var extent = TextExtent.FromBounds(Extent.Start + 1, Extent.End - 1);
 
-            return SyntaxTree.GetLocation(extent);
+            return SyntaxTree.SourceText.GetLocation(extent);
         }
 
         public SyntaxToken StringLiteral => ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral);
+
     }
+
 }

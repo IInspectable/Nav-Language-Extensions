@@ -21,6 +21,14 @@ namespace Pharmatechnik.Nav.Language {
 
     }
 
+    public static class NodeSymbolExtension {
+
+        public static bool IsConnectionPoint(this INodeSymbol node) {
+            return node is IInitNodeSymbol || node is IExitNodeSymbol || node is IEndNodeSymbol;
+        }
+
+    }
+
     public interface ITargetNodeSymbol: INodeSymbol {
 
         [NotNull]

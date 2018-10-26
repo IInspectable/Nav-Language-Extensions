@@ -15,7 +15,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         public IEnumerable<string> ContentTypes { get; }
 
         public ExportCommandHandlerAttribute(string name, params string[] contentTypes) :
-            base(typeof(ICommandHandler)) {
+            base(typeof(INavCommandHandler)) {
             Name = name;
             ContentTypes = contentTypes;
         }

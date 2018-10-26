@@ -24,7 +24,7 @@ namespace Nav.Language.Tests {
             _files[file.FilePath] = file.Content;
         }
 
-        public override CodeGenerationUnitSyntax FromFile(string filePath, CancellationToken cancellationToken = default(CancellationToken)) {
+        public override CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default) {
 
             if (!_files.TryGetValue(filePath, out var content)) {
                 return null;

@@ -4,6 +4,9 @@ using System;
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+using Pharmatechnik.Nav.Utilities.IO;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
@@ -11,88 +14,86 @@ namespace Pharmatechnik.Nav.Language {
     [Serializable]
     public class Location: IEquatable<Location> {
 
-        readonly TextExtent   _extent;
-        readonly LinePosition _start;
-        readonly LinePosition _end;
-        readonly string       _filePath;
-
         protected Location(Location location) {
-            _extent   = location._extent;
-            _start    = location._start;
-            _end      = location._end;
-            _filePath = location._filePath;
+            Extent            = location.Extent;
+            StartLinePosition = location.StartLinePosition;
+            EndLinePosition   = location.EndLinePosition;
+            FilePath          = location.FilePath;
         }
 
-        public Location(TextExtent extent, LinePositionExtent linePositionExtent, [CanBeNull] string filePath) {
-            _extent   = extent;
-            _start    = linePositionExtent.Start;
-            _end      = linePositionExtent.End;
-            _filePath = filePath;
+        public Location(TextExtent extent, LineRange lineRange, [CanBeNull] string filePath) {
+            Extent            = extent;
+            StartLinePosition = lineRange.Start;
+            EndLinePosition   = lineRange.End;
+            FilePath          = filePath;
         }
 
         public Location(TextExtent extent, LinePosition linePosition, [CanBeNull] string filePath):
-            this(extent, new LinePositionExtent(linePosition, linePosition), filePath) {
+            this(extent, new LineRange(linePosition, linePosition), filePath) {
         }
 
         public Location(string filePath) {
-            _extent   = TextExtent.Empty;
-            _start    = LinePosition.Empty;
-            _end      = LinePosition.Empty;
-            _filePath = filePath;
+            Extent            = TextExtent.Empty;
+            StartLinePosition = LinePosition.Empty;
+            EndLinePosition   = LinePosition.Empty;
+            FilePath          = filePath;
         }
 
         //TODO Missing/None
 
-        public TextExtent         Extent            => _extent;
-        public LinePosition       StartLinePosition => _start;
-        public LinePosition       EndLinePosition   => _end;
-        public LinePositionExtent LineExtent        => new LinePositionExtent(_start, _end);
+        public TextExtent   Extent            { get; }
+        public LinePosition StartLinePosition { get; }
+        public LinePosition EndLinePosition   { get; }
+        public LineRange    LineRange         => new LineRange(StartLinePosition, EndLinePosition);
 
         /// <summary>
         /// The path to the file or null.
         /// </summary>
         [CanBeNull]
-        public string FilePath => _filePath;
+        public string FilePath { get; }
+
+        [CanBeNull]
+        public string NormalizedFilePath => PathHelper.NormalizePath(FilePath);
 
         /// <summary>
         /// Gets the starting index of the location [0..n].
         /// -1 if the is unknown/missing
         /// </summary>
-        public int Start => _extent.Start;
+        public int Start => Extent.Start;
 
         /// <summary>
         /// The start line number of the location. The first line in a file is defined as line 0 (zero based line numbering).
         /// </summary>
-        public int StartLine => _start.Line;
+        public int StartLine => StartLinePosition.Line;
 
         /// <summary>
         /// The character position within the starting line (zero based).
         /// </summary>
-        public int StartCharacter => _start.Character;
+        public int StartCharacter => StartLinePosition.Character;
 
         /// <summary>
         /// Gets the length of the location. Length is guaranteed to be great or equal to 0.
         /// </summary>
-        public int Length => _extent.Length;
+        public int Length => Extent.Length;
 
         /// <summary>
         /// Gets the end index of the location, starting with 0;
         /// This index is actually one character past the end of the location.
         /// </summary>
-        public int End => _extent.End;
+        public int End => Extent.End;
 
         /// <summary>
         /// The end line number of the location. The first line in a file is defined as line 0 (zero based line numbering).
         /// </summary>
-        public int EndLine => _end.Line;
+        public int EndLine => EndLinePosition.Line;
 
         /// <summary>
         /// The character position within the end line (zero based).
         /// </summary>
-        public int EndCharacter => _end.Character;
+        public int EndCharacter => EndLinePosition.Character;
 
         public override string ToString() {
-            return $"{_filePath}@{StartLine + 1}:{StartCharacter + 1}";
+            return $"{FilePath}@{StartLine + 1}:{StartCharacter + 1}";
         }
 
         #region Equality members
@@ -106,10 +107,10 @@ namespace Pharmatechnik.Nav.Language {
                 return true;
             }
 
-            return _extent.Equals(other._extent) &&
-                   _start.Equals(other._start)   &&
-                   _end.Equals(other._end)       &&
-                   string.Equals(_filePath, other._filePath);
+            return Extent.Equals(other.Extent)                       &&
+                   StartLinePosition.Equals(other.StartLinePosition) &&
+                   EndLinePosition.Equals(other.EndLinePosition)     &&
+                   string.Equals(NormalizedFilePath, other.NormalizedFilePath);
         }
 
         public override bool Equals(object obj) {
@@ -126,10 +127,10 @@ namespace Pharmatechnik.Nav.Language {
 
         public override int GetHashCode() {
             unchecked {
-                var hashCode = _extent.GetHashCode();
-                hashCode     = (hashCode * 397) ^ _start.GetHashCode();
-                hashCode     = (hashCode * 397) ^ _end.GetHashCode();
-                hashCode     = (hashCode * 397) ^ (_filePath?.GetHashCode() ?? 0);
+                var hashCode = Extent.GetHashCode();
+                hashCode = (hashCode * 397) ^ StartLinePosition.GetHashCode();
+                hashCode = (hashCode * 397) ^ EndLinePosition.GetHashCode();
+                hashCode = (hashCode * 397) ^ (NormalizedFilePath?.GetHashCode() ?? 0);
                 return hashCode;
             }
         }
@@ -143,6 +144,8 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         #endregion
+
+        
 
     }
 

@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 
@@ -155,7 +154,7 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
                 yield break;
             }
 
-            var advancedOptions = NavLanguagePackage.GetAdvancedOptionsDialogPage();
+            var advancedOptions = NavLanguagePackage.AdvancedOptions;
          
             foreach (var reference in ReferenceFinder.FindReferences(symbol, advancedOptions)) {
 

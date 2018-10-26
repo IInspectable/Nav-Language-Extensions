@@ -1,14 +1,16 @@
 ﻿#region Using Directives
 
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
+using Microsoft.VisualStudio.Commanding;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Outlining;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
+using Microsoft.VisualStudio.Utilities;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.HighlightReferences;
@@ -17,11 +19,15 @@ using Pharmatechnik.Nav.Language.Extension.HighlightReferences;
 
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
-    [ExportCommandHandler(CommandHandlerNames.NavigateToHighlightReferenceCommandHandler, NavLanguageContentDefinitions.ContentType)]
-    class NavigateToHighlightReferenceCommandHandler: ICommandHandler<NavigateToHighlightedReferenceCommandArgs> {
+    [Export(typeof(ICommandHandler))]
+    [ContentType(NavLanguageContentDefinitions.ContentType)]
+    [Name(CommandHandlerNames.NavigateToHighlightReferenceCommandHandler)]
+    class NavigateToHighlightReferenceCommandHandler:
+        ICommandHandler<NavigateToNextHighlightedReferenceCommandArgs>,
+        ICommandHandler<NavigateToPreviousHighlightedReferenceCommandArgs> {
 
         readonly IViewTagAggregatorFactoryService _tagAggregatorFactory;
-        readonly IOutliningManagerService _outliningManagerService;
+        readonly IOutliningManagerService         _outliningManagerService;
 
         [ImportingConstructor]
         public NavigateToHighlightReferenceCommandHandler(IViewTagAggregatorFactoryService tagAggregatorFactory, IOutliningManagerService outliningManagerService) {
@@ -29,25 +35,52 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             _outliningManagerService = outliningManagerService;
         }
 
-        public CommandState GetCommandState(NavigateToHighlightedReferenceCommandArgs args, Func<CommandState> nextHandler) {
+        public string DisplayName => "Go To Next/Previous Member";
+
+        public CommandState GetCommandState(NavigateToPreviousHighlightedReferenceCommandArgs args) {
             return CommandState.Available;
         }
 
-        public void ExecuteCommand(NavigateToHighlightedReferenceCommandArgs args, Action nextHandler) {
-            using(var tagger = _tagAggregatorFactory.CreateTagAggregator<ReferenceHighlightTag>(args.TextView)) {
-                var tagUnderCursor = FindTagUnderCaret(tagger, args.TextView);
+        public bool ExecuteCommand(NavigateToPreviousHighlightedReferenceCommandArgs args, CommandExecutionContext executionContext) {
+            return ExecuteCommand(args.TextView, NavigateDirection.Up);
+        }
+
+        public CommandState GetCommandState(NavigateToNextHighlightedReferenceCommandArgs args) {
+            return CommandState.Available;
+        }
+
+        public bool ExecuteCommand(NavigateToNextHighlightedReferenceCommandArgs args, CommandExecutionContext executionContext) {
+            return ExecuteCommand(args.TextView, NavigateDirection.Down);
+        }
+
+        enum NavigateDirection {
+
+            Up   = -1,
+            Down = 1,
+
+        }
+
+        bool ExecuteCommand(ITextView textView, NavigateDirection direction) {
+            var wpfTextView = textView as IWpfTextView;
+            if (wpfTextView == null) {
+                return false;
+            }
+
+            using (var tagger = _tagAggregatorFactory.CreateTagAggregator<ReferenceHighlightTag>(wpfTextView)) {
+                var tagUnderCursor = FindTagUnderCaret(tagger, wpfTextView);
 
                 if (tagUnderCursor == null) {
-                    nextHandler();
-                    return;
+                    return false;
                 }
 
-                var spans = GetReferenceSpans(tagger, args.TextView.TextSnapshot.GetFullSpan()).ToList();
+                var spans = GetReferenceSpans(tagger, wpfTextView.TextSnapshot.GetFullSpan()).ToList();
 
-                var destinationSpan = GetDestinationSpan(tagUnderCursor.Value, spans, args.Direction);
-                if(args.TextView.TryMoveCaretToAndEnsureVisible(destinationSpan.Start, _outliningManagerService)) {
-                    args.TextView.SetSelection(destinationSpan);
+                var destinationSpan = GetDestinationSpan(tagUnderCursor.Value, spans, direction);
+                if (wpfTextView.TryMoveCaretToAndEnsureVisible(destinationSpan.Start, _outliningManagerService)) {
+                    wpfTextView.SetSelection(destinationSpan);
                 }
+
+                return true;
             }
         }
 
@@ -79,13 +112,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             var tags = GetReferenceSpans(tagAggregator, new SnapshotSpan(textView.TextSnapshot, new Span(caretPosition, 0)));
             return tags.Any()
                 ? tags.First()
-                : (SnapshotSpan?)null;
+                : (SnapshotSpan?) null;
         }
 
-        sealed class StartComparer : IComparer<SnapshotSpan> {
+        sealed class StartComparer: IComparer<SnapshotSpan> {
+
             public int Compare(SnapshotSpan x, SnapshotSpan y) {
                 return x.Start.CompareTo(y.Start);
             }
+
         }
+
     }
+
 }

@@ -65,6 +65,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             return FindNavLocationsAsync(sourceText, annotation, GetTriggerLocations, cancellationToken);
         }
 
+        // TODO Hier sollte bereits eine CodeGenerationUnit an Stelle des Source Texts rein. Alternativ eine "echte "SourceText" Implementierung
         /// <exception cref="LocationNotFoundException"/>
         static Task<IEnumerable<TLocation>> FindNavLocationsAsync<TAnnotation, TLocation>(
             string sourceText,
@@ -77,7 +78,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             var locationResult = Task.Run(() => {
 
                 var syntaxTree = SyntaxTree.ParseText(sourceText, annotation.NavFileName, cancellationToken);
-                if (!(syntaxTree.GetRoot() is CodeGenerationUnitSyntax codeGenerationUnitSyntax)) {
+                if (!(syntaxTree.Root is CodeGenerationUnitSyntax codeGenerationUnitSyntax)) {
                     throw new LocationNotFoundException(String.Format(MsgErrorWhileParsingNavFile0, annotation.NavFileName));
                 }
 
@@ -137,8 +138,8 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
 
             var exitTransitions = task.ExitTransitions
                 .Where(et => et.SourceReference?.Name == exitAnnotation.ExitTaskName)
-                .Where(et => et.ConnectionPointReference != null)
-                .Select(et => new AmbiguousLocation(et.ConnectionPointReference?.Location, et.ConnectionPointReference.Name))
+                .Where(et => et.ExitConnectionPointReference != null)
+                .Select(et => new AmbiguousLocation(et.ExitConnectionPointReference?.Location, et.ExitConnectionPointReference.Name))
                 .ToList();
 
             if (!exitTransitions.Any()) {
@@ -272,11 +273,12 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     if (!lineSpan.IsValid) {
                         continue;
                     }
+
                     var filePath   = loc.SourceTree?.FilePath;
                     var textExtent = loc.SourceSpan.ToTextExtent();
-                    var lineExtent = lineSpan.ToLinePositionExtent();
+                    var lineRange  = lineSpan.ToLineRange();
 
-                    locs.Add(new Location(textExtent, lineExtent, filePath));
+                    locs.Add(new Location(textExtent, lineRange, filePath));
                 }
 
                 if (!locs.Any()) {
@@ -328,11 +330,11 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
                     if (!lineSpan.IsValid) {
                         continue;
                     }
-                    
+
                     var textExtent = loc.SourceSpan.ToTextExtent();
-                    var lineExtent = lineSpan.ToLinePositionExtent();
+                    var lineRange  = lineSpan.ToLineRange();
                     
-                    locs.Add(new Location(textExtent, lineExtent, filePath));
+                    locs.Add(new Location(textExtent, lineRange, filePath));
                 }
 
                 if(!locs.Any()) {
@@ -495,10 +497,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
             }
 
             var textExtent = memberLocation.SourceSpan.ToTextExtent();
-            var lineExtent = lineSpan.ToLinePositionExtent();
+            var lineRange  = lineSpan.ToLineRange();
             var filePath   = memberLocation.SourceTree?.FilePath;
 
-            var loc = new Location(textExtent, lineExtent, filePath);
+            var loc = new Location(textExtent, lineRange, filePath);
 
             return loc;
         }

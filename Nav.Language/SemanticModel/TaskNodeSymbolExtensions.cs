@@ -6,6 +6,7 @@ using System.Collections.Generic;
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
+
     public static class TaskNodeSymbolExtensions {
 
         public static IEnumerable<IConnectionPointSymbol> GetMissingExitTransitionConnectionPoints(this ITaskNodeSymbol taskNode) {
@@ -16,7 +17,7 @@ namespace Pharmatechnik.Nav.Language {
 
             var expectedExitConnectionPoints = taskNode.Declaration.Exits();
             var actualExitConnectionPoints = taskNode.Outgoings
-                                                     .Select(et => et.ConnectionPointReference)
+                                                     .Select(et => et.ExitConnectionPointReference)
                                                      .Where(cp => cp != null)
                                                      .ToList();
 
@@ -26,7 +27,7 @@ namespace Pharmatechnik.Nav.Language {
                 }
             }
         }
-        
+
         public static bool CodeGenerateAbstractMethod(this IInitNodeSymbol initNode) {
             return initNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
         }
@@ -42,5 +43,41 @@ namespace Pharmatechnik.Nav.Language {
         public static bool CodeDoNotInject(this INodeSymbol node) {
             return (node as ITaskNodeSymbol)?.Syntax.CodeDoNotInjectDeclaration?.Keyword.IsMissing == false;
         }
+
+        public static IEnumerable<IConnectionPointSymbol> GetUnconnectedExits(this ITaskNodeSymbol taskNode) {
+
+            if (taskNode.Declaration != null) {
+
+                var expectedExits  = taskNode.Declaration.Exits().OrderBy(cp => cp.Name);
+                var connectedExits = GetConnectedExits(taskNode).ToList();
+
+                foreach (var expectedExit in expectedExits) {
+
+                    if (!connectedExits.Exists(connectedExit => connectedExit == expectedExit)) {
+                        yield return expectedExit;
+                    }
+                }
+
+            }
+
+        }
+
+        public static IEnumerable<IConnectionPointSymbol> GetConnectedExits(this ITaskNodeSymbol taskNode) {
+
+            if (taskNode.Declaration != null) {
+
+                var actualExits = taskNode.Outgoings
+                                          .Select(et => et?.ExitConnectionPointReference?.Declaration)
+                                          .Where(cps => cps != null);
+
+                return actualExits;
+
+            }
+
+            return Enumerable.Empty<IConnectionPointSymbol>();
+
+        }
+
     }
+
 }

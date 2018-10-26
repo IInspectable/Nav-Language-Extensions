@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
+using Pharmatechnik.Nav.Language.Text;
 
 namespace Nav.Language.Tests {
     [TestFixture]
@@ -12,7 +13,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count % 2, Is.EqualTo(1));
 
             Assert.That(syntaxTree.Tokens.FindAtPosition(-1).IsMissing, Is.True);
@@ -35,7 +36,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseCodeUsingDeclaration(usingText).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count,   Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length,   Is.EqualTo(0));
             Assert.That(syntaxTree.Tokens.Count%2, Is.EqualTo(0));
 
             Assert.That(syntaxTree.Tokens.FindAtPosition( 0).Type, Is.EqualTo(SyntaxTokenType.Whitespace));
@@ -57,7 +58,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseTaskDefinition(taskDef).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
             AssertTokens(syntaxTree.Tokens, 0, 1, SyntaxTokenType.Whitespace);
             AssertTokens(syntaxTree.Tokens, 0, 2, SyntaxTokenType.Whitespace);
@@ -76,7 +77,7 @@ namespace Nav.Language.Tests {
 
             var syntaxTree = Syntax.ParseTaskDefinition(taskDef).SyntaxTree;
 
-            Assert.That(syntaxTree.Diagnostics.Count, Is.EqualTo(0));
+            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
             AssertTokens(syntaxTree.Tokens, 0, 0, true, SyntaxTokenType.Whitespace);
             AssertTokens(syntaxTree.Tokens, 0, 1, true, SyntaxTokenType.Whitespace);
@@ -167,7 +168,7 @@ task B;
             Assert.That(empty.SyntaxTree      , Is.Null);
 
             Assert.That(empty.Type            , Is.EqualTo(SyntaxTokenType.Unknown));
-            Assert.That(empty.Classification  , Is.EqualTo(SyntaxTokenClassification.Unknown));
+            Assert.That(empty.Classification  , Is.EqualTo(TextClassification.Unknown));
         }
 
         [Test]
@@ -181,7 +182,7 @@ task B;
             Assert.That(missing.SyntaxTree      , Is.Null);
 
             Assert.That(missing.Type            , Is.EqualTo(SyntaxTokenType.Unknown));
-            Assert.That(missing.Classification  , Is.EqualTo(SyntaxTokenClassification.Unknown));
+            Assert.That(missing.Classification  , Is.EqualTo(TextClassification.Unknown));
         }
 
         [Test]

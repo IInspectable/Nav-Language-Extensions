@@ -6,7 +6,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                     codeGenerationUnitAndSnapshot: codeGenerationUnitAndSnapshot));
 
             // Semantic Highlighting
-            var advancedOptions = NavLanguagePackage.GetAdvancedOptionsDialogPage();
+            var advancedOptions = NavLanguagePackage.AdvancedOptions;
             if (advancedOptions.SemanticHighlighting) {
 
                 // Init Nodes

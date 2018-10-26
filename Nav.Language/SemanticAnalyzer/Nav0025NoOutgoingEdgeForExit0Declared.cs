@@ -13,31 +13,24 @@ namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
             //==============================
             foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
 
-                if (taskNode.References.Any() && taskNode.Declaration != null) {
+                // Wird mit Nav1012TaskNode0NotRequired behandelt
+                if (!taskNode.References.Any()) {
+                    continue;
+                }
 
-                    var expectedExits = taskNode.Declaration.Exits().OrderBy(cp => cp.Name);
-                    var actualExits = taskNode.Outgoings
-                                              .Select(et => et.ConnectionPointReference)
-                                              .Where(cp => cp != null)
-                                              .ToList();
+                foreach (var expectedExit in taskNode.GetUnconnectedExits()) {
 
-                    foreach (var expectedExit in expectedExits) {
-
-                        if (!actualExits.Exists(cpRef => cpRef.Declaration == expectedExit)) {
-
-                            yield return new Diagnostic(
-                                taskNode.Location,
-                                taskNode.Incomings
-                                        .Select(edge => edge.TargetReference)
-                                        .Where(nodeReference => nodeReference != null)
-                                        .Select(nodeReference => nodeReference.Location),
-                                Descriptor,
-                                expectedExit.Name);
-                        }
-                    }
-
+                    yield return new Diagnostic(
+                        taskNode.Location,
+                        taskNode.Incomings
+                                .Select(edge => edge.TargetReference)
+                                .Where(nodeReference => nodeReference != null)
+                                .Select(nodeReference => nodeReference.Location),
+                        Descriptor,
+                        expectedExit.Name);
                 }
             }
+
         }
 
     }

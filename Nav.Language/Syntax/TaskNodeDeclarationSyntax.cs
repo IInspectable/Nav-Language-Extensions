@@ -1,23 +1,23 @@
 using System;
+
 using JetBrains.Annotations;
+
 using Pharmatechnik.Nav.Language.Internal;
+using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
     [SampleSyntax("task Identifier Alias [donotinject] [abstractmethod];")]
-    public partial class TaskNodeDeclarationSyntax : NodeDeclarationSyntax {
-
-        readonly CodeDoNotInjectDeclarationSyntax _codeDoNotInjectDeclaration;
-        readonly CodeAbstractMethodDeclarationSyntax _codeAbstractMethodDeclaration;
+    public partial class TaskNodeDeclarationSyntax: NodeDeclarationSyntax {
 
         internal TaskNodeDeclarationSyntax(TextExtent extent,
-                            CodeDoNotInjectDeclarationSyntax codeDoNotInjectDeclaration, 
-                            CodeAbstractMethodDeclarationSyntax codeAbstractMethodDeclaration)
-             : base(extent) {
+                                           CodeDoNotInjectDeclarationSyntax codeDoNotInjectDeclaration,
+                                           CodeAbstractMethodDeclarationSyntax codeAbstractMethodDeclaration)
+            : base(extent) {
 
-            AddChildNode(_codeDoNotInjectDeclaration = codeDoNotInjectDeclaration);
-            AddChildNode(_codeAbstractMethodDeclaration = codeAbstractMethodDeclaration);
+            AddChildNode(CodeDoNotInjectDeclaration    = codeDoNotInjectDeclaration);
+            AddChildNode(CodeAbstractMethodDeclaration = codeAbstractMethodDeclaration);
         }
 
         public SyntaxToken TaskKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.TaskKeyword);
@@ -28,9 +28,11 @@ namespace Pharmatechnik.Nav.Language {
         public SyntaxToken IdentifierAlias => Identifier.NextToken(SyntaxTokenType.Identifier);
 
         [CanBeNull]
-        public CodeDoNotInjectDeclarationSyntax CodeDoNotInjectDeclaration => _codeDoNotInjectDeclaration;
+        public CodeDoNotInjectDeclarationSyntax CodeDoNotInjectDeclaration { get; }
 
         [CanBeNull]
-        public CodeAbstractMethodDeclarationSyntax CodeAbstractMethodDeclaration => _codeAbstractMethodDeclaration;
+        public CodeAbstractMethodDeclarationSyntax CodeAbstractMethodDeclaration { get; }
+
     }
+
 }

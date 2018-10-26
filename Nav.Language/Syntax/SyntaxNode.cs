@@ -7,6 +7,8 @@ using System.Diagnostics;
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
@@ -15,14 +17,12 @@ namespace Pharmatechnik.Nav.Language {
     [DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
     public abstract partial class SyntaxNode: IExtent {
 
-        readonly TextExtent _extent;
-
         List<SyntaxNode> _childNodes;
         SyntaxTree       _syntaxTree;
         SyntaxNode       _parent;
 
         internal SyntaxNode(TextExtent extent) {
-            _extent = extent;
+            Extent = extent;
         }
 
         internal void FinalConstruct(SyntaxTree syntaxTree, SyntaxNode parent) {
@@ -45,7 +45,7 @@ namespace Pharmatechnik.Nav.Language {
         public int End    => Extent.End;
         public int Length => Extent.Length;
 
-        public TextExtent Extent => _extent;
+        public TextExtent Extent { get; }
 
         [CanBeNull]
         public SyntaxNode Parent {
@@ -57,7 +57,7 @@ namespace Pharmatechnik.Nav.Language {
 
         public Location GetLocation() {
             EnsureConstructed();
-            return SyntaxTree.GetLocation(Extent);
+            return SyntaxTree.SourceText.GetLocation(Extent);
         }
 
         [NotNull]
@@ -135,6 +135,10 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
+        public SyntaxToken FindToken(int position) {
+           return SyntaxTree.Tokens.FindAtPosition(position);          
+        }
+
         public SyntaxNode FindNode(int position) {
             var token = SyntaxTree.Tokens.FindAtPosition(position);
             if (token.IsMissing) {
@@ -154,7 +158,7 @@ namespace Pharmatechnik.Nav.Language {
 
         public TextExtent GetLeadingTriviaExtent(bool onlyWhiteSpace = false) {
             var isTrivia      = GetIsTriviaFunc(onlyWhiteSpace);
-            var nodeStartLine = SyntaxTree.GetTextLineExtentAtPosition(Start);
+            var nodeStartLine = SyntaxTree.SourceText.GetTextLineAtPosition(Start);
             var leadingExtent = TextExtent.FromBounds(nodeStartLine.Extent.Start, Start);
 
             var start = Start;
@@ -166,7 +170,7 @@ namespace Pharmatechnik.Nav.Language {
                 var line = nodeStartLine.Line - 1;
                 while (line >= 0) {
 
-                    var lineExtent = SyntaxTree.GetTextLineExtent(line).Extent;
+                    var lineExtent = SyntaxTree.SourceText.TextLines[line].Extent;
                     if (!SyntaxTree.Tokens[lineExtent].All(token => isTrivia(token.Classification))) {
                         // Zeile besteht nicht nur aus Trivias
                         break;
@@ -184,7 +188,7 @@ namespace Pharmatechnik.Nav.Language {
         public TextExtent GetTrailingTriviaExtent(bool onlyWhiteSpace = false) {
 
             var isTrivia       = GetIsTriviaFunc(onlyWhiteSpace);
-            var nodeEndLine    = SyntaxTree.GetTextLineExtentAtPosition(End);
+            var nodeEndLine    = SyntaxTree.SourceText.GetTextLineAtPosition(End);
             var trailingExtent = TextExtent.FromBounds(End, nodeEndLine.Extent.End);
 
             var endToken = SyntaxTree.Tokens[trailingExtent]
@@ -196,8 +200,8 @@ namespace Pharmatechnik.Nav.Language {
             return TextExtent.FromBounds(End, end);
         }
 
-        static Func<SyntaxTokenClassification, bool> GetIsTriviaFunc(bool onlyWhiteSpace = false) {
-            return onlyWhiteSpace ? (c => c == SyntaxTokenClassification.Whitespace) : new Func<SyntaxTokenClassification, bool>(SyntaxFacts.IsTrivia);
+        static Func<TextClassification, bool> GetIsTriviaFunc(bool onlyWhiteSpace = false) {
+            return onlyWhiteSpace ? (c => c == TextClassification.Whitespace) : new Func<TextClassification, bool>(SyntaxFacts.IsTrivia);
         }
 
         [NotNull]

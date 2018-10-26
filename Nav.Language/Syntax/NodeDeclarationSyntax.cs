@@ -1,12 +1,17 @@
 using System;
 
-namespace Pharmatechnik.Nav.Language {
-    [Serializable]
-    public abstract class NodeDeclarationSyntax : SyntaxNode {
+using Pharmatechnik.Nav.Language.Text;
 
-        protected NodeDeclarationSyntax(TextExtent extent) : base(extent) {
+namespace Pharmatechnik.Nav.Language {
+
+    [Serializable]
+    public abstract class NodeDeclarationSyntax: SyntaxNode {
+
+        protected NodeDeclarationSyntax(TextExtent extent): base(extent) {
         }
 
         public SyntaxToken Semicolon => ChildTokens().FirstOrMissing(SyntaxTokenType.Semicolon);
+
     }
+
 }

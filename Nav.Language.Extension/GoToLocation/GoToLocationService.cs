@@ -10,13 +10,16 @@ using System.ComponentModel.Composition;
 using System.Windows.Controls.Primitives;
 
 using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
+
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Utilities.Logging;
 using Pharmatechnik.Nav.Language.Extension.UI;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
+
+using Task = System.Threading.Tasks.Task;
 
 #endregion
 
@@ -56,6 +59,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
 
                         waitContext.AllowCancel = false;
                         waitContext.Message     = OpeningFileMessage;
+
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(waitContext.CancellationToken); 
 
                         NavLanguagePackage.GoToLocationInPreviewTab(locationResult.Location);
 
@@ -103,7 +108,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
             }
         }
 
-        static async Task<IEnumerable<LocationInfo>> GetLocationInfosAsync(IEnumerable<ILocationInfoProvider> providers, CancellationToken cancellationToken = default(CancellationToken)) {
+        static async Task<IEnumerable<LocationInfo>> GetLocationInfosAsync(IEnumerable<ILocationInfoProvider> providers, CancellationToken cancellationToken = default) {
             using(Logger.LogBlock(nameof(GetLocationInfosAsync))) {
 
                 var results = await Task.WhenAll(providers.Select(p => p.GetLocationsAsync(cancellationToken)));
@@ -113,6 +118,8 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         }
 
         void GoToLocationInPreviewTab(LocationInfo locationInfo) {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if(!locationInfo.IsValid) {
                 ShowLocationErrorMessage(locationInfo);
@@ -125,6 +132,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
         }
 
         void ShowLocationErrorMessage(LocationInfo locationInfo) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             ShellUtil.ShowErrorMessage(locationInfo.ErrorMessage);
         }
     }

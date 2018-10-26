@@ -14,12 +14,7 @@ namespace Nav.Language.Tests {
         public void TestGeneratedFolderName() {
             Assert.That(PathProvider.GeneratedFolderName, Is.EqualTo("generated"), "Wrong GeneratedFolderName");
         }
-
-        [Test]
-        public void TestLegacyManualFolderName() {
-            Assert.That(PathProvider.LegacyManualFolderName, Is.EqualTo("manual"), "Wrong LegacyManualFolderName");
-        }
-
+       
         [Test]
         public void TestGeneratedFileNameSuffix() {
             Assert.That(PathProvider.GeneratedFileNameSuffix, Is.EqualTo("generated"), "Wrong GeneratedFileNameSuffix");
@@ -52,7 +47,6 @@ namespace Nav.Language.Tests {
             Assert.That(pathProvider.IwflGeneratedDirectory, Is.EqualTo(@"n:\av\IWFL\generated"));
             Assert.That(pathProvider.IWfsFileName          , Is.EqualTo(@"n:\av\IWFL\generated\ITestWFS.generated.cs"));
 
-            Assert.That(pathProvider.LegacyWfsFileName     , Is.EqualTo(@"n:\av\WFL\manual\TestWFS.cs"));
             Assert.That(pathProvider.GetToFileName("MyTo") , Is.EqualTo(@"n:\av\IWFL\generated\MyTo.generated.cs"));
         }
 
@@ -78,7 +72,6 @@ namespace Nav.Language.Tests {
             Assert.That(pathProvider.IwflGeneratedDirectory, Is.EqualTo(@"n:\av\IWFL\generateTo\generated"));
             Assert.That(pathProvider.IWfsFileName          , Is.EqualTo(@"n:\av\IWFL\generateTo\generated\ITestWFS.generated.cs"));
 
-            Assert.That(pathProvider.LegacyWfsFileName     , Is.EqualTo(@"n:\av\WFL\generateTo\manual\TestWFS.cs"));
         }
     }
 }

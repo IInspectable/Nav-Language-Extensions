@@ -31,20 +31,20 @@ namespace Pharmatechnik.Nav.Language {
         }
 
         public static (
-            IReadOnlyList<Diagnostic>               Diagnostics,
+            IReadOnlyList<Diagnostic> Diagnostics,
             SymbolCollection<TaskDeclarationSymbol> TaskDeklarations,
-            SymbolCollection<IncludeSymbol>         Includes) 
+            SymbolCollection<IncludeSymbol> Includes)
             FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, ISyntaxProvider syntaxProvider, CancellationToken cancellationToken) {
 
             return FromCodeGenerationUnitSyntax(syntax, false, syntaxProvider, cancellationToken);
         }
 
         static (
-            IReadOnlyList<Diagnostic>               Diagnostics,
+            IReadOnlyList<Diagnostic> Diagnostics,
             SymbolCollection<TaskDeclarationSymbol> TaskDeklarations,
-            SymbolCollection<IncludeSymbol>         Includes) 
+            SymbolCollection<IncludeSymbol> Includes)
             FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, bool processAsIncludedFile, ISyntaxProvider syntaxProvider, CancellationToken cancellationToken) {
-            
+
             var builder = new TaskDeclarationSymbolBuilder(syntax, processAsIncludedFile, syntaxProvider);
             builder.ProcessCodeGenerationUnitSyntax(syntax, cancellationToken);
 
@@ -80,10 +80,10 @@ namespace Pharmatechnik.Nav.Language {
 
             try {
 
-                var filePath = includeDirectiveSyntax.StringLiteral.ToString().Trim('"');
+                var filePath = includeDirectiveSyntax.StringLiteral.ToString().Trim('"').Trim();
                 if (!Path.IsPathRooted(filePath)) {
 
-                    var directory = includeDirectiveSyntax.SyntaxTree.FileInfo?.Directory;
+                    var directory = includeDirectiveSyntax.SyntaxTree.SourceText.FileInfo?.Directory;
                     if (directory == null) {
 
                         _diagnostics.Add(new Diagnostic(
@@ -100,7 +100,7 @@ namespace Pharmatechnik.Nav.Language {
                 filePath = Path.GetFullPath(filePath);
 
                 // nav File inkludiert sich selbst
-                if (String.Equals(includeDirectiveSyntax.SyntaxTree.FileInfo?.FullName, filePath, StringComparison.OrdinalIgnoreCase)) {
+                if (String.Equals(includeDirectiveSyntax.SyntaxTree.SourceText.FileInfo?.FullName, filePath, StringComparison.OrdinalIgnoreCase)) {
 
                     _diagnostics.Add(new Diagnostic(
                                          location,
@@ -109,7 +109,7 @@ namespace Pharmatechnik.Nav.Language {
                     return;
                 }
 
-                var includeFileSyntax = _syntaxProvider.FromFile(filePath, cancellationToken);
+                var includeFileSyntax = _syntaxProvider.GetSyntax(filePath, cancellationToken);
                 if (includeFileSyntax == null) {
                     _diagnostics.Add(new Diagnostic(
                                          location,
@@ -141,7 +141,7 @@ namespace Pharmatechnik.Nav.Language {
                 _diagnostics.Add(new Diagnostic(
                                      include.Location,
                                      DiagnosticDescriptors.DeadCode.Nav1001IncludeDirectiveForFile0AppearedPreviously,
-                                    Path.GetFileName(include.FileName)));
+                                     Path.GetFileName(include.FileName)));
 
             } else {
                 _includes.Add(include);
@@ -193,7 +193,9 @@ namespace Pharmatechnik.Nav.Language {
                 var location   = identifier.GetLocation();
                 if (location != null) {
 
-                    var syntax = _processAsIncludedFile ? null : taskDefinitionSyntax;
+                    // Speicher checken...
+                    // var syntax = _processAsIncludedFile ? null : taskDefinitionSyntax;
+                    var syntax = taskDefinitionSyntax;
 
                     var taskDeclaration = new TaskDeclarationSymbol(
                         name: identifier.ToString(),

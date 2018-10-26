@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
+using Pharmatechnik.Nav.Language.Text;
 
 // ReSharper disable PossibleNullReferenceException => Dann soll es so sein. Test wird dann eh rot
 
@@ -11,40 +11,74 @@ namespace Nav.Language.Tests {
 
     [TestFixture]
     public class SyntaxTreeTests {
-        
+
         [Test]
-        public void TestSerializable() {
-            var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
+        public void TestAllSyntaxesPresent() {
 
-            var copy = Clone(syntaxTree);
+            var src = Resources.AllRules;
 
-            Assert.That(copy.Tokens.Count, Is.EqualTo(syntaxTree.Tokens.Count));
+            var cgu = Syntax.ParseCodeGenerationUnit(src);
+
+            var nodeTypes = typeof(Syntax).Assembly
+                                          .GetTypes().Where(
+                                               t => typeof(SyntaxNode).IsAssignableFrom(t) &&
+                                                    !t.IsAbstract)
+                                          .ToList();
+
+            // Die Anzhal Kann/darf sich über die Zeit auch ändern.
+            // Blöd wäre nur, wenn hier keine Syntaxen gefunden würden ;-)
+            Assert.That(nodeTypes.Count, Is.EqualTo(47));
+
+            foreach (var nodeType in nodeTypes) {
+
+                var message = $"Es fehlt die Syntax {nodeType.Name}.";
+                var sample = SampleSyntax.Of(nodeType);
+                if (!String.IsNullOrEmpty(sample)) {
+                    message += $" Beispiel: '{sample}'";
+                }
+                Assert.That(
+                    cgu.DescendantNodesAndSelf().Any(t => t.GetType() == nodeType),
+                    Is.True, message);
+            }
         }
 
+        [Test]
+        public void TestEmptyText() {
+            var syntaxTree = SyntaxTree.ParseText(String.Empty);
+            Assert.That(syntaxTree,           Is.Not.Null);
+            Assert.That(syntaxTree.Root, Is.Not.Null);
+        }
+
+        [Test]
+        public void TestParseEmptyCodeDeclaration() {
+            var syntax = Syntax.ParseCodeDeclaration(String.Empty);
+            Assert.That(syntax, Is.Not.Null);
+        }
+       
         [Test]
         public void TestParentedNodesAndTokens() {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
 
             Assert.That(syntaxTree.Tokens.Count(token => token.Parent == null), Is.EqualTo(0));
-            Assert.That(syntaxTree.GetRoot().DescendantNodes().Count(node => node.Parent == null), Is.EqualTo(0));
-            Assert.That(syntaxTree.GetRoot().Parent, Is.Null);
+            Assert.That(syntaxTree.Root.DescendantNodes().Count(node => node.Parent == null), Is.EqualTo(0));
+            Assert.That(syntaxTree.Root.Parent, Is.Null);
         }
 
         [Test]
         public void TestCommentTokens() {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
 
-            Assert.That(syntaxTree.Tokens.OfClassification(SyntaxTokenClassification.Comment).Count(), Is.EqualTo(2));
+            Assert.That(syntaxTree.Tokens.OfClassification(TextClassification.Comment).Count(), Is.EqualTo(2));
 
-            var firstComment = syntaxTree.Tokens.OfClassification(SyntaxTokenClassification.Comment).First();
-            Assert.That(firstComment.Parent, Is.EqualTo(syntaxTree.GetRoot()));
+            var firstComment = syntaxTree.Tokens.OfClassification(TextClassification.Comment).First();
+            Assert.That(firstComment.Parent, Is.EqualTo(syntaxTree.Root));
             Assert.That(firstComment.Type, Is.EqualTo(SyntaxTokenType.SingleLineComment));
-            Assert.That(firstComment.Classification, Is.EqualTo(SyntaxTokenClassification.Comment));
+            Assert.That(firstComment.Classification, Is.EqualTo(TextClassification.Comment));
         }
         
         [Test]
         public void TestEndOfFile() {
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
 
             Assert.That(syntaxRoot.ChildTokens().Last().Type, Is.EqualTo(SyntaxTokenType.EndOfFile));
         }
@@ -52,12 +86,12 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestCodeNamespaceDeclaration() {
             // [namespaceprefix NS.1]
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
             var codeNamespaceDeclaration = syntaxRoot.DescendantNodes<CodeNamespaceDeclarationSyntax>().First();
 
             Assert.That(codeNamespaceDeclaration.NamespaceprefixKeyword.ToString(), Is.EqualTo("namespaceprefix"));
             Assert.That(codeNamespaceDeclaration.NamespaceprefixKeyword.Type, Is.EqualTo(SyntaxTokenType.NamespaceprefixKeyword));
-            Assert.That(codeNamespaceDeclaration.NamespaceprefixKeyword.Classification, Is.EqualTo(SyntaxTokenClassification.Keyword));
+            Assert.That(codeNamespaceDeclaration.NamespaceprefixKeyword.Classification, Is.EqualTo(TextClassification.Keyword));
 
             Assert.That(codeNamespaceDeclaration.Namespace.Text, Is.EqualTo("NS.1"));
 
@@ -77,12 +111,12 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestCodeUsingDirective() {
             // [using U1]
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
             var codeUsingDirective = syntaxRoot.DescendantNodes<CodeUsingDeclarationSyntax>().First();
 
             Assert.That(codeUsingDirective.UsingKeyword.ToString(), Is.EqualTo("using"));
             Assert.That(codeUsingDirective.UsingKeyword.Type, Is.EqualTo(SyntaxTokenType.UsingKeyword));
-            Assert.That(codeUsingDirective.UsingKeyword.Classification, Is.EqualTo(SyntaxTokenClassification.Keyword));
+            Assert.That(codeUsingDirective.UsingKeyword.Classification, Is.EqualTo(TextClassification.Keyword));
 
 
             Assert.That(codeUsingDirective.Namespace.Text, Is.EqualTo("U1"));
@@ -97,16 +131,16 @@ namespace Nav.Language.Tests {
         public void TestTaskIncludeDirective() {
             // taskref "F1";
 
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
             var includeDirective = syntaxRoot.DescendantNodes<IncludeDirectiveSyntax>().First();
 
             Assert.That(includeDirective.TaskrefKeyword.ToString(), Is.EqualTo("taskref"));
             Assert.That(includeDirective.TaskrefKeyword.Type, Is.EqualTo(SyntaxTokenType.TaskrefKeyword));
-            Assert.That(includeDirective.TaskrefKeyword.Classification, Is.EqualTo(SyntaxTokenClassification.Keyword));
+            Assert.That(includeDirective.TaskrefKeyword.Classification, Is.EqualTo(TextClassification.Keyword));
 
             Assert.That(includeDirective.StringLiteral.ToString(), Is.EqualTo("\"F1\""));
             Assert.That(includeDirective.StringLiteral.Type, Is.EqualTo(SyntaxTokenType.StringLiteral));
-            Assert.That(includeDirective.StringLiteral.Classification, Is.EqualTo(SyntaxTokenClassification.StringLiteral));
+            Assert.That(includeDirective.StringLiteral.Classification, Is.EqualTo(TextClassification.StringLiteral));
 
             Assert.That(includeDirective.Semicolon.ToString(), Is.EqualTo(";"));
             Assert.That(includeDirective.Semicolon.Type, Is.EqualTo(SyntaxTokenType.Semicolon));
@@ -119,7 +153,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestTaskDeclaration() {
             var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
-            var taskDeclaration = syntaxTree.GetRoot().DescendantNodes<TaskDeclarationSyntax>().First();
+            var taskDeclaration = syntaxTree.Root.DescendantNodes<TaskDeclarationSyntax>().First();
 
             Assert.That(taskDeclaration.ChildNodes()
                     .Count, Is.EqualTo(6));
@@ -255,7 +289,7 @@ namespace Nav.Language.Tests {
 
         [Test]
         public void TestTaskDefinition() {
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
 
             var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
@@ -320,7 +354,7 @@ namespace Nav.Language.Tests {
         [Test]
         public void TestNodeDeclarationBlock() {
 
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
 
             var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
@@ -393,7 +427,7 @@ namespace Nav.Language.Tests {
 
         [Test]
         public  void TestTransitionDefinitionBlock() {
-            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).GetRoot();
+            var syntaxRoot = SyntaxTree.ParseText(Resources.AllRules).Root;
 
             var taskDefinition = syntaxRoot.DescendantNodes<TaskDefinitionSyntax>().First();
 
@@ -462,17 +496,6 @@ namespace Nav.Language.Tests {
             Assert.That(exitNodeTransition.Semicolon.ToString(), Is.EqualTo(";"));
             Assert.That(exitNodeTransition.Semicolon.Type, Is.EqualTo(SyntaxTokenType.Semicolon));
         }
-
-        static T Clone<T>(T original) {
-
-            using (var stream = new MemoryStream()) {
-                var formatter = new BinaryFormatter();
-
-                formatter.Serialize(stream, original);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                return (T)formatter.Deserialize(stream);
-            }
-        }
+        
     }
 }

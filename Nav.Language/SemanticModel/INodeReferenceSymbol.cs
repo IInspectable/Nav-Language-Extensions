@@ -7,15 +7,22 @@ using JetBrains.Annotations;
 namespace Pharmatechnik.Nav.Language {
 
     public enum NodeReferenceType {
+
         Source,
         Target
+
     }
 
     public interface INodeReferenceSymbol: ISymbol {
+
         [CanBeNull]
-        INodeSymbol Declaration { get;}
+        INodeSymbol Declaration { get; }
+
         NodeReferenceType NodeReferenceType { get; }
+
         [NotNull]
         IEdge Edge { get; }
+
     }
+
 }

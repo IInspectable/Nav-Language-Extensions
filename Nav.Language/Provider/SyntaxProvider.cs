@@ -12,7 +12,7 @@ namespace Pharmatechnik.Nav.Language {
 
         public static readonly ISyntaxProvider Default = new SyntaxProvider();
 
-        public virtual CodeGenerationUnitSyntax FromFile(string filePath, CancellationToken cancellationToken = default) {
+        public virtual CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default) {
 
             if (!File.Exists(filePath)) {
                 return null;

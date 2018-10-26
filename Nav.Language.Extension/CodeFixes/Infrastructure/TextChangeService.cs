@@ -9,6 +9,8 @@ using Microsoft.VisualStudio.Text.Operations;
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Extension.Utilities;
 
+using TextExtent = Pharmatechnik.Nav.Language.Text.TextExtent;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
@@ -44,7 +46,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
                 foreach (var change in textChangesAndSnapshot.TextChanges) {
                     var span = TranslateToTextEditSpan(textChangesAndSnapshot.Snapshot, change.Extent, textEdit);
-                    textEdit.Replace(span, change.NewText);
+                    textEdit.Replace(span, change.ReplacementText);
                 }
 
                 var textSnapshot=textEdit.Apply();

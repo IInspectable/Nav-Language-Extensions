@@ -1,11 +1,13 @@
 ﻿using System;
 
+using Microsoft.VisualStudio.Commanding;
+
 namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
-    interface ICommandHandler {
+    interface INavCommandHandler {
     }
 
-    interface ICommandHandler<in T> : ICommandHandler where T : CommandArgs {
+    interface INavCommandHandler<in T> : INavCommandHandler where T : CommandArgs {
         CommandState GetCommandState(T args, Func<CommandState> nextHandler);
         void ExecuteCommand(T args, Action nextHandler);
     }   

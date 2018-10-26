@@ -291,7 +291,7 @@ namespace Nav.Language.Tests {
                 syntaxProvider.RegisterFile(include);
             }
 
-            var syntax = syntaxProvider.FromFile(navFile.FilePath);
+            var syntax = syntaxProvider.GetSyntax(navFile.FilePath);
             var model  = CodeGenerationUnit.FromCodeGenerationUnitSyntax(syntax, syntaxProvider: syntaxProvider);
             return model;
         }

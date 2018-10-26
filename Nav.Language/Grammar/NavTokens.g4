@@ -1,7 +1,8 @@
-﻿lexer grammar NavLexer;
+﻿lexer grammar NavTokens;
 
 channels {
-    TriviaChannel
+    TriviaChannel,
+    PreprocessorChannel
 }
 
 TaskKeyword            : 'task';
@@ -28,22 +29,20 @@ GeneratetoKeyword      : 'generateto';
 NotimplementedKeyword  : 'notimplemented';
 AbstractmethodKeyword  : 'abstractmethod';
 DonotinjectKeyword     : 'donotinject';
-GoToEdgeKeyword        :   '-->';
-ModalEdgeKeyword       :   '*->' | 'o->';
-NonModalEdgeKeyword    :   '==>';
+GoToEdgeKeyword        : '-->';
+ModalEdgeKeyword       : '*->' | 'o->';
+NonModalEdgeKeyword    : '==>';
 
-fragment
-NL
-    :   '\r\n' | '\n' | '\r'
+//------------------
+// DEFAULT_MODE
+
+HashToken                  
+    : '#'  
+    -> channel(PreprocessorChannel), mode(PreprocessorMode)
     ;
 
 Whitespace
-    :
-    (   ' '
-    |   '\u0009' // horizontal tab character
-    |   '\u000B' // vertical tab character
-    |   '\u000C' // form feed character
-    )+
+    : WS+
     -> channel(TriviaChannel)
     ;
 
@@ -64,15 +63,6 @@ NewLine
 
 Identifier
     :   IdentifierCharacter+
-    ;
-
-fragment
-IdentifierCharacter
-    :   'a'..'z'
-    |   'A'..'Z'
-    |   '_'
-    |   '0'..'9'
-    |   'Ä'|'Ö'|'Ü'|'ä'|'ö'|'ü'|'ß'|'.'
     ;
 
 OpenBrace
@@ -123,12 +113,95 @@ StringLiteral
     :   '\"' (StringLiteralCharacter)* '\"'
     ;
 
-fragment
-StringLiteralCharacter
-    :   ~( '\"' | '\u000D' | '\u000A' | '\u2028' | '\u2029')
+Unknown
+    :  .
+    -> channel(TriviaChannel)
     ;
 
-Unknown
-  :  .
-  -> channel(TriviaChannel)
-  ;
+//------------------
+// PreprocessorMode
+
+mode PreprocessorMode;
+
+PreprocessorKeyword
+    :   LetterCharacter+   
+    -> channel(PreprocessorChannel), mode(PreprocessorTextMode)
+    ;
+
+PreprocessorNewLine
+    :   NL    
+    -> channel(PreprocessorChannel), mode(DEFAULT_MODE)
+    ;
+
+//------------------
+// PreprocessorTextMode
+//
+mode PreprocessorTextMode;
+
+PreprocessorText
+    :   ~[NL]             
+    -> channel(PreprocessorChannel)
+    ;
+
+PreprocessorTextNewline
+    :   NL     
+    -> channel(PreprocessorChannel), type(PreprocessorNewLine), mode(DEFAULT_MODE)
+    ;
+
+//------------------
+// Fragments
+//
+fragment NL
+    :   '\r\n' | '\r' | '\n'
+    | '\u0085'      // <Next Line CHARACTER (U+0085)>'
+    | '\u2028'      // '<Line Separator CHARACTER (U+2028)>'
+    | '\u2029'      // '<Paragraph Separator CHARACTER (U+2029)>'
+    ;
+
+fragment WS
+    : UnicodeClassZS //'<Any Character With Unicode Class Zs>'
+    | '\u0009'       //'<Horizontal Tab Character (U+0009)>'
+    | '\u000B'       //'<Vertical Tab Character (U+000B)>'
+    | '\u000C'       //'<Form Feed Character (U+000C)>'
+    ;
+
+fragment UnicodeClassZS
+    : '\u0020'      // SPACE
+    | '\u00A0'      // NO_BREAK SPACE
+    | '\u1680'      // OGHAM SPACE MARK
+    | '\u180E'      // MONGOLIAN VOWEL SEPARATOR
+    | '\u2000'      // EN QUAD
+    | '\u2001'      // EM QUAD
+    | '\u2002'      // EN SPACE
+    | '\u2003'      // EM SPACE
+    | '\u2004'      // THREE_PER_EM SPACE
+    | '\u2005'      // FOUR_PER_EM SPACE
+    | '\u2006'      // SIX_PER_EM SPACE
+    | '\u2008'      // PUNCTUATION SPACE
+    | '\u2009'      // THIN SPACE
+    | '\u200A'      // HAIR SPACE
+    | '\u202F'      // NARROW NO_BREAK SPACE
+    | '\u3000'      // IDEOGRAPHIC SPACE
+    | '\u205F'      // MEDIUM MATHEMATICAL SPACE
+    ;
+
+fragment IdentifierCharacter
+    :   LetterCharacter
+    |   '_'
+    |   DecimalDigitCharacter
+    |   '.'
+    ;
+
+fragment LetterCharacter
+    :   'a'..'z'
+    |   'A'..'Z'
+    |   'Ä'|'Ö'|'Ü'|'ä'|'ö'|'ü'|'ß'
+    ;
+
+fragment DecimalDigitCharacter
+    :   '0'..'9' 
+    ;
+
+fragment StringLiteralCharacter
+    :   ~( '\"' | '\u000D' | '\u000A' | '\u2028' | '\u2029')
+    ;

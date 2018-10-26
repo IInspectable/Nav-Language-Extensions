@@ -31,9 +31,9 @@ namespace Pharmatechnik.Nav.Language.Text {
                 int start = offset + change.Extent.Start;
 
                 textBuilder.Remove(start, change.Extent.Length);
-                textBuilder.Insert(start, change.NewText);
+                textBuilder.Insert(start, change.ReplacementText);
 
-                offset += change.NewText.Length - change.Extent.Length;
+                offset += change.ReplacementText.Length - change.Extent.Length;
             }
 
             return textBuilder.ToString();

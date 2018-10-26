@@ -16,7 +16,7 @@ using Pharmatechnik.Nav.Utilities.Logging;
 
 namespace Pharmatechnik.Nav.Language.Extension {
 
-    public delegate SyntaxNode ParseMethod(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken));
+    public delegate SyntaxNode ParseMethod(string text, string filePath = null, CancellationToken cancellationToken = default);
 
     sealed class ParserService: IDisposable {
 
@@ -98,7 +98,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             OnRebuildTriggered(EventArgs.Empty);
         }
 
-        public SyntaxTreeAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default(CancellationToken)) {
+        public SyntaxTreeAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default) {
             var syntaxTreeAndSnapshot = SyntaxTreeAndSnapshot;
             if (syntaxTreeAndSnapshot!=null && syntaxTreeAndSnapshot.IsCurrent(TextBuffer)) {
                 return syntaxTreeAndSnapshot;

@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Text.Editor;
 
 using Pharmatechnik.Nav.Language.CodeFixes;
 using Pharmatechnik.Nav.Language.Extension.Common;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -21,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             CodeFixContext = new CodeFixContext(
                 range          : new TextExtent(range.Start, range.Length),
                 codeGenerationUnit: CodeGenerationUnitAndSnapshot.CodeGenerationUnit,
-                editorSettings    : TextView.GetEditorSettings());
+                textEditorSettings    : TextView.GetEditorSettings());
         }
         
         [NotNull]

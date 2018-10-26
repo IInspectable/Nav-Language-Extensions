@@ -17,20 +17,20 @@ namespace Pharmatechnik.Nav.Language {
     sealed class CodeGenerationUnitBuilder {
 
         readonly ISyntaxProvider                         _syntaxProvider;
-        readonly List<Diagnostic>                        _diagnostics;
+        readonly ImmutableArray<Diagnostic>.Builder      _diagnostics;
         readonly SymbolCollection<TaskDeclarationSymbol> _taskDeclarations;
         readonly SymbolCollection<TaskDefinitionSymbol>  _taskDefinitions;
         readonly SymbolCollection<IncludeSymbol>         _includes;
-        readonly List<string>                            _codeUsings;
+        readonly ImmutableArray<string>.Builder          _codeUsings;
         readonly List<ISymbol>                           _symbols;
 
         CodeGenerationUnitBuilder(ISyntaxProvider syntaxProvider) {
             _syntaxProvider   = syntaxProvider ?? SyntaxProvider.Default;
-            _diagnostics      = new List<Diagnostic>();
+            _diagnostics      = ImmutableArray.CreateBuilder<Diagnostic>();
             _taskDeclarations = new SymbolCollection<TaskDeclarationSymbol>();
             _taskDefinitions  = new SymbolCollection<TaskDefinitionSymbol>();
             _includes         = new SymbolCollection<IncludeSymbol>();
-            _codeUsings       = new List<string>();
+            _codeUsings       = ImmutableArray.CreateBuilder<string>();
             _symbols          = new List<ISymbol>();
         }
 
@@ -48,12 +48,12 @@ namespace Pharmatechnik.Nav.Language {
             // Temporary model for analyzing
             var tempModel = new CodeGenerationUnit(
                 syntax,
-                builder._codeUsings.ToImmutableList(),
+                builder._codeUsings.ToImmutable(),
                 builder._taskDeclarations,
                 builder._taskDefinitions,
                 builder._includes,
                 builder._symbols,
-                builder._diagnostics.ToImmutableList());
+                builder._diagnostics.ToImmutable());
 
             foreach (var taskDefinition in builder._taskDefinitions) {
                 taskDefinition.FinalConstruct(tempModel);
@@ -62,7 +62,7 @@ namespace Pharmatechnik.Nav.Language {
             // Analyze Model
             var analyzers   = Analyzer.GetAnalyzer();
             var context     = new AnalyzerContext();
-            var diagnostics = new List<Diagnostic>();
+            var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
 
             foreach (var analyzer in analyzers) {
 
@@ -75,7 +75,7 @@ namespace Pharmatechnik.Nav.Language {
             diagnostics.AddRange(tempModel.Diagnostics);
 
             // Finales Model mit allen Diagnostics
-            var model = tempModel.WithDiagnostics(diagnostics);
+            var model = tempModel.WithDiagnostics(diagnostics.ToImmutable());
 
             foreach (var taskDefinition in builder._taskDefinitions) {
                 taskDefinition.FinalConstruct(model);
@@ -134,7 +134,7 @@ namespace Pharmatechnik.Nav.Language {
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            (var taskDefinition, var diagnostics) = TaskDefinitionSymbolBuilder.Build(taskDefinitionSyntax, _taskDeclarations);
+            var (taskDefinition, diagnostics) = TaskDefinitionSymbolBuilder.Build(taskDefinitionSyntax, _taskDeclarations);
             _diagnostics.AddRange(diagnostics);
 
             if (taskDefinition == null) {

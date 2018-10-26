@@ -141,7 +141,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _result = null;
 
             if (_workspace != null) {
-                Logger.Trace($"{nameof(DisconnectFromWorkspace)}: {_textBuffer.GetTextDocument()?.FilePath}");
+                Logger.Trace($"{nameof(DisconnectFromWorkspace)}");
 
                 // ReSharper disable PossibleNullReferenceException
                 _workspace.WorkspaceChanged -= OnWorkspaceChanged;

@@ -1,152 +1,103 @@
 ﻿#region Using Directives
 
 using System;
-using System.IO;
 using System.Text;
-using System.Linq;
-using System.Collections.Generic;
 using System.Threading;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+
 using JetBrains.Annotations;
 
-using Pharmatechnik.Nav.Language.Generated;
+using Pharmatechnik.Nav.Language.Text;
 using Pharmatechnik.Nav.Language.Internal;
+using Pharmatechnik.Nav.Language.Generated;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
-
-    [Serializable]
+  
     public class SyntaxTree {
 
-        readonly SyntaxNode                    _root;
-        readonly SyntaxTokenList               _tokens;
-        readonly IReadOnlyList<Diagnostic>     _diagnostics;
-        readonly IReadOnlyList<TextLineExtent> _textLines;
-        readonly FileInfo                      _fileInfo;
-        readonly string                        _sourceText;
-
-        internal SyntaxTree(string sourceText,
+        internal SyntaxTree(SourceText sourceText,
                             SyntaxNode root,
                             SyntaxTokenList tokens,
-                            IReadOnlyList<TextLineExtent> textLines,
-                            IReadOnlyList<Diagnostic> diagnostics,
-                            FileInfo fileInfo) {
+                            ImmutableArray<Diagnostic> diagnostics) {
 
-            _sourceText  = sourceText ?? String.Empty;
-            _root        = root;
-            _fileInfo    = fileInfo;
-            _diagnostics = diagnostics ?? Enumerable.Empty<Diagnostic>().ToList();
-            _tokens      = tokens      ?? SyntaxTokenList.Empty;
-            _textLines   = textLines   ?? new List<TextLineExtent>();
+            Root        = root       ?? throw new ArgumentNullException(nameof(root));
+            Tokens      = tokens     ?? SyntaxTokenList.Empty;
+            SourceText  = sourceText ?? SourceText.Empty;
+            Diagnostics = diagnostics;
         }
 
         [NotNull]
-        public SyntaxTokenList Tokens => _tokens;
+        public SyntaxNode Root { get; }
 
         [NotNull]
-        public IReadOnlyList<TextLineExtent> TextLines => _textLines;
+        public SourceText SourceText { get; }
 
         [NotNull]
-        public IReadOnlyList<Diagnostic> Diagnostics => _diagnostics;
+        public SyntaxTokenList Tokens { get; }
 
-        public SyntaxNode GetRoot() {
-            return _root;
+        public ImmutableArray<Diagnostic> Diagnostics { get; }
+
+        public static SyntaxTree ParseText(string text, string filePath = null, CancellationToken cancellationToken = default) {
+
+            return ParseText(text: text,
+                             treeCreator: parser => parser.codeGenerationUnit(),
+                             filePath: filePath,
+                             cancellationToken: cancellationToken);
         }
 
-        [CanBeNull]
-        public FileInfo FileInfo => _fileInfo;
+        internal static SyntaxTree ParseText(string text,
+                                             Func<NavGrammar, IParseTree> treeCreator,
+                                             string filePath,
+                                             Encoding encoding = null,
+                                             CancellationToken cancellationToken = default) {
 
-        [NotNull]
-        public string SourceText => _sourceText;
+            text = text ?? String.Empty;
 
-        public Location GetLocation(TextExtent extent) {
-            return new Location(extent, GetLinePositionExtent(extent), FileInfo?.FullName);
-        }
+            var sourceText  = SourceText.From(text, filePath);
+            var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
+            
+            
+            // Setup Lexer
+            var stream             = sourceText.ToCharStream();
+            var lexer              = new NavTokens(stream);
+            var lexerErrorListener = new NavLexerErrorListener(sourceText, diagnostics);
+            lexer.RemoveErrorListeners();
+            lexer.AddErrorListener(lexerErrorListener);
 
-        LinePositionExtent GetLinePositionExtent(TextExtent extent) {
-
-            var start = GetLinePositionAtPosition(extent.Start);
-            var end   = GetLinePositionAtPosition(extent.End);
-
-            return new LinePositionExtent(start, end);
-        }
-
-        LinePosition GetLinePositionAtPosition(int position) {
-            var lineInformaton = GetTextLineExtentAtPositionCore(position);
-            return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
-        }
-
-        public TextLineExtent GetTextLineExtent(int line) {
-            return _textLines[line];
-        }
-
-        public TextLineExtent GetTextLineExtentAtPosition(int position) {
-            if (position < 0 || position > SourceText.Length) {
-                throw new ArgumentOutOfRangeException(nameof(position));
-            }
-            return GetTextLineExtentAtPositionCore(position);
-        }
-
-        TextLineExtent GetTextLineExtentAtPositionCore(int position) {
-            var lineInformaton = _textLines.FindElementAtPosition(position);
-            return lineInformaton;
-        }
-
-        public static SyntaxTree ParseText(string text, string filePath=null, CancellationToken cancellationToken = default) {
-
-            return ParseTextCore(sourceText       : text, 
-                                 treeCreator      : parser => parser.codeGenerationUnit(), 
-                                 filePath         : filePath, 
-                                 cancellationToken: cancellationToken);
-        }
-        
-        internal static SyntaxTree ParseTextCore(string sourceText, 
-                                                 Func<NavGrammarParser, IParseTree> treeCreator, 
-                                                 string filePath, 
-                                                 Encoding encoding = null, 
-                                                 CancellationToken cancellationToken = default) {
-
-            var fileInfo = String.IsNullOrEmpty(filePath) ? null : new FileInfo(filePath);
-
-            sourceText = sourceText ?? String.Empty;
-
-            var stream        = new AntlrInputStream(sourceText);
-            var lexer         = new NavGrammarLexer(stream);
-            var cts           = new NavCommonTokenStream(lexer);
-            var parser        = new NavGrammarParser(cts);
-            var errorListener = new NavErrorListener(filePath);
-
+            // Setup Parser
+            var cts                 = new NavCommonTokenStream(lexer);
+            var parser              = new NavGrammar(cts);
+            var parserErrorListener = new NavParserErrorListener(sourceText, diagnostics);
             parser.RemoveErrorListeners();
-            parser.AddErrorListener(errorListener);
+            parser.AddErrorListener(parserErrorListener);
 
-            var tree = treeCreator(parser);
+            var tree    = treeCreator(parser);
+            var visitor = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
+            var syntax  = visitor.Visit(tree);
+            var tokens  = PostprocessTokens(sourceText, visitor.Tokens, cts, syntax, diagnostics, filePath, cancellationToken);
 
-            var visitor     = new NavGrammarVisitor(expectedTokenCount: cts.AllTokens.Count);
-            var syntax      = visitor.Visit(tree);
-            var ppDiagnostics = new List<Diagnostic>();
-            var tokens      = PostprocessTokens(visitor.Tokens, cts, syntax, ppDiagnostics, filePath, cancellationToken);
-            var textLines   = GetTextLines(sourceText);
-            var diagnostics = errorListener.Diagnostics.Concat(ppDiagnostics).ToList();
-
-            var syntaxTree = new SyntaxTree(sourceText : sourceText, 
-                                            root       : syntax, 
-                                            tokens     : tokens, 
-                                            textLines  : textLines,
-                                            diagnostics: diagnostics,
-                                            fileInfo   : fileInfo);
+            var syntaxTree = new SyntaxTree(sourceText: sourceText,
+                                            root: syntax,
+                                            tokens: tokens,
+                                            diagnostics: diagnostics.ToImmutable());
 
             syntax.FinalConstruct(syntaxTree, null);
-            
+
             return syntaxTree;
         }
 
         static SyntaxTokenList PostprocessTokens(
-            List<SyntaxToken> tokens, 
-            NavCommonTokenStream cts, 
-            SyntaxNode syntax, 
-            List<Diagnostic> diagnostics, 
+            SourceText sourceText,
+            List<SyntaxToken> tokens,
+            NavCommonTokenStream cts,
+            SyntaxNode syntax,
+            ImmutableArray<Diagnostic>.Builder diagnostics,
             string filePath,
             CancellationToken cancellationToken) {
 
@@ -176,128 +127,131 @@ namespace Pharmatechnik.Nav.Language {
                         continue;
                     }
                 }
+
                 // Das Token existiert noch nicht, da es der Parser/Visitor offensichtlich nicht "erwischt hat" (t, u)
-                SyntaxTokenClassification tokenClassification;
+                TextClassification classification;
                 switch (candidate.Channel) {
-                    case NavGrammarLexer.TriviaChannel:
+                    case NavTokens.TriviaChannel:
                         switch (candidate.Type) {
-                            case NavGrammarLexer.NewLine:
-                                tokenClassification = SyntaxTokenClassification.Whitespace;
+                            case NavTokens.NewLine:
+                                classification = TextClassification.Whitespace;
                                 break;
-                            case NavGrammarLexer.Whitespace:
-                                tokenClassification = SyntaxTokenClassification.Whitespace;
+                            case NavTokens.Whitespace:
+                                classification = TextClassification.Whitespace;
                                 break;
-                            case NavGrammarLexer.SingleLineComment:
-                                tokenClassification = SyntaxTokenClassification.Comment;
+                            case NavTokens.SingleLineComment:
+                                classification = TextClassification.Comment;
                                 break;
-                            case NavGrammarLexer.MultiLineComment:
-                                tokenClassification = SyntaxTokenClassification.Comment;
+                            case NavTokens.MultiLineComment:
+                                classification = TextClassification.Comment;
                                 break;
-                            case NavGrammarLexer.Unknown:
-                                tokenClassification = SyntaxTokenClassification.Skiped;
+                            case NavTokens.Unknown:
+                                classification = TextClassification.Skiped;
                                 break;
                             default:
                                 // Wir haben sonst eigentlich nix im Trivia Channel
                                 throw new ArgumentException();
                         }
+
                         break;
-                    case Lexer.DefaultTokenChannel:
-                        tokenClassification = SyntaxTokenClassification.Skiped;
+                    case NavTokens.DefaultTokenChannel:
+                        classification = TextClassification.Skiped;
+                        break;
+                    case NavTokens.PreprocessorChannel:
+                        switch (candidate.Type) {
+                            case NavTokens.HashToken:
+                            case NavTokens.PreprocessorKeyword:
+                                classification = TextClassification.PreprocessorKeyword;
+                                break;
+                            default:
+                                classification = TextClassification.PreprocessorText;
+                                break;
+                        }
+
                         break;
                     default:
                         throw new ArgumentException();
                 }
-                
+
                 // TODO: hier evtl. den "echten" Parent herausfinden...
                 SyntaxNode parent = syntax;
 
                 // Fix Für Single Line Comments, da diese leider immer auch das EOL beinhalten
-                if(candidate.Type == NavGrammarLexer.SingleLineComment) {
-                    foreach(var token in SplitSingleLineCommenTokens(candidate, parent)) {
+                if (candidate.Type == NavGrammar.SingleLineComment) {
+                    foreach (var token in SplitSingleLineCommenTokens(candidate, parent)) {
                         finalTokens.Add(token);
                     }
                 } else {
 
-                    finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, tokenClassification, parent));
+                    finalTokens.Add(SyntaxTokenFactory.CreateToken(candidate, classification, parent));
 
-                    if (candidate.Type == NavGrammarLexer.Unknown) {
+                    if (candidate.Type == NavTokens.Unknown) {
                         diagnostics.Add(
                             new Diagnostic(candidate.GetLocation(filePath),
                                            DiagnosticDescriptors.Syntax.Nav0000UnexpectedCharacter,
                                            candidate.Text));
                     }
+
+                    // TODO Nur vorübergehend hier?
+                    if (candidate.Type == NavTokens.HashToken ||
+                        candidate.Type == NavTokens.PreprocessorKeyword) {
+                        
+                        var location = candidate.GetLocation(filePath);
+
+                        if (candidate.Type == NavTokens.HashToken) {
+                            var span = sourceText.SliceFromLineStartToPosition(candidate.StartIndex);
+                            if (!span.IsWhiteSpace()) {
+                                diagnostics.Add(
+                                    new Diagnostic(location, 
+                                                   DiagnosticDescriptors.Syntax.Nav3001PreprocessorDirectiveMustAppearOnFirstNonWhitespacePosition));
+                            }
+                        }
+                        
+                        // TODO werden derzeit nicht unterstützt
+                        diagnostics.Add(
+                            new Diagnostic(location,
+                                           DiagnosticDescriptors.Syntax.Nav3000InvalidPreprocessorDirective,
+                                           candidate.Text));
+
+                    }
+
                 }
 
-                
-            }   
+            }
 
             return SyntaxTokenList.AttachSortedTokens(finalTokens);
         }
 
         static IEnumerable<SyntaxToken> SplitSingleLineCommenTokens(IToken candidate, SyntaxNode parent) {
             int newLineIndex = FindNewLineIndexInSingleLineComment(candidate.Text);
-            if(newLineIndex > 0) {
-                var tokenExtent = TextExtent.FromBounds(candidate.StartIndex, candidate.StartIndex + newLineIndex);
-                var newLineExtent = TextExtent.FromBounds(candidate.StartIndex + newLineIndex, candidate.StopIndex + 1);
+            if (newLineIndex > 0) {
+                var tokenExtent   = TextExtent.FromBounds(candidate.StartIndex, candidate.StartIndex + newLineIndex);
+                var newLineExtent = TextExtent.FromBounds(candidate.StartIndex                       + newLineIndex, candidate.StopIndex + 1);
 
-                yield return SyntaxTokenFactory.CreateToken(tokenExtent, SyntaxTokenType.SingleLineComment, SyntaxTokenClassification.Comment, parent);
-                yield return SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine, SyntaxTokenClassification.Whitespace, parent);
+                yield return SyntaxTokenFactory.CreateToken(tokenExtent,   SyntaxTokenType.SingleLineComment, TextClassification.Comment,    parent);
+                yield return SyntaxTokenFactory.CreateToken(newLineExtent, SyntaxTokenType.NewLine,           TextClassification.Whitespace, parent);
             } else {
-                yield return SyntaxTokenFactory.CreateToken(candidate, SyntaxTokenClassification.Comment, parent);
+                yield return SyntaxTokenFactory.CreateToken(candidate, TextClassification.Comment, parent);
             }
         }
 
         static int FindNewLineIndexInSingleLineComment(string text) {
+
             char c1 = text[text.Length - 2];
             char c2 = text[text.Length - 1];
-            if (c2 == '\n' || c2== '\r') {
+
+            if (c2 == '\n' || c2 == '\r') {
+
                 if (c1 == '\n') {
                     return text.Length - 2;
                 }
+
                 return text.Length - 1;
             }
+
             return -1;
         }
-        
-        static IReadOnlyList<TextLineExtent> GetTextLines(string text) {
 
-            int index;
-            int line      = 0;
-            int lineStart = 0;
-            var lines     = new List<TextLineExtent>();
-            for (index = 0; index < text.Length; index++) {
-
-                char c = text[index];
-
-                bool isNewLine = false;
-
-                if (c == '\n') {
-                    isNewLine = true;
-                } else if (c == '\r') {
-                    isNewLine = true;
-                    // => \r\n
-                    if (index + 1 < text.Length && text[index + 1] == '\n') {
-                        index++;
-                    }
-                }
-
-                if (isNewLine) {
-                    // Achtung: Extent End zeigt immer _hinter_ das letzte Zeichen!
-                    var lineEnd = index + 1;
-                    lines.Add(new TextLineExtent(line, TextExtent.FromBounds(lineStart, lineEnd)));
-                    line++;
-                    lineStart = lineEnd;
-                }
-            }
-
-            // Letzte Zeile nicht vergessen. 
-            if (index > lineStart) {
-                // Achtung: Extent End zeigt immer _hinter_ das letzte Zeichen!
-                var lineEnd = index + 1;
-                lines.Add(new TextLineExtent(line, TextExtent.FromBounds(lineStart, lineEnd)));
-            }
-
-            return lines;
-        }
     }
+
 }

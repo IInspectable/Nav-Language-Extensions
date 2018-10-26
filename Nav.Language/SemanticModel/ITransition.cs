@@ -12,7 +12,7 @@ namespace Pharmatechnik.Nav.Language {
     public interface IInitTransition: ITransition {
 
         [CanBeNull]
-        IInitNodeReferenceSymbol InitNodeourceReference { get; }
+        IInitNodeReferenceSymbol InitNodeSourceReference { get; }
 
     }
 
@@ -42,7 +42,7 @@ namespace Pharmatechnik.Nav.Language {
         ITaskNodeReferenceSymbol TaskNodeSourceReference { get; }
 
         [CanBeNull]
-        IConnectionPointReferenceSymbol ConnectionPointReference { get; }
+        IExitConnectionPointReferenceSymbol ExitConnectionPointReference { get; }
 
     }
 

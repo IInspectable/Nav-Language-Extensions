@@ -401,7 +401,7 @@ namespace Nav.Language.Tests {
 			var syntaxTree = SyntaxTree.ParseText(Resources.AllRules);
 			var walker     = new TestSyntaxNodeWalker();
 
-			walker.Walk(syntaxTree.GetRoot());
+			walker.Walk(syntaxTree.Root);
 			MethodsCalled=walker.MethodsCalled;
 		}
 

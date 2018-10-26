@@ -82,7 +82,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
                     var fileIdentity = fileResult.FileName;
 
-                    var syntaxDirectory = fileResult.TaskDefinition.Syntax.SyntaxTree.FileInfo?.DirectoryName;
+                    var syntaxDirectory = fileResult.TaskDefinition.Syntax.SyntaxTree.SourceText.FileInfo?.DirectoryName;
                     if (syntaxDirectory != null) {
                         fileIdentity = PathHelper.GetRelativePath(syntaxDirectory, fileResult.FileName);
                     }
@@ -108,7 +108,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
 
                 var lines = new[] {
                     $"{ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion}",
-                    $"{statistic.FileCount} .nav {Pluralize("file",                statistic.FileCount)} with {statistic.TaskCount} task {Pluralize("definition", statistic.TaskCount)} processed.",
+                    $"{statistic.FileCount} .nav {Pluralize("file", statistic.FileCount)} with {statistic.TaskCount} task {Pluralize("definition", statistic.TaskCount)} processed.",
                     $"   Updated: {statistic.FilesUpated,3} .cs {Pluralize("file", statistic.FilesUpated)}",
                     $"   Skipped: {statistic.FilesSkiped,3} .cs {Pluralize("file", statistic.FilesSkiped)}",
                     $"Completed in {_processStopwatch.Elapsed.TotalSeconds} seconds"

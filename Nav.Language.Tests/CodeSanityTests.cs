@@ -63,7 +63,7 @@ namespace Nav.Language.Tests {
 
             var syntax = SyntaxTree.ParseText(Resources.AllRules);
             var walker = new CodeSyntaxTester();
-            walker.Walk(syntax.GetRoot());
+            walker.Walk(syntax.Root);
             foreach (var fail in walker.BaseFails) {
                 Assert.That(fail.ActualBaseType, Is.EqualTo(fail.ExpectedBaseType), "Base von {0} sollte {1} sein.", fail.SyntaxType.Name, fail.ExpectedBaseType.Name);
             }
@@ -75,7 +75,7 @@ namespace Nav.Language.Tests {
 
             var syntax = SyntaxTree.ParseText(Resources.AllRules);
             var walker = new CodeSyntaxTester();
-            walker.Walk(syntax.GetRoot());
+            walker.Walk(syntax.Root);
             foreach (var fail in walker.NameFails) {
                 Assert.Fail("Name von {0} sollte mit 'Code' beginnen.", fail.Name);
             }
@@ -85,8 +85,8 @@ namespace Nav.Language.Tests {
         [Description("Mit diesem Test stellen wir sicher, dass es für alle Token-Arten aus der NavTokens.g4 einen korrekten SyntaxTokenType Enum Wert gibt: \r\n")]
         public void TestSyntaxTokenTypeMapping() {
 
-            var expectedTypes = typeof (NavGrammarParser).GetFields(BindingFlags.Public | BindingFlags.Static)
-                    .Where(f => f.IsLiteral && !f.Name.StartsWith("RULE_"))
+            var expectedTypes = typeof (NavTokens).GetFields(BindingFlags.Public | BindingFlags.Static)
+                    .Where(f => f.IsLiteral && !f.Name.EndsWith("Channel") && !f.Name.EndsWith("Mode"))
                     .ToList();
 
             var actualTypes = typeof(SyntaxTokenType).GetFields(BindingFlags.Public | BindingFlags.Static)

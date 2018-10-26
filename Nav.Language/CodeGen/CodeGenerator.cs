@@ -17,21 +17,47 @@ using Pharmatechnik.Nav.Language.CodeGen.Templates;
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
+    public interface ICodeGeneratorProvider {
+
+        ICodeGenerator Create(GenerationOptions options, IPathProviderFactory pathProviderFactory);
+
+    }
+
+    public sealed class CodeGeneratorProvider: ICodeGeneratorProvider {
+
+        CodeGeneratorProvider() {
+
+        }
+
+        public static readonly ICodeGeneratorProvider Default = new CodeGeneratorProvider();
+
+        public ICodeGenerator Create(GenerationOptions options, IPathProviderFactory pathProviderFactory) {
+            return new CodeGenerator(options, pathProviderFactory);
+        }
+
+    }
+
+    public interface ICodeGenerator: IDisposable {
+
+        ImmutableArray<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit);
+
+    }
+
     // ReSharper disable InconsistentNaming
-    public class CodeGenerator: Generator {
+    public class CodeGenerator: Generator, ICodeGenerator {
 
         const string TemplateBeginName    = "Begin";
         const string ModelAttributeName   = "model";
         const string ContextAttributeName = "context";
 
-        public CodeGenerator(GenerationOptions options, IPathProviderFactory pathProviderFactory = null): base(options) {
+        public CodeGenerator(GenerationOptions options = null, IPathProviderFactory pathProviderFactory = null): base(options) {
             PathProviderFactory = pathProviderFactory ?? Language.PathProviderFactory.Default;
         }
 
         [NotNull]
         public IPathProviderFactory PathProviderFactory { get; }
 
-        public IImmutableList<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit) {
+        public ImmutableArray<CodeGenerationResult> Generate(CodeGenerationUnit codeGenerationUnit) {
 
             if (codeGenerationUnit == null) {
                 throw new ArgumentNullException(nameof(codeGenerationUnit));
@@ -52,7 +78,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return codeGenerationUnit.TaskDefinitions
                                      .Select(GenerateCodeModel)
                                      .Select(GenerateCode)
-                                     .ToImmutableList();
+                                     .ToImmutableArray();
 
             string FormatDiagnostics(IEnumerable<Diagnostic> diagnostics) {
                 return diagnostics.Aggregate(new StringBuilder(), (sb, d) => sb.AppendLine(FormatDiagnostic(d)), sb => sb.ToString());

@@ -8,17 +8,18 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Internal;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
-    public sealed class SymbolList : IReadOnlyList<ISymbol> {
+    public sealed class SymbolList: IReadOnlyList<ISymbol> {
 
         readonly IReadOnlyList<ISymbol> _symbols;
 
-        public SymbolList() : this(null) {
+        public SymbolList(): this(null) {
         }
 
         public SymbolList(IEnumerable<ISymbol> symbols) {
@@ -48,5 +49,7 @@ namespace Pharmatechnik.Nav.Language {
         public ISymbol FindAtPosition(int position) {
             return _symbols.FindElementAtPosition(position, defaultIfNotFound: true);
         }
+
     }
+
 }

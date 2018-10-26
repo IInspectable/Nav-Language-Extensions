@@ -1,0 +1,20 @@
+﻿task C 
+{
+    init I1;
+    exit e1;
+    I1 --> e1;
+}
+
+task A
+{
+    init I1;               
+    exit e1;
+    task C;
+
+    I1  --> e1;
+
+    C:e1 --> e1;
+}
+//==>>[Semantic](12,10,12,11): warning Nav0113: The task node 'C' has no incoming edges
+//==>>[DeadCode](16,5,16,17): warning Nav1010: The task node 'C' has no incoming edges
+

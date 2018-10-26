@@ -1,5 +1,11 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Collections.Generic;
+
+using Pharmatechnik.Nav.Language.Text;
+
+#endregion
 
 namespace Pharmatechnik.Nav.Language.Internal {
 
@@ -12,8 +18,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                 return missing;
             }
 
-            int index = FindFirstTokenIndexAtOrAfter(tokens, currentToken.Start);
-
+            int index = FindIndexAtPosition(tokens, currentToken.Start);
             if (index < 0) {
                 return missing; // eingenlich könnte man hier auch eine ArgumentException werfen...
             }
@@ -41,9 +46,8 @@ namespace Pharmatechnik.Nav.Language.Internal {
             if (!includeOverlapping) {
                 return GetElementsInside(tokens, extent);
             }
-            else {
-                return GetElementsIncludeOverlapping(tokens, extent);
-            }            
+
+            return GetElementsIncludeOverlapping(tokens, extent);
         }
 
         static IEnumerable<TElement> GetElementsIncludeOverlapping<TElement, TExtent>(this IReadOnlyList<TElement> tokens,
@@ -51,12 +55,9 @@ namespace Pharmatechnik.Nav.Language.Internal {
             where TElement : IExtent
             where TExtent : IExtent {
 
-            int startIndex = tokens.FindIndexAtPosition(extent.Start);
+            int startIndex = tokens.FindIndexAtOrAfterPosition(extent.Start);
             if (startIndex < 0) {
-                startIndex = tokens.FindFirstTokenIndexAtOrAfter(extent.Start);
-                if (startIndex < 0) {
-                    yield break;
-                }
+                yield break;
             }
 
             // Sonderlocke für "Punktsuche"
@@ -79,12 +80,19 @@ namespace Pharmatechnik.Nav.Language.Internal {
             where TElement: IExtent
             where TExtent : IExtent {
 
-            int startIndex = tokens.FindFirstTokenIndexAtOrAfter(extent.Start);
+            int startIndex = tokens.FindIndexAtOrAfterPosition(extent.Start);
             if (startIndex < 0) {
                 yield break;
             }
             for (int index = startIndex; index < tokens.Count; index++) {
                 var token = tokens[index];
+
+                // TODO Wie kann das sein, dass FindIndexAtOrAfterPosition ein ISymbol findet,
+                // das vor extent.Start liegt? Hängt das damit zusammen, dass Symbole
+                // nicht lückenlos aneinander liegen?
+                if (token.Start < extent.Start) {
+                    continue;
+                }
                 if (token.End > extent.End) {
                     break;
                 }
@@ -94,7 +102,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         public static T FindElementAtPosition<T>(this IReadOnlyList<T> tokens, int position, bool defaultIfNotFound=false) where T : IExtent {
 
-            int index = tokens.FindIndexAtPosition(position);
+            int index = tokens.FindIndexAtOrAfterPosition(position);
             if (index < 0) {
                 if(defaultIfNotFound) {
                     return default;
@@ -116,55 +124,40 @@ namespace Pharmatechnik.Nav.Language.Internal {
         /// <summary>
         /// Findet den Index des ersten Tokens, dessen Start größer oder gleich der angegebenen Position ist. 
         /// </summary>
-        public static int FindFirstTokenIndexAtOrAfter<T>(this IReadOnlyList<T> tokens, int pos) where T : IExtent {
-
-            // Da die Tokens nach Start Position aufsteigend sortiert sind, 
-            // drängt sich eine Binärsuche geradezu auf.
-            int iMin = 0;
-            int iMax = tokens.Count - 1;
-
-            while (iMin < iMax) {
-                int iMid = iMin + (iMax - iMin) / 2;
-
-                if (tokens[iMid].Start >= pos) {
-                    iMax = iMid;
-                } else {
-                    iMin = iMid + 1;
-                }
+        public static int FindIndexAtOrAfterPosition<T>(this IReadOnlyList<T> tokens, int pos) where T : IExtent {
+           // TODO Sollte bei pos < 0 eine Ausnahme geworfen werden?
+            
+            var index = FindIndexAtPosition(tokens, pos);
+            if (index < 0) {
+                index = ~index - 1;
             }
-
-            if (iMax == iMin && tokens[iMin].Start >= pos) {
-                return iMin;
-            }
-            return -1;
+            return index;
         }
 
         /// <summary>
-        /// Findet den Index des Elements, bei dem sich die angegebene Position innerhalb des Elements befindet.
+        /// Findet den Index des ersten Tokens, dessen Start gleich der angegebenen Position ist. 
         /// </summary>
-        public static int FindIndexAtPosition<T>(this IReadOnlyList<T> tokens, int pos) where T: IExtent {
+        public static int FindIndexAtPosition<T>(this IReadOnlyList<T> tokens, int pos) where T : IExtent {
 
-            // Da die Tokens nach Start Position aufsteigend sortiert sind, 
-            // drängt sich eine Binärsuche geradezu auf.
             int iMin = 0;
             int iMax = tokens.Count - 1;
+            while (iMin <= iMax) {
 
-            while (iMin < iMax) {
-                int iMid = iMin + (iMax - iMin) / 2;
+                int iMid  = iMin + (iMax - iMin >> 1);
+                int value = tokens[iMid].Start;
 
-                if (tokens[iMid].End <= pos) {
-                    iMin = iMid+1;
-                } else if (tokens[iMid].Start > pos) {
-                    iMax = iMid;
-                } else {
+                if (value == pos) {
                     return iMid;
+                }
+
+                if (value < pos) {
+                    iMin = iMid + 1;
+                } else {
+                    iMax = iMid - 1;
                 }
             }
 
-            if (iMax == iMin && tokens[iMin].Start <= pos && tokens[iMin].End > pos) {
-                return iMin;
-            }
-            return -1;
+            return ~iMin;
         }
     }
 }

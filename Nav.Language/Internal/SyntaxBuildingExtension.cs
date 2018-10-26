@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language.Internal {
 
     static class SyntaxBuildingExtension {

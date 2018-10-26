@@ -9,7 +9,7 @@
 
     public interface ISymbolVisitor {
 
-        void VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol);
+        void VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol);
         void VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol);
         void VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol);
         void VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol);
@@ -38,9 +38,9 @@
 
     }
 
-    public interface ISymbolVisitor<T> {
+    public interface ISymbolVisitor<out T> {
 
-        T VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol);
+        T VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol);
         T VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol);
         T VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol);
         T VisitEndConnectionPointSymbol(IEndConnectionPointSymbol endConnectionPointSymbol);
@@ -76,14 +76,14 @@
 
     }
 
-    partial class ConnectionPointReferenceSymbol {
+    partial class ExitConnectionPointReferenceSymbol {
 
         public override void Accept(ISymbolVisitor visitor) {
-            visitor.VisitConnectionPointReferenceSymbol(this);
+            visitor.VisitExitConnectionPointReferenceSymbol(this);
         }
 
         public override T Accept<T>(ISymbolVisitor<T> visitor) {
-            return visitor.VisitConnectionPointReferenceSymbol(this);
+            return visitor.VisitExitConnectionPointReferenceSymbol(this);
         }
 
     }
@@ -397,8 +397,8 @@
         protected virtual void DefaultVisit(ISymbol symbol) {
         }
 
-        public virtual void VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
-            DefaultVisit(connectionPointReferenceSymbol);
+        public virtual void VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+            DefaultVisit(exitConnectionPointReferenceSymbol);
         }
 
         public virtual void VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
@@ -510,11 +510,11 @@
         }
 
         protected virtual T DefaultVisit(ISymbol symbol) {
-            return default(T);
+            return default;
         }
 
-        public virtual T VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
-            return DefaultVisit(connectionPointReferenceSymbol);
+        public virtual T VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+            return DefaultVisit(exitConnectionPointReferenceSymbol);
         }
 
         public virtual T VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {

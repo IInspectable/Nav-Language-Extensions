@@ -4,6 +4,8 @@ configuration: Debug
 platform: Any CPU
 environment:
   DeployExtension: false
+before_build:
+  - nuget restore
 build:
   verbosity: minimal
 artifacts:

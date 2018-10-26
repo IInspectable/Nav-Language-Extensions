@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using System.Linq;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language {
     [Serializable]
     [SampleSyntax("")]
     public partial class NodeDeclarationBlockSyntax : SyntaxNode {
 
-        readonly IReadOnlyList<NodeDeclarationSyntax> _nodeDeclarations;
 
         internal NodeDeclarationBlockSyntax(TextExtent extent, IReadOnlyList<NodeDeclarationSyntax> nodeDeclarations) 
             : base(extent) {
 
-            AddChildNodes(_nodeDeclarations = nodeDeclarations);
+            AddChildNodes(NodeDeclarations = nodeDeclarations);
         }
 
         [NotNull]
-        public IReadOnlyList<NodeDeclarationSyntax> NodeDeclarations => _nodeDeclarations;
+        public IReadOnlyList<NodeDeclarationSyntax> NodeDeclarations { get; }
 
         [NotNull]
         public IEnumerable<ConnectionPointNodeSyntax> ConnectionPoints() {

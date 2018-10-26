@@ -6,6 +6,8 @@ using System.Linq;
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
@@ -13,10 +15,6 @@ namespace Pharmatechnik.Nav.Language {
     [Serializable]
     [SampleSyntax("")]
     public partial class CodeGenerationUnitSyntax: SyntaxNode {
-
-        readonly CodeNamespaceDeclarationSyntax            _codeNamespace;
-        readonly IReadOnlyList<CodeUsingDeclarationSyntax> _codeUsings;
-        readonly IReadOnlyList<MemberDeclarationSyntax>    _members;
 
         internal CodeGenerationUnitSyntax(
             TextExtent extent,
@@ -26,21 +24,19 @@ namespace Pharmatechnik.Nav.Language {
         )
             : base(extent) {
 
-            _members = memberDeclarations;
-
-            AddChildNode(_codeNamespace = codeNamespaceDeclaration);
-            AddChildNodes(_codeUsings   = codeUsingDeclarations);
-            AddChildNodes(_members      = memberDeclarations);
+            AddChildNode(CodeNamespace = codeNamespaceDeclaration);
+            AddChildNodes(CodeUsings   = codeUsingDeclarations);
+            AddChildNodes(Members      = memberDeclarations);
         }
 
         [CanBeNull]
-        public CodeNamespaceDeclarationSyntax CodeNamespace => _codeNamespace;
+        public CodeNamespaceDeclarationSyntax CodeNamespace { get; }
 
         [NotNull]
-        public IReadOnlyList<CodeUsingDeclarationSyntax> CodeUsings => _codeUsings;
+        public IReadOnlyList<CodeUsingDeclarationSyntax> CodeUsings { get; }
 
         [NotNull]
-        public IReadOnlyList<MemberDeclarationSyntax> Members => _members;
+        public IReadOnlyList<MemberDeclarationSyntax> Members { get; }
 
         [NotNull]
         public IReadOnlyList<IncludeDirectiveSyntax> Includes => Members.OfType<IncludeDirectiveSyntax>().ToList();

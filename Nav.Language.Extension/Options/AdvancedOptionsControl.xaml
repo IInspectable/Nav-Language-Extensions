@@ -27,5 +27,18 @@
                 </CheckBox>
             </Grid>
         </GroupBox>
+        <GroupBox Header="IntelliSense">
+            <Grid Margin="6,3,6,3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition MinHeight="4"/>
+                    <RowDefinition MinHeight="22"/>
+                </Grid.RowDefinitions>
+                <CheckBox Name="AutoInsertDelimiters" IsChecked="True" Grid.Row="1" >Auto-insert _delimiters</CheckBox>
+               
+            </Grid>
+        </GroupBox>
     </StackPanel>
 </Grid>

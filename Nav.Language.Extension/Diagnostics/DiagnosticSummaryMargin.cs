@@ -147,7 +147,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
         }
 
         void UpdateVisibility() {
-            // TODO Dispatcher benutzen!
             _summaryControl.Visibility = Enabled ? Visibility.Visible : Visibility.Collapsed;
         }
 

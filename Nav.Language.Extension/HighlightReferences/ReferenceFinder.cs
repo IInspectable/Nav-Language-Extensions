@@ -33,6 +33,36 @@ namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
             yield break;
         }
 
+        // Auskommentiert, da Navigation nicht stabil.
+        // Bsp.: Es wird runter zum ersten Target Knoten navigiert. Ab da steht der Cursor auf den Task Knoten, und es werden alle Knotenreferenzen
+        // im Task selektiert, aber nicht mehr der Init der Task Deklaration. Wozu auch...
+        //public override IEnumerable<ISymbol> VisitInitConnectionPointSymbol(IInitConnectionPointSymbol initConnectionPointSymbol) {
+
+        //    yield return initConnectionPointSymbol;
+
+        //    foreach (var taskCall in initConnectionPointSymbol.TaskDeclaration
+        //                                                    .References
+        //                                                    .SelectMany(tn => tn.Incomings)
+        //                                                    .Select(edge => edge.TargetReference)) {
+        //        yield return taskCall;
+        //    }
+        //}
+
+        public override IEnumerable<ISymbol> VisitExitConnectionPointSymbol(IExitConnectionPointSymbol exitConnectionPointSymbol) {
+
+            if (!exitConnectionPointSymbol.TaskDeclaration.IsIncluded) {
+                yield return exitConnectionPointSymbol;
+            }
+            
+            foreach (var exitConnectionPointReference in exitConnectionPointSymbol.TaskDeclaration
+                                                                                  .References
+                                                                                  .SelectMany(tn => tn.Outgoings)
+                                                                                  .Select(exitTrans => exitTrans.ExitConnectionPointReference)
+                                                                                  .Where(ep => ep?.Declaration == exitConnectionPointSymbol)) {
+                yield return exitConnectionPointReference;
+            }
+        }
+
         public override IEnumerable<ISymbol> VisitInitNodeSymbol(IInitNodeSymbol initNodeSymbol) {
 
             if (initNodeSymbol.Alias != null) {

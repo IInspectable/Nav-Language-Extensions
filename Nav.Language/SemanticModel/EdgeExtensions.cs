@@ -30,7 +30,8 @@ namespace Pharmatechnik.Nav.Language {
                     foreach (var call in choiceNode.Outgoings.SelectMany(e => GetReachableCallsImpl<T>(e, seenEdges))) {
                         yield return call;
                     }
-                } else if (edge.EdgeMode != null) { // Nur Edges mit einem definiertem Edge Mode ergeben einen Call
+                } else if (edge.EdgeMode != null) {
+                    // Nur Edges mit einem definiertem Edge Mode ergeben einen Call
                     yield return new Call(targetNode, edge.EdgeMode);
                 }
             }

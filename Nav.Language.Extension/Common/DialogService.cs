@@ -12,8 +12,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
     interface IDialogService {
 
         string ShowInputDialog(string promptText, string title = null, string defaultResonse = null, 
-                               ImageMoniker iconMoniker = default(ImageMoniker), Func<string, string> validator = null,
-                               ImageMoniker noteIconMoniker = default(ImageMoniker), string note = null);
+                               ImageMoniker iconMoniker = default, Func<string, string> validator = null,
+                               ImageMoniker noteIconMoniker = default, string note = null);
     }
 
     [Export(typeof(IDialogService))]
@@ -21,7 +21,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
         public string ShowInputDialog(string promptText, string title = null, string defaultResonse = null, 
                                       ImageMoniker iconMoniker = new ImageMoniker(), Func<string, string> validator = null,
-                                      ImageMoniker noteIconMoniker = default(ImageMoniker), string note = null) {
+                                      ImageMoniker noteIconMoniker = default, string note = null) {
 
             var viewModel = new InputDialogViewModel {
                 PromptText      = promptText,

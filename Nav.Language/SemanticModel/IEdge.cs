@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using JetBrains.Annotations;
 
 namespace Pharmatechnik.Nav.Language {
@@ -20,6 +21,8 @@ namespace Pharmatechnik.Nav.Language {
         [CanBeNull]
         INodeReferenceSymbol TargetReference { get; }
 
-        IEnumerable<ISymbol> Symbols();   
+        IEnumerable<ISymbol> Symbols();
+
     }
+
 }

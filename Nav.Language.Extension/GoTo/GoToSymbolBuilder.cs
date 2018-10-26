@@ -94,21 +94,21 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo {
             return tagSpan;
         }
 
-        public override TagSpan<GoToTag> VisitConnectionPointReferenceSymbol(IConnectionPointReferenceSymbol connectionPointReferenceSymbol) {
+        public override TagSpan<GoToTag> VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
 
-            if (connectionPointReferenceSymbol.Declaration == null) {
+            if (exitConnectionPointReferenceSymbol.Declaration == null) {
                 return null;
             }
 
             // GoTo Exit Declaration
-            var codeModel = TaskExitCodeInfo.FromConnectionPointReference(connectionPointReferenceSymbol);
+            var codeModel = TaskExitCodeInfo.FromConnectionPointReference(exitConnectionPointReferenceSymbol);
             var provider  = new TaskExitDeclarationLocationInfoProvider(_textBuffer, codeModel);
-            var tagSpan   = CreateTagSpan(connectionPointReferenceSymbol.Location, provider);
+            var tagSpan   = CreateTagSpan(exitConnectionPointReferenceSymbol.Location, provider);
 
             // GoTo Exit Definition
             var defProvider = new SimpleLocationInfoProvider(LocationInfo.FromLocation(
-                connectionPointReferenceSymbol.Declaration.Location,
-                $"Exit {connectionPointReferenceSymbol.Name}",
+                exitConnectionPointReferenceSymbol.Declaration.Location,
+                $"Exit {exitConnectionPointReferenceSymbol.Name}",
                 ImageMonikers.ExitConnectionPoint));
 
             tagSpan.Tag.Provider.Add(defProvider);

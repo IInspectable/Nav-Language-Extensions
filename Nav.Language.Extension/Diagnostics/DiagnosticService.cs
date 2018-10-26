@@ -14,7 +14,6 @@ using Microsoft.VisualStudio.Text.Outlining;
 using Microsoft.VisualStudio.ComponentModelHost;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 
 #endregion
 

@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Emit;
@@ -13,6 +14,8 @@ using Pharmatechnik.Nav.Language;
 using Pharmatechnik.Nav.Language.CodeGen;
 
 using NUnit.Framework;
+
+using Pharmatechnik.Nav.Language.Text;
 
 using RoslynDiagnostic = Microsoft.CodeAnalysis.Diagnostic;
 using RoslynSyntaxTree = Microsoft.CodeAnalysis.SyntaxTree;
@@ -38,7 +41,7 @@ namespace Nav.Language.Tests {
 
             var results = codeGenerator.Generate(codeGenerationUnit);
 
-            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results.Length, Is.EqualTo(1));
 
             var codeGenResult = results[0];
 
@@ -172,22 +175,25 @@ namespace Nav.Language.Tests {
         [Test, TestCaseSource(nameof(CompileTestCases))]
         public void CompileTest(TestCase testCase) {
 
-            var syntaxProvider = new TestSyntaxProvider();
+            var syntaxProvider         = new TestSyntaxProvider();
+            var semenaticModelProvider = SemanticModelProviderFactory.Default.CreateProvider(syntaxProvider);
+
             // Dateien bekanntgeben - wir haben hier keine echten Dateien zur Hand!
             foreach (var navFile in testCase.NavFiles) {
                 syntaxProvider.RegisterFile(navFile);
             }
 
             var syntaxTrees = new List<RoslynSyntaxTree>();
+
             foreach (var navFile in testCase.NavFiles) {
 
                 // 1. Syntaxbaum aus Nav-File erstellen
-                var codeGenerationUnitSyntax = syntaxProvider.FromFile(navFile.FilePath);
+                var codeGenerationUnitSyntax = syntaxProvider.GetSyntax(navFile.FilePath);
                 Assert.That(codeGenerationUnitSyntax, Is.Not.Null, $"File '{navFile.FilePath}' not found");
                 AssertNoDiagnosticErrors(codeGenerationUnitSyntax.SyntaxTree.Diagnostics, codeGenerationUnitSyntax.SyntaxTree.SourceText);
 
                 // 2. Semantic Model erstellen aus Syntax erstellen
-                var codeGenerationUnit = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax, syntaxProvider: syntaxProvider);
+                var codeGenerationUnit = semenaticModelProvider.GetSemanticModel(codeGenerationUnitSyntax);
                 AssertNoDiagnosticErrors(codeGenerationUnit.Diagnostics, codeGenerationUnitSyntax.SyntaxTree.SourceText);
 
                 var options       = GenerationOptions.Default;
@@ -224,7 +230,7 @@ namespace Nav.Language.Tests {
             MetadataReference[] references = {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Enumerable).Assembly.Location),
-                //   MetadataReference.CreateFromFile(typeof(ImmutableArrayExtensions).Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(ImmutableArray).Assembly.Location),
             };
 
             CSharpCompilation compilation = CSharpCompilation.Create(
@@ -259,9 +265,9 @@ namespace Nav.Language.Tests {
             return $"{diagnostic.Id}: {diagnostic.Location} {diagnostic.GetMessage()}";
         }
 
-        void AssertNoDiagnosticErrors(IEnumerable<Diagnostic> diagnostics, string sourceText) {
+        void AssertNoDiagnosticErrors(IEnumerable<Diagnostic> diagnostics, SourceText sourceText) {
             var errors = diagnostics.Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
-            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors) + sourceText);
+            Assert.That(errors.Any(), Is.False, FormatDiagnostics(errors) + sourceText.Text);
         }
 
         string FormatDiagnostics(IEnumerable<Diagnostic> diagnostics) {

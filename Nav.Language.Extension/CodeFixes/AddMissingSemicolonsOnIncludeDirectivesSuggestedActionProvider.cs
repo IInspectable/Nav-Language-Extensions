@@ -5,17 +5,17 @@ using System.Threading;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 
-using Pharmatechnik.Nav.Language.CodeFixes;
+using Pharmatechnik.Nav.Language.CodeFixes.StyleFix;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
 
     [ExportCodeFixSuggestedActionProvider(nameof(AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider))]
-    class AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider : CodeFixSuggestedActionProvider {
+    class AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider: CodeFixSuggestedActionProvider {
 
         [ImportingConstructor]
-        public AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider(CodeFixSuggestedActionContext context) : base(context) {
+        public AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider(CodeFixSuggestedActionContext context): base(context) {
         }
 
         public override IEnumerable<CodeFixSuggestedAction> GetSuggestedActions(CodeFixSuggestedActionParameter parameter, CancellationToken cancellationToken) {
@@ -23,11 +23,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
             var codeFixes = AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.SuggestCodeFixes(parameter.CodeFixContext, cancellationToken);
 
             var actions = codeFixes.Select(codeFix => new AddMissingSemicolonsOnIncludeDirectivesSuggestedAction(
-                codeFix  : codeFix,
-                parameter: parameter,
-                context  : Context));
+                                               codeFix  : codeFix,
+                                               parameter: parameter,
+                                               context  : Context));
 
             return actions;
-        }   
+        }
+
     }
+
 }

@@ -13,6 +13,6 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
     public interface ILocationInfoProvider {
 
         [NotNull]
-        Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken));        
+        Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default);        
     }
 }

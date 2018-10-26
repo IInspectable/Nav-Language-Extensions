@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
-using Pharmatechnik.Nav.Language.Extension.LanguageService;
 using Pharmatechnik.Nav.Utilities.Logging;
 
 #endregion
@@ -26,7 +25,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
         
         public TAnnotation Annotation { get; set; }
 
-        public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default(CancellationToken)) {
+        public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default) {
 
             string sourceText;
             var textBuffer = NavLanguagePackage.GetOpenTextBufferForFile(Annotation.NavFileName);
@@ -34,6 +33,7 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
                 sourceText = textBuffer.CurrentSnapshot.GetText();
             } else {
                 try {
+                    // TODO true sync read!
                     sourceText = await Task.Run(() => File.ReadAllText(Annotation.NavFileName), cancellationToken).ConfigureAwait(false);
                 } catch(Exception ex) when(
                     ex is FileNotFoundException ||
@@ -51,6 +51,6 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
             return await GetLocationsAsync(sourceText, cancellationToken).ConfigureAwait(false);
         }
 
-        protected abstract Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = default(CancellationToken));
+        protected abstract Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = default);
     }
 }

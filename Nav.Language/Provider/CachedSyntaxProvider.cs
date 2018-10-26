@@ -1,68 +1,101 @@
 #region Using Directives
 
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
-using System.Collections.Generic;
-using System.Linq;
+
+using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
 namespace Pharmatechnik.Nav.Language {
 
-    public class CachedSyntaxProviderStatistic {
+    public struct CachedSyntaxProviderStatistic {
 
-        public CachedSyntaxProviderStatistic(int cacheHits) {
-            CacheHits = cacheHits;
+        public CachedSyntaxProviderStatistic(int cacheHits, int cacheFails) {
+            CacheHits  = cacheHits;
+            CacheFails = cacheFails;
         }
 
-        public int CacheHits { get; }
+        public int CacheHits  { get; }
+        public int CacheFails { get; }
+
+        public CachedSyntaxProviderStatistic WithCacheHit() {
+            return new CachedSyntaxProviderStatistic(CacheHits + 1, CacheFails);
+        }
+
+        public CachedSyntaxProviderStatistic WithCacheFail() {
+            return new CachedSyntaxProviderStatistic(CacheHits, CacheFails + 1);
+        }
 
     }
 
-    public class CachedSyntaxProvider: SyntaxProvider {
+    public class CachedSyntaxProvider: ISyntaxProvider {
 
-        readonly Dictionary<string, CodeGenerationUnitSyntax> _cache;
-        readonly Dictionary<string, int>                      _cacheStatistic;
+        readonly ConcurrentDictionary<string, CodeGenerationUnitSyntax> _cache;
+        readonly ISyntaxProvider                                        _syntaxProvider;
 
-        public CachedSyntaxProvider() {
-            _cache          = new Dictionary<string, CodeGenerationUnitSyntax>(StringComparer.OrdinalIgnoreCase);
-            _cacheStatistic = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        private readonly object _gate = new object();
+
+        public CachedSyntaxProvider(): this(null) {
+
         }
 
-        public override CodeGenerationUnitSyntax FromFile(string filePath, CancellationToken cancellationToken = default) {
+        public CachedSyntaxProvider(ISyntaxProvider syntaxProvider) {
 
-            if (_cache.TryGetValue(filePath, out var syntax)) {
-                if (_cacheStatistic.ContainsKey(filePath)) {
-                    _cacheStatistic[filePath] += 1;
-                } else {
-                    _cacheStatistic[filePath] = 1;
-                }
+            _syntaxProvider = syntaxProvider ?? SyntaxProvider.Default;
+            _cache          = new ConcurrentDictionary<string, CodeGenerationUnitSyntax>();
+            Statistic       = default;
+        }
 
+        public virtual CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default) {
+
+            var normalizedFilePath = PathHelper.NormalizePath(filePath);
+
+            if (normalizedFilePath == null) {
+                throw new ArgumentNullException();
+            }
+
+            if (_cache.TryGetValue(normalizedFilePath, out var syntax)) {
+
+                CacheHit();
                 return syntax;
             }
 
-            syntax = base.FromFile(filePath, cancellationToken);
-            Cache(filePath, syntax);
+            CacheFail();
+
+            syntax = _syntaxProvider.GetSyntax(filePath, cancellationToken);
+
+            _cache[normalizedFilePath] = syntax;
 
             return syntax;
         }
 
-        public CachedSyntaxProviderStatistic GetStatistic() {
-            return new CachedSyntaxProviderStatistic(_cacheStatistic.Sum(kvp => kvp.Value));
-        }
+        public CachedSyntaxProviderStatistic Statistic { get; private set; }
 
-        public override void Dispose() {
-            base.Dispose();
+        public virtual void Dispose() {
             ClearCache();
         }
 
-        void Cache(string filePath, CodeGenerationUnitSyntax syntax) {
-            _cache[filePath] = syntax;
+        void CacheFail() {
+
+            lock (_gate) {
+                Statistic = Statistic.WithCacheFail();
+            }
+        }
+
+        void CacheHit() {
+
+            lock (_gate) {
+                Statistic = Statistic.WithCacheHit();
+            }
         }
 
         void ClearCache() {
-            _cache.Clear();
-            _cacheStatistic.Clear();
+            lock (_gate) {
+                _cache.Clear();
+                Statistic = default;
+            }
         }
 
     }

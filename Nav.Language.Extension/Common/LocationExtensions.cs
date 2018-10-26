@@ -2,6 +2,8 @@
 
 using Microsoft.VisualStudio.Text;
 
+using Pharmatechnik.Nav.Language.Text;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Common {
@@ -14,6 +16,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
         public static SnapshotSpan ToSnapshotSpan(this TextExtent extent, ITextSnapshot textSnapshot) {
             // TODO Adaption von Start und Legth
             return new SnapshotSpan(textSnapshot, start: extent.Start, length: extent.Length);
+        }
+
+        public static Span ToSpan(this TextExtent extent) {
+            return new Span(start: extent.Start, length: extent.Length);
         }
     }
 }

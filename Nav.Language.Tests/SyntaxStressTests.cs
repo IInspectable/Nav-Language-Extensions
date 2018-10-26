@@ -36,7 +36,7 @@ namespace Nav.Language.Tests {
                 var text = sb.ToString();
                 var tree=SyntaxTree.ParseText(text);
 
-                CheckNonNullChild(tree.GetRoot());
+                CheckNonNullChild(tree.Root);
             }
         }
 
@@ -49,7 +49,7 @@ namespace Nav.Language.Tests {
                 var text = source.Substring(0, source.Length-index);
                 var tree = SyntaxTree.ParseText(text);
 
-                CheckNonNullChild(tree.GetRoot());
+                CheckNonNullChild(tree.Root);
             }
         }
 

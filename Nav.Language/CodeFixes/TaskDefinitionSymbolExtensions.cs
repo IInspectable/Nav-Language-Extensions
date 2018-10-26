@@ -38,7 +38,10 @@ namespace Pharmatechnik.Nav.Language.CodeFixes {
                     declaredNodeNames.Add(nodeName);
                 }
             }
+
             return declaredNodeNames;
         }
+
     }
+
 }
