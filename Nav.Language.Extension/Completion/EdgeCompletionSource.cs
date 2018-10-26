@@ -50,7 +50,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             await Task.Yield();
 
-            if (!ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out _)) {
+            if (!ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out var myApplicableToSpan) ||
+                myApplicableToSpan != applicableToSpan) {
                 return CreateEmptyCompletionContext();
             }
 
@@ -98,9 +99,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             }
 
             var start = line.GetStartOfEdge(triggerLocation);
-            if (start == triggerLocation) {
-                return false;
-            }
 
             applicableToSpan = new SnapshotSpan(start, triggerLocation);
 

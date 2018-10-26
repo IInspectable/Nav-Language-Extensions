@@ -51,7 +51,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         public override async Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
-            if (!ShouldProvideCompletions(triggerLocation, out _, out var replacementSpan)) {
+            if (!ShouldProvideCompletions(triggerLocation, out var myApplicableToSpan, out var replacementSpan) ||
+                myApplicableToSpan != applicableToSpan) {
                 return CreateEmptyCompletionContext();
             }
 

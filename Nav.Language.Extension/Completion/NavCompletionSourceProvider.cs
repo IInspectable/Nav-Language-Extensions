@@ -14,6 +14,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
     [Export(typeof(IAsyncCompletionSourceProvider))]
     [ContentType(NavLanguageContentDefinitions.ContentType)]
     [Name(nameof(NavCompletionSourceProvider))]
+    [Order(Before = nameof(EdgeCompletionSourceProvider))]
     class NavCompletionSourceProvider: AsyncCompletionSourceProvider {
 
         [ImportingConstructor]
