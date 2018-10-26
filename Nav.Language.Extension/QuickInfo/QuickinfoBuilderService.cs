@@ -38,6 +38,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         public IClassificationFormatMap ClassificationFormatMap => _classificationFormatMapService.GetClassificationFormatMap("tooltip");
 
+        [CanBeNull]
         public UIElement BuildSymbolQuickInfoContent(ISymbol source) {
             return SymbolQuickInfoVisitor.Build(source, this);
         }
@@ -71,6 +72,10 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
             var imageMoniker = ImageMonikers.FromSymbol(symbol);
             var content      = ToTextBlock(symbol.ToDisplayParts());
+
+            if (content == null) {
+                return null;
+            }
 
             var control = new SymbolQuickInfoControl {
                 CrispImage  = {Moniker = imageMoniker},
@@ -111,7 +116,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
         }
 
         Run ToInline(string text, TextClassification classification, IClassificationFormatMap formatMap) {
-           
+
             var inline = new Run(text);
 
             _classificationMap.TryGetValue(classification, out var ct);
