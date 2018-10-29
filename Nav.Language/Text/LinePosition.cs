@@ -3,7 +3,7 @@ using System;
 namespace Pharmatechnik.Nav.Language.Text {
 
     [Serializable]
-    public struct LinePosition: IEquatable<LinePosition>, IComparable<LinePosition> {
+    public readonly struct LinePosition: IEquatable<LinePosition>, IComparable<LinePosition> {
 
         readonly int _line;
         readonly int _character;

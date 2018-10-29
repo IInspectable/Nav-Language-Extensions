@@ -6,7 +6,7 @@ using System;
 
 namespace Pharmatechnik.Nav.Language.Text {
 
-    public struct TextChange: IEquatable<TextChange> {
+    public readonly struct TextChange: IEquatable<TextChange> {
 
         private readonly string _replacementText;
 
