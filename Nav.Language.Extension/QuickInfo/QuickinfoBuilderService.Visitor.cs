@@ -29,6 +29,7 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             ISymbol                 OriginatingSymbol       { get; }
             QuickinfoBuilderService QuickinfoBuilderService { get; }
 
+            [CanBeNull]
             public static UIElement Build(ISymbol source, QuickinfoBuilderService quickinfoBuilderService) {
                 var builder = new SymbolQuickInfoVisitor(source, quickinfoBuilderService);
                 return builder.Visit(source);

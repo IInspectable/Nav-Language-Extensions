@@ -64,17 +64,18 @@ namespace Pharmatechnik.Nav.Language {
 
         public static IEnumerable<IConnectionPointSymbol> GetConnectedExits(this ITaskNodeSymbol taskNode) {
 
-            if (taskNode.Declaration != null) {
-
-                var actualExits = taskNode.Outgoings
-                                          .Select(et => et?.ExitConnectionPointReference?.Declaration)
-                                          .Where(cps => cps != null);
-
-                return actualExits;
-
+            if (taskNode.Declaration == null) {
+                return Enumerable.Empty<IConnectionPointSymbol>();
             }
 
-            return Enumerable.Empty<IConnectionPointSymbol>();
+            return GetConnectedExitsImpl().Distinct();
+
+            IEnumerable<IConnectionPointSymbol> GetConnectedExitsImpl() {
+                return taskNode.Outgoings
+                               .Select(et => et?.ExitConnectionPointReference?.Declaration)
+                               .Where(cps => cps != null);
+
+            }
 
         }
 

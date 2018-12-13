@@ -98,7 +98,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                 return false;
             }
 
-            var start = line.GetStartOfEdge(triggerLocation);
+            var start       = line.GetStartOfEdge(triggerLocation);
+            var triggerLine = triggerLocation.GetContainingLine();
+
+            // Vor der Edge muss ein Whitespace sein, bzw. der Zeilenanfang
+            if (start != triggerLine.Start &&
+                !char.IsWhiteSpace((start - 1).GetChar())) {
+                return false;
+            }
 
             applicableToSpan = new SnapshotSpan(start, triggerLocation);
 

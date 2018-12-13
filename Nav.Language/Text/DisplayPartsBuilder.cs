@@ -23,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.Text {
 
         public override ImmutableArray<ClassifiedText> VisitExitConnectionPointReferenceSymbol(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
             if (exitConnectionPointReferenceSymbol.Declaration == null) {
-                return default;
+                return DefaultVisit(exitConnectionPointReferenceSymbol);
             }
 
             return Visit(exitConnectionPointReferenceSymbol.Declaration);
