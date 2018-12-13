@@ -3,7 +3,7 @@
 namespace Pharmatechnik.Nav.Language.Text {
 
     [Serializable]
-    public struct TextExtent: IExtent, IEquatable<TextExtent> {
+    public readonly struct TextExtent: IExtent, IEquatable<TextExtent> {
 
         public TextExtent(int start, int length) {
 

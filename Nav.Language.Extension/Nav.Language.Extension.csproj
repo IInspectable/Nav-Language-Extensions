@@ -242,8 +242,8 @@
     <Compile Include="BraceMatching\BraceMatchingTaggerProvider.cs" />
     <Compile Include="BraceMatching\BraceMatchingTypeNames.cs" />
     <Compile Include="BraceMatching\BracePair.cs" />
-    <Compile Include="Classification\SemanticClassifier.cs" />
-    <Compile Include="Classification\SemanticClassifierProvider.cs" />
+    <Compile Include="Classification\SemanticClassificationTagger.cs" />
+    <Compile Include="Classification\SemanticClassificationTaggerProvider.cs" />
     <Compile Include="Classification\UnderlineClassifier.cs" />
     <Compile Include="Classification\UnderlineClassifierProvider.cs" />
     <Compile Include="Common\CodeContentControlProvider.cs" />
@@ -310,10 +310,10 @@
     <Compile Include="ParserService\ParserServiceDependent.cs" />
     <Compile Include="QuickInfo\DebugQuickInfoSourceProvider.cs" />
     <Compile Include="QuickInfo\DebugQuickInfoSource.cs" />
-    <Compile Include="Classification\SyntaxClassifier.cs" />
+    <Compile Include="Classification\SyntacticClassificationTagger.cs" />
     <Compile Include="Classification\ClassificationTypeNames.cs" />
     <Compile Include="Classification\ClassificationTypeDefinitions.cs" />
-    <Compile Include="Classification\SyntaxClassifierProvider.cs" />
+    <Compile Include="Classification\SyntacticClassificationTaggerProvider.cs" />
     <Compile Include="NavLanguageContentDefinitions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParserService\ParserService.cs" />

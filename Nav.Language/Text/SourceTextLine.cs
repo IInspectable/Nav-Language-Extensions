@@ -8,7 +8,7 @@ namespace Pharmatechnik.Nav.Language.Text {
     /// Represents an extent of a single line.
     /// </summary>
     [Serializable]
-    public struct SourceTextLine: IExtent, IEquatable<SourceTextLine> {
+    public readonly struct SourceTextLine: IExtent, IEquatable<SourceTextLine> {
 
         internal SourceTextLine(StringSourceText sourceText, int line, int lineStart, int lineEnd) {
 

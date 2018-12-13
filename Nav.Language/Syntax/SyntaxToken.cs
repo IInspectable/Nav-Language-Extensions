@@ -9,7 +9,7 @@ namespace Pharmatechnik.Nav.Language {
 
     [Serializable]
     [DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
-    public struct SyntaxToken: IExtent {
+    public readonly struct SyntaxToken: IExtent {
 
         const int BitMask                = 0xFF;
         const int TypeBitShift           = 8;
