@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -17,6 +16,7 @@ using EnvDTE;
 
 using JetBrains.Annotations;
 
+using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
@@ -36,6 +36,7 @@ using Pharmatechnik.Nav.Utilities.Logging;
 
 using Control = System.Windows.Controls.Control;
 using Project = Microsoft.CodeAnalysis.Project;
+using Task = System.Threading.Tasks.Task;
 
 #endregion
 
@@ -58,13 +59,13 @@ namespace Pharmatechnik.Nav.Language.Extension {
         ShowDropDownOptions         = true)]
     [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageService), NavLanguageContentDefinitions.FileExtension)]
-    [PackageRegistration(UseManagedResourcesOnly = true)]
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(Guids.PackageGuidString)]
     [ProvideShowBraceCompletion]
     [ProvideShowDropdownBarOption]
-    [ProvideService(typeof(NavLanguageService))]
-    [ProvideService(typeof(NavLanguagePackage))]
-    sealed partial class NavLanguagePackage: Package {
+    [ProvideService(typeof(NavLanguageService), IsAsyncQueryable = true)]
+    [ProvideService(typeof(NavLanguagePackage), IsAsyncQueryable = true)]
+    sealed partial class NavLanguagePackage: AsyncPackage {
 
         static readonly Logger Logger = Logger.Create<NavLanguagePackage>();
 
@@ -72,29 +73,36 @@ namespace Pharmatechnik.Nav.Language.Extension {
             LoggerConfig.Initialize(Path.GetTempPath(), "Nav.Language.Extension");
         }
 
-        protected override void Initialize() {
-            base.Initialize();
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress) {
+            await base.InitializeAsync(cancellationToken, progress).ConfigureAwait(false);
 
-            var serviceContainer = (IServiceContainer) this;
+            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            serviceContainer.AddService(typeof(NavLanguageService), OnCreateService, true);
-            serviceContainer.AddService(typeof(NavLanguagePackage), OnCreateService, true);
+            var shell    = (IVsShell) await GetServiceAsync(typeof(SVsShell)).ConfigureAwait(true);
+            var solution = (IVsSolution) await GetServiceAsync(typeof(SVsSolution)).ConfigureAwait(true);
 
+            cancellationToken.ThrowIfCancellationRequested();
+            Assumes.Present(shell);
+            Assumes.Present(solution);
+
+            AddService(typeof(NavLanguageService), async (container, ct, type)
+                           => {
+                           await JoinableTaskFactory.SwitchToMainThreadAsync(ct);
+                           return new NavLanguageService(this);
+                       }, true);
+
+            AddService(typeof(NavLanguagePackage), async (container, ct, type)
+                           => {
+                           await JoinableTaskFactory.SwitchToMainThreadAsync(ct);
+                           return this;
+                       }, true);
+
+            var componentModel = (IComponentModel) await GetServiceAsync(typeof(SComponentModel));
+
+            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             // Cache schon mal vorwärmen...
-            GetServiceProvider().GetMefService<NavSolutionProvider>();
-        }
+            componentModel?.GetService<NavSolutionProvider>();
 
-        object OnCreateService(IServiceContainer container, Type serviceType) {
-
-            if (serviceType == typeof(NavLanguageService)) {
-                return new NavLanguageService(this);
-            }
-
-            if (serviceType == typeof(NavLanguagePackage)) {
-                return this;
-            }
-
-            return null;
         }
 
         public static object GetGlobalService<TService>() where TService : class {
