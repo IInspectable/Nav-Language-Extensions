@@ -3,35 +3,35 @@
 ################################################################################
 
 /deploy
-/Nav.Utilities/bin/Debug
-/Nav.Utilities/obj/Debug
+/Nav.Utilities/bin
+/Nav.Utilities/obj
 
-/Nav.Language/bin/Debug
-/Nav.Language/obj/Debug
+/Nav.Language/bin
+/Nav.Language/obj
 
-/Nav.Language.BuildTasks/bin/Debug
-/Nav.Language.BuildTasks/obj/Debug
+/Nav.Language.BuildTasks/bin
+/Nav.Language.BuildTasks/obj
 
-/Nav.Language.CodeAnalysis/bin/Debug
-/Nav.Language.CodeAnalysis/obj/Debug
+/Nav.Language.CodeAnalysis/bin
+/Nav.Language.CodeAnalysis/obj
 
-/Nav.Language.Extension/bin/Debug
-/Nav.Language.Extension/obj/Debug
+/Nav.Language.Extension/bin
+/Nav.Language.Extension/obj
 
 /Nav.Language.Extension/Templates/ItemTemplates/*.zip
-/Nav.Language.Extension.Tests/bin/Debug
-/Nav.Language.Extension.Tests/obj/Debug
-/Nav.Language.Service/bin/Debug
-/Nav.Language.Service/obj/Debug
+/Nav.Language.Extension.Tests/bin
+/Nav.Language.Extension.Tests/obj
+/Nav.Language.Service/bin
+/Nav.Language.Service/obj
 
-/Nav.Language.ServiceHost/bin/Debug
-/Nav.Language.ServiceHost/obj/Debug
+/Nav.Language.ServiceHost/bin
+/Nav.Language.ServiceHost/obj
 
-/Nav.Cli/bin/Debug
-/Nav.Cli/obj/Debug
+/Nav.Cli/bin
+/Nav.Cli/obj
 
-/Nav.Language.Tests/bin/Debug
-/Nav.Language.Tests/obj/Debug
+/Nav.Language.Tests/bin
+/Nav.Language.Tests/obj
 /Nav.Language.Tests/Regression/Tests/**/*.cs
 !/Nav.Language.Tests/Regression/**/*.expected.cs
 
