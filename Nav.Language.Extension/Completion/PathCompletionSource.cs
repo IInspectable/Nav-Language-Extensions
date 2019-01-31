@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 using Microsoft.VisualStudio.Text;
 
@@ -19,37 +20,39 @@ using Pharmatechnik.Nav.Utilities.IO;
 namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
     class PathCompletionSource: AsyncCompletionSource {
-        
+
         public PathCompletionSource(QuickinfoBuilderService quickinfoBuilderService)
             : base(quickinfoBuilderService) {
 
         }
 
-        public override bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
-
-            applicableToSpan = default;
+        public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
 
             bool IsTriggerChar() {
 
-                return char.IsLetter(typedChar)                 ||
-                       typedChar == '\0'                        ||
-                       typedChar == '"'                         ||
-                       typedChar == Path.DirectorySeparatorChar ||
-                       typedChar == Path.AltDirectorySeparatorChar
+                return char.IsLetter(trigger.Character)                 ||
+                       trigger.Character == '\0'                        ||
+                       trigger.Character == '"'                         ||
+                       trigger.Character == Path.DirectorySeparatorChar ||
+                       trigger.Character == Path.AltDirectorySeparatorChar
                     ;
             }
 
             if (!IsTriggerChar()) {
-                return false;
+                return CompletionStartData.DoesNotParticipateInCompletion;
             }
 
-            return ShouldProvideCompletions(triggerLocation, out applicableToSpan, out _);
+            if (ShouldProvideCompletions(triggerLocation, out var applicableToSpan, out _)) {
+                return new CompletionStartData(CompletionParticipation.ProvidesItems, applicableToSpan);
+            }
+
+            return CompletionStartData.DoesNotParticipateInCompletion;
 
         }
 
         private const string ParentFolderDisplayString = "..";
 
-        public override async Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+        public override async Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
             if (!ShouldProvideCompletions(triggerLocation, out var myApplicableToSpan, out var replacementSpan) ||
                 myApplicableToSpan != applicableToSpan) {

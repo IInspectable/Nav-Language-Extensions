@@ -489,7 +489,7 @@
       <Version>15.7.27703</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Language">
-      <Version>15.8.525</Version>
+      <Version>16.0.189-g83e7c53a57</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Language.Intellisense">
       <Version>15.6.27740</Version>
@@ -525,7 +525,9 @@
       <Version>15.3.53</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>15.7.109</Version>
+      <Version>15.9.3039</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="MSBuildTasks">
       <Version>1.5.0.235</Version>

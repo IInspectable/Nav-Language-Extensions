@@ -28,10 +28,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         public QuickinfoBuilderService QuickinfoBuilderService { get; }
 
-        public abstract bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token);
-        public abstract Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token);
+        public abstract CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token);
 
-        public virtual Task<object> GetDescriptionAsync(CompletionItem item, CancellationToken token) {
+        public abstract Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token);
+
+        public virtual Task<object> GetDescriptionAsync(IAsyncCompletionSession session, CompletionItem item, CancellationToken token) {
+
             if (item.Properties.TryGetProperty<ISymbol>(SymbolPropertyName, out var symbol)) {
                 return Task.FromResult((object) QuickinfoBuilderService.BuildSymbolQuickInfoContent(symbol));
             }
@@ -50,9 +52,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             return Task.FromResult((object) item.DisplayText);
         }
-        
+
         protected static Task<CompletionContext> CreateCompletionContextTaskAsync(ImmutableArray<CompletionItem>.Builder itemsBuilder,
-                                                                             InitialSelectionHint initialSelectionHint = InitialSelectionHint.SoftSelection) {
+                                                                                  InitialSelectionHint initialSelectionHint = InitialSelectionHint.SoftSelection) {
             return Task.FromResult(CreateCompletionContext(itemsBuilder, initialSelectionHint));
         }
 
@@ -76,9 +78,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var filters = filter != null ? ImmutableArray.Create(filter) : ImmutableArray<CompletionFilter>.Empty;
 
             var completionItem = new CompletionItem(displayText: symbol.Name,
-                                                    source: this,
-                                                    icon: CompletionImages.FromSymbol(symbol),
-                                                    filters: filters);
+                                                    source     : this,
+                                                    icon       : CompletionImages.FromSymbol(symbol),
+                                                    filters    : filters);
 
             completionItem.Properties.AddProperty(SymbolPropertyName, symbol);
 
@@ -88,9 +90,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
         protected CompletionItem CreateKeywordCompletion(string keyword) {
 
             var completionItem = new CompletionItem(displayText: keyword,
-                                                    source: this,
-                                                    icon: CompletionImages.Keyword,
-                                                    filters: ImmutableArray.Create(CompletionFilters.Keywords)
+                                                    source     : this,
+                                                    icon       : CompletionImages.Keyword,
+                                                    filters    : ImmutableArray.Create(CompletionFilters.Keywords)
             );
 
             completionItem.Properties.AddProperty(KeywordPropertyName, keyword);
@@ -118,7 +120,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
                                                     sortText      : $"__{displayText}",
                                                     filterText    : displayText,
                                                     attributeIcons: ImmutableArray<ImageElement>.Empty);
-            
+
             completionItem.Properties.AddProperty(DirectoryInfoPropertyName, dir);
             if (replacementSpan != null) {
                 completionItem.Properties.AddProperty(ReplacementTrackingSpanProperty, replacementSpan);
@@ -155,11 +157,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             return completionItem;
         }
 
-        public static string SymbolPropertyName              => nameof(SymbolPropertyName);
-        public static string KeywordPropertyName             => nameof(KeywordPropertyName);
-        public static string DirectoryInfoPropertyName       => nameof(DirectoryInfoPropertyName);
-        public static string NavFileInfoPropertyName         => nameof(NavFileInfoPropertyName);
+        // ReSharper disable InconsistentNaming
+        public static string SymbolPropertyName        => nameof(SymbolPropertyName);
+        public static string KeywordPropertyName       => nameof(KeywordPropertyName);
+        public static string DirectoryInfoPropertyName => nameof(DirectoryInfoPropertyName);
+        public static string NavFileInfoPropertyName   => nameof(NavFileInfoPropertyName);
+
         public static string ReplacementTrackingSpanProperty => nameof(ReplacementTrackingSpanProperty);
+        // ReSharper restore InconsistentNaming
 
         protected static CodeGenerationUnit GetCodeGenerationUnit(SnapshotPoint triggerLocation) {
 
@@ -170,6 +175,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             return codeGenerationUnit;
         }
+
     }
 
 }
