@@ -6,7 +6,7 @@
   </PropertyGroup>
   <Import Project="..\_build\WriteThisAssemblyFile.targets" />
   <PropertyGroup>
-    <DeployDirectory>$([System.IO.Path]::GetFullPath($(OutputPath)\..\..\deploy\Build Tools))</DeployDirectory>
+    <DeployDirectory>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)\..\deploy\Build Tools))</DeployDirectory>
   </PropertyGroup>
   <!-- Es ist einfacher die Files explizit anzugeben...-->
   <ItemGroup>

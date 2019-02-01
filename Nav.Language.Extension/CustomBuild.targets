@@ -21,7 +21,7 @@
     </XmlConfigUpdates>
   </ItemGroup>
   <PropertyGroup>
-    <DeployDirectory>$(OutputPath)\..\..\..\deploy\Vsix</DeployDirectory>
+    <DeployDirectory>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)\..\deploy\Vsix))</DeployDirectory>
   </PropertyGroup>
   <Target Name="DeployFiles" AfterTargets="CreateVsixContainer">
     <ItemGroup>
