@@ -14,7 +14,6 @@
     <Deploy Include="$(OutputPath)\Antlr4.Runtime.dll" />
     <Deploy Include="$(OutputPath)\Antlr4.StringTemplate.dll" />
     <Deploy Include="$(OutputPath)\nav.exe" />
-    <Deploy Include="$(OutputPath)\nav.exe.config" />
     <Deploy Include="$(OutputPath)\NLog.dll" />
     <Deploy Include="$(OutputPath)\Pharmatechnik.Nav.Language.BuildTasks.dll" />
     <Deploy Include="$(OutputPath)\Pharmatechnik.Nav.Language.dll" />
