@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.Text.Adornments;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Utilities.IO;
 
+using ThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion {
@@ -167,6 +169,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
         // ReSharper restore InconsistentNaming
 
         protected static CodeGenerationUnit GetCodeGenerationUnit(SnapshotPoint triggerLocation) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
 

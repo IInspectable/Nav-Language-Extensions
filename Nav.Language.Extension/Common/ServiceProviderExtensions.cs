@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Microsoft.VisualStudio.ComponentModelHost;
 
 namespace Pharmatechnik.Nav.Language.Extension.Common {
@@ -7,8 +8,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
         public static T GetMefService<T>(this IServiceProvider serviceProvider) where T : class {
 
-            var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
-            return componentModel.GetService<T>();            
+            var componentModel = serviceProvider.GetService(typeof(SComponentModel)) as IComponentModel;
+            return componentModel?.GetService<T>();
         }
+
     }
+
 }

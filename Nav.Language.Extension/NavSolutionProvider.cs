@@ -80,14 +80,17 @@ namespace Pharmatechnik.Nav.Language.Extension {
         private event EventHandler<EventArgs> Invalidated;
 
         void OnAfterOpenSolution(object sender, OpenSolutionEventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             UpdateSearchDirectory();
         }
 
         void OnAfterCloseSolution(object sender, EventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             UpdateSearchDirectory();
         }
 
         void OnAfterBackgroundSolutionLoadComplete(object sender, EventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
             UpdateSearchDirectory();
         }
 

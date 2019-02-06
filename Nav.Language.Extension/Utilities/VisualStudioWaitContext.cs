@@ -27,6 +27,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Utilities {
                                        string title,
                                        string message,
                                        bool allowCancel) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             _title                   = title;
             _message                 = message;
             _allowCancel             = allowCancel;

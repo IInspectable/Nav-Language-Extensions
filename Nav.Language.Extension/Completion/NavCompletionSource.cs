@@ -29,6 +29,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
 
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             bool IsTriggerChar() {
 
                 return char.IsLetter(trigger.Character) ||

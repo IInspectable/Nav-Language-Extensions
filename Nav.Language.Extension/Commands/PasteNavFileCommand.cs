@@ -6,6 +6,7 @@ using System.Windows;
 
 using JetBrains.Annotations;
 
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 
@@ -30,6 +31,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         public ITextView TextView { get; }
 
         public bool Execute(IDataObject dataObject) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var navFileToReference = TryGetNavFile(dataObject);
             var navDirectory       = TryGetDirectory();
@@ -99,6 +102,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         CodeGenerationUnit GetCodeGenerationUnit() {
 
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var semanticModelService = SemanticModelService.GetOrCreateSingelton(TextView.TextBuffer);
 
             var generationUnitAndSnapshot = semanticModelService.UpdateSynchronously();
@@ -109,6 +114,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         [CanBeNull]
         DirectoryInfo TryGetDirectory() {
+            ThreadHelper.ThrowIfNotOnUIThread();
             return GetCodeGenerationUnit()?.Syntax.SyntaxTree.SourceText.FileInfo?.Directory;
         }
 

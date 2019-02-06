@@ -55,6 +55,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             IVsCodeWindow codeWindow,
             IServiceProvider serviceProvider): base(textBuffer) {
 
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             Logger.Trace($"{nameof(NavigationBar)}:Ctor");
 
             _manager          = manager;
@@ -70,7 +72,9 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
             VSColorTheme.ThemeChanged               += OnThemeChanged;
 
+            #pragma warning disable VSSDK006 // Check services exist
             var componentModel = (IComponentModel) serviceProvider.GetService(typeof(SComponentModel));
+            #pragma warning restore VSSDK006 // Check services exist
             _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
 
             _comEventSink = ComEventSink.Advise<IVsCodeWindowEvents>(codeWindow, this);

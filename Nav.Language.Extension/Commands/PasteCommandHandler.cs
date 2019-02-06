@@ -4,6 +4,7 @@ using System.Windows;
 using System.ComponentModel.Composition;
 
 using Microsoft.VisualStudio.Commanding;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.Commanding.Commands;
 using Microsoft.VisualStudio.Utilities;
@@ -29,6 +30,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         public string DisplayName => "Paste";
 
         public bool ExecuteCommand(PasteCommandArgs args, CommandExecutionContext executionContext) {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var pasteCommand = GetPasteNavFileCommand(args);
             return pasteCommand.Execute(Clipboard.GetDataObject());
