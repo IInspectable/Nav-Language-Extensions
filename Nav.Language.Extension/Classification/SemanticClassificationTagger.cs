@@ -3,13 +3,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Classification;
+using Microsoft.CodeAnalysis.Text;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
+using Microsoft.VisualStudio.Threading;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Text;
+
+using SourceText = Pharmatechnik.Nav.Language.Text.SourceText;
 
 #endregion
 
@@ -47,6 +55,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                         codeGenerationUnitAndSnapshot: codeGenerationUnitAndSnapshot)) {
 
                     yield return deadCode;
+                }
+
+                // C# Code
+                foreach (var csCode in GetCSharpCodeClassifications(span, codeGenerationUnitAndSnapshot)) {
+                    yield return csCode;
                 }
 
                 // Semantic Highlighting
@@ -154,6 +167,58 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
             }
         }
 
+        IEnumerable<ITagSpan<IClassificationTag>> GetCSharpCodeClassifications(SnapshotSpan range, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
+
+            var codeExtents = GetCodeExtents(codeGenerationUnitAndSnapshot.CodeGenerationUnit);
+            var rangeExtent = TextExtent.FromBounds(range.Start.Position, range.End.Position);
+
+            foreach (var extent in codeExtents.Where(e => !e.IsMissing)) {
+
+                if (!extent.IntersectsWith(rangeExtent)) {
+                    continue;
+                }
+
+                var codeSpan        = new Span(extent.Start, extent.Length);
+                var source          = codeGenerationUnitAndSnapshot.Snapshot.GetText(codeSpan);
+                var sourceText      = Microsoft.CodeAnalysis.Text.SourceText.From(source);
+                var classifiedSpans = ThreadHelper.JoinableTaskFactory.Run(() => ClassifyCSharpCode(sourceText));
+
+                foreach (var classifiedSpan in classifiedSpans) {
+
+                    var tokenSpan = new SnapshotSpan(codeGenerationUnitAndSnapshot.Snapshot, new Span(
+                                                         start: classifiedSpan.TextSpan.Start + codeSpan.Start,
+                                                         length: classifiedSpan.TextSpan.Length));
+
+                    var tagSpan = tokenSpan.TranslateTo(range.Snapshot, SpanTrackingMode.EdgeExclusive);
+
+                    var classificationType = ClassificationTypeRegistryService.GetClassificationType(classifiedSpan.ClassificationType);
+                    var tag                = new ClassificationTag(classificationType);
+
+                    yield return new TagSpan<IClassificationTag>(tagSpan, tag);
+                }
+
+            }
+        }
+
+        static IEnumerable<TextExtent> GetCodeExtents(CodeGenerationUnit codeGenerationUnit) {
+            return codeGenerationUnit.Syntax.DescendantNodes<CodeDeclarationSyntax>().SelectMany(cds=> cds.GetGetStringLiterals())
+                                     .Select(n => TextExtent.FromBounds(n.Extent.Start+1, n.Extent.End-1));            
+        }
+
+        static async Task<IEnumerable<ClassifiedSpan>> ClassifyCSharpCode(Microsoft.CodeAnalysis.Text.SourceText sourceText) {
+
+            var workspace    = new AdhocWorkspace();
+            var projName     = "AdHocClassification";
+            var projectId    = ProjectId.CreateNewId();
+            var versionStamp = Microsoft.CodeAnalysis.VersionStamp.Create();
+            var projectInfo  = ProjectInfo.Create(projectId, versionStamp, projName, projName, LanguageNames.CSharp);
+            var newProject   = workspace.AddProject(projectInfo);
+            var newDocument  = workspace.AddDocument(newProject.Id, "Code.cs", sourceText);
+
+            var classifiedSpans = await Classifier.GetClassifiedSpansAsync(newDocument, new TextSpan(0, sourceText.Length)).ConfigureAwait(false);
+
+            return classifiedSpans;
+        }
     }
 
 }

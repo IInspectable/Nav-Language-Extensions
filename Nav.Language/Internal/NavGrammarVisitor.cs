@@ -730,7 +730,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             CreateToken(node, context.OpenBracket(), TextClassification.Punctuation);
             CreateToken(node, context.CodeKeyword(), TextClassification.Keyword);
-            CreateTokens(node, context.StringLiteral(), TextClassification.StringLiteral);
+            CreateTokens(node, context.StringLiteral(), TextClassification.Text);
             CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
