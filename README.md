@@ -1,6 +1,6 @@
-# Nav Language
+ï»¿# Nav Language
 
-Die Nav Language ist einerseits eine Sprache zur Beschreibung von Workflows im Sinne von UML Aktivitätsdiagrammen,
+Die Nav Language ist einerseits eine Sprache zur Beschreibung von Workflows im Sinne von UML Aktivitï¿½tsdiagrammen,
 andererseits beinhaltet sie auch Sprachelemente, um das
 Erzeugen von C# Code zu beeinflussen.
 
