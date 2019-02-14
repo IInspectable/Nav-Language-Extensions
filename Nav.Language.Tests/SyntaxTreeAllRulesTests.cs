@@ -25,7 +25,7 @@ namespace Nav.Language.Tests {
                                                     !t.IsAbstract)
                                           .ToList();
 
-            // Die Anzhal Kann/darf sich über die Zeit auch ändern.
+            // Die Anzahl kann/darf sich über die Zeit auch ändern.
             // Blöd wäre nur, wenn hier keine Syntaxen gefunden würden ;-)
             Assert.That(nodeTypes.Count, Is.EqualTo(47));
 

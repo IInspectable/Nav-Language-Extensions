@@ -29,9 +29,8 @@ namespace Nav.Language.Tests {
         public void TestGeneratedPaths() {
 
             var taskName = "Test";
-            var syntaxFileName = @"n:\av\tets.nav";
+            var syntaxFileName = @"n:\av\test.nav";
 
-            // ReSharper disable once RedundantArgumentDefaultValue
             var pathProvider = new PathProvider(syntaxFileName: syntaxFileName, taskName: taskName, generateTo: null);
 
             Assert.That(pathProvider.TaskName              , Is.EqualTo(taskName));
