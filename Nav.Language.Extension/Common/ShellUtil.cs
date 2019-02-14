@@ -25,10 +25,10 @@ namespace Pharmatechnik.Nav.Language.Extension.Common {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            var uiShell = (IVsUIShell) ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell));
+            var uiShell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
             var unused  = Guid.Empty;
 
-            uiShell.ShowMessageBox(
+            uiShell?.ShowMessageBox(
                 dwCompRole     : 0,
                 rclsidComp     : ref unused,
                 pszTitle       : null,

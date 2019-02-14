@@ -12,12 +12,9 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
-using Microsoft.VisualStudio.Threading;
 
 using Pharmatechnik.Nav.Language.Extension.Common;
 using Pharmatechnik.Nav.Language.Text;
-
-using SourceText = Pharmatechnik.Nav.Language.Text.SourceText;
 
 #endregion
 
@@ -181,7 +178,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                 var codeSpan        = new Span(extent.Start, extent.Length);
                 var source          = codeGenerationUnitAndSnapshot.Snapshot.GetText(codeSpan);
                 var sourceText      = Microsoft.CodeAnalysis.Text.SourceText.From(source);
-                var classifiedSpans = ThreadHelper.JoinableTaskFactory.Run(() => ClassifyCSharpCode(sourceText));
+                var classifiedSpans = ThreadHelper.JoinableTaskFactory.Run(() => ClassifyCSharpCodeAsync(sourceText));
 
                 foreach (var classifiedSpan in classifiedSpans) {
 
@@ -205,7 +202,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                                      .Select(n => TextExtent.FromBounds(n.Extent.Start+1, n.Extent.End-1));            
         }
 
-        static async Task<IEnumerable<ClassifiedSpan>> ClassifyCSharpCode(Microsoft.CodeAnalysis.Text.SourceText sourceText) {
+        static async Task<IEnumerable<ClassifiedSpan>> ClassifyCSharpCodeAsync(Microsoft.CodeAnalysis.Text.SourceText sourceText) {
 
             var workspace    = new AdhocWorkspace();
             var projName     = "AdHocClassification";
