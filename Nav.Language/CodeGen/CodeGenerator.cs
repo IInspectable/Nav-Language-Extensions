@@ -95,7 +95,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var codeModelResult = new CodeModelResult(
                 taskDefinition   : taskDefinition,
-                pathProvider     : pathProvider,
                 beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
                 iwfsCodeModel    : IWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
                 wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
@@ -112,7 +111,6 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var codeGenerationResult = new CodeGenerationResult(
                 taskDefinition   : codeModelResult.TaskDefinition,
-                pathProvider     : codeModelResult.PathProvider,
                 iBeginWfsCodeSpec: GenerateIBeginWfsCodeSpec(codeModelResult.IBeginWfsCodeModel, context),
                 iWfsCodeSpec     : GenerateIWfsCodeSpec(codeModelResult.IWfsCodeModel, context),
                 wfsBaseCodeSpec  : GenerateWfsBaseCodeSpec(codeModelResult.WfsBaseCodeModel, context),
