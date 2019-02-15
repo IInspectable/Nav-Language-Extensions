@@ -49,9 +49,9 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var results = new List<FileGeneratorResult> {
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCodeSpec,      OverwritePolicy.ContentChanged),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCodeSpec, OverwritePolicy.ContentChanged),
-                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCodeSpec,   OverwritePolicy.ContentChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IWfsCodeSpec,      OverwritePolicy.WhenChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.IBeginWfsCodeSpec, OverwritePolicy.WhenChanged),
+                WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsBaseCodeSpec,   OverwritePolicy.WhenChanged),
                 WriteFile(codeGenerationResult.TaskDefinition, codeGenerationResult.WfsCodeSpec,       OverwritePolicy.Never)
             };
 
@@ -118,7 +118,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
         enum OverwritePolicy {
 
             Never,
-            ContentChanged
+            WhenChanged
 
         }
 
