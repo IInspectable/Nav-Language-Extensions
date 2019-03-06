@@ -1,483 +1,60 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C38F8EE6-5DC6-40F3-8994-A33069B05FD8}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>net472</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Pharmatechnik.Nav.Language</RootNamespace>
     <AssemblyName>Pharmatechnik.Nav.Language</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>CS3021</NoWarn>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
+    <Compile Include="..\_build\GobalAssemblyInfo.cs" Link="Properties\GobalAssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\_build\GobalAssemblyInfo.cs">
-      <Link>Properties\GobalAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="CodeFixes\CodeFixCategory.cs" />
-    <Compile Include="CodeFixes\ErrorFix\ErrorCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\RefactoringCodeFix.cs" />
-    <Compile Include="CodeFixes\StyleFix\StyleCodeFix.cs" />
-    <Compile Include="Common\IntExtensions.cs" />
-    <Compile Include="Diagnostic\DiagnosticSeverityExtension.cs" />
-    <Compile Include="FindReferences\DefinitionItem.Factory.cs" />
-    <Compile Include="FindReferences\DefinitionItem.cs" />
-    <Compile Include="FindReferences\FindReferences.cs" />
-    <Compile Include="FindReferences\FindReferencesArgs.cs" />
-    <Compile Include="FindReferences\FindReferencesVisitor.cs" />
-    <Compile Include="FindReferences\ReferenceItemExtensions.cs" />
-    <Compile Include="FindReferences\SymbolOrderer.cs" />
-    <Compile Include="FindReferences\IFindReferencesContext.cs" />
-    <Compile Include="FindReferences\ReferenceItem.cs" />
-    <Compile Include="FindReferences\ReferenceItemBuilder.cs" />
-    <Compile Include="Provider\ISemanticModelProvider.cs" />
-    <Compile Include="Provider\ISemanticModelProviderFactory.cs" />
-    <Compile Include="Provider\SemanticModelProvider.cs" />
-    <Compile Include="Provider\SemanticModelProviderFactory.cs" />
-    <Compile Include="Text\ClassifiedTexts.cs" />
-    <Compile Include="Text\DisplayPartsBuilder.cs" />
-    <Compile Include="Text\ClassifiedText.cs" />
-    <Compile Include="Text\ClassifiedTextExtensions.cs" />
-    <Compile Include="Text\SourceTextExtensions.cs" />
-    <Compile Include="Common\VersionStamp.cs" />
-    <Compile Include="Diagnostic\UnitTestDiagnosticFormatter.cs" />
-    <Compile Include="Internal\NavLexerErrorListener.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0010CannotResolveTask0.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0011CannotResolveNode0.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0012CannotResolveExit0.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0023AnOutgoingEdgeForTrigger0IsAlreadyDeclared.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0024OutgoingEdgeForExit0AlreadyDeclared.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0025NoOutgoingEdgeForExit0Declared.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0103InitNodeMustNotContainIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0104ChoiceNode0MustOnlyReachedByGoTo.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0105ExitNode0MustOnlyReachedByGoTo.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0106EndNode0MustOnlyReachedByGoTo.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0110Edge0NotAllowedIn1BecauseItsReachableFromInit2.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0113TaskNode0HasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0114DialogNode0HasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0115DialogNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0116ViewNode0HasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0117ViewNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0200SignalTriggerNotAllowedAfterInit.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0201SpontaneousNotAllowedInSignalTrigger.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0203TriggerNotAllowedAfterChoice.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0220ConditionsAreNotAllowedInTriggerTransitions.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0221OnlyIfConditionsAllowedInExitTransitions.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0222Node0IsReachableByDifferentEdgeModes.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1002UsingDirective0AppearedPreviously.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1003IncludeNotRequired.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1005TaskDeclaration0NotRequired.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1010TaskNode0HasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1012TaskNode0NotRequired.cs" />
-    <Compile Include="CodeFixes\ErrorFix\AddMissingExitTransitionCodeFix.cs" />
-    <Compile Include="CodeFixes\ErrorFix\AddMissingExitTransitionCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\StyleFix\AddMissingSemicolonsOnIncludeDirectivesCodeFix.cs" />
-    <Compile Include="CodeFixes\StyleFix\AddMissingSemicolonsOnIncludeDirectivesCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\CodeFix.cs" />
-    <Compile Include="CodeFixes\CodeFixContext.cs" />
-    <Compile Include="CodeFixes\CodeFixImpact.cs" />
-    <Compile Include="CodeFixes\CodeFixPrio.cs" />
-    <Compile Include="Text\SymbolExtensions.cs" />
-    <Compile Include="Text\TextEditorSettings.cs" />
-    <Compile Include="CodeFixes\StyleFix\RemoveUnusedIncludeDirectiveCodeFix.cs" />
-    <Compile Include="CodeFixes\StyleFix\RemoveUnusedTaskDeclarationCodeFix.cs" />
-    <Compile Include="CodeFixes\StyleFix\RemoveUnusedNodesCodeFix.cs" />
-    <Compile Include="CodeFixes\StyleFix\RemoveSignalTriggerQuotationMarksCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\IntroduceChoiceCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\Refactoring\IntroduceChoiceCodeFix.cs" />
-    <Compile Include="CodeFixes\StyleFix\RemoveSignalTriggerQuotationMarksCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\StyleFix\RemoveUnusedNodesCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\StyleFix\RemoveUnusedIncludeDirectiveCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\StyleFix\RemoveUnusedTaskDeclarationCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\Refactoring\DialogNodeRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\ExitNodeRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\RenameCodeFixProvider.cs" />
-    <Compile Include="CodeFixes\Refactoring\RenameNodeCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\TaskDeclarationRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\TaskNodeRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\InitNodeRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\ChoiceRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\RenameCodeFix.cs" />
-    <Compile Include="CodeFixes\Refactoring\ViewNodeRenameCodeFix.cs" />
-    <Compile Include="CodeFixes\TaskDefinitionSymbolExtensions.cs" />
-    <Compile Include="Diagnostic\DiagnosticDescriptors.Syntax.cs" />
-    <Compile Include="Generator\FileSpec.cs" />
-    <Compile Include="CodeGen\CodeGenerationSpec.cs" />
-    <Compile Include="CodeGen\CodeGenFacts.cs" />
-    <Compile Include="CodeGen\CodeModel\BeginWrapperCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\TaskBeginCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\CodeModelBuilder.cs" />
-    <Compile Include="CodeGen\CodeModel\ExitTransitionCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\FileGenerationCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\InitTransitionCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\CallCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\CallCodeModelBuilder.cs" />
-    <Compile Include="CodeGen\CodeModel\FieldCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\TOCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\TransitionCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\TriggerTransitionCodeMode.cs" />
-    <Compile Include="CodeGen\CodeModel\WfsCodeModel.cs" />
-    <Compile Include="CodeGen\FileGenerator.cs" />
-    <Compile Include="CodeGen\FileGeneratorAction.cs" />
-    <Compile Include="CodeGen\FileGeneratorResult.cs" />
-    <Compile Include="CodeGen\GenerationOptions.cs" />
-    <Compile Include="CodeGen\CodeGenerationResult.cs" />
-    <Compile Include="CodeGen\CodeGenerator.cs" />
-    <Compile Include="CodeGen\CodeGeneratorContext.cs" />
-    <Compile Include="CodeGen\CodeModelResult.cs" />
-    <Compile Include="CodeGen\CodeModel\CodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\IBeginWfsCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\WfsBaseCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\IWfsCodeModel.cs" />
-    <Compile Include="CodeGen\CodeModel\ParameterCodeModel.cs" />
-    <Compile Include="CodeGen\SignalTriggerCodeInfo.cs" />
-    <Compile Include="CodeGen\TaskInitCodeInfo.cs" />
-    <Compile Include="CodeGen\TaskCodeInfo.cs" />
-    <Compile Include="CodeGen\TaskDeclarationCodeInfo.cs" />
-    <Compile Include="CodeGen\TaskExitCodeInfo.cs" />
-    <Compile Include="CodeGen\Generator.cs" />
-    <Compile Include="CodeGen\Templates\CodeGenFacts.generated.cs" />
-    <Compile Include="Diagnostic\DiagnosticFormatter.cs" />
-    <Compile Include="Generator\NavCodeGeneratorPipeline.cs" />
-    <Compile Include="Generator\NavCodeGeneratorPipeline.LoggerAdapter.cs" />
-    <Compile Include="Generator\NavCodeGeneratorPipeline.Statistic.cs" />
-    <Compile Include="Generator\ILogger.cs" />
-    <Compile Include="SemanticAnalyzer\Analyzer.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0107ExitNode0HasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0108EndNodeHasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0109InitNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0111ChoiceNode0HasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav0112ChoiceNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1007ChoiceNode0HasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1008ChoiceNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1009ChoiceNode0NotRequired.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1014DialogNode0NotRequired.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1015DialogNode0HasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1016DialogNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1017ViewNode0NotRequired.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1018ViewNode0HasNoIncomingEdges.cs" />
-    <Compile Include="SemanticAnalyzer\Nav1019ViewNode0HasNoOutgoingEdges.cs" />
-    <Compile Include="SemanticModel\Call.cs" />
-    <Compile Include="SemanticModel\EdgeExtensions.cs" />
-    <Compile Include="SemanticModel\ICodeParameter.cs" />
-    <Compile Include="SemanticModel\InitTransition.cs" />
-    <Compile Include="SemanticModel\INodeReferenceSymbolOfT.cs" />
-    <Compile Include="SemanticModel\NodeExtensions.cs" />
-    <Compile Include="SemanticModel\CodeParameter.cs" />
-    <Compile Include="SemanticModel\NodeReferenceSymbolOfT.cs" />
-    <Compile Include="SemanticModel\ChoiceTransition.cs" />
-    <Compile Include="SemanticModel\TriggerSymbolBuilder.cs" />
-    <Compile Include="SemanticModel\TriggerTransition.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Provider\CachedSyntaxProvider.cs" />
-    <Compile Include="Provider\IPathProvider.cs" />
-    <Compile Include="Provider\IPathProviderFactory.cs" />
-    <Compile Include="Provider\ISyntaxProviderFactory.cs" />
-    <Compile Include="Provider\PathProvider.cs" />
-    <Compile Include="Provider\PathProviderFactory.cs" />
-    <Compile Include="CodeGen\Templates\Resources.cs" />
-    <Compile Include="Common\EnumerableExtensions.cs" />
-    <Compile Include="Text\StringExtensions.cs" />
-    <Compile Include="Syntax\SourceTextCharStream.cs" />
-    <Compile Include="Text\SourceText.cs" />
-    <Compile Include="Text\SourceTextLine.cs" />
-    <Compile Include="Text\LinePosition.cs" />
-    <Compile Include="Text\LineRange.cs" />
-    <Compile Include="Common\Location.cs" />
-    <Compile Include="Dependencies\DependencyAnalyzer.cs" />
-    <Compile Include="Dependencies\DependencyExtensions.cs" />
-    <Compile Include="Dependencies\Dependency.cs" />
-    <Compile Include="Dependencies\DependencyItem.cs" />
-    <Compile Include="Diagnostic\DiagnosticCategory.cs" />
-    <Compile Include="Diagnostic\DiagnosticDescriptors.cs" />
-    <Compile Include="Diagnostic\DiagnosticDescriptors.Semantic.cs" />
-    <Compile Include="Diagnostic\DiagnosticExtensions.cs" />
-    <Compile Include="Diagnostic\DiagnosticId.cs" />
-    <Compile Include="Diagnostic\DiagnosticSeverity.cs" />
-    <Compile Include="SemanticModel\CodeGenerationUnitExtensions.cs" />
-    <Compile Include="SemanticModel\ExitConnectionPointReferenceSymbol.cs" />
-    <Compile Include="SemanticModel\ConnectionPointSymbol.cs" />
-    <Compile Include="CodeGen\CSharp.cs" />
-    <Compile Include="SemanticModel\EdgeModeSymbol.cs" />
-    <Compile Include="SemanticModel\ExitTransition.cs" />
-    <Compile Include="SemanticModel\Generated\SymbolVisitor.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SymbolVisitor.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SemanticModel\IExitConnectionPointReferenceSymbol.cs" />
-    <Compile Include="SemanticModel\IEdge.cs" />
-    <Compile Include="SemanticModel\IEdgeModeSymbol.cs" />
-    <Compile Include="SemanticModel\IIncludeSymbol.cs" />
-    <Compile Include="SemanticModel\IInitNodeAliasSymbol.cs" />
-    <Compile Include="SemanticModel\IncludeSymbol.cs" />
-    <Compile Include="SemanticModel\InitNodeAliasSymbol.cs" />
-    <Compile Include="SemanticModel\ISymbol.cs" />
-    <Compile Include="SemanticModel\ITaskDefinitionSymbol.cs" />
-    <Compile Include="SemanticModel\ITaskNodeAlias.cs" />
-    <Compile Include="SemanticModel\ITriggerSymbol.cs" />
-    <Compile Include="SemanticModel\NodeReferenceSymbol.cs" />
-    <Compile Include="SemanticModel\SymbolList.cs" />
-    <Compile Include="SemanticModel\TaskDeclarationSymbol.cs" />
-    <Compile Include="SemanticModel\TaskDefinitionSymbolExtensions.cs" />
-    <Compile Include="SemanticModel\TaskNodeAliasSymbol.cs" />
-    <Compile Include="SemanticModel\TaskNodeSymbolExtensions.cs" />
-    <Compile Include="SemanticModel\Transition.cs" />
-    <Compile Include="SemanticModel\IConnectionPointSymbol.cs" />
-    <Compile Include="SemanticModel\ITransition.cs" />
-    <Compile Include="SemanticModel\INodeSymbol.cs" />
-    <Compile Include="SemanticModel\INodeReferenceSymbol.cs" />
-    <Compile Include="SemanticModel\ITaskDeclarationSymbol.cs" />
-    <Compile Include="SemanticModel\NodeSymbol.cs" />
-    <Compile Include="SemanticModel\TaskDefinitionSymbolBuilder.cs" />
-    <Compile Include="SemanticModel\SemanticModelBuilder.cs" />
-    <Compile Include="SemanticModel\CodeGenerationUnit.cs" />
-    <Compile Include="SemanticModel\Symbol.cs" />
-    <Compile Include="SemanticModel\SymbolCollection.cs" />
-    <Compile Include="SemanticModel\TaskDeclarationSymbolBuilder.cs" />
-    <Compile Include="SemanticModel\TaskDefinitionSymbol.cs" />
-    <Compile Include="SemanticModel\TriggerSymbol.cs" />
-    <Compile Include="Provider\SyntaxProvider.cs" />
-    <Compile Include="Provider\SyntaxProviderFactory.cs" />
-    <Compile Include="Syntax\CodeSyntax.cs" />
-    <Compile Include="Diagnostic\DiagnosticDescriptor.cs" />
-    <Compile Include="Syntax\Generated\SyntaxNodeWalker.Generated.cs">
-      <DependentUpon>SyntaxNodeWalker.Generated.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Syntax\IdentifierOrStringListSyntax.cs" />
-    <Compile Include="Provider\ISyntaxProvider.cs" />
-    <Compile Include="Syntax\SampleSyntaxAttribute.cs" />
-    <Compile Include="Syntax\Generated\Syntax.Generated.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Syntax.Generated.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Internal\ExtentExtensions.cs" />
-    <Compile Include="Internal\SyntaxBuildingExtension.cs" />
-    <Compile Include="Internal\TextExtentFactory.cs" />
-    <Compile Include="Syntax\ArrayRankSpecifierSyntax.cs" />
-    <Compile Include="Syntax\ArrayTypeSyntax.cs" />
-    <Compile Include="Syntax\CodeDeclarationSyntax.cs" />
-    <Compile Include="Syntax\ConnectionPointNodeSyntax.cs" />
-    <Compile Include="Syntax\Generated\SyntaxNodeVisitor.Generated.cs">
-      <DependentUpon>SyntaxNodeVisitor.Generated.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Syntax\CodeGenerateToDeclarationSyntax.cs" />
-    <Compile Include="Syntax\ConditionClauseSyntax.cs" />
-    <Compile Include="Syntax\DoClauseSyntax.cs" />
-    <Compile Include="Syntax\EdgeSyntax.cs" />
-    <Compile Include="Syntax\ExitTransitionDefinitionSyntax.cs" />
-    <Compile Include="Syntax\GenericTypeSyntax.cs" />
-    <Compile Include="Syntax\IdentifierOrStringSyntax.cs" />
-    <Compile Include="Text\IExtent.cs" />
-    <Compile Include="Syntax\SyntaxFacts.cs" />
-    <Compile Include="Syntax\SyntaxTokenComparer.cs" />
-    <Compile Include="CodeFixes\SyntaxTreeExtensions.cs" />
-    <Compile Include="Syntax\TriggerSyntax.cs" />
-    <Compile Include="Syntax\ParameterListSyntax.cs" />
-    <Compile Include="Syntax\SimpleTypeSyntax.cs" />
-    <Compile Include="Syntax\SourceNodeSyntax.cs" />
-    <Compile Include="Internal\SuppressCodeSanityCheckAttribute.cs" />
-    <Compile Include="Syntax\SyntaxNode.cs" />
-    <Compile Include="Syntax\ChoiceNodeDeclarationSyntax.cs" />
-    <Compile Include="Syntax\CodeBaseDeclarationSyntax.cs" />
-    <Compile Include="Syntax\CodeDoNotInjectDeclarationSyntax.cs" />
-    <Compile Include="Syntax\CodeAbstractMethodDeclarationSyntax.cs" />
-    <Compile Include="Syntax\CodeNamespaceDeclarationSyntax.cs" />
-    <Compile Include="Syntax\CodeNotImplementedDeclarationSyntax.cs" />
-    <Compile Include="Syntax\ParameterSyntax.cs" />
-    <Compile Include="Syntax\CodeParamsDeclarationSyntax.cs" />
-    <Compile Include="Syntax\CodeResultDeclarationSyntax.cs" />
-    <Compile Include="Syntax\CodeTypeSyntax.cs" />
-    <Compile Include="Syntax\SyntaxTokenList.cs" />
-    <Compile Include="Syntax\SyntaxTokenType.cs" />
-    <Compile Include="Syntax\CodeUsingDeclarationSyntax.cs" />
-    <Compile Include="Syntax\DialogNodeDeclarationSyntax.cs" />
-    <Compile Include="Syntax\EndNodeDeclarationSyntax.cs" />
-    <Compile Include="Syntax\ExitNodeDeclarationSyntax.cs" />
-    <Compile Include="Text\SourceTextLineExtensions.cs" />
-    <Compile Include="Text\SourceTextLineList.cs" />
-    <Compile Include="Text\StringSourceText.cs" />
-    <Compile Include="Text\TextExtent.cs" />
-    <Compile Include="Syntax\InitNodeDeclarationSyntax.cs" />
-    <Compile Include="Syntax\NodeDeclarationSyntax.cs" />
-    <Compile Include="Syntax\NodeDeclarationBlockSyntax.cs" />
-    <Compile Include="Syntax\TargetNodeSyntax.cs" />
-    <Compile Include="Syntax\TaskNodeDeclarationSyntax.cs" />
-    <Compile Include="Syntax\TaskDefinitionSyntax.cs" />
-    <Compile Include="Syntax\CodeGenerationUnitSyntax.cs" />
-    <Compile Include="Syntax\MemberDeclarationSyntax.cs" />
-    <Compile Include="Syntax\IncludeDirectiveSyntax.cs" />
-    <Compile Include="Syntax\TaskDeclarationSyntax.cs" />
-    <Compile Include="Syntax\TransitionDefinitionBlockSyntax.cs" />
-    <Compile Include="Syntax\TransitionDefinitionSyntax.cs" />
-    <Compile Include="Syntax\ViewNodeDeclarationSyntax.cs" />
-    <Compile Include="Internal\NavCommonTokenStream.cs" />
-    <Compile Include="Diagnostic\Diagnostic.cs" />
-    <Compile Include="Internal\DiagnosticFactory.cs" />
-    <Compile Include="Internal\NavGrammarVisitor.cs" />
-    <Compile Include="Syntax\SyntaxTree.cs" />
-    <Compile Include="Syntax\SyntaxToken.cs" />
-    <Compile Include="Syntax\SyntaxTokenExtensions.cs" />
-    <Compile Include="Internal\SyntaxTokenFactory.cs" />
-    <Compile Include="Text\SyntaxTokenClassification.cs" />
-    <Compile Include="Internal\NavParserErrorListener.cs" />
-    <Compile Include="Text\TextChange.cs" />
-    <Compile Include="Text\TextChangeWriter.cs" />
-    <Compile Include="ThisAssembly.generated.cs" />
-    <Compile Include="Workspace\NavSolution.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Diagnostic\DiagnosticDescriptors.DeadCode.cs" />
+    <EmbeddedResource Include="CodeGen\Templates\Common.stg" />
     <EmbeddedResource Include="CodeGen\Templates\IBeginWFS.stg" />
     <EmbeddedResource Include="CodeGen\Templates\IWFS.stg" />
+    <EmbeddedResource Include="CodeGen\Templates\TO.stg" />
     <EmbeddedResource Include="CodeGen\Templates\WFSBase.stg" />
     <EmbeddedResource Include="CodeGen\Templates\WFSOneShot.stg" />
-    <EmbeddedResource Include="CodeGen\Templates\Common.stg" />
-    <EmbeddedResource Include="CodeGen\Templates\TO.stg" />
+  </ItemGroup>
+  <ItemGroup>
     <ExportStringTemplates Include="CodeGen\Templates\CodeGenFacts.stg">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.CodeGen</CustomToolNamespace>
     </ExportStringTemplates>
-    <None Include="CodeGen\ClassDiagram1.cd" />
-    <Antlr4 Include="Grammar\NavTokens.g4">
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Antlr4" Version="4.6.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.5" />
+    <PackageReference Include="StringTemplate4" Version="4.0.8" />
+    <PackageReference Include="System.Memory" Version="4.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Antlr4 Update="Grammar\NavGrammar.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
     </Antlr4>
-    <Antlr4 Include="Grammar\NavGrammar.g4">
+    <Antlr4 Update="Grammar\NavTokens.g4">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
     </Antlr4>
-    <None Include="CustomBuild.targets">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Syntax\Generated\_Readme.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Syntax\Generated\SyntaxNodeVisitor.Generated.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SyntaxNodeVisitor.Generated.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Syntax\Generated\Syntax.Generated.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Syntax.Generated.cs</LastGenOutput>
-    </None>
-    <None Include="Syntax\Generated\SyntaxNodeWalker.Generated.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SyntaxNodeWalker.Generated.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="SemanticAnalyzer\Nav2000IdentifierExpected.cs" />
-    <Content Include="SemanticModel\Generated\SymbolVisitor.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SymbolVisitor.cs</LastGenOutput>
-    </Content>
-    <None Include="SemanticModel\_Missing Diagnostics.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj">
-      <Project>{aa0629b3-af39-4049-9723-7989ec93b0a4}</Project>
-      <Name>Nav.Utilities</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Antlr4">
-      <Version>4.6.6</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Antlr4.CodeGenerator">
-      <Version>4.6.6</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Antlr4.Runtime">
-      <Version>4.6.6</Version>
-    </PackageReference>
-    <PackageReference Include="StringTemplate4">
-      <Version>4.0.8</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections.Immutable">
-      <Version>1.5.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Diagnostics.Debug">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Globalization">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Linq">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Memory">
-      <Version>4.5.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Resources.ResourceManager">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.Extensions">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Threading">
-      <Version>4.3.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup />
+
   <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
   <Import Project="CustomBuild.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
+
 </Project>
