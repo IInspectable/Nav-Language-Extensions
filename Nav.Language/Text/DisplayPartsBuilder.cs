@@ -211,7 +211,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             var codeInfo = SignalTriggerCodeInfo.FromSignalTrigger(signalTriggerSymbol);
 
             return CreateClassifiedText(
-                ClassifiedTexts.TaskName(codeInfo.Task.WfsTypeName),
+                ClassifiedTexts.TaskName(codeInfo.ContainingTask.WfsTypeName),
                 ClassifiedTexts.Punctuation("."),
                 ClassifiedTexts.Identifier(codeInfo.TriggerLogicMethodName),
                 ClassifiedTexts.Punctuation("()")

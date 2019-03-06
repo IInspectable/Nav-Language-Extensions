@@ -233,7 +233,7 @@ namespace Nav.Language.Tests {
                 MetadataReference.CreateFromFile(typeof(ImmutableArray).Assembly.Location),
             };
 
-            CSharpCompilation compilation = CSharpCompilation.Create(
+            var compilation = CSharpCompilation.Create(
                 assemblyName,
                 syntaxTrees: syntaxTrees,
                 references: references,

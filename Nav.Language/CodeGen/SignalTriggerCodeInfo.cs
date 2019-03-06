@@ -10,20 +10,20 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public sealed class SignalTriggerCodeInfo {
 
-        SignalTriggerCodeInfo(TaskCodeInfo taskCodeInfo, string triggerName, string viewNodeName) {
+        SignalTriggerCodeInfo(TaskCodeInfo containingTask, string triggerName, string viewNodeName) {
 
-            Task         = taskCodeInfo ?? throw new ArgumentNullException(nameof(taskCodeInfo));
-            TriggerName  = triggerName  ?? String.Empty;
-            ViewNodeName = viewNodeName ?? String.Empty;           
+            ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
+            TriggerName    = triggerName    ?? String.Empty;
+            ViewNodeName   = viewNodeName   ?? String.Empty;
         }
 
-        public TaskCodeInfo Task     { get; }
-        public string ViewNodeName { get; }
-        public string TriggerName  { get; }
-        public string TriggerMethodName      => $"{TriggerName}";
-        public string TriggerLogicMethodName => $"{TriggerName}{CodeGenFacts.LogicMethodSuffix}";
-        public string TOClassName            => $"{ViewNodeName.ToPascalcase()}{CodeGenFacts.ToClassNameSuffix}";
-        
+        public TaskCodeInfo ContainingTask         { get; }
+        public string       ViewNodeName           { get; }
+        public string       TriggerName            { get; }
+        public string       TriggerMethodName      => $"{TriggerName}";
+        public string       TriggerLogicMethodName => $"{TriggerName}{CodeGenFacts.LogicMethodSuffix}";
+        public string       TOClassName            => $"{ViewNodeName.ToPascalcase()}{CodeGenFacts.ToClassNameSuffix}";
+
         public static SignalTriggerCodeInfo FromSignalTrigger(ISignalTriggerSymbol signalTriggerSymbol) {
             return FromSignalTrigger(signalTriggerSymbol, null);
         }
@@ -35,14 +35,16 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             }
 
             var task         = signalTriggerSymbol.Transition.ContainingTask;
-            var viewNodeName = signalTriggerSymbol.Transition.GuiNodeSourceReference?.Declaration?.Name??String.Empty;
+            var viewNodeName = signalTriggerSymbol.Transition.GuiNodeSourceReference?.Declaration?.Name ?? String.Empty;
             var triggerName  = signalTriggerSymbol.Name;
 
             return new SignalTriggerCodeInfo(
-                taskCodeInfo: taskCodeInfo ?? TaskCodeInfo.FromTaskDefinition(task),
-                triggerName : triggerName,
+                containingTask: taskCodeInfo ?? TaskCodeInfo.FromTaskDefinition(task),
+                triggerName: triggerName,
                 viewNodeName: viewNodeName
             );
-        }       
+        }
+
     }
+
 }

@@ -2,33 +2,24 @@
 
 using System;
 
-using JetBrains.Annotations;
-
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
 
     public sealed class TaskInitCodeInfo {
 
-        TaskInitCodeInfo(string initName, TaskCodeInfo taskCodeInfo) {
+        TaskInitCodeInfo(TaskCodeInfo containingTask, string initName) {
 
-            TaskCodeInfo         = taskCodeInfo ?? throw new ArgumentNullException(nameof(taskCodeInfo));
+            ContainingTask       = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
             BeginMethodName      = $"{CodeGenFacts.BeginMethodPrefix}";
             BeginLogicMethodName = $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.LogicMethodSuffix}";
             InitName             = initName ?? String.Empty;
         }
 
-        [NotNull]
-        public TaskCodeInfo TaskCodeInfo { get; }
-
-        [NotNull]
-        public string BeginLogicMethodName { get; }
-
-        [NotNull]
-        public string BeginMethodName { get; }
-
-        [NotNull]
-        public string InitName { get; }
+        public TaskCodeInfo ContainingTask       { get; }
+        public string       BeginLogicMethodName { get; }
+        public string       BeginMethodName      { get; }
+        public string       InitName             { get; }
 
         public static TaskInitCodeInfo FromInitNode(IInitNodeSymbol initNodeSymbol) {
 
@@ -38,10 +29,10 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
             var taskCodeModel = TaskCodeInfo.FromTaskDefinition(initNodeSymbol.ContainingTask);
 
-            return FromInitNode(initNodeSymbol, taskCodeModel);
+            return FromInitNode(taskCodeModel, initNodeSymbol);
         }
 
-        internal static TaskInitCodeInfo FromInitNode(IInitNodeSymbol initNodeSymbol, TaskCodeInfo taskCodeInfo) {
+        internal static TaskInitCodeInfo FromInitNode(TaskCodeInfo taskCodeInfo, IInitNodeSymbol initNodeSymbol) {
 
             if (initNodeSymbol == null) {
                 throw new ArgumentNullException(nameof(initNodeSymbol));
@@ -51,8 +42,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 throw new ArgumentNullException(nameof(taskCodeInfo));
             }
 
-            return new TaskInitCodeInfo(initName: initNodeSymbol.Name ?? String.Empty,
-                                        taskCodeInfo: taskCodeInfo);
+            return new TaskInitCodeInfo(containingTask: taskCodeInfo, initName: initNodeSymbol.Name ?? String.Empty);
         }
 
     }

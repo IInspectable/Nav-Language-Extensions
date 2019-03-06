@@ -16,11 +16,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
                 return String.Empty;
             }
 
-            if (parts.Count == 1) {
-                return parts[0];
-            }
-
-            return parts.Skip(1).Aggregate(parts[0], (s, part) => String.Join(".", s, part));
+            return String.Join(".", parts);
         }
 
     }
