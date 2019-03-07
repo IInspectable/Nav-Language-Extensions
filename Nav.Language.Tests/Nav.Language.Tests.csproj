@@ -1,162 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6F82F651-4D21-467D-BD83-68C743BC8DF4}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>net472</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Nav.Language.Tests</RootNamespace>
     <AssemblyName>Nav.Language.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="IntExtensionsTests.cs" />
-    <Compile Include="StringExtensionsTests.cs" />
-    <Compile Include="SymbolListTests.cs" />
-    <Compile Include="CodeGenFactsTests.cs" />
-    <Compile Include="CodeGenTests.cs" />
-    <Compile Include="SourceTextTests.cs" />
-    <Compile Include="VersionStampTests.cs" />
+
     <EmbeddedResource Include="Resources\FrameworkStubs.cs" />
-    <Compile Include="Diagnostics\DiagnosticTests.cs" />
-    <Compile Include="PathProviderTests.cs" />
     <EmbeddedResource Include="Resources\FrameworkStubsWithoutNS.cs" />
-    <Compile Include="Regression\RegressionTests.cs" />
-    <Compile Include="Resources\Resources.cs" />
-    <Compile Include="DescendantNodesTests.cs" />
-    <Compile Include="ExtentTests.cs" />
-    <Compile Include="Generated Tests\TokenPropertyNameTests.cs">
-      <DependentUpon>TokenPropertyNameTests.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="LocationTests.cs" />
-    <Compile Include="PerformanceTests.cs" />
-    <Compile Include="CodeSanityTests.cs" />
-    <Compile Include="Generated Tests\ParseEmptyStringTests.cs">
-      <DependentUpon>ParseEmptyStringTests.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Generated Tests\SyntaxWalkerTests.cs">
-      <DependentUpon>SyntaxWalkerTests.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Generated Tests\SyntaxTest.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>SyntaxTest.tt</DependentUpon>
-    </Compile>
-    <Compile Include="RenameChoiceCodeFixTests.cs" />
-    <Compile Include="SemanticTests.cs" />
-    <Compile Include="SymbolVisitorTests.cs" />
-    <Compile Include="SyntaxErrorTests.cs" />
-    <Compile Include="SyntaxFactsTest.cs" />
-    <Compile Include="SyntaxNodeTriviaTests.cs" />
-    <Compile Include="SyntaxStressTests.cs" />
-    <Compile Include="SyntaxTreeNavigationTests.cs" />
-    <Compile Include="SyntaxTreeAllRulesTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestHelper.cs" />
-    <Compile Include="SyntaxTokenTests.cs" />
-    <Compile Include="TestSyntaxProvider.cs" />
-    <Compile Include="TextChangeWriterTests.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CustomBuild.targets">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Nav.Language\Nav.Language.csproj">
-      <Project>{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}</Project>
-      <Name>Nav.Language</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj">
-      <Project>{aa0629b3-af39-4049-9723-7989ec93b0a4}</Project>
-      <Name>Nav.Utilities</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\AllRules.nav" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\LargeNav.nav" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\NavWithError.nav" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Generated Tests\TokenPropertyNameTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>TokenPropertyNameTests.cs</LastGenOutput>
-    </None>
-    <None Include="Generated Tests\ParseEmptyStringTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ParseEmptyStringTests.cs</LastGenOutput>
-    </None>
-    <None Include="Generated Tests\SyntaxWalkerTests.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SyntaxWalkerTests.cs</LastGenOutput>
-    </None>
-    <None Include="Generated Tests\SyntaxTest.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SyntaxTest.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\TaskA.nav" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\TaskB.nav" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\SingleFile.nav" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\TaskC.nav" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\NestedChoices.nav" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <NoCompile Include="Resources\FrameworkStubs.cs" />
+    <NoCompile Include="Resources\FrameworkStubsWithoutNS.cs" />
+    <NoCompile Include="Regression\Tests\IWFL\**\*" />
+    <NoCompile Include="Regression\Tests\WFL\**\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="@(NoCompile)" />    
+    <None Include="@(NoCompile)" />
+    <None Include="CustomBuild.targets" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="Generated Tests\TokenPropertyNameTests.tt"/>
+    <None Include="Generated Tests\ParseEmptyStringTests.tt"/>
+    <None Include="Generated Tests\SyntaxWalkerTests.tt"/>
+    <None Include="Generated Tests\SyntaxTest.tt"/>
+  </ItemGroup>
+
   <ItemGroup>
     <Content Include="Diagnostics\Tests\Nav1010TaskNode0HasNoIncomingEdges.nav" />
     <Content Include="Diagnostics\Tests\Nav1012TaskNode0NotRequired.nav" />
@@ -233,72 +125,32 @@
     <Content Include="Regression\Tests\Test.nav" />
     <Content Include="Regression\Tests\SimpleTask.nav" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="Antlr4">
-      <Version>4.6.6</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Antlr4.CodeGenerator">
-      <Version>4.6.6</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Antlr4.Runtime">
-      <Version>4.6.6</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis">
-      <Version>2.10.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
-      <Version>2.6.3</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Composition">
-      <Version>1.0.31</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit">
-      <Version>3.11.0</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit.Console">
-      <Version>3.9.0</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit.Extension.NUnitProjectLoader">
-      <Version>3.6.0</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit.Extension.NUnitV2Driver">
-      <Version>3.7.0</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit.Extension.NUnitV2ResultWriter">
-      <Version>3.6.0</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit.Runners">
-      <Version>3.9.0</Version>
-    </PackageReference>
-    <PackageReference Include="NUnit3TestAdapter">
-      <Version>3.12.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections.Immutable">
-      <Version>1.5.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Composition">
-      <Version>1.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.ValueTuple">
-      <Version>4.4.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Xml.ReaderWriter">
-      <Version>4.3.1</Version>
-    </PackageReference>
+    <ProjectReference Include="..\Nav.Language\Nav.Language.csproj" />
+    <ProjectReference Include="..\Nav.Utilities\Nav.Utilities.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4" Version="4.6.6" />
+    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.6" />
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="2.10.0" />
+    <PackageReference Include="Microsoft.Composition" Version="1.0.31" />
+    <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="NUnit.Console" Version="3.9.0" />
+    <PackageReference Include="NUnit.Extension.NUnitProjectLoader" Version="3.6.0" />
+    <PackageReference Include="NUnit.Extension.NUnitV2Driver" Version="3.7.0" />
+    <PackageReference Include="NUnit.Extension.NUnitV2ResultWriter" Version="3.6.0" />
+    <PackageReference Include="NUnit.Runners" Version="3.9.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.12.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
+    <PackageReference Include="System.Composition" Version="1.1.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+    <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
+  </ItemGroup>
+
   <Import Project="CustomBuild.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  
+
 </Project>
