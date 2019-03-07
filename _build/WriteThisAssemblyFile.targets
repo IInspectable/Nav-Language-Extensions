@@ -18,7 +18,7 @@
   </Target>
 
   <ItemGroup>
-    <Compile Update="$(AssemblyInfoFile)">
+    <Compile Include="$(AssemblyInfoFile)">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
