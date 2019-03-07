@@ -13,6 +13,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,10 +44,10 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="Generated Tests\TokenPropertyNameTests.tt"/>
-    <None Include="Generated Tests\ParseEmptyStringTests.tt"/>
-    <None Include="Generated Tests\SyntaxWalkerTests.tt"/>
-    <None Include="Generated Tests\SyntaxTest.tt"/>
+    <None Include="Generated Tests\TokenPropertyNameTests.tt" />
+    <None Include="Generated Tests\ParseEmptyStringTests.tt" />
+    <None Include="Generated Tests\SyntaxWalkerTests.tt" />
+    <None Include="Generated Tests\SyntaxTest.tt" />
   </ItemGroup>
 
   <ItemGroup>
