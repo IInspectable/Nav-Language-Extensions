@@ -7,7 +7,6 @@ environment:
 before_build:
   - nuget restore
 build:
-  project: Nav.Utilities\Nav.Utilities.csproj
   verbosity: normal
 artifacts:
 - path: deploy\Vsix
