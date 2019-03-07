@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <Compile Include="..\_build\GobalAssemblyInfo.cs" Link="Properties\GobalAssemblyInfo.cs" />
-    <Compile Update="CodeGen\Templates\CodeGenFacts.generated.cs"/>
+    
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CodeGen\Templates\Common.stg" />
@@ -29,11 +29,14 @@
     <EmbeddedResource Include="CodeGen\Templates\WFSBase.stg" />
     <EmbeddedResource Include="CodeGen\Templates\WFSOneShot.stg" />
   </ItemGroup>
+  
   <ItemGroup>
     <ExportStringTemplates Include="CodeGen\Templates\CodeGenFacts.stg">
       <CustomToolNamespace>Pharmatechnik.Nav.Language.CodeGen</CustomToolNamespace>
     </ExportStringTemplates>
+    <Compile Include="CodeGen\Templates\CodeGenFacts.generated.cs"/>
   </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="Antlr4" Version="4.6.5">
       <PrivateAssets>all</PrivateAssets>
