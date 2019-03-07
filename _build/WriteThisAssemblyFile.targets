@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
     <AssemblyInfoFile>$(MSBuildProjectDirectory)\ThisAssembly.generated.cs</AssemblyInfoFile>
   </PropertyGroup>
   <ItemGroup>
-    <AssemblyInfoLine Include="// Warning: This is generated code! Don't touch as it will be overwritten by the code generator." />
+    <AssemblyInfoLine
+      Include="// Warning: This is generated code! Don't touch as it will be overwritten by the code generator." />
     <AssemblyInfoLine Include="static partial class MyAssembly {" />
     <AssemblyInfoLine Include="%20%20%20%20public const string ProductVersion = &quot;$(ProductVersion)&quot;%3b" />
     <AssemblyInfoLine Include="%20%20%20%20public const string ProductName = &quot;$(ProductName)&quot;%3b" />
@@ -18,10 +20,8 @@
   </Target>
 
   <ItemGroup>
-    <Compile Include="$(AssemblyInfoFile)">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
+    <Compile Remove="$(AssemblyInfoFile)" />
+    <Compile Include="$(AssemblyInfoFile)" />
   </ItemGroup>
 
 </Project>
