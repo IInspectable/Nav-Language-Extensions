@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <Compile Include="..\_build\GobalAssemblyInfo.cs" Link="Properties\GobalAssemblyInfo.cs" />
-    <Compile Update="CodeGen\CodeGenFacts.cs"/>
+    <Compile Update="CodeGen\Templates\CodeGenFacts.generated.cs"/>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CodeGen\Templates\Common.stg" />
