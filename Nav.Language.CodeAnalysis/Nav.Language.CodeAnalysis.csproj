@@ -8,7 +8,7 @@
     <RootNamespace>Pharmatechnik.Nav.Language.CodeAnalysis</RootNamespace>
     <AssemblyName>Pharmatechnik.Nav.Language.CodeAnalysis</AssemblyName>
     <LangVersion>7.3</LangVersion>
-
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>    
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
