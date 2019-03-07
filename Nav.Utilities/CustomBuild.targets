@@ -5,4 +5,5 @@
     <ProductVersion>5.0.9</ProductVersion>
   </PropertyGroup>
   <Import Project="..\_build\WriteThisAssemblyFile.targets" />
+    
 </Project>
