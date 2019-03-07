@@ -77,4 +77,5 @@ public const string <kvp.Key> = ""<kvp.Value>"";
       <EmbeddedResource Include="@(ExportStringTemplates)" />
     </ItemGroup>
   </Target>
+
 </Project>

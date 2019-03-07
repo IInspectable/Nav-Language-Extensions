@@ -107,7 +107,7 @@ namespace Pharmatechnik.Nav.Language.Generator {
                 _processStopwatch.Stop();
 
                 var lines = new[] {
-                    $"{ThisAssembly.ProductName}, Version {ThisAssembly.ProductVersion}",
+                    $"{MyAssembly.ProductName}, Version {MyAssembly.ProductVersion}",
                     $"{statistic.FileCount} .nav {Pluralize("file", statistic.FileCount)} with {statistic.TaskCount} task {Pluralize("definition", statistic.TaskCount)} processed.",
                     $"   Updated: {statistic.FilesUpated,3} .cs {Pluralize("file", statistic.FilesUpated)}",
                     $"   Skipped: {statistic.FilesSkiped,3} .cs {Pluralize("file", statistic.FilesSkiped)}",

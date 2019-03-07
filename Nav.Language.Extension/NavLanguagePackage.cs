@@ -57,7 +57,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
         EnableAdvancedMembersOption = false,
         ShowMatchingBrace           = true,
         ShowDropDownOptions         = true)]
-    [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", MyAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageService), NavLanguageContentDefinitions.FileExtension)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(Guids.PackageGuidString)]
