@@ -75,7 +75,7 @@ namespace Nav.Language.Tests {
 
         static string GetRegressiontestDirectory() {
 
-            return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\Regression\Tests"));
+            return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\..\Regression\Tests"));
         }
 
         public class FileTestCase {
