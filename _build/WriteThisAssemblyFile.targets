@@ -17,8 +17,9 @@
   <Target Name="WriteThisAssemblyFile" BeforeTargets="PrepareForBuild">
     <Message Text="Updating Assembly Info $(AssemblyInfoFile)" Importance="high" />
     <WriteLinesToFile File="$(AssemblyInfoFile)" Overwrite="true" Lines="@(AssemblyInfoLine)" />
+  
   </Target>
-
+ 
   <ItemGroup>
     <Compile Remove="$(AssemblyInfoFile)" />
     <Compile Include="$(AssemblyInfoFile)" />
