@@ -1,16 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Library</ProductName>
-    <ProductVersion>5.0.9</ProductVersion>
+    <ProductVersion>5.0.10</ProductVersion>
   </PropertyGroup>
   <Import Project="..\_build\WriteThisAssemblyFile.targets" />
   <ItemGroup>
     <AvailableItemName Include="ExportStringTemplates" />
   </ItemGroup>
-  <UsingTask TaskName="GenerateStringTemplateExport" TaskFactory="CodeTaskFactory"
-             AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+  <UsingTask TaskName="GenerateStringTemplateExport" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
     <ParameterGroup>
       <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
       <OutputFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
@@ -75,18 +73,13 @@ public const string <kvp.Key> = ""<kvp.Value>"";
   </UsingTask>
   <Target Name="GenerateStringTemplateExport" BeforeTargets="PrepareForBuild">
     <GenerateStringTemplateExport Files="@(ExportStringTemplates)" />
-
     <ItemGroup>
       <EmbeddedResource Include="@(ExportStringTemplates)" />
     </ItemGroup>
-
-    <Message Text="Include @(ExportStringTemplates -> '%(RelativeDir)%(filename).generated.cs')" Importance="High" />
-
+    <Message Text="Include @(ExportStringTemplates -&gt; '%(RelativeDir)%(filename).generated.cs')" Importance="High" />
     <ItemGroup>
-      <Compile Remove="@(ExportStringTemplates -> '%(RelativeDir)%(filename).generated.cs')" />
-      <Compile Include="@(ExportStringTemplates -> '%(RelativeDir)%(filename).generated.cs')" />
+      <Compile Remove="@(ExportStringTemplates -&gt; '%(RelativeDir)%(filename).generated.cs')" />
+      <Compile Include="@(ExportStringTemplates -&gt; '%(RelativeDir)%(filename).generated.cs')" />
     </ItemGroup>
-
   </Target>
-
 </Project>
