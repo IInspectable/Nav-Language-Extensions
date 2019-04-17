@@ -92,6 +92,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
                         yield return choiceNode;
                     }
+
+                    // Gui Nodes
+                    foreach (var guiNode in BuildClassificationSpan(
+                        textExtents                  : GetGuiNodeExtents(codeGenerationUnitAndSnapshot.CodeGenerationUnit),
+                        classificationType           : ClassificationTypeRegistryService.GetClassificationType(ClassificationTypeNames.FormName),
+                        range                        : span,
+                        codeGenerationUnitAndSnapshot: codeGenerationUnitAndSnapshot)) {
+
+                        yield return guiNode;
+                    }
                 }
             }
         }
@@ -140,6 +150,34 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
             }
         }
 
+        static IEnumerable<TextExtent> GetGuiNodeExtents(CodeGenerationUnit codeGenerationUnit) {
+            var viewNodes = codeGenerationUnit.Symbols.OfType<IViewNodeSymbol>();
+            foreach (var viewNode in viewNodes) {
+                yield return viewNode.Syntax.Identifier.Extent;
+
+                foreach (var sourceNode in viewNode.Outgoings.Select(trans => trans.SourceReference).Where(source => source != null)) {
+                    yield return sourceNode.Location.Extent;
+                }
+
+                foreach (var targetNode in viewNode.Incomings.Select(trans => trans.TargetReference).Where(target => target != null)) {
+                    yield return targetNode.Location.Extent;
+                }
+            }
+
+            var dialogNodes = codeGenerationUnit.Symbols.OfType<IDialogNodeSymbol>();
+            foreach (var dialogNode in dialogNodes) {
+                yield return dialogNode.Syntax.Identifier.Extent;
+
+                foreach (var sourceNode in dialogNode.Outgoings.Select(trans => trans.SourceReference).Where(source => source != null)) {
+                    yield return sourceNode.Location.Extent;
+                }
+
+                foreach (var targetNode in dialogNode.Incomings.Select(trans => trans.TargetReference).Where(target => target != null)) {
+                    yield return targetNode.Location.Extent;
+                }
+            }
+        }
+
         static IEnumerable<TextExtent> GetInitNodeExtents(CodeGenerationUnit codeGenerationUnit) {
             var initNodes = codeGenerationUnit.Symbols.OfType<IInitNodeSymbol>();
             foreach (var initNode in initNodes) {
@@ -160,6 +198,12 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
                 foreach (var targetNode in exitNode.Incomings.Select(trans => trans.TargetReference).Where(target => target != null)) {
                     yield return targetNode.Location.Extent;
+                }
+            }
+
+            foreach (var taskNode in codeGenerationUnit.Symbols.OfType<ITaskNodeSymbol>()) {
+                foreach (var cpRef in taskNode.Outgoings.Select(trans => trans.ExitConnectionPointReference).Where(cpRef => cpRef != null)) {
+                    yield return cpRef.Location.Extent;
                 }
             }
         }
