@@ -222,7 +222,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
         #region ChoiceNode
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.ChoiceNode)] [BaseDefinition(ClassificationTypeNames.Identifier)]
+        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.ChoiceNode)] [BaseDefinition("method name")]
         public static ClassificationTypeDefinition ChoiceNode;
 
         [Export(typeof(EditorFormatDefinition))]
