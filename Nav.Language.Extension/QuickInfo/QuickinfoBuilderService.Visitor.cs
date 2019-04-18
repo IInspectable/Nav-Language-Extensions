@@ -9,7 +9,6 @@ using JetBrains.Annotations;
 using Microsoft.VisualStudio.Imaging.Interop;
 
 using Pharmatechnik.Nav.Language.Extension.Images;
-using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -60,10 +59,8 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
                                          .OrderBy(call => call.Node.Name)
                                          .Select(call => new CallViewModel(
                                                      edgeModeMoniker: ImageMonikers.FromSymbol(call.EdgeMode),
-                                                     verb: QuickinfoBuilderService.ToTextBlock(call.EdgeMode.Verb, TextClassification.Keyword),
-                                                     nodeMoniker: ImageMonikers.FromSymbol(call.Node),
-                                                     node: QuickinfoBuilderService.ToTextBlock(call.Node.Name, TextClassification.Identifier
-                                                     ))));
+                                                     node: Visit(call.Node)
+                                                 )));
 
                 var control = new EdgeQuickInfoControl {
                     DataContext = edgeViewModel
@@ -76,21 +73,14 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
         class CallViewModel {
 
-            public CallViewModel(ImageMoniker edgeModeMoniker, object verb, ImageMoniker nodeMoniker, object node) {
+            public CallViewModel(ImageMoniker edgeModeMoniker, object node) {
                 EdgeModeMoniker = edgeModeMoniker;
-                Verb            = verb;
-                NodeMoniker     = nodeMoniker;
-                Node            = node;
+
+                Node = node;
             }
 
             [UsedImplicitly]
             public ImageMoniker EdgeModeMoniker { get; }
-
-            [UsedImplicitly]
-            public object Verb { get; }
-
-            [UsedImplicitly]
-            public ImageMoniker NodeMoniker { get; }
 
             [UsedImplicitly]
             public object Node { get; }

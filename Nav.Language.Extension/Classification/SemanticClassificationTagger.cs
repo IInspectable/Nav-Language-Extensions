@@ -96,7 +96,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                     // Gui Nodes
                     foreach (var guiNode in BuildClassificationSpan(
                         textExtents                  : GetGuiNodeExtents(codeGenerationUnitAndSnapshot.CodeGenerationUnit),
-                        classificationType           : ClassificationTypeRegistryService.GetClassificationType(ClassificationTypeNames.FormName),
+                        classificationType           : ClassificationTypeRegistryService.GetClassificationType(ClassificationTypeNames.GuiNode),
                         range                        : span,
                         codeGenerationUnitAndSnapshot: codeGenerationUnitAndSnapshot)) {
 

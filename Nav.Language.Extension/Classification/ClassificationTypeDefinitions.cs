@@ -49,6 +49,27 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
         #endregion
 
+        #region ControlKeyword
+
+        [Export(typeof(ClassificationTypeDefinition))] 
+        [Name(ClassificationTypeNames.ControlKeyword)] 
+        [BaseDefinition(CSharpClassificationTypeNames.ControlKeyword)]
+        public static ClassificationTypeDefinition ControlKeyword;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.ControlKeyword)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Default)]
+        public sealed class ControlKeywordClassificationFormatDefinition: ClassificationFormatDefinition {
+
+            public ControlKeywordClassificationFormatDefinition() {
+                DisplayName = "Nav Control Keyword";
+            }
+
+        }
+
+        #endregion
+
         #region Comment
 
         [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Comment)] [BaseDefinition(PredefinedClassificationTypeNames.Comment)]
@@ -109,11 +130,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
         #region FormName
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.FormName)] [BaseDefinition(CSharpClassificationTypeNames.LocalName)]
+        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.GuiNode)] [BaseDefinition(CSharpClassificationTypeNames.LocalName)]
         public static ClassificationTypeDefinition Type;
 
         [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.FormName)]
+        [Name(ClassificationTypeNames.GuiNode)]
         [UserVisible(Is.UserVisible)]
         [Order(Before = Priority.Default)]
         public sealed class FormNameClassificationFormatDefinition: ClassificationFormatDefinition {
@@ -289,6 +310,27 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
 
         #endregion
 
+        #region ParameterName
+
+        [Export(typeof(ClassificationTypeDefinition))] 
+        [Name(ClassificationTypeNames.ParameterName)] 
+        [BaseDefinition(CSharpClassificationTypeNames.ParameterName)]
+        public static ClassificationTypeDefinition Parameter;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.ParameterName)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Default)]
+        public sealed class ParameterNameClassificationFormatDefinition: ClassificationFormatDefinition {
+
+            public ParameterNameClassificationFormatDefinition() {
+                DisplayName = "Nav ParameterName";              
+            }
+
+        }
+
+        #endregion
+
         #region PreprocessorKeyword
 
         [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.PreprocessorKeyword)] [BaseDefinition(CSharpClassificationTypeNames.PreprocessorKeyword)]
@@ -334,12 +376,17 @@ namespace Pharmatechnik.Nav.Language.Extension.Classification {
                 {TextClassification.Unknown            , registry.GetClassificationType(ClassificationTypeNames.Unknown)},
                 {TextClassification.Comment            , registry.GetClassificationType(ClassificationTypeNames.Comment)},
                 {TextClassification.Keyword            , registry.GetClassificationType(ClassificationTypeNames.Keyword)},
+                {TextClassification.ControlKeyword     , registry.GetClassificationType(ClassificationTypeNames.ControlKeyword)},
                 {TextClassification.Identifier         , registry.GetClassificationType(ClassificationTypeNames.Identifier)},
                 {TextClassification.Punctuation        , registry.GetClassificationType(ClassificationTypeNames.Punctuation)},
                 {TextClassification.StringLiteral      , registry.GetClassificationType(ClassificationTypeNames.StringLiteral)},
-                {TextClassification.FormName           , registry.GetClassificationType(ClassificationTypeNames.FormName)},
                 {TextClassification.TypeName           , registry.GetClassificationType(ClassificationTypeNames.TypeName)},
                 {TextClassification.TaskName           , registry.GetClassificationType(ClassificationTypeNames.TaskName)},
+                {TextClassification.ConnectionPoint    , registry.GetClassificationType(ClassificationTypeNames.ConnectionPoint)},
+                {TextClassification.ChoiceNode         , registry.GetClassificationType(ClassificationTypeNames.ChoiceNode)},
+                {TextClassification.GuiNode            , registry.GetClassificationType(ClassificationTypeNames.GuiNode)},
+                {TextClassification.DeadCode           , registry.GetClassificationType(ClassificationTypeNames.DeadCode)},
+                {TextClassification.ParameterName      , registry.GetClassificationType(ClassificationTypeNames.ParameterName)},
                 {TextClassification.PreprocessorKeyword, registry.GetClassificationType(ClassificationTypeNames.PreprocessorKeyword)},
                 {TextClassification.PreprocessorText   , registry.GetClassificationType(ClassificationTypeNames.PreprocessorText)},
             };

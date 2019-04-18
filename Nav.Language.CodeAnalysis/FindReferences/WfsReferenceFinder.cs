@@ -446,6 +446,10 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
                 return TextClassification.Keyword;
             }
 
+            if (c == ClassificationTypeNames.ControlKeyword) {
+                return TextClassification.ControlKeyword;
+            }
+
             if (c == ClassificationTypeNames.StringLiteral ||
                 c == ClassificationTypeNames.VerbatimStringLiteral) {
                 return TextClassification.StringLiteral;
