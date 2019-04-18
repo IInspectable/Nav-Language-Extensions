@@ -7,15 +7,21 @@
         Whitespace,
         Comment,
         Keyword,
+        ControlKeyword,
         Punctuation,
         StringLiteral,
         Identifier,
         TaskName,
         FormName,
         TypeName,
+        ChoiceNode,
+        GuiNode,
+        ConnectionPoint,
         PreprocessorText,
+        DeadCode,
         PreprocessorKeyword,
-        Text
+        Text,
+        ParameterName,
 
     }
 
