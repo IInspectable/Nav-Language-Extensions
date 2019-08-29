@@ -4,6 +4,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
+using Pharmatechnik.Nav.Language.Extension.Images;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
@@ -51,7 +53,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             NavigationItems.Add(new NavigationBarItem(
                 displayName    : taskDefinitionSymbol.Name, 
-                imageIndex     : NavigationBarImages.Index.TaskDefinition, 
+                imageMoniker   : ImageMonikers.TaskDefinition, 
                 location       : taskDefinitionSymbol.Syntax.GetLocation(), 
                 navigationPoint: taskDefinitionSymbol.Location.Start,
                 children       : MemberItems.ToImmutableList()));
@@ -69,7 +71,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             NavigationItems.Add(new NavigationBarItem(
                 displayName    : taskDeclarationSymbol.Name, 
-                imageIndex     : NavigationBarImages.Index.TaskDeclaration, 
+                imageMoniker   : ImageMonikers.TaskDeclaration, 
                 location       : taskDeclarationSymbol.Syntax?.GetLocation(), 
                 navigationPoint: taskDeclarationSymbol.Location.Start));
         }

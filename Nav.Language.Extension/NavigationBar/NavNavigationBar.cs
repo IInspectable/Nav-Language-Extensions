@@ -14,9 +14,9 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Nav.Utilities.Logging;
@@ -28,12 +28,15 @@ using Control = System.Windows.Controls.Control;
 
 namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
-    class NavigationBar: SemanticModelServiceDependent, IVsDropdownBarClient, IVsCodeWindowEvents, IDisposable {
+    class NavigationBar: SemanticModelServiceDependent, 
+                         IVsDropdownBarClient, 
+                         IVsDropdownBarClient4, 
+                         IVsCodeWindowEvents, 
+                         IDisposable {
 
         static readonly Logger Logger = Logger.Create<NavigationBar>();
 
         readonly IVsCodeWindow                         _codeWindow;
-        readonly IServiceProvider                      _serviceProvider;
         readonly IVsDropdownBarManager                 _manager;
         readonly WorkspaceRegistration                 _workspaceRegistration;
         readonly Dictionary<int, int>                  _activeSelections;
@@ -44,7 +47,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         [CanBeNull] Workspace _workspace;
         IVsDropdownBar        _dropdownBar;
         int                   _focusedCombo;
-        IntPtr                _imageListHandle;
 
         ImmutableList<NavigationBarItem> _projectItems;
         ImmutableList<NavigationBarItem> _taskItems;
@@ -61,7 +63,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
             _manager          = manager;
             _codeWindow       = codeWindow;
-            _serviceProvider  = serviceProvider;
             _projectItems     = ImmutableList<NavigationBarItem>.Empty;
             _taskItems        = ImmutableList<NavigationBarItem>.Empty;
             _activeSelections = new Dictionary<int, int>();
@@ -86,8 +87,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             ConnectView(pTextView);
 
             ConnectToWorkspace(_workspaceRegistration.Workspace);
-
-            UpdateImageList();
         }
 
         public override void Dispose() {
@@ -107,16 +106,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             _comEventSink?.Dispose();
 
             DisconnectFromWorkspace();
-        }
-
-        void UpdateImageList() {
-
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            var imageService            = (IVsImageService2) _serviceProvider.GetService(typeof(SVsImageService));
-            var comboBoxBackgroundColor = VSColorTheme.GetThemedColor(EnvironmentColors.ComboBoxBackgroundColorKey);
-
-            _imageListHandle = NavigationBarImages.GetImageList(comboBoxBackgroundColor, imageService);
         }
 
         void ConnectView(IVsTextView vsTextView) {
@@ -220,7 +209,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
             puEntryType = (uint) (DROPDOWNENTRYTYPE.ENTRY_TEXT | DROPDOWNENTRYTYPE.ENTRY_ATTR | DROPDOWNENTRYTYPE.ENTRY_IMAGE);
             // ReSharper restore BitwiseOperatorOnEnumWithoutFlags
-            phImageList = _imageListHandle;
+            phImageList = IntPtr.Zero;
             pcEntries   = (uint) GetItems(iCombo).Count;
 
             return VSConstants.S_OK;
@@ -257,11 +246,15 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         }
 
         int IVsDropdownBarClient.GetEntryImage(int iCombo, int iIndex, out int piImageIndex) {
+            piImageIndex = -1;
+            return VSConstants.E_UNEXPECTED;
+        }
 
-            var items = GetItems(iCombo);
-            piImageIndex = iIndex >= items.Count ? 0 : items[iIndex].ImageIndex;
 
-            return VSConstants.S_OK;
+        public ImageMoniker GetEntryImage(int iCombo, int iIndex) {
+            var  items   = GetItems(iCombo);
+            var moniker = iIndex >= items.Count ? default : items[iIndex].ImageMoniker;
+            return moniker;
         }
 
         int IVsDropdownBarClient.OnItemSelected(int iCombo, int iIndex) {
@@ -349,8 +342,6 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
 
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                UpdateImageList();
 
                 SetActiveSelection(TaskComboIndex);
                 SetActiveSelection(ProjectComboIndex);
@@ -496,6 +487,8 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
             DisconnectView(pView);
             return VSConstants.S_OK;
         }
+
+        
 
     }
 
