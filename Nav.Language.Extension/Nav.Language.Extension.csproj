@@ -394,6 +394,10 @@
       <Project>{aa0629b3-af39-4049-9723-7989ec93b0a4}</Project>
       <Name>Nav.Utilities</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VisualSudio.Interop\VisualSudio.Interop.csproj">
+      <Project>{b4843df2-22e7-4cd2-af16-7022b0d61ef9}</Project>
+      <Name>VisualSudio.Interop</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VSPackage.resx">
@@ -510,7 +514,6 @@
     <PackageReference Include="System.Xml.ReaderWriter">
       <Version>4.3.1</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.TextManager.Interop.16.0.DesignTime" Version="16.0.0" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />

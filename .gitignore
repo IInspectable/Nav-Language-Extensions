@@ -27,6 +27,9 @@
 /Nav.Language.ServiceHost/bin
 /Nav.Language.ServiceHost/obj
 
+/VisualSudio.Interop/bin
+/VisualSudio.Interop/obj
+
 /Nav.Cli/bin
 /Nav.Cli/obj
 
