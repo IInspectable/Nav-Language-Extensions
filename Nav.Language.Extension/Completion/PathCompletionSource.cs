@@ -28,17 +28,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
 
-            bool IsTriggerChar() {
-
-                return char.IsLetter(trigger.Character)                 ||
-                       trigger.Character == '\0'                        ||
-                       trigger.Character == '"'                         ||
-                       trigger.Character == Path.DirectorySeparatorChar ||
-                       trigger.Character == Path.AltDirectorySeparatorChar
-                    ;
-            }
-
-            if (!IsTriggerChar()) {
+            if (!ShouldTriggerCompletion(trigger)) {
                 return CompletionStartData.DoesNotParticipateInCompletion;
             }
 
@@ -48,6 +38,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             return CompletionStartData.DoesNotParticipateInCompletion;
 
+        }
+
+        protected override bool ShouldTriggerCompletionOverride(CompletionTrigger trigger) {
+            return char.IsLetter(trigger.Character)                 ||
+                   trigger.Character == '"'                         ||
+                   trigger.Character == Path.DirectorySeparatorChar ||
+                   trigger.Character == Path.AltDirectorySeparatorChar
+                ;
         }
 
         private const string ParentFolderDisplayString = "..";

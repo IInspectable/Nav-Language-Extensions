@@ -31,14 +31,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            bool IsTriggerChar() {
-
-                return char.IsLetter(trigger.Character) ||
-                       trigger.Character == '\0'        ||
-                       trigger.Character == SyntaxFacts.Colon;
-            }
-
-            if (!IsTriggerChar()) {
+            if (!ShouldTriggerCompletion(trigger)) {
                 return CompletionStartData.DoesNotParticipateInCompletion;
             }
 
@@ -49,6 +42,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             }
 
             return CompletionStartData.DoesNotParticipateInCompletion;
+        }
+
+        protected override bool ShouldTriggerCompletionOverride(CompletionTrigger trigger) {
+            return char.IsLetter(trigger.Character) ||
+                   trigger.Character == SyntaxFacts.Colon;
         }
 
         public override async Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {

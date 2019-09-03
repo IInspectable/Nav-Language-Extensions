@@ -30,6 +30,24 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         public QuickinfoBuilderService QuickinfoBuilderService { get; }
 
+        protected bool ShouldTriggerCompletion(CompletionTrigger trigger) {
+            // The trigger reason guarantees that user wants a completion.
+            if (trigger.Reason == CompletionTriggerReason.Invoke ||
+                trigger.Reason == CompletionTriggerReason.InvokeAndCommitIfUnique) {
+                return true;
+            }
+
+            // Enter does not trigger completion.
+            if (trigger.Reason == CompletionTriggerReason.Insertion && trigger.Character == '\n') {
+                return false;
+            }
+
+            return ShouldTriggerCompletionOverride(trigger);
+        }
+
+        protected abstract bool ShouldTriggerCompletionOverride(CompletionTrigger trigger);
+
+
         public abstract CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token);
 
         public abstract Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token);
@@ -80,9 +98,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var filters = filter != null ? ImmutableArray.Create(filter) : ImmutableArray<CompletionFilter>.Empty;
 
             var completionItem = new CompletionItem(displayText: symbol.Name,
-                                                    source     : this,
-                                                    icon       : CompletionImages.FromSymbol(symbol),
-                                                    filters    : filters);
+                                                    source: this,
+                                                    icon: CompletionImages.FromSymbol(symbol),
+                                                    filters: filters);
 
             completionItem.Properties.AddProperty(SymbolPropertyName, symbol);
 
@@ -92,9 +110,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
         protected CompletionItem CreateKeywordCompletion(string keyword) {
 
             var completionItem = new CompletionItem(displayText: keyword,
-                                                    source     : this,
-                                                    icon       : CompletionImages.Keyword,
-                                                    filters    : ImmutableArray.Create(CompletionFilters.Keywords)
+                                                    source: this,
+                                                    icon: CompletionImages.Keyword,
+                                                    filters: ImmutableArray.Create(CompletionFilters.Keywords)
             );
 
             completionItem.Properties.AddProperty(KeywordPropertyName, keyword);
@@ -113,14 +131,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             displayText = displayText ?? dir.Name;
 
-            var completionItem = new CompletionItem(displayText   : displayText,
-                                                    source        : this,
-                                                    icon          : icon ?? CompletionImages.Folder,
-                                                    filters       : ImmutableArray.Create(CompletionFilters.Folders),
-                                                    suffix        : "",
-                                                    insertText    : relativePath,
-                                                    sortText      : $"__{displayText}",
-                                                    filterText    : displayText,
+            var completionItem = new CompletionItem(displayText: displayText,
+                                                    source: this,
+                                                    icon: icon ?? CompletionImages.Folder,
+                                                    filters: ImmutableArray.Create(CompletionFilters.Folders),
+                                                    suffix: "",
+                                                    insertText: relativePath,
+                                                    sortText: $"__{displayText}",
+                                                    filterText: displayText,
                                                     attributeIcons: ImmutableArray<ImageElement>.Empty);
 
             completionItem.Properties.AddProperty(DirectoryInfoPropertyName, dir);
@@ -141,14 +159,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             displayText = displayText ?? file.Name;
 
-            var completionItem = new CompletionItem(displayText   : displayText,
-                                                    source        : this,
-                                                    icon          : CompletionImages.NavFile,
-                                                    filters       : ImmutableArray.Create(CompletionFilters.Files),
-                                                    suffix        : "",
-                                                    insertText    : relativePath,
-                                                    sortText      : $"_{displayText}",
-                                                    filterText    : file.Name,
+            var completionItem = new CompletionItem(displayText: displayText,
+                                                    source: this,
+                                                    icon: CompletionImages.NavFile,
+                                                    filters: ImmutableArray.Create(CompletionFilters.Files),
+                                                    suffix: "",
+                                                    insertText: relativePath,
+                                                    sortText: $"_{displayText}",
+                                                    filterText: file.Name,
                                                     attributeIcons: ImmutableArray<ImageElement>.Empty);
 
             completionItem.Properties.AddProperty(NavFileInfoPropertyName, file);
