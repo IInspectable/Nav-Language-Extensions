@@ -3,6 +3,7 @@
 using System.Threading;
 
 using Microsoft.VisualStudio.Imaging.Interop;
+using Microsoft.VisualStudio.Shell;
 
 using Pharmatechnik.Nav.Language.CodeFixes.ErrorFix;
 using Pharmatechnik.Nav.Language.Extension.Common;
@@ -26,6 +27,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
         protected override void Apply(CancellationToken cancellationToken) {
 
             ApplyTextChanges(CodeFix.GetTextChanges());
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var codeGenerationUnitAndSnapshot = SemanticModelService.TryGet(Parameter.TextBuffer)?.UpdateSynchronously();
             if(codeGenerationUnitAndSnapshot == null) {

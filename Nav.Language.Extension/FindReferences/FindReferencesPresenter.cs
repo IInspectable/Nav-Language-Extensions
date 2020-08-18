@@ -66,6 +66,8 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences {
 
         public FindReferencesContext StartSearch() {
 
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             var window        = _vsFindAllReferencesService.StartSearch("Find References");
             var projectMapper = _projectService.GetProjectMapper();
             var context       = new FindReferencesContext(this, window, projectMapper);

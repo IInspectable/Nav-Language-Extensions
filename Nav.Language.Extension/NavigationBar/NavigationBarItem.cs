@@ -1,8 +1,10 @@
-﻿#region 
+﻿#region
 
 using System.Collections.Immutable;
 
 using JetBrains.Annotations;
+
+using Microsoft.VisualStudio.Imaging.Interop;
 
 using Pharmatechnik.Nav.Language.Text;
 
@@ -12,14 +14,14 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
     class NavigationBarItem {
 
-        public NavigationBarItem(string displayName, int imageIndex): this(displayName, imageIndex, null, -1) {
+        public NavigationBarItem(string displayName, ImageMoniker imageMoniker): this(displayName, imageMoniker, null, -1) {
         }
 
-        public NavigationBarItem(string displayName, int imageIndex, [CanBeNull] Location location, int navigationPoint, ImmutableList<NavigationBarItem> children=null) {
+        public NavigationBarItem(string displayName, ImageMoniker imageMoniker, [CanBeNull] Location location, int navigationPoint, ImmutableList<NavigationBarItem> children = null) {
             Extent          = location?.Extent;
             NavigationPoint = navigationPoint;
             DisplayName     = displayName;
-            ImageIndex      = imageIndex;
+            ImageMoniker    = imageMoniker;
             Children        = children ?? ImmutableList<NavigationBarItem>.Empty;
         }
 
@@ -29,9 +31,9 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
         public string DisplayName { get; }
 
         /// <summary>
-        /// Liefert den Image Index für das item.
+        /// Liefert den Moniker für das anzuzeigende Icon
         /// </summary>
-        public int ImageIndex { get; }
+        public ImageMoniker ImageMoniker { get; }
 
         /// <summary>
         /// Gibt den gesamte Bereich des Items an, oder null, falls es keinen definierten Bereich gibt (z.B. Projekt Items)
@@ -56,5 +58,7 @@ namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
 
         [NotNull]
         public ImmutableList<NavigationBarItem> Children { get; set; }
+
     }
+
 }

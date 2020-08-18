@@ -23,7 +23,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
         public static Diagnostic CreateDiagnostic(SourceText sourceText, int line, int charPositionInLine, string msg) {
 
-            var textLine = sourceText.GetTextLineAtPosition(line - 1);
+            var textLine = sourceText.TextLines[line - 1];
             var location = textLine.GetLocation(charPositionInLine, 1);
 
             return CreateDiagnostic(msg, location);

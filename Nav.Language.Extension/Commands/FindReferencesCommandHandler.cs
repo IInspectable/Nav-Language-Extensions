@@ -18,6 +18,7 @@ using Pharmatechnik.Nav.Language.Extension.FindReferences;
 using Pharmatechnik.Nav.Language.FindReferences;
 
 using Task = System.Threading.Tasks.Task;
+using ThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
 
 #endregion
 
@@ -44,18 +45,21 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
 
         public bool ExecuteCommand(FindReferencesCommandArgs args, CommandExecutionContext executionContext) {
 
-            FindAllReferencesAsync(args).FileAndForget("nav/extension/findreferences");
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            var codeGenerationUnitAndSnapshot = GetCodeGenerationUnit(args.SubjectBuffer);
+            var context                       = _referencesPresenter.StartSearch();
+
+            FindAllReferencesAsync(args, codeGenerationUnitAndSnapshot, context).FileAndForget("nav/extension/findreferences");
 
             return false;
 
         }
 
-        async Task FindAllReferencesAsync(FindReferencesCommandArgs args) {
+        async Task FindAllReferencesAsync(FindReferencesCommandArgs args, CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot, FindReferencesContext context) {
 
-            var codeGenerationUnitAndSnapshot = GetCodeGenerationUnit(args.SubjectBuffer);
-            var originatingSymbol             = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
+            var originatingSymbol = args.TextView.TryFindSymbolUnderCaret(codeGenerationUnitAndSnapshot);
 
-            var context = _referencesPresenter.StartSearch();
             try {
 
                 if (originatingSymbol == null) {
@@ -80,6 +84,8 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
         }
 
         static CodeGenerationUnitAndSnapshot GetCodeGenerationUnit(ITextBuffer textBuffer) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var semanticModelService      = SemanticModelService.GetOrCreateSingelton(textBuffer);
             var generationUnitAndSnapshot = semanticModelService.UpdateSynchronously();

@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Immutable;
 
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
@@ -23,26 +24,30 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
         public EdgeCompletionSource(QuickinfoBuilderService quickinfoBuilderService): base(quickinfoBuilderService) {
         }
 
-        public override bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
-            bool IsTriggerChar() {
+        public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
 
-                return char.IsLetter(typedChar) ||
-                       typedChar == '\0'        ||
-                       typedChar == '-';
-            }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            applicableToSpan = default;
-
-            if (!IsTriggerChar()) {
-                return false;
+            if (!ShouldTriggerCompletion(trigger)) {
+                return CompletionStartData.DoesNotParticipateInCompletion;
             }
 
             var codeGenerationUnit = GetCodeGenerationUnit(triggerLocation);
 
-            return ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out applicableToSpan);
+            if (ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out var applicableToSpan)) {
+                return new CompletionStartData(CompletionParticipation.ProvidesItems, applicableToSpan);
+            }
+
+            return CompletionStartData.DoesNotParticipateInCompletion;
+
         }
 
-        public override async Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+        protected override bool ShouldTriggerCompletionOverride(CompletionTrigger trigger) {
+            return char.IsLetter(trigger.Character) ||
+                   trigger.Character == '-';
+        }
+
+        public override async Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

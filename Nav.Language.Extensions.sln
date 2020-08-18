@@ -1,27 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language", "Nav.Language\Nav.Language.csproj", "{C38F8EE6-5DC6-40F3-8994-A33069B05FD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language", "Nav.Language\Nav.Language.csproj", "{C38F8EE6-5DC6-40F3-8994-A33069B05FD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Cli", "Nav.Cli\Nav.Cli.csproj", "{AB2AC2BC-E10D-4BAD-9740-2FB7FF6EACDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Cli", "Nav.Cli\Nav.Cli.csproj", "{AB2AC2BC-E10D-4BAD-9740-2FB7FF6EACDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.Extension", "Nav.Language.Extension\Nav.Language.Extension.csproj", "{C88AACD6-6973-430B-A94B-4CC45B37F32D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.Tests", "Nav.Language.Tests\Nav.Language.Tests.csproj", "{6F82F651-4D21-467D-BD83-68C743BC8DF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.Tests", "Nav.Language.Tests\Nav.Language.Tests.csproj", "{6F82F651-4D21-467D-BD83-68C743BC8DF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.CodeAnalysis", "Nav.Language.CodeAnalysis\Nav.Language.CodeAnalysis.csproj", "{32AF2E02-A21A-4D1F-9927-09931715D057}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.CodeAnalysis", "Nav.Language.CodeAnalysis\Nav.Language.CodeAnalysis.csproj", "{32AF2E02-A21A-4D1F-9927-09931715D057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Utilities", "Nav.Utilities\Nav.Utilities.csproj", "{AA0629B3-AF39-4049-9723-7989EC93B0A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Utilities", "Nav.Utilities\Nav.Utilities.csproj", "{AA0629B3-AF39-4049-9723-7989EC93B0A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.ServiceHost", "Nav.Language.ServiceHost\Nav.Language.ServiceHost.csproj", "{A40D87E9-C07E-432C-9271-058599F0DBB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.ServiceHost", "Nav.Language.ServiceHost\Nav.Language.ServiceHost.csproj", "{A40D87E9-C07E-432C-9271-058599F0DBB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.Service", "Nav.Language.Service\Nav.Language.Service.csproj", "{0E07ED6F-4FC9-47DA-96C3-BCD06D583BC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.Service", "Nav.Language.Service\Nav.Language.Service.csproj", "{0E07ED6F-4FC9-47DA-96C3-BCD06D583BC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.Extension.Tests", "Nav.Language.Extension.Tests\Nav.Language.Extension.Tests.csproj", "{F0E023F3-FA98-4A8C-B68F-81C8554F4B5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.Extension.Tests", "Nav.Language.Extension.Tests\Nav.Language.Extension.Tests.csproj", "{F0E023F3-FA98-4A8C-B68F-81C8554F4B5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.BuildTasks", "Nav.Language.BuildTasks\Nav.Language.BuildTasks.csproj", "{DB6EFC93-1185-43B7-A721-8515B59CC3AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.BuildTasks", "Nav.Language.BuildTasks\Nav.Language.BuildTasks.csproj", "{DB6EFC93-1185-43B7-A721-8515B59CC3AD}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JetBrains.Annotations", "JetBrains.Annotations\JetBrains.Annotations.shproj", "{A535B35C-5D62-46D8-9EE7-055597F2817A}"
 EndProject
@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 		_build\WriteThisAssemblyFile.targets = _build\WriteThisAssemblyFile.targets
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisualSudio.Interop", "VisualSudio.Interop\VisualSudio.Interop.csproj", "{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -89,6 +91,10 @@ Global
 		{DB6EFC93-1185-43B7-A721-8515B59CC3AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB6EFC93-1185-43B7-A721-8515B59CC3AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB6EFC93-1185-43B7-A721-8515B59CC3AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

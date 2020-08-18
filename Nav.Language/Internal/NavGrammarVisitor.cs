@@ -343,7 +343,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             var node = new DialogNodeDeclarationSyntax(CreateExtent(context));
 
             CreateToken(node, context.DialogKeyword(), TextClassification.Keyword);
-            CreateToken(node, context.Identifier(),    TextClassification.FormName);
+            CreateToken(node, context.Identifier(),    TextClassification.GuiNode);
             CreateToken(node, context.Semicolon(),     TextClassification.Punctuation);
 
             return node;
@@ -354,7 +354,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
             var node = new ViewNodeDeclarationSyntax(CreateExtent(context));
 
             CreateToken(node, context.ViewKeyword(), TextClassification.Keyword);
-            CreateToken(node, context.Identifier(),  TextClassification.FormName);
+            CreateToken(node, context.Identifier(),  TextClassification.GuiNode);
             CreateToken(node, context.Semicolon(),   TextClassification.Punctuation);
 
             return node;
@@ -515,7 +515,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<IdentifierOrStringListSyntax>()
             );
 
-            CreateToken(node, context.OnKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.OnKeyword(), TextClassification.ControlKeyword);
 
             return node;
         }
@@ -545,7 +545,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .Optional(VisitIdentifierOrString)
                        .OfSyntaxType<IdentifierOrStringSyntax>());
 
-            CreateToken(node, context.IfKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.IfKeyword(), TextClassification.ControlKeyword);
 
             return node;
         }
@@ -553,7 +553,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
         public override SyntaxNode VisitElseConditionClause(NavGrammar.ElseConditionClauseContext context) {
             var node = new ElseConditionClauseSyntax(extent: CreateExtent(context));
 
-            CreateToken(node, context.ElseKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.ElseKeyword(), TextClassification.ControlKeyword);
 
             return node;
         }
@@ -584,7 +584,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<IdentifierOrStringSyntax>()
             );
 
-            CreateToken(node, context.DoKeyword(), TextClassification.Keyword);
+            CreateToken(node, context.DoKeyword(), TextClassification.ControlKeyword);
 
             return node;
         }
@@ -730,7 +730,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
 
             CreateToken(node, context.OpenBracket(), TextClassification.Punctuation);
             CreateToken(node, context.CodeKeyword(), TextClassification.Keyword);
-            CreateTokens(node, context.StringLiteral(), TextClassification.StringLiteral);
+            CreateTokens(node, context.StringLiteral(), TextClassification.Text);
             CreateToken(node, context.CloseBracket(), TextClassification.Punctuation);
 
             return node;
@@ -826,7 +826,7 @@ namespace Pharmatechnik.Nav.Language.Internal {
                        .OfSyntaxType<CodeTypeSyntax>()
             );
 
-            CreateToken(node, context.Identifier(), TextClassification.Identifier);
+            CreateToken(node, context.Identifier(), TextClassification.ParameterName);
 
             return node;
         }

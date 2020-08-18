@@ -7,6 +7,6 @@
         }
 
         public CodeGenerator Generator { get; }
-        public string ProductVersion => ThisAssembly.ProductVersion;
+        public string ProductVersion => MyAssembly.ProductVersion;
     }
 }

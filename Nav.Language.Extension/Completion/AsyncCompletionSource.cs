@@ -15,6 +15,8 @@ using Microsoft.VisualStudio.Text.Adornments;
 using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 using Pharmatechnik.Nav.Utilities.IO;
 
+using ThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion {
@@ -28,10 +30,30 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         public QuickinfoBuilderService QuickinfoBuilderService { get; }
 
-        public abstract bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token);
-        public abstract Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token);
+        protected bool ShouldTriggerCompletion(CompletionTrigger trigger) {
+            // The trigger reason guarantees that user wants a completion.
+            if (trigger.Reason == CompletionTriggerReason.Invoke ||
+                trigger.Reason == CompletionTriggerReason.InvokeAndCommitIfUnique) {
+                return true;
+            }
 
-        public virtual Task<object> GetDescriptionAsync(CompletionItem item, CancellationToken token) {
+            // Enter does not trigger completion.
+            if (trigger.Reason == CompletionTriggerReason.Insertion && trigger.Character == '\n') {
+                return false;
+            }
+
+            return ShouldTriggerCompletionOverride(trigger);
+        }
+
+        protected abstract bool ShouldTriggerCompletionOverride(CompletionTrigger trigger);
+
+
+        public abstract CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token);
+
+        public abstract Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token);
+
+        public virtual Task<object> GetDescriptionAsync(IAsyncCompletionSession session, CompletionItem item, CancellationToken token) {
+
             if (item.Properties.TryGetProperty<ISymbol>(SymbolPropertyName, out var symbol)) {
                 return Task.FromResult((object) QuickinfoBuilderService.BuildSymbolQuickInfoContent(symbol));
             }
@@ -50,9 +72,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             return Task.FromResult((object) item.DisplayText);
         }
-        
+
         protected static Task<CompletionContext> CreateCompletionContextTaskAsync(ImmutableArray<CompletionItem>.Builder itemsBuilder,
-                                                                             InitialSelectionHint initialSelectionHint = InitialSelectionHint.SoftSelection) {
+                                                                                  InitialSelectionHint initialSelectionHint = InitialSelectionHint.SoftSelection) {
             return Task.FromResult(CreateCompletionContext(itemsBuilder, initialSelectionHint));
         }
 
@@ -109,16 +131,16 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             displayText = displayText ?? dir.Name;
 
-            var completionItem = new CompletionItem(displayText   : displayText,
-                                                    source        : this,
-                                                    icon          : icon ?? CompletionImages.Folder,
-                                                    filters       : ImmutableArray.Create(CompletionFilters.Folders),
-                                                    suffix        : "",
-                                                    insertText    : relativePath,
-                                                    sortText      : $"__{displayText}",
-                                                    filterText    : displayText,
+            var completionItem = new CompletionItem(displayText: displayText,
+                                                    source: this,
+                                                    icon: icon ?? CompletionImages.Folder,
+                                                    filters: ImmutableArray.Create(CompletionFilters.Folders),
+                                                    suffix: "",
+                                                    insertText: relativePath,
+                                                    sortText: $"__{displayText}",
+                                                    filterText: displayText,
                                                     attributeIcons: ImmutableArray<ImageElement>.Empty);
-            
+
             completionItem.Properties.AddProperty(DirectoryInfoPropertyName, dir);
             if (replacementSpan != null) {
                 completionItem.Properties.AddProperty(ReplacementTrackingSpanProperty, replacementSpan);
@@ -137,14 +159,14 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             displayText = displayText ?? file.Name;
 
-            var completionItem = new CompletionItem(displayText   : displayText,
-                                                    source        : this,
-                                                    icon          : CompletionImages.NavFile,
-                                                    filters       : ImmutableArray.Create(CompletionFilters.Files),
-                                                    suffix        : "",
-                                                    insertText    : relativePath,
-                                                    sortText      : $"_{displayText}",
-                                                    filterText    : file.Name,
+            var completionItem = new CompletionItem(displayText: displayText,
+                                                    source: this,
+                                                    icon: CompletionImages.NavFile,
+                                                    filters: ImmutableArray.Create(CompletionFilters.Files),
+                                                    suffix: "",
+                                                    insertText: relativePath,
+                                                    sortText: $"_{displayText}",
+                                                    filterText: file.Name,
                                                     attributeIcons: ImmutableArray<ImageElement>.Empty);
 
             completionItem.Properties.AddProperty(NavFileInfoPropertyName, file);
@@ -155,13 +177,18 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             return completionItem;
         }
 
-        public static string SymbolPropertyName              => nameof(SymbolPropertyName);
-        public static string KeywordPropertyName             => nameof(KeywordPropertyName);
-        public static string DirectoryInfoPropertyName       => nameof(DirectoryInfoPropertyName);
-        public static string NavFileInfoPropertyName         => nameof(NavFileInfoPropertyName);
+        // ReSharper disable InconsistentNaming
+        public static string SymbolPropertyName        => nameof(SymbolPropertyName);
+        public static string KeywordPropertyName       => nameof(KeywordPropertyName);
+        public static string DirectoryInfoPropertyName => nameof(DirectoryInfoPropertyName);
+        public static string NavFileInfoPropertyName   => nameof(NavFileInfoPropertyName);
+
         public static string ReplacementTrackingSpanProperty => nameof(ReplacementTrackingSpanProperty);
+        // ReSharper restore InconsistentNaming
 
         protected static CodeGenerationUnit GetCodeGenerationUnit(SnapshotPoint triggerLocation) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var semanticModelService = SemanticModelService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
 
@@ -170,6 +197,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
             return codeGenerationUnit;
         }
+
     }
 
 }

@@ -245,14 +245,19 @@ namespace Nav.Language.Tests {
             #region Equality members
 
             public bool Equals(DiagnosticResult other) {
-                if (ReferenceEquals(null, other)) return false;
-                if (ReferenceEquals(this, other)) return true;
+                if (other is null) {
+                    return false;
+                }
+
+                if (ReferenceEquals(this, other)) {
+                    return true;
+                }
 
                 return string.Equals(DiagnosticText, other.DiagnosticText);
             }
 
             public override bool Equals(object obj) {
-                if (ReferenceEquals(null, obj)) {
+                if (obj is null) {
                     return false;
                 }
 

@@ -6,7 +6,7 @@ namespace Nav.Language.ServiceHost {
         public MainWindow() {
             InitializeComponent();
 
-            Title      = ThisAssembly.ProductName; // TODO Title mit Uri?
+            Title      = MyAssembly.ProductName; // TODO Title mit Uri?
             Visibility = Visibility.Visible;
             Visibility = Visibility.Hidden;
         }

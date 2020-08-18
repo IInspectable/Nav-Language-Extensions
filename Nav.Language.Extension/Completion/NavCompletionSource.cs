@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
@@ -18,37 +19,40 @@ using Task = System.Threading.Tasks.Task;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.Completion {
-    
+
+    // ReSharper disable once InconsistentNaming
     class NavCompletionSource: AsyncCompletionSource {
 
         public NavCompletionSource(QuickinfoBuilderService quickinfoBuilderService): base(quickinfoBuilderService) {
 
         }
-        
-        public override bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
 
-            bool IsTriggerChar() {
+        public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
 
-                return char.IsLetter(typedChar)     ||
-                       typedChar == '\0'            ||
-                       typedChar == SyntaxFacts.Colon;
-            }
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            applicableToSpan = default;
-
-            if (!IsTriggerChar()) {
-                return false;
+            if (!ShouldTriggerCompletion(trigger)) {
+                return CompletionStartData.DoesNotParticipateInCompletion;
             }
 
             var codeGenerationUnit = GetCodeGenerationUnit(triggerLocation);
 
-            return ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out applicableToSpan);
+            if (ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out var applicableToSpan)) {
+                return new CompletionStartData(CompletionParticipation.ProvidesItems, applicableToSpan);
+            }
+
+            return CompletionStartData.DoesNotParticipateInCompletion;
         }
 
-        public override async Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+        protected override bool ShouldTriggerCompletionOverride(CompletionTrigger trigger) {
+            return char.IsLetter(trigger.Character) ||
+                   trigger.Character == SyntaxFacts.Colon;
+        }
+
+        public override async Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            
+
             var codeGenerationUnit = GetCodeGenerationUnit(triggerLocation);
 
             if (!ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out var myApplicableToSpan) ||
@@ -57,7 +61,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             }
 
             await Task.Yield();
-           
+
             var triggerLine       = triggerLocation.GetContainingLine();
             var startOfIdentifier = triggerLine.GetStartOfIdentifier(triggerLocation);
 
@@ -68,7 +72,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             var prevousIdentfier = previousWordSpan?.GetText() ?? "";
 
             var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
-            
+
             // Task Nodes
             if (prevousIdentfier == SyntaxFacts.TaskKeyword) {
                 var taskDecls = codeGenerationUnit.TaskDeclarations;
@@ -193,13 +197,11 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
             }
 
             var start = line.GetStartOfIdentifier(triggerLocation);
-            
+
             applicableToSpan = new SnapshotSpan(start, triggerLocation);
 
             return true;
         }
-
-        
 
     }
 

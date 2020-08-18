@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Immutable;
 using System.Linq;
 
+using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 
@@ -21,26 +22,26 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         }
 
-        public override bool TryGetApplicableToSpan(char typedChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan, CancellationToken token) {
+        public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
 
-            applicableToSpan = default;
-
-            bool IsTriggerChar() {
-
-                return char.IsLetter(typedChar) ||
-                       typedChar == '\0'        ||
-                       typedChar == SyntaxFacts.OpenBracket;
+            if (!ShouldTriggerCompletion(trigger)) {
+                return CompletionStartData.DoesNotParticipateInCompletion;
             }
 
-            if (!IsTriggerChar()) {
-                return false;
+            if (ShouldProvideCompletions(triggerLocation, out var applicableToSpan)) {
+                return new CompletionStartData(CompletionParticipation.ProvidesItems, applicableToSpan);
             }
 
-            return ShouldProvideCompletions(triggerLocation, out applicableToSpan);
+            return CompletionStartData.DoesNotParticipateInCompletion;
 
         }
 
-        public override Task<CompletionContext> GetCompletionContextAsync(InitialTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+        protected override bool ShouldTriggerCompletionOverride(CompletionTrigger trigger) {
+            return char.IsLetter(trigger.Character) ||
+                   trigger.Character == SyntaxFacts.OpenBracket;
+        }
+
+        public override Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
             if (ShouldProvideCompletions(triggerLocation, out _)) {
                 var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
@@ -60,7 +61,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
         }
 
         bool ShouldProvideCompletions(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {
-           
+
             var line                       = triggerLocation.GetContainingLine();
             var start                      = line.GetStartOfIdentifier(triggerLocation);
             var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);

@@ -2,11 +2,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language MSBuild Tasks</ProductName>
-    <ProductVersion>4.0.37</ProductVersion>
+    <ProductVersion>5.0.20</ProductVersion>
   </PropertyGroup>
   <Import Project="..\_build\WriteThisAssemblyFile.targets" />
   <PropertyGroup>
-    <DeployDirectory>$([System.IO.Path]::GetFullPath($(OutputPath)\..\..\deploy\Build Tools))</DeployDirectory>
+    <DeployDirectory>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)\..\deploy\Build Tools))</DeployDirectory>
   </PropertyGroup>
   <!-- Es ist einfacher die Files explizit anzugeben...-->
   <ItemGroup>
@@ -14,7 +14,6 @@
     <Deploy Include="$(OutputPath)\Antlr4.Runtime.dll" />
     <Deploy Include="$(OutputPath)\Antlr4.StringTemplate.dll" />
     <Deploy Include="$(OutputPath)\nav.exe" />
-    <Deploy Include="$(OutputPath)\nav.exe.config" />
     <Deploy Include="$(OutputPath)\NLog.dll" />
     <Deploy Include="$(OutputPath)\Pharmatechnik.Nav.Language.BuildTasks.dll" />
     <Deploy Include="$(OutputPath)\Pharmatechnik.Nav.Language.dll" />

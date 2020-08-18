@@ -55,7 +55,7 @@ namespace Pharmatechnik.Nav.Language.Text {
                 ClassifiedTexts.Space,
                 ClassifiedTexts.TaskName(exitConnectionPointSymbol.TaskDeclaration.Name),
                 ClassifiedTexts.Colon,
-                ClassifiedTexts.Identifier(exitConnectionPointSymbol.Name)
+                ClassifiedTexts.ConnectionPoint(exitConnectionPointSymbol.Name)
             );
         }
 
@@ -118,7 +118,7 @@ namespace Pharmatechnik.Nav.Language.Text {
                 ClassifiedTexts.Space,
                 ClassifiedTexts.TaskName(initNodeSymbol.ContainingTask.Name),
                 ClassifiedTexts.Colon,
-                ClassifiedTexts.Identifier(initNodeSymbol.Name)
+                ClassifiedTexts.ConnectionPoint(initNodeSymbol.Name)
             );
         }
 
@@ -128,7 +128,7 @@ namespace Pharmatechnik.Nav.Language.Text {
                 ClassifiedTexts.Space,
                 ClassifiedTexts.TaskName(exitNodeSymbol.ContainingTask.Name),
                 ClassifiedTexts.Colon,
-                ClassifiedTexts.Identifier(exitNodeSymbol.Name)
+                ClassifiedTexts.ConnectionPoint(exitNodeSymbol.Name)
             );
         }
 
@@ -136,7 +136,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             // Der "end Knoten" ist nicht von außen erreichbar, und wird deshalb als "privater Knoten" gesehen,
             // d.h. es wird nicht der Taskname wie bei den Inits und Exits vorangestellt.
             return CreateClassifiedText(
-                ClassifiedTexts.Keyword(SyntaxFacts.EndKeyword)
+                ClassifiedTexts.ConnectionPoint(SyntaxFacts.EndKeyword)
             );
         }
 
@@ -172,7 +172,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             return CreateClassifiedText(
                 ClassifiedTexts.Keyword(SyntaxFacts.ChoiceKeyword),
                 ClassifiedTexts.Space,
-                ClassifiedTexts.Identifier(choiceNodeSymbol.Name)
+                ClassifiedTexts.ChoiceNode(choiceNodeSymbol.Name)
             );
         }
 
@@ -180,7 +180,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             return CreateClassifiedText(
                 ClassifiedTexts.Keyword(SyntaxFacts.DialogKeyword),
                 ClassifiedTexts.Space,
-                ClassifiedTexts.FormName(dialogNodeSymbol.Name)
+                ClassifiedTexts.GuiNode(dialogNodeSymbol.Name)
             );
         }
 
@@ -188,7 +188,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             return CreateClassifiedText(
                 ClassifiedTexts.Keyword(SyntaxFacts.ViewKeyword),
                 ClassifiedTexts.Space,
-                ClassifiedTexts.FormName(viewNodeSymbol.Name)
+                ClassifiedTexts.GuiNode(viewNodeSymbol.Name)
             );
         }       
 
@@ -211,9 +211,9 @@ namespace Pharmatechnik.Nav.Language.Text {
             var codeInfo = SignalTriggerCodeInfo.FromSignalTrigger(signalTriggerSymbol);
 
             return CreateClassifiedText(
-                ClassifiedTexts.TaskName(codeInfo.Task.WfsTypeName),
+                ClassifiedTexts.TaskName(codeInfo.ContainingTask.WfsTypeName),
                 ClassifiedTexts.Punctuation("."),
-                ClassifiedTexts.Identifier(codeInfo.TriggerLogicMethodName),
+                ClassifiedTexts.MethodName(codeInfo.TriggerLogicMethodName),
                 ClassifiedTexts.Punctuation("()")
             );
         }

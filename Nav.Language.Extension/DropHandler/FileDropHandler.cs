@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.DragDrop;
 
@@ -20,6 +21,8 @@ namespace Pharmatechnik.Nav.Language.Extension.DropHandler {
         }
 
         public DragDropPointerEffects HandleDataDropped(DragDropInfo dragDropInfo) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var pasteCommand = GetPasteNavFileCommand();
 

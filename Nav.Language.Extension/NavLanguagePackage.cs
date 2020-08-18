@@ -57,7 +57,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
         EnableAdvancedMembersOption = false,
         ShowMatchingBrace           = true,
         ShowDropDownOptions         = true)]
-    [InstalledProductRegistration("#110", "#112", ThisAssembly.ProductVersion, IconResourceID = 400)]
+    [InstalledProductRegistration("#110", "#112", MyAssembly.ProductVersion, IconResourceID = 400)]
     [ProvideLanguageExtension(typeof(NavLanguageService), NavLanguageContentDefinitions.FileExtension)]
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(Guids.PackageGuidString)]
@@ -78,8 +78,10 @@ namespace Pharmatechnik.Nav.Language.Extension {
 
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            var shell    = (IVsShell) await GetServiceAsync(typeof(SVsShell)).ConfigureAwait(true);
+            #pragma warning disable VSSDK006 // Check services exist
+            var shell    = (IVsShell)    await GetServiceAsync(typeof(SVsShell)).ConfigureAwait(true);
             var solution = (IVsSolution) await GetServiceAsync(typeof(SVsSolution)).ConfigureAwait(true);
+            #pragma warning restore VSSDK006 // Check services exist
 
             cancellationToken.ThrowIfCancellationRequested();
             Assumes.Present(shell);

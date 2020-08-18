@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Library</ProductName>
-    <ProductVersion>4.0.37</ProductVersion>
+    <ProductVersion>5.0.20</ProductVersion>
   </PropertyGroup>
   <Import Project="..\_build\WriteThisAssemblyFile.targets" />
   <ItemGroup>
@@ -75,6 +75,11 @@ public const string <kvp.Key> = ""<kvp.Value>"";
     <GenerateStringTemplateExport Files="@(ExportStringTemplates)" />
     <ItemGroup>
       <EmbeddedResource Include="@(ExportStringTemplates)" />
+    </ItemGroup>
+    <Message Text="Include @(ExportStringTemplates -&gt; '%(RelativeDir)%(filename).generated.cs')" Importance="High" />
+    <ItemGroup>
+      <Compile Remove="@(ExportStringTemplates -&gt; '%(RelativeDir)%(filename).generated.cs')" />
+      <Compile Include="@(ExportStringTemplates -&gt; '%(RelativeDir)%(filename).generated.cs')" />
     </ItemGroup>
   </Target>
 </Project>

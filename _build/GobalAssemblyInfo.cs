@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: AssemblyTitle(ThisAssembly.ProductName)]
-[assembly: AssemblyProduct(ThisAssembly.ProductName)]
-[assembly: AssemblyVersion(ThisAssembly.ProductVersion)]
-[assembly: AssemblyDescription(ThisAssembly.ProductName)]
-[assembly: AssemblyFileVersion(ThisAssembly.ProductVersion)]
+[assembly: AssemblyTitle(MyAssembly.ProductName)]
+[assembly: AssemblyProduct(MyAssembly.ProductName)]
+[assembly: AssemblyVersion(MyAssembly.ProductVersion)]
+[assembly: AssemblyDescription(MyAssembly.ProductName)]
+[assembly: AssemblyFileVersion(MyAssembly.ProductVersion)]

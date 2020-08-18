@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 
 using JetBrains.Annotations;
+
 // ReSharper disable InconsistentNaming
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeGen {
@@ -14,29 +16,28 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
     public sealed class CodeGenerationResult {
 
         public CodeGenerationResult(
-            ITaskDefinitionSymbol taskDefinition, 
-            IPathProvider pathProvider, 
-            CodeGenerationSpec iBeginWfsCodeSpec, 
-            CodeGenerationSpec iWfsCodeSpec, 
-            CodeGenerationSpec wfsBaseCodeSpec, 
+            ITaskDefinitionSymbol taskDefinition,
+            CodeGenerationSpec iBeginWfsCodeSpec,
+            CodeGenerationSpec iWfsCodeSpec,
+            CodeGenerationSpec wfsBaseCodeSpec,
             CodeGenerationSpec wfsCodeSpec,
             [CanBeNull] IEnumerable<CodeGenerationSpec> toCodeSpecs) {
 
             TaskDefinition    = taskDefinition    ?? throw new ArgumentNullException(nameof(taskDefinition));
-            PathProvider      = pathProvider      ?? throw new ArgumentNullException(nameof(pathProvider));
             IBeginWfsCodeSpec = iBeginWfsCodeSpec ?? throw new ArgumentNullException(nameof(iBeginWfsCodeSpec));
             IWfsCodeSpec      = iWfsCodeSpec      ?? throw new ArgumentNullException(nameof(iWfsCodeSpec));
             WfsBaseCodeSpec   = wfsBaseCodeSpec   ?? throw new ArgumentNullException(nameof(wfsBaseCodeSpec));
             WfsCodeSpec       = wfsCodeSpec       ?? throw new ArgumentNullException(nameof(wfsCodeSpec));
-            ToCodeSpecs       = (toCodeSpecs      ?? Enumerable.Empty<CodeGenerationSpec>()).ToImmutableList();
+            ToCodeSpecs       = (toCodeSpecs ?? Enumerable.Empty<CodeGenerationSpec>()).ToImmutableList();
         }
-        
-        public ITaskDefinitionSymbol TaskDefinition          { get; }
-        public IPathProvider PathProvider                    { get; }
-        public CodeGenerationSpec IBeginWfsCodeSpec          { get; }
-        public CodeGenerationSpec IWfsCodeSpec               { get; }
-        public CodeGenerationSpec WfsBaseCodeSpec            { get; }
-        public CodeGenerationSpec WfsCodeSpec                { get; }
-        public ImmutableList<CodeGenerationSpec> ToCodeSpecs { get; }       
+
+        public ITaskDefinitionSymbol             TaskDefinition    { get; }
+        public CodeGenerationSpec                IBeginWfsCodeSpec { get; }
+        public CodeGenerationSpec                IWfsCodeSpec      { get; }
+        public CodeGenerationSpec                WfsBaseCodeSpec   { get; }
+        public CodeGenerationSpec                WfsCodeSpec       { get; }
+        public ImmutableList<CodeGenerationSpec> ToCodeSpecs       { get; }
+
     }
+
 }
