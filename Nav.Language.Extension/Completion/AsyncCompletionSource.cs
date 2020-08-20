@@ -52,25 +52,27 @@ namespace Pharmatechnik.Nav.Language.Extension.Completion {
 
         public abstract Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token);
 
-        public virtual Task<object> GetDescriptionAsync(IAsyncCompletionSession session, CompletionItem item, CancellationToken token) {
+        public virtual async Task<object> GetDescriptionAsync(IAsyncCompletionSession session, CompletionItem item, CancellationToken token) {
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
             if (item.Properties.TryGetProperty<ISymbol>(SymbolPropertyName, out var symbol)) {
-                return Task.FromResult((object) QuickinfoBuilderService.BuildSymbolQuickInfoContent(symbol));
+                return QuickinfoBuilderService.BuildSymbolQuickInfoContent(symbol);
             }
 
             if (item.Properties.TryGetProperty<string>(KeywordPropertyName, out var keyword)) {
-                return Task.FromResult((object) QuickinfoBuilderService.BuildKeywordQuickInfoContent(keyword));
+                return QuickinfoBuilderService.BuildKeywordQuickInfoContent(keyword);
             }
 
             if (item.Properties.TryGetProperty<DirectoryInfo>(DirectoryInfoPropertyName, out var dirInfo)) {
-                return Task.FromResult((object) QuickinfoBuilderService.BuildDirectoryInfoQuickInfoContent(dirInfo));
+                return QuickinfoBuilderService.BuildDirectoryInfoQuickInfoContent(dirInfo);
             }
 
             if (item.Properties.TryGetProperty<FileInfo>(NavFileInfoPropertyName, out var fileInfo)) {
-                return Task.FromResult((object) QuickinfoBuilderService.BuildNavFileInfoQuickInfoContent(fileInfo));
+                return QuickinfoBuilderService.BuildNavFileInfoQuickInfoContent(fileInfo);
             }
 
-            return Task.FromResult((object) item.DisplayText);
+            return item.DisplayText;
         }
 
         protected static Task<CompletionContext> CreateCompletionContextTaskAsync(ImmutableArray<CompletionItem>.Builder itemsBuilder,
