@@ -79,14 +79,14 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
         public static ParserService GetOrCreateSingelton(ITextBuffer textBuffer) {
-            return textBuffer.Properties.GetOrCreateSingletonProperty(
-                typeof(ParserService), 
-                () => new ParserService(textBuffer));
+            return TextBufferScopedValue<ParserService>.GetOrCreate(
+                textBuffer,
+                typeof(ParserService),
+                () => new ParserService(textBuffer)).Value;
         }
 
         public static ParserService TryGet(ITextBuffer textBuffer) {
-            textBuffer.Properties.TryGetProperty< ParserService>(typeof(ParserService), out var parserService);
-            return parserService;
+            return TextBufferScopedValue<ParserService>.TryGet(textBuffer, typeof(ParserService));
         }
         
         public static void SetParseMethod(ITextBuffer textBuffer, ParseMethod parseMethod) {
@@ -105,7 +105,7 @@ namespace Pharmatechnik.Nav.Language.Extension {
             }
 
             syntaxTreeAndSnapshot = BuildSynchronously(CreateBuildResultArgs(), cancellationToken);
-            TrySetResult(syntaxTreeAndSnapshot);
+            TrySetResult(syntaxTreeAndSnapshot, raiseEvents: false);
 
             return syntaxTreeAndSnapshot;
         }
@@ -168,6 +168,10 @@ namespace Pharmatechnik.Nav.Language.Extension {
         }
 
         void TrySetResult(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot) {
+            TrySetResult(syntaxTreeAndSnapshot, raiseEvents: true);
+        }
+
+        void TrySetResult(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, bool raiseEvents) {
 
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
             // da bereits ein neues berechnet wird.
@@ -178,7 +182,9 @@ namespace Pharmatechnik.Nav.Language.Extension {
             _syntaxTreeAndSnapshot = syntaxTreeAndSnapshot;
 
             var snapshotSpan = syntaxTreeAndSnapshot.Snapshot.GetFullSpan();
-            OnParseResultChanged(new SnapshotSpanEventArgs(snapshotSpan));
+            if (raiseEvents) {
+                OnParseResultChanged(new SnapshotSpanEventArgs(snapshotSpan));
+            }
         }
         
         // Irgend jemand scheint den ITextBuffer länger als erhofft im Speicher zu halten
