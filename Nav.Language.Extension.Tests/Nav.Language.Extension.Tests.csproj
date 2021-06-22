@@ -18,12 +18,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Nav.Language.Extension\Nav.Language.Extension.csproj" />
+    <PackageReference Include="NUnit" Version="3.11.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.11.0" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
+    <ProjectReference Include="..\Nav.Language.Extension2019\Nav.Language.Extension2019.csproj" />
   </ItemGroup>
 
 </Project>

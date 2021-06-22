@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Extensions</ProductName>
-    <ProductVersion>5.0.22</ProductVersion>
+    <ProductVersion>5.0.24</ProductVersion>
   </PropertyGroup>
   <Import Project="..\_build\WriteThisAssemblyFile.targets" />
   <PropertyGroup>
@@ -14,11 +14,11 @@
       <XPath>/a:PackageManifest/a:Metadata/a:Identity/@Version</XPath>
       <NewValue>$(ProductVersion)</NewValue>
     </XmlConfigUpdates>
-    <XmlConfigUpdates Include="$(VsixmanifestFile)">
+    <!--<XmlConfigUpdates Include="$(VsixmanifestFile)">
       <Namespaces>"&lt;Namespace Prefix='a' Uri='http://schemas.microsoft.com/developer/vsx-schema/2011' /&gt;"</Namespaces>
       <XPath>/a:PackageManifest/a:Metadata/a:DisplayName</XPath>
       <NewValue>$(ProductName)</NewValue>
-    </XmlConfigUpdates>
+    </XmlConfigUpdates>-->
   </ItemGroup>
   <PropertyGroup>
     <DeployDirectory>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)\..\deploy\Vsix))</DeployDirectory>

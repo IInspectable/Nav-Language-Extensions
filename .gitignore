@@ -15,8 +15,11 @@
 /Nav.Language.CodeAnalysis/bin
 /Nav.Language.CodeAnalysis/obj
 
-/Nav.Language.Extension/bin
-/Nav.Language.Extension/obj
+/Nav.Language.Extension2019/bin
+/Nav.Language.Extension2019/obj
+
+/Nav.Language.Extension2022/bin
+/Nav.Language.Extension2022/obj
 
 /Nav.Language.Extension/Templates/ItemTemplates/*.zip
 /Nav.Language.Extension.Tests/bin

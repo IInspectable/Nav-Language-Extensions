@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>da1f60b3-96af-4862-aab9-90b0ab7b2504</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Nav.Language.ExtensionShared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BraceCompletion\BraceCompletionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BraceMatching\BraceMatchingTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BraceMatching\BraceMatchingTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BraceMatching\BraceMatchingTypeNames.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)BraceMatching\BracePair.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Classification\ClassificationTypeDefinitions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Classification\ClassificationTypeNames.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Classification\SemanticClassificationTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Classification\SemanticClassificationTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Classification\SyntacticClassificationTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Classification\SyntacticClassificationTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Classification\UnderlineClassifier.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Classification\UnderlineClassifierProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\AddMissingExitTransitionSuggestedAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\AddMissingExitTransitionSuggestedActionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\AddMissingSemicolonsOnIncludeDirectivesSuggestedActionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\CodeFixSuggestedAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\CodeFixSuggestedActionContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\CodeFixSuggestedActionOfT.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\CodeFixSuggestedActionParameter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\CodeFixSuggestedActionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\CodeFixSuggestedActionProviderService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\CodeFixSuggestedActionsSource.SuggestedActionSetComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\CodeFixSuggestedActionsSourceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\ExportCodeFixSuggestedActionProviderAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\TextChangesAndSnapshot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\TextChangeService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\IntroduceChoiceSuggestedAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\IntroduceChoiceSuggestedActionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedActionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveUnusedIncludeDirectiveSuggestedAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveUnusedIncludeDirectiveSuggestedActionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveUnusedNodesSuggestedAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveUnusedNodesSuggestedActionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveUnusedTaskDeclarationSuggestedAction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveUnusedTaskDeclarationSuggestedActionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandHandlerNames.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\CommentUncommentSelectionCommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\FindReferencesCommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\GoToDefinitionCommandCommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\CommandArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\CommandHandlerMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\CommandHandlerService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\CommandHandlerServiceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\CommandTarget.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\CommandTarget.Exec.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\CommandTarget.QueryStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\ExportCommandHandlerAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\ICommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\TextViewCreationListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Infrastructure\ViewCodeCommandArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\NavEditorOperationsProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\NavigateToHighlightReferenceCommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\PasteCommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\PasteNavFileCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\RenameCommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\ViewCSharpCodeCommandHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\AbstractNotifyPropertyChanged.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\AndSnapshot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\BufferGraphExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\CodeContentControlProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ComEventSink.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ContentTypeExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\DependencyObjectExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\DialogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\DictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ExtensionOrderer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Common\InputDialogViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\IOrderableMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\LocationExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ServiceProperties.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ServiceProviderExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\ShellUtil.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SnapshotPointExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\StringExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\SymbolExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextBufferExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextBufferScopedClassifier.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextBufferScopedTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextBufferScopedValue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextSelectionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextSnapshotExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextSnapshotLineExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextUndoTransaction.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextViewConnectionListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextViewExtensions.AutoClosingViewProperty.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\TextViewExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\WpfTextViewExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\AsyncCompletionSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\AsyncCompletionSourceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\CodeCompletionSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\CodeCompletionSourceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\CompletionCommitManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\CompletionCommitManagerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\CompletionFilters.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\CompletionImages.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\CompletionProviderNames.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\EdgeCompletionSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\EdgeCompletionSourceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\NavCompletionSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\NavCompletionSourceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\PathCompletionSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\PathCompletionSourceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Completion\TextSnaphotLineExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharp\GoTo\IntraTextGoToAdornment.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharp\GoTo\IntraTextGoToAdornmentTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharp\GoTo\IntraTextGoToAdornmentTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharp\GoTo\IntraTextGoToTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharp\GoTo\IntraTextGoToTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharp\GoTo\IntraTextGoToTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharp\GoTo\IntraTextGoToTagSpanBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CSharp\IntraTextAdornmentTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticErrorTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticErrorTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticErrorTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticErrorTypeNames.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticStripeControl.xaml.cs">
+      <DependentUpon>DiagnosticStripeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticStripeMargin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticStripeMarginProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticSummaryControl.xaml.cs">
+      <DependentUpon>DiagnosticSummaryControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticSummaryMargin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticSummaryMarginProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DropHandler\ClipBoardFormats.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DropHandler\FileDropHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DropHandler\FileDropHandlerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FindReferences\DefinitionEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FindReferences\Entry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FindReferences\FindReferencesContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FindReferences\FindReferencesPresenter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FindReferences\LazyTooltip.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FindReferences\ReferenceEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FindReferences\SimpleTextEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FindReferences\TableEntriesSnapshot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\GoToLocationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\GoToTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\LocationInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\CodeAnalysisLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\ILocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\LocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\NavAnnotationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\NavExitAnnotationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\NavInitAnnotationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\NavInitCallLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\NavTaskAnnotationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\NavTriggerAnnotationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\SimpleLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\TaskBeginDeclarationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\TaskDeclarationCodeFileLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\TaskDeclarationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\TaskExitDeclarationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\TaskIBeginInterfaceDeclarationCodeFileLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\TaskIBeginInterfaceDeclarationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoToLocation\Provider\TriggerDeclarationLocationInfoProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoTo\GoToKeyProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoTo\GoToKeyProcessorProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoTo\GoToMouseProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoTo\GoToMouseProcessorProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoTo\GoToSymbolBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoTo\GoToTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoTo\GoToTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GoTo\ModifierKeyState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HighlightReferences\DefinitionHighlightTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HighlightReferences\MarkerFormatDefinitionNames.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HighlightReferences\ReferenceFinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HighlightReferences\ReferenceHighlightTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HighlightReferences\ReferenceHighlightTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HighlightReferences\ReferenceHighlightTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HighlightReferences\ReferenceRootFinder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImageMonikerImageList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImageMonikers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Images\ImageMonikers.SymbolImageVisitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LanguageService\LanguageServiceOptionRegistrationAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LanguageService\NavCodeWindowManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LanguageService\NavLanguagePreferences.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LanguageService\NavLanguageService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LanguageService\ProvideShowBraceCompletionAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LanguageService\ProvideShowDropdownBarOptionAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavigationBar\NavigationBarItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavigationBar\NavigationBarProjectItemBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavigationBar\NavigationBarTaskItemBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavigationBar\NavNavigationBar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavLanguageContentDefinitions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavLanguagePackage.AdvancedOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavLanguagePackage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavLanguagePackage.Guids.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavSolutionProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavSolutionProvider.HierarchyEvents.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NavSolutionSnapshot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Notification\NotificationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Notification\WeakListenerManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Options\AdvancedOptionsControl.xaml.cs">
+      <DependentUpon>AdvancedOptionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Options\AdvancedOptionsDialogPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Options\IAdvancedOptions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Outlining\OutlineTagger\CodeNamespaceDeclarationOutlineTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Outlining\OutlineTagger\CodeUsingDirectiveOutlineTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Outlining\OutlineTagger\MultilineCommentOutlineTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Outlining\OutlineTagger\NodeDeclarationBlockOutlineTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Outlining\OutlineTagger\TaskDefinitionsOutlineTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Outlining\OutlineTagger\TaskReferenceOutlineTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Outlining\OutlineTagger\TransitionDefinitionBlockOutlineTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Outlining\OutliningTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Outlining\OutliningTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ParserService\ParserService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ParserService\ParserServiceDependent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ParserService\SyntaxTreeAndSnapshot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuickInfo\DebugQuickInfoSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuickInfo\DebugQuickInfoSourceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuickInfo\EdgeQuickInfoControl.xaml.cs">
+      <DependentUpon>EdgeQuickInfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)QuickInfo\QuickinfoBuilderService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuickInfo\QuickinfoBuilderService.Visitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuickInfo\QuickInfoSourceProviderNames.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuickInfo\SymbolQuickInfoControl.xaml.cs">
+      <DependentUpon>SymbolQuickInfoControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)QuickInfo\SymbolQuickInfoSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)QuickInfo\SymbolQuickInfoSourceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SemanticModelService\CodeGenerationUnitAndSnapshot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SemanticModelService\SemanticModelService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SemanticModelService\SemanticModelServiceDependent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\VsContextMenu.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UI\VsMenuItem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Underlining\UnderlineTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Underlining\UnderlineTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Underlining\UnderlineTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Hierarchy.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\IWaitContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\IWaitIndicator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ProjectInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ProjectMapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ProjectService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\TaskStatusProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\UriBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\VisualStudioWaitContext.Callback.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\VisualStudioWaitContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\VisualStudioWaitIndicator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Common\InputDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticStripeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticSummaryControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Options\AdvancedOptionsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)QuickInfo\EdgeQuickInfoControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)QuickInfo\SymbolQuickInfoControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>
