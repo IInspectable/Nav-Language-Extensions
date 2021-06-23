@@ -124,6 +124,7 @@
     <Reference Include="System" />
     <Reference Include="System.Collections" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
@@ -202,16 +203,11 @@
     <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text">
       <Version>3.0.0</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>16.0.202</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.202" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
       <Version>16.7.3069</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="MSBuildTasks">
-      <Version>1.5.0.235</Version>
     </PackageReference>
     <PackageReference Include="NLog">
       <Version>4.6.2</Version>
