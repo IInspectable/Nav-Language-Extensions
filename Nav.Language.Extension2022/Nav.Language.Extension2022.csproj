@@ -176,55 +176,18 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 und x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text">
-      <Version>3.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis">
-      <Version>3.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
-      <Version>3.0.0</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.LanguageServices">
-      <Version>3.0.0</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text" Version ="3.0.0" ExcludeAssets="runtime"/>
+    <PackageReference Include="Microsoft.CodeAnalysis" Version = "3.0.0" ExcludeAssets="runtime"/>  
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version = "3.0.0" ExcludeAssets="runtime"/>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-1-31410-273" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>17.0.1619-preview1</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="NLog">
-      <Version>4.6.2</Version>
-    </PackageReference>
-    <PackageReference Include="Rx-Linq">
-      <Version>2.2.5</Version>
-    </PackageReference>
-    <PackageReference Include="Rx-PlatformServices">
-      <Version>2.2.5</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections.Immutable">
-      <Version>5.0.0</Version>
-    </PackageReference>
+	  <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version = "3.0.0" ExcludeAssets="runtime"/>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version = "17.0.1619-preview1" ExcludeAssets="runtime"/>
+    <PackageReference Include="NLog" Version="4.6.2" />
+    <PackageReference Include="Rx-Linq" Version="2.2.5"/>
+    <PackageReference Include="Rx-PlatformServices" Version="2.2.5"/>
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" ExcludeAssets="runtime"/>     
   </ItemGroup>
-  <ItemGroup />
+
   <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
   <Import Project="..\Nav.Language.ExtensionShared\Nav.Language.ExtensionShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
