@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ImageManifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.microsoft.com/VisualStudio/ImageManifestSchema/2014">
   <Symbols>
-    <String Name="Resources" Value="/Pharmatechnik.Nav.Language.Extension.2019;component/Resources/Icons" />
+    <String Name="Resources" Value="/Pharmatechnik.Nav.Language.Extension.2022;component/Resources/Icons" />
     <Guid Name="CustomMonikerGuid" Value="{11e9628b-b9e6-45d6-ae8d-b4440be46fa6}" />
     <ID Name="ModalEdge"    Value="1" />
     <ID Name="NonModalEdge" Value="2" />

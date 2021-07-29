@@ -37,6 +37,40 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
+        public static IEnumerable<Call> ExpandOutgoings(this ISourceNodeSymbol source)
+        {
+
+            return ExpandOutgoingsImpl<INodeSymbol>(source, new HashSet<ISourceNodeSymbol>()).Distinct(CallComparer.Default);
+
+            IEnumerable<Call> ExpandOutgoingsImpl<T>(ISourceNodeSymbol sourceNode, HashSet<ISourceNodeSymbol> seenNodes) where T : class, INodeSymbol
+            {
+
+                if (seenNodes.Contains(sourceNode))
+                {
+                    yield break;
+                }
+
+                seenNodes.Add(sourceNode);  
+
+                foreach (var edge in sourceNode.Outgoings)
+                {
+                    if (edge.TargetReference.Declaration is IChoiceNodeSymbol sn)
+                    {
+                        foreach (var call in ExpandOutgoingsImpl<T>(sn, seenNodes))
+                        {
+                            yield return call;
+                        }
+                    }
+                    else if (edge.TargetReference.Declaration is T targetNode &&
+                             edge.EdgeMode != null)
+                    {
+                        // Nur Edges mit einem definiertem Edge Mode ergeben einen Call
+                        yield return new Call(targetNode, edge.EdgeMode);
+                    }
+                }
+            }
+        }
+
         public static bool IsReachable(this IEdge source) {
 
             return IsReachableImpl(source, new HashSet<IEdge>());

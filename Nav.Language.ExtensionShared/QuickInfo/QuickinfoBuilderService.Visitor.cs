@@ -51,30 +51,39 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
             }
 
             public override UIElement VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
-              
-                var choiceNodeRef=choiceNodeSymbol.References.FirstOrDefault() as IChoiceNodeReferenceSymbol;
-                if(choiceNodeRef != null) {
-                    return VisitChoiceNodeReferenceSymbol(choiceNodeRef);
-                }
 
-                return base.VisitChoiceNodeSymbol(choiceNodeSymbol);
+                var node = base.VisitChoiceNodeSymbol(choiceNodeSymbol);
+
+                var edgeViewModel = new EdgeViewModel(
+                    moniker: ImageMonikers.Edge,
+                    calls  : choiceNodeSymbol.ExpandOutgoings()
+                                           .OrderBy(call => call.Node.Name)
+                                           .Select(call => new CallViewModel(
+                                                       edgeModeMoniker: ImageMonikers.FromSymbol(call.EdgeMode),
+                                                       node           : Visit(call.Node)
+                                                   )));
+
+                var calls = new EdgeQuickInfoControl {
+                    DataContext = edgeViewModel
+                };
+
+                var panel = new StackPanel {
+                    Orientation = Orientation.Vertical
+                };
+
+                panel.Children.Add(node);
+                panel.Children.Add(calls);
+                
+                return panel;
             }
 
             public override UIElement VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol) {
-                
-                // Node
-                //    Call 1 
-                //    Call 2
-                //    ...
-                var node  = base.VisitChoiceNodeReferenceSymbol(choiceNodeReferenceSymbol);
-                var calls = VisitEdgeModeSymbol(choiceNodeReferenceSymbol.Edge.EdgeMode);
-               
-                var panel = new StackPanel();
-                panel.Children.Add(node);
-                panel.Children.Add(calls);
-                panel.Orientation = Orientation.Vertical;
 
-                return panel;
+                if (choiceNodeReferenceSymbol.Declaration is IChoiceNodeSymbol choiceNode) {
+                    return VisitChoiceNodeSymbol(choiceNode);
+                }
+
+                return base.VisitChoiceNodeReferenceSymbol(choiceNodeReferenceSymbol);
             }
 
             public override UIElement VisitEdgeModeSymbol(IEdgeModeSymbol edgeModeSymbol) {
