@@ -84,7 +84,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         protected override IntraTextGoToAdornment CreateAdornment(IntraTextGoToTag dataTag, SnapshotSpan span) {
-            return new IntraTextGoToAdornment(dataTag, TextView, _goToLocationService);
+            return new IntraTextGoToAdornment(dataTag, TextView,span, _goToLocationService);
         }
 
         protected override bool UpdateAdornment(IntraTextGoToAdornment adornment, IntraTextGoToTag dataTag) {

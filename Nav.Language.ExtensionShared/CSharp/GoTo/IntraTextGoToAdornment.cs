@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 
 using Pharmatechnik.Nav.Language.Extension.GoToLocation;
@@ -18,13 +19,15 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
     sealed class IntraTextGoToAdornment: ButtonBase {
 
-        readonly IWpfTextView        _textView;
-        readonly GoToLocationService _goToLocationService;
-        readonly CrispImage          _crispImage;
+        readonly         IWpfTextView        _textView;
+        private readonly SnapshotSpan        _span;
+        readonly         GoToLocationService _goToLocationService;
+        readonly         CrispImage          _crispImage;
 
-        internal IntraTextGoToAdornment(IntraTextGoToTag goToTag, IWpfTextView textView, GoToLocationService goToLocationService) {
+        internal IntraTextGoToAdornment(IntraTextGoToTag goToTag, IWpfTextView textView, SnapshotSpan span, GoToLocationService goToLocationService) {
 
             _textView            = textView;
+            _span                = span;
             _goToLocationService = goToLocationService;
             _crispImage          = new CrispImage();
 
@@ -51,6 +54,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         void OnClick(object sender, RoutedEventArgs e) {
+            // Vorher den Cursor setzen, damit das rückwärts Navigieren schöner geht
+            _textView.Caret.MoveTo(_span.End, PositionAffinity.Predecessor);
+            _textView.VisualElement.Focus();
 
             ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
 
