@@ -50,6 +50,16 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
             }
 
+            public override UIElement VisitChoiceNodeSymbol(IChoiceNodeSymbol choiceNodeSymbol) {
+              
+                var choiceNodeRef=choiceNodeSymbol.References.FirstOrDefault() as IChoiceNodeReferenceSymbol;
+                if(choiceNodeRef != null) {
+                    return VisitChoiceNodeReferenceSymbol(choiceNodeRef);
+                }
+
+                return base.VisitChoiceNodeSymbol(choiceNodeSymbol);
+            }
+
             public override UIElement VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol) {
                 
                 // Node
