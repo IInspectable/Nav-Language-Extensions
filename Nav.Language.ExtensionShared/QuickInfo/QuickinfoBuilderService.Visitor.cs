@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-
+using System.Windows.Controls;
 using JetBrains.Annotations;
 
 using Microsoft.VisualStudio.Imaging.Interop;
@@ -48,6 +48,23 @@ namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
 
                 return DefaultVisit(initNodeSymbol);
 
+            }
+
+            public override UIElement VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol) {
+                
+                // Node
+                //    Call 1 
+                //    Call 2
+                //    ...
+                var node  = base.VisitChoiceNodeReferenceSymbol(choiceNodeReferenceSymbol);
+                var calls = VisitEdgeModeSymbol(choiceNodeReferenceSymbol.Edge.EdgeMode);
+               
+                var panel = new StackPanel();
+                panel.Children.Add(node);
+                panel.Children.Add(calls);
+                panel.Orientation = Orientation.Vertical;
+
+                return panel;
             }
 
             public override UIElement VisitEdgeModeSymbol(IEdgeModeSymbol edgeModeSymbol) {
