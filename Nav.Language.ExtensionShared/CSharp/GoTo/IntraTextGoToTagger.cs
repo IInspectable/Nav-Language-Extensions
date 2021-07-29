@@ -286,7 +286,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             
                 var annotations = AnnotationReader.ReadNavTaskAnnotations(document)
                                                   .ToList();
-                var tagSpanBuilder = new IntraTextGoToTagSpanBuilder(buildArgs.Snapshot);
+                var tagSpanBuilder = new IntraTextGoToTagSpanBuilder(annotations, buildArgs.Snapshot);
 
                 var tags = annotations.Select(annotation => tagSpanBuilder.Visit(annotation))
                                       .Where(tagsSpan => tagsSpan != null)

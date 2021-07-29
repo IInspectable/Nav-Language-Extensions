@@ -483,7 +483,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols {
         #endregion
 
         [CanBeNull]
-        static Location ToLocation([CanBeNull] Microsoft.CodeAnalysis.Location memberLocation) {
+        public static Location ToLocation([CanBeNull] Microsoft.CodeAnalysis.Location memberLocation) {
 
             if (memberLocation == null) {
                 Logger.Debug($"{nameof(ToLocation)}: {nameof(memberLocation)} is null");

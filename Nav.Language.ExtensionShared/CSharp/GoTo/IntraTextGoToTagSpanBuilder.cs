@@ -6,6 +6,9 @@ using Microsoft.VisualStudio.Text.Tagging;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 using Pharmatechnik.Nav.Language.Extension.Images;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 
 #endregion
 
@@ -19,10 +22,13 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         const string ToolTipGoToTriggerDefinition = "Go To Trigger Definition";
         const string ToolTipGoToImplementation    = "Go To Implementation";
 
-        readonly ITextSnapshot _textSnapshot;
-        
-        public IntraTextGoToTagSpanBuilder(ITextSnapshot textSnapshot) {
-            _textSnapshot = textSnapshot;
+        readonly ImmutableList<NavTaskAnnotation> _allAnnotations;
+        readonly ITextSnapshot                    _textSnapshot;
+
+        public IntraTextGoToTagSpanBuilder(IEnumerable<NavTaskAnnotation> allAnnotations,
+                                           ITextSnapshot textSnapshot) {
+            _allAnnotations = allAnnotations.ToImmutableList();
+            _textSnapshot   = textSnapshot;
         }
 
         public override ITagSpan<IntraTextGoToTag> VisitNavTaskAnnotation(NavTaskAnnotation navTaskAnnotation) {
@@ -84,7 +90,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
-        
+
         public override ITagSpan<IntraTextGoToTag> VisitNavInitCallAnnotation(NavInitCallAnnotation navInitCallAnnotation) {
 
             var start  = navInitCallAnnotation.Identifier.Span.Start;
@@ -92,12 +98,19 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var snapshotSpan = new SnapshotSpan(_textSnapshot, start, length);
 
-            var provider = new NavInitCallLocationInfoProvider(_textSnapshot.TextBuffer, navInitCallAnnotation);
+            var navExitAnnotation = _allAnnotations.OfType<NavExitAnnotation>()
+                                                   .First(a => a.TaskName == navInitCallAnnotation.TaskName);
+
+            var provider = new NavInitCallLocationInfoProvider(
+                sourceBuffer  : _textSnapshot.TextBuffer, 
+                callAnnotation: navInitCallAnnotation, 
+                exitAnnotation: navExitAnnotation);
+
             var tag = new IntraTextGoToTag(
-                provider    : provider, 
-                imageMoniker: ImageMonikers.GoToDeclaration, 
-                toolTip     : ToolTipGoToImplementation);      
-                  
+                provider      : provider,
+                imageMoniker  : ImageMonikers.GoToDeclaration,
+                toolTip       : ToolTipGoToImplementation);
+
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
     }

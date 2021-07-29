@@ -12,6 +12,8 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 using Pharmatechnik.Nav.Language.CodeAnalysis.Annotation;
 using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
+using JetBrains.Annotations;
+
 #endregion
 
 namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
@@ -20,30 +22,52 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
 
         readonly NavInitCallAnnotation _callAnnotation;
 
-        public NavInitCallLocationInfoProvider(ITextBuffer sourceBuffer, NavInitCallAnnotation callAnnotation): base(sourceBuffer) {
+        [CanBeNull]
+        readonly NavExitAnnotation _exitAnnotation;
+
+        public NavInitCallLocationInfoProvider(ITextBuffer sourceBuffer,
+                                               NavInitCallAnnotation callAnnotation,
+                                               [CanBeNull] NavExitAnnotation exitAnnotation): base(sourceBuffer) {
             _callAnnotation = callAnnotation;
+            _exitAnnotation = exitAnnotation;
         }
 
-        static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToMethodPublic; } }
+        static ImageMoniker ImageMoniker => ImageMonikers.GoToMethodPublic;
 
         protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
+            LocationInfo beginLocationInfo;
             try {
                 var location = await LocationFinder.FindCallBeginLogicDeclarationLocationsAsync(
                     project           : project,
                     initCallAnnotation: _callAnnotation,
                     cancellationToken : cancellationToken).ConfigureAwait(false);
 
-                var locationInfo = LocationInfo.FromLocation(
-                    location    : location,
-                    displayName : "Go To BeginLogic",
-                    imageMoniker: ImageMoniker);
+                beginLocationInfo = LocationInfo.FromLocation(
+                    location          : location,
+                    displayName       : "BeginLogic",
+                    imageMoniker      : ImageMoniker);
 
-                return ToEnumerable(locationInfo);
+            } catch (LocationNotFoundException ex) {
+                beginLocationInfo = LocationInfo.FromError(ex, ImageMoniker);
+            }
 
-            } catch(LocationNotFoundException ex) {
-                return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
-            }            
+            if (_exitAnnotation == null) {
+                return ToEnumerable(beginLocationInfo);
+            }
+
+            var memberLocation = _exitAnnotation.MethodDeclarationSyntax.Identifier.GetLocation();
+            var afterLocation  = LocationFinder.ToLocation(memberLocation);
+
+            var afterLocationInfo = LocationInfo.FromLocation(
+                location    : afterLocation,
+                displayName : _exitAnnotation.MethodDeclarationSyntax.Identifier.Text,
+                imageMoniker: ImageMoniker);
+
+            return new[] {beginLocationInfo, afterLocationInfo};
+
         }
+
     }
+
 }
