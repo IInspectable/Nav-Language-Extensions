@@ -9,6 +9,9 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.RegularExpressions;
+
+using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
@@ -91,6 +94,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
         }
 
+        static readonly Regex BeginMethodRegex = new Regex(pattern: $"^{CodeGenFacts.BeginMethodPrefix}", options: RegexOptions.Singleline | RegexOptions.Compiled);
+
         public override ITagSpan<IntraTextGoToTag> VisitNavInitCallAnnotation(NavInitCallAnnotation navInitCallAnnotation) {
 
             var start  = navInitCallAnnotation.Identifier.Span.Start;
@@ -98,8 +103,10 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             var snapshotSpan = new SnapshotSpan(_textSnapshot, start, length);
 
+            var exitTaskName = BeginMethodRegex.Replace(input: navInitCallAnnotation.Identifier.Identifier.Text, replacement: "");
+
             var navExitAnnotation = _allAnnotations.OfType<NavExitAnnotation>()
-                                                   .First(a => a.TaskName == navInitCallAnnotation.TaskName);
+                                                   .FirstOrDefault(a => a.ExitTaskName == exitTaskName);
 
             var provider = new NavInitCallLocationInfoProvider(
                 sourceBuffer  : _textSnapshot.TextBuffer, 
