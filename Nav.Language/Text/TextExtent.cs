@@ -71,7 +71,7 @@ namespace Pharmatechnik.Nav.Language.Text {
             int intersectStart = Math.Max(Start, span.Start);
             int intersectEnd   = Math.Min(End, span.End);
 
-            return intersectStart <= intersectEnd ? FromBounds(intersectStart, intersectEnd) : (TextExtent?) null;
+            return intersectStart <= intersectEnd ? FromBounds(intersectStart, intersectEnd) : null;
         }
 
         public override string ToString() {

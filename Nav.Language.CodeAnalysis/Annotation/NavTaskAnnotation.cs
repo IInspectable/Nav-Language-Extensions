@@ -33,7 +33,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         /// in vielen Fällen die Basisklasse "WFSBase" sein.
         /// </summary>
         [NotNull]
-        public ClassDeclarationSyntax DeclaringClassDeclarationSyntax { get; set; }
+        public ClassDeclarationSyntax DeclaringClassDeclarationSyntax { get; }
 
         [NotNull]
         public string TaskName { get;}

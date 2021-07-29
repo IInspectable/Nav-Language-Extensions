@@ -9,18 +9,19 @@ using LinePosition = Pharmatechnik.Nav.Language.Text.LinePosition;
 #endregion
 
 namespace Pharmatechnik.Nav.Language.CodeAnalysis.Common {
+
     public static class LinePositionExtensions {
 
         public static LinePosition ToLinePosition(this Microsoft.CodeAnalysis.Text.LinePosition linePosition) {
-            return new LinePosition(linePosition.Line, linePosition.Character);            
+            return new(linePosition.Line, linePosition.Character);
         }
 
         public static LineRange ToLineRange(this FileLinePositionSpan fileLinePositionSpan) {
-            return new LineRange(
-                fileLinePositionSpan.StartLinePosition.ToLinePosition(), 
+            return new(
+                fileLinePositionSpan.StartLinePosition.ToLinePosition(),
                 fileLinePositionSpan.EndLinePosition.ToLinePosition());
         }
+
     }
 
-   
 }

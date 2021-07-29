@@ -11,7 +11,7 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Common {
     public static class TextSpanExtensions {
 
         public static TextExtent ToTextExtent(this TextSpan span) {
-            return new TextExtent(start: span.Start, length: span.Length);
+            return new(start: span.Start, length: span.Length);
         }
 
         public static TextSpan Trim(this TextSpan span, TextSpan range) {

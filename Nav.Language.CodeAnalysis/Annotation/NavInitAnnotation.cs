@@ -17,6 +17,6 @@ namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
         }
 
         [NotNull]
-        public string InitName { get; internal set; }
+        public string InitName { get; }
     }
 }

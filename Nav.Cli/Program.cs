@@ -42,49 +42,48 @@ namespace Pharmatechnik.Nav.Language {
 
         // TODO in Utility Klasse
         static string[] LoadArgs(string file) {
-            
-            using (var reader = new StreamReader(file)) {
-                
-                var args = new List<string>();
 
-                StringBuilder sb = new StringBuilder();
+            using var reader = new StreamReader(file);
 
-                string line;
-                while ((line = reader.ReadLine()) != null) {
+            var       args   = new List<string>();
+            var sb = new StringBuilder();
 
-                    int t = line.Length;
+            string line;
+            while ((line = reader.ReadLine()) != null) {
 
-                    for (int i = 0; i < t; i++) {
-                        char c = line[i];
+                int t = line.Length;
 
-                        if (c == '"' || c == '\'') {
-                            char quoteEnd = c;
+                for (int i = 0; i < t; i++) {
+                    char c = line[i];
 
-                            for (i++; i < t; i++) {
-                                c = line[i];
+                    if (c == '"' || c == '\'') {
+                        char quoteEnd = c;
 
-                                if (c == quoteEnd) {
-                                    break;
-                                }
-                                sb.Append(c);
+                        for (i++; i < t; i++) {
+                            c = line[i];
+
+                            if (c == quoteEnd) {
+                                break;
                             }
-                        } else if (c == ' ') {
-                            if (sb.Length > 0) {
-                                args.Add(sb.ToString());
-                                sb.Length = 0;
-                            }
-                        } else {
                             sb.Append(c);
                         }
-                    }
-                    if (sb.Length > 0) {
-                        args.Add(sb.ToString());
-                        sb.Length = 0;
+                    } else if (c == ' ') {
+                        if (sb.Length > 0) {
+                            args.Add(sb.ToString());
+                            sb.Length = 0;
+                        }
+                    } else {
+                        sb.Append(c);
                     }
                 }
-
-                return args.ToArray();
+                if (sb.Length > 0) {
+                    args.Add(sb.ToString());
+                    sb.Length = 0;
+                }
             }
+
+            return args.ToArray();
+
         }
     }
 }

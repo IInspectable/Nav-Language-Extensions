@@ -23,8 +23,9 @@ namespace Pharmatechnik.Nav.Language.Extension.Commands {
             IVsEditorAdaptersFactoryService editorAdaptersFactory) {
 
             _wpfTextView = wpfTextView;
-
+            
             var vsTextView  = editorAdaptersFactory.GetViewAdapter(_wpfTextView);
+            // ReSharper disable once PossibleNullReferenceException Lass krachen
             int returnValue = vsTextView.AddCommandFilter(this, out var nextCommandTarget);
             Marshal.ThrowExceptionForHR(returnValue);
 

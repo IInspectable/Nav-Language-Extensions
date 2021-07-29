@@ -23,7 +23,7 @@ using SourceText = Microsoft.CodeAnalysis.Text.SourceText;
 
 namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
-    public partial class WfsReferenceFinder {
+    public static partial class WfsReferenceFinder {
 
         static readonly ImmutableArray<ClassInfo> NavlessClasses = new[] {
                 new ClassInfo(projectName: "XTplus.Kasse",             className: "Pharmatechnik.Apotheke.XTplus.Kasse.WFL.KasseWFS"),

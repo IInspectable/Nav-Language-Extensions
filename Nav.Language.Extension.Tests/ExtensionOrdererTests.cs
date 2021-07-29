@@ -135,7 +135,7 @@ namespace Nav.Language.Extension.Tests
         #region Helper
 
         TestLazy Create(string name) {
-            return new TestLazy(name);
+            return new(name);
         }
       
         class OrderableMetadata : IOrderableMetadata {

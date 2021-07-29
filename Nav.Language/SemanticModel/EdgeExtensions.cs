@@ -13,7 +13,11 @@ namespace Pharmatechnik.Nav.Language {
 
             return GetReachableCallsImpl<INodeSymbol>(source, new HashSet<IEdge>()).Distinct(CallComparer.Default);
 
-            IEnumerable<Call> GetReachableCallsImpl<T>(IEdge edge, HashSet<IEdge> seenEdges) where T : class, INodeSymbol {
+            static IEnumerable<Call> GetReachableCallsImpl<T>(IEdge edge, ISet<IEdge> seenEdges) where T : class, INodeSymbol {
+
+                if (edge == null) {
+                    yield break;
+                }
 
                 if (seenEdges.Contains(edge)) {
                     yield break;
@@ -21,7 +25,7 @@ namespace Pharmatechnik.Nav.Language {
 
                 seenEdges.Add(edge);
 
-                if (!(edge?.TargetReference?.Declaration is T targetNode)) {
+                if (edge.TargetReference?.Declaration is not T targetNode) {
                     yield break;
                 }
 
@@ -37,45 +41,15 @@ namespace Pharmatechnik.Nav.Language {
             }
         }
 
-        public static IEnumerable<Call> ExpandOutgoings(this ISourceNodeSymbol source)
-        {
-
-            return ExpandOutgoingsImpl<INodeSymbol>(source, new HashSet<ISourceNodeSymbol>()).Distinct(CallComparer.Default);
-
-            IEnumerable<Call> ExpandOutgoingsImpl<T>(ISourceNodeSymbol sourceNode, HashSet<ISourceNodeSymbol> seenNodes) where T : class, INodeSymbol
-            {
-
-                if (seenNodes.Contains(sourceNode))
-                {
-                    yield break;
-                }
-
-                seenNodes.Add(sourceNode);  
-
-                foreach (var edge in sourceNode.Outgoings)
-                {
-                    if (edge.TargetReference.Declaration is IChoiceNodeSymbol sn)
-                    {
-                        foreach (var call in ExpandOutgoingsImpl<T>(sn, seenNodes))
-                        {
-                            yield return call;
-                        }
-                    }
-                    else if (edge.TargetReference.Declaration is T targetNode &&
-                             edge.EdgeMode != null)
-                    {
-                        // Nur Edges mit einem definiertem Edge Mode ergeben einen Call
-                        yield return new Call(targetNode, edge.EdgeMode);
-                    }
-                }
-            }
-        }
-
         public static bool IsReachable(this IEdge source) {
 
             return IsReachableImpl(source, new HashSet<IEdge>());
 
-            bool IsReachableImpl(IEdge edge, HashSet<IEdge> seenEdges) {
+            static bool IsReachableImpl(IEdge edge, HashSet<IEdge> seenEdges) {
+
+                if (edge == null) {
+                    return false;
+                }
 
                 if (seenEdges.Contains(edge)) {
                     return false;
@@ -83,17 +57,14 @@ namespace Pharmatechnik.Nav.Language {
 
                 seenEdges.Add(edge);
 
-                var sourceNode = edge?.SourceReference?.Declaration;
-                switch (sourceNode) {
-                    case null:
-                        return false;
-                    case ITargetNodeSymbol targetNode:
-                        return targetNode.Incomings.Any(e => IsReachableImpl(e, seenEdges));
-                    case ISourceNodeSymbol _: // Ein Source Node, der kein Target Node ist, ist immer der Anfang und damit per Definition erreichbar
-                        return true;
-                }
-
-                return false;
+                var sourceNode = edge.SourceReference?.Declaration;
+                return sourceNode switch {
+                    null => false,
+                    ITargetNodeSymbol targetNode => targetNode.Incomings.Any(e => IsReachableImpl(e, seenEdges)),
+                    // Ein Source Node, der kein Target Node ist, ist immer der Anfang und damit per Definition erreichbar
+                    ISourceNodeSymbol => true,
+                    _ => false,
+                };
             }
         }
 

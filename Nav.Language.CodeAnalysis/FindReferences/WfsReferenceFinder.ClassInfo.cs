@@ -1,8 +1,8 @@
 ﻿namespace Pharmatechnik.Nav.Language.CodeAnalysis.FindReferences {
 
-    public partial class WfsReferenceFinder {
+    public static partial class WfsReferenceFinder {
 
-        struct ClassInfo {
+        readonly struct ClassInfo {
 
             public ClassInfo(string projectName, string className) {
                 ProjectName = projectName;
