@@ -40,6 +40,8 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             _textBuffer = textBuffer;
 
+            Logger.Info($"{nameof(IntraTextGoToTagger)}.Ctor Begin: {_textBuffer.GetTextDocument()?.FilePath}");
+
             _workspaceRegistration = Workspace.GetWorkspaceRegistration(textBuffer.AsTextContainer());
             _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
             
@@ -69,7 +71,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             
             Invalidate();
 
-            Logger.Info($"{nameof(IntraTextGoToTagger)}.Ctor");
+            Logger.Info($"{nameof(IntraTextGoToTagger)}.Ctor Ende: {_textBuffer.GetTextDocument()?.FilePath}");
         }
 
         void IClassAnnotationChangeListener.OnClassAnnotationsChanged(object sender, ClassAnnotationChangedArgs e) {
@@ -84,7 +86,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
                 // theoretisch das eine oder file zu viel aktualisieren. So what?
                 taskAnnotation.TaskName == e.TaskAnnotation.TaskName)==true) {
 
-                Logger.Info($"Das Taggen für die Datei wird getriggert, weil sich die Annotations für den Task '{e.TaskAnnotation.TaskName}' geändert haben. Dieses Dokument:' {GetDocumentId()}', geändertes Dokument: '{e.DocumentId}'");
+                Logger.Info($"Das Taggen für die Datei wird getriggert, weil sich die Annotations für den Task '{e.TaskAnnotation.TaskName}' geändert haben. Dieses Dokument:' {GetDocumentId()}', geändertes Dokument: '{e.DocumentId}': {_textBuffer.GetTextDocument()?.FilePath}");
 
                 Invalidate();
             }
@@ -110,7 +112,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         }
 
         void OnWorkspaceRegistrationChanged(object sender, EventArgs e) {
-            Logger.Trace($"{nameof(OnWorkspaceRegistrationChanged)}: {_textBuffer.GetTextDocument()?.FilePath}");
+            Logger.Trace($"{nameof(OnWorkspaceRegistrationChanged)}: {_textBuffer.GetTextDocument()?.FilePath}: {_textBuffer.GetTextDocument()?.FilePath}");
             DisconnectFromWorkspace();
 
             var newWorkspace = _workspaceRegistration.Workspace;
@@ -121,7 +123,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
         void ConnectToWorkspace([CanBeNull] Workspace workspace) {
 
             DisconnectFromWorkspace();
-            Logger.Trace($"{nameof(ConnectToWorkspace)}: {_textBuffer.GetTextDocument()?.FilePath}");
+            Logger.Trace($"{nameof(ConnectToWorkspace)}: {_textBuffer.GetTextDocument()?.FilePath}: {_textBuffer.GetTextDocument()?.FilePath}");
 
             _workspace = workspace;
 
@@ -141,7 +143,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
             _result = null;
 
             if (_workspace != null) {
-                Logger.Trace($"{nameof(DisconnectFromWorkspace)}");
+                Logger.Trace($"{nameof(DisconnectFromWorkspace)}: {_textBuffer.GetTextDocument()?.FilePath}");
 
                 // ReSharper disable PossibleNullReferenceException
                 _workspace.WorkspaceChanged -= OnWorkspaceChanged;
@@ -157,7 +159,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
         void OnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args) {
 
-            Logger.Debug($"{nameof(OnWorkspaceChanged)}@{GetDocumentId()}: {args.Kind}");
+            Logger.Debug($"{nameof(OnWorkspaceChanged)}@{GetDocumentId()}: {args.Kind}: {_textBuffer.GetTextDocument()?.FilePath}");
 
             // We're getting an event for a workspace we already disconnected from
             if (args.NewSolution.Workspace != _workspace) {
@@ -255,7 +257,7 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
             NotificationService.RemoveClassAnnotationChangeListener(this);
 
-            Logger.Info($"{nameof(IntraTextGoToTagger)}.{nameof(Dispose)}");
+            Logger.Info($"{nameof(IntraTextGoToTagger)}.{nameof(Dispose)}: {_textBuffer.GetTextDocument()?.FilePath}");
         }
 
         
