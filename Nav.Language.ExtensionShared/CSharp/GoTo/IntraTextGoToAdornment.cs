@@ -55,7 +55,12 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
 
         void OnClick(object sender, RoutedEventArgs e) {
             // Vorher den Cursor setzen, damit das rückwärts Navigieren schöner geht
-            _textView.Caret.MoveTo(_span.End, PositionAffinity.Predecessor);
+
+            // Wichtig: Die Snapshots können mittlerweile auseinandergelkaufen sein
+            var trackingSpan =_span.Snapshot.CreateTrackingSpan(_span, SpanTrackingMode.EdgeInclusive);
+            var targetSpan   = trackingSpan.GetSpan(_textView.TextBuffer.CurrentSnapshot);
+            
+            _textView.Caret.MoveTo(targetSpan.End, PositionAffinity.Predecessor);
             _textView.VisualElement.Focus();
 
             ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
