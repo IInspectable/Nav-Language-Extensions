@@ -69,7 +69,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DeployExtension>False</DeployExtension>
+    <DeployExtension>True</DeployExtension>
     <CreateVsixContainer>True</CreateVsixContainer>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>7.2</LangVersion>

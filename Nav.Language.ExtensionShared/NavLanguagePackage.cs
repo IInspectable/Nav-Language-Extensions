@@ -2,14 +2,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
 using EnvDTE;
@@ -20,7 +18,6 @@ using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -105,6 +102,13 @@ namespace Pharmatechnik.Nav.Language.Extension {
             // Cache schon mal vorwärmen...
             componentModel?.GetService<NavSolutionProvider>();
 
+        }
+
+        public static _DTE DTE {
+            get {
+                _DTE dte = GetGlobalService<_DTE, _DTE>();
+                return dte;
+            }
         }
 
         public static object GetGlobalService<TService>() where TService : class {
@@ -328,103 +332,19 @@ namespace Pharmatechnik.Nav.Language.Extension {
             ThreadHelper.ThrowIfNotOnUIThread();
 
             using (Logger.LogBlock(nameof(GetWpfTextViewFromFrame))) {
-                if (ErrorHandler.Failed(frame.GetProperty((int) __VSFPROPID.VSFPROPID_DocView, out var docView))) {
-                    Logger.Error("Get __VSFPROPID.VSFPROPID_DocView failed");
+
+                var textView = VsShellUtilities.GetTextView(frame);
+                if (textView == null) {
+                    Logger.Warn($"{nameof(GetWpfTextViewFromFrame)}: {nameof(frame)} liefert null.");
                     return null;
                 }
 
-                if (docView is IVsCodeWindow window) {
-                    if (ErrorHandler.Failed(window.GetPrimaryView(out var textView))) {
-                        Logger.Error("GetPrimaryView failed");
-                        return null;
-                    }
-
-                    var model          = (IComponentModel) GetGlobalService(typeof(SComponentModel));
-                    var adapterFactory = model.GetService<IVsEditorAdaptersFactoryService>();
-                    var wpfTextView    = adapterFactory.GetWpfTextView(textView);
-                    return wpfTextView;
-                }
-
-                Logger.Warn($"{nameof(GetWpfTextViewFromFrame)}: {nameof(docView)} ist kein {nameof(IVsCodeWindow)}");
-                return null;
-            }
-        }
-
-        public static _DTE DTE {
-            get {
-                _DTE dte = GetGlobalService<_DTE, _DTE>();
-                return dte;
-            }
-        }
-
-        public static BitmapSource GetBitmapSource(ImageMoniker moniker, Color? backgroundColor = null) {
-
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WPF, backgroundColor);
-            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
-            var result          = imageService?.GetImage(moniker, imageAttributes);
-
-            object data = null;
-            result?.get_Data(out data);
-            return data as BitmapSource;
-        }
-
-        public static Bitmap GetBitmap(ImageMoniker moniker, Color? backgroundColor = null) {
-
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WinForms, backgroundColor);
-            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
-            var result          = imageService?.GetImage(moniker, imageAttributes);
-
-            object data = null;
-            result?.get_Data(out data);
-            return data as Bitmap;
-        }
-
-        public static IntPtr GetImageList(ImageMoniker moniker, Color? backgroundColor = null) {
-
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            var imageAttributes = GetImageAttributes(_UIImageType.IT_ImageList, _UIDataFormat.DF_Win32, backgroundColor);
-            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
-            var result          = imageService?.GetImage(moniker, imageAttributes);
-
-            if (!(Microsoft.Internal.VisualStudio.PlatformUI.Utilities.GetObjectData(result) is IVsUIWin32ImageList imageListData)) {
-                Logger.Warn($"{nameof(GetImageList)}: Unable to get IVsUIWin32ImageList");
-                return IntPtr.Zero;
-            }
-
-            if (!ErrorHandler.Succeeded(imageListData.GetHIMAGELIST(out var imageListInt))) {
-                Logger.Warn($"{nameof(GetImageList)}: Unable to get HIMAGELIST");
-                return IntPtr.Zero;
+                var model          = (IComponentModel)GetGlobalService(typeof(SComponentModel));
+                var adapterFactory = model.GetService<IVsEditorAdaptersFactoryService>();
+                var wpfTextView    = adapterFactory.GetWpfTextView(textView);
+                return wpfTextView;
 
             }
-
-            return (IntPtr) imageListInt;
-        }
-
-        static ImageAttributes GetImageAttributes(_UIImageType imageType, _UIDataFormat format, Color? backgroundColor, int width = 16, int height = 16) {
-
-            ImageAttributes imageAttributes = new ImageAttributes {
-                StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
-                Dpi           = 96,
-                Flags         = (uint) _ImageAttributesFlags.IAF_RequiredFlags,
-                ImageType     = (uint) imageType,
-                Format        = (uint) format,
-                LogicalHeight = height,
-                LogicalWidth  = width
-            };
-            if (backgroundColor.HasValue) {
-                unchecked {
-                    imageAttributes.Flags |= (uint) _ImageAttributesFlags.IAF_Background;
-                }
-
-                imageAttributes.Background = (uint) backgroundColor.Value.ToArgb();
-            }
-
-            return imageAttributes;
         }
 
         public static async Task<NavSolution> GetSolutionAsync(CancellationToken cancellationToken) {
@@ -440,6 +360,77 @@ namespace Pharmatechnik.Nav.Language.Extension {
             return solution;
 
         }
+
+        //public static BitmapSource GetBitmapSource(ImageMoniker moniker, Color? backgroundColor = null) {
+
+        //    ThreadHelper.ThrowIfNotOnUIThread();
+
+        //    var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WPF, backgroundColor);
+        //    var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
+        //    var result          = imageService?.GetImage(moniker, imageAttributes);
+
+        //    object data = null;
+        //    result?.get_Data(out data);
+        //    return data as BitmapSource;
+        //}
+
+        //public static Bitmap GetBitmap(ImageMoniker moniker, Color? backgroundColor = null) {
+
+        //    ThreadHelper.ThrowIfNotOnUIThread();
+
+        //    var imageAttributes = GetImageAttributes(_UIImageType.IT_Bitmap, _UIDataFormat.DF_WinForms, backgroundColor);
+        //    var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
+        //    var result          = imageService?.GetImage(moniker, imageAttributes);
+
+        //    object data = null;
+        //    result?.get_Data(out data);
+        //    return data as Bitmap;
+        //}
+
+        //public static IntPtr GetImageList(ImageMoniker moniker, Color? backgroundColor = null) {
+
+        //    ThreadHelper.ThrowIfNotOnUIThread();
+
+        //    var imageAttributes = GetImageAttributes(_UIImageType.IT_ImageList, _UIDataFormat.DF_Win32, backgroundColor);
+        //    var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
+        //    var result          = imageService?.GetImage(moniker, imageAttributes);
+
+        //    if (!(Microsoft.Internal.VisualStudio.PlatformUI.Utilities.GetObjectData(result) is IVsUIWin32ImageList imageListData)) {
+        //        Logger.Warn($"{nameof(GetImageList)}: Unable to get IVsUIWin32ImageList");
+        //        return IntPtr.Zero;
+        //    }
+
+        //    if (!ErrorHandler.Succeeded(imageListData.GetHIMAGELIST(out var imageListInt))) {
+        //        Logger.Warn($"{nameof(GetImageList)}: Unable to get HIMAGELIST");
+        //        return IntPtr.Zero;
+
+        //    }
+
+        //    return (IntPtr) imageListInt;
+        //}
+
+        //static ImageAttributes GetImageAttributes(_UIImageType imageType, _UIDataFormat format, Color? backgroundColor, int width = 16, int height = 16) {
+
+        //    ImageAttributes imageAttributes = new ImageAttributes {
+        //        StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
+        //        Dpi           = 96,
+        //        Flags         = (uint) _ImageAttributesFlags.IAF_RequiredFlags,
+        //        ImageType     = (uint) imageType,
+        //        Format        = (uint) format,
+        //        LogicalHeight = height,
+        //        LogicalWidth  = width
+        //    };
+        //    if (backgroundColor.HasValue) {
+        //        unchecked {
+        //            imageAttributes.Flags |= (uint) _ImageAttributesFlags.IAF_Background;
+        //        }
+
+        //        imageAttributes.Background = (uint) backgroundColor.Value.ToArgb();
+        //    }
+
+        //    return imageAttributes;
+        //}
+        
 
     }
 
