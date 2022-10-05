@@ -3,6 +3,7 @@
 using System;
 
 using JetBrains.Annotations;
+using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
@@ -13,7 +14,7 @@ namespace Pharmatechnik.Nav.Language {
         public static readonly PathProviderFactory Default = new PathProviderFactory();
 
         [NotNull]
-        public virtual IPathProvider CreatePathProvider(ITaskDefinitionSymbol taskDefinition) {
+        public virtual IPathProvider CreatePathProvider(ITaskDefinitionSymbol taskDefinition, GenerationOptions options) {
 
             if (taskDefinition == null) {
                 throw new ArgumentNullException(nameof(taskDefinition));
@@ -34,7 +35,7 @@ namespace Pharmatechnik.Nav.Language {
                 generateToInfo = generateToToken.ToString();
             }
 
-            return new PathProvider(syntaxFileName, taskName, generateToInfo);
+            return new PathProvider(syntaxFileName, taskName, generateToInfo, options);
         }
 
     }

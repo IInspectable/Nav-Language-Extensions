@@ -30,10 +30,16 @@
   &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.visualstudio.text.ui.wpf\15.6.27740\lib\net46\Microsoft.VisualStudio.Text.UI.Wpf.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\rx-linq\2.2.5\lib\net45\System.Reactive.Linq.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.visualstudio.languageservices\3.0.0\lib\net472\Microsoft.VisualStudio.LanguageServices.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.codeanalysis.workspaces.common\3.0.0\lib\netstandard2.0\Microsoft.CodeAnalysis.Workspaces.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:Int64 x:Key="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue">20</s:Int64>
 	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndex/@EntryValue">9</s:Int64>
-	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">08/26/2021 08:16:40</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=feaddfeb_002Df637_002D4617_002D9064_002D9a3a39cea9ba/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestGeneratedPaths" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::6F82F651-4D21-467D-BD83-68C743BC8DF4::.NETFramework,Version=v4.7.2::Nav.Language.Tests.PathProviderTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">10/15/2021 10:41:11</s:String>
 	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialogView/Position/@EntryValue">[0,0](1280,688)</s:String>
 	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/RefactoringWizardWindow/Location/@EntryValue">-640,-338</s:String>
 	<s:String x:Key="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue">ReSpellerSettings</s:String>

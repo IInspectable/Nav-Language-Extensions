@@ -91,7 +91,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
 
         CodeModelResult GenerateCodeModel(ITaskDefinitionSymbol taskDefinition) {
 
-            var pathProvider = PathProviderFactory.CreatePathProvider(taskDefinition);
+            var pathProvider = PathProviderFactory.CreatePathProvider(taskDefinition, Options);
 
             var codeModelResult = new CodeModelResult(
                 taskDefinition   : taskDefinition,
@@ -120,7 +120,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return codeGenerationResult;
         }
 
-        static readonly ThreadLocal<TemplateGroup> IBeginWfsTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.IBeginWfsTemplate));
+        static readonly ThreadLocal<TemplateGroup> IBeginWfsTemplateGroup = new(() => LoadTemplateGroup(Resources.IBeginWfsTemplate));
 
         static CodeGenerationSpec GenerateIBeginWfsCodeSpec(IBeginWfsCodeModel model, CodeGeneratorContext context) {
 
@@ -130,7 +130,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static readonly ThreadLocal<TemplateGroup> IWfsTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.IWfsTemplate));
+        static readonly ThreadLocal<TemplateGroup> IWfsTemplateGroup = new(() => LoadTemplateGroup(Resources.IWfsTemplate));
 
         static CodeGenerationSpec GenerateIWfsCodeSpec(IWfsCodeModel model, CodeGeneratorContext context) {
 
@@ -140,7 +140,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static readonly ThreadLocal<TemplateGroup> WfsBaseTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.WfsBaseTemplate));
+        static readonly ThreadLocal<TemplateGroup> WfsBaseTemplateGroup = new(() => LoadTemplateGroup(Resources.WfsBaseTemplate));
 
         static CodeGenerationSpec GenerateWfsBaseCodeSpec(WfsBaseCodeModel model, CodeGeneratorContext context) {
 
@@ -150,7 +150,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return new CodeGenerationSpec(content, model.FilePath);
         }
 
-        static readonly ThreadLocal<TemplateGroup> WfsTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.WFSOneShotTemplate));
+        static readonly ThreadLocal<TemplateGroup> WfsTemplateGroup = new(() => LoadTemplateGroup(Resources.WFSOneShotTemplate));
 
         static CodeGenerationSpec GenerateWfsCodeSpec(WfsCodeModel model, CodeGeneratorContext context) {
 
@@ -164,7 +164,7 @@ namespace Pharmatechnik.Nav.Language.CodeGen {
             return models.Select(model => GenerateToCodeSpec(model, context));
         }
 
-        static readonly ThreadLocal<TemplateGroup> ToTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.TOTemplate));
+        static readonly ThreadLocal<TemplateGroup> ToTemplateGroup = new(() => LoadTemplateGroup(Resources.TOTemplate));
 
         static CodeGenerationSpec GenerateToCodeSpec(TOCodeModel model, CodeGeneratorContext context) {
 

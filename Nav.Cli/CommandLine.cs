@@ -25,6 +25,9 @@ namespace Pharmatechnik.Nav.Language {
         public bool Analyze { get; set; }
         public string Pattern { get; set; }
 
+        public string ProjectRootDirectory { get; set; }
+        public string IwflRootDirectory    { get; set; }
+
         public static CommandLine Parse(string[] commandline) {
 
             bool showHelp = false;
@@ -38,7 +41,10 @@ namespace Pharmatechnik.Nav.Language {
                 { "nowarnings"          , v => cla.NoWarnings = v != null },
                 { "v|verbose"           , v => cla.Verbose    = v != null },
                 { "fullpaths"           , v => cla.FullPaths  = v != null },
-                { "h|?|help"            , v => showHelp       = v != null },
+                { "i=|iwflroot"         , v => cla.IwflRootDirectory = v  },
+                { "r=|projectroot"      , v => cla.ProjectRootDirectory = v  },
+                { "h|?|help"            , v => showHelp = v != null },
+
             };
 
             try {

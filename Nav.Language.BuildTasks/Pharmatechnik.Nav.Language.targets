@@ -8,10 +8,12 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <NavForce             Condition="'$(NavForce)'             == ''">false</NavForce>
-    <NavGenerateToClasses Condition="'$(NavGenerateToClasses)' == ''">true</NavGenerateToClasses>
-    <NavUseSyntaxCache    Condition="'$(NavUseSyntaxCache)'    == ''">false</NavUseSyntaxCache>
-    <NavFullPaths         Condition="'$(NavFullPaths)'         == ''">$(BuildingInsideVisualStudio)</NavFullPaths>
+    <NavForce                Condition="'$(NavForce)'                == ''">false</NavForce>
+    <NavGenerateToClasses    Condition="'$(NavGenerateToClasses)'    == ''">true</NavGenerateToClasses>
+    <NavUseSyntaxCache       Condition="'$(NavUseSyntaxCache)'       == ''">false</NavUseSyntaxCache>
+    <NavFullPaths            Condition="'$(NavFullPaths)'            == ''">$(BuildingInsideVisualStudio)</NavFullPaths>
+    <NavProjectRootDirectory Condition="'$(NavProjectRootDirectory)' == ''">$(MSBuildProjectDirectory)\</NavProjectRootDirectory>
+    <NavIwflRootDirectory    Condition="'$(NavIwflRootDirectory)'    == ''"></NavIwflRootDirectory>
   </PropertyGroup>
 
   <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild">
@@ -20,11 +22,13 @@
       <NavFilesToProcess Include="@(GenerateNavCode)" Exclude="@(SkipNavCode)"/>
     </ItemGroup>
     
-    <Nav Sources           = "@(NavFilesToProcess)"
-         Force             = "$(NavForce)"
-         GenerateToClasses = "$(NavGenerateToClasses)"
-         UseSyntaxCache    = "$(NavUseSyntaxCache)" 
-         FullPaths         = "$(NavFullPaths)" />
+    <Nav Sources              = "@(NavFilesToProcess)"
+         Force                = "$(NavForce)"
+         GenerateToClasses    = "$(NavGenerateToClasses)"
+         ProjectRootDirectory = "$(NavProjectRootDirectory)"
+         IwflRootDirectory    = "$(NavIwflRootDirectory)"
+         UseSyntaxCache       = "$(NavUseSyntaxCache)" 
+         FullPaths            = "$(NavFullPaths)" />
   </Target>
   
 </Project>

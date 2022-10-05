@@ -14,3 +14,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion(MyAssembly.ProductVersion)]
 [assembly: AssemblyDescription(MyAssembly.ProductName)]
 [assembly: AssemblyFileVersion(MyAssembly.ProductVersion)]
+
+namespace System.Runtime.CompilerServices
+{
+    internal static class IsExternalInit {}
+}

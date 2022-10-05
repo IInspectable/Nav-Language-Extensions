@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Nav.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "/v /r:C:\\ws\\xtplus\\Main\\XTplusApplication\\src\\XTplus.OffenePosten\\ /i:C:\\ws\\xtplus\\Main\\XTplusApplication\\src\\XTplus.OffenePosten.Shared\\ /s:Forderungsausfall.nav /s:\"NachlieferungenAuflösen.nav\" /s:OffenePostenDruckauswahl.nav /s:OffenePostenErweiterteSuche.nav /s:OffenePostenSucheValidation.nav /s:\"OffenePostenÜbersicht.nav\" /s:\"OffenePostenÜbersichtRechnungErstellen.nav\"",
+      "workingDirectory": "C:\\ws\\xtplus\\Main\\XTplusApplication\\src\\XTplus.OffenePosten"
+    }
+  }
+}

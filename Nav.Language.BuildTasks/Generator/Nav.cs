@@ -17,7 +17,9 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
         public bool UseSyntaxCache { get; set; }
         public bool FullPaths { get; set; }
 
-        public ITaskItem[] Sources { get; set; }
+        public ITaskItem   ProjectRootDirectory { get; set; }
+        public ITaskItem   IwflRootDirectory    { get; set; }
+        public ITaskItem[] Sources              { get; set; }
         
         protected override string GenerateFullPathToTool() {
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -33,12 +35,14 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             var clb = new CommandLineBuilder();
 
             clb.AppendSwitchIfPresent(GenerateToClasses, "/t");
-            clb.AppendSwitchIfPresent(Force, "/f");
-            clb.AppendSwitchIfPresent(UseSyntaxCache, "/c");
-            clb.AppendSwitchIfPresent(FullPaths, "/fullpaths");
-            clb.AppendSwitch("/v");                          
+            clb.AppendSwitchIfPresent(Force,             "/f");
+            clb.AppendSwitchIfPresent(UseSyntaxCache,    "/c");
+            clb.AppendSwitchIfPresent(FullPaths,         "/fullpaths");
+            clb.AppendSwitch("/v");
+            clb.AppendSwitchIfNotNull("/r:", ProjectRootDirectory);
+            clb.AppendSwitchIfNotNull("/i:", IwflRootDirectory);
             clb.AppendSwitchIfNotNull("/s:", Sources, " /s:");
-            
+
             return clb.ToString();
         }
 
