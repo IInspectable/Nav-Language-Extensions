@@ -11,59 +11,57 @@ using ThreadHelper = Microsoft.VisualStudio.Shell.ThreadHelper;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
+namespace Pharmatechnik.Nav.Language.Extension.QuickInfo; 
 
-    sealed class SymbolQuickInfoSource: SemanticModelServiceDependent, IAsyncQuickInfoSource {
+sealed class SymbolQuickInfoSource: SemanticModelServiceDependent, IAsyncQuickInfoSource {
 
-        public SymbolQuickInfoSource(ITextBuffer textBuffer,
-                                     QuickinfoBuilderService quickinfoBuilderService): base(textBuffer) {
+    public SymbolQuickInfoSource(ITextBuffer textBuffer,
+                                 QuickinfoBuilderService quickinfoBuilderService): base(textBuffer) {
 
-            QuickinfoBuilderService = quickinfoBuilderService;
+        QuickinfoBuilderService = quickinfoBuilderService;
+    }
+
+    public QuickinfoBuilderService QuickinfoBuilderService { get; }
+
+    public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken) {
+
+        await Task.Yield().ConfigureAwait(false);
+        if (cancellationToken.IsCancellationRequested) {
+            return null;
         }
 
-        public QuickinfoBuilderService QuickinfoBuilderService { get; }
-
-        public async Task<QuickInfoItem> GetQuickInfoItemAsync(IAsyncQuickInfoSession session, CancellationToken cancellationToken) {
-
-            await Task.Yield().ConfigureAwait(false);
-            if (cancellationToken.IsCancellationRequested) {
-                return null;
-            }
-
-            var codeGenerationUnitAndSnapshot = SemanticModelService.CodeGenerationUnitAndSnapshot;
-            if (codeGenerationUnitAndSnapshot == null) {
-                return null;
-            }
-
-            // Map the trigger point down to our buffer.
-            SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(codeGenerationUnitAndSnapshot.Snapshot);
-            if (!subjectTriggerPoint.HasValue) {
-                return null;
-            }
-
-            var triggerSymbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(subjectTriggerPoint.Value.Position);
-
-            if (triggerSymbol == null) {
-                return null;
-            }
-
-            var location = triggerSymbol.Location;
-            var applicableToSpan = codeGenerationUnitAndSnapshot.Snapshot.CreateTrackingSpan(
-                location.Start,
-                location.Length,
-                SpanTrackingMode.EdgeExclusive);
-
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-            var qiContent = QuickinfoBuilderService.BuildSymbolQuickInfoContent(triggerSymbol);
-            if (qiContent == null) {
-                return null;
-            }
-
-            return new QuickInfoItem(applicableToSpan: applicableToSpan,
-                                     item: qiContent);
+        var codeGenerationUnitAndSnapshot = SemanticModelService.CodeGenerationUnitAndSnapshot;
+        if (codeGenerationUnitAndSnapshot == null) {
+            return null;
         }
 
+        // Map the trigger point down to our buffer.
+        SnapshotPoint? subjectTriggerPoint = session.GetTriggerPoint(codeGenerationUnitAndSnapshot.Snapshot);
+        if (!subjectTriggerPoint.HasValue) {
+            return null;
+        }
+
+        var triggerSymbol = codeGenerationUnitAndSnapshot.CodeGenerationUnit.Symbols.FindAtPosition(subjectTriggerPoint.Value.Position);
+
+        if (triggerSymbol == null) {
+            return null;
+        }
+
+        var location = triggerSymbol.Location;
+        var applicableToSpan = codeGenerationUnitAndSnapshot.Snapshot.CreateTrackingSpan(
+            location.Start,
+            location.Length,
+            SpanTrackingMode.EdgeExclusive);
+
+        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+        var qiContent = QuickinfoBuilderService.BuildSymbolQuickInfoContent(triggerSymbol);
+        if (qiContent == null) {
+            return null;
+        }
+
+        return new QuickInfoItem(applicableToSpan: applicableToSpan,
+                                 item: qiContent);
     }
 
 }

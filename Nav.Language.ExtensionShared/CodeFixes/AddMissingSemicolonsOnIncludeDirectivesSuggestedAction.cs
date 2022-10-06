@@ -9,24 +9,22 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+namespace Pharmatechnik.Nav.Language.Extension.CodeFixes; 
 
-    class AddMissingSemicolonsOnIncludeDirectivesSuggestedAction: CodeFixSuggestedAction<AddMissingSemicolonsOnIncludeDirectivesCodeFix> {
+class AddMissingSemicolonsOnIncludeDirectivesSuggestedAction: CodeFixSuggestedAction<AddMissingSemicolonsOnIncludeDirectivesCodeFix> {
 
-        public AddMissingSemicolonsOnIncludeDirectivesSuggestedAction(AddMissingSemicolonsOnIncludeDirectivesCodeFix codeFix,
-                                                                      CodeFixSuggestedActionParameter parameter,
-                                                                      CodeFixSuggestedActionContext context)
-            : base(context, parameter, codeFix) {
-        }
+    public AddMissingSemicolonsOnIncludeDirectivesSuggestedAction(AddMissingSemicolonsOnIncludeDirectivesCodeFix codeFix,
+                                                                  CodeFixSuggestedActionParameter parameter,
+                                                                  CodeFixSuggestedActionContext context)
+        : base(context, parameter, codeFix) {
+    }
 
-        public override ImageMoniker IconMoniker => ImageMonikers.AddSemicolon;
-        public override string       DisplayText => CodeFix.Name;
+    public override ImageMoniker IconMoniker => ImageMonikers.AddSemicolon;
+    public override string       DisplayText => CodeFix.Name;
 
-        protected override void Apply(CancellationToken cancellationToken) {
+    protected override void Apply(CancellationToken cancellationToken) {
 
-            ApplyTextChanges(CodeFix.GetTextChanges());
-        }
-
+        ApplyTextChanges(CodeFix.GetTextChanges());
     }
 
 }

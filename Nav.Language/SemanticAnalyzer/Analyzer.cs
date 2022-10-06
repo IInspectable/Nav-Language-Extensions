@@ -8,77 +8,75 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
+namespace Pharmatechnik.Nav.Language.SemanticAnalyzer; 
 
-    public class AnalyzerContext {
+public class AnalyzerContext {
 
-    }
+}
 
-    public interface INavAnalyzer {
+public interface INavAnalyzer {
 
-        IEnumerable<Diagnostic> Analyze(CodeGenerationUnit codeGenerationUnit, AnalyzerContext context);
+    IEnumerable<Diagnostic> Analyze(CodeGenerationUnit codeGenerationUnit, AnalyzerContext context);
 
-    }
+}
 
-    public abstract class NavAnalyzer: INavAnalyzer {
+public abstract class NavAnalyzer: INavAnalyzer {
 
-        public abstract DiagnosticDescriptor Descriptor { get; }
+    public abstract DiagnosticDescriptor Descriptor { get; }
 
-        public virtual IEnumerable<Diagnostic> Analyze(CodeGenerationUnit codeGenerationUnit, AnalyzerContext context) {
+    public virtual IEnumerable<Diagnostic> Analyze(CodeGenerationUnit codeGenerationUnit, AnalyzerContext context) {
             
-            foreach (var diag in codeGenerationUnit.TaskDeclarations.SelectMany(taskDeclaration=> Analyze(taskDeclaration, context))) {
-                yield return diag;
-            }
-
-            foreach (var diag in codeGenerationUnit.TaskDefinitions.SelectMany(taskDefinition=> Analyze(taskDefinition, context))) {
-              yield return diag;
-            }
+        foreach (var diag in codeGenerationUnit.TaskDeclarations.SelectMany(taskDeclaration=> Analyze(taskDeclaration, context))) {
+            yield return diag;
         }
 
-        public virtual IEnumerable<Diagnostic> Analyze(ITaskDeclarationSymbol taskDeclaration, AnalyzerContext context) {
-            yield break;
+        foreach (var diag in codeGenerationUnit.TaskDefinitions.SelectMany(taskDefinition=> Analyze(taskDefinition, context))) {
+            yield return diag;
         }
-
-        public virtual IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
-            yield break;
-        }
-
     }
 
-    static class Analyzer {
+    public virtual IEnumerable<Diagnostic> Analyze(ITaskDeclarationSymbol taskDeclaration, AnalyzerContext context) {
+        yield break;
+    }
 
-        private static readonly Lazy<IList<INavAnalyzer>> TaskDefinitionAnalyzer = new Lazy<IList<INavAnalyzer>>(
-            () => GetInterfaceImplementationsFromAssembly<INavAnalyzer>().ToList(),
-            LazyThreadSafetyMode.PublicationOnly);
+    public virtual IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        yield break;
+    }
 
-        public static IEnumerable<INavAnalyzer> GetAnalyzer() {
-            return TaskDefinitionAnalyzer.Value;
-        }
+}
 
-        private static IEnumerable<T> GetInterfaceImplementationsFromAssembly<T>() where T : class {
+static class Analyzer {
 
-            var dll   = typeof(Analyzer).GetTypeInfo().Assembly;
-            var rules = new List<T>();
+    private static readonly Lazy<IList<INavAnalyzer>> TaskDefinitionAnalyzer = new Lazy<IList<INavAnalyzer>>(
+        () => GetInterfaceImplementationsFromAssembly<INavAnalyzer>().ToList(),
+        LazyThreadSafetyMode.PublicationOnly);
 
-            foreach (var type in dll.ExportedTypes) {
-                var typeInfo = type.GetTypeInfo();
-                if (!typeInfo.IsInterface
-                 && !typeInfo.IsAbstract
-                 && typeInfo.ImplementedInterfaces.Contains(typeof(T))) {
+    public static IEnumerable<INavAnalyzer> GetAnalyzer() {
+        return TaskDefinitionAnalyzer.Value;
+    }
 
-                    var ruleObj = Activator.CreateInstance(type);
-                    if (!(ruleObj is T rule)) {
+    private static IEnumerable<T> GetInterfaceImplementationsFromAssembly<T>() where T : class {
 
-                        continue;
-                    }
+        var dll   = typeof(Analyzer).GetTypeInfo().Assembly;
+        var rules = new List<T>();
 
-                    rules.Add(rule);
+        foreach (var type in dll.ExportedTypes) {
+            var typeInfo = type.GetTypeInfo();
+            if (!typeInfo.IsInterface
+             && !typeInfo.IsAbstract
+             && typeInfo.ImplementedInterfaces.Contains(typeof(T))) {
+
+                var ruleObj = Activator.CreateInstance(type);
+                if (!(ruleObj is T rule)) {
+
+                    continue;
                 }
-            }
 
-            return rules;
+                rules.Add(rule);
+            }
         }
 
+        return rules;
     }
 
 }

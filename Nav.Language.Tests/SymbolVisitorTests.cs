@@ -2,82 +2,80 @@
 
 using Pharmatechnik.Nav.Language;
 
-namespace Nav.Language.Tests {
+namespace Nav.Language.Tests; 
 
-    [TestFixture]
-    public class SymbolVisitorTests {
+[TestFixture]
+public class SymbolVisitorTests {
 
-        [Test]
-        public void SymbolVisitorOfTVisitNodeReferenceSymbolFallBack() {
+    [Test]
+    public void SymbolVisitorOfTVisitNodeReferenceSymbolFallBack() {
 
-            var visitor = new SymbolVisitorVisitNodeReferenceSymbolReturnsTrue();
+        var visitor = new SymbolVisitorVisitNodeReferenceSymbolReturnsTrue();
 
-            Assert.That(visitor.VisitChoiceNodeSymbol(null), Is.False);
+        Assert.That(visitor.VisitChoiceNodeSymbol(null), Is.False);
 
-            // Fallback auf VisitNodeReferenceSymbol
-            Assert.That(visitor.VisitInitNodeReferenceSymbol(null),   Is.True);
-            Assert.That(visitor.VisitChoiceNodeReferenceSymbol(null), Is.True);
-            Assert.That(visitor.VisitGuiNodeReferenceSymbol(null),    Is.True);
-            Assert.That(visitor.VisitTaskNodeReferenceSymbol(null),   Is.True);
-            Assert.That(visitor.VisitExitNodeReferenceSymbol(null),   Is.True);
-            Assert.That(visitor.VisitEndNodeReferenceSymbol(null),    Is.True);
+        // Fallback auf VisitNodeReferenceSymbol
+        Assert.That(visitor.VisitInitNodeReferenceSymbol(null),   Is.True);
+        Assert.That(visitor.VisitChoiceNodeReferenceSymbol(null), Is.True);
+        Assert.That(visitor.VisitGuiNodeReferenceSymbol(null),    Is.True);
+        Assert.That(visitor.VisitTaskNodeReferenceSymbol(null),   Is.True);
+        Assert.That(visitor.VisitExitNodeReferenceSymbol(null),   Is.True);
+        Assert.That(visitor.VisitEndNodeReferenceSymbol(null),    Is.True);
+    }
+
+    class SymbolVisitorVisitNodeReferenceSymbolReturnsTrue: SymbolVisitor<bool> {
+
+        protected override bool DefaultVisit(ISymbol symbol) {
+            return false;
         }
 
-        class SymbolVisitorVisitNodeReferenceSymbolReturnsTrue: SymbolVisitor<bool> {
-
-            protected override bool DefaultVisit(ISymbol symbol) {
-                return false;
-            }
-
-            public override bool VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
-                return true;
-            }
-
+        public override bool VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
+            return true;
         }
 
-        [Test]
-        public void SymbolVisitoVisitNodeReferenceSymbolFallBack() {
+    }
 
-            var visitor = new TestSymbolVisitor();
-            visitor.VisitChoiceNodeSymbol(null);
-            Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.False);
+    [Test]
+    public void SymbolVisitoVisitNodeReferenceSymbolFallBack() {
 
-            // Fallback auf VisitNodeReferenceSymbol
+        var visitor = new TestSymbolVisitor();
+        visitor.VisitChoiceNodeSymbol(null);
+        Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.False);
 
-            visitor = new TestSymbolVisitor();
-            visitor.VisitInitNodeReferenceSymbol(null);
-            Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
+        // Fallback auf VisitNodeReferenceSymbol
 
-            visitor = new TestSymbolVisitor();
-            visitor.VisitChoiceNodeReferenceSymbol(null);
-            Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
+        visitor = new TestSymbolVisitor();
+        visitor.VisitInitNodeReferenceSymbol(null);
+        Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
 
-            visitor = new TestSymbolVisitor();
-            visitor.VisitGuiNodeReferenceSymbol(null);
-            Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
+        visitor = new TestSymbolVisitor();
+        visitor.VisitChoiceNodeReferenceSymbol(null);
+        Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
 
-            visitor = new TestSymbolVisitor();
-            visitor.VisitTaskNodeReferenceSymbol(null);
-            Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
+        visitor = new TestSymbolVisitor();
+        visitor.VisitGuiNodeReferenceSymbol(null);
+        Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
 
-            visitor = new TestSymbolVisitor();
-            visitor.VisitExitNodeReferenceSymbol(null);
-            Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
+        visitor = new TestSymbolVisitor();
+        visitor.VisitTaskNodeReferenceSymbol(null);
+        Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
 
-            visitor = new TestSymbolVisitor();
-            visitor.VisitEndNodeReferenceSymbol(null);
-            Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
+        visitor = new TestSymbolVisitor();
+        visitor.VisitExitNodeReferenceSymbol(null);
+        Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
 
-        }
+        visitor = new TestSymbolVisitor();
+        visitor.VisitEndNodeReferenceSymbol(null);
+        Assert.That(visitor.VisitNodeReferenceSymbolCalled, Is.True);
 
-        class TestSymbolVisitor: SymbolVisitor {
+    }
 
-            public bool VisitNodeReferenceSymbolCalled { get; private set; }
+    class TestSymbolVisitor: SymbolVisitor {
 
-            public override void VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
-                VisitNodeReferenceSymbolCalled = true;
-            }
+        public bool VisitNodeReferenceSymbolCalled { get; private set; }
 
+        public override void VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
+            VisitNodeReferenceSymbolCalled = true;
         }
 
     }

@@ -8,52 +8,51 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Utilities {
+namespace Pharmatechnik.Nav.Language.Extension.Utilities; 
 
-    [Export(typeof(IWaitIndicator))]
-    sealed class VisualStudioWaitIndicator : IWaitIndicator {
+[Export(typeof(IWaitIndicator))]
+sealed class VisualStudioWaitIndicator : IWaitIndicator {
 
-        readonly SVsServiceProvider _serviceProvider;
+    readonly SVsServiceProvider _serviceProvider;
 
-        [ImportingConstructor]
-        public VisualStudioWaitIndicator(SVsServiceProvider serviceProvider) {
-            _serviceProvider = serviceProvider;
-        }
+    [ImportingConstructor]
+    public VisualStudioWaitIndicator(SVsServiceProvider serviceProvider) {
+        _serviceProvider = serviceProvider;
+    }
 
-        public WaitIndicatorResult Wait(string title, string message, bool allowCancel, Action<IWaitContext> action) {
+    public WaitIndicatorResult Wait(string title, string message, bool allowCancel, Action<IWaitContext> action) {
 
-            ThreadHelper.ThrowIfNotOnUIThread();
+        ThreadHelper.ThrowIfNotOnUIThread();
 
-            using(var waitContext = StartWait(title, message, allowCancel)) {
-                try {
-                    action(waitContext);
+        using(var waitContext = StartWait(title, message, allowCancel)) {
+            try {
+                action(waitContext);
 
-                    return WaitIndicatorResult.Completed;
-                } catch(OperationCanceledException) {
+                return WaitIndicatorResult.Completed;
+            } catch(OperationCanceledException) {
+                return WaitIndicatorResult.Canceled;
+            } catch(AggregateException e) {
+                if(e.InnerExceptions[0] is OperationCanceledException) {
                     return WaitIndicatorResult.Canceled;
-                } catch(AggregateException e) {
-                    if(e.InnerExceptions[0] is OperationCanceledException) {
-                        return WaitIndicatorResult.Canceled;
-                    } else {
-                        throw;
-                    }
+                } else {
+                    throw;
                 }
             }
         }
+    }
 
-        VisualStudioWaitContext StartWait(string title, string message, bool allowCancel) {
+    VisualStudioWaitContext StartWait(string title, string message, bool allowCancel) {
             
-            ThreadHelper.ThrowIfNotOnUIThread();
+        ThreadHelper.ThrowIfNotOnUIThread();
            
-            var dialogFactory = (IVsThreadedWaitDialogFactory) _serviceProvider.GetService(typeof(SVsThreadedWaitDialogFactory));
+        var dialogFactory = (IVsThreadedWaitDialogFactory) _serviceProvider.GetService(typeof(SVsThreadedWaitDialogFactory));
            
 
-            return new VisualStudioWaitContext(dialogFactory, title, message, allowCancel);
-        }
+        return new VisualStudioWaitContext(dialogFactory, title, message, allowCancel);
+    }
 
-        IWaitContext IWaitIndicator.StartWait(string title, string message, bool allowCancel) {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            return StartWait(title, message, allowCancel);
-        }
+    IWaitContext IWaitIndicator.StartWait(string title, string message, bool allowCancel) {
+        ThreadHelper.ThrowIfNotOnUIThread();
+        return StartWait(title, message, allowCancel);
     }
 }

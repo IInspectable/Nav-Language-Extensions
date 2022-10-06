@@ -11,45 +11,43 @@ using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Commands {
+namespace Pharmatechnik.Nav.Language.Extension.Commands; 
 
-    [Export(typeof(ICommandHandler))]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [TextViewRole(PredefinedTextViewRoles.Editable)]
-    [Name(CommandHandlerNames.PasteCommandHandler)]
-    class PasteCommandHandler: ICommandHandler<PasteCommandArgs> {
+[Export(typeof(ICommandHandler))]
+[ContentType(NavLanguageContentDefinitions.ContentType)]
+[TextViewRole(PredefinedTextViewRoles.Editable)]
+[Name(CommandHandlerNames.PasteCommandHandler)]
+class PasteCommandHandler: ICommandHandler<PasteCommandArgs> {
 
-        readonly NavEditorOperationsProvider _navEditorOperationsProvider;
+    readonly NavEditorOperationsProvider _navEditorOperationsProvider;
 
-        [ImportingConstructor]
-        public PasteCommandHandler(NavEditorOperationsProvider navEditorOperationsProvider) {
-            _navEditorOperationsProvider = navEditorOperationsProvider;
+    [ImportingConstructor]
+    public PasteCommandHandler(NavEditorOperationsProvider navEditorOperationsProvider) {
+        _navEditorOperationsProvider = navEditorOperationsProvider;
 
-        }
+    }
 
-        public string DisplayName => "Paste";
+    public string DisplayName => "Paste";
 
-        public bool ExecuteCommand(PasteCommandArgs args, CommandExecutionContext executionContext) {
+    public bool ExecuteCommand(PasteCommandArgs args, CommandExecutionContext executionContext) {
             
-            ThreadHelper.ThrowIfNotOnUIThread();
+        ThreadHelper.ThrowIfNotOnUIThread();
 
-            var pasteCommand = GetPasteNavFileCommand(args);
-            return pasteCommand.Execute(Clipboard.GetDataObject());
+        var pasteCommand = GetPasteNavFileCommand(args);
+        return pasteCommand.Execute(Clipboard.GetDataObject());
 
-        }
+    }
 
-        public CommandState GetCommandState(PasteCommandArgs args) {
+    public CommandState GetCommandState(PasteCommandArgs args) {
 
-            var pasteCommand = GetPasteNavFileCommand(args);
-            return pasteCommand.CanExecute(Clipboard.GetDataObject()) ? CommandState.Available : CommandState.Unavailable;
-        }
+        var pasteCommand = GetPasteNavFileCommand(args);
+        return pasteCommand.CanExecute(Clipboard.GetDataObject()) ? CommandState.Available : CommandState.Unavailable;
+    }
 
-        PasteNavFileCommand GetPasteNavFileCommand(PasteCommandArgs args) {
+    PasteNavFileCommand GetPasteNavFileCommand(PasteCommandArgs args) {
 
-            var pasteCommand = _navEditorOperationsProvider.CreatePasteNavFileCommand(args.TextView);
-            return pasteCommand;
-        }
-
+        var pasteCommand = _navEditorOperationsProvider.CreatePasteNavFileCommand(args.TextView);
+        return pasteCommand;
     }
 
 }

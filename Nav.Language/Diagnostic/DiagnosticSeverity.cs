@@ -1,11 +1,9 @@
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public enum DiagnosticSeverity {
+public enum DiagnosticSeverity {
 
-        Suggestion,
-        Warning,
-        Error
-
-    }
+    Suggestion,
+    Warning,
+    Error
 
 }

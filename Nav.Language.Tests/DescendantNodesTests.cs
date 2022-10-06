@@ -7,12 +7,12 @@ using Pharmatechnik.Nav.Language;
 
 #endregion
 
-namespace Nav.Language.Tests {
+namespace Nav.Language.Tests; 
 
-    [TestFixture]
-    public class DescendantNodesTests {
+[TestFixture]
+public class DescendantNodesTests {
 
-        string navContent = @"
+    string navContent = @"
             [namespaceprefix NamespacePrefix]
             [using My.Using.Namespace]
 
@@ -32,51 +32,50 @@ namespace Nav.Language.Tests {
                 TestView --> Ok on Ok;
             }
         ";
-        CodeGenerationUnitSyntax _codegenerationUnitSyntax;
+    CodeGenerationUnitSyntax _codegenerationUnitSyntax;
 
-        [SetUp]
-        public void Setup() {
-            _codegenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navContent);
-        }
+    [SetUp]
+    public void Setup() {
+        _codegenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navContent);
+    }
 
-        [Test]
-        public void CountIdentifierSyntaxTest() {
-            Assert.That(
-                _codegenerationUnitSyntax.DescendantNodes<IdentifierSyntax>().Count(),
-                Is.EqualTo(3) 
-            );
-        }
+    [Test]
+    public void CountIdentifierSyntaxTest() {
+        Assert.That(
+            _codegenerationUnitSyntax.DescendantNodes<IdentifierSyntax>().Count(),
+            Is.EqualTo(3) 
+        );
+    }
 
-        [Test]
-        public void CountIncludeDirectiveSyntaxTest() {
-            Assert.That(
-                _codegenerationUnitSyntax.DescendantNodes<IncludeDirectiveSyntax>().Count(),
-                Is.EqualTo(1)
-            );
-        }
+    [Test]
+    public void CountIncludeDirectiveSyntaxTest() {
+        Assert.That(
+            _codegenerationUnitSyntax.DescendantNodes<IncludeDirectiveSyntax>().Count(),
+            Is.EqualTo(1)
+        );
+    }
 
-        [Test]
-        public void CountTaskDefinitionSyntaxTest() {
-            Assert.That(
-                _codegenerationUnitSyntax.DescendantNodes<TaskDefinitionSyntax>().Count(),
-                Is.EqualTo(1)
-            );
-        }
+    [Test]
+    public void CountTaskDefinitionSyntaxTest() {
+        Assert.That(
+            _codegenerationUnitSyntax.DescendantNodes<TaskDefinitionSyntax>().Count(),
+            Is.EqualTo(1)
+        );
+    }
 
-        [Test]
-        public void CountSyntaxNodeTest1() {
-            Assert.That(
-                _codegenerationUnitSyntax.DescendantNodes<SyntaxNode>().Count(),
-                Is.EqualTo(32)
-            );
-        }
+    [Test]
+    public void CountSyntaxNodeTest1() {
+        Assert.That(
+            _codegenerationUnitSyntax.DescendantNodes<SyntaxNode>().Count(),
+            Is.EqualTo(32)
+        );
+    }
 
-        [Test]
-        public void CountSyntaxNodeTest2() {
-            Assert.That(
-                _codegenerationUnitSyntax.DescendantNodes<SyntaxNode>().Count(),
-                Is.EqualTo(_codegenerationUnitSyntax.DescendantNodes().Count())
-            );
-        }
+    [Test]
+    public void CountSyntaxNodeTest2() {
+        Assert.That(
+            _codegenerationUnitSyntax.DescendantNodes<SyntaxNode>().Count(),
+            Is.EqualTo(_codegenerationUnitSyntax.DescendantNodes().Count())
+        );
     }
 }

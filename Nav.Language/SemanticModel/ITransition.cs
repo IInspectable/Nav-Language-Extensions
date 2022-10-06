@@ -1,49 +1,47 @@
 using JetBrains.Annotations;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public interface ITransition: IEdge {
+public interface ITransition: IEdge {
 
-        [NotNull]
-        TransitionDefinitionSyntax Syntax { get; }
+    [NotNull]
+    TransitionDefinitionSyntax Syntax { get; }
 
-    }
+}
 
-    public interface IInitTransition: ITransition {
+public interface IInitTransition: ITransition {
 
-        [CanBeNull]
-        IInitNodeReferenceSymbol InitNodeSourceReference { get; }
+    [CanBeNull]
+    IInitNodeReferenceSymbol InitNodeSourceReference { get; }
 
-    }
+}
 
-    public interface ITriggerTransition: ITransition {
+public interface ITriggerTransition: ITransition {
 
-        [CanBeNull]
-        IGuiNodeReferenceSymbol GuiNodeSourceReference { get; }
+    [CanBeNull]
+    IGuiNodeReferenceSymbol GuiNodeSourceReference { get; }
 
-        [NotNull]
-        IReadOnlySymbolCollection<ITriggerSymbol> Triggers { get; }
+    [NotNull]
+    IReadOnlySymbolCollection<ITriggerSymbol> Triggers { get; }
 
-    }
+}
 
-    public interface IChoiceTransition: ITransition {
+public interface IChoiceTransition: ITransition {
 
-        [CanBeNull]
-        IChoiceNodeReferenceSymbol ChoiceNodeSourceReference { get; }
+    [CanBeNull]
+    IChoiceNodeReferenceSymbol ChoiceNodeSourceReference { get; }
 
-    }
+}
 
-    public interface IExitTransition: IEdge {
+public interface IExitTransition: IEdge {
 
-        [NotNull]
-        ExitTransitionDefinitionSyntax Syntax { get; }
+    [NotNull]
+    ExitTransitionDefinitionSyntax Syntax { get; }
 
-        [CanBeNull]
-        ITaskNodeReferenceSymbol TaskNodeSourceReference { get; }
+    [CanBeNull]
+    ITaskNodeReferenceSymbol TaskNodeSourceReference { get; }
 
-        [CanBeNull]
-        IExitConnectionPointReferenceSymbol ExitConnectionPointReference { get; }
-
-    }
+    [CanBeNull]
+    IExitConnectionPointReferenceSymbol ExitConnectionPointReference { get; }
 
 }

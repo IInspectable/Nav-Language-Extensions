@@ -12,32 +12,31 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider; 
 
-    class NavExitAnnotationLocationInfoProvider : NavAnnotationLocationInfoProvider<NavExitAnnotation> {
+class NavExitAnnotationLocationInfoProvider : NavAnnotationLocationInfoProvider<NavExitAnnotation> {
 
-        public NavExitAnnotationLocationInfoProvider(NavExitAnnotation annotation) : base(annotation) {
-        }
+    public NavExitAnnotationLocationInfoProvider(NavExitAnnotation annotation) : base(annotation) {
+    }
 
-        static ImageMoniker ImageMoniker { get { return ImageMonikers.ExitConnectionPoint; } }
+    static ImageMoniker ImageMoniker { get { return ImageMonikers.ExitConnectionPoint; } }
 
-        protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new CancellationToken()) {
+    protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new CancellationToken()) {
 
-            try {
+        try {
 
-                var locs = await LocationFinder.FindNavLocationsAsync(
-                    sourceText       : sourceText,
-                    annotation       : Annotation,
-                    cancellationToken: cancellationToken).ConfigureAwait(false);
+            var locs = await LocationFinder.FindNavLocationsAsync(
+                sourceText       : sourceText,
+                annotation       : Annotation,
+                cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                return locs.Select(location => LocationInfo.FromLocation(
-                    location    : location,
-                    displayName : $"Exit {location.Name}",
-                    imageMoniker: ImageMoniker));
+            return locs.Select(location => LocationInfo.FromLocation(
+                                   location    : location,
+                                   displayName : $"Exit {location.Name}",
+                                   imageMoniker: ImageMoniker));
 
-            } catch (LocationNotFoundException ex) {
-                return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
-            }
+        } catch (LocationNotFoundException ex) {
+            return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
         }
     }
 }

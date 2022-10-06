@@ -2,15 +2,13 @@
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeFixes; 
 
-    public enum CodeFixPrio {
+public enum CodeFixPrio {
 
-        None,
-        Low,
-        Medium,
-        High,
-
-    }
+    None,
+    Low,
+    Medium,
+    High,
 
 }

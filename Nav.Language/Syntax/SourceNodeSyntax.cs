@@ -2,42 +2,40 @@ using System;
 
 using Pharmatechnik.Nav.Language.Text;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    [Serializable]
-    public abstract class SourceNodeSyntax: SyntaxNode {
+[Serializable]
+public abstract class SourceNodeSyntax: SyntaxNode {
 
-        protected SourceNodeSyntax(TextExtent extent): base(extent) {
-        }
-
-        public abstract string Name { get; }
-
+    protected SourceNodeSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("init")]
-    public partial class InitSourceNodeSyntax: SourceNodeSyntax {
+    public abstract string Name { get; }
 
-        internal InitSourceNodeSyntax(TextExtent extent): base(extent) {
-        }
+}
 
-        public SyntaxToken InitKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.InitKeyword);
+[Serializable]
+[SampleSyntax("init")]
+public partial class InitSourceNodeSyntax: SourceNodeSyntax {
 
-        public override string Name => InitKeyword.ToString();
-
+    internal InitSourceNodeSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("Identifier")]
-    public partial class IdentifierSourceNodeSyntax: SourceNodeSyntax {
+    public SyntaxToken InitKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.InitKeyword);
 
-        internal IdentifierSourceNodeSyntax(TextExtent extent): base(extent) {
-        }
+    public override string Name => InitKeyword.ToString();
 
-        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+}
 
-        public override string Name => Identifier.ToString();
+[Serializable]
+[SampleSyntax("Identifier")]
+public partial class IdentifierSourceNodeSyntax: SourceNodeSyntax {
 
+    internal IdentifierSourceNodeSyntax(TextExtent extent): base(extent) {
     }
+
+    public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+
+    public override string Name => Identifier.ToString();
 
 }

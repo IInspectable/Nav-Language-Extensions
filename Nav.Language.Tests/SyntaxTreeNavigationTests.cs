@@ -5,78 +5,78 @@ using Pharmatechnik.Nav.Language.Text;
 
 // ReSharper disable PossibleNullReferenceException
 
-namespace Nav.Language.Tests {
+namespace Nav.Language.Tests; 
 
-    [TestFixture]
-    public class SyntaxTreeNavigationTests {
+[TestFixture]
+public class SyntaxTreeNavigationTests {
 
-        [Test]
-        public void TestTokenParent() {
-            var syntaxTree = SyntaxTree.ParseText("task Test { init I;}");
+    [Test]
+    public void TestTokenParent() {
+        var syntaxTree = SyntaxTree.ParseText("task Test { init I;}");
                     
-            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
+        Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
-            var task = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First();
+        var task = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First();
 
-            Assert.That(task.TaskKeyword, Is.Not.Null);
-            Assert.That(task.TaskKeyword.Parent, Is.EqualTo(task));
+        Assert.That(task.TaskKeyword,        Is.Not.Null);
+        Assert.That(task.TaskKeyword.Parent, Is.EqualTo(task));
 
-            var initNode = task.NodeDeclarationBlock.InitNodes().First();
+        var initNode = task.NodeDeclarationBlock.InitNodes().First();
 
-            Assert.That(initNode.InitKeyword.Parent,          Is.EqualTo(initNode));
-            Assert.That(initNode.Parent,                  Is.EqualTo(task.NodeDeclarationBlock));
-            Assert.That(task.NodeDeclarationBlock.Parent, Is.EqualTo(task));
-            Assert.That(task.Parent,                      Is.EqualTo(syntaxTree.Root));
-            Assert.That(syntaxTree.Root.Parent,           Is.Null);
-        }
+        Assert.That(initNode.InitKeyword.Parent,      Is.EqualTo(initNode));
+        Assert.That(initNode.Parent,                  Is.EqualTo(task.NodeDeclarationBlock));
+        Assert.That(task.NodeDeclarationBlock.Parent, Is.EqualTo(task));
+        Assert.That(task.Parent,                      Is.EqualTo(syntaxTree.Root));
+        Assert.That(syntaxTree.Root.Parent,           Is.Null);
+    }
 
-        [Test]
-        public void TestRandomText() {
+    [Test]
+    public void TestRandomText() {
             
-            string s = TestHelper.RandomString(400000);
+        string s = TestHelper.RandomString(400000);
 
-            var syntaxTree = SyntaxTree.ParseText(s);
+        var syntaxTree = SyntaxTree.ParseText(s);
 
-            var lastToken = syntaxTree.Tokens.Last();
-            Assert.That(lastToken.End, Is.EqualTo(s.Length));
+        var lastToken = syntaxTree.Tokens.Last();
+        Assert.That(lastToken.End, Is.EqualTo(s.Length));
+    }
+
+    [Test]
+    public void TestTokenGaps() {
+
+        string s = Resources.LargeNav;
+
+        var syntaxTree = SyntaxTree.ParseText(s);
+
+        int pos = 0;
+        foreach (var token in syntaxTree.Tokens) {
+            Assert.That(token.Start, Is.EqualTo(pos));
+            pos = token.End;
         }
 
-        [Test]
-        public void TestTokenGaps() {
+        Assert.That(pos, Is.EqualTo(s.Length));          
+    }
 
-            string s = Resources.LargeNav;
+    [Test]
+    public void TestTokenGapsWithError() {
 
-            var syntaxTree = SyntaxTree.ParseText(s);
+        string s = Resources.NavWithError;
 
-            int pos = 0;
-            foreach (var token in syntaxTree.Tokens) {
-                Assert.That(token.Start, Is.EqualTo(pos));
-                pos = token.End;
-            }
+        var syntaxTree = SyntaxTree.ParseText(s);
 
-            Assert.That(pos, Is.EqualTo(s.Length));          
+        int pos = 0;
+        foreach (var token in syntaxTree.Tokens) {
+            Assert.That(token.Start, Is.EqualTo(pos));
+            pos = token.End;
         }
 
-        [Test]
-        public void TestTokenGapsWithError() {
+        Assert.That(pos, Is.EqualTo(s.Length));
+    }
 
-            string s = Resources.NavWithError;
+    [Test]
+    public void TestTokenWithErrorAtStart() {
 
-            var syntaxTree = SyntaxTree.ParseText(s);
-
-            int pos = 0;
-            foreach (var token in syntaxTree.Tokens) {
-                Assert.That(token.Start, Is.EqualTo(pos));
-                pos = token.End;
-            }
-
-            Assert.That(pos, Is.EqualTo(s.Length));
-        }
-
-        [Test]
-        public void TestTokenWithErrorAtStart() {
-
-            string nav = @"
+        string nav = @"
                     [
                     task T1	
                     {
@@ -84,16 +84,16 @@ namespace Nav.Language.Tests {
                     	exit E;
                     }";
 
-            var syntaxTree = SyntaxTree.ParseText(nav);
-            Assert.That(syntaxTree.Diagnostics.Any(), Is.True);
+        var syntaxTree = SyntaxTree.ParseText(nav);
+        Assert.That(syntaxTree.Diagnostics.Any(), Is.True);
 
-            Assert.That(syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
-        }
+        Assert.That(syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
+    }
 
-        [Test]
-        public void TestTokenWithErrorAtEnd() {
+    [Test]
+    public void TestTokenWithErrorAtEnd() {
 
-            string nav = @"
+        string nav = @"
                     task T1	
                     {
                     	init I;
@@ -102,46 +102,45 @@ namespace Nav.Language.Tests {
                     
                     task {";
 
-            var syntaxTree = SyntaxTree.ParseText(nav);
-            Assert.That(syntaxTree.Diagnostics.Any(), Is.True);
-            Assert.That(syntaxTree.Root.DescendantNodes().OfType<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
-        }
+        var syntaxTree = SyntaxTree.ParseText(nav);
+        Assert.That(syntaxTree.Diagnostics.Any(),                                                                   Is.True);
+        Assert.That(syntaxTree.Root.DescendantNodes().OfType<TaskDefinitionSyntax>().First().Identifier.ToString(), Is.EqualTo("T1"));
+    }
 
-        [Test]
-        [Ignore("Enablen sobald Trivias unterstützt werden.")]
-        public void TestCommentToken() {
-            var syntaxTree = SyntaxTree.ParseText("task /* Kommentar*/ \r\nTest { init I;}");
+    [Test]
+    [Ignore("Enablen sobald Trivias unterstützt werden.")]
+    public void TestCommentToken() {
+        var syntaxTree = SyntaxTree.ParseText("task /* Kommentar*/ \r\nTest { init I;}");
 
-            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
-            Assert.That(syntaxTree.Tokens.Count(t=>t.Parent== null), Is.EqualTo(0));
+        Assert.That(syntaxTree.Diagnostics.Length,                Is.EqualTo(0));
+        Assert.That(syntaxTree.Tokens.Count(t=>t.Parent == null), Is.EqualTo(0));
 
-            var task = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First();
+        var task = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First();
 
-            Assert.That(task.ChildTokens().Count(), Is.EqualTo(4));
+        Assert.That(task.ChildTokens().Count(), Is.EqualTo(4));
 
-            var comments = task.ChildTokens().OfClassification(TextClassification.Comment).ToList();
-            Assert.That(comments.Count, Is.EqualTo(1));
-            Assert.That(comments[0].ToString(), Is.EqualTo("/* Kommentar*/"));
-            Assert.That(comments[0].Classification, Is.EqualTo(TextClassification.Comment));
-        }
+        var comments = task.ChildTokens().OfClassification(TextClassification.Comment).ToList();
+        Assert.That(comments.Count,             Is.EqualTo(1));
+        Assert.That(comments[0].ToString(),     Is.EqualTo("/* Kommentar*/"));
+        Assert.That(comments[0].Classification, Is.EqualTo(TextClassification.Comment));
+    }
 
-        [Test]
-        public void TestPrevNextToken() {
-            var syntaxTree = SyntaxTree.ParseText("task Test {}");
+    [Test]
+    public void TestPrevNextToken() {
+        var syntaxTree = SyntaxTree.ParseText("task Test {}");
 
-            Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
+        Assert.That(syntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
-            var taskKeywordToken = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First().TaskKeyword;
+        var taskKeywordToken = syntaxTree.Root.DescendantNodes<TaskDefinitionSyntax>().First().TaskKeyword;
 
-            Assert.That(taskKeywordToken.Classification, Is.EqualTo(TextClassification.Keyword));
+        Assert.That(taskKeywordToken.Classification, Is.EqualTo(TextClassification.Keyword));
 
-            var nameToken = taskKeywordToken.NextToken(TextClassification.TaskName);
-            Assert.That(nameToken.Classification, Is.EqualTo(TextClassification.TaskName));
-            Assert.That(nameToken.ToString(), Is.EqualTo("Test"));
+        var nameToken = taskKeywordToken.NextToken(TextClassification.TaskName);
+        Assert.That(nameToken.Classification, Is.EqualTo(TextClassification.TaskName));
+        Assert.That(nameToken.ToString(),     Is.EqualTo("Test"));
 
-            var prevToken = nameToken.PreviousToken(TextClassification.Keyword);
-            Assert.That(prevToken.Classification, Is.EqualTo(TextClassification.Keyword));
-            Assert.That(prevToken.ToString(), Is.EqualTo("task"));
-        }
+        var prevToken = nameToken.PreviousToken(TextClassification.Keyword);
+        Assert.That(prevToken.Classification, Is.EqualTo(TextClassification.Keyword));
+        Assert.That(prevToken.ToString(),     Is.EqualTo("task"));
     }
 }

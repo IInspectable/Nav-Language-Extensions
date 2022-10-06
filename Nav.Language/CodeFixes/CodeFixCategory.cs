@@ -1,12 +1,10 @@
-﻿namespace Pharmatechnik.Nav.Language.CodeFixes {
+﻿namespace Pharmatechnik.Nav.Language.CodeFixes; 
 
-    public enum CodeFixCategory {
+public enum CodeFixCategory {
 
-        CodeFix,
-        ErrorFix,
-        StyleFix,
-        Refactoring
-
-    }
+    CodeFix,
+    ErrorFix,
+    StyleFix,
+    Refactoring
 
 }

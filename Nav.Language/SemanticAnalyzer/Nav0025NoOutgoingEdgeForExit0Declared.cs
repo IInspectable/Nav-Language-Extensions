@@ -1,36 +1,34 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Pharmatechnik.Nav.Language.SemanticAnalyzer {
+namespace Pharmatechnik.Nav.Language.SemanticAnalyzer; 
 
-    public class Nav0025NoOutgoingEdgeForExit0Declared: NavAnalyzer {
+public class Nav0025NoOutgoingEdgeForExit0Declared: NavAnalyzer {
 
-        public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared;
+    public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0025NoOutgoingEdgeForExit0Declared;
 
-        public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
-            //==============================
-            //  No outgoing edge for exit '{0}' declared
-            //==============================
-            foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
+    public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+        //==============================
+        //  No outgoing edge for exit '{0}' declared
+        //==============================
+        foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
 
-                // Wird mit Nav1012TaskNode0NotRequired behandelt
-                if (!taskNode.References.Any()) {
-                    continue;
-                }
-
-                foreach (var expectedExit in taskNode.GetUnconnectedExits()) {
-
-                    yield return new Diagnostic(
-                        taskNode.Location,
-                        taskNode.Incomings
-                                .Select(edge => edge.TargetReference)
-                                .Where(nodeReference => nodeReference != null)
-                                .Select(nodeReference => nodeReference.Location),
-                        Descriptor,
-                        expectedExit.Name);
-                }
+            // Wird mit Nav1012TaskNode0NotRequired behandelt
+            if (!taskNode.References.Any()) {
+                continue;
             }
 
+            foreach (var expectedExit in taskNode.GetUnconnectedExits()) {
+
+                yield return new Diagnostic(
+                    taskNode.Location,
+                    taskNode.Incomings
+                            .Select(edge => edge.TargetReference)
+                            .Where(nodeReference => nodeReference != null)
+                            .Select(nodeReference => nodeReference.Location),
+                    Descriptor,
+                    expectedExit.Name);
+            }
         }
 
     }

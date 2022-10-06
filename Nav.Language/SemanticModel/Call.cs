@@ -7,71 +7,69 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public sealed class Call {
+public sealed class Call {
 
-        public Call([NotNull] INodeSymbol node, [NotNull] IEdgeModeSymbol edgeMode) {
-            Node     = node     ?? throw new ArgumentNullException(nameof(node));
-            EdgeMode = edgeMode ?? throw new ArgumentNullException(nameof(edgeMode));
-        }
-
-        public INodeSymbol     Node     { get; }
-        public IEdgeModeSymbol EdgeMode { get; }
-
+    public Call([NotNull] INodeSymbol node, [NotNull] IEdgeModeSymbol edgeMode) {
+        Node     = node     ?? throw new ArgumentNullException(nameof(node));
+        EdgeMode = edgeMode ?? throw new ArgumentNullException(nameof(edgeMode));
     }
 
-    public class CallComparer: IEqualityComparer<Call> {
+    public INodeSymbol     Node     { get; }
+    public IEdgeModeSymbol EdgeMode { get; }
 
-        protected CallComparer() {
-        }
+}
 
-        public static readonly IEqualityComparer<Call> Default   = new CallComparer();
-        public static readonly IEqualityComparer<Call> FoldExits = new FoldExitsCallComparer();
+public class CallComparer: IEqualityComparer<Call> {
 
-        public virtual bool Equals(Call x, Call y) {
-
-            if (x == null && y == null) {
-                return true;
-            }
-
-            if (x == null | y == null) {
-                return false;
-            }
-
-            return x.Node.Name      == y.Node.Name &&
-                   x.EdgeMode?.Name == y.EdgeMode?.Name;
-        }
-
-        public virtual int GetHashCode(Call call) {
-            unchecked {
-                return (call.Node.Name.GetHashCode() * 397) ^ (call.EdgeMode?.Name?.GetHashCode() ?? 0);
-            }
-        }
-
+    protected CallComparer() {
     }
 
-    /// <summary>
-    /// In der Codegenerierung werden Exits nicht unterschieden
-    /// </summary>
-    class FoldExitsCallComparer: CallComparer {
+    public static readonly IEqualityComparer<Call> Default   = new CallComparer();
+    public static readonly IEqualityComparer<Call> FoldExits = new FoldExitsCallComparer();
 
-        public override bool Equals(Call x, Call y) {
-            if (base.Equals(x, y)) {
-                return true;
-            }
+    public virtual bool Equals(Call x, Call y) {
 
-            return x?.Node is IExitNodeSymbol && y?.Node is IExitNodeSymbol;
+        if (x == null && y == null) {
+            return true;
         }
 
-        public override int GetHashCode(Call call) {
-            if (call.Node is IExitNodeSymbol) {
-                return typeof(IExitNodeSymbol).GetHashCode();
-            }
-
-            return base.GetHashCode();
-
+        if (x == null | y == null) {
+            return false;
         }
+
+        return x.Node.Name      == y.Node.Name &&
+               x.EdgeMode?.Name == y.EdgeMode?.Name;
+    }
+
+    public virtual int GetHashCode(Call call) {
+        unchecked {
+            return (call.Node.Name.GetHashCode() * 397) ^ (call.EdgeMode?.Name?.GetHashCode() ?? 0);
+        }
+    }
+
+}
+
+/// <summary>
+/// In der Codegenerierung werden Exits nicht unterschieden
+/// </summary>
+class FoldExitsCallComparer: CallComparer {
+
+    public override bool Equals(Call x, Call y) {
+        if (base.Equals(x, y)) {
+            return true;
+        }
+
+        return x?.Node is IExitNodeSymbol && y?.Node is IExitNodeSymbol;
+    }
+
+    public override int GetHashCode(Call call) {
+        if (call.Node is IExitNodeSymbol) {
+            return typeof(IExitNodeSymbol).GetHashCode();
+        }
+
+        return base.GetHashCode();
 
     }
 

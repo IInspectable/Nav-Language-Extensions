@@ -9,24 +9,22 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+namespace Pharmatechnik.Nav.Language.Extension.CodeFixes; 
 
-    class RemoveSignalTriggerQuotationMarksSuggestedAction: CodeFixSuggestedAction<RemoveSignalTriggerQuotationMarksCodeFix> {
+class RemoveSignalTriggerQuotationMarksSuggestedAction: CodeFixSuggestedAction<RemoveSignalTriggerQuotationMarksCodeFix> {
 
-        public RemoveSignalTriggerQuotationMarksSuggestedAction(RemoveSignalTriggerQuotationMarksCodeFix codeFix,
-                                                                CodeFixSuggestedActionParameter parameter,
-                                                                CodeFixSuggestedActionContext context)
-            : base(context, parameter, codeFix) {
-        }
+    public RemoveSignalTriggerQuotationMarksSuggestedAction(RemoveSignalTriggerQuotationMarksCodeFix codeFix,
+                                                            CodeFixSuggestedActionParameter parameter,
+                                                            CodeFixSuggestedActionContext context)
+        : base(context, parameter, codeFix) {
+    }
 
-        public override ImageMoniker IconMoniker => ImageMonikers.DeleteQuotationMarks;
-        public override string       DisplayText => CodeFix.Name;
+    public override ImageMoniker IconMoniker => ImageMonikers.DeleteQuotationMarks;
+    public override string       DisplayText => CodeFix.Name;
 
-        protected override void Apply(CancellationToken cancellationToken) {
+    protected override void Apply(CancellationToken cancellationToken) {
 
-            ApplyTextChanges(CodeFix.GetTextChanges());
-        }
-
+        ApplyTextChanges(CodeFix.GetTextChanges());
     }
 
 }

@@ -11,22 +11,20 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.QuickInfo {
+namespace Pharmatechnik.Nav.Language.Extension.QuickInfo; 
 
-    [Export(typeof(IAsyncQuickInfoSourceProvider))]
-    [Name(QuickInfoSourceProviderNames.DebugQuickInfoSourceProvider)]
-    [Order(After = QuickInfoSourceProviderNames.DefaultQuickInfoPresenter)]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    class DebugQuickInfoSourceProvider: IAsyncQuickInfoSourceProvider {
+[Export(typeof(IAsyncQuickInfoSourceProvider))]
+[Name(QuickInfoSourceProviderNames.DebugQuickInfoSourceProvider)]
+[Order(After = QuickInfoSourceProviderNames.DefaultQuickInfoPresenter)]
+[ContentType(NavLanguageContentDefinitions.ContentType)]
+class DebugQuickInfoSourceProvider: IAsyncQuickInfoSourceProvider {
 
-        [ImportingConstructor]
-        public DebugQuickInfoSourceProvider(ITextStructureNavigatorSelectorService navigatorService, ITextBufferFactoryService textBufferFactoryService, CodeContentControlProvider codeContentControlProvider) {
-        }
+    [ImportingConstructor]
+    public DebugQuickInfoSourceProvider(ITextStructureNavigatorSelectorService navigatorService, ITextBufferFactoryService textBufferFactoryService, CodeContentControlProvider codeContentControlProvider) {
+    }
 
-        IAsyncQuickInfoSource IAsyncQuickInfoSourceProvider.TryCreateQuickInfoSource(ITextBuffer textBuffer) {
-            return new DebugQuickInfoSource(textBuffer);
-        }
-
+    IAsyncQuickInfoSource IAsyncQuickInfoSourceProvider.TryCreateQuickInfoSource(ITextBuffer textBuffer) {
+        return new DebugQuickInfoSource(textBuffer);
     }
 
 }

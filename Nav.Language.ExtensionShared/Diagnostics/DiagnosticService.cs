@@ -17,184 +17,183 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
+namespace Pharmatechnik.Nav.Language.Extension.Diagnostics; 
 
-    sealed class DiagnosticService : IDisposable {
+sealed class DiagnosticService : IDisposable {
 
-        readonly IWpfTextView _textView;
-        readonly ITagAggregator<DiagnosticErrorTag> _errorTagAggregator;
-        readonly IOutliningManagerService _outliningManagerService;
-        bool _waitingForAnalysis;
+    readonly IWpfTextView                       _textView;
+    readonly ITagAggregator<DiagnosticErrorTag> _errorTagAggregator;
+    readonly IOutliningManagerService           _outliningManagerService;
+    bool                                        _waitingForAnalysis;
 
-        [NotNull]
-        IReadOnlyDictionary<DiagnosticSeverity, ReadOnlyCollection<IMappingTagSpan<DiagnosticErrorTag>>> _diagnosticMapping;
-        DiagnosticSeverity? _worstSeverity;
+    [NotNull]
+    IReadOnlyDictionary<DiagnosticSeverity, ReadOnlyCollection<IMappingTagSpan<DiagnosticErrorTag>>> _diagnosticMapping;
+    DiagnosticSeverity? _worstSeverity;
         
-        DiagnosticService(IWpfTextView textView, IComponentModel componentModel) {
-            var viewTagAggregatorFactoryService = componentModel.GetService<IViewTagAggregatorFactoryService>();
+    DiagnosticService(IWpfTextView textView, IComponentModel componentModel) {
+        var viewTagAggregatorFactoryService = componentModel.GetService<IViewTagAggregatorFactoryService>();
             
-            _textView           = textView;
-            _outliningManagerService = componentModel.GetService<IOutliningManagerService>();
-            _errorTagAggregator = viewTagAggregatorFactoryService.CreateTagAggregator<DiagnosticErrorTag>(textView);
-            _diagnosticMapping  = new Dictionary<DiagnosticSeverity, ReadOnlyCollection<IMappingTagSpan<DiagnosticErrorTag>>>();
-            _waitingForAnalysis = true;
+        _textView                = textView;
+        _outliningManagerService = componentModel.GetService<IOutliningManagerService>();
+        _errorTagAggregator      = viewTagAggregatorFactoryService.CreateTagAggregator<DiagnosticErrorTag>(textView);
+        _diagnosticMapping       = new Dictionary<DiagnosticSeverity, ReadOnlyCollection<IMappingTagSpan<DiagnosticErrorTag>>>();
+        _waitingForAnalysis      = true;
             
-            _textView.Closed                       += OnTextViewClosed;
-            _textView.TextBuffer.Changed           += OnTextBufferChanged;
-            _errorTagAggregator.BatchedTagsChanged += OnBatchedTagsChanged;
+        _textView.Closed                       += OnTextViewClosed;
+        _textView.TextBuffer.Changed           += OnTextBufferChanged;
+        _errorTagAggregator.BatchedTagsChanged += OnBatchedTagsChanged;
 
-            // Evtl. gibt es bereits einen Syntaxbaum...
-            Invalidate();
-        }
+        // Evtl. gibt es bereits einen Syntaxbaum...
+        Invalidate();
+    }
 
-        public static DiagnosticService GetOrCreate(IWpfTextView textView) {
-            var componentModel = NavLanguagePackage.GetGlobalService<SComponentModel, IComponentModel>();
-            return textView.Properties.GetOrCreateSingletonProperty(() =>
-                new DiagnosticService(textView, componentModel));
-        }
+    public static DiagnosticService GetOrCreate(IWpfTextView textView) {
+        var componentModel = NavLanguagePackage.GetGlobalService<SComponentModel, IComponentModel>();
+        return textView.Properties.GetOrCreateSingletonProperty(() =>
+                                                                    new DiagnosticService(textView, componentModel));
+    }
 
-        public void Dispose() {
-            _textView.Properties.RemoveProperty(this);
+    public void Dispose() {
+        _textView.Properties.RemoveProperty(this);
 
-            _textView.Closed                       -= OnTextViewClosed;
-            _textView.TextBuffer.Changed           -= OnTextBufferChanged;
-            _errorTagAggregator.BatchedTagsChanged -= OnBatchedTagsChanged;
-            _errorTagAggregator?.Dispose();
-        }
+        _textView.Closed                       -= OnTextViewClosed;
+        _textView.TextBuffer.Changed           -= OnTextBufferChanged;
+        _errorTagAggregator.BatchedTagsChanged -= OnBatchedTagsChanged;
+        _errorTagAggregator?.Dispose();
+    }
 
-        void OnTextBufferChanged(object sender, TextContentChangedEventArgs e) {
-            OnDiagnosticsChanging();
-        }
+    void OnTextBufferChanged(object sender, TextContentChangedEventArgs e) {
+        OnDiagnosticsChanging();
+    }
 
-        void OnTextViewClosed(object sender, EventArgs e) {
-            Dispose();
-        }
+    void OnTextViewClosed(object sender, EventArgs e) {
+        Dispose();
+    }
 
-        void OnBatchedTagsChanged(object sender, BatchedTagsChangedEventArgs e) {
-            UpdateDiagnostics();
-        }
+    void OnBatchedTagsChanged(object sender, BatchedTagsChangedEventArgs e) {
+        UpdateDiagnostics();
+    }
         
-        public event EventHandler DiagnosticsChanging;
+    public event EventHandler DiagnosticsChanging;
 
-        void OnDiagnosticsChanging() {
+    void OnDiagnosticsChanging() {
 
-            _waitingForAnalysis = true;
+        _waitingForAnalysis = true;
 
-            DiagnosticsChanging?.Invoke(this, EventArgs.Empty);
+        DiagnosticsChanging?.Invoke(this, EventArgs.Empty);
+    }
+
+    public event EventHandler DiagnosticsChanged;
+
+    void OnDiagnosticsChanged() {
+
+        _waitingForAnalysis = false;
+
+        DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    [CanBeNull]
+    public DiagnosticSeverity? WorstSeverity {
+        get { return _worstSeverity; }
+    }
+
+    public bool NoErrorsOrWarnings {
+        get {
+            return CountDiagnosticsWithSeverity(DiagnosticSeverity.Error)   == 0 &&
+                   CountDiagnosticsWithSeverity(DiagnosticSeverity.Warning) == 0;
         }
+    }
 
-        public event EventHandler DiagnosticsChanged;
+    public bool WaitingForAnalysis {
+        get { return _waitingForAnalysis; }
+    }
 
-        void OnDiagnosticsChanged() {
+    public void Invalidate() {
 
-            _waitingForAnalysis = false;
+        OnDiagnosticsChanging();
 
-            DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
+        foreach(var modelService in _textView.BufferGraph
+                                             .GetTextBuffers(tb => SemanticModelService.TryGet(tb) != null)
+                                             .Select(SemanticModelService.TryGet)) {
+            modelService?.Invalidate();
         }
+    }
 
-        [CanBeNull]
-        public DiagnosticSeverity? WorstSeverity {
-            get { return _worstSeverity; }
-        }
+    public bool HasDiagnosticsWithSeverity(DiagnosticSeverity severity) {
+        return _diagnosticMapping.ContainsKey(severity);            
+    }
 
-        public bool NoErrorsOrWarnings {
-            get {
-                return CountDiagnosticsWithSeverity(DiagnosticSeverity.Error) == 0 &&
-                       CountDiagnosticsWithSeverity(DiagnosticSeverity.Warning) == 0;
-            }
-        }
+    public int CountDiagnosticsWithSeverity(DiagnosticSeverity severity) {
+        return HasDiagnosticsWithSeverity(severity) ? _diagnosticMapping[severity].Count: 0;
+    }
 
-        public bool WaitingForAnalysis {
-            get { return _waitingForAnalysis; }
-        }
+    public IEnumerable<IMappingTagSpan<DiagnosticErrorTag>> GetDiagnosticsWithSeverity(DiagnosticSeverity severity) {
+        return (HasDiagnosticsWithSeverity(severity)? _diagnosticMapping[severity] : null) 
+            ?? Enumerable.Empty<IMappingTagSpan<DiagnosticErrorTag>>();
+    }
 
-        public void Invalidate() {
+    public bool CanGoToNextDiagnostic {
+        get { return _diagnosticMapping.Count > 0; }
+    }
 
-            OnDiagnosticsChanging();
-
-            foreach(var modelService in _textView.BufferGraph
-                                                 .GetTextBuffers(tb => SemanticModelService.TryGet(tb) != null)
-                                                 .Select(SemanticModelService.TryGet)) {
-                modelService?.Invalidate();
-            }
-        }
-
-        public bool HasDiagnosticsWithSeverity(DiagnosticSeverity severity) {
-            return _diagnosticMapping.ContainsKey(severity);            
-        }
-
-        public int CountDiagnosticsWithSeverity(DiagnosticSeverity severity) {
-            return HasDiagnosticsWithSeverity(severity) ? _diagnosticMapping[severity].Count: 0;
-        }
-
-        public IEnumerable<IMappingTagSpan<DiagnosticErrorTag>> GetDiagnosticsWithSeverity(DiagnosticSeverity severity) {
-            return (HasDiagnosticsWithSeverity(severity)? _diagnosticMapping[severity] : null) 
-                    ?? Enumerable.Empty<IMappingTagSpan<DiagnosticErrorTag>>();
-        }
-
-        public bool CanGoToNextDiagnostic {
-            get { return _diagnosticMapping.Count> 0; }
-        }
-
-        public bool GoToNextDiagnostic() {
+    public bool GoToNextDiagnostic() {
             
-            var severities = new[] {
-                DiagnosticSeverity.Error,
-                DiagnosticSeverity.Warning,
-                DiagnosticSeverity.Suggestion};
+        var severities = new[] {
+            DiagnosticSeverity.Error,
+            DiagnosticSeverity.Warning,
+            DiagnosticSeverity.Suggestion};
 
-            return severities.Where(HasDiagnosticsWithSeverity)
-                             .Select(GoToNextDiagnostic)
-                             .FirstOrDefault();           
+        return severities.Where(HasDiagnosticsWithSeverity)
+                         .Select(GoToNextDiagnostic)
+                         .FirstOrDefault();           
+    }
+
+    public bool GoToNextDiagnostic(DiagnosticSeverity severity) {
+
+        if(!HasDiagnosticsWithSeverity(severity)) {
+            return false;
         }
 
-        public bool GoToNextDiagnostic(DiagnosticSeverity severity) {
-
-            if(!HasDiagnosticsWithSeverity(severity)) {
-                return false;
-            }
-
-            var caretPos = _textView.Caret.Position.BufferPosition;
+        var caretPos = _textView.Caret.Position.BufferPosition;
             
-            // TODO noch optimieren / überprüfen
-            foreach(var tagSpan in GetDiagnosticsWithSeverity(severity)
-                                      .Select(mappingTagSpan => _textView.MapToSingleSnapshotSpan(mappingTagSpan))) {
+        // TODO noch optimieren / überprüfen
+        foreach(var tagSpan in GetDiagnosticsWithSeverity(severity)
+                   .Select(mappingTagSpan => _textView.MapToSingleSnapshotSpan(mappingTagSpan))) {
 
-                if(tagSpan?.Span.Start > caretPos) {
-                    return GoToDiagnostic(tagSpan);
-                }
+            if(tagSpan?.Span.Start > caretPos) {
+                return GoToDiagnostic(tagSpan);
             }
-
-            var firstMappingTagSpan = GetDiagnosticsWithSeverity(severity).First();
-            var ts = _textView.MapToSingleSnapshotSpan(firstMappingTagSpan);            
-            return GoToDiagnostic(ts);
         }
+
+        var firstMappingTagSpan = GetDiagnosticsWithSeverity(severity).First();
+        var ts                  = _textView.MapToSingleSnapshotSpan(firstMappingTagSpan);            
+        return GoToDiagnostic(ts);
+    }
                 
-        void UpdateDiagnostics() {
+    void UpdateDiagnostics() {
 
-            var mappingSpan = _textView.BufferGraph.CreateMappingSpan(
-                                    new SnapshotSpan(_textView.TextSnapshot, 0, _textView.TextSnapshot.Length), 
-                                    SpanTrackingMode.EdgeInclusive);
+        var mappingSpan = _textView.BufferGraph.CreateMappingSpan(
+            new SnapshotSpan(_textView.TextSnapshot, 0, _textView.TextSnapshot.Length), 
+            SpanTrackingMode.EdgeInclusive);
 
-            var diagnosticMapping = _errorTagAggregator.GetTags(mappingSpan)
-                                                       .GroupBy(tagSpan => tagSpan.Tag.Diagnostic.Severity)
-                                                       .ToDictionary(
-                                                           grouping => grouping.Key,
-                                                           grouping => grouping.OrderBy(tags => tags.Tag.Diagnostic.Location.Start)
-                                                               .ToList()
-                                                               .AsReadOnly());
+        var diagnosticMapping = _errorTagAggregator.GetTags(mappingSpan)
+                                                   .GroupBy(tagSpan => tagSpan.Tag.Diagnostic.Severity)
+                                                   .ToDictionary(
+                                                        grouping => grouping.Key,
+                                                        grouping => grouping.OrderBy(tags => tags.Tag.Diagnostic.Location.Start)
+                                                                            .ToList()
+                                                                            .AsReadOnly());
 
-            _diagnosticMapping  = diagnosticMapping;
-            _worstSeverity      = diagnosticMapping.Keys.GetWorst();
+        _diagnosticMapping = diagnosticMapping;
+        _worstSeverity     = diagnosticMapping.Keys.GetWorst();
 
-            OnDiagnosticsChanged();
+        OnDiagnosticsChanged();
+    }
+
+    bool GoToDiagnostic(ITagSpan<DiagnosticErrorTag> tagSpan) {
+        if (tagSpan == null) {
+            return false;
         }
-
-        bool GoToDiagnostic(ITagSpan<DiagnosticErrorTag> tagSpan) {
-            if (tagSpan == null) {
-                return false;
-            }
-            return _textView.TryMoveCaretToAndEnsureVisible(tagSpan.Span.Start, _outliningManagerService);
-        }
+        return _textView.TryMoveCaretToAndEnsureVisible(tagSpan.Span.Start, _outliningManagerService);
     }
 }

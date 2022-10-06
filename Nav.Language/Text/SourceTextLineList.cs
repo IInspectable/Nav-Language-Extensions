@@ -6,76 +6,74 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Text {
+namespace Pharmatechnik.Nav.Language.Text; 
 
-    public abstract class SourceTextLineList: IReadOnlyList<SourceTextLine> {
+public abstract class SourceTextLineList: IReadOnlyList<SourceTextLine> {
 
-        public Enumerator GetEnumerator() {
-            return new Enumerator(this);
+    public Enumerator GetEnumerator() {
+        return new Enumerator(this);
+    }
+
+    IEnumerator<SourceTextLine> IEnumerable<SourceTextLine>.GetEnumerator() {
+        return GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+        return GetEnumerator();
+    }
+
+    public abstract int Count { get; }
+    public abstract SourceTextLine this[int index] { get; }
+
+    public struct Enumerator: IEnumerator<SourceTextLine>, IEnumerator {
+
+        private readonly SourceTextLineList _lines;
+        private          int                _index;
+
+        internal Enumerator(SourceTextLineList lines) {
+            _lines = lines;
+            _index = -1;
         }
 
-        IEnumerator<SourceTextLine> IEnumerable<SourceTextLine>.GetEnumerator() {
-            return GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() {
-            return GetEnumerator();
-        }
-
-        public abstract int Count { get; }
-        public abstract SourceTextLine this[int index] { get; }
-
-        public struct Enumerator: IEnumerator<SourceTextLine>, IEnumerator {
-
-            private readonly SourceTextLineList _lines;
-            private          int                _index;
-
-            internal Enumerator(SourceTextLineList lines) {
-                _lines = lines;
-                _index = -1;
-            }
-
-            public SourceTextLine Current {
-                get {
-                    var ndx = _index;
-                    if (ndx >= 0 && ndx < _lines.Count) {
-                        return _lines[ndx];
-                    }
-
-                    return default;
-                }
-            }
-
-            public bool MoveNext() {
-                if (_index < _lines.Count - 1) {
-                    _index = _index + 1;
-                    return true;
+        public SourceTextLine Current {
+            get {
+                var ndx = _index;
+                if (ndx >= 0 && ndx < _lines.Count) {
+                    return _lines[ndx];
                 }
 
-                return false;
+                return default;
+            }
+        }
+
+        public bool MoveNext() {
+            if (_index < _lines.Count - 1) {
+                _index = _index + 1;
+                return true;
             }
 
-            object IEnumerator.Current => Current;
+            return false;
+        }
 
-            bool IEnumerator.MoveNext() {
-                return MoveNext();
-            }
+        object IEnumerator.Current => Current;
 
-            void IEnumerator.Reset() {
-                _index = -1;
-            }
+        bool IEnumerator.MoveNext() {
+            return MoveNext();
+        }
 
-            void IDisposable.Dispose() {
-            }
+        void IEnumerator.Reset() {
+            _index = -1;
+        }
 
-            public override bool Equals(object obj) {
-                throw new NotSupportedException();
-            }
+        void IDisposable.Dispose() {
+        }
 
-            public override int GetHashCode() {
-                throw new NotSupportedException();
-            }
+        public override bool Equals(object obj) {
+            throw new NotSupportedException();
+        }
 
+        public override int GetHashCode() {
+            throw new NotSupportedException();
         }
 
     }

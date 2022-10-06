@@ -7,28 +7,27 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Images {
+namespace Pharmatechnik.Nav.Language.Extension.Images; 
 
-    sealed class ImageMonikerImageList: IVsImageMonikerImageList {
+sealed class ImageMonikerImageList: IVsImageMonikerImageList {
 
-        readonly ImmutableList<ImageMoniker> _imageMonikers;
+    readonly ImmutableList<ImageMoniker> _imageMonikers;
 
-        public ImageMonikerImageList(IEnumerable<ImageMoniker> imageMonikers) {
-            _imageMonikers = imageMonikers.ToImmutableList();
+    public ImageMonikerImageList(IEnumerable<ImageMoniker> imageMonikers) {
+        _imageMonikers = imageMonikers.ToImmutableList();
+    }
+
+    public ImageMonikerImageList(params ImageMoniker[] imageMonikers) {
+        _imageMonikers = imageMonikers.ToImmutableList();
+    }
+
+    public void GetImageMonikers(int firstImageIndex, int imageMonikerCount, ImageMoniker[] imageMonikers) {
+        for (int index = 0; index < imageMonikerCount; index++) {
+            imageMonikers[index] = _imageMonikers[index + firstImageIndex];
         }
+    }
 
-        public ImageMonikerImageList(params ImageMoniker[] imageMonikers) {
-            _imageMonikers = imageMonikers.ToImmutableList();
-        }
-
-        public void GetImageMonikers(int firstImageIndex, int imageMonikerCount, ImageMoniker[] imageMonikers) {
-            for (int index = 0; index < imageMonikerCount; index++) {
-                imageMonikers[index] = _imageMonikers[index + firstImageIndex];
-            }
-        }
-
-        public int ImageCount {
-            get { return _imageMonikers.Count; }
-        }
+    public int ImageCount {
+        get { return _imageMonikers.Count; }
     }
 }

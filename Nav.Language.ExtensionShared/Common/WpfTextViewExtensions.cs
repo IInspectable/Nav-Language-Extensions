@@ -14,91 +14,91 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
-    static class WpfTextViewExtensions {
+namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
-        public static SnapshotPoint? GetBufferPositionAtMousePosition(this IWpfTextView textView) {
+static class WpfTextViewExtensions {
 
-            Point position = Mouse.GetPosition(textView.VisualElement);
+    public static SnapshotPoint? GetBufferPositionAtMousePosition(this IWpfTextView textView) {
 
-            var viewportPoint = textView.ToViewportPoint(position);
-            var line = textView.TextViewLines.GetTextViewLineContainingYCoordinate(viewportPoint.Y);
-            var bufferPos = line?.GetBufferPositionFromXCoordinate(viewportPoint.X, true);
+        Point position = Mouse.GetPosition(textView.VisualElement);
 
-            return bufferPos;
+        var viewportPoint = textView.ToViewportPoint(position);
+        var line          = textView.TextViewLines.GetTextViewLineContainingYCoordinate(viewportPoint.Y);
+        var bufferPos     = line?.GetBufferPositionFromXCoordinate(viewportPoint.X, true);
+
+        return bufferPos;
+    }
+
+    public static Point ToViewportPoint(this IWpfTextView textView, Point position) {
+        return new Point(position.X + textView.ViewportLeft, position.Y + textView.ViewportTop);
+    }
+
+    [CanBeNull]
+    public static ITagSpan<T> MapToSingleSnapshotSpan<T>(this IWpfTextView textView, IMappingTagSpan<T> mappingTagSpan) where T: ITag {
+
+        if(mappingTagSpan == null || textView.TextSnapshot ==null) {
+            return null;
         }
 
-        public static Point ToViewportPoint(this IWpfTextView textView, Point position) {
-            return new Point(position.X + textView.ViewportLeft, position.Y + textView.ViewportTop);
+        var tagSpans = mappingTagSpan.Span.GetSpans(textView.TextSnapshot);
+        if (!tagSpans.Any()) {
+            return null;
         }
 
-        [CanBeNull]
-        public static ITagSpan<T> MapToSingleSnapshotSpan<T>(this IWpfTextView textView, IMappingTagSpan<T> mappingTagSpan) where T: ITag {
+        return new TagSpan<T>(tagSpans[0], mappingTagSpan.Tag);
+    }
 
-            if(mappingTagSpan == null || textView.TextSnapshot==null) {
-                return null;
-            }
+    [CanBeNull]
+    public static ITagSpan<GoToTag> GetGoToDefinitionTagSpanAtMousePosition(this IWpfTextView textView, ITagAggregator<GoToTag> tagAggregator) {
 
-            var tagSpans = mappingTagSpan.Span.GetSpans(textView.TextSnapshot);
-            if (!tagSpans.Any()) {
-                return null;
-            }
-
-            return new TagSpan<T>(tagSpans[0], mappingTagSpan.Tag);
+        var spanAtMousePos = textView.GetBufferPositionAtMousePosition().ToSnapshotSpan();
+        if (spanAtMousePos == null) {
+            return null;
         }
 
-        [CanBeNull]
-        public static ITagSpan<GoToTag> GetGoToDefinitionTagSpanAtMousePosition(this IWpfTextView textView, ITagAggregator<GoToTag> tagAggregator) {
+        var mappingTagSpan = tagAggregator.GetTags(spanAtMousePos.Value).FirstOrDefault();
 
-            var spanAtMousePos = textView.GetBufferPositionAtMousePosition().ToSnapshotSpan();
-            if (spanAtMousePos == null) {
-                return null;
-            }
+        return textView.MapToSingleSnapshotSpan(mappingTagSpan);
+    }
 
-            var mappingTagSpan = tagAggregator.GetTags(spanAtMousePos.Value).FirstOrDefault();
+    [CanBeNull]
+    public static ITagSpan<GoToTag> GetGoToDefinitionTagSpanAtCaretPosition(this IWpfTextView textView, ITagAggregator<GoToTag> tagAggregator) {
 
-            return textView.MapToSingleSnapshotSpan(mappingTagSpan);
-        }
-
-        [CanBeNull]
-        public static ITagSpan<GoToTag> GetGoToDefinitionTagSpanAtCaretPosition(this IWpfTextView textView, ITagAggregator<GoToTag> tagAggregator) {
-
-            var caretPosition = textView.Caret.Position.BufferPosition;
+        var caretPosition = textView.Caret.Position.BufferPosition;
             
-            // Wenn das Caret am Ende einer "Definition" steht, gehen wir ein Zeichen zurück, damit das "Definition-Tag" auch gefunden wird
-            // Bsp.: Foo|; <= Das Caret steht hinter Foo. Nach der Adaption: Fo|o; <= jetzt wird Foo potentiell gefunden
-            if (!SyntaxFacts.IsIdentifierCharacter(caretPosition.GetChar()) 
-                && caretPosition > caretPosition.GetContainingLine().Start &&
-                SyntaxFacts.IsIdentifierCharacter((caretPosition-1).GetChar())) {
-                caretPosition = caretPosition-1;
-            }
+        // Wenn das Caret am Ende einer "Definition" steht, gehen wir ein Zeichen zurück, damit das "Definition-Tag" auch gefunden wird
+        // Bsp.: Foo|; <= Das Caret steht hinter Foo. Nach der Adaption: Fo|o; <= jetzt wird Foo potentiell gefunden
+        if (!SyntaxFacts.IsIdentifierCharacter(caretPosition.GetChar()) 
+         && caretPosition > caretPosition.GetContainingLine().Start &&
+            SyntaxFacts.IsIdentifierCharacter((caretPosition -1).GetChar())) {
+            caretPosition = caretPosition -1;
+        }
             
-            var spanAtCaretPos = caretPosition.ToSnapshotSpan();
-            var mappingTagSpan = tagAggregator.GetTags(spanAtCaretPos).FirstOrDefault();
+        var spanAtCaretPos = caretPosition.ToSnapshotSpan();
+        var mappingTagSpan = tagAggregator.GetTags(spanAtCaretPos).FirstOrDefault();
 
-            return textView.MapToSingleSnapshotSpan(mappingTagSpan);
-        }
+        return textView.MapToSingleSnapshotSpan(mappingTagSpan);
+    }
 
-        public static void PrepareSizeToFit(this IWpfTextView view) {
-            view.LayoutChanged += (s, e) => {
-                ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
+    public static void PrepareSizeToFit(this IWpfTextView view) {
+        view.LayoutChanged += (s, e) => {
+            ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
 
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-                    view.VisualElement.Height = view.LineHeight * view.TextBuffer.CurrentSnapshot.LineCount;
-                    double width = view.VisualElement.Width;
-                    if (!IsNormal(view.MaxTextRightCoordinate))
-                        return;
-                    if (IsNormal(width) && view.MaxTextRightCoordinate <= width)
-                        return;
+                view.VisualElement.Height = view.LineHeight * view.TextBuffer.CurrentSnapshot.LineCount;
+                double width = view.VisualElement.Width;
+                if (!IsNormal(view.MaxTextRightCoordinate))
+                    return;
+                if (IsNormal(width) && view.MaxTextRightCoordinate <= width)
+                    return;
 
-                    view.VisualElement.Width = view.MaxTextRightCoordinate;
-                });
-            };
-        }
+                view.VisualElement.Width = view.MaxTextRightCoordinate;
+            });
+        };
+    }
 
-        static bool IsNormal(double value) {
-            return !double.IsNaN(value) && !double.IsInfinity(value);
-        }
+    static bool IsNormal(double value) {
+        return !double.IsNaN(value) && !double.IsInfinity(value);
     }
 }

@@ -6,31 +6,30 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-    public sealed class TaskDeclarationCodeInfo {
+public sealed class TaskDeclarationCodeInfo {
 
-        TaskDeclarationCodeInfo(ITaskDeclarationSymbol taskDeclarationSymbol) {
+    TaskDeclarationCodeInfo(ITaskDeclarationSymbol taskDeclarationSymbol) {
             
-            if (taskDeclarationSymbol == null) {
-                throw new ArgumentNullException(nameof(taskDeclarationSymbol));
-            }
-
-            Taskname        = taskDeclarationSymbol.Name ?? String.Empty;
-            NamespacePräfix = taskDeclarationSymbol.CodeNamespace;                
+        if (taskDeclarationSymbol == null) {
+            throw new ArgumentNullException(nameof(taskDeclarationSymbol));
         }
 
-        public string Taskname        { get; }
-        public string NamespacePräfix { get; }
-        public string WflNamespace => BuildQualifiedName(NamespacePräfix, CodeGenFacts.WflNamespaceSuffix);
-        public string FullyQualifiedBeginInterfaceName => BuildQualifiedName(WflNamespace, $"{CodeGenFacts.BeginInterfacePrefix}{Taskname.ToPascalcase()}{CodeGenFacts.WfsClassSuffix}");
+        Taskname        = taskDeclarationSymbol.Name ?? String.Empty;
+        NamespacePräfix = taskDeclarationSymbol.CodeNamespace;                
+    }
 
-        public static TaskDeclarationCodeInfo FromTaskDeclaration(ITaskDeclarationSymbol taskDeclarationSymbol) {
-            return new TaskDeclarationCodeInfo(taskDeclarationSymbol);
-        }
+    public string Taskname                         { get; }
+    public string NamespacePräfix                  { get; }
+    public string WflNamespace                     => BuildQualifiedName(NamespacePräfix, CodeGenFacts.WflNamespaceSuffix);
+    public string FullyQualifiedBeginInterfaceName => BuildQualifiedName(WflNamespace,    $"{CodeGenFacts.BeginInterfacePrefix}{Taskname.ToPascalcase()}{CodeGenFacts.WfsClassSuffix}");
 
-        static string BuildQualifiedName(params string[] identifier) {
-            return CodeGenFacts.BuildQualifiedName(identifier);
-        }
+    public static TaskDeclarationCodeInfo FromTaskDeclaration(ITaskDeclarationSymbol taskDeclarationSymbol) {
+        return new TaskDeclarationCodeInfo(taskDeclarationSymbol);
+    }
+
+    static string BuildQualifiedName(params string[] identifier) {
+        return CodeGenFacts.BuildQualifiedName(identifier);
     }
 }

@@ -1,10 +1,8 @@
-﻿namespace Pharmatechnik.Nav.Language.Extension.Completion {
+﻿namespace Pharmatechnik.Nav.Language.Extension.Completion; 
 
-    static class CompletionProviderNames {
+static class CompletionProviderNames {
 
-        public const string NavCompletionSourceProvider        = nameof(NavCompletionSourceProvider);
-        public const string NavCompletionCommitManagerProvider = nameof(NavCompletionCommitManagerProvider);
-
-    }
+    public const string NavCompletionSourceProvider        = nameof(NavCompletionSourceProvider);
+    public const string NavCompletionCommitManagerProvider = nameof(NavCompletionCommitManagerProvider);
 
 }

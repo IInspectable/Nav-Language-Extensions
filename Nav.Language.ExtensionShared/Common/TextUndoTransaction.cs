@@ -7,59 +7,58 @@ using Microsoft.VisualStudio.Text.Operations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
+namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
-    sealed class TextUndoTransaction: IDisposable {
+sealed class TextUndoTransaction: IDisposable {
 
-        readonly IEditorOperations _editorOperations;        
-        [CanBeNull]
-        ITextUndoTransaction _transaction;
-        bool _inTransaction;
+    readonly IEditorOperations _editorOperations;        
+    [CanBeNull]
+    ITextUndoTransaction _transaction;
+    bool _inTransaction;
 
-        public TextUndoTransaction(
-            string description,
-            ITextView textView,
-            ITextUndoHistoryRegistry undoHistoryRegistry,
-            IEditorOperationsFactoryService editorOperationsFactoryService) {
+    public TextUndoTransaction(
+        string description,
+        ITextView textView,
+        ITextUndoHistoryRegistry undoHistoryRegistry,
+        IEditorOperationsFactoryService editorOperationsFactoryService) {
 
-            _inTransaction    = true;
-            _editorOperations = editorOperationsFactoryService.GetEditorOperations(textView);
+        _inTransaction    = true;
+        _editorOperations = editorOperationsFactoryService.GetEditorOperations(textView);
 
-            var undoHistory = undoHistoryRegistry.GetHistory(textView.TextBuffer);
-            if (undoHistory != null) {
-                _transaction = undoHistory.CreateTransaction(description);
-                _editorOperations.AddBeforeTextBufferChangePrimitive();
-            }
+        var undoHistory = undoHistoryRegistry.GetHistory(textView.TextBuffer);
+        if (undoHistory != null) {
+            _transaction = undoHistory.CreateTransaction(description);
+            _editorOperations.AddBeforeTextBufferChangePrimitive();
         }
+    }
 
-        public void Dispose() {
-            EndTransaction();
-        }
+    public void Dispose() {
+        EndTransaction();
+    }
         
-        public void Commit() {
-            if (!_inTransaction) {
-                throw new InvalidOperationException("The transaction is already complete");
-            }
-
-            _editorOperations?.AddAfterTextBufferChangePrimitive();
-            _transaction?.Complete();
-
-            EndTransaction();
+    public void Commit() {
+        if (!_inTransaction) {
+            throw new InvalidOperationException("The transaction is already complete");
         }
 
-        public void Cancel() {
-            if (!_inTransaction) {
-                throw new InvalidOperationException("The transaction is already complete");
-            }
+        _editorOperations?.AddAfterTextBufferChangePrimitive();
+        _transaction?.Complete();
 
-            _transaction?.Cancel();
-            EndTransaction();
+        EndTransaction();
+    }
+
+    public void Cancel() {
+        if (!_inTransaction) {
+            throw new InvalidOperationException("The transaction is already complete");
         }
 
-        void EndTransaction() {
-            _inTransaction = false;
-            _transaction?.Dispose();
-            _transaction = null;
-        }
+        _transaction?.Cancel();
+        EndTransaction();
+    }
+
+    void EndTransaction() {
+        _inTransaction = false;
+        _transaction?.Dispose();
+        _transaction = null;
     }
 }

@@ -6,35 +6,33 @@ using System.Threading;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring; 
 
-    public static class IntroduceChoiceCodeFixProvider {
+public static class IntroduceChoiceCodeFixProvider {
 
-        public static IEnumerable<IntroduceChoiceCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
-            var visitor = new Visitor(context);
+    public static IEnumerable<IntroduceChoiceCodeFix> SuggestCodeFixes(CodeFixContext context, CancellationToken cancellationToken) {
+        var visitor = new Visitor(context);
 
-            return context.FindSymbols()
-                          .Select(symbol => visitor.Visit(symbol))
-                          .SelectMany(s => s)
-                          .Where(codeFix => codeFix != null && codeFix.CanApplyFix());
+        return context.FindSymbols()
+                      .Select(symbol => visitor.Visit(symbol))
+                      .SelectMany(s => s)
+                      .Where(codeFix => codeFix != null && codeFix.CanApplyFix());
+    }
+
+    sealed class Visitor: SymbolVisitor<IEnumerable<IntroduceChoiceCodeFix>> {
+
+        public Visitor(CodeFixContext context) {
+            Context = context;
         }
 
-        sealed class Visitor: SymbolVisitor<IEnumerable<IntroduceChoiceCodeFix>> {
+        CodeFixContext Context { get; }
 
-            public Visitor(CodeFixContext context) {
-                Context = context;
-            }
+        protected override IEnumerable<IntroduceChoiceCodeFix> DefaultVisit(ISymbol symbol) {
+            yield break;
+        }
 
-            CodeFixContext Context { get; }
-
-            protected override IEnumerable<IntroduceChoiceCodeFix> DefaultVisit(ISymbol symbol) {
-                yield break;
-            }
-
-            public override IEnumerable<IntroduceChoiceCodeFix> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
-                yield return new IntroduceChoiceCodeFix(nodeReferenceSymbol, Context);
-            }
-
+        public override IEnumerable<IntroduceChoiceCodeFix> VisitNodeReferenceSymbol(INodeReferenceSymbol nodeReferenceSymbol) {
+            yield return new IntroduceChoiceCodeFix(nodeReferenceSymbol, Context);
         }
 
     }

@@ -11,250 +11,248 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    [Serializable]
-    [DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
-    public abstract partial class SyntaxNode: IExtent {
+[Serializable]
+[DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
+public abstract partial class SyntaxNode: IExtent {
 
-        List<SyntaxNode> _childNodes;
-        SyntaxTree       _syntaxTree;
-        SyntaxNode       _parent;
+    List<SyntaxNode> _childNodes;
+    SyntaxTree       _syntaxTree;
+    SyntaxNode       _parent;
 
-        internal SyntaxNode(TextExtent extent) {
-            Extent = extent;
+    internal SyntaxNode(TextExtent extent) {
+        Extent = extent;
+    }
+
+    internal void FinalConstruct(SyntaxTree syntaxTree, SyntaxNode parent) {
+
+        EnsureConstructionMode();
+
+        _syntaxTree = syntaxTree;
+        _parent     = parent;
+
+        if (_childNodes == null) {
+            return;
         }
 
-        internal void FinalConstruct(SyntaxTree syntaxTree, SyntaxNode parent) {
-
-            EnsureConstructionMode();
-
-            _syntaxTree = syntaxTree;
-            _parent     = parent;
-
-            if (_childNodes == null) {
-                return;
-            }
-
-            foreach (var child in _childNodes) {
-                child.FinalConstruct(syntaxTree, this);
-            }
+        foreach (var child in _childNodes) {
+            child.FinalConstruct(syntaxTree, this);
         }
+    }
 
-        public int Start  => Extent.Start;
-        public int End    => Extent.End;
-        public int Length => Extent.Length;
+    public int Start  => Extent.Start;
+    public int End    => Extent.End;
+    public int Length => Extent.Length;
 
-        public TextExtent Extent { get; }
+    public TextExtent Extent { get; }
 
-        [CanBeNull]
-        public SyntaxNode Parent {
-            get {
-                EnsureConstructed();
-                return _parent;
-            }
-        }
-
-        public Location GetLocation() {
+    [CanBeNull]
+    public SyntaxNode Parent {
+        get {
             EnsureConstructed();
-            return SyntaxTree.SourceText.GetLocation(Extent);
+            return _parent;
         }
+    }
 
-        [NotNull]
-        public IEnumerable<SyntaxToken> ChildTokens() {
-            return SyntaxTree.Tokens[Extent].Where(token => token.Parent == this);
-        }
+    public Location GetLocation() {
+        EnsureConstructed();
+        return SyntaxTree.SourceText.GetLocation(Extent);
+    }
 
-        static readonly IReadOnlyList<SyntaxNode> EmptyNodeList = new List<SyntaxNode>();
+    [NotNull]
+    public IEnumerable<SyntaxToken> ChildTokens() {
+        return SyntaxTree.Tokens[Extent].Where(token => token.Parent == this);
+    }
 
-        [NotNull]
-        public IReadOnlyList<SyntaxNode> ChildNodes() {
-            EnsureConstructed();
-            return _childNodes ?? EmptyNodeList;
-        }
+    static readonly IReadOnlyList<SyntaxNode> EmptyNodeList = new List<SyntaxNode>();
 
-        [NotNull]
-        public IEnumerable<SyntaxNode> DescendantNodes() {
-            return DescendantNodes<SyntaxNode>();
-        }
+    [NotNull]
+    public IReadOnlyList<SyntaxNode> ChildNodes() {
+        EnsureConstructed();
+        return _childNodes ?? EmptyNodeList;
+    }
 
-        [NotNull]
-        public IEnumerable<SyntaxNode> DescendantNodesAndSelf() {
-            return DescendantNodesAndSelf<SyntaxNode>();
-        }
+    [NotNull]
+    public IEnumerable<SyntaxNode> DescendantNodes() {
+        return DescendantNodes<SyntaxNode>();
+    }
 
-        [NotNull]
-        public IEnumerable<T> DescendantNodes<T>() where T : SyntaxNode {
-            return DescendantNodesAndSelfImpl<T>(includeSelf: false);
-        }
+    [NotNull]
+    public IEnumerable<SyntaxNode> DescendantNodesAndSelf() {
+        return DescendantNodesAndSelf<SyntaxNode>();
+    }
 
-        [NotNull]
-        public IEnumerable<T> DescendantNodesAndSelf<T>() where T : SyntaxNode {
-            return DescendantNodesAndSelfImpl<T>(includeSelf: true);
-        }
+    [NotNull]
+    public IEnumerable<T> DescendantNodes<T>() where T : SyntaxNode {
+        return DescendantNodesAndSelfImpl<T>(includeSelf: false);
+    }
 
-        [NotNull]
-        IEnumerable<T> DescendantNodesAndSelfImpl<T>(bool includeSelf) where T : SyntaxNode {
-            EnsureConstructed();
-            if (includeSelf && this is T) {
-                yield return (T) this;
+    [NotNull]
+    public IEnumerable<T> DescendantNodesAndSelf<T>() where T : SyntaxNode {
+        return DescendantNodesAndSelfImpl<T>(includeSelf: true);
+    }
 
-                if (typeof(T) == GetType() && PromiseNoDescendantNodeOfSameType) {
-                    yield break;
-                }
-            }
+    [NotNull]
+    IEnumerable<T> DescendantNodesAndSelfImpl<T>(bool includeSelf) where T : SyntaxNode {
+        EnsureConstructed();
+        if (includeSelf && this is T) {
+            yield return (T) this;
 
-            foreach (var node in ChildNodes().SelectMany(child => child.DescendantNodesAndSelf<T>())) {
-                yield return node;
-            }
-        }
-
-        /// <summary>
-        /// Für Knoten, die sehr weit "oben" liegen, kann die Implementierung von DescendantNodes&lt;T&gt;
-        /// massiv beschleunigt werden, wenn sichergestellt werden kann, dass ein Knoten keine untergeordnenten 
-        /// Knoten vom selben Typ haben kann, und deshalb die Suche in den Kindknoten vorzeitig abgebrochen
-        /// werden kann.
-        /// Eigentlich müsste diese Eigenschaft systematisch überschrieben werden. Bisweilen werden hiermit nur
-        /// die Hotspots optimiert.
-        /// </summary>
-        private protected virtual bool PromiseNoDescendantNodeOfSameType => false;
-
-        /// <summary>
-        /// Gets a list of ancestor nodes
-        /// </summary>
-        public IEnumerable<SyntaxNode> Ancestors() {
-            return Parent?.AncestorsAndSelf() ?? Enumerable.Empty<SyntaxNode>();
-        }
-
-        /// <summary>
-        /// Gets a list of ancestor nodes (including this node) 
-        /// </summary>
-        public IEnumerable<SyntaxNode> AncestorsAndSelf() {
-            for (var node = this; node != null; node = node.Parent) {
-                yield return node;
+            if (typeof(T) == GetType() && PromiseNoDescendantNodeOfSameType) {
+                yield break;
             }
         }
 
-        public SyntaxToken FindToken(int position) {
-           return SyntaxTree.Tokens.FindAtPosition(position);          
+        foreach (var node in ChildNodes().SelectMany(child => child.DescendantNodesAndSelf<T>())) {
+            yield return node;
         }
+    }
 
-        public SyntaxNode FindNode(int position) {
-            var token = SyntaxTree.Tokens.FindAtPosition(position);
-            if (token.IsMissing) {
-                return null;
-            }
+    /// <summary>
+    /// Für Knoten, die sehr weit "oben" liegen, kann die Implementierung von DescendantNodes&lt;T&gt;
+    /// massiv beschleunigt werden, wenn sichergestellt werden kann, dass ein Knoten keine untergeordnenten 
+    /// Knoten vom selben Typ haben kann, und deshalb die Suche in den Kindknoten vorzeitig abgebrochen
+    /// werden kann.
+    /// Eigentlich müsste diese Eigenschaft systematisch überschrieben werden. Bisweilen werden hiermit nur
+    /// die Hotspots optimiert.
+    /// </summary>
+    private protected virtual bool PromiseNoDescendantNodeOfSameType => false;
 
-            if (Extent.Contains(token.Extent)) {
-                return token.Parent;
-            }
+    /// <summary>
+    /// Gets a list of ancestor nodes
+    /// </summary>
+    public IEnumerable<SyntaxNode> Ancestors() {
+        return Parent?.AncestorsAndSelf() ?? Enumerable.Empty<SyntaxNode>();
+    }
 
+    /// <summary>
+    /// Gets a list of ancestor nodes (including this node) 
+    /// </summary>
+    public IEnumerable<SyntaxNode> AncestorsAndSelf() {
+        for (var node = this; node != null; node = node.Parent) {
+            yield return node;
+        }
+    }
+
+    public SyntaxToken FindToken(int position) {
+        return SyntaxTree.Tokens.FindAtPosition(position);          
+    }
+
+    public SyntaxNode FindNode(int position) {
+        var token = SyntaxTree.Tokens.FindAtPosition(position);
+        if (token.IsMissing) {
             return null;
         }
 
-        public TextExtent GetFullExtent(bool onlyWhiteSpace = false) {
-            return TextExtent.FromBounds(GetLeadingTriviaExtent(onlyWhiteSpace).Start, GetTrailingTriviaExtent(onlyWhiteSpace).End);
+        if (Extent.Contains(token.Extent)) {
+            return token.Parent;
         }
 
-        public TextExtent GetLeadingTriviaExtent(bool onlyWhiteSpace = false) {
-            var isTrivia      = GetIsTriviaFunc(onlyWhiteSpace);
-            var nodeStartLine = SyntaxTree.SourceText.GetTextLineAtPosition(Start);
-            var leadingExtent = TextExtent.FromBounds(nodeStartLine.Extent.Start, Start);
+        return null;
+    }
 
-            var start = Start;
-            // Wenn  bis zum Zeilenanfang nur Trivia Tokens, werden alle vorigen Zeilen, die nur aus Trivias bestehen, auch mit dazu genommen
-            if (SyntaxTree.Tokens[leadingExtent].All(token => isTrivia(token.Classification))) {
-                // Trivia geht mindestens zum Zeilenanfang der Node
-                start = leadingExtent.Start;
-                // Jetzt alle vorigen Zeilen durchlaufen
-                var line = nodeStartLine.Line - 1;
-                while (line >= 0) {
+    public TextExtent GetFullExtent(bool onlyWhiteSpace = false) {
+        return TextExtent.FromBounds(GetLeadingTriviaExtent(onlyWhiteSpace).Start, GetTrailingTriviaExtent(onlyWhiteSpace).End);
+    }
 
-                    var lineExtent = SyntaxTree.SourceText.TextLines[line].Extent;
-                    if (!SyntaxTree.Tokens[lineExtent].All(token => isTrivia(token.Classification))) {
-                        // Zeile besteht nicht nur aus Trivias
-                        break;
-                    }
+    public TextExtent GetLeadingTriviaExtent(bool onlyWhiteSpace = false) {
+        var isTrivia      = GetIsTriviaFunc(onlyWhiteSpace);
+        var nodeStartLine = SyntaxTree.SourceText.GetTextLineAtPosition(Start);
+        var leadingExtent = TextExtent.FromBounds(nodeStartLine.Extent.Start, Start);
 
-                    start =  lineExtent.Start;
-                    line  -= 1;
+        var start = Start;
+        // Wenn  bis zum Zeilenanfang nur Trivia Tokens, werden alle vorigen Zeilen, die nur aus Trivias bestehen, auch mit dazu genommen
+        if (SyntaxTree.Tokens[leadingExtent].All(token => isTrivia(token.Classification))) {
+            // Trivia geht mindestens zum Zeilenanfang der Node
+            start = leadingExtent.Start;
+            // Jetzt alle vorigen Zeilen durchlaufen
+            var line = nodeStartLine.Line - 1;
+            while (line >= 0) {
+
+                var lineExtent = SyntaxTree.SourceText.TextLines[line].Extent;
+                if (!SyntaxTree.Tokens[lineExtent].All(token => isTrivia(token.Classification))) {
+                    // Zeile besteht nicht nur aus Trivias
+                    break;
                 }
-            }
 
-            return TextExtent.FromBounds(start, Start);
-        }
-
-        // Die Trailing Trivias gehen bis zum nächsten Token, respektive zum Ende der Zeile
-        public TextExtent GetTrailingTriviaExtent(bool onlyWhiteSpace = false) {
-
-            var isTrivia       = GetIsTriviaFunc(onlyWhiteSpace);
-            var nodeEndLine    = SyntaxTree.SourceText.GetTextLineAtPosition(End);
-            var trailingExtent = TextExtent.FromBounds(End, nodeEndLine.Extent.End);
-
-            var endToken = SyntaxTree.Tokens[trailingExtent]
-                                     .SkipWhile(token => isTrivia(token.Classification))
-                                     .FirstOrDefault();
-
-            var end = endToken.IsMissing ? nodeEndLine.Extent.End : endToken.Start;
-
-            return TextExtent.FromBounds(End, end);
-        }
-
-        static Func<TextClassification, bool> GetIsTriviaFunc(bool onlyWhiteSpace = false) {
-            return onlyWhiteSpace ? (c => c == TextClassification.Whitespace) : new Func<TextClassification, bool>(SyntaxFacts.IsTrivia);
-        }
-
-        [NotNull]
-        public SyntaxTree SyntaxTree {
-            get {
-                EnsureConstructed();
-                return _syntaxTree;
+                start =  lineExtent.Start;
+                line  -= 1;
             }
         }
 
-        protected void AddChildNode(SyntaxNode syntaxNode) {
+        return TextExtent.FromBounds(start, Start);
+    }
+
+    // Die Trailing Trivias gehen bis zum nächsten Token, respektive zum Ende der Zeile
+    public TextExtent GetTrailingTriviaExtent(bool onlyWhiteSpace = false) {
+
+        var isTrivia       = GetIsTriviaFunc(onlyWhiteSpace);
+        var nodeEndLine    = SyntaxTree.SourceText.GetTextLineAtPosition(End);
+        var trailingExtent = TextExtent.FromBounds(End, nodeEndLine.Extent.End);
+
+        var endToken = SyntaxTree.Tokens[trailingExtent]
+                                 .SkipWhile(token => isTrivia(token.Classification))
+                                 .FirstOrDefault();
+
+        var end = endToken.IsMissing ? nodeEndLine.Extent.End : endToken.Start;
+
+        return TextExtent.FromBounds(End, end);
+    }
+
+    static Func<TextClassification, bool> GetIsTriviaFunc(bool onlyWhiteSpace = false) {
+        return onlyWhiteSpace ? (c => c == TextClassification.Whitespace) : new Func<TextClassification, bool>(SyntaxFacts.IsTrivia);
+    }
+
+    [NotNull]
+    public SyntaxTree SyntaxTree {
+        get {
+            EnsureConstructed();
+            return _syntaxTree;
+        }
+    }
+
+    protected void AddChildNode(SyntaxNode syntaxNode) {
+        EnsureConstructionMode();
+        EnsureChildNodes();
+        if (syntaxNode != null) {
+            _childNodes.Add(syntaxNode);
+        }
+    }
+
+    protected void AddChildNodes(IEnumerable<SyntaxNode> syntaxNodes) {
+        EnsureConstructionMode();
+        EnsureChildNodes();
+        foreach (var node in syntaxNodes) {
+            AddChildNode(node);
+        }
+    }
+
+    void EnsureConstructed() {
+        if (_syntaxTree == null) {
+            throw new InvalidOperationException();
+        }
+    }
+
+    void EnsureChildNodes() {
+        if (_childNodes == null) {
             EnsureConstructionMode();
-            EnsureChildNodes();
-            if (syntaxNode != null) {
-                _childNodes.Add(syntaxNode);
-            }
+            _childNodes = new List<SyntaxNode>();
         }
+    }
 
-        protected void AddChildNodes(IEnumerable<SyntaxNode> syntaxNodes) {
-            EnsureConstructionMode();
-            EnsureChildNodes();
-            foreach (var node in syntaxNodes) {
-                AddChildNode(node);
-            }
+    void EnsureConstructionMode() {
+        if (_syntaxTree != null) {
+            throw new InvalidOperationException();
         }
+    }
 
-        void EnsureConstructed() {
-            if (_syntaxTree == null) {
-                throw new InvalidOperationException();
-            }
-        }
+    public override string ToString() {
+        return SyntaxTree.SourceText.Substring(Start, Length);
+    }
 
-        void EnsureChildNodes() {
-            if (_childNodes == null) {
-                EnsureConstructionMode();
-                _childNodes = new List<SyntaxNode>();
-            }
-        }
-
-        void EnsureConstructionMode() {
-            if (_syntaxTree != null) {
-                throw new InvalidOperationException();
-            }
-        }
-
-        public override string ToString() {
-            return SyntaxTree.SourceText.Substring(Start, Length);
-        }
-
-        public string ToDebuggerDisplayString() {
-            return $"{Extent} {GetType().Name}";
-        }
-
+    public string ToDebuggerDisplayString() {
+        return $"{Extent} {GetType().Name}";
     }
 
 }

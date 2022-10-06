@@ -13,83 +13,83 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo {
-    sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGoToTag, IntraTextGoToAdornment>, IDisposable {
+namespace Pharmatechnik.Nav.Language.Extension.CSharp.GoTo; 
 
-        static readonly Logger Logger = Logger.Create<IntraTextGoToAdornmentTagger>();
+sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGoToTag, IntraTextGoToAdornment>, IDisposable {
 
-        readonly ITagAggregator<IntraTextGoToTag> _intraTextGoToTagger;
-        readonly GoToLocationService _goToLocationService;
+    static readonly Logger Logger = Logger.Create<IntraTextGoToAdornmentTagger>();
 
-        IntraTextGoToAdornmentTagger(IWpfTextView textView, ITagAggregator<IntraTextGoToTag> intraTextGoToTagger, GoToLocationService goToLocationService)
-            : base(textView) {
+    readonly ITagAggregator<IntraTextGoToTag> _intraTextGoToTagger;
+    readonly GoToLocationService              _goToLocationService;
 
-            _intraTextGoToTagger = intraTextGoToTagger;
-            _goToLocationService = goToLocationService;
+    IntraTextGoToAdornmentTagger(IWpfTextView textView, ITagAggregator<IntraTextGoToTag> intraTextGoToTagger, GoToLocationService goToLocationService)
+        : base(textView) {
 
-            intraTextGoToTagger.TagsChanged += OnTagsChanged;
+        _intraTextGoToTagger = intraTextGoToTagger;
+        _goToLocationService = goToLocationService;
 
-            Logger.Info($"{nameof(IntraTextGoToAdornmentTagger)}.Ctor");
-        }
+        intraTextGoToTagger.TagsChanged += OnTagsChanged;
 
-        public override void Dispose() {
-            base.Dispose();
+        Logger.Info($"{nameof(IntraTextGoToAdornmentTagger)}.Ctor");
+    }
 
-            _intraTextGoToTagger.TagsChanged -= OnTagsChanged;
-            _intraTextGoToTagger.Dispose();
+    public override void Dispose() {
+        base.Dispose();
 
-            TextView.Properties.RemoveProperty(typeof(IntraTextGoToAdornmentTagger));
+        _intraTextGoToTagger.TagsChanged -= OnTagsChanged;
+        _intraTextGoToTagger.Dispose();
 
-            Logger.Info($"{nameof(IntraTextGoToAdornmentTagger)}.{nameof(Dispose)}");
-        }
+        TextView.Properties.RemoveProperty(typeof(IntraTextGoToAdornmentTagger));
 
-        internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> intraTextGoToTagger, GoToLocationService goToLocationService) {
-            return view.GetOrCreateAutoClosingProperty( v => new IntraTextGoToAdornmentTagger(
-                textView           : view, 
-                intraTextGoToTagger: intraTextGoToTagger.Value, 
-                goToLocationService: goToLocationService));
-        }
+        Logger.Info($"{nameof(IntraTextGoToAdornmentTagger)}.{nameof(Dispose)}");
+    }
 
-        void OnTagsChanged(object sender, TagsChangedEventArgs e) {
+    internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> intraTextGoToTagger, GoToLocationService goToLocationService) {
+        return view.GetOrCreateAutoClosingProperty( v => new IntraTextGoToAdornmentTagger(
+                                                        textView           : view, 
+                                                        intraTextGoToTagger: intraTextGoToTagger.Value, 
+                                                        goToLocationService: goToLocationService));
+    }
 
-            InvalidateSpans(new List<SnapshotSpan> {
-                TextView.TextBuffer.CurrentSnapshot.GetFullSpan()
-            });
-        }
+    void OnTagsChanged(object sender, TagsChangedEventArgs e) {
+
+        InvalidateSpans(new List<SnapshotSpan> {
+            TextView.TextBuffer.CurrentSnapshot.GetFullSpan()
+        });
+    }
         
-        protected override IEnumerable<Tuple<SnapshotSpan, PositionAffinity?, IntraTextGoToTag>> GetAdornmentData(NormalizedSnapshotSpanCollection spans) {
+    protected override IEnumerable<Tuple<SnapshotSpan, PositionAffinity?, IntraTextGoToTag>> GetAdornmentData(NormalizedSnapshotSpanCollection spans) {
 
-            if (spans.Count == 0) {
-                yield break;
+        if (spans.Count == 0) {
+            yield break;
+        }
+
+        var snapshot        = spans[0].Snapshot;
+        var mappingTagSpans = _intraTextGoToTagger.GetTags(spans);
+
+        foreach(IMappingTagSpan<IntraTextGoToTag> dataTagSpan in mappingTagSpans) {
+
+            NormalizedSnapshotSpanCollection goToTagSpans = dataTagSpan.Span.GetSpans(snapshot);
+
+            // Ignore data tags that are split by projection.
+            // This is theoretically possible but unlikely in current scenarios.
+            if(goToTagSpans.Count != 1) {
+                continue;
             }
 
-            var snapshot        = spans[0].Snapshot;
-            var mappingTagSpans = _intraTextGoToTagger.GetTags(spans);
+            // Uns interessiert nur das Ende des Spans
+            var adornmentSpan = new SnapshotSpan(goToTagSpans[0].End, 0);
 
-            foreach(IMappingTagSpan<IntraTextGoToTag> dataTagSpan in mappingTagSpans) {
-
-                NormalizedSnapshotSpanCollection goToTagSpans = dataTagSpan.Span.GetSpans(snapshot);
-
-                // Ignore data tags that are split by projection.
-                // This is theoretically possible but unlikely in current scenarios.
-                if(goToTagSpans.Count != 1) {
-                    continue;
-                }
-
-                // Uns interessiert nur das Ende des Spans
-                var adornmentSpan = new SnapshotSpan(goToTagSpans[0].End, 0);
-
-                yield return Tuple.Create(adornmentSpan, (PositionAffinity?) PositionAffinity.Successor, dataTagSpan.Tag);
-            }
+            yield return Tuple.Create(adornmentSpan, (PositionAffinity?) PositionAffinity.Successor, dataTagSpan.Tag);
         }
+    }
 
-        protected override IntraTextGoToAdornment CreateAdornment(IntraTextGoToTag dataTag, SnapshotSpan span) {
-            return new IntraTextGoToAdornment(dataTag, TextView,span, _goToLocationService);
-        }
+    protected override IntraTextGoToAdornment CreateAdornment(IntraTextGoToTag dataTag, SnapshotSpan span) {
+        return new IntraTextGoToAdornment(dataTag, TextView, span, _goToLocationService);
+    }
 
-        protected override bool UpdateAdornment(IntraTextGoToAdornment adornment, IntraTextGoToTag dataTag) {
-            adornment.Update(dataTag);
-            return true;
-        }
+    protected override bool UpdateAdornment(IntraTextGoToAdornment adornment, IntraTextGoToTag dataTag) {
+        adornment.Update(dataTag);
+        return true;
     }
 }

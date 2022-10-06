@@ -5,52 +5,51 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Notification {
+namespace Pharmatechnik.Nav.Language.Extension.Notification; 
 
-    class WeakListenerManager<T> where T :class {
+class WeakListenerManager<T> where T :class {
 
-        readonly List<WeakReference<T>> _listeners;
+    readonly List<WeakReference<T>> _listeners;
 
-        public WeakListenerManager() {
-            _listeners = new List<WeakReference<T>>();
-        }
+    public WeakListenerManager() {
+        _listeners = new List<WeakReference<T>>();
+    }
 
-        public void InvokeListener(Action<T> action) {
+    public void InvokeListener(Action<T> action) {
 
-            lock (_listeners) {
+        lock (_listeners) {
 
-                var toRemove = new List<WeakReference<T>>();
+            var toRemove = new List<WeakReference<T>>();
 
-                foreach (var entry in _listeners) {
-                    if (entry.TryGetTarget(out var listener)) {
-                        action(listener);
-                    } else {
-                        toRemove.Add(entry);
-                    }
-                }
-
-                foreach (var entry in toRemove) {
-                    _listeners.Remove(entry);
+            foreach (var entry in _listeners) {
+                if (entry.TryGetTarget(out var listener)) {
+                    action(listener);
+                } else {
+                    toRemove.Add(entry);
                 }
             }
-        }
 
-        public void AddListener(T listener) {
-            lock (_listeners) {
-                _listeners.Add(new WeakReference<T>(listener));
+            foreach (var entry in toRemove) {
+                _listeners.Remove(entry);
             }
         }
+    }
 
-        public void RemoveListener(T listener) {
-            lock (_listeners) {
+    public void AddListener(T listener) {
+        lock (_listeners) {
+            _listeners.Add(new WeakReference<T>(listener));
+        }
+    }
 
-                _listeners.RemoveAll(entry => {
-                    if(entry.TryGetTarget(out var target)) {
-                        return target == listener;
-                    }
-                    return false;
-                });
-            }
+    public void RemoveListener(T listener) {
+        lock (_listeners) {
+
+            _listeners.RemoveAll(entry => {
+                if(entry.TryGetTarget(out var target)) {
+                    return target == listener;
+                }
+                return false;
+            });
         }
     }
 }

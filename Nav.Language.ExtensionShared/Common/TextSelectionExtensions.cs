@@ -7,16 +7,15 @@ using Microsoft.VisualStudio.Text.Editor;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
+namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
-    static class TextSelectionExtensions {
+static class TextSelectionExtensions {
 
-        public static NormalizedSnapshotSpanCollection GetSnapshotSpansOnBuffer(this ITextSelection selection, ITextBuffer subjectBuffer) {
-            var list = new List<SnapshotSpan>();
-            foreach(var snapshotSpan in selection.SelectedSpans) {
-                list.AddRange(selection.TextView.BufferGraph.MapDownToBuffer(snapshotSpan, SpanTrackingMode.EdgeExclusive, subjectBuffer));
-            }
-            return new NormalizedSnapshotSpanCollection(list);
+    public static NormalizedSnapshotSpanCollection GetSnapshotSpansOnBuffer(this ITextSelection selection, ITextBuffer subjectBuffer) {
+        var list = new List<SnapshotSpan>();
+        foreach(var snapshotSpan in selection.SelectedSpans) {
+            list.AddRange(selection.TextView.BufferGraph.MapDownToBuffer(snapshotSpan, SpanTrackingMode.EdgeExclusive, subjectBuffer));
         }
+        return new NormalizedSnapshotSpanCollection(list);
     }
 }

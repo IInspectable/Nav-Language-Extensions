@@ -3,73 +3,71 @@ using System;
 using Pharmatechnik.Nav.Language.Internal;
 using Pharmatechnik.Nav.Language.Text;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public enum EdgeMode {
+public enum EdgeMode {
 
-        Modal,
-        NonModal,
-        Goto
+    Modal,
+    NonModal,
+    Goto
 
+}
+
+[Serializable]
+public abstract class EdgeSyntax: SyntaxNode {
+
+    protected EdgeSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    public abstract class EdgeSyntax: SyntaxNode {
+    public abstract SyntaxToken Keyword { get; }
+    public abstract EdgeMode    Mode    { get; }
 
-        protected EdgeSyntax(TextExtent extent): base(extent) {
-        }
+}
 
-        public abstract SyntaxToken Keyword { get; }
-        public abstract EdgeMode    Mode    { get; }
+[Serializable]
+[SampleSyntax("o->")]
+public partial class ModalEdgeSyntax: EdgeSyntax {
 
+    internal ModalEdgeSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("o->")]
-    public partial class ModalEdgeSyntax: EdgeSyntax {
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    public override SyntaxToken Keyword => ModalEdgeKeyword;
 
-        internal ModalEdgeSyntax(TextExtent extent): base(extent) {
-        }
+    public override EdgeMode Mode => EdgeMode.Modal;
 
-        [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
-        public override SyntaxToken Keyword => ModalEdgeKeyword;
+    public SyntaxToken ModalEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ModalEdgeKeyword);
 
-        public override EdgeMode Mode => EdgeMode.Modal;
+}
 
-        public SyntaxToken ModalEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ModalEdgeKeyword);
+[Serializable]
+[SampleSyntax("==>")]
+public partial class NonModalEdgeSyntax: EdgeSyntax {
 
+    internal NonModalEdgeSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("==>")]
-    public partial class NonModalEdgeSyntax: EdgeSyntax {
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    public override SyntaxToken Keyword => NonModalEdgeKeyword;
 
-        internal NonModalEdgeSyntax(TextExtent extent): base(extent) {
-        }
+    public override EdgeMode Mode => EdgeMode.NonModal;
 
-        [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
-        public override SyntaxToken Keyword => NonModalEdgeKeyword;
+    public SyntaxToken NonModalEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.NonModalEdgeKeyword);
 
-        public override EdgeMode Mode => EdgeMode.NonModal;
+}
 
-        public SyntaxToken NonModalEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.NonModalEdgeKeyword);
+[Serializable]
+[SampleSyntax("-->")]
+public partial class GoToEdgeSyntax: EdgeSyntax {
 
+    internal GoToEdgeSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("-->")]
-    public partial class GoToEdgeSyntax: EdgeSyntax {
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    public override SyntaxToken Keyword => GoToEdgeKeyword;
 
-        internal GoToEdgeSyntax(TextExtent extent): base(extent) {
-        }
+    public override EdgeMode Mode => EdgeMode.Goto;
 
-        [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
-        public override SyntaxToken Keyword => GoToEdgeKeyword;
-
-        public override EdgeMode Mode => EdgeMode.Goto;
-
-        public SyntaxToken GoToEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.GoToEdgeKeyword);
-
-    }
+    public SyntaxToken GoToEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.GoToEdgeKeyword);
 
 }

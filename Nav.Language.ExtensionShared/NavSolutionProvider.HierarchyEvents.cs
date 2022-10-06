@@ -8,78 +8,76 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension {
+namespace Pharmatechnik.Nav.Language.Extension; 
 
-    partial class NavSolutionProvider: IVsHierarchyEvents {
+partial class NavSolutionProvider: IVsHierarchyEvents {
 
-        private uint _hierarchyEventsCookie;
+    private uint _hierarchyEventsCookie;
 
-        bool AreHierarchyEventsConnected => _hierarchyEventsCookie != 0;
+    bool AreHierarchyEventsConnected => _hierarchyEventsCookie != 0;
 
-        void ConnectHierarchyEvents() {
+    void ConnectHierarchyEvents() {
 
-            ThreadHelper.ThrowIfNotOnUIThread();
+        ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (!AreHierarchyEventsConnected) {
+        if (!AreHierarchyEventsConnected) {
 
-                GetSolutionHierachy()?.AdviseHierarchyEvents(this, out _hierarchyEventsCookie);
-            }
-
+            GetSolutionHierachy()?.AdviseHierarchyEvents(this, out _hierarchyEventsCookie);
         }
 
-        IVsHierarchy GetSolutionHierachy() {
-            ThreadHelper.ThrowIfNotOnUIThread();
+    }
 
-            var vsSolution1 = (IVsSolution) ServiceProvider.GetService(typeof(SVsSolution)) ?? throw new InvalidOperationException();
+    IVsHierarchy GetSolutionHierachy() {
+        ThreadHelper.ThrowIfNotOnUIThread();
 
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            return vsSolution1 as IVsHierarchy;
+        var vsSolution1 = (IVsSolution) ServiceProvider.GetService(typeof(SVsSolution)) ?? throw new InvalidOperationException();
+
+        // ReSharper disable once SuspiciousTypeConversion.Global
+        return vsSolution1 as IVsHierarchy;
+    }
+
+    // TODO DisconnectHierarchyEvents beim Beenden von Studio
+    // ReSharper disable once UnusedMember.Local
+    void DisconnectHierarchyEvents() {
+        ThreadHelper.ThrowIfNotOnUIThread();
+
+        if (AreHierarchyEventsConnected) {
+            GetSolutionHierachy().UnadviseHierarchyEvents(_hierarchyEventsCookie);
+            _hierarchyEventsCookie = 0;
         }
+    }
 
-        // TODO DisconnectHierarchyEvents beim Beenden von Studio
-        // ReSharper disable once UnusedMember.Local
-        void DisconnectHierarchyEvents() {
-            ThreadHelper.ThrowIfNotOnUIThread();
+    int IVsHierarchyEvents.OnItemAdded(uint itemidParent, uint itemidSiblingPrev, uint itemidAdded) {
+        return VSConstants.S_OK;
+    }
 
-            if (AreHierarchyEventsConnected) {
-                GetSolutionHierachy().UnadviseHierarchyEvents(_hierarchyEventsCookie);
-                _hierarchyEventsCookie = 0;
-            }
-        }
+    int IVsHierarchyEvents.OnItemsAppended(uint itemidParent) {
+        return VSConstants.S_OK;
+    }
 
-        int IVsHierarchyEvents.OnItemAdded(uint itemidParent, uint itemidSiblingPrev, uint itemidAdded) {
-            return VSConstants.S_OK;
-        }
+    int IVsHierarchyEvents.OnItemDeleted(uint itemid) {
+        return VSConstants.S_OK;
+    }
 
-        int IVsHierarchyEvents.OnItemsAppended(uint itemidParent) {
-            return VSConstants.S_OK;
-        }
-
-        int IVsHierarchyEvents.OnItemDeleted(uint itemid) {
-            return VSConstants.S_OK;
-        }
-
-        int IVsHierarchyEvents.OnPropertyChanged(uint itemid, int propid, uint flags) {
+    int IVsHierarchyEvents.OnPropertyChanged(uint itemid, int propid, uint flags) {
            
-            if (propid == (int) __VSHPROPID.VSHPROPID_ProjectName &&
-                itemid == (uint) VSConstants.VSITEMID.Root) {
+        if (propid == (int) __VSHPROPID.VSHPROPID_ProjectName &&
+            itemid == (uint) VSConstants.VSITEMID.Root) {
 
-                Invalidate();
-
-                return VSConstants.S_OK;
-            }
+            Invalidate();
 
             return VSConstants.S_OK;
         }
 
-        int IVsHierarchyEvents.OnInvalidateItems(uint itemidParent) {
-            return VSConstants.S_OK;
-        }
+        return VSConstants.S_OK;
+    }
 
-        int IVsHierarchyEvents.OnInvalidateIcon(IntPtr hicon) {
-            return VSConstants.S_OK;
-        }
+    int IVsHierarchyEvents.OnInvalidateItems(uint itemidParent) {
+        return VSConstants.S_OK;
+    }
 
+    int IVsHierarchyEvents.OnInvalidateIcon(IntPtr hicon) {
+        return VSConstants.S_OK;
     }
 
 }

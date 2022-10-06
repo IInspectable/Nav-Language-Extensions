@@ -12,34 +12,32 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+namespace Pharmatechnik.Nav.Language.Extension.CodeFixes; 
 
-    abstract class CodeFixSuggestedAction<T>: CodeFixSuggestedAction where T : CodeFix {
+abstract class CodeFixSuggestedAction<T>: CodeFixSuggestedAction where T : CodeFix {
 
-        protected CodeFixSuggestedAction(CodeFixSuggestedActionContext context, CodeFixSuggestedActionParameter parameter, T codeFix): base(context, parameter) {
-            CodeFix = codeFix ?? throw new ArgumentNullException(nameof(codeFix));
-        }
+    protected CodeFixSuggestedAction(CodeFixSuggestedActionContext context, CodeFixSuggestedActionParameter parameter, T codeFix): base(context, parameter) {
+        CodeFix = codeFix ?? throw new ArgumentNullException(nameof(codeFix));
+    }
 
-        public T CodeFix { get; }
+    public T CodeFix { get; }
 
-        public sealed override string          UndoDescription  => CodeFix.Name;
-        public sealed override Span?           ApplicableToSpan => GetSnapshotSpan(CodeFix.ApplicableTo);
-        public sealed override CodeFixPrio     Prio             => CodeFix.Prio;
-        public sealed override CodeFixCategory Category         => CodeFix.Category;
+    public sealed override string          UndoDescription  => CodeFix.Name;
+    public sealed override Span?           ApplicableToSpan => GetSnapshotSpan(CodeFix.ApplicableTo);
+    public sealed override CodeFixPrio     Prio             => CodeFix.Prio;
+    public sealed override CodeFixCategory Category         => CodeFix.Category;
 
-        public sealed override void Invoke(CancellationToken cancellationToken) {
+    public sealed override void Invoke(CancellationToken cancellationToken) {
 
-            Apply(cancellationToken);
+        Apply(cancellationToken);
 
-            ThreadHelper.ThrowIfNotOnUIThread();
+        ThreadHelper.ThrowIfNotOnUIThread();
 
-            SemanticModelService.TryGet(Parameter.TextBuffer)?.UpdateSynchronously();
-        }
+        SemanticModelService.TryGet(Parameter.TextBuffer)?.UpdateSynchronously();
+    }
 
-        SnapshotSpan? GetSnapshotSpan(TextExtent? lineExtent) {
-            return lineExtent?.ToSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
-        }
-
+    SnapshotSpan? GetSnapshotSpan(TextExtent? lineExtent) {
+        return lineExtent?.ToSnapshotSpan(Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
     }
 
 }

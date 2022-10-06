@@ -10,66 +10,65 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-    // ReSharper disable once InconsistentNaming
-    sealed class TOCodeModel : FileGenerationCodeModel {
+// ReSharper disable once InconsistentNaming
+sealed class TOCodeModel : FileGenerationCodeModel {
         
-        TOCodeModel(string relativeSyntaxFileName, 
-            TaskCodeInfo taskCodeInfo, 
-            ImmutableList<string> usingNamespaces,
-            string className, 
-            string filePath) 
-            : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
+    TOCodeModel(string relativeSyntaxFileName, 
+                TaskCodeInfo taskCodeInfo, 
+                ImmutableList<string> usingNamespaces,
+                string className, 
+                string filePath) 
+        : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
 
-            UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            ClassName       = className       ?? String.Empty;
+        UsingNamespaces = usingNamespaces ?? throw new ArgumentNullException(nameof(usingNamespaces));
+        ClassName       = className       ?? String.Empty;
+    }
+
+    public string ClassName { get; }
+
+    [NotNull]
+    public ImmutableList<string> UsingNamespaces { get; }
+
+    [NotNull]
+    public string IwflNamespace => Task.IwflNamespace;
+
+    public static IEnumerable<TOCodeModel> FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
+
+        if (taskDefinition == null) {
+            throw new ArgumentNullException(nameof(taskDefinition));
+        }
+        if (pathProvider == null) {
+            throw new ArgumentNullException(nameof(pathProvider));
         }
 
-        public string ClassName { get; }
+        var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
 
-        [NotNull]
-        public ImmutableList<string> UsingNamespaces { get; }
+        foreach(var guiNode in taskDefinition.NodeDeclarations.OfType<IGuiNodeSymbol>().Where(n => n.References.Any())) {
 
-        [NotNull]
-        public string IwflNamespace => Task.IwflNamespace;
+            var viewName = guiNode.Name;
 
-        public static IEnumerable<TOCodeModel> FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
+            var toClassName = $"{viewName.ToPascalcase()}{CodeGenFacts.ToClassNameSuffix}";
+            var filePath    = pathProvider.GetToFileName(guiNode.Name + CodeGenFacts.ToClassNameSuffix);
 
-            if (taskDefinition == null) {
-                throw new ArgumentNullException(nameof(taskDefinition));
-            }
-            if (pathProvider == null) {
-                throw new ArgumentNullException(nameof(pathProvider));
-            }
+            var relativeSyntaxFileName = pathProvider.GetRelativePath(filePath, pathProvider.SyntaxFileName);
 
-            var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
+            yield return new TOCodeModel(
+                relativeSyntaxFileName: relativeSyntaxFileName,
+                taskCodeInfo          : taskCodeInfo,
+                usingNamespaces       : GetUsingNamespaces().ToImmutableList(),
+                className             : toClassName,
+                filePath              : filePath);
+        }           
+    }
 
-            foreach(var guiNode in taskDefinition.NodeDeclarations.OfType<IGuiNodeSymbol>().Where(n => n.References.Any())) {
+    private static IEnumerable<string> GetUsingNamespaces() {
 
-                var viewName    = guiNode.Name;
-
-                var toClassName = $"{viewName.ToPascalcase()}{CodeGenFacts.ToClassNameSuffix}";
-                var filePath    = pathProvider.GetToFileName(guiNode.Name+ CodeGenFacts.ToClassNameSuffix);
-
-                var relativeSyntaxFileName = pathProvider.GetRelativePath(filePath, pathProvider.SyntaxFileName);
-
-                yield return new TOCodeModel(
-                    relativeSyntaxFileName: relativeSyntaxFileName,
-                    taskCodeInfo          : taskCodeInfo,
-                    usingNamespaces       : GetUsingNamespaces().ToImmutableList(),
-                    className             : toClassName,
-                    filePath              : filePath);
-            }           
-        }
-
-        private static IEnumerable<string> GetUsingNamespaces() {
-
-            var namespaces = new List<string> {
-                CodeGenFacts.NavigationEngineIwflNamespace
-            };
+        var namespaces = new List<string> {
+            CodeGenFacts.NavigationEngineIwflNamespace
+        };
             
-            return namespaces.ToSortedNamespaces();
-        }
+        return namespaces.ToSortedNamespaces();
     }
 }

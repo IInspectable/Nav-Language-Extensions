@@ -8,29 +8,29 @@ using Microsoft.VisualStudio.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
-    abstract class AndSnapshot {
+namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
-        protected AndSnapshot([NotNull] ITextSnapshot snapshot) {
-            Snapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
+abstract class AndSnapshot {
+
+    protected AndSnapshot([NotNull] ITextSnapshot snapshot) {
+        Snapshot = snapshot ?? throw new ArgumentNullException(nameof(snapshot));
+    }
+
+    [NotNull]
+    public ITextSnapshot Snapshot { get; }
+
+    public bool IsCurrent(SnapshotSpan snapshotSpan) {
+        return Snapshot.Version.VersionNumber == snapshotSpan.Snapshot.Version.VersionNumber;
+    }
+
+    public bool IsCurrent(ITextSnapshot snapshot) {
+        if (snapshot != Snapshot) {
+            return false;
         }
+        return Snapshot.Version.ReiteratedVersionNumber == snapshot.Version.ReiteratedVersionNumber;
+    }
 
-        [NotNull]
-        public ITextSnapshot Snapshot { get; }
-
-        public bool IsCurrent(SnapshotSpan snapshotSpan) {
-            return Snapshot.Version.VersionNumber == snapshotSpan.Snapshot.Version.VersionNumber;
-        }
-
-        public bool IsCurrent(ITextSnapshot snapshot) {
-            if (snapshot != Snapshot) {
-                return false;
-            }
-            return Snapshot.Version.ReiteratedVersionNumber == snapshot.Version.ReiteratedVersionNumber;
-        }
-
-        public bool IsCurrent(ITextBuffer textBuffer) {
-            return IsCurrent(textBuffer.CurrentSnapshot);
-        }
+    public bool IsCurrent(ITextBuffer textBuffer) {
+        return IsCurrent(textBuffer.CurrentSnapshot);
     }
 }

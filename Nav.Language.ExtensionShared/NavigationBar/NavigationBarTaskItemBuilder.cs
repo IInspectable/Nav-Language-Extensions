@@ -8,78 +8,77 @@ using Pharmatechnik.Nav.Language.Extension.Images;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
+namespace Pharmatechnik.Nav.Language.Extension.NavigationBar; 
 
-    class NavigationBarTaskItemBuilder : SymbolVisitor {
+class NavigationBarTaskItemBuilder : SymbolVisitor {
 
-        protected NavigationBarTaskItemBuilder() {
-            NavigationItems = new List<NavigationBarItem>();
-            MemberItems     = new List<NavigationBarItem>();
+    protected NavigationBarTaskItemBuilder() {
+        NavigationItems = new List<NavigationBarItem>();
+        MemberItems     = new List<NavigationBarItem>();
+    }
+
+    public List<NavigationBarItem> NavigationItems { get; }
+    public List<NavigationBarItem> MemberItems     { get; }
+
+    public static ImmutableList<NavigationBarItem> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
+
+        var codeGenerationUnit = codeGenerationUnitAndSnapshot?.CodeGenerationUnit;
+        if(codeGenerationUnit == null) {
+            return ImmutableList<NavigationBarItem>.Empty;
         }
 
-        public List<NavigationBarItem> NavigationItems { get; }
-        public List<NavigationBarItem> MemberItems { get; }
+        var builder = new NavigationBarTaskItemBuilder();
 
-        public static ImmutableList<NavigationBarItem> Build(CodeGenerationUnitAndSnapshot codeGenerationUnitAndSnapshot) {
-
-            var codeGenerationUnit = codeGenerationUnitAndSnapshot?.CodeGenerationUnit;
-            if(codeGenerationUnit == null) {
-                return ImmutableList<NavigationBarItem>.Empty;
-            }
-
-            var builder = new NavigationBarTaskItemBuilder();
-
-            foreach (var symbol in codeGenerationUnit.TaskDefinitions) {
-                builder.Visit(symbol);
-            }
-
-            foreach (var symbol in codeGenerationUnit.TaskDeclarations) {
-                builder.Visit(symbol);
-            }
-
-            var items = builder.NavigationItems
-                               .OrderBy(ni => ni.Start)
-                               .ToImmutableList();
-
-            return items;
+        foreach (var symbol in codeGenerationUnit.TaskDefinitions) {
+            builder.Visit(symbol);
         }
 
-        public override void VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
-            #if ShowMemberCombobox
+        foreach (var symbol in codeGenerationUnit.TaskDeclarations) {
+            builder.Visit(symbol);
+        }
+
+        var items = builder.NavigationItems
+                           .OrderBy(ni => ni.Start)
+                           .ToImmutableList();
+
+        return items;
+    }
+
+    public override void VisitTaskDefinitionSymbol(ITaskDefinitionSymbol taskDefinitionSymbol) {
+        #if ShowMemberCombobox
             foreach (var symbol in taskDefinitionSymbol.Transitions.SelectMany(trans => trans.Symbols())) {
                 Visit(symbol);
             }
-            #endif
+        #endif
 
-            NavigationItems.Add(new NavigationBarItem(
-                displayName    : taskDefinitionSymbol.Name, 
-                imageMoniker   : ImageMonikers.TaskDefinition, 
-                location       : taskDefinitionSymbol.Syntax.GetLocation(), 
-                navigationPoint: taskDefinitionSymbol.Location.Start,
-                children       : MemberItems.ToImmutableList()));
+        NavigationItems.Add(new NavigationBarItem(
+                                displayName    : taskDefinitionSymbol.Name, 
+                                imageMoniker   : ImageMonikers.TaskDefinition, 
+                                location       : taskDefinitionSymbol.Syntax.GetLocation(), 
+                                navigationPoint: taskDefinitionSymbol.Location.Start,
+                                children       : MemberItems.ToImmutableList()));
 
-            MemberItems.Clear();
+        MemberItems.Clear();
+    }
+
+    public override void VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
+
+        // Haben wir bereits in Form der Taskdefinition abgefrühstückt
+        // => Jede Taskdefinition ist auch eine Deklaration
+        if(taskDeclarationSymbol.Origin == TaskDeclarationOrigin.TaskDefinition) {
+            return;
         }
 
-        public override void VisitTaskDeclarationSymbol(ITaskDeclarationSymbol taskDeclarationSymbol) {
+        NavigationItems.Add(new NavigationBarItem(
+                                displayName    : taskDeclarationSymbol.Name, 
+                                imageMoniker   : ImageMonikers.TaskDeclaration, 
+                                location       : taskDeclarationSymbol.Syntax?.GetLocation(), 
+                                navigationPoint: taskDeclarationSymbol.Location.Start));
+    }
 
-            // Haben wir bereits in Form der Taskdefinition abgefrühstückt
-            // => Jede Taskdefinition ist auch eine Deklaration
-            if(taskDeclarationSymbol.Origin == TaskDeclarationOrigin.TaskDefinition) {
-                return;
-            }
-
-            NavigationItems.Add(new NavigationBarItem(
-                displayName    : taskDeclarationSymbol.Name, 
-                imageMoniker   : ImageMonikers.TaskDeclaration, 
-                location       : taskDeclarationSymbol.Syntax?.GetLocation(), 
-                navigationPoint: taskDeclarationSymbol.Location.Start));
-        }
-
-        #if ShowMemberCombobox
+    #if ShowMemberCombobox
         public override void VisitSignalTriggerSymbol(ISignalTriggerSymbol signalTriggerSymbol) {
             MemberItems.Add(new NavigationBarItem(signalTriggerSymbol.Name, NavigationBarImages.Index.TriggerSymbol, signalTriggerSymbol.Transition.Location, signalTriggerSymbol.Start));
         }
-        #endif
-    }
+    #endif
 }

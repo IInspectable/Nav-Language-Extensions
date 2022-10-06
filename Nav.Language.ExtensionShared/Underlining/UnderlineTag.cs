@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.Text.Tagging;
 
-namespace Pharmatechnik.Nav.Language.Extension.Underlining {
+namespace Pharmatechnik.Nav.Language.Extension.Underlining; 
 
-    public class UnderlineTag: ITag {
+public class UnderlineTag: ITag {
 
-    }
 }

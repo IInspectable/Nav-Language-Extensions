@@ -9,63 +9,62 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-    class BeginWrapperCodeModel: CodeModel {
+class BeginWrapperCodeModel: CodeModel {
 
-        public BeginWrapperCodeModel(string taskNodeName, ImmutableList<TaskBeginCodeModel> ctors) {
+    public BeginWrapperCodeModel(string taskNodeName, ImmutableList<TaskBeginCodeModel> ctors) {
 
-            TaskNodeName = taskNodeName;
-            TaskBegins        = ctors ?? throw new ArgumentNullException(nameof(ctors));
-        }
+        TaskNodeName = taskNodeName;
+        TaskBegins   = ctors ?? throw new ArgumentNullException(nameof(ctors));
+    }
 
-        public string TaskNodeName { get; }
-        public string TaskNodeNamePascalcase => TaskNodeName.ToPascalcase();
+    public string TaskNodeName           { get; }
+    public string TaskNodeNamePascalcase => TaskNodeName.ToPascalcase();
 
-        public ImmutableList<TaskBeginCodeModel> TaskBegins { get;}
+    public ImmutableList<TaskBeginCodeModel> TaskBegins { get;}
 
-        public static BeginWrapperCodeModel FromTaskNode(ITaskNodeSymbol taskNode, TaskCodeInfo taskCodeInfo) {
+    public static BeginWrapperCodeModel FromTaskNode(ITaskNodeSymbol taskNode, TaskCodeInfo taskCodeInfo) {
             
-            if (taskNode.Declaration == null) {
-                throw new InvalidOperationException();
-            }
+        if (taskNode.Declaration == null) {
+            throw new InvalidOperationException();
+        }
 
-            var taskBegins = new List<TaskBeginCodeModel>();
+        var taskBegins = new List<TaskBeginCodeModel>();
 
-            foreach (var initConnectionPoint in taskNode.Declaration.Inits().OfType<IInitConnectionPointSymbol>()) {
+        foreach (var initConnectionPoint in taskNode.Declaration.Inits().OfType<IInitConnectionPointSymbol>()) {
 
-                var parameterSyntaxes = GetTaskParameterSyntaxes(initConnectionPoint);
-                var taskParameter     = ParameterCodeModel.FromParameterSyntaxes(parameterSyntaxes);
+            var parameterSyntaxes = GetTaskParameterSyntaxes(initConnectionPoint);
+            var taskParameter     = ParameterCodeModel.FromParameterSyntaxes(parameterSyntaxes);
                
-                if (taskNode.Declaration.CodeNotImplemented) {
+            if (taskNode.Declaration.CodeNotImplemented) {
 
-                    var taskBegin = new TaskBeginCodeModel(
-                        taskNodeName: taskNode.Name,
-                        taskBeginParameter: new ParameterCodeModel(
-                            parameterType : CodeGenFacts.DefaultIwfsBaseType,
-                            parameterName : CodeGenFacts.TaskBeginParameterName),
-                        taskParameter: taskParameter.ToImmutableList(),
-                        notImplemented: true);
+                var taskBegin = new TaskBeginCodeModel(
+                    taskNodeName: taskNode.Name,
+                    taskBeginParameter: new ParameterCodeModel(
+                        parameterType : CodeGenFacts.DefaultIwfsBaseType,
+                        parameterName : CodeGenFacts.TaskBeginParameterName),
+                    taskParameter: taskParameter.ToImmutableList(),
+                    notImplemented: true);
 
-                    taskBegins.Add(taskBegin);
+                taskBegins.Add(taskBegin);
 
-                } else {
-                    var taskBegin = new TaskBeginCodeModel(
-                        taskNodeName      : taskNode.Name, 
-                        taskBeginParameter: ParameterCodeModel.GetTaskBeginAsParameter(taskNode.Declaration)
-                                                              .WithParameterName(CodeGenFacts.TaskBeginParameterName), 
-                        taskParameter     : taskParameter.ToImmutableList());
+            } else {
+                var taskBegin = new TaskBeginCodeModel(
+                    taskNodeName      : taskNode.Name, 
+                    taskBeginParameter: ParameterCodeModel.GetTaskBeginAsParameter(taskNode.Declaration)
+                                                          .WithParameterName(CodeGenFacts.TaskBeginParameterName), 
+                    taskParameter     : taskParameter.ToImmutableList());
 
-                    taskBegins.Add(taskBegin);
-                }                
-            }
+                taskBegins.Add(taskBegin);
+            }                
+        }
            
-            return new BeginWrapperCodeModel(taskNode.Name, taskBegins.ToImmutableList());
-        }
+        return new BeginWrapperCodeModel(taskNode.Name, taskBegins.ToImmutableList());
+    }
 
-        static IEnumerable<ParameterSyntax> GetTaskParameterSyntaxes(IInitConnectionPointSymbol initConnectionPoint) {
-            var parameterList = initConnectionPoint.Syntax.CodeParamsDeclaration?.ParameterList;
-            return parameterList ?? Enumerable.Empty<ParameterSyntax>();
-        }
+    static IEnumerable<ParameterSyntax> GetTaskParameterSyntaxes(IInitConnectionPointSymbol initConnectionPoint) {
+        var parameterList = initConnectionPoint.Syntax.CodeParamsDeclaration?.ParameterList;
+        return parameterList ?? Enumerable.Empty<ParameterSyntax>();
     }
 }

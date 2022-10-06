@@ -8,11 +8,10 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider; 
 
-    public interface ILocationInfoProvider {
+public interface ILocationInfoProvider {
 
-        [NotNull]
-        Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default);        
-    }
+    [NotNull]
+    Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = default);        
 }

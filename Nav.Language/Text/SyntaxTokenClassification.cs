@@ -1,28 +1,26 @@
-﻿namespace Pharmatechnik.Nav.Language.Text {
+﻿namespace Pharmatechnik.Nav.Language.Text; 
 
-    public enum TextClassification {
+public enum TextClassification {
 
-        Unknown,
-        Skiped,
-        Whitespace,
-        Comment,
-        Keyword,
-        ControlKeyword,
-        Punctuation,
-        StringLiteral,
-        Identifier,
-        TaskName,
-        FormName,
-        TypeName,
-        ChoiceNode,
-        GuiNode,
-        ConnectionPoint,
-        PreprocessorText,
-        DeadCode,
-        PreprocessorKeyword,
-        Text,
-        ParameterName,
-
-    }
+    Unknown,
+    Skiped,
+    Whitespace,
+    Comment,
+    Keyword,
+    ControlKeyword,
+    Punctuation,
+    StringLiteral,
+    Identifier,
+    TaskName,
+    FormName,
+    TypeName,
+    ChoiceNode,
+    GuiNode,
+    ConnectionPoint,
+    PreprocessorText,
+    DeadCode,
+    PreprocessorKeyword,
+    Text,
+    ParameterName,
 
 }

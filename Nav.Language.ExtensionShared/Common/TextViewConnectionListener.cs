@@ -11,40 +11,39 @@ using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
+namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
-    [Export(typeof(IWpfTextViewConnectionListener))]
-    [Export(typeof(TextViewConnectionListener))]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [TextViewRole(PredefinedTextViewRoles.Document)]
-    sealed class TextViewConnectionListener : IWpfTextViewConnectionListener {
+[Export(typeof(IWpfTextViewConnectionListener))]
+[Export(typeof(TextViewConnectionListener))]
+[ContentType(NavLanguageContentDefinitions.ContentType)]
+[TextViewRole(PredefinedTextViewRoles.Document)]
+sealed class TextViewConnectionListener : IWpfTextViewConnectionListener {
 
-        readonly Dictionary<IWpfTextView, List<Action<IWpfTextView>>> _textViews;
+    readonly Dictionary<IWpfTextView, List<Action<IWpfTextView>>> _textViews;
 
-        public TextViewConnectionListener() {
-            _textViews = new Dictionary<IWpfTextView, List<Action<IWpfTextView>>>();
+    public TextViewConnectionListener() {
+        _textViews = new Dictionary<IWpfTextView, List<Action<IWpfTextView>>>();
+    }
+
+    public void SubjectBuffersConnected(IWpfTextView textView, ConnectionReason reason, Collection<ITextBuffer> subjectBuffers) {
+        _textViews[textView] = new List<Action<IWpfTextView>>();
+    }
+
+    public void SubjectBuffersDisconnected(IWpfTextView textView, ConnectionReason reason, Collection<ITextBuffer> subjectBuffers) {
+        var actions = _textViews[textView];
+
+        _textViews.Remove(textView);
+
+        foreach(var action in actions) {
+            action(textView);
         }
+    }
 
-        public void SubjectBuffersConnected(IWpfTextView textView, ConnectionReason reason, Collection<ITextBuffer> subjectBuffers) {
-            _textViews[textView] = new List<Action<IWpfTextView>>();
-        }
+    public IWpfTextView GetTextViewForBuffer(ITextBuffer textBuffer) {
+        return _textViews.Keys.FirstOrDefault(t => t.TextBuffer == textBuffer);
+    }
 
-        public void SubjectBuffersDisconnected(IWpfTextView textView, ConnectionReason reason, Collection<ITextBuffer> subjectBuffers) {
-            var actions = _textViews[textView];
-
-            _textViews.Remove(textView);
-
-            foreach(var action in actions) {
-                action(textView);
-            }
-        }
-
-        public IWpfTextView GetTextViewForBuffer(ITextBuffer textBuffer) {
-            return _textViews.Keys.FirstOrDefault(t => t.TextBuffer == textBuffer);
-        }
-
-        public void AddDisconnectAction(IWpfTextView textView, Action<IWpfTextView> action) {
-            _textViews[textView].Add(action);
-        }
+    public void AddDisconnectAction(IWpfTextView textView, Action<IWpfTextView> action) {
+        _textViews[textView].Add(action);
     }
 }

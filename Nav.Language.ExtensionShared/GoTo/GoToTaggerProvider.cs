@@ -9,15 +9,14 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoTo {
+namespace Pharmatechnik.Nav.Language.Extension.GoTo; 
 
-    [Export(typeof(ITaggerProvider))]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [Name("Nav/" + nameof(GoToTaggerProvider))]
-    [TagType(typeof(GoToTag))]
-    sealed class GoToTaggerProvider : ITaggerProvider {
-        public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-            return GoToTagger.GetOrCreateSingelton<T>(buffer);
-        }
+[Export(typeof(ITaggerProvider))]
+[ContentType(NavLanguageContentDefinitions.ContentType)]
+[Name("Nav/" + nameof(GoToTaggerProvider))]
+[TagType(typeof(GoToTag))]
+sealed class GoToTaggerProvider : ITaggerProvider {
+    public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
+        return GoToTagger.GetOrCreateSingelton<T>(buffer);
     }
 }

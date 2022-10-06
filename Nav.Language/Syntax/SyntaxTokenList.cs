@@ -12,84 +12,82 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    [Serializable]
-    public sealed class SyntaxTokenList: IReadOnlyList<SyntaxToken> {
+[Serializable]
+public sealed class SyntaxTokenList: IReadOnlyList<SyntaxToken> {
 
-        static readonly IReadOnlyList<SyntaxToken> EmptyTokens = new List<SyntaxToken>(Enumerable.Empty<SyntaxToken>()).AsReadOnly();
-        readonly        IReadOnlyList<SyntaxToken> _tokens;
+    static readonly IReadOnlyList<SyntaxToken> EmptyTokens = new List<SyntaxToken>(Enumerable.Empty<SyntaxToken>()).AsReadOnly();
+    readonly        IReadOnlyList<SyntaxToken> _tokens;
 
-        public SyntaxTokenList(List<SyntaxToken> tokens): this(tokens, attachSorted: false) {
+    public SyntaxTokenList(List<SyntaxToken> tokens): this(tokens, attachSorted: false) {
+    }
+
+    SyntaxTokenList(IReadOnlyList<SyntaxToken> tokens, bool attachSorted) {
+
+        if (attachSorted || tokens == null || tokens.Count == 0) {
+            // Tokens sind bereits sortiert oder es gibt keine Tokens
+            _tokens = tokens ?? EmptyTokens;
+        } else {
+            var tokenList = new List<SyntaxToken>(tokens);
+            tokenList.Sort(SyntaxTokenComparer.Default);
+            _tokens = tokenList;
         }
+    }
 
-        SyntaxTokenList(IReadOnlyList<SyntaxToken> tokens, bool attachSorted) {
+    internal static SyntaxTokenList AttachSortedTokens(IReadOnlyList<SyntaxToken> tokens) {
+        return new SyntaxTokenList(tokens, attachSorted: true);
+    }
 
-            if (attachSorted || tokens == null || tokens.Count == 0) {
-                // Tokens sind bereits sortiert oder es gibt keine Tokens
-                _tokens = tokens ?? EmptyTokens;
-            } else {
-                var tokenList = new List<SyntaxToken>(tokens);
-                tokenList.Sort(SyntaxTokenComparer.Default);
-                _tokens = tokenList;
-            }
-        }
+    public static readonly SyntaxTokenList Empty = new SyntaxTokenList(null);
 
-        internal static SyntaxTokenList AttachSortedTokens(IReadOnlyList<SyntaxToken> tokens) {
-            return new SyntaxTokenList(tokens, attachSorted: true);
-        }
+    public IEnumerator<SyntaxToken> GetEnumerator() {
+        return _tokens.GetEnumerator();
+    }
 
-        public static readonly SyntaxTokenList Empty = new SyntaxTokenList(null);
+    IEnumerator IEnumerable.GetEnumerator() {
+        return GetEnumerator();
+    }
 
-        public IEnumerator<SyntaxToken> GetEnumerator() {
-            return _tokens.GetEnumerator();
-        }
+    public int Count => _tokens.Count;
 
-        IEnumerator IEnumerable.GetEnumerator() {
-            return GetEnumerator();
-        }
+    public SyntaxToken this[int index] => _tokens[index];
 
-        public int Count => _tokens.Count;
+    [NotNull]
+    public IEnumerable<SyntaxToken> this[TextExtent extent, bool includeOverlapping = false] => _tokens.GetElements(extent, includeOverlapping);
 
-        public SyntaxToken this[int index] => _tokens[index];
-
-        [NotNull]
-        public IEnumerable<SyntaxToken> this[TextExtent extent, bool includeOverlapping = false] => _tokens.GetElements(extent, includeOverlapping);
-
-        public SyntaxToken FindAtPosition(int position) {
-            if (position < 0) {
-                return SyntaxToken.Missing;
-            }
-
-            return _tokens.FindElementAtPosition(position, defaultIfNotFound: true);
-        }
-
-        internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, SyntaxTokenType type, bool nextToken) {
-            SyntaxToken token = currentToken;
-            while (!(token = NextOrPrevious(node, token, nextToken)).IsMissing) {
-                if (token.Type == type) {
-                    return token;
-                }
-            }
-
+    public SyntaxToken FindAtPosition(int position) {
+        if (position < 0) {
             return SyntaxToken.Missing;
         }
 
-        internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, TextClassification classification, bool nextToken) {
-            SyntaxToken token = currentToken;
-            while (!(token = NextOrPrevious(node, token, nextToken)).IsMissing) {
-                if (token.Classification == classification) {
-                    return token;
-                }
+        return _tokens.FindElementAtPosition(position, defaultIfNotFound: true);
+    }
+
+    internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, SyntaxTokenType type, bool nextToken) {
+        SyntaxToken token = currentToken;
+        while (!(token = NextOrPrevious(node, token, nextToken)).IsMissing) {
+            if (token.Type == type) {
+                return token;
             }
-
-            return SyntaxToken.Missing;
         }
 
-        internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, bool nextToken) {
-            return _tokens.NextOrPreviousElement(node, currentToken, nextToken, SyntaxToken.Missing);
+        return SyntaxToken.Missing;
+    }
+
+    internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, TextClassification classification, bool nextToken) {
+        SyntaxToken token = currentToken;
+        while (!(token = NextOrPrevious(node, token, nextToken)).IsMissing) {
+            if (token.Classification == classification) {
+                return token;
+            }
         }
 
+        return SyntaxToken.Missing;
+    }
+
+    internal SyntaxToken NextOrPrevious(SyntaxNode node, SyntaxToken currentToken, bool nextToken) {
+        return _tokens.NextOrPreviousElement(node, currentToken, nextToken, SyntaxToken.Missing);
     }
 
 }

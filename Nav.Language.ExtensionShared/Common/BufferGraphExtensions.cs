@@ -8,17 +8,16 @@ using Microsoft.VisualStudio.Text.Projection;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
+namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
-    static class BufferGraphExtensions {
+static class BufferGraphExtensions {
 
-        public static SnapshotSpan? MapUpOrDownToFirstMatch(this IBufferGraph bufferGraph, SnapshotSpan span, Predicate<ITextSnapshot> match) {
-            var spans = bufferGraph.MapDownToFirstMatch(span, SpanTrackingMode.EdgeExclusive, match);
-            if(!spans.Any()) {
-                spans = bufferGraph.MapUpToFirstMatch(span, SpanTrackingMode.EdgeExclusive, match);
-            }
+    public static SnapshotSpan? MapUpOrDownToFirstMatch(this IBufferGraph bufferGraph, SnapshotSpan span, Predicate<ITextSnapshot> match) {
+        var spans = bufferGraph.MapDownToFirstMatch(span, SpanTrackingMode.EdgeExclusive, match);
+        if(!spans.Any()) {
+            spans = bufferGraph.MapUpToFirstMatch(span, SpanTrackingMode.EdgeExclusive, match);
+        }
 
-            return spans.FirstOrDefault();
-        }        
-    }
+        return spans.FirstOrDefault();
+    }        
 }

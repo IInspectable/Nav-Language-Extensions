@@ -4,18 +4,16 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public interface IEdgeModeSymbol: ISymbol {
+public interface IEdgeModeSymbol: ISymbol {
 
-        EdgeMode EdgeMode { get; }
+    EdgeMode EdgeMode { get; }
 
-        [NotNull]
-        IEdge Edge { get; }
+    [NotNull]
+    IEdge Edge { get; }
 
-        string DisplayName { get; }
-        string Verb        { get; }
-
-    }
+    string DisplayName { get; }
+    string Verb        { get; }
 
 }

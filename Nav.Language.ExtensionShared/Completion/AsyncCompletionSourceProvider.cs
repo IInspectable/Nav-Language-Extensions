@@ -7,26 +7,24 @@ using Microsoft.VisualStudio.Text.Editor;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion {
+namespace Pharmatechnik.Nav.Language.Extension.Completion; 
 
-    abstract class AsyncCompletionSourceProvider: IAsyncCompletionSourceProvider {
+abstract class AsyncCompletionSourceProvider: IAsyncCompletionSourceProvider {
 
-        readonly IDictionary<ITextView, IAsyncCompletionSource> _cache = new Dictionary<ITextView, IAsyncCompletionSource>();
+    readonly IDictionary<ITextView, IAsyncCompletionSource> _cache = new Dictionary<ITextView, IAsyncCompletionSource>();
 
-        public IAsyncCompletionSource GetOrCreate(ITextView textView) {
-            if (_cache.TryGetValue(textView, out var completionSource)) {
-                return completionSource;
-            }
-
-            var source = CreateCompletionSource();
-            textView.Closed += (o, e) => _cache.Remove(textView);
-            _cache.Add(textView, source);
-
-            return source;
+    public IAsyncCompletionSource GetOrCreate(ITextView textView) {
+        if (_cache.TryGetValue(textView, out var completionSource)) {
+            return completionSource;
         }
 
-        protected abstract IAsyncCompletionSource CreateCompletionSource();
+        var source = CreateCompletionSource();
+        textView.Closed += (o, e) => _cache.Remove(textView);
+        _cache.Add(textView, source);
 
+        return source;
     }
+
+    protected abstract IAsyncCompletionSource CreateCompletionSource();
 
 }

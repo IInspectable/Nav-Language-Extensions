@@ -10,28 +10,26 @@ using Pharmatechnik.Nav.Language.Logging;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Analyzer {
+namespace Pharmatechnik.Nav.Language.Analyzer; 
 
-    sealed class SyntaxAnalyzerProgram {
+sealed class SyntaxAnalyzerProgram {
 
-        public int Run(CommandLine cl) {
+    public int Run(CommandLine cl) {
 
-            var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
+        var syntaxProviderFactory = cl.UseSyntaxCache ? SyntaxProviderFactory.Cached : SyntaxProviderFactory.Default;
 
-            var logger   = new ConsoleLogger(fullPaths: cl.FullPaths, noWarnings: cl.NoWarnings, verbose: cl.Verbose);
-            var pipeline = new SyntaxAnalyzerPipeline(logger, syntaxProviderFactory);
+        var logger   = new ConsoleLogger(fullPaths: cl.FullPaths, noWarnings: cl.NoWarnings, verbose: cl.Verbose);
+        var pipeline = new SyntaxAnalyzerPipeline(logger, syntaxProviderFactory);
 
-            var navFiles  = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);
-            var fileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(cl.Directory, file), fileName: file));
-            var analyzer  = new CodeNotImplementedAnalyzer(cl.Pattern);
+        var navFiles  = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);
+        var fileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(cl.Directory, file), fileName: file));
+        var analyzer  = new CodeNotImplementedAnalyzer(cl.Pattern);
 
-            pipeline.Run(fileSpecs, analyzer);
+        pipeline.Run(fileSpecs, analyzer);
 
-            Console.WriteLine($"Number of CodeNotImplemented: {analyzer.Result}");
+        Console.WriteLine($"Number of CodeNotImplemented: {analyzer.Result}");
 
-            return 0;
-        }
-
+        return 0;
     }
 
 }

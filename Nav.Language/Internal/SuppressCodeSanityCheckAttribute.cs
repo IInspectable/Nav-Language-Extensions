@@ -1,22 +1,22 @@
 using System;
 using System.Linq;
 
-namespace Pharmatechnik.Nav.Language.Internal {
-    [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-    sealed class SuppressCodeSanityCheckAttribute : Attribute {
+namespace Pharmatechnik.Nav.Language.Internal; 
 
-        public SuppressCodeSanityCheckAttribute(string reason) {
-            Reason = reason;
-        }
+[AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
+sealed class SuppressCodeSanityCheckAttribute : Attribute {
 
-        public string Reason { get; }
+    public SuppressCodeSanityCheckAttribute(string reason) {
+        Reason = reason;
+    }
 
-        public static SuppressCodeSanityCheckAttribute GetAttribute<T>() {
-            return typeof(T).GetCustomAttributes(false).OfType<SuppressCodeSanityCheckAttribute>().FirstOrDefault();
-        }
+    public string Reason { get; }
 
-        public static SuppressCodeSanityCheckAttribute GetAttribute(Type t) {
-            return t.GetCustomAttributes(false).OfType<SuppressCodeSanityCheckAttribute>().FirstOrDefault();
-        }
+    public static SuppressCodeSanityCheckAttribute GetAttribute<T>() {
+        return typeof(T).GetCustomAttributes(false).OfType<SuppressCodeSanityCheckAttribute>().FirstOrDefault();
+    }
+
+    public static SuppressCodeSanityCheckAttribute GetAttribute(Type t) {
+        return t.GetCustomAttributes(false).OfType<SuppressCodeSanityCheckAttribute>().FirstOrDefault();
     }
 }

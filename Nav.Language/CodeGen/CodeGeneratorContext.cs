@@ -1,12 +1,11 @@
-﻿namespace Pharmatechnik.Nav.Language.CodeGen {
+﻿namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-    sealed class CodeGeneratorContext {
+sealed class CodeGeneratorContext {
 
-        public CodeGeneratorContext(CodeGenerator generator) {
-            Generator = generator;
-        }
-
-        public CodeGenerator Generator { get; }
-        public string ProductVersion => MyAssembly.ProductVersion;
+    public CodeGeneratorContext(CodeGenerator generator) {
+        Generator = generator;
     }
+
+    public CodeGenerator Generator      { get; }
+    public string        ProductVersion => MyAssembly.ProductVersion;
 }

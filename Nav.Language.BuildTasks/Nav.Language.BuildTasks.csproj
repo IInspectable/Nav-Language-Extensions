@@ -8,7 +8,6 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Pharmatechnik.Nav.Language.BuildTasks</RootNamespace>
     <AssemblyName>Pharmatechnik.Nav.Language.BuildTasks</AssemblyName>
-    <LangVersion>9.0</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>    
   </PropertyGroup>
 

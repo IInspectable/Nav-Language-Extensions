@@ -6,34 +6,32 @@ using Microsoft.VisualStudio.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension {
+namespace Pharmatechnik.Nav.Language.Extension; 
 
-    abstract class ParserServiceDependent: IDisposable {
+abstract class ParserServiceDependent: IDisposable {
 
-        protected ParserServiceDependent(ITextBuffer textBuffer) {
+    protected ParserServiceDependent(ITextBuffer textBuffer) {
 
-            TextBuffer = textBuffer;
+        TextBuffer = textBuffer;
 
-            ParserService = ParserService.GetOrCreateSingelton(textBuffer);
+        ParserService = ParserService.GetOrCreateSingelton(textBuffer);
 
-            ParserService.ParseResultChanging += OnParseResultChanging;
-            ParserService.ParseResultChanged  += OnParseResultChanged;
-        }
+        ParserService.ParseResultChanging += OnParseResultChanging;
+        ParserService.ParseResultChanged  += OnParseResultChanged;
+    }
 
-        public virtual void Dispose() {
-            ParserService.ParseResultChanging -= OnParseResultChanging;
-            ParserService.ParseResultChanged  -= OnParseResultChanged;
-        }
+    public virtual void Dispose() {
+        ParserService.ParseResultChanging -= OnParseResultChanging;
+        ParserService.ParseResultChanged  -= OnParseResultChanged;
+    }
 
-        protected ITextBuffer   TextBuffer    { get; }
-        protected ParserService ParserService { get; }
+    protected ITextBuffer   TextBuffer    { get; }
+    protected ParserService ParserService { get; }
 
-        protected virtual void OnParseResultChanging(object sender, EventArgs e) {
-        }
+    protected virtual void OnParseResultChanging(object sender, EventArgs e) {
+    }
 
-        protected virtual void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
-        }
-
+    protected virtual void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
     }
 
 }

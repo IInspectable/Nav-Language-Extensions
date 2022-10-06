@@ -10,91 +10,89 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes.ErrorFix {
+namespace Pharmatechnik.Nav.Language.CodeFixes.ErrorFix; 
 
-    public sealed class AddMissingExitTransitionCodeFix: ErrorCodeFix {
+public sealed class AddMissingExitTransitionCodeFix: ErrorCodeFix {
 
-        internal AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNodeRef, IConnectionPointSymbol connectionPoint, CodeFixContext context)
-            : base(context) {
+    internal AddMissingExitTransitionCodeFix(INodeReferenceSymbol targetNodeRef, IConnectionPointSymbol connectionPoint, CodeFixContext context)
+        : base(context) {
 
-            ConnectionPoint = connectionPoint                              ?? throw new ArgumentNullException(nameof(connectionPoint));
-            TargetNodeRef   = targetNodeRef                                ?? throw new ArgumentNullException(nameof(targetNodeRef));
-            TaskNode        = targetNodeRef.Declaration as ITaskNodeSymbol ?? throw new ArgumentException(nameof(targetNodeRef));
+        ConnectionPoint = connectionPoint                              ?? throw new ArgumentNullException(nameof(connectionPoint));
+        TargetNodeRef   = targetNodeRef                                ?? throw new ArgumentNullException(nameof(targetNodeRef));
+        TaskNode        = targetNodeRef.Declaration as ITaskNodeSymbol ?? throw new ArgumentException(nameof(targetNodeRef));
 
-            if (TaskNode.Declaration != ConnectionPoint.TaskDeclaration) {
-                throw new ArgumentException();
-            }
+        if (TaskNode.Declaration != ConnectionPoint.TaskDeclaration) {
+            throw new ArgumentException();
         }
+    }
 
-        public ITaskNodeSymbol        TaskNode        { get; }
-        public IConnectionPointSymbol ConnectionPoint { get; }
-        public INodeReferenceSymbol   TargetNodeRef   { get; }
+    public ITaskNodeSymbol        TaskNode        { get; }
+    public IConnectionPointSymbol ConnectionPoint { get; }
+    public INodeReferenceSymbol   TargetNodeRef   { get; }
 
-        public ITaskDefinitionSymbol ContainingTask => TaskNode.ContainingTask;
+    public ITaskDefinitionSymbol ContainingTask => TaskNode.ContainingTask;
 
-        public override string          Name         => "Add Missing Edge";
-        public override CodeFixImpact   Impact       => CodeFixImpact.None;
-        public override TextExtent?     ApplicableTo => TargetNodeRef.Location.Extent;
-        public override CodeFixPrio     Prio         => CodeFixPrio.High;
+    public override string        Name         => "Add Missing Edge";
+    public override CodeFixImpact Impact       => CodeFixImpact.None;
+    public override TextExtent?   ApplicableTo => TargetNodeRef.Location.Extent;
+    public override CodeFixPrio   Prio         => CodeFixPrio.High;
         
 
-        internal bool CanApplyFix() {
+    internal bool CanApplyFix() {
 
-            var templateEdge = GetTemplateEdge();
+        var templateEdge = GetTemplateEdge();
 
-            // 1. Wir brauchen eine vollständige Kante als "Formatvorlage"
-            if (templateEdge?.SourceReference == null || templateEdge.EdgeMode == null || templateEdge.TargetReference == null) {
-                return false;
-            }
-
-            // 2. Es darf noch keine ExitTransition mit dem Verbindungspunkt geben
-            return TaskNode.Outgoings
-                           .Where(trans => trans.ExitConnectionPointReference != null)
-                            // ReSharper disable once PossibleNullReferenceException
-                           .All(o => o.ExitConnectionPointReference.Declaration != ConnectionPoint);
+        // 1. Wir brauchen eine vollständige Kante als "Formatvorlage"
+        if (templateEdge?.SourceReference == null || templateEdge.EdgeMode == null || templateEdge.TargetReference == null) {
+            return false;
         }
 
-        public IList<TextChange> GetTextChanges() {
+        // 2. Es darf noch keine ExitTransition mit dem Verbindungspunkt geben
+        return TaskNode.Outgoings
+                       .Where(trans => trans.ExitConnectionPointReference != null)
+                        // ReSharper disable once PossibleNullReferenceException
+                       .All(o => o.ExitConnectionPointReference.Declaration != ConnectionPoint);
+    }
 
-            if (!CanApplyFix()) {
-                throw new InvalidOperationException();
-            }
+    public IList<TextChange> GetTextChanges() {
 
-            var textChanges = new List<TextChange>();
-
-            var sourceName   = $"{TaskNode.Name}{SyntaxFacts.Colon}{ConnectionPoint.Name}";
-            var edgeKeyword  = SyntaxFacts.GoToEdgeKeyword;
-            var targetName   = GetApplicableTargetName();
-            var templateEdge = GetTemplateEdge();
-            // Die neue Exit Transition
-            var exitTransition = ComposeEdge(templateEdge, sourceName, edgeKeyword, targetName);
-
-            // ReSharper disable once PossibleNullReferenceException Check unter CanApplyFix
-            var transitionLine = SyntaxTree.SourceText.GetTextLineAtPosition(templateEdge.SourceReference.Start);
-            textChanges.AddRange(GetInsertChanges(transitionLine.Extent.End, $"{exitTransition}{Context.TextEditorSettings.NewLine}"));
-
-            return textChanges;
+        if (!CanApplyFix()) {
+            throw new InvalidOperationException();
         }
 
-        public TextExtent TryGetSelectionAfterChanges([CanBeNull] CodeGenerationUnit codegenerationUnit) {
+        var textChanges = new List<TextChange>();
 
-            var taskDef    = codegenerationUnit?.TryFindTaskDefinition(TargetNodeRef.Declaration?.ContainingTask.Name);
-            var taskNode   = taskDef.TryFindNode<ITaskNodeSymbol>(TaskNode.Name);
-            var exitEdge   = taskNode?.Outgoings.FirstOrDefault(e => e.ExitConnectionPointReference?.Name == ConnectionPoint.Name);
-            var targetNode = exitEdge?.TargetReference;
+        var sourceName   = $"{TaskNode.Name}{SyntaxFacts.Colon}{ConnectionPoint.Name}";
+        var edgeKeyword  = SyntaxFacts.GoToEdgeKeyword;
+        var targetName   = GetApplicableTargetName();
+        var templateEdge = GetTemplateEdge();
+        // Die neue Exit Transition
+        var exitTransition = ComposeEdge(templateEdge, sourceName, edgeKeyword, targetName);
 
-            return targetNode?.Location.Extent ?? TextExtent.Missing;
-        }
+        // ReSharper disable once PossibleNullReferenceException Check unter CanApplyFix
+        var transitionLine = SyntaxTree.SourceText.GetTextLineAtPosition(templateEdge.SourceReference.Start);
+        textChanges.AddRange(GetInsertChanges(transitionLine.Extent.End, $"{exitTransition}{Context.TextEditorSettings.NewLine}"));
 
-        IEdge GetTemplateEdge() {
-            return TargetNodeRef.Edge;
-        }
+        return textChanges;
+    }
 
-        string GetApplicableTargetName() {
-            var guiNode = TaskNode.ContainingTask.NodeDeclarations.OfType<IGuiNodeSymbol>().FirstOrDefault();
-            return guiNode?.Name ?? "TO_BE_FILLED";
-        }
+    public TextExtent TryGetSelectionAfterChanges([CanBeNull] CodeGenerationUnit codegenerationUnit) {
 
+        var taskDef    = codegenerationUnit?.TryFindTaskDefinition(TargetNodeRef.Declaration?.ContainingTask.Name);
+        var taskNode   = taskDef.TryFindNode<ITaskNodeSymbol>(TaskNode.Name);
+        var exitEdge   = taskNode?.Outgoings.FirstOrDefault(e => e.ExitConnectionPointReference?.Name == ConnectionPoint.Name);
+        var targetNode = exitEdge?.TargetReference;
+
+        return targetNode?.Location.Extent ?? TextExtent.Missing;
+    }
+
+    IEdge GetTemplateEdge() {
+        return TargetNodeRef.Edge;
+    }
+
+    string GetApplicableTargetName() {
+        var guiNode = TaskNode.ContainingTask.NodeDeclarations.OfType<IGuiNodeSymbol>().FirstOrDefault();
+        return guiNode?.Name ?? "TO_BE_FILLED";
     }
 
 }

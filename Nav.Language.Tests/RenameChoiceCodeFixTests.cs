@@ -12,16 +12,16 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Nav.Language.Tests {
+namespace Nav.Language.Tests; 
 
-    [TestFixture]
-    public class RenameChoiceCodeFixTests {
+[TestFixture]
+public class RenameChoiceCodeFixTests {
 
-        public static IEnumerable<TestCaseData> TestCases = new[] {
-            //=============================================
-            //
-            CreateTestCase(
-                    originalSourceText: @"
+    public static IEnumerable<TestCaseData> TestCases = new[] {
+        //=============================================
+        //
+        CreateTestCase(
+                originalSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -40,7 +40,7 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
     Choice_Ok      --> Ok;
 }
 ",
-                    expectedSourceText: @"
+                expectedSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -59,15 +59,15 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
     Choice_Renamed --> Ok;
 }
 ",
-                    taskName: "MessageBox",
-                    choiceName: "Choice_Ok",
-                    newChoiceName: "Choice_Renamed")
-                .SetName("Simple rename"),
+                taskName: "MessageBox",
+                choiceName: "Choice_Ok",
+                newChoiceName: "Choice_Renamed")
+           .SetName("Simple rename"),
 
-            //=============================================
-            //
-            CreateTestCase(
-                    originalSourceText: @"
+        //=============================================
+        //
+        CreateTestCase(
+                originalSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -86,7 +86,7 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
     Choice_Ok      --> Ok;
 }
 ",
-                    expectedSourceText: @"
+                expectedSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -105,15 +105,15 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
     Choice_RenamedLonger --> Ok;
 }
 ",
-                    taskName: "MessageBox",
-                    choiceName: "Choice_Ok",
-                    newChoiceName: "Choice_RenamedLonger")
-                .SetName("Rename with long choice name"),
+                taskName: "MessageBox",
+                choiceName: "Choice_Ok",
+                newChoiceName: "Choice_RenamedLonger")
+           .SetName("Rename with long choice name"),
 
-            //=============================================
-            //
-            CreateTestCase(
-                    originalSourceText: @"
+        //=============================================
+        //
+        CreateTestCase(
+                originalSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -132,7 +132,7 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
     Choice_Ok		-->	Ok;
 }
 ",
-                    expectedSourceText: @"
+                expectedSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -151,15 +151,15 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
     C               -->	Ok;
 }
 ",
-                    taskName: "MessageBox",
-                    choiceName: "Choice_Ok",
-                    newChoiceName: "C")
-                .SetName("Rename with short choice name"),
+                taskName: "MessageBox",
+                choiceName: "Choice_Ok",
+                newChoiceName: "C")
+           .SetName("Rename with short choice name"),
 
-            //=============================================
-            //
-            CreateTestCase(
-                    originalSourceText: @"
+        //=============================================
+        //
+        CreateTestCase(
+                originalSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -178,7 +178,7 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
     Choice_Ok	/* Foo*/-->	Ok;
 }
 ",
-                    expectedSourceText: @"
+                expectedSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -197,15 +197,15 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
     C           /* Foo*/-->	Ok;
 }
 ",
-                    taskName: "MessageBox",
-                    choiceName: "Choice_Ok",
-                    newChoiceName: "C")
-                .SetName("Rename with comment between source and edge"),
+                taskName: "MessageBox",
+                choiceName: "Choice_Ok",
+                newChoiceName: "C")
+           .SetName("Rename with comment between source and edge"),
 
-            //=============================================
-            //
-            CreateTestCase(
-                    originalSourceText: @"
+        //=============================================
+        //
+        CreateTestCase(
+                originalSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -225,7 +225,7 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
             --> Ok;
 }
 ",
-                    expectedSourceText: @"
+                expectedSourceText: @"
 [namespaceprefix Test]
 
 task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
@@ -245,63 +245,62 @@ task MessageBox [base StandardWFS : ILegacyMessageBoxWFS]
             --> Ok;
 }
 ",
-                    taskName: "MessageBox",
-                    choiceName: "Choice_Ok",
-                    newChoiceName: "Renamed_Choice")
-                .SetName("Rename with new line between source and edge"),
-        };
+                taskName: "MessageBox",
+                choiceName: "Choice_Ok",
+                newChoiceName: "Renamed_Choice")
+           .SetName("Rename with new line between source and edge"),
+    };
 
-        [Test]
-        [TestCaseSource(nameof(TestCases))]
-        public void SimpleRename(string originalSourceText, string expectedSourceText, string taskName, string choiceName, string newChoiceName) {
+    [Test]
+    [TestCaseSource(nameof(TestCases))]
+    public void SimpleRename(string originalSourceText, string expectedSourceText, string taskName, string choiceName, string newChoiceName) {
 
-            var orgCodeGenerationUnit = GetCodeGenerationUnit(originalSourceText);
-            Assert.That(orgCodeGenerationUnit.Diagnostics.Any(), Is.False, "Test Code should not have any diagnostics");
+        var orgCodeGenerationUnit = GetCodeGenerationUnit(originalSourceText);
+        Assert.That(orgCodeGenerationUnit.Diagnostics.Any(), Is.False, "Test Code should not have any diagnostics");
 
-            var choiceNodeSymbol = FindNodeSymbol<IChoiceNodeSymbol>(orgCodeGenerationUnit, taskName, choiceName);
-            var context   = new CodeFixContext(choiceNodeSymbol.Location.Extent, orgCodeGenerationUnit, GetEditorSettings());
-            var codeFixes = RenameCodeFixProvider.SuggestCodeFixes(context).ToList();
+        var choiceNodeSymbol = FindNodeSymbol<IChoiceNodeSymbol>(orgCodeGenerationUnit, taskName, choiceName);
+        var context          = new CodeFixContext(choiceNodeSymbol.Location.Extent, orgCodeGenerationUnit, GetEditorSettings());
+        var codeFixes        = RenameCodeFixProvider.SuggestCodeFixes(context).ToList();
 
-            Assert.That(codeFixes.Count, Is.EqualTo(1));
+        Assert.That(codeFixes.Count, Is.EqualTo(1));
 
-            var codeFix     = codeFixes.Single();
-            var textChanges = codeFix.GetTextChanges(newChoiceName);
+        var codeFix     = codeFixes.Single();
+        var textChanges = codeFix.GetTextChanges(newChoiceName);
 
-            var actual = ApplyChanges(originalSourceText, textChanges);
-            var actualCodeGenerationUnit = GetCodeGenerationUnit(actual);
+        var actual                   = ApplyChanges(originalSourceText, textChanges);
+        var actualCodeGenerationUnit = GetCodeGenerationUnit(actual);
 
-            Assert.That(actualCodeGenerationUnit.Diagnostics.Any(), Is.False, "Result Code should not have any diagnostics");
+        Assert.That(actualCodeGenerationUnit.Diagnostics.Any(), Is.False, "Result Code should not have any diagnostics");
 
-            Assert.That(actual, Is.EqualTo(expectedSourceText));
-        }
+        Assert.That(actual, Is.EqualTo(expectedSourceText));
+    }
 
-        #region Infrastructure
+    #region Infrastructure
 
-        static TestCaseData CreateTestCase(string originalSourceText, string expectedSourceText, string taskName, string choiceName, string newChoiceName) {
-            return new TestCaseData(originalSourceText, expectedSourceText, taskName, choiceName, newChoiceName);
-        }
+    static TestCaseData CreateTestCase(string originalSourceText, string expectedSourceText, string taskName, string choiceName, string newChoiceName) {
+        return new TestCaseData(originalSourceText, expectedSourceText, taskName, choiceName, newChoiceName);
+    }
 
-        string ApplyChanges(string text, IEnumerable<TextChange> textChanges) {
-            var writer = new TextChangeWriter();
-            return writer.ApplyTextChanges(text, textChanges);
-        }
+    string ApplyChanges(string text, IEnumerable<TextChange> textChanges) {
+        var writer = new TextChangeWriter();
+        return writer.ApplyTextChanges(text, textChanges);
+    }
 
-        TextEditorSettings GetEditorSettings() {
-            return new TextEditorSettings(4, "\r\n");
-        }
+    TextEditorSettings GetEditorSettings() {
+        return new TextEditorSettings(4, "\r\n");
+    }
 
-        private static T FindNodeSymbol<T>(CodeGenerationUnit unit, string taskName, string nodeName)where T : INodeSymbol {
-            var taskDefinitionSymbol = unit.TaskDefinitions.First(td => td.Name == taskName);
-            var choiceNodeSymbol = taskDefinitionSymbol.NodeDeclarations.OfType<T>().First(cn => cn.Name == nodeName);
-            return choiceNodeSymbol;
-        }
+    private static T FindNodeSymbol<T>(CodeGenerationUnit unit, string taskName, string nodeName)where T : INodeSymbol {
+        var taskDefinitionSymbol = unit.TaskDefinitions.First(td => td.Name                              == taskName);
+        var choiceNodeSymbol     = taskDefinitionSymbol.NodeDeclarations.OfType<T>().First(cn => cn.Name == nodeName);
+        return choiceNodeSymbol;
+    }
 
-        CodeGenerationUnit GetCodeGenerationUnit(string text) {
+    CodeGenerationUnit GetCodeGenerationUnit(string text) {
 
-            var tree=SyntaxTree.ParseText(text);
-            return CodeGenerationUnit.FromCodeGenerationUnitSyntax(tree.Root as CodeGenerationUnitSyntax);
-        }
+        var tree =SyntaxTree.ParseText(text);
+        return CodeGenerationUnit.FromCodeGenerationUnitSyntax(tree.Root as CodeGenerationUnitSyntax);
+    }
 
-        #endregion
-    }    
+    #endregion
 }

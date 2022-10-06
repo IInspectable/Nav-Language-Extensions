@@ -1,9 +1,9 @@
-﻿namespace Pharmatechnik.Nav.Language.CodeGen {
-    class FieldCodeModel : ParameterCodeModel {
+﻿namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-        public FieldCodeModel(string parameterType, string name): base(parameterType, name) {
-        }
+class FieldCodeModel : ParameterCodeModel {
 
-        public override string ParameterName => $"{CodeGenFacts.FieldPrefix}{base.ParameterName}";
+    public FieldCodeModel(string parameterType, string name): base(parameterType, name) {
     }
+
+    public override string ParameterName => $"{CodeGenFacts.FieldPrefix}{base.ParameterName}";
 }

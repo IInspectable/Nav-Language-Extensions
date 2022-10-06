@@ -7,67 +7,65 @@ using Microsoft.VisualStudio.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion {
+namespace Pharmatechnik.Nav.Language.Extension.Completion; 
 
-    static class TextSnaphotLineExtensions {
+static class TextSnaphotLineExtensions {
 
-        public static SnapshotPoint GetStartOfIdentifier(this ITextSnapshotLine line, SnapshotPoint start) {
-            while (start > line.Start && SyntaxFacts.IsIdentifierCharacter((start - 1).GetChar())) {
-                start -= 1;
-            }
-
-            return start;
+    public static SnapshotPoint GetStartOfIdentifier(this ITextSnapshotLine line, SnapshotPoint start) {
+        while (start > line.Start && SyntaxFacts.IsIdentifierCharacter((start - 1).GetChar())) {
+            start -= 1;
         }
 
-        public static SnapshotPoint? GetPreviousNonWhitespace(this ITextSnapshotLine line, SnapshotPoint start) {
+        return start;
+    }
 
-            if (start == line.Start) {
-                return null;
-            }
+    public static SnapshotPoint? GetPreviousNonWhitespace(this ITextSnapshotLine line, SnapshotPoint start) {
 
-            do {
-                start -= 1;
-            } while (start > line.Start && char.IsWhiteSpace(start.GetChar()));
-
-            return start;
+        if (start == line.Start) {
+            return null;
         }
 
-        public static SnapshotSpan? GetSpanOfPreviousIdentifier(this ITextSnapshotLine line, SnapshotPoint start) {
+        do {
+            start -= 1;
+        } while (start > line.Start && char.IsWhiteSpace(start.GetChar()));
 
-            var wordEnd = line.GetPreviousNonWhitespace(start);
-            if (wordEnd == null) {
-                return null;
-            }
+        return start;
+    }
 
-            var wordStart = line.GetStartOfIdentifier(wordEnd.Value);
+    public static SnapshotSpan? GetSpanOfPreviousIdentifier(this ITextSnapshotLine line, SnapshotPoint start) {
 
-            return new SnapshotSpan(wordStart, wordEnd.Value + 1);
+        var wordEnd = line.GetPreviousNonWhitespace(start);
+        if (wordEnd == null) {
+            return null;
         }
 
-        public static SnapshotPoint GetStartOfFileNamePart(this ITextSnapshotLine line, SnapshotPoint start) {
-            while (start > line.Start && IsFileNameChar((start - 1).GetChar())) {
-                start -= 1;
-            }
+        var wordStart = line.GetStartOfIdentifier(wordEnd.Value);
 
-            return start;
+        return new SnapshotSpan(wordStart, wordEnd.Value + 1);
+    }
+
+    public static SnapshotPoint GetStartOfFileNamePart(this ITextSnapshotLine line, SnapshotPoint start) {
+        while (start > line.Start && IsFileNameChar((start - 1).GetChar())) {
+            start -= 1;
         }
 
-        static bool IsFileNameChar(this char ch) {
-            return Path.GetInvalidFileNameChars().All(c => ch != c);
+        return start;
+    }
+
+    static bool IsFileNameChar(this char ch) {
+        return Path.GetInvalidFileNameChars().All(c => ch != c);
+    }
+
+    public static SnapshotPoint GetStartOfEdge(this ITextSnapshotLine line, SnapshotPoint start) {
+        while (start > line.Start && IsEdgeChar((start - 1).GetChar())) {
+            start -= 1;
         }
 
-        public static SnapshotPoint GetStartOfEdge(this ITextSnapshotLine line, SnapshotPoint start) {
-            while (start > line.Start && IsEdgeChar((start - 1).GetChar())) {
-                start -= 1;
-            }
+        return start;
+    }
 
-            return start;
-        }
-
-        static bool IsEdgeChar(this char ch) {
-            return SyntaxFacts.EdgeKeywords.SelectMany(k => k).Contains(ch);
-        }
-
+    static bool IsEdgeChar(this char ch) {
+        return SyntaxFacts.EdgeKeywords.SelectMany(k => k).Contains(ch);
     }
 
 }

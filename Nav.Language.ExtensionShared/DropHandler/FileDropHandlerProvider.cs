@@ -10,28 +10,26 @@ using Pharmatechnik.Nav.Language.Extension.Commands;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.DropHandler {
+namespace Pharmatechnik.Nav.Language.Extension.DropHandler; 
 
-    [Export(typeof(IDropHandlerProvider))]
-    [DropFormat(ClipBoardFormats.VsProjectItems)]
-    [DropFormat(ClipBoardFormats.FileDrop)]
-    [Name(nameof(FileDropHandlerProvider))]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [Order(Before = "DefaultFileDropHandler")]
-    class FileDropHandlerProvider: IDropHandlerProvider {
+[Export(typeof(IDropHandlerProvider))]
+[DropFormat(ClipBoardFormats.VsProjectItems)]
+[DropFormat(ClipBoardFormats.FileDrop)]
+[Name(nameof(FileDropHandlerProvider))]
+[ContentType(NavLanguageContentDefinitions.ContentType)]
+[Order(Before = "DefaultFileDropHandler")]
+class FileDropHandlerProvider: IDropHandlerProvider {
 
-        readonly NavEditorOperationsProvider _navEditorOperationsProvider;
+    readonly NavEditorOperationsProvider _navEditorOperationsProvider;
 
-        [ImportingConstructor]
-        public FileDropHandlerProvider(NavEditorOperationsProvider navEditorOperationsProvider) {
-            _navEditorOperationsProvider = navEditorOperationsProvider;
+    [ImportingConstructor]
+    public FileDropHandlerProvider(NavEditorOperationsProvider navEditorOperationsProvider) {
+        _navEditorOperationsProvider = navEditorOperationsProvider;
 
-        }
+    }
 
-        public IDropHandler GetAssociatedDropHandler(IWpfTextView view) {
-            return view.Properties.GetOrCreateSingletonProperty(() => new FileDropHandler(view, _navEditorOperationsProvider));
-        }
-
+    public IDropHandler GetAssociatedDropHandler(IWpfTextView view) {
+        return view.Properties.GetOrCreateSingletonProperty(() => new FileDropHandler(view, _navEditorOperationsProvider));
     }
 
 }

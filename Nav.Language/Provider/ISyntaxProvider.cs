@@ -6,10 +6,9 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public interface ISyntaxProvider : IDisposable {
-        [CanBeNull]
-        CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default);
-    }
+public interface ISyntaxProvider : IDisposable {
+    [CanBeNull]
+    CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default);
 }

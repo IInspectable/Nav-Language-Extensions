@@ -8,35 +8,33 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public static class CodeGenerationUnitExtensions {
+public static class CodeGenerationUnitExtensions {
 
-        [CanBeNull]
-        public static ITaskDefinitionSymbol TryFindTaskDefinition(this CodeGenerationUnit codeGenerationUnit, string taskName) {
-            return codeGenerationUnit?.TaskDefinitions.TryFindSymbol(taskName);
+    [CanBeNull]
+    public static ITaskDefinitionSymbol TryFindTaskDefinition(this CodeGenerationUnit codeGenerationUnit, string taskName) {
+        return codeGenerationUnit?.TaskDefinitions.TryFindSymbol(taskName);
+    }
+
+    public static IEnumerable<string> GetCodeUsingNamespaces(this CodeGenerationUnit codeGenerationUnit) {
+
+        if (codeGenerationUnit == null) {
+            return ImmutableList<string>.Empty;
         }
 
-        public static IEnumerable<string> GetCodeUsingNamespaces(this CodeGenerationUnit codeGenerationUnit) {
+        return codeGenerationUnit.Syntax
+                                 .CodeUsings
+                                 .Select(cu => cu.Namespace?.Text)
+                                 .Where(ns => ns != null);
+    }
 
-            if (codeGenerationUnit == null) {
-                return ImmutableList<string>.Empty;
-            }
-
-            return codeGenerationUnit.Syntax
-                                     .CodeUsings
-                                     .Select(cu => cu.Namespace?.Text)
-                                     .Where(ns => ns != null);
-        }
-
-        public static IEnumerable<string> ToSortedNamespaces(this IEnumerable<string> usings) {
-            return usings.Where(ns => ns != null)
-                         .Distinct()
-                         .OrderBy(ns => ns.Length)
-                         .ThenBy(ns => ns)
-                         .ToImmutableList();
-        }
-
+    public static IEnumerable<string> ToSortedNamespaces(this IEnumerable<string> usings) {
+        return usings.Where(ns => ns != null)
+                     .Distinct()
+                     .OrderBy(ns => ns.Length)
+                     .ThenBy(ns => ns)
+                     .ToImmutableList();
     }
 
 }

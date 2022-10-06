@@ -6,14 +6,13 @@ using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.BraceCompletion {
+namespace Pharmatechnik.Nav.Language.Extension.BraceCompletion; 
 
-    [Export(typeof(IBraceCompletionDefaultProvider))]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [BracePair('{', '}')]
-    [BracePair('(', ')')]
-    [BracePair('[', ']')]
-    [BracePair('"', '"')]
-    class BraceCompletionProvider : IBraceCompletionDefaultProvider {
-    }
+[Export(typeof(IBraceCompletionDefaultProvider))]
+[ContentType(NavLanguageContentDefinitions.ContentType)]
+[BracePair('{', '}')]
+[BracePair('(', ')')]
+[BracePair('[', ']')]
+[BracePair('"', '"')]
+class BraceCompletionProvider : IBraceCompletionDefaultProvider {
 }

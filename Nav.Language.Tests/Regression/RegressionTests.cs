@@ -11,85 +11,83 @@ using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
 
-namespace Nav.Language.Tests {
+namespace Nav.Language.Tests; 
 
-    [TestFixture]
-    public class RegressionTests {
+[TestFixture]
+public class RegressionTests {
 
-        [Test, TestCaseSource(nameof(GetFileTestCases))]
-        public void TestCase(FileTestCase pair) {
+    [Test, TestCaseSource(nameof(GetFileTestCases))]
+    public void TestCase(FileTestCase pair) {
 
-            var generatedContent = File.ReadAllText(pair.GeneratedFile);
-            var expectedContent  = File.ReadAllText(pair.ExpectedFile);
+        var generatedContent = File.ReadAllText(pair.GeneratedFile);
+        var expectedContent  = File.ReadAllText(pair.ExpectedFile);
 
-            Assert.That(generatedContent, Is.EqualTo(expectedContent), $"File '{pair.GeneratedFile}' differes from expected file content '{pair.ExpectedFile}'");
+        Assert.That(generatedContent, Is.EqualTo(expectedContent), $"File '{pair.GeneratedFile}' differes from expected file content '{pair.ExpectedFile}'");
+    }
+
+    [Test, Explicit]
+    public void GenerateFiles() {
+        GenerateNavCode();
+    }
+
+    public static IEnumerable<FileTestCase> GetFileTestCases() {
+
+        GenerateNavCode();
+
+        return PlainGetFileTestCases();
+    }
+
+    static void GenerateNavCode() {
+
+        // Sicherstellen, dass auch wirklich alle Files (auch die "OneShots") neu geschrieben werden.
+        foreach(var tc in PlainGetFileTestCases()) {
+            File.Delete(tc.GeneratedFile);
         }
 
-        [Test, Explicit]
-        public void GenerateFiles() {
-            GenerateNavCode();
-        }
+        var fileSpecs = CollectNavFiles();
 
-        public static IEnumerable<FileTestCase> GetFileTestCases() {
+        var pipeline = NavCodeGeneratorPipeline.CreateDefault();
+        var b        = pipeline.Run(fileSpecs);
 
-            GenerateNavCode();
+        Assert.That(b, Is.True);
+    }
 
-            return PlainGetFileTestCases();
-        }
+    static IEnumerable<FileTestCase> PlainGetFileTestCases() {
 
-        static void GenerateNavCode() {
+        var directory = GetRegressiontestDirectory();
 
-            // Sicherstellen, dass auch wirklich alle Files (auch die "OneShots") neu geschrieben werden.
-            foreach(var tc in PlainGetFileTestCases()) {
-                File.Delete(tc.GeneratedFile);
+        var files = Directory.EnumerateFiles(directory, "*.cs", SearchOption.AllDirectories).Where(f => !f.EndsWith("expected.cs"));
+
+        return files.Select(f => new FileTestCase {
+                GeneratedFile = Path.GetFullPath(f),
+                ExpectedFile  = Path.GetFullPath(Path.ChangeExtension(f, "expected.cs"))
             }
+        );
+    }
 
-            var fileSpecs = CollectNavFiles();
+    static IEnumerable<FileSpec> CollectNavFiles() {
+        var directory    = GetRegressiontestDirectory();
+        var navFiles     = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories);
+        var dirFileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(directory, file), fileName: file));
 
-            var pipeline = NavCodeGeneratorPipeline.CreateDefault();
-            var b        = pipeline.Run(fileSpecs);
+        return dirFileSpecs;
+    }
 
-            Assert.That(b, Is.True);
-        }
+    static string GetRegressiontestDirectory() {
 
-        static IEnumerable<FileTestCase> PlainGetFileTestCases() {
+        return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\Regression\Tests"));
+    }
 
-            var directory = GetRegressiontestDirectory();
+    public class FileTestCase {
 
-            var files = Directory.EnumerateFiles(directory, "*.cs", SearchOption.AllDirectories).Where(f => !f.EndsWith("expected.cs"));
+        public string GeneratedFile { get; set; }
+        public string ExpectedFile  { get; set; }
 
-            return files.Select(f => new FileTestCase {
-                    GeneratedFile = Path.GetFullPath(f),
-                    ExpectedFile  = Path.GetFullPath(Path.ChangeExtension(f, "expected.cs"))
-                }
-            );
-        }
+        public string RelativeGeneratedFile => PathHelper.GetRelativePath(GetRegressiontestDirectory(), GeneratedFile);
+        public string RelativeExpectedFile  => PathHelper.GetRelativePath(GetRegressiontestDirectory(), ExpectedFile);
 
-        static IEnumerable<FileSpec> CollectNavFiles() {
-            var directory    = GetRegressiontestDirectory();
-            var navFiles     = Directory.EnumerateFiles(directory, "*.nav", SearchOption.AllDirectories);
-            var dirFileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(directory, file), fileName: file));
-
-            return dirFileSpecs;
-        }
-
-        static string GetRegressiontestDirectory() {
-
-            return Path.GetFullPath(Path.Combine(TestContext.CurrentContext.TestDirectory, @"..\..\Regression\Tests"));
-        }
-
-        public class FileTestCase {
-
-            public string GeneratedFile { get; set; }
-            public string ExpectedFile  { get; set; }
-
-            public string RelativeGeneratedFile => PathHelper.GetRelativePath(GetRegressiontestDirectory(), GeneratedFile);
-            public string RelativeExpectedFile  => PathHelper.GetRelativePath(GetRegressiontestDirectory(), ExpectedFile);
-
-            public override string ToString() {
-                return $"{RelativeGeneratedFile} <-?-> {RelativeExpectedFile}";
-            }
-
+        public override string ToString() {
+            return $"{RelativeGeneratedFile} <-?-> {RelativeExpectedFile}";
         }
 
     }

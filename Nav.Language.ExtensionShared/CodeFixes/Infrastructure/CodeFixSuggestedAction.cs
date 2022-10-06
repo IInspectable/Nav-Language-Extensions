@@ -14,66 +14,64 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+namespace Pharmatechnik.Nav.Language.Extension.CodeFixes; 
 
-    abstract class CodeFixSuggestedAction: ISuggestedAction {
+abstract class CodeFixSuggestedAction: ISuggestedAction {
 
-        protected CodeFixSuggestedAction(CodeFixSuggestedActionContext context, CodeFixSuggestedActionParameter parameter) {
-            Context   = context   ?? throw new ArgumentNullException(nameof(context));
-            Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
-        }
+    protected CodeFixSuggestedAction(CodeFixSuggestedActionContext context, CodeFixSuggestedActionParameter parameter) {
+        Context   = context   ?? throw new ArgumentNullException(nameof(context));
+        Parameter = parameter ?? throw new ArgumentNullException(nameof(parameter));
+    }
 
-        protected CodeFixSuggestedActionContext   Context   { get; }
-        protected CodeFixSuggestedActionParameter Parameter { get; }
+    protected CodeFixSuggestedActionContext   Context   { get; }
+    protected CodeFixSuggestedActionParameter Parameter { get; }
 
-        public abstract Span?           ApplicableToSpan { get; }
-        public abstract CodeFixPrio     Prio             { get; }
-        public abstract CodeFixCategory Category         { get; }
-        public abstract string          DisplayText      { get; }
-        public abstract string          UndoDescription  { get; }
+    public abstract Span?           ApplicableToSpan { get; }
+    public abstract CodeFixPrio     Prio             { get; }
+    public abstract CodeFixCategory Category         { get; }
+    public abstract string          DisplayText      { get; }
+    public abstract string          UndoDescription  { get; }
 
-        public virtual ImageMoniker IconMoniker        => default;
-        public virtual string       IconAutomationText => null;
-        public virtual string       InputGestureText   => null;
+    public virtual ImageMoniker IconMoniker        => default;
+    public virtual string       IconAutomationText => null;
+    public virtual string       InputGestureText   => null;
 
-        public virtual void Dispose() {
+    public virtual void Dispose() {
 
-        }
+    }
 
-        public bool TryGetTelemetryId(out Guid telemetryId) {
-            telemetryId = Guid.Empty;
-            return false;
-        }
+    public bool TryGetTelemetryId(out Guid telemetryId) {
+        telemetryId = Guid.Empty;
+        return false;
+    }
 
-        public virtual bool HasActionSets => false;
+    public virtual bool HasActionSets => false;
 
-        public virtual Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken) {
-            return null;
-        }
+    public virtual Task<IEnumerable<SuggestedActionSet>> GetActionSetsAsync(CancellationToken cancellationToken) {
+        return null;
+    }
 
-        public virtual bool HasPreview => false;
+    public virtual bool HasPreview => false;
 
-        public virtual Task<object> GetPreviewAsync(CancellationToken cancellationToken) {
-            return null;
-        }
+    public virtual Task<object> GetPreviewAsync(CancellationToken cancellationToken) {
+        return null;
+    }
 
-        public abstract void Invoke(CancellationToken cancellationToken);
+    public abstract void Invoke(CancellationToken cancellationToken);
 
-        protected abstract void Apply(CancellationToken cancellationToken);
+    protected abstract void Apply(CancellationToken cancellationToken);
 
-        protected ITextSnapshot ApplyTextChanges(IEnumerable<TextChange> textChanges) {
+    protected ITextSnapshot ApplyTextChanges(IEnumerable<TextChange> textChanges) {
 
-            var textChangesAndSnapshot = new TextChangesAndSnapshot(
-                textChanges: textChanges,
-                snapshot: Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
+        var textChangesAndSnapshot = new TextChangesAndSnapshot(
+            textChanges: textChanges,
+            snapshot: Parameter.CodeGenerationUnitAndSnapshot.Snapshot);
 
-            return Context.TextChangeService.ApplyTextChanges(
-                textView: Parameter.TextView,
-                undoDescription: UndoDescription,
-                textChangesAndSnapshot: textChangesAndSnapshot,
-                waitMessage: DisplayText);
-        }
-
+        return Context.TextChangeService.ApplyTextChanges(
+            textView: Parameter.TextView,
+            undoDescription: UndoDescription,
+            textChangesAndSnapshot: textChangesAndSnapshot,
+            waitMessage: DisplayText);
     }
 
 }

@@ -14,36 +14,35 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider; 
 
-    class TriggerDeclarationLocationInfoProvider: CodeAnalysisLocationInfoProvider {
+class TriggerDeclarationLocationInfoProvider: CodeAnalysisLocationInfoProvider {
 
-        readonly SignalTriggerCodeInfo _signalTriggerCodeInfo;
+    readonly SignalTriggerCodeInfo _signalTriggerCodeInfo;
 
-        public TriggerDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, SignalTriggerCodeInfo signalTriggerCodeInfo): base(sourceBuffer) {
-            _signalTriggerCodeInfo  = signalTriggerCodeInfo;
-        }
+    public TriggerDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, SignalTriggerCodeInfo signalTriggerCodeInfo): base(sourceBuffer) {
+        _signalTriggerCodeInfo = signalTriggerCodeInfo;
+    }
 
-        static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToMethodPublic; } }
+    static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToMethodPublic; } }
 
-        protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
+    protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
-            try {
-                var location = await LocationFinder.FindTriggerDeclarationLocationsAsync(
-                    project          : project, 
-                    codegenInfo      : _signalTriggerCodeInfo, 
-                    cancellationToken: cancellationToken).ConfigureAwait(false);
+        try {
+            var location = await LocationFinder.FindTriggerDeclarationLocationsAsync(
+                project          : project, 
+                codegenInfo      : _signalTriggerCodeInfo, 
+                cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                var locationInfo = LocationInfo.FromLocation(
-                    location    : location,
-                    displayName : "Go To Trigger Declaration",
-                    imageMoniker: ImageMoniker);
+            var locationInfo = LocationInfo.FromLocation(
+                location    : location,
+                displayName : "Go To Trigger Declaration",
+                imageMoniker: ImageMoniker);
 
-                return ToEnumerable(locationInfo);
+            return ToEnumerable(locationInfo);
 
-            } catch(LocationNotFoundException ex) {
-                return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
-            }
+        } catch(LocationNotFoundException ex) {
+            return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
         }
     }
 }

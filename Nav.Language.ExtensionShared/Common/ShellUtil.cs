@@ -6,40 +6,40 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
-    static class ShellUtil {
+namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
-        public static void ShowInfoMessage(string message) {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            ShowMessagebox(message, OLEMSGICON.OLEMSGICON_INFO);
-        }
+static class ShellUtil {
 
-        public static void ShowErrorMessage(string message) {      
-            ThreadHelper.ThrowIfNotOnUIThread();
-            ShowMessagebox(message, OLEMSGICON.OLEMSGICON_CRITICAL);
-        }
+    public static void ShowInfoMessage(string message) {
+        ThreadHelper.ThrowIfNotOnUIThread();
+        ShowMessagebox(message, OLEMSGICON.OLEMSGICON_INFO);
+    }
 
-         static void ShowMessagebox(string message, OLEMSGICON msgicon, 
-                                    OLEMSGBUTTON msgbtn = OLEMSGBUTTON.OLEMSGBUTTON_OK, 
-                                    OLEMSGDEFBUTTON msgdefbtn = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST) {
+    public static void ShowErrorMessage(string message) {      
+        ThreadHelper.ThrowIfNotOnUIThread();
+        ShowMessagebox(message, OLEMSGICON.OLEMSGICON_CRITICAL);
+    }
 
-            ThreadHelper.ThrowIfNotOnUIThread();
+    static void ShowMessagebox(string message, OLEMSGICON msgicon, 
+                               OLEMSGBUTTON msgbtn = OLEMSGBUTTON.OLEMSGBUTTON_OK, 
+                               OLEMSGDEFBUTTON msgdefbtn = OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST) {
 
-            var uiShell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
-            var unused  = Guid.Empty;
+        ThreadHelper.ThrowIfNotOnUIThread();
 
-            uiShell?.ShowMessageBox(
-                dwCompRole     : 0,
-                rclsidComp     : ref unused,
-                pszTitle       : null,
-                pszText        : message,
-                pszHelpFile    : null,
-                dwHelpContextID: 0,
-                msgbtn         : msgbtn,
-                msgdefbtn      : msgdefbtn,
-                msgicon        : msgicon,
-                fSysAlert      : 0,
-                pnResult       : out _);
-        }
+        var uiShell = ServiceProvider.GlobalProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
+        var unused  = Guid.Empty;
+
+        uiShell?.ShowMessageBox(
+            dwCompRole     : 0,
+            rclsidComp     : ref unused,
+            pszTitle       : null,
+            pszText        : message,
+            pszHelpFile    : null,
+            dwHelpContextID: 0,
+            msgbtn         : msgbtn,
+            msgdefbtn      : msgdefbtn,
+            msgicon        : msgicon,
+            fSysAlert      : 0,
+            pnResult       : out _);
     }
 }

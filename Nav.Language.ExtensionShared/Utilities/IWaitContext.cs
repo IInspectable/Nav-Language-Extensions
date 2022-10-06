@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Threading;
 
-namespace Pharmatechnik.Nav.Language.Extension.Utilities {
+namespace Pharmatechnik.Nav.Language.Extension.Utilities; 
 
-    enum WaitIndicatorResult {
+enum WaitIndicatorResult {
 
-        Completed,
-        Canceled,
+    Completed,
+    Canceled,
 
-    }
+}
 
-    interface IWaitContext : IDisposable {
+interface IWaitContext : IDisposable {
 
-        CancellationToken CancellationToken { get; }
+    CancellationToken CancellationToken { get; }
 
-        bool AllowCancel { get; set; }
-        string Message { get; set; }
+    bool   AllowCancel { get; set; }
+    string Message     { get; set; }
 
-        void UpdateProgress();
+    void UpdateProgress();
 
-    }
 }

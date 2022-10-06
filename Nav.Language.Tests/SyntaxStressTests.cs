@@ -7,66 +7,66 @@ using Pharmatechnik.Nav.Language;
 
 // ReSharper disable PossibleNullReferenceException => Dann soll es so sein. Test wird dann eh rot
 
-namespace Nav.Language.Tests {
-    [TestFixture]
-    public class SyntaxStressTests {
+namespace Nav.Language.Tests; 
 
-        [Test]
-        public void IncompleteSyntaxTest() {
-            var syntax = Syntax.ParseTaskDefinition("task F [base {}");
+[TestFixture]
+public class SyntaxStressTests {
 
-            Assert.That(syntax.CodeBaseDeclaration, Is.Not.Null);
+    [Test]
+    public void IncompleteSyntaxTest() {
+        var syntax = Syntax.ParseTaskDefinition("task F [base {}");
 
-            var nullSyntaxen = syntax.CodeBaseDeclaration.BaseTypes.Where(b => b == null);
-            Assert.That(nullSyntaxen.Any(), Is.False);
-        }
+        Assert.That(syntax.CodeBaseDeclaration, Is.Not.Null);
 
-        [Test]
-        public void SimulatedRandomTypingTest() {
-            var source = Resources.AllRules;
+        var nullSyntaxen = syntax.CodeBaseDeclaration.BaseTypes.Where(b => b == null);
+        Assert.That(nullSyntaxen.Any(), Is.False);
+    }
 
-            List<int> indexes = RandomShuffle(Enumerable.Range(0, source.Length));
-            for (int count = 1; count <= source.Length; count++) {
+    [Test]
+    public void SimulatedRandomTypingTest() {
+        var source = Resources.AllRules;
+
+        List<int> indexes = RandomShuffle(Enumerable.Range(0, source.Length));
+        for (int count = 1; count <= source.Length; count++) {
           
-                var sb = new StringBuilder();
-                foreach(var index in indexes) {
-                    sb.Append(source[index]);
-                }
-
-                var text = sb.ToString();
-                var tree=SyntaxTree.ParseText(text);
-
-                CheckNonNullChild(tree.Root);
+            var sb = new StringBuilder();
+            foreach(var index in indexes) {
+                sb.Append(source[index]);
             }
+
+            var text = sb.ToString();
+            var tree =SyntaxTree.ParseText(text);
+
+            CheckNonNullChild(tree.Root);
         }
+    }
 
-        [Test]
-        public void SimulatedTypingTest() {
-            var source = Resources.AllRules;
+    [Test]
+    public void SimulatedTypingTest() {
+        var source = Resources.AllRules;
 
-            for (int index = 1; index <= source.Length; index++) {
+        for (int index = 1; index <= source.Length; index++) {
                 
-                var text = source.Substring(0, source.Length-index);
-                var tree = SyntaxTree.ParseText(text);
+            var text = source.Substring(0, source.Length -index);
+            var tree = SyntaxTree.ParseText(text);
 
-                CheckNonNullChild(tree.Root);
-            }
+            CheckNonNullChild(tree.Root);
         }
+    }
 
-        void CheckNonNullChild(SyntaxNode node) {
-            Assert.That(node, Is.Not.Null);
-            foreach (var child in node.ChildNodes()) {
-                CheckNonNullChild(child);
-            }
+    void CheckNonNullChild(SyntaxNode node) {
+        Assert.That(node, Is.Not.Null);
+        foreach (var child in node.ChildNodes()) {
+            CheckNonNullChild(child);
         }
+    }
 
-        List<int> RandomShuffle(IEnumerable<int> source) {
-            var random = new Random();
+    List<int> RandomShuffle(IEnumerable<int> source) {
+        var random = new Random();
 
-            return source.Select(i => new KeyValuePair<int, int>(random.Next(), i))
-                         .OrderBy(i => i.Key)
-                         .Select(i => i.Value)
-                         .ToList();
-        }
+        return source.Select(i => new KeyValuePair<int, int>(random.Next(), i))
+                     .OrderBy(i => i.Key)
+                     .Select(i => i.Value)
+                     .ToList();
     }
 }

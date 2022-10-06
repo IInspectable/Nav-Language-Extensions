@@ -4,61 +4,59 @@ using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    [Serializable]
-    public abstract class IdentifierOrStringSyntax: SyntaxNode {
+[Serializable]
+public abstract class IdentifierOrStringSyntax: SyntaxNode {
 
-        internal IdentifierOrStringSyntax(TextExtent extent)
-            : base(extent) {
-        }
-
-        [CanBeNull]
-        public abstract string Text { get; }
-
-        public abstract Location GetTextLocation();
-
+    internal IdentifierOrStringSyntax(TextExtent extent)
+        : base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("Identifier")]
-    public sealed partial class IdentifierSyntax: IdentifierOrStringSyntax {
+    [CanBeNull]
+    public abstract string Text { get; }
 
-        internal IdentifierSyntax(TextExtent extent): base(extent) {
-        }
+    public abstract Location GetTextLocation();
 
-        public override string Text => Identifier.ToString();
+}
 
-        public override Location GetTextLocation() {
+[Serializable]
+[SampleSyntax("Identifier")]
+public sealed partial class IdentifierSyntax: IdentifierOrStringSyntax {
+
+    internal IdentifierSyntax(TextExtent extent): base(extent) {
+    }
+
+    public override string Text => Identifier.ToString();
+
+    public override Location GetTextLocation() {
+        return GetLocation();
+    }
+
+    public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+
+}
+
+[Serializable]
+[SampleSyntax("\"StringLiteral\"")]
+public sealed partial class StringLiteralSyntax: IdentifierOrStringSyntax {
+
+    internal StringLiteralSyntax(TextExtent extent): base(extent) {
+    }
+
+    public override string Text => StringLiteral.ToString().Trim('"');
+
+    public override Location GetTextLocation() {
+
+        if (Extent.IsEmpty || Extent.IsMissing) {
             return GetLocation();
         }
 
-        public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+        var extent = TextExtent.FromBounds(Extent.Start + 1, Extent.End - 1);
 
+        return SyntaxTree.SourceText.GetLocation(extent);
     }
 
-    [Serializable]
-    [SampleSyntax("\"StringLiteral\"")]
-    public sealed partial class StringLiteralSyntax: IdentifierOrStringSyntax {
-
-        internal StringLiteralSyntax(TextExtent extent): base(extent) {
-        }
-
-        public override string Text => StringLiteral.ToString().Trim('"');
-
-        public override Location GetTextLocation() {
-
-            if (Extent.IsEmpty || Extent.IsMissing) {
-                return GetLocation();
-            }
-
-            var extent = TextExtent.FromBounds(Extent.Start + 1, Extent.End - 1);
-
-            return SyntaxTree.SourceText.GetLocation(extent);
-        }
-
-        public SyntaxToken StringLiteral => ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral);
-
-    }
+    public SyntaxToken StringLiteral => ChildTokens().FirstOrMissing(SyntaxTokenType.StringLiteral);
 
 }

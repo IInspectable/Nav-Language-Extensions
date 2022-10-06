@@ -1,9 +1,8 @@
-namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
+namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences; 
 
-    class DefinitionHighlightTag : ReferenceHighlightTag {
+class DefinitionHighlightTag : ReferenceHighlightTag {
 
-        public DefinitionHighlightTag() : base(MarkerFormatDefinitionNames.DefinitionHighlight) {
+    public DefinitionHighlightTag() : base(MarkerFormatDefinitionNames.DefinitionHighlight) {
 
-        }
     }
 }

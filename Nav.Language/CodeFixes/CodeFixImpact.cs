@@ -1,11 +1,9 @@
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeFixes; 
 
-    public enum CodeFixImpact {
+public enum CodeFixImpact {
 
-        None,
-        Medium,
-        High
-
-    }
+    None,
+    Medium,
+    High
 
 }

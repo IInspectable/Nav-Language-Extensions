@@ -13,70 +13,68 @@ using Pharmatechnik.Nav.Language.Extension.QuickInfo;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion {
+namespace Pharmatechnik.Nav.Language.Extension.Completion; 
 
-    class CodeCompletionSource: AsyncCompletionSource {
+class CodeCompletionSource: AsyncCompletionSource {
 
-        public CodeCompletionSource(QuickinfoBuilderService quickinfoBuilderService)
-            : base(quickinfoBuilderService) {
+    public CodeCompletionSource(QuickinfoBuilderService quickinfoBuilderService)
+        : base(quickinfoBuilderService) {
 
-        }
+    }
 
-        public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
+    public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
 
-            if (!ShouldTriggerCompletion(trigger)) {
-                return CompletionStartData.DoesNotParticipateInCompletion;
-            }
-
-            if (ShouldProvideCompletions(triggerLocation, out var applicableToSpan)) {
-                return new CompletionStartData(CompletionParticipation.ProvidesItems, applicableToSpan);
-            }
-
+        if (!ShouldTriggerCompletion(trigger)) {
             return CompletionStartData.DoesNotParticipateInCompletion;
-
         }
 
-        protected override bool ShouldTriggerCompletionOverride(CompletionTrigger trigger) {
-            return char.IsLetter(trigger.Character) ||
-                   trigger.Character == SyntaxFacts.OpenBracket;
+        if (ShouldProvideCompletions(triggerLocation, out var applicableToSpan)) {
+            return new CompletionStartData(CompletionParticipation.ProvidesItems, applicableToSpan);
         }
 
-        public override Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+        return CompletionStartData.DoesNotParticipateInCompletion;
 
-            if (ShouldProvideCompletions(triggerLocation, out _)) {
-                var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
+    }
 
-                foreach (var keyword in SyntaxFacts.CodeKeywords
-                                                   .Where(k => !SyntaxFacts.IsHiddenKeyword(k))
-                                                   .OrderBy(k => k)) {
+    protected override bool ShouldTriggerCompletionOverride(CompletionTrigger trigger) {
+        return char.IsLetter(trigger.Character) ||
+               trigger.Character == SyntaxFacts.OpenBracket;
+    }
 
-                    completionItems.Add(CreateKeywordCompletion(keyword));
+    public override Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
-                }
+        if (ShouldProvideCompletions(triggerLocation, out _)) {
+            var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
 
-                return CreateCompletionContextTaskAsync(completionItems);
+            foreach (var keyword in SyntaxFacts.CodeKeywords
+                                               .Where(k => !SyntaxFacts.IsHiddenKeyword(k))
+                                               .OrderBy(k => k)) {
+
+                completionItems.Add(CreateKeywordCompletion(keyword));
+
             }
 
-            return CreateEmptyCompletionContextTaskAsync();
+            return CreateCompletionContextTaskAsync(completionItems);
         }
 
-        bool ShouldProvideCompletions(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {
+        return CreateEmptyCompletionContextTaskAsync();
+    }
 
-            var line                       = triggerLocation.GetContainingLine();
-            var start                      = line.GetStartOfIdentifier(triggerLocation);
-            var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
-            var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
+    bool ShouldProvideCompletions(SnapshotPoint triggerLocation, out SnapshotSpan applicableToSpan) {
 
-            applicableToSpan = default;
+        var line                       = triggerLocation.GetContainingLine();
+        var start                      = line.GetStartOfIdentifier(triggerLocation);
+        var previousNonWhitespacePoint = line.GetPreviousNonWhitespace(start);
+        var previousNonWhitespace      = previousNonWhitespacePoint?.GetChar();
 
-            if (previousNonWhitespace == SyntaxFacts.OpenBracket) {
-                applicableToSpan = new SnapshotSpan(start, triggerLocation);
-                return true;
-            }
+        applicableToSpan = default;
 
-            return false;
+        if (previousNonWhitespace == SyntaxFacts.OpenBracket) {
+            applicableToSpan = new SnapshotSpan(start, triggerLocation);
+            return true;
         }
 
+        return false;
     }
 
 }

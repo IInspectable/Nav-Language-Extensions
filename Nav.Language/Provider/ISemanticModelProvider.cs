@@ -7,15 +7,13 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public interface ISemanticModelProvider: IDisposable {
+public interface ISemanticModelProvider: IDisposable {
 
-        [CanBeNull]
-        CodeGenerationUnit GetSemanticModel(string filePath, CancellationToken cancellationToken = default);
-        [NotNull]
-        CodeGenerationUnit GetSemanticModel(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default);
-
-    }
+    [CanBeNull]
+    CodeGenerationUnit GetSemanticModel(string filePath, CancellationToken cancellationToken = default);
+    [NotNull]
+    CodeGenerationUnit GetSemanticModel(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken = default);
 
 }

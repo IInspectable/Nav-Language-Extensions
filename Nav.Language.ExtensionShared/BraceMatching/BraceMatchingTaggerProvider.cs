@@ -10,25 +10,24 @@ using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.BraceMatching {
-    
-    [Export(typeof (IViewTaggerProvider))]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [TagType(typeof (TextMarkerTag))]
-    class BraceMatchingTaggerProvider : IViewTaggerProvider {
+namespace Pharmatechnik.Nav.Language.Extension.BraceMatching; 
 
-        public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag {
+[Export(typeof (IViewTaggerProvider))]
+[ContentType(NavLanguageContentDefinitions.ContentType)]
+[TagType(typeof (TextMarkerTag))]
+class BraceMatchingTaggerProvider : IViewTaggerProvider {
 
-            if (textView == null) {
-                return null;
-            }
+    public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag {
 
-            // Provide highlighting only on the top-level buffer
-            if (textView.TextBuffer != buffer) {
-                return null;
-            }
-
-            return new BraceMatchingTagger(textView, buffer) as ITagger<T>;
+        if (textView == null) {
+            return null;
         }
+
+        // Provide highlighting only on the top-level buffer
+        if (textView.TextBuffer != buffer) {
+            return null;
+        }
+
+        return new BraceMatchingTagger(textView, buffer) as ITagger<T>;
     }
 }

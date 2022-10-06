@@ -2,27 +2,25 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public interface IEdge {
+public interface IEdge {
 
-        [NotNull]
-        ITaskDefinitionSymbol ContainingTask { get; }
+    [NotNull]
+    ITaskDefinitionSymbol ContainingTask { get; }
 
-        [NotNull]
-        Location Location { get; }
+    [NotNull]
+    Location Location { get; }
 
-        [CanBeNull]
-        INodeReferenceSymbol SourceReference { get; }
+    [CanBeNull]
+    INodeReferenceSymbol SourceReference { get; }
 
-        [CanBeNull]
-        IEdgeModeSymbol EdgeMode { get; }
+    [CanBeNull]
+    IEdgeModeSymbol EdgeMode { get; }
 
-        [CanBeNull]
-        INodeReferenceSymbol TargetReference { get; }
+    [CanBeNull]
+    INodeReferenceSymbol TargetReference { get; }
 
-        IEnumerable<ISymbol> Symbols();
-
-    }
+    IEnumerable<ISymbol> Symbols();
 
 }

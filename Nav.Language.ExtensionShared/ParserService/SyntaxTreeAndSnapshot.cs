@@ -8,15 +8,14 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension {
+namespace Pharmatechnik.Nav.Language.Extension; 
 
-    sealed class SyntaxTreeAndSnapshot : AndSnapshot {
+sealed class SyntaxTreeAndSnapshot : AndSnapshot {
 
-        internal SyntaxTreeAndSnapshot([NotNull] SyntaxTree syntaxTree, ITextSnapshot snapshot) : base(snapshot) {
-            SyntaxTree = syntaxTree;
-        }
-
-        public SyntaxTree SyntaxTree { get; }
-
+    internal SyntaxTreeAndSnapshot([NotNull] SyntaxTree syntaxTree, ITextSnapshot snapshot) : base(snapshot) {
+        SyntaxTree = syntaxTree;
     }
+
+    public SyntaxTree SyntaxTree { get; }
+
 }

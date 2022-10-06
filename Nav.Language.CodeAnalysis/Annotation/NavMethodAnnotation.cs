@@ -6,17 +6,16 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation {
+namespace Pharmatechnik.Nav.Language.CodeAnalysis.Annotation; 
 
-    public abstract class NavMethodAnnotation: NavTaskAnnotation {
+public abstract class NavMethodAnnotation: NavTaskAnnotation {
 
-        protected NavMethodAnnotation(NavTaskAnnotation taskAnnotation,
-                                      MethodDeclarationSyntax methodDeclarationSyntax) : base(taskAnnotation) {
+    protected NavMethodAnnotation(NavTaskAnnotation taskAnnotation,
+                                  MethodDeclarationSyntax methodDeclarationSyntax) : base(taskAnnotation) {
 
-            MethodDeclarationSyntax = methodDeclarationSyntax ?? throw new ArgumentNullException(nameof(methodDeclarationSyntax));
-        }
-
-        [NotNull]
-        public MethodDeclarationSyntax MethodDeclarationSyntax { get; }
+        MethodDeclarationSyntax = methodDeclarationSyntax ?? throw new ArgumentNullException(nameof(methodDeclarationSyntax));
     }
+
+    [NotNull]
+    public MethodDeclarationSyntax MethodDeclarationSyntax { get; }
 }

@@ -9,34 +9,32 @@ using Microsoft.VisualStudio.TaskStatusCenter;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Utilities {
+namespace Pharmatechnik.Nav.Language.Extension.Utilities; 
 
-    [Export(typeof(TaskStatusProvider))]
-    class TaskStatusProvider {
+[Export(typeof(TaskStatusProvider))]
+class TaskStatusProvider {
 
-        readonly Lazy<IVsTaskStatusCenterService> _taskCenterService;
+    readonly Lazy<IVsTaskStatusCenterService> _taskCenterService;
 
-        [ImportingConstructor]
-        public TaskStatusProvider(SVsServiceProvider serviceProvider) {
-            _taskCenterService = new Lazy<IVsTaskStatusCenterService>(
-                () => (IVsTaskStatusCenterService) serviceProvider.GetService(typeof(SVsTaskStatusCenterService)));
-        }
+    [ImportingConstructor]
+    public TaskStatusProvider(SVsServiceProvider serviceProvider) {
+        _taskCenterService = new Lazy<IVsTaskStatusCenterService>(
+            () => (IVsTaskStatusCenterService) serviceProvider.GetService(typeof(SVsTaskStatusCenterService)));
+    }
 
-        public TaskStatus CreateTaskStatus(string title) {
+    public TaskStatus CreateTaskStatus(string title) {
 
-            var options = new TaskHandlerOptions {
-                Title                  = title,
-                ActionsAfterCompletion = CompletionActions.None
-            };
+        var options = new TaskHandlerOptions {
+            Title                  = title,
+            ActionsAfterCompletion = CompletionActions.None
+        };
 
-            var taskCompletionSource = new TaskCompletionSource<bool>();
+        var taskCompletionSource = new TaskCompletionSource<bool>();
 
-            var handler = _taskCenterService.Value?.PreRegister(options, data: default);
-            handler?.RegisterTask(taskCompletionSource.Task);
+        var handler = _taskCenterService.Value?.PreRegister(options, data: default);
+        handler?.RegisterTask(taskCompletionSource.Task);
 
-            return new TaskStatus(taskCompletionSource, handler);
-        }
-
+        return new TaskStatus(taskCompletionSource, handler);
     }
 
 }

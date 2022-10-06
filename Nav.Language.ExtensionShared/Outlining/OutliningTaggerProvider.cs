@@ -9,22 +9,21 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Outlining {
-       
-    [Export(typeof(ITaggerProvider))]
-    [TagType(typeof(IOutliningRegionTag))]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    sealed class OutliningTaggerProvider: ITaggerProvider {
+namespace Pharmatechnik.Nav.Language.Extension.Outlining; 
 
-        readonly CodeContentControlProvider _codeContentControlProvider;
+[Export(typeof(ITaggerProvider))]
+[TagType(typeof(IOutliningRegionTag))]
+[ContentType(NavLanguageContentDefinitions.ContentType)]
+sealed class OutliningTaggerProvider: ITaggerProvider {
 
-        [ImportingConstructor]
-        public OutliningTaggerProvider(CodeContentControlProvider codeContentControlProvider) {
-            _codeContentControlProvider = codeContentControlProvider;
-        }
+    readonly CodeContentControlProvider _codeContentControlProvider;
+
+    [ImportingConstructor]
+    public OutliningTaggerProvider(CodeContentControlProvider codeContentControlProvider) {
+        _codeContentControlProvider = codeContentControlProvider;
+    }
        
-        public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-            return OutliningTagger.GetOrCreateSingelton<T>(buffer, _codeContentControlProvider);
-        }
+    public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
+        return OutliningTagger.GetOrCreateSingelton<T>(buffer, _codeContentControlProvider);
     }
 }

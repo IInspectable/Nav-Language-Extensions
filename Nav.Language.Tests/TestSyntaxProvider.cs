@@ -3,36 +3,34 @@ using System.Threading;
 
 using Pharmatechnik.Nav.Language;
 
-namespace Nav.Language.Tests {
+namespace Nav.Language.Tests; 
 
-    public class TestCaseFile {
+public class TestCaseFile {
 
-        public string Content  { get; set; }
-        public string FilePath { get; set; }
+    public string Content  { get; set; }
+    public string FilePath { get; set; }
 
+}
+
+class TestSyntaxProvider: SyntaxProvider {
+
+    readonly Dictionary<string, string> _files;
+
+    public TestSyntaxProvider() {
+        _files = new Dictionary<string, string>();
     }
 
-    class TestSyntaxProvider: SyntaxProvider {
+    public void RegisterFile(TestCaseFile file) {
+        _files[file.FilePath] = file.Content;
+    }
 
-        readonly Dictionary<string, string> _files;
+    public override CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default) {
 
-        public TestSyntaxProvider() {
-            _files = new Dictionary<string, string>();
+        if (!_files.TryGetValue(filePath, out var content)) {
+            return null;
         }
 
-        public void RegisterFile(TestCaseFile file) {
-            _files[file.FilePath] = file.Content;
-        }
-
-        public override CodeGenerationUnitSyntax GetSyntax(string filePath, CancellationToken cancellationToken = default) {
-
-            if (!_files.TryGetValue(filePath, out var content)) {
-                return null;
-            }
-
-            return Syntax.ParseCodeGenerationUnit(text: content, filePath: filePath);
-        }
-
+        return Syntax.ParseCodeGenerationUnit(text: content, filePath: filePath);
     }
 
 }

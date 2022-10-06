@@ -5,77 +5,75 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public static class TaskNodeSymbolExtensions {
+public static class TaskNodeSymbolExtensions {
 
-        public static IEnumerable<IConnectionPointSymbol> GetMissingExitTransitionConnectionPoints(this ITaskNodeSymbol taskNode) {
+    public static IEnumerable<IConnectionPointSymbol> GetMissingExitTransitionConnectionPoints(this ITaskNodeSymbol taskNode) {
 
-            if (taskNode?.Declaration == null) {
-                yield break;
+        if (taskNode?.Declaration == null) {
+            yield break;
+        }
+
+        var expectedExitConnectionPoints = taskNode.Declaration.Exits();
+        var actualExitConnectionPoints = taskNode.Outgoings
+                                                 .Select(et => et.ExitConnectionPointReference)
+                                                 .Where(cp => cp != null)
+                                                 .ToList();
+
+        foreach (var expectedExit in expectedExitConnectionPoints) {
+            if (!actualExitConnectionPoints.Exists(connectionPointReference => connectionPointReference.Declaration == expectedExit)) {
+                yield return expectedExit;
             }
+        }
+    }
 
-            var expectedExitConnectionPoints = taskNode.Declaration.Exits();
-            var actualExitConnectionPoints = taskNode.Outgoings
-                                                     .Select(et => et.ExitConnectionPointReference)
-                                                     .Where(cp => cp != null)
-                                                     .ToList();
+    public static bool CodeGenerateAbstractMethod(this IInitNodeSymbol initNode) {
+        return initNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
+    }
 
-            foreach (var expectedExit in expectedExitConnectionPoints) {
-                if (!actualExitConnectionPoints.Exists(connectionPointReference => connectionPointReference.Declaration == expectedExit)) {
+    public static bool CodeGenerateAbstractMethod(this ITaskNodeSymbol taskNode) {
+        return taskNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
+    }
+
+    public static bool CodeNotImplemented(this INodeSymbol taskNode) {
+        return (taskNode as ITaskNodeSymbol)?.Declaration?.CodeNotImplemented == true;
+    }
+
+    public static bool CodeDoNotInject(this INodeSymbol node) {
+        return (node as ITaskNodeSymbol)?.Syntax.CodeDoNotInjectDeclaration?.Keyword.IsMissing == false;
+    }
+
+    public static IEnumerable<IConnectionPointSymbol> GetUnconnectedExits(this ITaskNodeSymbol taskNode) {
+
+        if (taskNode.Declaration != null) {
+
+            var expectedExits  = taskNode.Declaration.Exits().OrderBy(cp => cp.Name);
+            var connectedExits = GetConnectedExits(taskNode).ToList();
+
+            foreach (var expectedExit in expectedExits) {
+
+                if (!connectedExits.Exists(connectedExit => connectedExit == expectedExit)) {
                     yield return expectedExit;
                 }
             }
-        }
-
-        public static bool CodeGenerateAbstractMethod(this IInitNodeSymbol initNode) {
-            return initNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
-        }
-
-        public static bool CodeGenerateAbstractMethod(this ITaskNodeSymbol taskNode) {
-            return taskNode?.Syntax.CodeAbstractMethodDeclaration?.Keyword.IsMissing == false;
-        }
-
-        public static bool CodeNotImplemented(this INodeSymbol taskNode) {
-            return (taskNode as ITaskNodeSymbol)?.Declaration?.CodeNotImplemented == true;
-        }
-
-        public static bool CodeDoNotInject(this INodeSymbol node) {
-            return (node as ITaskNodeSymbol)?.Syntax.CodeDoNotInjectDeclaration?.Keyword.IsMissing == false;
-        }
-
-        public static IEnumerable<IConnectionPointSymbol> GetUnconnectedExits(this ITaskNodeSymbol taskNode) {
-
-            if (taskNode.Declaration != null) {
-
-                var expectedExits  = taskNode.Declaration.Exits().OrderBy(cp => cp.Name);
-                var connectedExits = GetConnectedExits(taskNode).ToList();
-
-                foreach (var expectedExit in expectedExits) {
-
-                    if (!connectedExits.Exists(connectedExit => connectedExit == expectedExit)) {
-                        yield return expectedExit;
-                    }
-                }
-
-            }
 
         }
 
-        public static IEnumerable<IConnectionPointSymbol> GetConnectedExits(this ITaskNodeSymbol taskNode) {
+    }
 
-            if (taskNode.Declaration == null) {
-                return Enumerable.Empty<IConnectionPointSymbol>();
-            }
+    public static IEnumerable<IConnectionPointSymbol> GetConnectedExits(this ITaskNodeSymbol taskNode) {
 
-            return GetConnectedExitsImpl().Distinct();
+        if (taskNode.Declaration == null) {
+            return Enumerable.Empty<IConnectionPointSymbol>();
+        }
 
-            IEnumerable<IConnectionPointSymbol> GetConnectedExitsImpl() {
-                return taskNode.Outgoings
-                               .Select(et => et?.ExitConnectionPointReference?.Declaration)
-                               .Where(cps => cps != null);
+        return GetConnectedExitsImpl().Distinct();
 
-            }
+        IEnumerable<IConnectionPointSymbol> GetConnectedExitsImpl() {
+            return taskNode.Outgoings
+                           .Select(et => et?.ExitConnectionPointReference?.Declaration)
+                           .Where(cps => cps != null);
 
         }
 

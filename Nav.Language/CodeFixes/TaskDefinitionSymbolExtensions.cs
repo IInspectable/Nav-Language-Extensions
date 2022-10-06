@@ -5,43 +5,41 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes {
+namespace Pharmatechnik.Nav.Language.CodeFixes; 
 
-    static class TaskDefinitionSymbolExtensions {
+static class TaskDefinitionSymbolExtensions {
 
-        public static string ValidateNewNodeName(this ITaskDefinitionSymbol taskDefinitionSymbol, string nodeName) {
+    public static string ValidateNewNodeName(this ITaskDefinitionSymbol taskDefinitionSymbol, string nodeName) {
 
-            nodeName = nodeName?.Trim();
+        nodeName = nodeName?.Trim();
 
-            if (!SyntaxFacts.IsValidIdentifier(nodeName)) {
-                return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
-            }
-
-            var declaredNodeNames = taskDefinitionSymbol.GetDeclaredNodeNames();
-            if (declaredNodeNames.Contains(nodeName)) {
-                return String.Format(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared.MessageFormat, nodeName);
-            }
-
-            return null;
+        if (!SyntaxFacts.IsValidIdentifier(nodeName)) {
+            return DiagnosticDescriptors.Semantic.Nav2000IdentifierExpected.MessageFormat;
         }
 
-        static HashSet<string> GetDeclaredNodeNames(this ITaskDefinitionSymbol taskDefinitionSymbol) {
+        var declaredNodeNames = taskDefinitionSymbol.GetDeclaredNodeNames();
+        if (declaredNodeNames.Contains(nodeName)) {
+            return String.Format(DiagnosticDescriptors.Semantic.Nav0022NodeWithName0AlreadyDeclared.MessageFormat, nodeName);
+        }
 
-            var declaredNodeNames = new HashSet<string>();
-            if (taskDefinitionSymbol == null) {
-                return declaredNodeNames;
-            }
+        return null;
+    }
 
-            foreach (var node in taskDefinitionSymbol.NodeDeclarations) {
-                var nodeName = node.Name;
-                if (!String.IsNullOrEmpty(nodeName)) {
-                    declaredNodeNames.Add(nodeName);
-                }
-            }
+    static HashSet<string> GetDeclaredNodeNames(this ITaskDefinitionSymbol taskDefinitionSymbol) {
 
+        var declaredNodeNames = new HashSet<string>();
+        if (taskDefinitionSymbol == null) {
             return declaredNodeNames;
         }
 
+        foreach (var node in taskDefinitionSymbol.NodeDeclarations) {
+            var nodeName = node.Name;
+            if (!String.IsNullOrEmpty(nodeName)) {
+                declaredNodeNames.Add(nodeName);
+            }
+        }
+
+        return declaredNodeNames;
     }
 
 }

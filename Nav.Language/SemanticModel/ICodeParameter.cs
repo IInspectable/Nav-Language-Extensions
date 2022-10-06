@@ -1,10 +1,8 @@
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public interface ICodeParameter {
+public interface ICodeParameter {
 
-        string ParameterName { get; }
-        string ParameterType { get; }
-
-    }
+    string ParameterName { get; }
+    string ParameterType { get; }
 
 }

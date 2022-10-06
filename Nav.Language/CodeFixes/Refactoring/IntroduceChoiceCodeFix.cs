@@ -7,89 +7,87 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring; 
 
-    public class IntroduceChoiceCodeFix: RefactoringCodeFix {
+public class IntroduceChoiceCodeFix: RefactoringCodeFix {
 
-        internal IntroduceChoiceCodeFix(INodeReferenceSymbol nodeReference, CodeFixContext context)
-            : base(context) {
-            NodeReference = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
+    internal IntroduceChoiceCodeFix(INodeReferenceSymbol nodeReference, CodeFixContext context)
+        : base(context) {
+        NodeReference = nodeReference ?? throw new ArgumentNullException(nameof(nodeReference));
+    }
+
+    public INodeReferenceSymbol  NodeReference  { get; }
+    public ITaskDefinitionSymbol ContainingTask => NodeReference.Declaration?.ContainingTask;
+
+    public override string        Name         => "Introduce Choice";
+    public override CodeFixImpact Impact       => CodeFixImpact.None;
+    public override TextExtent?   ApplicableTo => NodeReference.Location.Extent;
+    public override CodeFixPrio   Prio         => CodeFixPrio.Medium;
+
+    public string SuggestChoiceName() {
+        string baseName   = $"Choice_{NodeReference.Name}";
+        string choiceName = baseName;
+        int    number     = 1;
+        while (!String.IsNullOrEmpty(ValidateChoiceName(choiceName))) {
+            choiceName = $"{baseName}{number++}";
         }
 
-        public INodeReferenceSymbol  NodeReference  { get; }
-        public ITaskDefinitionSymbol ContainingTask => NodeReference.Declaration?.ContainingTask;
+        return choiceName;
+    }
 
-        public override string          Name         => "Introduce Choice";
-        public override CodeFixImpact   Impact       => CodeFixImpact.None;
-        public override TextExtent?     ApplicableTo => NodeReference.Location.Extent;
-        public override CodeFixPrio     Prio         => CodeFixPrio.Medium;
+    internal bool CanApplyFix() {
 
-        public string SuggestChoiceName() {
-            string baseName   = $"Choice_{NodeReference.Name}";
-            string choiceName = baseName;
-            int    number     = 1;
-            while (!String.IsNullOrEmpty(ValidateChoiceName(choiceName))) {
-                choiceName = $"{baseName}{number++}";
-            }
+        return NodeReference.NodeReferenceType    == NodeReferenceType.Target &&
+               NodeReference.Declaration          != null                     &&
+               NodeReference.Edge.SourceReference != null                     &&
+               NodeReference.Edge.EdgeMode        != null;
+    }
 
-            return choiceName;
+    public string ValidateChoiceName(string choiceName) {
+        return ContainingTask.ValidateNewNodeName(choiceName);
+    }
+
+    public IList<TextChange> GetTextChanges(string choiceName) {
+
+        if (!CanApplyFix()) {
+            throw new InvalidOperationException();
         }
 
-        internal bool CanApplyFix() {
+        choiceName = choiceName?.Trim();
 
-            return NodeReference.NodeReferenceType    == NodeReferenceType.Target &&
-                   NodeReference.Declaration          != null                     &&
-                   NodeReference.Edge.SourceReference != null                     &&
-                   NodeReference.Edge.EdgeMode        != null;
+        var validationMessage = ValidateChoiceName(choiceName);
+        if (!String.IsNullOrEmpty(validationMessage)) {
+            throw new ArgumentException(validationMessage, nameof(choiceName));
         }
 
-        public string ValidateChoiceName(string choiceName) {
-            return ContainingTask.ValidateNewNodeName(choiceName);
-        }
+        var edge       = NodeReference.Edge;
+        var edgeMode   = edge.EdgeMode;
+        var nodeSymbol = NodeReference.Declaration;
 
-        public IList<TextChange> GetTextChanges(string choiceName) {
+        // ReSharper disable once PossibleNullReferenceException Check ist schon in CanApplyFix passiert
+        var nodeDeclarationLine = SyntaxTree.SourceText.GetTextLineAtPosition(nodeSymbol.Start);
+        var nodeTransitionLine  = SyntaxTree.SourceText.GetTextLineAtPosition(NodeReference.End);
 
-            if (!CanApplyFix()) {
-                throw new InvalidOperationException();
-            }
+        var choiceDeclaration = $"{GetIndentAsSpaces(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
+        var choiceTransition  = $"{GetIndentAsSpaces(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
 
-            choiceName = choiceName?.Trim();
+        var textChanges = new List<TextChange>();
+        // Die Choice Deklaration: choice NeueChoice;
+        textChanges.AddRange(GetInsertChanges(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{Context.TextEditorSettings.NewLine}"));
+        // Die Node Reference wird nun umgebogen auf die choice
+        textChanges.AddRange(GetRenameSymbolChanges(NodeReference, choiceName));
+        // Die Edge der choice ist immer '-->'
+        textChanges.AddRange(GetRenameSymbolChanges(edgeMode, SyntaxFacts.GoToEdgeKeyword));
+        // Die neue choice Transition 
+        textChanges.AddRange(GetInsertChanges(nodeTransitionLine.Extent.End, $"{choiceTransition}{Context.TextEditorSettings.NewLine}"));
 
-            var validationMessage = ValidateChoiceName(choiceName);
-            if (!String.IsNullOrEmpty(validationMessage)) {
-                throw new ArgumentException(validationMessage, nameof(choiceName));
-            }
+        return textChanges;
+    }
 
-            var edge       = NodeReference.Edge;
-            var edgeMode   = edge.EdgeMode;
-            var nodeSymbol = NodeReference.Declaration;
+    string WhiteSpaceBetweenChoiceKeywordAndIdentifier(INodeSymbol sampleNode) {
 
-            // ReSharper disable once PossibleNullReferenceException Check ist schon in CanApplyFix passiert
-            var nodeDeclarationLine = SyntaxTree.SourceText.GetTextLineAtPosition(nodeSymbol.Start);
-            var nodeTransitionLine  = SyntaxTree.SourceText.GetTextLineAtPosition(NodeReference.End);
-
-            var choiceDeclaration = $"{GetIndentAsSpaces(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
-            var choiceTransition  = $"{GetIndentAsSpaces(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
-
-            var textChanges = new List<TextChange>();
-            // Die Choice Deklaration: choice NeueChoice;
-            textChanges.AddRange(GetInsertChanges(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{Context.TextEditorSettings.NewLine}"));
-            // Die Node Reference wird nun umgebogen auf die choice
-            textChanges.AddRange(GetRenameSymbolChanges(NodeReference, choiceName));
-            // Die Edge der choice ist immer '-->'
-            textChanges.AddRange(GetRenameSymbolChanges(edgeMode, SyntaxFacts.GoToEdgeKeyword));
-            // Die neue choice Transition 
-            textChanges.AddRange(GetInsertChanges(nodeTransitionLine.Extent.End, $"{choiceTransition}{Context.TextEditorSettings.NewLine}"));
-
-            return textChanges;
-        }
-
-        string WhiteSpaceBetweenChoiceKeywordAndIdentifier(INodeSymbol sampleNode) {
-
-            var offset = ColumnsBetweenKeywordAndIdentifier(sampleNode, newKeyword: SyntaxFacts.ChoiceKeyword);
-            return new String(' ', offset);
-        }
-
+        var offset = ColumnsBetweenKeywordAndIdentifier(sampleNode, newKeyword: SyntaxFacts.ChoiceKeyword);
+        return new String(' ', offset);
     }
 
 }

@@ -6,47 +6,45 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-    public sealed class TaskExitCodeInfo {
+public sealed class TaskExitCodeInfo {
 
-        TaskExitCodeInfo(TaskCodeInfo containingTask, string taskNodeName) {
-            ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
-            var nodeNamePascalcase = (taskNodeName ?? String.Empty).ToPascalcase();
+    TaskExitCodeInfo(TaskCodeInfo containingTask, string taskNodeName) {
+        ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
+        var nodeNamePascalcase = (taskNodeName ?? String.Empty).ToPascalcase();
 
-            AfterMethodName      = $"{CodeGenFacts.ExitMethodPrefix}{nodeNamePascalcase}";
-            AfterLogicMethodName = $"{CodeGenFacts.ExitMethodPrefix}{nodeNamePascalcase}{CodeGenFacts.LogicMethodSuffix}";
+        AfterMethodName      = $"{CodeGenFacts.ExitMethodPrefix}{nodeNamePascalcase}";
+        AfterLogicMethodName = $"{CodeGenFacts.ExitMethodPrefix}{nodeNamePascalcase}{CodeGenFacts.LogicMethodSuffix}";
+    }
+
+    public TaskCodeInfo ContainingTask       { get; }
+    public string       AfterMethodName      { get; }
+    public string       AfterLogicMethodName { get; }
+
+    public static TaskExitCodeInfo FromConnectionPointReference(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+
+        if (exitConnectionPointReferenceSymbol == null) {
+            throw new ArgumentNullException(nameof(exitConnectionPointReferenceSymbol));
         }
 
-        public TaskCodeInfo ContainingTask       { get; }
-        public string       AfterMethodName      { get; }
-        public string       AfterLogicMethodName { get; }
+        var exitTransition = exitConnectionPointReferenceSymbol.ExitTransition;
 
-        public static TaskExitCodeInfo FromConnectionPointReference(IExitConnectionPointReferenceSymbol exitConnectionPointReferenceSymbol) {
+        var containingTaskCodeInfo = TaskCodeInfo.FromTaskDefinition(exitTransition.ContainingTask);
 
-            if (exitConnectionPointReferenceSymbol == null) {
-                throw new ArgumentNullException(nameof(exitConnectionPointReferenceSymbol));
-            }
+        return new TaskExitCodeInfo(containingTaskCodeInfo, exitTransition.SourceReference?.Name);
+    }
 
-            var exitTransition = exitConnectionPointReferenceSymbol.ExitTransition;
+    internal static TaskExitCodeInfo FromTaskNode(ITaskNodeSymbol taskNode,
+                                                  TaskCodeInfo containingTaskCodeInfo) {
 
-            var containingTaskCodeInfo = TaskCodeInfo.FromTaskDefinition(exitTransition.ContainingTask);
-
-            return new TaskExitCodeInfo(containingTaskCodeInfo, exitTransition.SourceReference?.Name);
+        if (taskNode == null) {
+            throw new ArgumentNullException(nameof(taskNode));
         }
 
-        internal static TaskExitCodeInfo FromTaskNode(ITaskNodeSymbol taskNode,
-                                                      TaskCodeInfo containingTaskCodeInfo) {
+        containingTaskCodeInfo = containingTaskCodeInfo ?? TaskCodeInfo.FromTaskDefinition(taskNode.ContainingTask);
 
-            if (taskNode == null) {
-                throw new ArgumentNullException(nameof(taskNode));
-            }
-
-            containingTaskCodeInfo = containingTaskCodeInfo ?? TaskCodeInfo.FromTaskDefinition(taskNode.ContainingTask);
-
-            return new TaskExitCodeInfo(containingTaskCodeInfo, taskNode.Name);
-        }
-
+        return new TaskExitCodeInfo(containingTaskCodeInfo, taskNode.Name);
     }
 
 }

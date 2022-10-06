@@ -9,41 +9,39 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring {
+namespace Pharmatechnik.Nav.Language.CodeFixes.Refactoring; 
 
-    public abstract class RenameCodeFix: RefactoringCodeFix {
+public abstract class RenameCodeFix: RefactoringCodeFix {
 
-        protected RenameCodeFix(CodeFixContext context)
-            : base(context) {
-        }
-
-        public abstract string ProvideDefaultName();
-        public abstract string ValidateSymbolName(string symbolName);
-        public abstract IEnumerable<TextChange> GetTextChanges(string newName);
-
+    protected RenameCodeFix(CodeFixContext context)
+        : base(context) {
     }
 
-    abstract class RenameCodeFix<T>: RenameCodeFix where T : class, ISymbol {
+    public abstract string ProvideDefaultName();
+    public abstract string ValidateSymbolName(string symbolName);
+    public abstract IEnumerable<TextChange> GetTextChanges(string newName);
 
-        protected RenameCodeFix(T symbol, ISymbol originatingSymbol, CodeFixContext context)
-            : base(context) {
+}
 
-            Symbol            = symbol            ?? throw new ArgumentNullException(nameof(symbol));
-            OriginatingSymbol = originatingSymbol ?? throw new ArgumentNullException(nameof(originatingSymbol));
-        }
+abstract class RenameCodeFix<T>: RenameCodeFix where T : class, ISymbol {
 
-        protected ISymbol OriginatingSymbol { get; }
+    protected RenameCodeFix(T symbol, ISymbol originatingSymbol, CodeFixContext context)
+        : base(context) {
 
-        public override TextExtent?     ApplicableTo => OriginatingSymbol.Location.Extent;
-        public override CodeFixPrio     Prio         => CodeFixPrio.Low;
+        Symbol            = symbol            ?? throw new ArgumentNullException(nameof(symbol));
+        OriginatingSymbol = originatingSymbol ?? throw new ArgumentNullException(nameof(originatingSymbol));
+    }
 
-        [NotNull]
-        public T Symbol { get; }
+    protected ISymbol OriginatingSymbol { get; }
 
-        public override string ProvideDefaultName() {
-            return Symbol.Name;
-        }
+    public override TextExtent? ApplicableTo => OriginatingSymbol.Location.Extent;
+    public override CodeFixPrio Prio         => CodeFixPrio.Low;
 
+    [NotNull]
+    public T Symbol { get; }
+
+    public override string ProvideDefaultName() {
+        return Symbol.Name;
     }
 
 }

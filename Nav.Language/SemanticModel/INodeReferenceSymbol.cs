@@ -4,25 +4,23 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public enum NodeReferenceType {
+public enum NodeReferenceType {
 
-        Source,
-        Target
+    Source,
+    Target
 
-    }
+}
 
-    public interface INodeReferenceSymbol: ISymbol {
+public interface INodeReferenceSymbol: ISymbol {
 
-        [CanBeNull]
-        INodeSymbol Declaration { get; }
+    [CanBeNull]
+    INodeSymbol Declaration { get; }
 
-        NodeReferenceType NodeReferenceType { get; }
+    NodeReferenceType NodeReferenceType { get; }
 
-        [NotNull]
-        IEdge Edge { get; }
-
-    }
+    [NotNull]
+    IEdge Edge { get; }
 
 }

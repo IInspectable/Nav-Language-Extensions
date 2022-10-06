@@ -10,53 +10,51 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Utilities {
+namespace Pharmatechnik.Nav.Language.Extension.Utilities; 
 
-    [Export(typeof(ProjectService))]
-    class ProjectService {
+[Export(typeof(ProjectService))]
+class ProjectService {
 
-        readonly IVsSolution _vsSolution1;
+    readonly IVsSolution _vsSolution1;
 
-        [ImportingConstructor]
-        public ProjectService(SVsServiceProvider serviceProvider) {
+    [ImportingConstructor]
+    public ProjectService(SVsServiceProvider serviceProvider) {
 
-            ThreadHelper.ThrowIfNotOnUIThread();
+        ThreadHelper.ThrowIfNotOnUIThread();
 
-            _vsSolution1 = (IVsSolution) serviceProvider.GetService(typeof(SVsSolution)) ?? throw new InvalidOperationException();
+        _vsSolution1 = (IVsSolution) serviceProvider.GetService(typeof(SVsSolution)) ?? throw new InvalidOperationException();
+    }
+
+    public ProjectMapper GetProjectMapper() {
+
+        ThreadHelper.ThrowIfNotOnUIThread();
+
+        var entries = ImmutableArray.CreateBuilder<ProjectInfo>();
+
+        Guid ignored = Guid.Empty;
+        var  flags   = __VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION | __VSENUMPROJFLAGS.EPF_UNLOADEDINSOLUTION;
+        if (ErrorHandler.Failed(_vsSolution1.GetProjectEnum((uint) flags, ref ignored, out var hierEnum))) {
+            return ProjectMapper.Empty;
         }
 
-        public ProjectMapper GetProjectMapper() {
+        IVsHierarchy[] hier = new IVsHierarchy[1];
+        while (hierEnum.Next((uint) hier.Length, hier, out var fetched) == VSConstants.S_OK && fetched == hier.Length) {
 
-            ThreadHelper.ThrowIfNotOnUIThread();
+            var hierarchy = new Hierarchy(hier[0]);
 
-            var entries = ImmutableArray.CreateBuilder<ProjectInfo>();
+            var directory   = UriBuilder.BuildDirectoryUriFromFile(hierarchy.FullPath);
+            var name        = hierarchy.Name;
+            var projectGuid = hierarchy.ProjectGuid;
 
-            Guid ignored = Guid.Empty;
-            var  flags   = __VSENUMPROJFLAGS.EPF_LOADEDINSOLUTION | __VSENUMPROJFLAGS.EPF_UNLOADEDINSOLUTION;
-            if (ErrorHandler.Failed(_vsSolution1.GetProjectEnum((uint) flags, ref ignored, out var hierEnum))) {
-                return ProjectMapper.Empty;
+            if (directory == null || name == null) {
+                continue;
             }
 
-            IVsHierarchy[] hier = new IVsHierarchy[1];
-            while (hierEnum.Next((uint) hier.Length, hier, out var fetched) == VSConstants.S_OK && fetched == hier.Length) {
+            entries.Add(new ProjectInfo(directory, name, projectGuid));
 
-                var hierarchy = new Hierarchy(hier[0]);
-
-                var directory   = UriBuilder.BuildDirectoryUriFromFile(hierarchy.FullPath);
-                var name        = hierarchy.Name;
-                var projectGuid = hierarchy.ProjectGuid;
-
-                if (directory == null || name == null) {
-                    continue;
-                }
-
-                entries.Add(new ProjectInfo(directory, name, projectGuid));
-
-            }
-
-            return new ProjectMapper(entries.ToImmutable());
         }
 
+        return new ProjectMapper(entries.ToImmutable());
     }
 
 }

@@ -4,13 +4,11 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public interface ISemanticModelProviderFactory {
+public interface ISemanticModelProviderFactory {
 
-        [NotNull] 
-        ISemanticModelProvider CreateProvider(ISyntaxProvider syntaxProvider);
-
-    }
+    [NotNull] 
+    ISemanticModelProvider CreateProvider(ISyntaxProvider syntaxProvider);
 
 }

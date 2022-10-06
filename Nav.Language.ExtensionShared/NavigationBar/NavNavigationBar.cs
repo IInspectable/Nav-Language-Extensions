@@ -26,473 +26,471 @@ using Control = System.Windows.Controls.Control;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.NavigationBar {
+namespace Pharmatechnik.Nav.Language.Extension.NavigationBar; 
 
-    class NavigationBar: SemanticModelServiceDependent, 
-                         IVsDropdownBarClient, 
-                         IVsDropdownBarClient4, 
-                         IVsCodeWindowEvents, 
-                         IDisposable {
+class NavigationBar: SemanticModelServiceDependent, 
+                     IVsDropdownBarClient, 
+                     IVsDropdownBarClient4, 
+                     IVsCodeWindowEvents, 
+                     IDisposable {
 
-        static readonly Logger Logger = Logger.Create<NavigationBar>();
+    static readonly Logger Logger = Logger.Create<NavigationBar>();
 
-        readonly IVsCodeWindow                         _codeWindow;
-        readonly IVsDropdownBarManager                 _manager;
-        readonly WorkspaceRegistration                 _workspaceRegistration;
-        readonly Dictionary<int, int>                  _activeSelections;
-        readonly IVsEditorAdaptersFactoryService       _editorAdaptersFactoryService;
-        readonly Dictionary<IVsTextView, IWpfTextView> _trackedViews;
-        readonly IDisposable                           _comEventSink;
+    readonly IVsCodeWindow                         _codeWindow;
+    readonly IVsDropdownBarManager                 _manager;
+    readonly WorkspaceRegistration                 _workspaceRegistration;
+    readonly Dictionary<int, int>                  _activeSelections;
+    readonly IVsEditorAdaptersFactoryService       _editorAdaptersFactoryService;
+    readonly Dictionary<IVsTextView, IWpfTextView> _trackedViews;
+    readonly IDisposable                           _comEventSink;
 
-        [CanBeNull] Workspace _workspace;
-        IVsDropdownBar        _dropdownBar;
-        int                   _focusedCombo;
+    [CanBeNull] Workspace _workspace;
+    IVsDropdownBar        _dropdownBar;
+    int                   _focusedCombo;
 
-        ImmutableList<NavigationBarItem> _projectItems;
-        ImmutableList<NavigationBarItem> _taskItems;
+    ImmutableList<NavigationBarItem> _projectItems;
+    ImmutableList<NavigationBarItem> _taskItems;
 
-        public NavigationBar(
-            ITextBuffer textBuffer,
-            IVsDropdownBarManager manager,
-            IVsCodeWindow codeWindow,
-            IServiceProvider serviceProvider): base(textBuffer) {
+    public NavigationBar(
+        ITextBuffer textBuffer,
+        IVsDropdownBarManager manager,
+        IVsCodeWindow codeWindow,
+        IServiceProvider serviceProvider): base(textBuffer) {
 
-            ThreadHelper.ThrowIfNotOnUIThread();
+        ThreadHelper.ThrowIfNotOnUIThread();
 
-            Logger.Trace($"{nameof(NavigationBar)}:Ctor");
+        Logger.Trace($"{nameof(NavigationBar)}:Ctor");
 
-            _manager          = manager;
-            _codeWindow       = codeWindow;
-            _projectItems     = ImmutableList<NavigationBarItem>.Empty;
-            _taskItems        = ImmutableList<NavigationBarItem>.Empty;
-            _activeSelections = new Dictionary<int, int>();
-            _focusedCombo     = -1;
-            _trackedViews     = new Dictionary<IVsTextView, IWpfTextView>();
+        _manager          = manager;
+        _codeWindow       = codeWindow;
+        _projectItems     = ImmutableList<NavigationBarItem>.Empty;
+        _taskItems        = ImmutableList<NavigationBarItem>.Empty;
+        _activeSelections = new Dictionary<int, int>();
+        _focusedCombo     = -1;
+        _trackedViews     = new Dictionary<IVsTextView, IWpfTextView>();
 
-            _workspaceRegistration                  =  Workspace.GetWorkspaceRegistration(TextBuffer.AsTextContainer());
-            _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
-            VSColorTheme.ThemeChanged               += OnThemeChanged;
+        _workspaceRegistration                  =  Workspace.GetWorkspaceRegistration(TextBuffer.AsTextContainer());
+        _workspaceRegistration.WorkspaceChanged += OnWorkspaceRegistrationChanged;
+        VSColorTheme.ThemeChanged               += OnThemeChanged;
 
-            #pragma warning disable VSSDK006 // Check services exist
-            var componentModel = (IComponentModel) serviceProvider.GetService(typeof(SComponentModel));
-            #pragma warning restore VSSDK006 // Check services exist
-            _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
+        #pragma warning disable VSSDK006 // Check services exist
+        var componentModel = (IComponentModel) serviceProvider.GetService(typeof(SComponentModel));
+        #pragma warning restore VSSDK006 // Check services exist
+        _editorAdaptersFactoryService = componentModel.GetService<IVsEditorAdaptersFactoryService>();
 
-            _comEventSink = ComEventSink.Advise<IVsCodeWindowEvents>(codeWindow, this);
+        _comEventSink = ComEventSink.Advise<IVsCodeWindowEvents>(codeWindow, this);
 
-            codeWindow.GetPrimaryView(out var pTextView);
-            ConnectView(pTextView);
+        codeWindow.GetPrimaryView(out var pTextView);
+        ConnectView(pTextView);
 
-            codeWindow.GetSecondaryView(out pTextView);
-            ConnectView(pTextView);
+        codeWindow.GetSecondaryView(out pTextView);
+        ConnectView(pTextView);
 
-            ConnectToWorkspace(_workspaceRegistration.Workspace);
+        ConnectToWorkspace(_workspaceRegistration.Workspace);
+    }
+
+    public override void Dispose() {
+
+        Logger.Trace($"{nameof(NavigationBar)}:{nameof(Dispose)}");
+
+        base.Dispose();
+
+        _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
+        VSColorTheme.ThemeChanged               -= OnThemeChanged;
+
+        foreach (var view in _trackedViews.Keys.ToList()) {
+            DisconnectView(view);
         }
 
-        public override void Dispose() {
+        _manager?.RemoveDropdownBar();
+        _comEventSink?.Dispose();
 
-            Logger.Trace($"{nameof(NavigationBar)}:{nameof(Dispose)}");
+        DisconnectFromWorkspace();
+    }
 
-            base.Dispose();
+    void ConnectView(IVsTextView vsTextView) {
 
-            _workspaceRegistration.WorkspaceChanged -= OnWorkspaceRegistrationChanged;
-            VSColorTheme.ThemeChanged               -= OnThemeChanged;
-
-            foreach (var view in _trackedViews.Keys.ToList()) {
-                DisconnectView(view);
-            }
-
-            _manager?.RemoveDropdownBar();
-            _comEventSink?.Dispose();
-
-            DisconnectFromWorkspace();
+        if (vsTextView == null || _trackedViews.ContainsKey(vsTextView)) {
+            return;
         }
 
-        void ConnectView(IVsTextView vsTextView) {
-
-            if (vsTextView == null || _trackedViews.ContainsKey(vsTextView)) {
-                return;
-            }
-
-            var wpfTextView = _editorAdaptersFactoryService.GetWpfTextView(vsTextView);
-            if (wpfTextView == null) {
-                return;
-            }
-
-            wpfTextView.Caret.PositionChanged += OnCaretPositionChanged;
-            wpfTextView.GotAggregateFocus     += OnTextViewGotAggregateFocus;
-
-            _trackedViews.Add(vsTextView, wpfTextView);
+        var wpfTextView = _editorAdaptersFactoryService.GetWpfTextView(vsTextView);
+        if (wpfTextView == null) {
+            return;
         }
 
-        void DisconnectView(IVsTextView vsTextView) {
+        wpfTextView.Caret.PositionChanged += OnCaretPositionChanged;
+        wpfTextView.GotAggregateFocus     += OnTextViewGotAggregateFocus;
 
-            if (vsTextView == null || !_trackedViews.ContainsKey(vsTextView)) {
-                return;
-            }
+        _trackedViews.Add(vsTextView, wpfTextView);
+    }
 
-            var wpfTextView = _trackedViews[vsTextView];
+    void DisconnectView(IVsTextView vsTextView) {
 
-            wpfTextView.Caret.PositionChanged -= OnCaretPositionChanged;
-            wpfTextView.GotAggregateFocus     -= OnTextViewGotAggregateFocus;
-
-            _trackedViews.Remove(vsTextView);
+        if (vsTextView == null || !_trackedViews.ContainsKey(vsTextView)) {
+            return;
         }
 
-        #region Workspace Management
+        var wpfTextView = _trackedViews[vsTextView];
 
-        void OnWorkspaceRegistrationChanged(object sender, EventArgs e) {
+        wpfTextView.Caret.PositionChanged -= OnCaretPositionChanged;
+        wpfTextView.GotAggregateFocus     -= OnTextViewGotAggregateFocus;
 
-            DisconnectFromWorkspace();
+        _trackedViews.Remove(vsTextView);
+    }
 
-            var newWorkspace = _workspaceRegistration.Workspace;
+    #region Workspace Management
 
-            ConnectToWorkspace(newWorkspace);
+    void OnWorkspaceRegistrationChanged(object sender, EventArgs e) {
+
+        DisconnectFromWorkspace();
+
+        var newWorkspace = _workspaceRegistration.Workspace;
+
+        ConnectToWorkspace(newWorkspace);
+    }
+
+    void ConnectToWorkspace([CanBeNull] Workspace workspace) {
+
+        DisconnectFromWorkspace();
+
+        _workspace = workspace;
+
+        if (_workspace != null) {
+            _workspace.WorkspaceChanged += OnWorkspaceChanged;
         }
 
-        void ConnectToWorkspace([CanBeNull] Workspace workspace) {
+        UpdateProjectItems();
+    }
 
-            DisconnectFromWorkspace();
+    void DisconnectFromWorkspace() {
 
-            _workspace = workspace;
+        if (_workspace == null) {
+            return;
+        }
 
-            if (_workspace != null) {
-                _workspace.WorkspaceChanged += OnWorkspaceChanged;
-            }
+        _workspace.WorkspaceChanged -= OnWorkspaceChanged;
+        _workspace                  =  null;
+    }
 
+    void OnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args) {
+
+        // We're getting an event for a workspace we already disconnected from
+        if (args.NewSolution.Workspace != _workspace) {
+            return;
+        }
+
+        if (args.Kind == WorkspaceChangeKind.SolutionChanged  ||
+            args.Kind == WorkspaceChangeKind.SolutionAdded    ||
+            args.Kind == WorkspaceChangeKind.SolutionRemoved  ||
+            args.Kind == WorkspaceChangeKind.SolutionCleared  ||
+            args.Kind == WorkspaceChangeKind.SolutionReloaded ||
+            args.Kind == WorkspaceChangeKind.ProjectAdded     ||
+            args.Kind == WorkspaceChangeKind.ProjectChanged   ||
+            args.Kind == WorkspaceChangeKind.ProjectReloaded  ||
+            args.Kind == WorkspaceChangeKind.ProjectRemoved) {
             UpdateProjectItems();
         }
+    }
 
-        void DisconnectFromWorkspace() {
+    #endregion
 
-            if (_workspace == null) {
-                return;
-            }
+    int IVsDropdownBarClient.SetDropdownBar(IVsDropdownBar pDropdownBar) {
 
-            _workspace.WorkspaceChanged -= OnWorkspaceChanged;
-            _workspace                  =  null;
+        _dropdownBar = pDropdownBar;
+
+        UpdateNavigationItems();
+
+        return VSConstants.S_OK;
+    }
+
+    int IVsDropdownBarClient.GetComboAttributes(int iCombo, out uint pcEntries, out uint puEntryType, out IntPtr phImageList) {
+
+        // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
+        puEntryType = (uint) (DROPDOWNENTRYTYPE.ENTRY_TEXT | DROPDOWNENTRYTYPE.ENTRY_ATTR | DROPDOWNENTRYTYPE.ENTRY_IMAGE);
+        // ReSharper restore BitwiseOperatorOnEnumWithoutFlags
+        phImageList = IntPtr.Zero;
+        pcEntries   = (uint) GetItems(iCombo).Count;
+
+        return VSConstants.S_OK;
+    }
+
+    int IVsDropdownBarClient.GetEntryText(int iCombo, int iIndex, out string ppszText) {
+
+        var items = GetItems(iCombo);
+        ppszText = iIndex >= items.Count ? "" : items[iIndex].DisplayName;
+
+        return VSConstants.S_OK;
+    }
+
+    int IVsDropdownBarClient.GetEntryAttributes(int iCombo, int iIndex, out uint pAttr) {
+
+        DROPDOWNFONTATTR attributes = DROPDOWNFONTATTR.FONTATTR_PLAIN;
+
+        var entries       = GetItems(iCombo);
+        var selectedIndex = GetActiveSelection(iCombo);
+        var caretPosition = GetCurrentView().Caret.Position.BufferPosition.Position;
+
+        if (_focusedCombo != iCombo &&
+            entries.Any()           && iIndex < entries.Count  &&
+            iIndex                            == selectedIndex &&
+            (caretPosition < entries[selectedIndex].Start ||
+             caretPosition > entries[selectedIndex].End)) {
+
+            attributes = DROPDOWNFONTATTR.FONTATTR_GRAY;
         }
 
-        void OnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args) {
+        pAttr = (uint) attributes;
 
-            // We're getting an event for a workspace we already disconnected from
-            if (args.NewSolution.Workspace != _workspace) {
-                return;
-            }
+        return VSConstants.S_OK;
+    }
 
-            if (args.Kind == WorkspaceChangeKind.SolutionChanged  ||
-                args.Kind == WorkspaceChangeKind.SolutionAdded    ||
-                args.Kind == WorkspaceChangeKind.SolutionRemoved  ||
-                args.Kind == WorkspaceChangeKind.SolutionCleared  ||
-                args.Kind == WorkspaceChangeKind.SolutionReloaded ||
-                args.Kind == WorkspaceChangeKind.ProjectAdded     ||
-                args.Kind == WorkspaceChangeKind.ProjectChanged   ||
-                args.Kind == WorkspaceChangeKind.ProjectReloaded  ||
-                args.Kind == WorkspaceChangeKind.ProjectRemoved) {
-                UpdateProjectItems();
-            }
-        }
-
-        #endregion
-
-        int IVsDropdownBarClient.SetDropdownBar(IVsDropdownBar pDropdownBar) {
-
-            _dropdownBar = pDropdownBar;
-
-            UpdateNavigationItems();
-
-            return VSConstants.S_OK;
-        }
-
-        int IVsDropdownBarClient.GetComboAttributes(int iCombo, out uint pcEntries, out uint puEntryType, out IntPtr phImageList) {
-
-            // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
-            puEntryType = (uint) (DROPDOWNENTRYTYPE.ENTRY_TEXT | DROPDOWNENTRYTYPE.ENTRY_ATTR | DROPDOWNENTRYTYPE.ENTRY_IMAGE);
-            // ReSharper restore BitwiseOperatorOnEnumWithoutFlags
-            phImageList = IntPtr.Zero;
-            pcEntries   = (uint) GetItems(iCombo).Count;
-
-            return VSConstants.S_OK;
-        }
-
-        int IVsDropdownBarClient.GetEntryText(int iCombo, int iIndex, out string ppszText) {
-
-            var items = GetItems(iCombo);
-            ppszText = iIndex >= items.Count ? "" : items[iIndex].DisplayName;
-
-            return VSConstants.S_OK;
-        }
-
-        int IVsDropdownBarClient.GetEntryAttributes(int iCombo, int iIndex, out uint pAttr) {
-
-            DROPDOWNFONTATTR attributes = DROPDOWNFONTATTR.FONTATTR_PLAIN;
-
-            var entries       = GetItems(iCombo);
-            var selectedIndex = GetActiveSelection(iCombo);
-            var caretPosition = GetCurrentView().Caret.Position.BufferPosition.Position;
-
-            if (_focusedCombo != iCombo &&
-                entries.Any()           && iIndex < entries.Count  &&
-                iIndex                            == selectedIndex &&
-                (caretPosition < entries[selectedIndex].Start ||
-                 caretPosition > entries[selectedIndex].End)) {
-
-                attributes = DROPDOWNFONTATTR.FONTATTR_GRAY;
-            }
-
-            pAttr = (uint) attributes;
-
-            return VSConstants.S_OK;
-        }
-
-        int IVsDropdownBarClient.GetEntryImage(int iCombo, int iIndex, out int piImageIndex) {
-            piImageIndex = -1;
-            return VSConstants.E_UNEXPECTED;
-        }
+    int IVsDropdownBarClient.GetEntryImage(int iCombo, int iIndex, out int piImageIndex) {
+        piImageIndex = -1;
+        return VSConstants.E_UNEXPECTED;
+    }
 
 
-        public ImageMoniker GetEntryImage(int iCombo, int iIndex) {
-            var  items   = GetItems(iCombo);
-            var moniker = iIndex >= items.Count ? default : items[iIndex].ImageMoniker;
-            return moniker;
-        }
+    public ImageMoniker GetEntryImage(int iCombo, int iIndex) {
+        var items   = GetItems(iCombo);
+        var moniker = iIndex >= items.Count ? default : items[iIndex].ImageMoniker;
+        return moniker;
+    }
 
-        int IVsDropdownBarClient.OnItemSelected(int iCombo, int iIndex) {
-            #if ShowMemberCombobox
+    int IVsDropdownBarClient.OnItemSelected(int iCombo, int iIndex) {
+        #if ShowMemberCombobox
             if(iCombo == TaskComboIndex) {            
                 SetActiveSelection(MemberComboIndex);    
             }
-            #endif
-            return VSConstants.S_OK;
+        #endif
+        return VSConstants.S_OK;
+    }
+
+    int IVsDropdownBarClient.OnItemChosen(int iCombo, int iIndex) {
+
+        if (_dropdownBar == null) {
+            return VSConstants.E_UNEXPECTED;
         }
 
-        int IVsDropdownBarClient.OnItemChosen(int iCombo, int iIndex) {
+        var item = GetActiveSelectionItem(iCombo, iIndex);
 
-            if (_dropdownBar == null) {
-                return VSConstants.E_UNEXPECTED;
-            }
+        if (item?.NavigationPoint >= 0) {
 
-            var item = GetActiveSelectionItem(iCombo, iIndex);
+            _dropdownBar.RefreshCombo(iCombo, iIndex);
 
-            if (item?.NavigationPoint >= 0) {
-
-                _dropdownBar.RefreshCombo(iCombo, iIndex);
-
-                NavLanguagePackage.NavigateToLocation(GetCurrentView(), item.NavigationPoint);
-            } else {
-                // ReSharper disable once SuspiciousTypeConversion.Global
-                (GetCurrentView() as Control)?.Focus();
-            }
-
-            return VSConstants.S_OK;
+            NavLanguagePackage.NavigateToLocation(GetCurrentView(), item.NavigationPoint);
+        } else {
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            (GetCurrentView() as Control)?.Focus();
         }
 
-        int IVsDropdownBarClient.OnComboGetFocus(int iCombo) {
-            _focusedCombo = iCombo;
+        return VSConstants.S_OK;
+    }
+
+    int IVsDropdownBarClient.OnComboGetFocus(int iCombo) {
+        _focusedCombo = iCombo;
+        SetActiveSelection(TaskComboIndex);
+        return VSConstants.S_OK;
+    }
+
+    int IVsDropdownBarClient.GetComboTipText(int iCombo, out string pbstrText) {
+
+        pbstrText = GetActiveSelectionItem(iCombo)?.DisplayName ?? "";
+        if (pbstrText != "") {
+            pbstrText += Environment.NewLine + Environment.NewLine;
+        }
+
+        pbstrText += "Use the dropdown to view and navigate to other items in the file.";
+
+        return VSConstants.S_OK;
+    }
+
+    protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
+        ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            UpdateNavigationItems();
+        });
+    }
+
+    void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
+
+        ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
             SetActiveSelection(TaskComboIndex);
-            return VSConstants.S_OK;
-        }
 
-        int IVsDropdownBarClient.GetComboTipText(int iCombo, out string pbstrText) {
-
-            pbstrText = GetActiveSelectionItem(iCombo)?.DisplayName ?? "";
-            if (pbstrText != "") {
-                pbstrText += Environment.NewLine + Environment.NewLine;
-            }
-
-            pbstrText += "Use the dropdown to view and navigate to other items in the file.";
-
-            return VSConstants.S_OK;
-        }
-
-        protected override void OnSemanticModelChanged(object sender, SnapshotSpanEventArgs e) {
-            ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                UpdateNavigationItems();
-            });
-        }
-
-        void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
-
-            ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
-
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                SetActiveSelection(TaskComboIndex);
-
-                #if ShowMemberCombobox
+            #if ShowMemberCombobox
                 SetActiveSelection(MemberComboIndex);
-                #endif
-            });
+            #endif
+        });
+    }
+
+    void OnTextViewGotAggregateFocus(object sender, EventArgs e) {
+
+        // Es kann keine Combobox mehr einen Fokus haben
+        _focusedCombo = -1;
+        // Leider bekommen wir ein Project Reload nicht mit. Hier nochmal die Chance das aktuelle Projekt zu aktualisieren
+        UpdateProjectItems();
+
+        // Selektion aktualisieren, um FONTATTR_GRAY entprechend zu setzen 
+        SetActiveSelection(TaskComboIndex);
+    }
+
+    void OnThemeChanged(ThemeChangedEventArgs e) {
+
+        ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            SetActiveSelection(TaskComboIndex);
+            SetActiveSelection(ProjectComboIndex);
+        });
+    }
+
+    ImmutableList<NavigationBarItem> GetItems(int iCombo) {
+        switch (iCombo) {
+            case ProjectComboIndex:
+                return _projectItems;
+            case TaskComboIndex:
+                return _taskItems;
+            case MemberComboIndex:
+                var taskItem = GetActiveSelectionItem(TaskComboIndex);
+                return taskItem?.Children ?? ImmutableList<NavigationBarItem>.Empty;
+            default:
+                return ImmutableList<NavigationBarItem>.Empty;
         }
+    }
 
-        void OnTextViewGotAggregateFocus(object sender, EventArgs e) {
+    void UpdateNavigationItems() {
+        using (Logger.LogBlock(nameof(UpdateNavigationItems))) {
 
-            // Es kann keine Combobox mehr einen Fokus haben
-            _focusedCombo = -1;
-            // Leider bekommen wir ein Project Reload nicht mit. Hier nochmal die Chance das aktuelle Projekt zu aktualisieren
             UpdateProjectItems();
-
-            // Selektion aktualisieren, um FONTATTR_GRAY entprechend zu setzen 
-            SetActiveSelection(TaskComboIndex);
-        }
-
-        void OnThemeChanged(ThemeChangedEventArgs e) {
-
-            ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
-
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                SetActiveSelection(TaskComboIndex);
-                SetActiveSelection(ProjectComboIndex);
-            });
-        }
-
-        ImmutableList<NavigationBarItem> GetItems(int iCombo) {
-            switch (iCombo) {
-                case ProjectComboIndex:
-                    return _projectItems;
-                case TaskComboIndex:
-                    return _taskItems;
-                case MemberComboIndex:
-                    var taskItem = GetActiveSelectionItem(TaskComboIndex);
-                    return taskItem?.Children ?? ImmutableList<NavigationBarItem>.Empty;
-                default:
-                    return ImmutableList<NavigationBarItem>.Empty;
-            }
-        }
-
-        void UpdateNavigationItems() {
-            using (Logger.LogBlock(nameof(UpdateNavigationItems))) {
-
-                UpdateProjectItems();
-                UpdateTaskItems();
-                #if ShowMemberCombobox
+            UpdateTaskItems();
+            #if ShowMemberCombobox
                 UpdateMemberItems();
-                #endif
-            }
+            #endif
         }
+    }
 
-        const int ProjectComboIndex = 0;
-        const int TaskComboIndex    = 1;
-        const int MemberComboIndex  = 2;
+    const int ProjectComboIndex = 0;
+    const int TaskComboIndex    = 1;
+    const int MemberComboIndex  = 2;
 
-        void UpdateProjectItems() {
+    void UpdateProjectItems() {
 
-            _projectItems = NavigationBarProjectItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
+        _projectItems = NavigationBarProjectItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
 
-            _dropdownBar?.RefreshCombo(ProjectComboIndex, 0);
-        }
+        _dropdownBar?.RefreshCombo(ProjectComboIndex, 0);
+    }
 
-        void UpdateTaskItems() {
+    void UpdateTaskItems() {
 
-            _taskItems = NavigationBarTaskItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
+        _taskItems = NavigationBarTaskItemBuilder.Build(SemanticModelService?.CodeGenerationUnitAndSnapshot);
 
-            SetActiveSelection(TaskComboIndex);
-        }
+        SetActiveSelection(TaskComboIndex);
+    }
 
-        #if ShowMemberCombobox
+    #if ShowMemberCombobox
         void UpdateMemberItems() {
             
             SetActiveSelection(MemberComboIndex);
         }
-        #endif
+    #endif
 
-        void SetActiveSelection(int comboBoxId) {
+    void SetActiveSelection(int comboBoxId) {
 
-            if (_dropdownBar == null) {
-                return;
-            }
-
-            var newIndex = CalculateActiveSelection(comboBoxId);
-            // Wir speichern die Selektion hier, weil u.a. während des Aufrufs von GetEntryAttributes 
-            // _dropdownBar.GetCurrentSelection nicht den aktuellsten Stand wiederspiegelt.
-            _activeSelections[comboBoxId] = newIndex;
-            // Hier reicht kein _dropdownBar.SetCurrentSelection, da wir u.U. auch die Font Attribute ändern müssen (ausgegraut/nicht ausgegraut)            
-            _dropdownBar.RefreshCombo(comboBoxId, newIndex);
+        if (_dropdownBar == null) {
+            return;
         }
 
-        int GetActiveSelection(int comboBoxId) {
-            if (_activeSelections.TryGetValue(comboBoxId, out var selection)) {
-                return selection;
-            }
+        var newIndex = CalculateActiveSelection(comboBoxId);
+        // Wir speichern die Selektion hier, weil u.a. während des Aufrufs von GetEntryAttributes 
+        // _dropdownBar.GetCurrentSelection nicht den aktuellsten Stand wiederspiegelt.
+        _activeSelections[comboBoxId] = newIndex;
+        // Hier reicht kein _dropdownBar.SetCurrentSelection, da wir u.U. auch die Font Attribute ändern müssen (ausgegraut/nicht ausgegraut)            
+        _dropdownBar.RefreshCombo(comboBoxId, newIndex);
+    }
 
-            return -1;
+    int GetActiveSelection(int comboBoxId) {
+        if (_activeSelections.TryGetValue(comboBoxId, out var selection)) {
+            return selection;
         }
 
-        [CanBeNull]
-        NavigationBarItem GetActiveSelectionItem(int iCombo) {
+        return -1;
+    }
 
-            var index = GetActiveSelection(iCombo);
-            if (index < 0) {
-                return null;
-            }
+    [CanBeNull]
+    NavigationBarItem GetActiveSelectionItem(int iCombo) {
 
-            return GetActiveSelectionItem(iCombo, index);
+        var index = GetActiveSelection(iCombo);
+        if (index < 0) {
+            return null;
         }
 
-        [CanBeNull]
-        NavigationBarItem GetActiveSelectionItem(int iCombo, int iIndex) {
+        return GetActiveSelectionItem(iCombo, index);
+    }
 
-            if (iIndex < 0) {
-                return null;
-            }
+    [CanBeNull]
+    NavigationBarItem GetActiveSelectionItem(int iCombo, int iIndex) {
 
-            var items = GetItems(iCombo);
-            return iIndex < items.Count ? items[iIndex] : null;
+        if (iIndex < 0) {
+            return null;
         }
 
-        /// <summary>
-        /// Berechnet die zu wählende Selektion für die angegebene Combobox ausgehend von der aktuellen Caretposition
-        /// </summary>
-        int CalculateActiveSelection(int comboBoxId) {
+        var items = GetItems(iCombo);
+        return iIndex < items.Count ? items[iIndex] : null;
+    }
 
-            var newIndex = -1;
-            var items    = GetItems(comboBoxId);
+    /// <summary>
+    /// Berechnet die zu wählende Selektion für die angegebene Combobox ausgehend von der aktuellen Caretposition
+    /// </summary>
+    int CalculateActiveSelection(int comboBoxId) {
 
-            if (items.Any()) {
+        var newIndex = -1;
+        var items    = GetItems(comboBoxId);
 
-                var caretPosition = GetCurrentView().Caret.Position.BufferPosition.Position;
-                var activeItem    = items.FirstOrDefault(entry => caretPosition >= entry.Start && caretPosition <= entry.End);
+        if (items.Any()) {
 
-                if (activeItem != null) {
-                    newIndex = items.IndexOf(activeItem);
-                } else {
-                    // Den ersten Eintrag nach dem Cursor wählen
-                    var closestEntry = items.FirstOrDefault(entry => caretPosition < entry.Start && caretPosition < entry.End);
-                    if (closestEntry == null) {
-                        // Den letzten Eintrag wählen
-                        closestEntry = items.Last();
-                    }
+            var caretPosition = GetCurrentView().Caret.Position.BufferPosition.Position;
+            var activeItem    = items.FirstOrDefault(entry => caretPosition >= entry.Start && caretPosition <= entry.End);
 
-                    newIndex = items.IndexOf(closestEntry);
+            if (activeItem != null) {
+                newIndex = items.IndexOf(activeItem);
+            } else {
+                // Den ersten Eintrag nach dem Cursor wählen
+                var closestEntry = items.FirstOrDefault(entry => caretPosition < entry.Start && caretPosition < entry.End);
+                if (closestEntry == null) {
+                    // Den letzten Eintrag wählen
+                    closestEntry = items.Last();
                 }
+
+                newIndex = items.IndexOf(closestEntry);
             }
-
-            return newIndex;
         }
 
-        IWpfTextView GetCurrentView() {
-            _codeWindow.GetLastActiveView(out var lastActiveView);
-            lastActiveView = lastActiveView ?? _trackedViews.Keys.FirstOrDefault();
-            if (lastActiveView == null) {
-                return null;
-            }
-            return _editorAdaptersFactoryService.GetWpfTextView(lastActiveView);
-        }
+        return newIndex;
+    }
 
-        int IVsCodeWindowEvents.OnNewView(IVsTextView pView) {
-            ConnectView(pView);
-            return VSConstants.S_OK;
+    IWpfTextView GetCurrentView() {
+        _codeWindow.GetLastActiveView(out var lastActiveView);
+        lastActiveView = lastActiveView ?? _trackedViews.Keys.FirstOrDefault();
+        if (lastActiveView == null) {
+            return null;
         }
+        return _editorAdaptersFactoryService.GetWpfTextView(lastActiveView);
+    }
 
-        int IVsCodeWindowEvents.OnCloseView(IVsTextView pView) {
-            DisconnectView(pView);
-            return VSConstants.S_OK;
-        }
+    int IVsCodeWindowEvents.OnNewView(IVsTextView pView) {
+        ConnectView(pView);
+        return VSConstants.S_OK;
+    }
+
+    int IVsCodeWindowEvents.OnCloseView(IVsTextView pView) {
+        DisconnectView(pView);
+        return VSConstants.S_OK;
+    }
 
         
-
-    }
 
 }

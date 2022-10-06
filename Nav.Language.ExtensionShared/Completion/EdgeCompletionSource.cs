@@ -17,106 +17,104 @@ using Task = System.Threading.Tasks.Task;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion {
+namespace Pharmatechnik.Nav.Language.Extension.Completion; 
 
-    class EdgeCompletionSource: AsyncCompletionSource {
+class EdgeCompletionSource: AsyncCompletionSource {
 
-        public EdgeCompletionSource(QuickinfoBuilderService quickinfoBuilderService): base(quickinfoBuilderService) {
-        }
+    public EdgeCompletionSource(QuickinfoBuilderService quickinfoBuilderService): base(quickinfoBuilderService) {
+    }
 
-        public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
+    public override CompletionStartData InitializeCompletion(CompletionTrigger trigger, SnapshotPoint triggerLocation, CancellationToken token) {
 
-            ThreadHelper.ThrowIfNotOnUIThread();
+        ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (!ShouldTriggerCompletion(trigger)) {
-                return CompletionStartData.DoesNotParticipateInCompletion;
-            }
-
-            var codeGenerationUnit = GetCodeGenerationUnit(triggerLocation);
-
-            if (ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out var applicableToSpan)) {
-                return new CompletionStartData(CompletionParticipation.ProvidesItems, applicableToSpan);
-            }
-
+        if (!ShouldTriggerCompletion(trigger)) {
             return CompletionStartData.DoesNotParticipateInCompletion;
-
         }
 
-        protected override bool ShouldTriggerCompletionOverride(CompletionTrigger trigger) {
-            return char.IsLetter(trigger.Character) ||
-                   trigger.Character == '-';
+        var codeGenerationUnit = GetCodeGenerationUnit(triggerLocation);
+
+        if (ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out var applicableToSpan)) {
+            return new CompletionStartData(CompletionParticipation.ProvidesItems, applicableToSpan);
         }
 
-        public override async Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
+        return CompletionStartData.DoesNotParticipateInCompletion;
 
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+    }
 
-            var codeGenerationUnit = GetCodeGenerationUnit(triggerLocation);
+    protected override bool ShouldTriggerCompletionOverride(CompletionTrigger trigger) {
+        return char.IsLetter(trigger.Character) ||
+               trigger.Character == '-';
+    }
 
-            await Task.Yield();
+    public override async Task<CompletionContext> GetCompletionContextAsync(IAsyncCompletionSession session, CompletionTrigger trigger, SnapshotPoint triggerLocation, SnapshotSpan applicableToSpan, CancellationToken token) {
 
-            if (!ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out var myApplicableToSpan) ||
-                myApplicableToSpan != applicableToSpan) {
-                return CreateEmptyCompletionContext();
-            }
+        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
+        var codeGenerationUnit = GetCodeGenerationUnit(triggerLocation);
 
-            // Edges
-            foreach (var keyword in SyntaxFacts.EdgeKeywords
-                                               .Where(k => !SyntaxFacts.IsHiddenKeyword(k))
-                                               .OrderBy(k => k)) {
+        await Task.Yield();
 
-                completionItems.Add(CreateKeywordCompletion(keyword));
-            }
-
-            return CreateCompletionContext(completionItems);
+        if (!ShouldProvideCompletions(triggerLocation, codeGenerationUnit, out var myApplicableToSpan) ||
+            myApplicableToSpan != applicableToSpan) {
+            return CreateEmptyCompletionContext();
         }
 
-        bool ShouldProvideCompletions(SnapshotPoint triggerLocation, CodeGenerationUnit codeGenerationUnit, out SnapshotSpan applicableToSpan) {
+        var completionItems = ImmutableArray.CreateBuilder<CompletionItem>();
 
-            applicableToSpan = default;
+        // Edges
+        foreach (var keyword in SyntaxFacts.EdgeKeywords
+                                           .Where(k => !SyntaxFacts.IsHiddenKeyword(k))
+                                           .OrderBy(k => k)) {
 
-            var triggerToken = codeGenerationUnit.Syntax.FindToken(triggerLocation);
-
-            bool isInComment = triggerToken.Type == SyntaxTokenType.SingleLineComment ||
-                               triggerToken.Type == SyntaxTokenType.MultiLineComment;
-
-            // Keine Autocompletion in Kommentaren!
-            if (isInComment) {
-                return false;
-            }
-
-            // Kein Auto Completion in ""
-            var line         = triggerLocation.GetContainingLine();
-            var linePosition = triggerLocation - line.Start;
-            var lineText     = line.GetText();
-
-            if (lineText.IsInQuotation(linePosition)) {
-                return false;
-            }
-
-            // Kein Auto Completion in Code Blöcken
-            // TODO Nicht vollständig, da nur aktuelle Zeile betrachtet wird
-            var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
-            if (isInCodeBlock) {
-                return false;
-            }
-
-            var start       = line.GetStartOfEdge(triggerLocation);
-            var triggerLine = triggerLocation.GetContainingLine();
-
-            // Vor der Edge muss ein Whitespace sein, bzw. der Zeilenanfang
-            if (start != triggerLine.Start &&
-                !char.IsWhiteSpace((start - 1).GetChar())) {
-                return false;
-            }
-
-            applicableToSpan = new SnapshotSpan(start, triggerLocation);
-
-            return true;
+            completionItems.Add(CreateKeywordCompletion(keyword));
         }
 
+        return CreateCompletionContext(completionItems);
+    }
+
+    bool ShouldProvideCompletions(SnapshotPoint triggerLocation, CodeGenerationUnit codeGenerationUnit, out SnapshotSpan applicableToSpan) {
+
+        applicableToSpan = default;
+
+        var triggerToken = codeGenerationUnit.Syntax.FindToken(triggerLocation);
+
+        bool isInComment = triggerToken.Type == SyntaxTokenType.SingleLineComment ||
+                           triggerToken.Type == SyntaxTokenType.MultiLineComment;
+
+        // Keine Autocompletion in Kommentaren!
+        if (isInComment) {
+            return false;
+        }
+
+        // Kein Auto Completion in ""
+        var line         = triggerLocation.GetContainingLine();
+        var linePosition = triggerLocation - line.Start;
+        var lineText     = line.GetText();
+
+        if (lineText.IsInQuotation(linePosition)) {
+            return false;
+        }
+
+        // Kein Auto Completion in Code Blöcken
+        // TODO Nicht vollständig, da nur aktuelle Zeile betrachtet wird
+        var isInCodeBlock = lineText.IsInTextBlock(linePosition, SyntaxFacts.OpenBracket, SyntaxFacts.CloseBracket);
+        if (isInCodeBlock) {
+            return false;
+        }
+
+        var start       = line.GetStartOfEdge(triggerLocation);
+        var triggerLine = triggerLocation.GetContainingLine();
+
+        // Vor der Edge muss ein Whitespace sein, bzw. der Zeilenanfang
+        if (start != triggerLine.Start &&
+            !char.IsWhiteSpace((start - 1).GetChar())) {
+            return false;
+        }
+
+        applicableToSpan = new SnapshotSpan(start, triggerLocation);
+
+        return true;
     }
 
 }

@@ -1,6 +1,5 @@
-namespace Pharmatechnik.Nav.Language.Extension.BraceMatching {
+namespace Pharmatechnik.Nav.Language.Extension.BraceMatching; 
 
-    static class BraceMatchingTypeNames {
-        public const string BraceMatching = "brace matching";
-    }
+static class BraceMatchingTypeNames {
+    public const string BraceMatching = "brace matching";
 }

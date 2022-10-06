@@ -11,35 +11,33 @@ using Pharmatechnik.Nav.Utilities.Logging;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
+namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
-    static class TextBufferExtensions {
+static class TextBufferExtensions {
 
-        static readonly Logger Logger = Logger.Create(typeof(TextBufferExtensions));
+    static readonly Logger Logger = Logger.Create(typeof(TextBufferExtensions));
 
-        [CanBeNull]
-        public static ITextDocument GetTextDocument(this ITextBuffer textBuffer) {
+    [CanBeNull]
+    public static ITextDocument GetTextDocument(this ITextBuffer textBuffer) {
 
-            textBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument textDoc);
+        textBuffer.Properties.TryGetProperty(typeof(ITextDocument), out ITextDocument textDoc);
 
-            if (textDoc == null) {
-                Logger.Warn($"{nameof(GetTextDocument)}: There's no ITextDocument for the {nameof(ITextBuffer)}");
-                return null;
-            }
-
-            return textDoc;
+        if (textDoc == null) {
+            Logger.Warn($"{nameof(GetTextDocument)}: There's no ITextDocument for the {nameof(ITextBuffer)}");
+            return null;
         }
 
-        [CanBeNull]
-        public static Project GetContainingProject(this ITextBuffer textBuffer) {
+        return textDoc;
+    }
 
-            Dispatcher.CurrentDispatcher.VerifyAccess();
+    [CanBeNull]
+    public static Project GetContainingProject(this ITextBuffer textBuffer) {
 
-            var filePath = textBuffer.GetTextDocument()?.FilePath;
+        Dispatcher.CurrentDispatcher.VerifyAccess();
 
-            return NavLanguagePackage.GetContainingProject(filePath);
-        }
+        var filePath = textBuffer.GetTextDocument()?.FilePath;
 
+        return NavLanguagePackage.GetContainingProject(filePath);
     }
 
 }

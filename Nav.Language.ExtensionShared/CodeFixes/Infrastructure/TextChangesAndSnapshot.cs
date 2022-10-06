@@ -10,14 +10,13 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+namespace Pharmatechnik.Nav.Language.Extension.CodeFixes; 
 
-    sealed class TextChangesAndSnapshot: AndSnapshot {
+sealed class TextChangesAndSnapshot: AndSnapshot {
         
-        public TextChangesAndSnapshot(IEnumerable<TextChange> textChanges, ITextSnapshot snapshot): base(snapshot) {
-            TextChanges = textChanges.ToImmutableList();
-        }
-
-        public ImmutableList<TextChange> TextChanges { get; }
+    public TextChangesAndSnapshot(IEnumerable<TextChange> textChanges, ITextSnapshot snapshot): base(snapshot) {
+        TextChanges = textChanges.ToImmutableList();
     }
+
+    public ImmutableList<TextChange> TextChanges { get; }
 }

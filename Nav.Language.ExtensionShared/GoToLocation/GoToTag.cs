@@ -9,21 +9,20 @@ using Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToLocation {
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation; 
 
-    public class GoToTag: ITag {
+public class GoToTag: ITag {
 
-        public GoToTag() {
-            Provider = new List<ILocationInfoProvider>();
-        }
-
-        public GoToTag(ILocationInfoProvider provider) {
-            if(provider == null) {
-                throw new ArgumentNullException(nameof(provider));
-            }
-            Provider = new List<ILocationInfoProvider> { provider };
-        }
-
-        public List<ILocationInfoProvider> Provider { get; }
+    public GoToTag() {
+        Provider = new List<ILocationInfoProvider>();
     }
+
+    public GoToTag(ILocationInfoProvider provider) {
+        if(provider == null) {
+            throw new ArgumentNullException(nameof(provider));
+        }
+        Provider = new List<ILocationInfoProvider> { provider };
+    }
+
+    public List<ILocationInfoProvider> Provider { get; }
 }

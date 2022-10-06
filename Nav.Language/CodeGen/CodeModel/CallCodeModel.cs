@@ -6,106 +6,104 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-    abstract class CallCodeModel: CodeModel {
+abstract class CallCodeModel: CodeModel {
 
-        protected CallCodeModel(string name, EdgeMode edgeMode) {
-            Name     = name ?? String.Empty;
-            EdgeMode = edgeMode;
-        }
-
-        public EdgeMode EdgeMode       { get; }
-        public string   Name           { get; }
-        public string   PascalcaseName => Name.ToPascalcase();
-        public string   CamelcaseName  => Name.ToCamelcase();
-
-        public abstract string TemplateName { get; }
-        public abstract int    SortOrder    { get; }
-
+    protected CallCodeModel(string name, EdgeMode edgeMode) {
+        Name     = name ?? String.Empty;
+        EdgeMode = edgeMode;
     }
 
-    sealed class CanceCallCodeModel: CallCodeModel {
+    public EdgeMode EdgeMode       { get; }
+    public string   Name           { get; }
+    public string   PascalcaseName => Name.ToPascalcase();
+    public string   CamelcaseName  => Name.ToCamelcase();
 
-        public CanceCallCodeModel(): base(String.Empty, EdgeMode.Goto) {
-        }
+    public abstract string TemplateName { get; }
+    public abstract int    SortOrder    { get; }
 
-        public override string TemplateName => "cancel";
-        public override int    SortOrder    => Int32.MaxValue;
+}
 
+sealed class CanceCallCodeModel: CallCodeModel {
+
+    public CanceCallCodeModel(): base(String.Empty, EdgeMode.Goto) {
     }
 
-    sealed class TaskCallCodeModel: CallCodeModel {
+    public override string TemplateName => "cancel";
+    public override int    SortOrder    => Int32.MaxValue;
 
-        public TaskCallCodeModel(string name, EdgeMode edgeMode, ParameterCodeModel taskResult, bool notImplemented): base(name, edgeMode) {
-            TaskResult     = taskResult ?? throw new ArgumentNullException(nameof(taskResult));
-            NotImplemented = notImplemented;
-        }
+}
 
-        public ParameterCodeModel TaskResult     { get; }
-        public bool               NotImplemented { get; }
+sealed class TaskCallCodeModel: CallCodeModel {
 
-        public override string TemplateName {
-            get {
-                switch (EdgeMode) {
-                    case EdgeMode.Modal:
-                        return "openModalTask";
-                    case EdgeMode.NonModal:
-                        return "startNonModalTask";
-                    case EdgeMode.Goto:
-                        return "gotoTask";
-                    default:
-                        return "";
-                }
+    public TaskCallCodeModel(string name, EdgeMode edgeMode, ParameterCodeModel taskResult, bool notImplemented): base(name, edgeMode) {
+        TaskResult     = taskResult ?? throw new ArgumentNullException(nameof(taskResult));
+        NotImplemented = notImplemented;
+    }
+
+    public ParameterCodeModel TaskResult     { get; }
+    public bool               NotImplemented { get; }
+
+    public override string TemplateName {
+        get {
+            switch (EdgeMode) {
+                case EdgeMode.Modal:
+                    return "openModalTask";
+                case EdgeMode.NonModal:
+                    return "startNonModalTask";
+                case EdgeMode.Goto:
+                    return "gotoTask";
+                default:
+                    return "";
             }
         }
-
-        public override int SortOrder => 1;
-
     }
 
-    sealed class GuiCallCodeModel: CallCodeModel {
+    public override int SortOrder => 1;
 
-        public GuiCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
-        }
+}
 
-        public override string TemplateName {
-            get {
-                switch (EdgeMode) {
-                    case EdgeMode.Modal:
-                        return "openModalGUI";
-                    case EdgeMode.NonModal:
-                        return "startNonModalGUI";
-                    case EdgeMode.Goto:
-                        return "gotoGUI";
-                    default:
-                        return "";
-                }
+sealed class GuiCallCodeModel: CallCodeModel {
+
+    public GuiCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
+    }
+
+    public override string TemplateName {
+        get {
+            switch (EdgeMode) {
+                case EdgeMode.Modal:
+                    return "openModalGUI";
+                case EdgeMode.NonModal:
+                    return "startNonModalGUI";
+                case EdgeMode.Goto:
+                    return "gotoGUI";
+                default:
+                    return "";
             }
         }
-
-        public override int SortOrder => 2;
-
     }
 
-    sealed class ExitCallCodeModel: CallCodeModel {
+    public override int SortOrder => 2;
 
-        public ExitCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
-        }
+}
 
-        public override string TemplateName => "goToExit";
-        public override int    SortOrder    => 3;
+sealed class ExitCallCodeModel: CallCodeModel {
 
+    public ExitCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
     }
 
-    sealed class EndCallCodeModel: CallCodeModel {
+    public override string TemplateName => "goToExit";
+    public override int    SortOrder    => 3;
 
-        public EndCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
-        }
+}
 
-        public override string TemplateName => "goToEnd";
-        public override int    SortOrder    => 4;
+sealed class EndCallCodeModel: CallCodeModel {
 
+    public EndCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
     }
+
+    public override string TemplateName => "goToEnd";
+    public override int    SortOrder    => 4;
 
 }

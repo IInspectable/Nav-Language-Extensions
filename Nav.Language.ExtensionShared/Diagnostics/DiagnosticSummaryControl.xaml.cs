@@ -1,8 +1,7 @@
-﻿namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
+﻿namespace Pharmatechnik.Nav.Language.Extension.Diagnostics; 
 
-    public partial class DiagnosticSummaryControl  {
-        public DiagnosticSummaryControl() {
-            InitializeComponent();
-        }
+public partial class DiagnosticSummaryControl  {
+    public DiagnosticSummaryControl() {
+        InitializeComponent();
     }
 }

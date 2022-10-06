@@ -4,45 +4,43 @@ using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    [Serializable]
-    public abstract class TargetNodeSyntax: SyntaxNode {
+[Serializable]
+public abstract class TargetNodeSyntax: SyntaxNode {
 
-        protected TargetNodeSyntax(TextExtent extent): base(extent) {
-        }
-
-        public abstract string Name { get; }
-
+    protected TargetNodeSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("end")]
-    public partial class EndTargetNodeSyntax: TargetNodeSyntax {
+    public abstract string Name { get; }
 
-        internal EndTargetNodeSyntax(TextExtent extent): base(extent) {
-        }
+}
 
-        public          SyntaxToken EndKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.EndKeyword);
-        public override string      Name       => EndKeyword.ToString();
+[Serializable]
+[SampleSyntax("end")]
+public partial class EndTargetNodeSyntax: TargetNodeSyntax {
 
+    internal EndTargetNodeSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("Identifier (identifierOrStringList)")]
-    public partial class IdentifierTargetNodeSyntax: TargetNodeSyntax {
+    public          SyntaxToken EndKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.EndKeyword);
+    public override string      Name       => EndKeyword.ToString();
 
-        internal IdentifierTargetNodeSyntax(TextExtent extent, IdentifierOrStringListSyntax identifierOrStringList)
-            : base(extent) {
-            AddChildNode(IdentifierOrStringList = identifierOrStringList);
-        }
+}
 
-        public          SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
-        public override string      Name       => Identifier.ToString();
+[Serializable]
+[SampleSyntax("Identifier (identifierOrStringList)")]
+public partial class IdentifierTargetNodeSyntax: TargetNodeSyntax {
 
-        [CanBeNull]
-        public IdentifierOrStringListSyntax IdentifierOrStringList { get; }
-
+    internal IdentifierTargetNodeSyntax(TextExtent extent, IdentifierOrStringListSyntax identifierOrStringList)
+        : base(extent) {
+        AddChildNode(IdentifierOrStringList = identifierOrStringList);
     }
+
+    public          SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
+    public override string      Name       => Identifier.ToString();
+
+    [CanBeNull]
+    public IdentifierOrStringListSyntax IdentifierOrStringList { get; }
 
 }

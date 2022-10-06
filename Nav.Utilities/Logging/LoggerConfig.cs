@@ -8,33 +8,32 @@ using NLog.Layouts;
 using NLog.Targets;
 
 #endregion
-namespace Pharmatechnik.Nav.Utilities.Logging {
+namespace Pharmatechnik.Nav.Utilities.Logging; 
 
-    public static class LoggerConfig {
+public static class LoggerConfig {
 
-        // ReSharper disable InconsistentNaming
-        const long KB = 1024;
-        const long MB = 1024 * KB;
-        // ReSharper restore InconsistentNaming
+    // ReSharper disable InconsistentNaming
+    const long KB = 1024;
+    const long MB = 1024 * KB;
+    // ReSharper restore InconsistentNaming
 
-        public static void Initialize(string logFolder, string logName) {
+    public static void Initialize(string logFolder, string logName) {
             
-            LoggingConfiguration loggingConfiguration = new LoggingConfiguration();
+        LoggingConfiguration loggingConfiguration = new LoggingConfiguration();
             
-            var fileTarget = new FileTarget {
-                FileName         = Path.Combine(logFolder, $"{logName}.log.xml"),
-                ArchiveFileName  = Path.Combine(logFolder, $"{logName}.log.xml.{{#####}}"),
-                ArchiveNumbering = ArchiveNumberingMode.Rolling,
-                MaxArchiveFiles  = 10,
-                ArchiveAboveSize = 10 * MB,
-                Layout           = new Log4JXmlEventLayout(),
-                ConcurrentWrites = true,
-            };
+        var fileTarget = new FileTarget {
+            FileName         = Path.Combine(logFolder, $"{logName}.log.xml"),
+            ArchiveFileName  = Path.Combine(logFolder, $"{logName}.log.xml.{{#####}}"),
+            ArchiveNumbering = ArchiveNumberingMode.Rolling,
+            MaxArchiveFiles  = 10,
+            ArchiveAboveSize = 10 * MB,
+            Layout           = new Log4JXmlEventLayout(),
+            ConcurrentWrites = true,
+        };
 
-            loggingConfiguration.AddTarget("file", fileTarget);
-            loggingConfiguration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, fileTarget));
+        loggingConfiguration.AddTarget("file", fileTarget);
+        loggingConfiguration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, fileTarget));
 
-            LogManager.Configuration = loggingConfiguration;
-        }
+        LogManager.Configuration = loggingConfiguration;
     }
 }

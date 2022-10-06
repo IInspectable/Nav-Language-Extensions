@@ -12,199 +12,198 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Diagnostics {
+namespace Pharmatechnik.Nav.Language.Extension.Diagnostics; 
 
-    sealed class DiagnosticStripeMargin : Border, IWpfTextViewMargin {
+sealed class DiagnosticStripeMargin : Border, IWpfTextViewMargin {
 
-        readonly IWpfTextView _textView;
-        bool _isDisposed;
+    readonly IWpfTextView _textView;
+    bool                  _isDisposed;
 
-        public const string MarginName = nameof(DiagnosticStripeMargin);
+    public const string MarginName = nameof(DiagnosticStripeMargin);
 
-        readonly DiagnosticService _diagnosticService;
+    readonly DiagnosticService _diagnosticService;
 
-        readonly IVerticalScrollBar _scrollBar;
-        readonly IEditorFormatMap _editorFormatMap;
+    readonly IVerticalScrollBar _scrollBar;
+    readonly IEditorFormatMap   _editorFormatMap;
 
-        Dictionary<DiagnosticSeverity, GeometryGroup>  _markerGeometryGroups;
+    Dictionary<DiagnosticSeverity, GeometryGroup> _markerGeometryGroups;
 
-        public DiagnosticStripeMargin(IWpfTextView textView, IVerticalScrollBar scrollBar,
-            IEditorFormatMapService editorFormatMapService) {
+    public DiagnosticStripeMargin(IWpfTextView textView, IVerticalScrollBar scrollBar,
+                                  IEditorFormatMapService editorFormatMapService) {
 
-            _textView          = textView;
-            _isDisposed        = false;
-            _scrollBar         = scrollBar;
-            _editorFormatMap   = editorFormatMapService.GetEditorFormatMap(textView);
-            _diagnosticService = DiagnosticService.GetOrCreate(textView);
+        _textView          = textView;
+        _isDisposed        = false;
+        _scrollBar         = scrollBar;
+        _editorFormatMap   = editorFormatMapService.GetEditorFormatMap(textView);
+        _diagnosticService = DiagnosticService.GetOrCreate(textView);
 
-            ClipToBounds      = true;
-            Background        = null;
-            VerticalAlignment = VerticalAlignment.Stretch;
-            Focusable         = false;
-            Width             = 10;
+        ClipToBounds      = true;
+        Background        = null;
+        VerticalAlignment = VerticalAlignment.Stretch;
+        Focusable         = false;
+        Width             = 10;
 
-            RenderOptions.SetEdgeMode(this, System.Windows.Media.EdgeMode.Aliased);
+        RenderOptions.SetEdgeMode(this, System.Windows.Media.EdgeMode.Aliased);
 
-            _diagnosticService.DiagnosticsChanging += OnDiagnosticsChanging;
-            _diagnosticService.DiagnosticsChanged  += OnDiagnosticsChanged;
-            _editorFormatMap.FormatMappingChanged  += OnFormatMappingChanged;
-            _scrollBar.TrackSpanChanged            += OnTrackSpanChanged;
-            _textView.LayoutChanged                += OnTextViewLayoutChanged;
-            _textView.Closed                       += OnTextViewClosed;
-        }
+        _diagnosticService.DiagnosticsChanging += OnDiagnosticsChanging;
+        _diagnosticService.DiagnosticsChanged  += OnDiagnosticsChanged;
+        _editorFormatMap.FormatMappingChanged  += OnFormatMappingChanged;
+        _scrollBar.TrackSpanChanged            += OnTrackSpanChanged;
+        _textView.LayoutChanged                += OnTextViewLayoutChanged;
+        _textView.Closed                       += OnTextViewClosed;
+    }
 
-        void OnTextViewClosed(object sender, EventArgs e) {
-            Dispose();
-        }
+    void OnTextViewClosed(object sender, EventArgs e) {
+        Dispose();
+    }
 
-        void OnFormatMappingChanged(object sender, FormatItemsEventArgs e) {
+    void OnFormatMappingChanged(object sender, FormatItemsEventArgs e) {
             
-        }
+    }
 
-        void OnDiagnosticsChanging(object sender, EventArgs e) {
-        }
+    void OnDiagnosticsChanging(object sender, EventArgs e) {
+    }
 
-        void OnDiagnosticsChanged(object sender, EventArgs e) {
-            InvalidateGeometry();
-            InvalidateVisual();
-        }
+    void OnDiagnosticsChanged(object sender, EventArgs e) {
+        InvalidateGeometry();
+        InvalidateVisual();
+    }
        
-        void OnTextViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e) {
-            InvalidateGeometry();
-            InvalidateVisual();
+    void OnTextViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e) {
+        InvalidateGeometry();
+        InvalidateVisual();
+    }
+
+    void OnTrackSpanChanged(object sender, EventArgs e) {
+        InvalidateGeometry();
+        InvalidateVisual();
+    }
+
+    void InvalidateGeometry() {
+        _markerGeometryGroups = null;
+    }
+
+    void EnsureGeometry() {
+
+        if(_markerGeometryGroups != null) {
+            return;
         }
 
-        void OnTrackSpanChanged(object sender, EventArgs e) {
-            InvalidateGeometry();
-            InvalidateVisual();
-        }
+        _markerGeometryGroups = new Dictionary<DiagnosticSeverity, GeometryGroup>();
 
-        void InvalidateGeometry() {
-            _markerGeometryGroups=null;
-        }
-
-        void EnsureGeometry() {
-
-            if(_markerGeometryGroups != null) {
-                return;
-            }
-
-            _markerGeometryGroups = new Dictionary<DiagnosticSeverity, GeometryGroup>();
-
-            var severities = new[] {
-                DiagnosticSeverity.Error,
-                DiagnosticSeverity.Warning,
-                DiagnosticSeverity.Suggestion};
+        var severities = new[] {
+            DiagnosticSeverity.Error,
+            DiagnosticSeverity.Warning,
+            DiagnosticSeverity.Suggestion};
             
-            foreach (var severity in severities) {
+        foreach (var severity in severities) {
                
-                var group = new GeometryGroup();
+            var group = new GeometryGroup();
                 
-                foreach (var mappingTagSpan in _diagnosticService.GetDiagnosticsWithSeverity(severity)) {
+            foreach (var mappingTagSpan in _diagnosticService.GetDiagnosticsWithSeverity(severity)) {
 
-                    var tagSpan = _textView.MapToSingleSnapshotSpan(mappingTagSpan);
-                    if(tagSpan == null) {
-                        continue;
-                    }
-                    group.Children.Add(GetMarkerGeometry(tagSpan.Span.Start));
+                var tagSpan = _textView.MapToSingleSnapshotSpan(mappingTagSpan);
+                if(tagSpan == null) {
+                    continue;
                 }
+                group.Children.Add(GetMarkerGeometry(tagSpan.Span.Start));
+            }
 
-                _markerGeometryGroups.Add(severity, group);
-            }                       
-        }
+            _markerGeometryGroups.Add(severity, group);
+        }                       
+    }
         
-        Geometry GetMarkerGeometry(SnapshotPoint snapshotPoint) {
+    Geometry GetMarkerGeometry(SnapshotPoint snapshotPoint) {
 
-            double markerHeight = 2.0;
+        double markerHeight = 2.0;
 
-            var y = _scrollBar.GetYCoordinateOfBufferPosition(snapshotPoint);
+        var y = _scrollBar.GetYCoordinateOfBufferPosition(snapshotPoint);
 
-            var rectangleGeometry = new RectangleGeometry(new Rect(0, y - markerHeight / 2, Width, markerHeight));
+        var rectangleGeometry = new RectangleGeometry(new Rect(0, y - markerHeight / 2, Width, markerHeight));
 
-            return rectangleGeometry;
+        return rectangleGeometry;
+    }
+
+    protected override Size ArrangeOverride(Size finalSize) {
+        InvalidateGeometry();
+        return base.ArrangeOverride(finalSize);
+    }
+
+    protected override void OnRender(DrawingContext dc) {
+        base.OnRender(dc);
+        EnsureGeometry();
+
+        foreach(var geoGroup in _markerGeometryGroups) {
+
+            var brush = GetMarkerBrush(geoGroup.Key);
+            dc.DrawGeometry(brush, null, geoGroup.Value);
+        }            
+    }
+
+    Brush GetMarkerBrush(DiagnosticSeverity severity) {
+        // TODO Farben
+        switch (severity) {                
+            case DiagnosticSeverity.Suggestion:
+                return GetForeGroundColor(DiagnosticErrorTypeNames.Suggestion , Brushes.Blue);
+            case DiagnosticSeverity.Warning:
+                return Brushes.Orange; //GetForeGroundColor(DiagnosticErrorTypeNames.Warning, Brushes.Orange);
+            case DiagnosticSeverity.Error:
+                return GetForeGroundColor(DiagnosticErrorTypeNames.Error, Brushes.Red);
+            default:
+                throw new ArgumentOutOfRangeException(nameof(severity), severity, null);
         }
+    }
 
-        protected override Size ArrangeOverride(Size finalSize) {
-            InvalidateGeometry();
-            return base.ArrangeOverride(finalSize);
+    Brush GetForeGroundColor(string type, Brush fallbackBrush) {
+        ResourceDictionary resourceDictionary = _editorFormatMap.GetProperties(type);
+
+        if (resourceDictionary.Contains(EditorFormatDefinition.ForegroundBrushId)) {
+            var color = (Brush)resourceDictionary[EditorFormatDefinition.ForegroundBrushId];
+            return color;
+        } else {
+            return fallbackBrush;
         }
+    }
 
-        protected override void OnRender(DrawingContext dc) {
-            base.OnRender(dc);
-            EnsureGeometry();
-
-            foreach(var geoGroup in _markerGeometryGroups) {
-
-                var brush = GetMarkerBrush(geoGroup.Key);
-                dc.DrawGeometry(brush, null, geoGroup.Value);
-            }            
+    public FrameworkElement VisualElement {
+        get {
+            ThrowIfDisposed();
+            return this;
         }
+    }
 
-        Brush GetMarkerBrush(DiagnosticSeverity severity) {
-            // TODO Farben
-            switch (severity) {                
-                case DiagnosticSeverity.Suggestion:
-                    return GetForeGroundColor(DiagnosticErrorTypeNames.Suggestion ,Brushes.Blue);
-                case DiagnosticSeverity.Warning:
-                    return Brushes.Orange;//GetForeGroundColor(DiagnosticErrorTypeNames.Warning, Brushes.Orange);
-                case DiagnosticSeverity.Error:
-                    return GetForeGroundColor(DiagnosticErrorTypeNames.Error, Brushes.Red);
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(severity), severity, null);
-            }
+    public double MarginSize {
+        get {
+            ThrowIfDisposed();
+
+            return ActualWidth;
         }
+    }
 
-        Brush GetForeGroundColor(string type, Brush fallbackBrush) {
-            ResourceDictionary resourceDictionary = _editorFormatMap.GetProperties(type);
-
-            if (resourceDictionary.Contains(EditorFormatDefinition.ForegroundBrushId)) {
-                var color = (Brush)resourceDictionary[EditorFormatDefinition.ForegroundBrushId];
-                return color;
-            } else {
-                return fallbackBrush;
-            }
-        }
-
-        public FrameworkElement VisualElement {
-            get {
-                ThrowIfDisposed();
-                return this;
-            }
-        }
-
-        public double MarginSize {
-            get {
-                ThrowIfDisposed();
-
-                return ActualWidth;
-            }
-        }
-
-        bool ITextViewMargin.Enabled {
-            get { return _textView.Options.GetOptionValue(DefaultTextViewHostOptions.VerticalScrollBarId); }
-        }
+    bool ITextViewMargin.Enabled {
+        get { return _textView.Options.GetOptionValue(DefaultTextViewHostOptions.VerticalScrollBarId); }
+    }
         
-        public ITextViewMargin GetTextViewMargin(string marginName) {
-            return string.Equals(marginName, MarginName, StringComparison.OrdinalIgnoreCase) ? this : null;
+    public ITextViewMargin GetTextViewMargin(string marginName) {
+        return string.Equals(marginName, MarginName, StringComparison.OrdinalIgnoreCase) ? this : null;
+    }
+
+    public void Dispose() {
+        if(!_isDisposed) {
+            _isDisposed = true;
+
+            _diagnosticService.DiagnosticsChanging -= OnDiagnosticsChanging;
+            _diagnosticService.DiagnosticsChanged  -= OnDiagnosticsChanged;
+            _scrollBar.TrackSpanChanged            -= OnTrackSpanChanged;
+            _textView.LayoutChanged                -= OnTextViewLayoutChanged;
+            _editorFormatMap.FormatMappingChanged  -= OnFormatMappingChanged;
+            _textView.Closed                       -= OnTextViewClosed;
         }
+    }
 
-        public void Dispose() {
-            if(!_isDisposed) {
-                _isDisposed = true;
-
-                _diagnosticService.DiagnosticsChanging    -= OnDiagnosticsChanging;
-                _diagnosticService.DiagnosticsChanged     -= OnDiagnosticsChanged;
-                _scrollBar.TrackSpanChanged               -= OnTrackSpanChanged;
-                _textView.LayoutChanged                   -= OnTextViewLayoutChanged;
-                _editorFormatMap.FormatMappingChanged     -= OnFormatMappingChanged;
-                _textView.Closed                          -= OnTextViewClosed;
-            }
-        }
-
-        void ThrowIfDisposed() {
-            if(_isDisposed) {
-                throw new ObjectDisposedException(MarginName);
-            }
+    void ThrowIfDisposed() {
+        if(_isDisposed) {
+            throw new ObjectDisposedException(MarginName);
         }
     }
 }

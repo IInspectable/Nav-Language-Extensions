@@ -14,386 +14,384 @@ using CSharpClassificationTypeNames=Microsoft.CodeAnalysis.Classification.Classi
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Classification {
+namespace Pharmatechnik.Nav.Language.Extension.Classification; 
 
-    // ReSharper disable UnassignedField.Local
-    #pragma warning disable 0169
-    static class ClassificationTypeDefinitions {
+// ReSharper disable UnassignedField.Local
+#pragma warning disable 0169
+static class ClassificationTypeDefinitions {
 
-        //======================================
-        //      Die Farben sollen derzeit nicht 
-        //      anpassbar sein.
-        //======================================
-        static class Is {
+    //======================================
+    //      Die Farben sollen derzeit nicht 
+    //      anpassbar sein.
+    //======================================
+    static class Is {
 
-            public const bool UserVisible = false;
+        public const bool UserVisible = false;
 
+    }
+
+    #region Keyword
+
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Keyword)] [BaseDefinition(PredefinedClassificationTypeNames.Keyword)]
+    public static ClassificationTypeDefinition Keyword;
+
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.Keyword)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class KeywordClassificationFormatDefinition: ClassificationFormatDefinition {
+
+        public KeywordClassificationFormatDefinition() {
+            DisplayName = "Nav Keyword";
         }
 
-        #region Keyword
+    }
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Keyword)] [BaseDefinition(PredefinedClassificationTypeNames.Keyword)]
-        public static ClassificationTypeDefinition Keyword;
+    #endregion
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.Keyword)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class KeywordClassificationFormatDefinition: ClassificationFormatDefinition {
+    #region ControlKeyword
 
-            public KeywordClassificationFormatDefinition() {
-                DisplayName = "Nav Keyword";
-            }
+    [Export(typeof(ClassificationTypeDefinition))] 
+    [Name(ClassificationTypeNames.ControlKeyword)] 
+    [BaseDefinition(CSharpClassificationTypeNames.ControlKeyword)]
+    public static ClassificationTypeDefinition ControlKeyword;
 
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.ControlKeyword)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class ControlKeywordClassificationFormatDefinition: ClassificationFormatDefinition {
+
+        public ControlKeywordClassificationFormatDefinition() {
+            DisplayName = "Nav Control Keyword";
         }
 
-        #endregion
+    }
 
-        #region ControlKeyword
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] 
-        [Name(ClassificationTypeNames.ControlKeyword)] 
-        [BaseDefinition(CSharpClassificationTypeNames.ControlKeyword)]
-        public static ClassificationTypeDefinition ControlKeyword;
+    #region Comment
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.ControlKeyword)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class ControlKeywordClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Comment)] [BaseDefinition(PredefinedClassificationTypeNames.Comment)]
+    public static ClassificationTypeDefinition Comment;
 
-            public ControlKeywordClassificationFormatDefinition() {
-                DisplayName = "Nav Control Keyword";
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.Comment)]
+    [UserVisible(Is.UserVisible)] // This should be visible to the end user
+    [Order(Before = Priority.Default)]
+    // Set the priority to be after the default classifiers
+    public sealed class CommentClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public CommentClassificationFormatDefinition() {
+            DisplayName = "Nav Comment"; // Human readable version of the name
         }
 
-        #endregion
+    }
 
-        #region Comment
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Comment)] [BaseDefinition(PredefinedClassificationTypeNames.Comment)]
-        public static ClassificationTypeDefinition Comment;
+    #region Identifier
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.Comment)]
-        [UserVisible(Is.UserVisible)] // This should be visible to the end user
-        [Order(Before = Priority.Default)]
-        // Set the priority to be after the default classifiers
-        public sealed class CommentClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Identifier)] [BaseDefinition(PredefinedClassificationTypeNames.Identifier)]
+    public static ClassificationTypeDefinition Identifier;
 
-            public CommentClassificationFormatDefinition() {
-                DisplayName = "Nav Comment"; // Human readable version of the name
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.Identifier)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class IdentifierClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public IdentifierClassificationFormatDefinition() {
+            DisplayName = "Nav Identifier";
         }
 
-        #endregion
+    }
 
-        #region Identifier
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Identifier)] [BaseDefinition(PredefinedClassificationTypeNames.Identifier)]
-        public static ClassificationTypeDefinition Identifier;
+    #region String
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.Identifier)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class IdentifierClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.StringLiteral)] [BaseDefinition(PredefinedClassificationTypeNames.String)]
+    public static ClassificationTypeDefinition String;
 
-            public IdentifierClassificationFormatDefinition() {
-                DisplayName = "Nav Identifier";
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.StringLiteral)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class StringClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public StringClassificationFormatDefinition() {
+            DisplayName = "Nav String";
         }
 
-        #endregion
+    }
 
-        #region String
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.StringLiteral)] [BaseDefinition(PredefinedClassificationTypeNames.String)]
-        public static ClassificationTypeDefinition String;
+    #region FormName
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.StringLiteral)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class StringClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.GuiNode)] [BaseDefinition(CSharpClassificationTypeNames.LocalName)]
+    public static ClassificationTypeDefinition Type;
 
-            public StringClassificationFormatDefinition() {
-                DisplayName = "Nav String";
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.GuiNode)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class FormNameClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public FormNameClassificationFormatDefinition() {
+            DisplayName = "Nav Form Name";
         }
 
-        #endregion
+    }
 
-        #region FormName
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.GuiNode)] [BaseDefinition(CSharpClassificationTypeNames.LocalName)]
-        public static ClassificationTypeDefinition Type;
+    #region TaskName
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.GuiNode)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class FormNameClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.TaskName)] [BaseDefinition(CSharpClassificationTypeNames.ClassName)]
+    public static ClassificationTypeDefinition TaskName;
 
-            public FormNameClassificationFormatDefinition() {
-                DisplayName = "Nav Form Name";
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.TaskName)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class TaskNameClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public TaskNameClassificationFormatDefinition() {
+            DisplayName = "Nav Task Name";
         }
 
-        #endregion
+    }
 
-        #region TaskName
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.TaskName)] [BaseDefinition(CSharpClassificationTypeNames.ClassName)]
-        public static ClassificationTypeDefinition TaskName;
+    #region TypeName
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.TaskName)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class TaskNameClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.TypeName)] [BaseDefinition(CSharpClassificationTypeNames.ClassName)]
+    public static ClassificationTypeDefinition TypeName;
 
-            public TaskNameClassificationFormatDefinition() {
-                DisplayName = "Nav Task Name";
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.TypeName)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class TypeNameClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public TypeNameClassificationFormatDefinition() {
+            DisplayName = "Nav Type Name";
         }
 
-        #endregion
+    }
 
-        #region TypeName
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.TypeName)] [BaseDefinition(CSharpClassificationTypeNames.ClassName)]
-        public static ClassificationTypeDefinition TypeName;
+    #region Punctuation
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.TypeName)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class TypeNameClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Punctuation)] [BaseDefinition(CSharpClassificationTypeNames.Punctuation)]
+    public static ClassificationTypeDefinition Punctuation;
 
-            public TypeNameClassificationFormatDefinition() {
-                DisplayName = "Nav Type Name";
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.Punctuation)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class PunctuationClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public PunctuationClassificationFormatDefinition() {
+            DisplayName = "Nav Punctuation";
         }
 
-        #endregion
+    }
 
-        #region Punctuation
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Punctuation)] [BaseDefinition(CSharpClassificationTypeNames.Punctuation)]
-        public static ClassificationTypeDefinition Punctuation;
+    #region Unknown
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.Punctuation)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class PunctuationClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Unknown)] [BaseDefinition("Syntax Error")]
+    public static ClassificationTypeDefinition Unknown;
 
-            public PunctuationClassificationFormatDefinition() {
-                DisplayName = "Nav Punctuation";
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.Unknown)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class UnknownClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public UnknownClassificationFormatDefinition() {
+            DisplayName = "Nav Unknown";
         }
 
-        #endregion
+    }
 
-        #region Unknown
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Unknown)] [BaseDefinition("Syntax Error")]
-        public static ClassificationTypeDefinition Unknown;
+    #region DeadCode
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.Unknown)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class UnknownClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.DeadCode)] [BaseDefinition(PredefinedClassificationTypeNames.FormalLanguage)]
+    public static ClassificationTypeDefinition DeadCode;
 
-            public UnknownClassificationFormatDefinition() {
-                DisplayName = "Nav Unknown";
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.DeadCode)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.High)]
+    public sealed class DeadCodeClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public DeadCodeClassificationFormatDefinition() {
+            DisplayName       = "Nav Dead Code";
+            ForegroundOpacity = 0.5;
         }
 
-        #endregion
+    }
 
-        #region DeadCode
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.DeadCode)] [BaseDefinition(PredefinedClassificationTypeNames.FormalLanguage)]
-        public static ClassificationTypeDefinition DeadCode;
+    #region ChoiceNode
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.DeadCode)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.High)]
-        public sealed class DeadCodeClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.ChoiceNode)] [BaseDefinition(CSharpClassificationTypeNames.MethodName)]
+    public static ClassificationTypeDefinition ChoiceNode;
 
-            public DeadCodeClassificationFormatDefinition() {
-                DisplayName       = "Nav Dead Code";
-                ForegroundOpacity = 0.5;
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.ChoiceNode)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Low)]
+    public sealed class ChoiceNodeClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public ChoiceNodeClassificationFormatDefinition() {
+            IsItalic = true;
         }
 
-        #endregion
+    }
 
-        #region ChoiceNode
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.ChoiceNode)] [BaseDefinition(CSharpClassificationTypeNames.MethodName)]
-        public static ClassificationTypeDefinition ChoiceNode;
+    #region ConnectionPoint
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.ChoiceNode)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Low)]
-        public sealed class ChoiceNodeClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.ConnectionPoint)] [BaseDefinition(ClassificationTypeNames.Identifier)]
+    public static ClassificationTypeDefinition ConnectionPoint;
 
-            public ChoiceNodeClassificationFormatDefinition() {
-                IsItalic = true;
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.ConnectionPoint)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Low)]
+    public sealed class ConnectionPointClassificationFormatDefinition: ClassificationFormatDefinition {
 
+        public ConnectionPointClassificationFormatDefinition() {
+            // IsItalic = true;
+            IsBold = true;
         }
 
-        #endregion
+    }
 
-        #region ConnectionPoint
+    #endregion
 
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.ConnectionPoint)] [BaseDefinition(ClassificationTypeNames.Identifier)]
-        public static ClassificationTypeDefinition ConnectionPoint;
+    #region Underline
 
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.ConnectionPoint)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Low)]
-        public sealed class ConnectionPointClassificationFormatDefinition: ClassificationFormatDefinition {
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Underline)] [BaseDefinition(PredefinedClassificationTypeNames.FormalLanguage)]
+    public static ClassificationTypeDefinition Underline;
 
-            public ConnectionPointClassificationFormatDefinition() {
-                // IsItalic = true;
-                IsBold = true;
-            }
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.Underline)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class UnderlineClassificationFormatDefinition: ClassificationFormatDefinition {
 
-        }
+        public UnderlineClassificationFormatDefinition() {
+            DisplayName = "Nav Underline";
 
-        #endregion
-
-        #region Underline
-
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.Underline)] [BaseDefinition(PredefinedClassificationTypeNames.FormalLanguage)]
-        public static ClassificationTypeDefinition Underline;
-
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.Underline)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class UnderlineClassificationFormatDefinition: ClassificationFormatDefinition {
-
-            public UnderlineClassificationFormatDefinition() {
-                DisplayName = "Nav Underline";
-
-                var underline = new System.Windows.TextDecoration {
-                    PenThicknessUnit = System.Windows.TextDecorationUnit.FontRecommended
-                };
-                if (TextDecorations == null) {
-                    TextDecorations = new System.Windows.TextDecorationCollection();
-                }
-
-                TextDecorations.Add(underline);
-            }
-
-        }
-
-        #endregion
-
-        #region ParameterName
-
-        [Export(typeof(ClassificationTypeDefinition))] 
-        [Name(ClassificationTypeNames.ParameterName)] 
-        [BaseDefinition(CSharpClassificationTypeNames.ParameterName)]
-        public static ClassificationTypeDefinition Parameter;
-
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.ParameterName)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class ParameterNameClassificationFormatDefinition: ClassificationFormatDefinition {
-
-            public ParameterNameClassificationFormatDefinition() {
-                DisplayName = "Nav ParameterName";              
-            }
-
-        }
-
-        #endregion
-
-        #region PreprocessorKeyword
-
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.PreprocessorKeyword)] [BaseDefinition(CSharpClassificationTypeNames.PreprocessorKeyword)]
-        public static ClassificationTypeDefinition PreprocessorKeyword;
-
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.PreprocessorKeyword)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class PreprocessorKeywordClassificationFormatDefinition: ClassificationFormatDefinition {
-
-            public PreprocessorKeywordClassificationFormatDefinition() {
-                DisplayName = "Nav Preprocessor Keyword";
-            }
-
-        }
-
-        #endregion
-
-        #region PreprocessorText
-
-        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.PreprocessorText)] [BaseDefinition(CSharpClassificationTypeNames.PreprocessorText)]
-        public static ClassificationTypeDefinition PreprocessorText;
-
-        [Export(typeof(EditorFormatDefinition))]
-        [Name(ClassificationTypeNames.PreprocessorText)]
-        [UserVisible(Is.UserVisible)]
-        [Order(Before = Priority.Default)]
-        public sealed class PreprocessorTextClassificationFormatDefinition: ClassificationFormatDefinition {
-
-            public PreprocessorTextClassificationFormatDefinition() {
-                DisplayName = "Nav Preprocessor Text";
-            }
-
-        }
-
-        #endregion
-
-        public static ImmutableDictionary<TextClassification, IClassificationType> GetSyntaxTokenClassificationMap(IClassificationTypeRegistryService registry) {
-
-            var classificationMap = new Dictionary<TextClassification, IClassificationType> {
-                {TextClassification.Skiped             , registry.GetClassificationType(ClassificationTypeNames.Unknown)},
-                {TextClassification.Unknown            , registry.GetClassificationType(ClassificationTypeNames.Unknown)},
-                {TextClassification.Comment            , registry.GetClassificationType(ClassificationTypeNames.Comment)},
-                {TextClassification.Keyword            , registry.GetClassificationType(ClassificationTypeNames.Keyword)},
-                {TextClassification.ControlKeyword     , registry.GetClassificationType(ClassificationTypeNames.ControlKeyword)},
-                {TextClassification.Identifier         , registry.GetClassificationType(ClassificationTypeNames.Identifier)},
-                {TextClassification.Punctuation        , registry.GetClassificationType(ClassificationTypeNames.Punctuation)},
-                {TextClassification.StringLiteral      , registry.GetClassificationType(ClassificationTypeNames.StringLiteral)},
-                {TextClassification.TypeName           , registry.GetClassificationType(ClassificationTypeNames.TypeName)},
-                {TextClassification.TaskName           , registry.GetClassificationType(ClassificationTypeNames.TaskName)},
-                {TextClassification.ConnectionPoint    , registry.GetClassificationType(ClassificationTypeNames.ConnectionPoint)},
-                {TextClassification.ChoiceNode         , registry.GetClassificationType(ClassificationTypeNames.ChoiceNode)},
-                {TextClassification.GuiNode            , registry.GetClassificationType(ClassificationTypeNames.GuiNode)},
-                {TextClassification.DeadCode           , registry.GetClassificationType(ClassificationTypeNames.DeadCode)},
-                {TextClassification.ParameterName      , registry.GetClassificationType(ClassificationTypeNames.ParameterName)},
-                {TextClassification.PreprocessorKeyword, registry.GetClassificationType(ClassificationTypeNames.PreprocessorKeyword)},
-                {TextClassification.PreprocessorText   , registry.GetClassificationType(ClassificationTypeNames.PreprocessorText)},
+            var underline = new System.Windows.TextDecoration {
+                PenThicknessUnit = System.Windows.TextDecorationUnit.FontRecommended
             };
+            if (TextDecorations == null) {
+                TextDecorations = new System.Windows.TextDecorationCollection();
+            }
 
-            return classificationMap.ToImmutableDictionary();
+            TextDecorations.Add(underline);
         }
 
+    }
+
+    #endregion
+
+    #region ParameterName
+
+    [Export(typeof(ClassificationTypeDefinition))] 
+    [Name(ClassificationTypeNames.ParameterName)] 
+    [BaseDefinition(CSharpClassificationTypeNames.ParameterName)]
+    public static ClassificationTypeDefinition Parameter;
+
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.ParameterName)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class ParameterNameClassificationFormatDefinition: ClassificationFormatDefinition {
+
+        public ParameterNameClassificationFormatDefinition() {
+            DisplayName = "Nav ParameterName";              
+        }
+
+    }
+
+    #endregion
+
+    #region PreprocessorKeyword
+
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.PreprocessorKeyword)] [BaseDefinition(CSharpClassificationTypeNames.PreprocessorKeyword)]
+    public static ClassificationTypeDefinition PreprocessorKeyword;
+
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.PreprocessorKeyword)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class PreprocessorKeywordClassificationFormatDefinition: ClassificationFormatDefinition {
+
+        public PreprocessorKeywordClassificationFormatDefinition() {
+            DisplayName = "Nav Preprocessor Keyword";
+        }
+
+    }
+
+    #endregion
+
+    #region PreprocessorText
+
+    [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.PreprocessorText)] [BaseDefinition(CSharpClassificationTypeNames.PreprocessorText)]
+    public static ClassificationTypeDefinition PreprocessorText;
+
+    [Export(typeof(EditorFormatDefinition))]
+    [Name(ClassificationTypeNames.PreprocessorText)]
+    [UserVisible(Is.UserVisible)]
+    [Order(Before = Priority.Default)]
+    public sealed class PreprocessorTextClassificationFormatDefinition: ClassificationFormatDefinition {
+
+        public PreprocessorTextClassificationFormatDefinition() {
+            DisplayName = "Nav Preprocessor Text";
+        }
+
+    }
+
+    #endregion
+
+    public static ImmutableDictionary<TextClassification, IClassificationType> GetSyntaxTokenClassificationMap(IClassificationTypeRegistryService registry) {
+
+        var classificationMap = new Dictionary<TextClassification, IClassificationType> {
+            {TextClassification.Skiped             , registry.GetClassificationType(ClassificationTypeNames.Unknown)},
+            {TextClassification.Unknown            , registry.GetClassificationType(ClassificationTypeNames.Unknown)},
+            {TextClassification.Comment            , registry.GetClassificationType(ClassificationTypeNames.Comment)},
+            {TextClassification.Keyword            , registry.GetClassificationType(ClassificationTypeNames.Keyword)},
+            {TextClassification.ControlKeyword     , registry.GetClassificationType(ClassificationTypeNames.ControlKeyword)},
+            {TextClassification.Identifier         , registry.GetClassificationType(ClassificationTypeNames.Identifier)},
+            {TextClassification.Punctuation        , registry.GetClassificationType(ClassificationTypeNames.Punctuation)},
+            {TextClassification.StringLiteral      , registry.GetClassificationType(ClassificationTypeNames.StringLiteral)},
+            {TextClassification.TypeName           , registry.GetClassificationType(ClassificationTypeNames.TypeName)},
+            {TextClassification.TaskName           , registry.GetClassificationType(ClassificationTypeNames.TaskName)},
+            {TextClassification.ConnectionPoint    , registry.GetClassificationType(ClassificationTypeNames.ConnectionPoint)},
+            {TextClassification.ChoiceNode         , registry.GetClassificationType(ClassificationTypeNames.ChoiceNode)},
+            {TextClassification.GuiNode            , registry.GetClassificationType(ClassificationTypeNames.GuiNode)},
+            {TextClassification.DeadCode           , registry.GetClassificationType(ClassificationTypeNames.DeadCode)},
+            {TextClassification.ParameterName      , registry.GetClassificationType(ClassificationTypeNames.ParameterName)},
+            {TextClassification.PreprocessorKeyword, registry.GetClassificationType(ClassificationTypeNames.PreprocessorKeyword)},
+            {TextClassification.PreprocessorText   , registry.GetClassificationType(ClassificationTypeNames.PreprocessorText)},
+        };
+
+        return classificationMap.ToImmutableDictionary();
     }
 
 }

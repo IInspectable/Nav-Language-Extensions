@@ -6,14 +6,13 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider; 
 
-    abstract class LocationInfoProvider : ILocationInfoProvider {
+abstract class LocationInfoProvider : ILocationInfoProvider {
 
-        public abstract Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken());
+    public abstract Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken());
 
-        protected static IEnumerable<T> ToEnumerable<T>(T value) {
-            return new[] { value };
-        }
+    protected static IEnumerable<T> ToEnumerable<T>(T value) {
+        return new[] { value };
     }
 }

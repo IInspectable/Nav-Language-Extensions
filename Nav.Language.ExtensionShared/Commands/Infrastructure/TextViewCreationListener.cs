@@ -11,33 +11,32 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Commands {
+namespace Pharmatechnik.Nav.Language.Extension.Commands; 
 
-    [Export(typeof(IVsTextViewCreationListener))]
-    [ContentType(NavLanguageContentDefinitions.ContentType)]
-    [TextViewRole(PredefinedTextViewRoles.Interactive)]
-    sealed class TextViewCreationListener : IVsTextViewCreationListener {
+[Export(typeof(IVsTextViewCreationListener))]
+[ContentType(NavLanguageContentDefinitions.ContentType)]
+[TextViewRole(PredefinedTextViewRoles.Interactive)]
+sealed class TextViewCreationListener : IVsTextViewCreationListener {
 
-        readonly ICommandHandlerServiceProvider _commandHandlerServiceProvider;
-        readonly IVsEditorAdaptersFactoryService _editorAdaptersFactory;
+    readonly ICommandHandlerServiceProvider  _commandHandlerServiceProvider;
+    readonly IVsEditorAdaptersFactoryService _editorAdaptersFactory;
 
-        [ImportingConstructor]
-        public TextViewCreationListener(
-            IVsEditorAdaptersFactoryService editorAdaptersFactory,
-            ICommandHandlerServiceProvider commandHandlerServiceProvider) {
+    [ImportingConstructor]
+    public TextViewCreationListener(
+        IVsEditorAdaptersFactoryService editorAdaptersFactory,
+        ICommandHandlerServiceProvider commandHandlerServiceProvider) {
 
-            _editorAdaptersFactory = editorAdaptersFactory;
-            _commandHandlerServiceProvider = commandHandlerServiceProvider;            
-        }
+        _editorAdaptersFactory         = editorAdaptersFactory;
+        _commandHandlerServiceProvider = commandHandlerServiceProvider;            
+    }
 
-        public void VsTextViewCreated(IVsTextView textView) {
+    public void VsTextViewCreated(IVsTextView textView) {
 
-            var wpfTextView = _editorAdaptersFactory.GetWpfTextView(textView);
+        var wpfTextView = _editorAdaptersFactory.GetWpfTextView(textView);
 
-            wpfTextView.GetOrCreateAutoClosingProperty(wpfTextView,
-                tv => new CommandTarget(tv, _commandHandlerServiceProvider, _editorAdaptersFactory)
+        wpfTextView.GetOrCreateAutoClosingProperty(wpfTextView,
+                                                   tv => new CommandTarget(tv, _commandHandlerServiceProvider, _editorAdaptersFactory)
 
-            );
-        }
+        );
     }
 }

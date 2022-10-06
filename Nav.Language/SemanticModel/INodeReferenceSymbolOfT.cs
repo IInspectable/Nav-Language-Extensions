@@ -1,36 +1,34 @@
 ﻿using JetBrains.Annotations;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public interface INodeReferenceSymbol<out T>: INodeReferenceSymbol where T : INodeSymbol {
+public interface INodeReferenceSymbol<out T>: INodeReferenceSymbol where T : INodeSymbol {
 
-        [CanBeNull]
-        new T Declaration { get; }
+    [CanBeNull]
+    new T Declaration { get; }
 
-    }
+}
 
-    public interface IInitNodeReferenceSymbol: INodeReferenceSymbol<IInitNodeSymbol> {
+public interface IInitNodeReferenceSymbol: INodeReferenceSymbol<IInitNodeSymbol> {
 
-    }
+}
 
-    public interface IChoiceNodeReferenceSymbol: INodeReferenceSymbol<IChoiceNodeSymbol> {
+public interface IChoiceNodeReferenceSymbol: INodeReferenceSymbol<IChoiceNodeSymbol> {
 
-    }
+}
 
-    public interface IGuiNodeReferenceSymbol: INodeReferenceSymbol<IGuiNodeSymbol> {
+public interface IGuiNodeReferenceSymbol: INodeReferenceSymbol<IGuiNodeSymbol> {
 
-    }
+}
 
-    public interface ITaskNodeReferenceSymbol: INodeReferenceSymbol<ITaskNodeSymbol> {
+public interface ITaskNodeReferenceSymbol: INodeReferenceSymbol<ITaskNodeSymbol> {
 
-    }
+}
 
-    public interface IExitNodeReferenceSymbol: INodeReferenceSymbol<IExitNodeSymbol> {
+public interface IExitNodeReferenceSymbol: INodeReferenceSymbol<IExitNodeSymbol> {
 
-    }
+}
 
-    public interface IEndNodeReferenceSymbol: INodeReferenceSymbol<IEndNodeSymbol> {
-
-    }
+public interface IEndNodeReferenceSymbol: INodeReferenceSymbol<IEndNodeSymbol> {
 
 }

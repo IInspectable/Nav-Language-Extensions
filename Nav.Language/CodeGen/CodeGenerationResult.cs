@@ -11,33 +11,31 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-    public sealed class CodeGenerationResult {
+public sealed class CodeGenerationResult {
 
-        public CodeGenerationResult(
-            ITaskDefinitionSymbol taskDefinition,
-            CodeGenerationSpec iBeginWfsCodeSpec,
-            CodeGenerationSpec iWfsCodeSpec,
-            CodeGenerationSpec wfsBaseCodeSpec,
-            CodeGenerationSpec wfsCodeSpec,
-            [CanBeNull] IEnumerable<CodeGenerationSpec> toCodeSpecs) {
+    public CodeGenerationResult(
+        ITaskDefinitionSymbol taskDefinition,
+        CodeGenerationSpec iBeginWfsCodeSpec,
+        CodeGenerationSpec iWfsCodeSpec,
+        CodeGenerationSpec wfsBaseCodeSpec,
+        CodeGenerationSpec wfsCodeSpec,
+        [CanBeNull] IEnumerable<CodeGenerationSpec> toCodeSpecs) {
 
-            TaskDefinition    = taskDefinition    ?? throw new ArgumentNullException(nameof(taskDefinition));
-            IBeginWfsCodeSpec = iBeginWfsCodeSpec ?? throw new ArgumentNullException(nameof(iBeginWfsCodeSpec));
-            IWfsCodeSpec      = iWfsCodeSpec      ?? throw new ArgumentNullException(nameof(iWfsCodeSpec));
-            WfsBaseCodeSpec   = wfsBaseCodeSpec   ?? throw new ArgumentNullException(nameof(wfsBaseCodeSpec));
-            WfsCodeSpec       = wfsCodeSpec       ?? throw new ArgumentNullException(nameof(wfsCodeSpec));
-            ToCodeSpecs       = (toCodeSpecs ?? Enumerable.Empty<CodeGenerationSpec>()).ToImmutableList();
-        }
-
-        public ITaskDefinitionSymbol             TaskDefinition    { get; }
-        public CodeGenerationSpec                IBeginWfsCodeSpec { get; }
-        public CodeGenerationSpec                IWfsCodeSpec      { get; }
-        public CodeGenerationSpec                WfsBaseCodeSpec   { get; }
-        public CodeGenerationSpec                WfsCodeSpec       { get; }
-        public ImmutableList<CodeGenerationSpec> ToCodeSpecs       { get; }
-
+        TaskDefinition    = taskDefinition    ?? throw new ArgumentNullException(nameof(taskDefinition));
+        IBeginWfsCodeSpec = iBeginWfsCodeSpec ?? throw new ArgumentNullException(nameof(iBeginWfsCodeSpec));
+        IWfsCodeSpec      = iWfsCodeSpec      ?? throw new ArgumentNullException(nameof(iWfsCodeSpec));
+        WfsBaseCodeSpec   = wfsBaseCodeSpec   ?? throw new ArgumentNullException(nameof(wfsBaseCodeSpec));
+        WfsCodeSpec       = wfsCodeSpec       ?? throw new ArgumentNullException(nameof(wfsCodeSpec));
+        ToCodeSpecs       = (toCodeSpecs ?? Enumerable.Empty<CodeGenerationSpec>()).ToImmutableList();
     }
+
+    public ITaskDefinitionSymbol             TaskDefinition    { get; }
+    public CodeGenerationSpec                IBeginWfsCodeSpec { get; }
+    public CodeGenerationSpec                IWfsCodeSpec      { get; }
+    public CodeGenerationSpec                WfsBaseCodeSpec   { get; }
+    public CodeGenerationSpec                WfsCodeSpec       { get; }
+    public ImmutableList<CodeGenerationSpec> ToCodeSpecs       { get; }
 
 }

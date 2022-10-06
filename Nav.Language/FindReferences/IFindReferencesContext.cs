@@ -5,19 +5,17 @@ using System.Threading.Tasks;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.FindReferences {
+namespace Pharmatechnik.Nav.Language.FindReferences; 
 
-    public interface IFindReferencesContext {
+public interface IFindReferencesContext {
 
-        CancellationToken CancellationToken { get; }
+    CancellationToken CancellationToken { get; }
 
-        Task SetSearchTitleAsync(string title);
-        Task ReportMessageAsync(string message);
+    Task SetSearchTitleAsync(string title);
+    Task ReportMessageAsync(string message);
 
-        Task OnDefinitionFoundAsync(DefinitionItem definitionItem);
-        Task OnReferenceFoundAsync(ReferenceItem referenceItem);
+    Task OnDefinitionFoundAsync(DefinitionItem definitionItem);
+    Task OnReferenceFoundAsync(ReferenceItem referenceItem);
 
-
-    }
 
 }

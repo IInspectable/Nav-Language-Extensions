@@ -7,15 +7,14 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension {
-    
-    sealed class CodeGenerationUnitAndSnapshot: AndSnapshot {
+namespace Pharmatechnik.Nav.Language.Extension; 
 
-        internal CodeGenerationUnitAndSnapshot([NotNull] CodeGenerationUnit codeGenerationUnit, [NotNull] ITextSnapshot snapshot): base(snapshot) {
-            CodeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
-        }
+sealed class CodeGenerationUnitAndSnapshot: AndSnapshot {
 
-        [NotNull]
-        public CodeGenerationUnit CodeGenerationUnit { get; }         
+    internal CodeGenerationUnitAndSnapshot([NotNull] CodeGenerationUnit codeGenerationUnit, [NotNull] ITextSnapshot snapshot): base(snapshot) {
+        CodeGenerationUnit = codeGenerationUnit ?? throw new ArgumentNullException(nameof(codeGenerationUnit));
     }
+
+    [NotNull]
+    public CodeGenerationUnit CodeGenerationUnit { get; }         
 }

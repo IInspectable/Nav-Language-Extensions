@@ -1,9 +1,8 @@
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public enum DiagnosticCategory {
-        Internal,
-        Syntax,
-        Semantic,
-        DeadCode
-    }
+public enum DiagnosticCategory {
+    Internal,
+    Syntax,
+    Semantic,
+    DeadCode
 }

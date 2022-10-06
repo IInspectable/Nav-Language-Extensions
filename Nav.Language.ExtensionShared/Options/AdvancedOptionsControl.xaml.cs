@@ -3,11 +3,10 @@
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Options {
+namespace Pharmatechnik.Nav.Language.Extension.Options; 
 
-    public partial class AdvancedOptionsControl {
-        public AdvancedOptionsControl() {
-            InitializeComponent();
-        }
+public partial class AdvancedOptionsControl {
+    public AdvancedOptionsControl() {
+        InitializeComponent();
     }
 }

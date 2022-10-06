@@ -11,30 +11,29 @@ using Pharmatechnik.Nav.Language.Extension.Common;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider; 
 
-    abstract class CodeAnalysisLocationInfoProvider: LocationInfoProvider {
-        readonly ITextBuffer _sourceBuffer;
+abstract class CodeAnalysisLocationInfoProvider: LocationInfoProvider {
+    readonly ITextBuffer _sourceBuffer;
 
-        protected CodeAnalysisLocationInfoProvider(ITextBuffer sourceBuffer) {
-            _sourceBuffer = sourceBuffer;
-        }
-
-        public ITextBuffer SourceBuffer {
-            get { return _sourceBuffer; }
-        }
-
-        public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
-            var project = _sourceBuffer.GetContainingProject();
-            if (project == null) {
-                // Das kommt vor, wenn das Dokument "extern" ist, also nicht in einem der geöffneten Projekte hängt.
-                // TODO Fehlermeldung überarbeiten.
-                return ToEnumerable(LocationInfo.FromError("Unable to determine containing project."));
-            }
-
-            return await GetLocationsAsync(project, cancellationToken);
-        }
-
-        protected abstract Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken);
+    protected CodeAnalysisLocationInfoProvider(ITextBuffer sourceBuffer) {
+        _sourceBuffer = sourceBuffer;
     }
+
+    public ITextBuffer SourceBuffer {
+        get { return _sourceBuffer; }
+    }
+
+    public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
+        var project = _sourceBuffer.GetContainingProject();
+        if (project == null) {
+            // Das kommt vor, wenn das Dokument "extern" ist, also nicht in einem der geöffneten Projekte hängt.
+            // TODO Fehlermeldung überarbeiten.
+            return ToEnumerable(LocationInfo.FromError("Unable to determine containing project."));
+        }
+
+        return await GetLocationsAsync(project, cancellationToken);
+    }
+
+    protected abstract Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken);
 }

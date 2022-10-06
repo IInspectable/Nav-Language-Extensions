@@ -4,16 +4,15 @@ using Microsoft.VisualStudio.Text.Tagging;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences {
+namespace Pharmatechnik.Nav.Language.Extension.HighlightReferences; 
 
-    class ReferenceHighlightTag : TextMarkerTag {
+class ReferenceHighlightTag : TextMarkerTag {
         
-        public ReferenceHighlightTag() : base(MarkerFormatDefinitionNames.ReferenceHighlight) {
+    public ReferenceHighlightTag() : base(MarkerFormatDefinitionNames.ReferenceHighlight) {
 
-        }
+    }
 
-        protected ReferenceHighlightTag(string type) : base(type) {
+    protected ReferenceHighlightTag(string type) : base(type) {
 
-        }
     }
 }

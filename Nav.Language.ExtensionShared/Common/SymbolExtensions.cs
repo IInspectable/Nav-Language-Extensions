@@ -4,15 +4,15 @@ using Microsoft.VisualStudio.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common {
-    static class SymbolExtensions {
+namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
-        public static SnapshotSpan GetSnapshotSpan(this Location location, ITextSnapshot snapshot) {
-            return location.ToSnapshotSpan(snapshot);
-        }
+static class SymbolExtensions {
+
+    public static SnapshotSpan GetSnapshotSpan(this Location location, ITextSnapshot snapshot) {
+        return location.ToSnapshotSpan(snapshot);
+    }
         
-        public static SnapshotSpan GetSnapshotSpan(this ISymbol symbol, ITextSnapshot snapshot) {
-            return GetSnapshotSpan(symbol.Location, snapshot);
-        }
+    public static SnapshotSpan GetSnapshotSpan(this ISymbol symbol, ITextSnapshot snapshot) {
+        return GetSnapshotSpan(symbol.Location, snapshot);
     }
 }

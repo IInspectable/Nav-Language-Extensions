@@ -1,11 +1,9 @@
 using Pharmatechnik.Nav.Language.CodeGen;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    public interface IPathProviderFactory {
+public interface IPathProviderFactory {
 
-        IPathProvider CreatePathProvider(ITaskDefinitionSymbol taskDefinition, GenerationOptions options);
-
-    }
+    IPathProvider CreatePathProvider(ITaskDefinitionSymbol taskDefinition, GenerationOptions options);
 
 }

@@ -4,19 +4,17 @@ using System;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-    public abstract class Generator: IDisposable {
+public abstract class Generator: IDisposable {
 
-        protected Generator(GenerationOptions options) {
-            Options = options ?? GenerationOptions.Default;
-        }
+    protected Generator(GenerationOptions options) {
+        Options = options ?? GenerationOptions.Default;
+    }
 
-        public GenerationOptions Options { get; }
+    public GenerationOptions Options { get; }
 
-        public virtual void Dispose() {
-        }
-
+    public virtual void Dispose() {
     }
 
 }

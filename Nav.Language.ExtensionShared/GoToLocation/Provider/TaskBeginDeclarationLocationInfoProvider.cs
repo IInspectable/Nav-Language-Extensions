@@ -14,36 +14,35 @@ using Pharmatechnik.Nav.Language.CodeAnalysis.FindSymbols;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider {
+namespace Pharmatechnik.Nav.Language.Extension.GoToLocation.Provider; 
 
-    class TaskBeginDeclarationLocationInfoProvider : CodeAnalysisLocationInfoProvider {
+class TaskBeginDeclarationLocationInfoProvider : CodeAnalysisLocationInfoProvider {
 
-        readonly TaskInitCodeInfo _taskInitCodeInfo;
+    readonly TaskInitCodeInfo _taskInitCodeInfo;
 
-        public TaskBeginDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskInitCodeInfo taskInitCodeInfo): base(sourceBuffer) {
-            _taskInitCodeInfo = taskInitCodeInfo;
-        }
+    public TaskBeginDeclarationLocationInfoProvider(ITextBuffer sourceBuffer, TaskInitCodeInfo taskInitCodeInfo): base(sourceBuffer) {
+        _taskInitCodeInfo = taskInitCodeInfo;
+    }
 
-        static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToMethodPublic; } }
+    static ImageMoniker ImageMoniker { get { return ImageMonikers.GoToMethodPublic; } }
 
-        protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
+    protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(Project project, CancellationToken cancellationToken) {
 
-            try {
-                var location = await LocationFinder.FindTaskBeginDeclarationLocationAsync(
-                        project          : project, 
-                        codegenInfo      : _taskInitCodeInfo, 
-                        cancellationToken: cancellationToken).ConfigureAwait(false);
+        try {
+            var location = await LocationFinder.FindTaskBeginDeclarationLocationAsync(
+                project          : project, 
+                codegenInfo      : _taskInitCodeInfo, 
+                cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                var locationInfo= LocationInfo.FromLocation(
-                        location    : location,
-                        displayName : $"{_taskInitCodeInfo.ContainingTask.WfsTypeName}.{_taskInitCodeInfo.BeginLogicMethodName}",
-                        imageMoniker: ImageMoniker);
+            var locationInfo = LocationInfo.FromLocation(
+                location    : location,
+                displayName : $"{_taskInitCodeInfo.ContainingTask.WfsTypeName}.{_taskInitCodeInfo.BeginLogicMethodName}",
+                imageMoniker: ImageMoniker);
 
-                return ToEnumerable(locationInfo);
+            return ToEnumerable(locationInfo);
 
-            } catch(LocationNotFoundException ex) {
-                return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
-            }            
-        }
+        } catch(LocationNotFoundException ex) {
+            return ToEnumerable(LocationInfo.FromError(ex, ImageMoniker));
+        }            
     }
 }

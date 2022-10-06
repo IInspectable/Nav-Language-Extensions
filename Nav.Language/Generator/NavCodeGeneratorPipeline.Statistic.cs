@@ -6,36 +6,34 @@ using Pharmatechnik.Nav.Language.CodeGen;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Generator {
+namespace Pharmatechnik.Nav.Language.Generator; 
 
-    public sealed partial class NavCodeGeneratorPipeline {
+public sealed partial class NavCodeGeneratorPipeline {
 
-        sealed class Statistic {
+    sealed class Statistic {
 
-            public int FileCount   { get; private set; }
-            public int TaskCount   { get; private set; }
-            public int FilesUpated { get; private set; }
-            public int FilesSkiped { get; private set; }
+        public int FileCount   { get; private set; }
+        public int TaskCount   { get; private set; }
+        public int FilesUpated { get; private set; }
+        public int FilesSkiped { get; private set; }
 
-            public void UpdatePerFile() {
-                FileCount++;
-            }
+        public void UpdatePerFile() {
+            FileCount++;
+        }
 
-            public void UpdatePerTask(IImmutableList<FileGeneratorResult> fileGeneratorResults) {
-                TaskCount++;
+        public void UpdatePerTask(IImmutableList<FileGeneratorResult> fileGeneratorResults) {
+            TaskCount++;
 
-                foreach (var fileResult in fileGeneratorResults) {
-                    switch (fileResult.Action) {
-                        case FileGeneratorAction.Skiped:
-                            FilesSkiped++;
-                            break;
-                        case FileGeneratorAction.Updated:
-                            FilesUpated++;
-                            break;
-                    }
+            foreach (var fileResult in fileGeneratorResults) {
+                switch (fileResult.Action) {
+                    case FileGeneratorAction.Skiped:
+                        FilesSkiped++;
+                        break;
+                    case FileGeneratorAction.Updated:
+                        FilesUpated++;
+                        break;
                 }
             }
-
         }
 
     }

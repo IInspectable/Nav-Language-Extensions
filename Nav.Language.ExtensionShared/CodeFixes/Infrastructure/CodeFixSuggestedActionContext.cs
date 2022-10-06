@@ -7,23 +7,22 @@ using Pharmatechnik.Nav.Language.Extension.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.CodeFixes {
+namespace Pharmatechnik.Nav.Language.Extension.CodeFixes; 
 
-    [Export(typeof(CodeFixSuggestedActionContext))]
-    class CodeFixSuggestedActionContext {
+[Export(typeof(CodeFixSuggestedActionContext))]
+class CodeFixSuggestedActionContext {
         
-        [ImportingConstructor]
-        public CodeFixSuggestedActionContext(IWaitIndicator waitIndicator,
-            ITextChangeService textChangeService, 
-            IDialogService dialogService) {
+    [ImportingConstructor]
+    public CodeFixSuggestedActionContext(IWaitIndicator waitIndicator,
+                                         ITextChangeService textChangeService, 
+                                         IDialogService dialogService) {
 
-            WaitIndicator     = waitIndicator;
-            TextChangeService = textChangeService;
-            DialogService     = dialogService;
-        }
-
-        public IWaitIndicator WaitIndicator { get; }
-        public ITextChangeService TextChangeService { get; }
-        public IDialogService DialogService { get; }       
+        WaitIndicator     = waitIndicator;
+        TextChangeService = textChangeService;
+        DialogService     = dialogService;
     }
+
+    public IWaitIndicator     WaitIndicator     { get; }
+    public ITextChangeService TextChangeService { get; }
+    public IDialogService     DialogService     { get; }       
 }

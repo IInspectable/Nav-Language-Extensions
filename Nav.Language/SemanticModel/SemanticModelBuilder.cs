@@ -12,157 +12,155 @@ using Pharmatechnik.Nav.Language.SemanticAnalyzer;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    sealed class CodeGenerationUnitBuilder {
+sealed class CodeGenerationUnitBuilder {
 
-        readonly ISyntaxProvider                         _syntaxProvider;
-        readonly ImmutableArray<Diagnostic>.Builder      _diagnostics;
-        readonly SymbolCollection<TaskDeclarationSymbol> _taskDeclarations;
-        readonly SymbolCollection<TaskDefinitionSymbol>  _taskDefinitions;
-        readonly SymbolCollection<IncludeSymbol>         _includes;
-        readonly ImmutableArray<string>.Builder          _codeUsings;
-        readonly List<ISymbol>                           _symbols;
+    readonly ISyntaxProvider                         _syntaxProvider;
+    readonly ImmutableArray<Diagnostic>.Builder      _diagnostics;
+    readonly SymbolCollection<TaskDeclarationSymbol> _taskDeclarations;
+    readonly SymbolCollection<TaskDefinitionSymbol>  _taskDefinitions;
+    readonly SymbolCollection<IncludeSymbol>         _includes;
+    readonly ImmutableArray<string>.Builder          _codeUsings;
+    readonly List<ISymbol>                           _symbols;
 
-        CodeGenerationUnitBuilder(ISyntaxProvider syntaxProvider) {
-            _syntaxProvider   = syntaxProvider ?? SyntaxProvider.Default;
-            _diagnostics      = ImmutableArray.CreateBuilder<Diagnostic>();
-            _taskDeclarations = new SymbolCollection<TaskDeclarationSymbol>();
-            _taskDefinitions  = new SymbolCollection<TaskDefinitionSymbol>();
-            _includes         = new SymbolCollection<IncludeSymbol>();
-            _codeUsings       = ImmutableArray.CreateBuilder<string>();
-            _symbols          = new List<ISymbol>();
+    CodeGenerationUnitBuilder(ISyntaxProvider syntaxProvider) {
+        _syntaxProvider   = syntaxProvider ?? SyntaxProvider.Default;
+        _diagnostics      = ImmutableArray.CreateBuilder<Diagnostic>();
+        _taskDeclarations = new SymbolCollection<TaskDeclarationSymbol>();
+        _taskDefinitions  = new SymbolCollection<TaskDefinitionSymbol>();
+        _includes         = new SymbolCollection<IncludeSymbol>();
+        _codeUsings       = ImmutableArray.CreateBuilder<string>();
+        _symbols          = new List<ISymbol>();
+    }
+
+    [NotNull]
+    public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken, ISyntaxProvider syntaxProvider) {
+
+        if (syntax == null) {
+            throw new ArgumentNullException(nameof(syntax));
         }
 
-        [NotNull]
-        public static CodeGenerationUnit FromCodeGenerationUnitSyntax(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken, ISyntaxProvider syntaxProvider) {
+        var builder = new CodeGenerationUnitBuilder(syntaxProvider);
 
-            if (syntax == null) {
-                throw new ArgumentNullException(nameof(syntax));
-            }
+        builder.Process(syntax, cancellationToken);
 
-            var builder = new CodeGenerationUnitBuilder(syntaxProvider);
+        // Temporary model for analyzing
+        var tempModel = new CodeGenerationUnit(
+            syntax,
+            builder._codeUsings.ToImmutable(),
+            builder._taskDeclarations,
+            builder._taskDefinitions,
+            builder._includes,
+            builder._symbols,
+            builder._diagnostics.ToImmutable());
 
-            builder.Process(syntax, cancellationToken);
-
-            // Temporary model for analyzing
-            var tempModel = new CodeGenerationUnit(
-                syntax,
-                builder._codeUsings.ToImmutable(),
-                builder._taskDeclarations,
-                builder._taskDefinitions,
-                builder._includes,
-                builder._symbols,
-                builder._diagnostics.ToImmutable());
-
-            foreach (var taskDefinition in builder._taskDefinitions) {
-                taskDefinition.FinalConstruct(tempModel);
-            }
-
-            // Analyze Model
-            var analyzers   = Analyzer.GetAnalyzer();
-            var context     = new AnalyzerContext();
-            var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
-
-            foreach (var analyzer in analyzers) {
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                diagnostics.AddRange(analyzer.Analyze(tempModel, context));
-            }
-
-            // Bisherige Diagnostics anhängen
-            diagnostics.AddRange(tempModel.Diagnostics);
-
-            // Finales Model mit allen Diagnostics
-            var model = tempModel.WithDiagnostics(diagnostics.ToImmutable());
-
-            foreach (var taskDefinition in builder._taskDefinitions) {
-                taskDefinition.FinalConstruct(model);
-            }
-
-            foreach (var taskDeclaration in builder._taskDeclarations.Where(td => !td.IsIncluded)) {
-                taskDeclaration.FinalConstruct(model);
-            }
-
-            return model;
+        foreach (var taskDefinition in builder._taskDefinitions) {
+            taskDefinition.FinalConstruct(tempModel);
         }
 
-        void Process(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
-            ProcessNavLanguage(syntax, cancellationToken);
-            ProcessCodeLanguage(syntax, cancellationToken);
-        }
+        // Analyze Model
+        var analyzers   = Analyzer.GetAnalyzer();
+        var context     = new AnalyzerContext();
+        var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
 
-        void ProcessNavLanguage(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
+        foreach (var analyzer in analyzers) {
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            //====================
-            // 1. TaskDeclarations 
-            //====================
-            var taskDeclarationResult = TaskDeclarationSymbolBuilder.FromCodeGenerationUnitSyntax(syntax, _syntaxProvider, cancellationToken);
-
-            _diagnostics.AddRange(taskDeclarationResult.Diagnostics);
-            _taskDeclarations.AddRange(taskDeclarationResult.TaskDeklarations);
-            _includes.AddRange(taskDeclarationResult.Includes);
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            //====================
-            // 2. TaskDefinitions
-            //====================
-            foreach (var taskDefinitionSyntax in syntax.DescendantNodes<TaskDefinitionSyntax>()) {
-                ProcessTaskDefinitionSyntax(taskDefinitionSyntax, cancellationToken);
-            }
-
-            //====================
-            // 3. Collect Symbols
-            //====================
-            // Nur Symbole von Taskdeklarationen der eigenen Datei, und auch nur solche, die aus "taskrefs task" entstanden sind
-            _symbols.AddRange(_taskDeclarations.Where(td => !td.IsIncluded &&
-                                                            td.Origin == TaskDeclarationOrigin.TaskDeclaration)
-                                               .SelectMany(td => td.SymbolsAndSelf()));
-
-            // Alle Symbole und deren "Kinder" der Taskdefinitionen
-            _symbols.AddRange(_taskDefinitions.SelectMany(td => td.SymbolsAndSelf()));
-
-            // Alle Includes (= taskref "filepath") hinzufügen
-            _symbols.AddRange(_includes);
+            diagnostics.AddRange(analyzer.Analyze(tempModel, context));
         }
 
-        void ProcessTaskDefinitionSyntax(TaskDefinitionSyntax taskDefinitionSyntax, CancellationToken cancellationToken) {
+        // Bisherige Diagnostics anhängen
+        diagnostics.AddRange(tempModel.Diagnostics);
+
+        // Finales Model mit allen Diagnostics
+        var model = tempModel.WithDiagnostics(diagnostics.ToImmutable());
+
+        foreach (var taskDefinition in builder._taskDefinitions) {
+            taskDefinition.FinalConstruct(model);
+        }
+
+        foreach (var taskDeclaration in builder._taskDeclarations.Where(td => !td.IsIncluded)) {
+            taskDeclaration.FinalConstruct(model);
+        }
+
+        return model;
+    }
+
+    void Process(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
+        ProcessNavLanguage(syntax, cancellationToken);
+        ProcessCodeLanguage(syntax, cancellationToken);
+    }
+
+    void ProcessNavLanguage(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        //====================
+        // 1. TaskDeclarations 
+        //====================
+        var taskDeclarationResult = TaskDeclarationSymbolBuilder.FromCodeGenerationUnitSyntax(syntax, _syntaxProvider, cancellationToken);
+
+        _diagnostics.AddRange(taskDeclarationResult.Diagnostics);
+        _taskDeclarations.AddRange(taskDeclarationResult.TaskDeklarations);
+        _includes.AddRange(taskDeclarationResult.Includes);
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        //====================
+        // 2. TaskDefinitions
+        //====================
+        foreach (var taskDefinitionSyntax in syntax.DescendantNodes<TaskDefinitionSyntax>()) {
+            ProcessTaskDefinitionSyntax(taskDefinitionSyntax, cancellationToken);
+        }
+
+        //====================
+        // 3. Collect Symbols
+        //====================
+        // Nur Symbole von Taskdeklarationen der eigenen Datei, und auch nur solche, die aus "taskrefs task" entstanden sind
+        _symbols.AddRange(_taskDeclarations.Where(td => !td.IsIncluded &&
+                                                        td.Origin == TaskDeclarationOrigin.TaskDeclaration)
+                                           .SelectMany(td => td.SymbolsAndSelf()));
+
+        // Alle Symbole und deren "Kinder" der Taskdefinitionen
+        _symbols.AddRange(_taskDefinitions.SelectMany(td => td.SymbolsAndSelf()));
+
+        // Alle Includes (= taskref "filepath") hinzufügen
+        _symbols.AddRange(_includes);
+    }
+
+    void ProcessTaskDefinitionSyntax(TaskDefinitionSyntax taskDefinitionSyntax, CancellationToken cancellationToken) {
+
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var (taskDefinition, diagnostics) = TaskDefinitionSymbolBuilder.Build(taskDefinitionSyntax, _taskDeclarations);
+        _diagnostics.AddRange(diagnostics);
+
+        if (taskDefinition == null) {
+            return;
+        }
+
+        // Doppelte Einträge überspringen. Fehler existiert schon wegen der Taskdeclarations.
+        if (!_taskDefinitions.Contains(taskDefinition.Name)) {
+            _taskDefinitions.Add(taskDefinition);
+        }
+    }
+
+    void ProcessCodeLanguage(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
+        foreach (var codeUsingDeclarationSyntax in syntax.DescendantNodes<CodeUsingDeclarationSyntax>()) {
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var (taskDefinition, diagnostics) = TaskDefinitionSymbolBuilder.Build(taskDefinitionSyntax, _taskDeclarations);
-            _diagnostics.AddRange(diagnostics);
-
-            if (taskDefinition == null) {
+            if (codeUsingDeclarationSyntax?.Namespace == null) {
                 return;
             }
 
-            // Doppelte Einträge überspringen. Fehler existiert schon wegen der Taskdeclarations.
-            if (!_taskDefinitions.Contains(taskDefinition.Name)) {
-                _taskDefinitions.Add(taskDefinition);
-            }
+            var nsSyntax = codeUsingDeclarationSyntax.Namespace;
+            var ns       = nsSyntax.ToString();
+
+            _codeUsings.Add(ns);
         }
-
-        void ProcessCodeLanguage(CodeGenerationUnitSyntax syntax, CancellationToken cancellationToken) {
-            foreach (var codeUsingDeclarationSyntax in syntax.DescendantNodes<CodeUsingDeclarationSyntax>()) {
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                if (codeUsingDeclarationSyntax?.Namespace == null) {
-                    return;
-                }
-
-                var nsSyntax = codeUsingDeclarationSyntax.Namespace;
-                var ns       = nsSyntax.ToString();
-
-                _codeUsings.Add(ns);
-            }
-        }
-
     }
 
 }

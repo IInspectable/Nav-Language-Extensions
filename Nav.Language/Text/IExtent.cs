@@ -1,10 +1,8 @@
-﻿namespace Pharmatechnik.Nav.Language.Text {
+﻿namespace Pharmatechnik.Nav.Language.Text; 
 
-    public interface IExtent {
+public interface IExtent {
 
-        int Start { get; }
-        int End   { get; }
-
-    }
+    int Start { get; }
+    int End   { get; }
 
 }

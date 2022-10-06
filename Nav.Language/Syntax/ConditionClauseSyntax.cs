@@ -4,57 +4,55 @@ using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;
 
-namespace Pharmatechnik.Nav.Language {
+namespace Pharmatechnik.Nav.Language; 
 
-    [Serializable]
-    public abstract class ConditionClauseSyntax: SyntaxNode {
+[Serializable]
+public abstract class ConditionClauseSyntax: SyntaxNode {
 
-        protected ConditionClauseSyntax(TextExtent extent): base(extent) {
-        }
-
+    protected ConditionClauseSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("if Condition")]
-    public partial class IfConditionClauseSyntax: ConditionClauseSyntax {
+}
 
-        internal IfConditionClauseSyntax(TextExtent extent, IdentifierOrStringSyntax identifierOrString): base(extent) {
-            AddChildNode(IdentifierOrString = identifierOrString);
-        }
+[Serializable]
+[SampleSyntax("if Condition")]
+public partial class IfConditionClauseSyntax: ConditionClauseSyntax {
 
-        public SyntaxToken IfKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.IfKeyword);
-
-        [CanBeNull]
-        public IdentifierOrStringSyntax IdentifierOrString { get; }
-
+    internal IfConditionClauseSyntax(TextExtent extent, IdentifierOrStringSyntax identifierOrString): base(extent) {
+        AddChildNode(IdentifierOrString = identifierOrString);
     }
 
-    [Serializable]
-    [SampleSyntax("else")]
-    public partial class ElseConditionClauseSyntax: ConditionClauseSyntax {
+    public SyntaxToken IfKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.IfKeyword);
 
-        internal ElseConditionClauseSyntax(TextExtent extent): base(extent) {
-        }
+    [CanBeNull]
+    public IdentifierOrStringSyntax IdentifierOrString { get; }
 
-        public SyntaxToken ElseKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ElseKeyword);
+}
 
+[Serializable]
+[SampleSyntax("else")]
+public partial class ElseConditionClauseSyntax: ConditionClauseSyntax {
+
+    internal ElseConditionClauseSyntax(TextExtent extent): base(extent) {
     }
 
-    [Serializable]
-    [SampleSyntax("else if Condition")]
-    public partial class ElseIfConditionClauseSyntax: ConditionClauseSyntax {
+    public SyntaxToken ElseKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ElseKeyword);
 
-        internal ElseIfConditionClauseSyntax(TextExtent extent, ElseConditionClauseSyntax elseCondition, IfConditionClauseSyntax ifCondition): base(extent) {
-            AddChildNode(ElseCondition = elseCondition);
-            AddChildNode(IfCondition   = ifCondition);
-        }
+}
 
-        [NotNull]
-        public ElseConditionClauseSyntax ElseCondition { get; }
+[Serializable]
+[SampleSyntax("else if Condition")]
+public partial class ElseIfConditionClauseSyntax: ConditionClauseSyntax {
 
-        [NotNull]
-        public IfConditionClauseSyntax IfCondition { get; }
-
+    internal ElseIfConditionClauseSyntax(TextExtent extent, ElseConditionClauseSyntax elseCondition, IfConditionClauseSyntax ifCondition): base(extent) {
+        AddChildNode(ElseCondition = elseCondition);
+        AddChildNode(IfCondition   = ifCondition);
     }
+
+    [NotNull]
+    public ElseConditionClauseSyntax ElseCondition { get; }
+
+    [NotNull]
+    public IfConditionClauseSyntax IfCondition { get; }
 
 }

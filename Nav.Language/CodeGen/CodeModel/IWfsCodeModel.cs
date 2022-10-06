@@ -7,62 +7,61 @@ using System.Collections.Immutable;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen {
+namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-    sealed class IWfsCodeModel : FileGenerationCodeModel {
+sealed class IWfsCodeModel : FileGenerationCodeModel {
 
-        IWfsCodeModel(TaskCodeInfo taskCodeInfo, 
-                      string relativeSyntaxFileName, 
-                      string filePath, 
-                      ImmutableList<string> usingNamespaces, 
-                      string baseInterfaceName, 
-                      ImmutableList<TriggerTransitionCodeModel> triggerTransitions) 
+    IWfsCodeModel(TaskCodeInfo taskCodeInfo, 
+                  string relativeSyntaxFileName, 
+                  string filePath, 
+                  ImmutableList<string> usingNamespaces, 
+                  string baseInterfaceName, 
+                  ImmutableList<TriggerTransitionCodeModel> triggerTransitions) 
 
-            : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
-            UsingNamespaces    = usingNamespaces    ?? throw new ArgumentNullException(nameof(usingNamespaces));
-            BaseInterfaceName  = baseInterfaceName  ?? throw new ArgumentNullException(nameof(baseInterfaceName));
-            TriggerTransitions = triggerTransitions ?? throw new ArgumentNullException(nameof(triggerTransitions));
+        : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
+        UsingNamespaces    = usingNamespaces    ?? throw new ArgumentNullException(nameof(usingNamespaces));
+        BaseInterfaceName  = baseInterfaceName  ?? throw new ArgumentNullException(nameof(baseInterfaceName));
+        TriggerTransitions = triggerTransitions ?? throw new ArgumentNullException(nameof(triggerTransitions));
+    }
+
+    public ImmutableList<string>                     UsingNamespaces    { get; }        
+    public string                                    Namespace          => Task.IwflNamespace;
+    public string                                    InterfaceName      => Task.IWfsTypeName;
+    public string                                    BaseInterfaceName  { get; }
+    public ImmutableList<TriggerTransitionCodeModel> TriggerTransitions { get; }
+
+    public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
+
+        if (taskDefinition == null) {
+            throw new ArgumentNullException(nameof(taskDefinition));
+        }
+        if (pathProvider == null) {
+            throw new ArgumentNullException(nameof(pathProvider));
         }
 
-        public ImmutableList<string> UsingNamespaces { get; }        
-        public string Namespace     => Task.IwflNamespace;
-        public string InterfaceName => Task.IWfsTypeName;
-        public string BaseInterfaceName { get; }
-        public ImmutableList<TriggerTransitionCodeModel> TriggerTransitions { get; }
+        var taskCodeInfo           = TaskCodeInfo.FromTaskDefinition(taskDefinition);
+        var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
 
-        public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
-
-            if (taskDefinition == null) {
-                throw new ArgumentNullException(nameof(taskDefinition));
-            }
-            if (pathProvider == null) {
-                throw new ArgumentNullException(nameof(pathProvider));
-            }
-
-            var taskCodeInfo = TaskCodeInfo.FromTaskDefinition(taskDefinition);
-            var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
-
-            var namespaces         = GetUsingNamespaces(taskDefinition, taskCodeInfo);
-            var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
+        var namespaces         = GetUsingNamespaces(taskDefinition, taskCodeInfo);
+        var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
             
-            return new IWfsCodeModel(
-                taskCodeInfo          : taskCodeInfo,
-                relativeSyntaxFileName: relativeSyntaxFileName,
-                filePath              : pathProvider.IWfsFileName, 
-                usingNamespaces       : namespaces.ToImmutableList(), 
-                baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType, 
-                triggerTransitions    : triggerTransitions.ToImmutableList());
-        }
+        return new IWfsCodeModel(
+            taskCodeInfo          : taskCodeInfo,
+            relativeSyntaxFileName: relativeSyntaxFileName,
+            filePath              : pathProvider.IWfsFileName, 
+            usingNamespaces       : namespaces.ToImmutableList(), 
+            baseInterfaceName     : taskDefinition.Syntax.CodeBaseDeclaration?.IwfsBaseType?.ToString() ?? CodeGenFacts.DefaultIwfsBaseType, 
+            triggerTransitions    : triggerTransitions.ToImmutableList());
+    }
 
-        private static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
+    private static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
 
-            var namespaces = new List<string>();
+        var namespaces = new List<string>();
 
-            namespaces.Add(taskCodeInfo.IwflNamespace);
-            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
-            namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
+        namespaces.Add(taskCodeInfo.IwflNamespace);
+        namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
+        namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
 
-            return namespaces.ToSortedNamespaces();
-        }
+        return namespaces.ToSortedNamespaces();
     }
 }

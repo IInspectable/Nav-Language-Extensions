@@ -10,80 +10,79 @@ using Pharmatechnik.Nav.Language.Generator;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language {
-    
-    static class Program  {
+namespace Pharmatechnik.Nav.Language; 
 
-        static int Main(string[] args) {
+static class Program  {
 
-            Console.OutputEncoding = Encoding.UTF8;
+    static int Main(string[] args) {
 
-            var cmdArgs = args;
+        Console.OutputEncoding = Encoding.UTF8;
+
+        var cmdArgs = args;
             
-            // Response file
-            if (args.Length == 1 && args[0].StartsWith("@")) {
-                var fileName = args[0].Substring(1);
-                cmdArgs = LoadArgs(fileName);
-            }
-            
-            var cl = CommandLine.Parse(cmdArgs);            
-            if (cl == null) {
-                return -1;
-            }
-            
-            if (cl.Analyze) {
-                var p = new SyntaxAnalyzerProgram();
-                return p.Run(cl);
-            } else {
-                var p = new NavCodeGenerator();
-                return p.Run(cl);
-            }                      
+        // Response file
+        if (args.Length == 1 && args[0].StartsWith("@")) {
+            var fileName = args[0].Substring(1);
+            cmdArgs = LoadArgs(fileName);
         }
+            
+        var cl = CommandLine.Parse(cmdArgs);            
+        if (cl == null) {
+            return -1;
+        }
+            
+        if (cl.Analyze) {
+            var p = new SyntaxAnalyzerProgram();
+            return p.Run(cl);
+        } else {
+            var p = new NavCodeGenerator();
+            return p.Run(cl);
+        }                      
+    }
 
-        // TODO in Utility Klasse
-        static string[] LoadArgs(string file) {
+    // TODO in Utility Klasse
+    static string[] LoadArgs(string file) {
 
-            using var reader = new StreamReader(file);
+        using var reader = new StreamReader(file);
 
-            var       args   = new List<string>();
-            var sb = new StringBuilder();
+        var args = new List<string>();
+        var sb   = new StringBuilder();
 
-            string line;
-            while ((line = reader.ReadLine()) != null) {
+        string line;
+        while ((line = reader.ReadLine()) != null) {
 
-                int t = line.Length;
+            int t = line.Length;
 
-                for (int i = 0; i < t; i++) {
-                    char c = line[i];
+            for (int i = 0; i < t; i++) {
+                char c = line[i];
 
-                    if (c == '"' || c == '\'') {
-                        char quoteEnd = c;
+                if (c == '"' || c == '\'') {
+                    char quoteEnd = c;
 
-                        for (i++; i < t; i++) {
-                            c = line[i];
+                    for (i++; i < t; i++) {
+                        c = line[i];
 
-                            if (c == quoteEnd) {
-                                break;
-                            }
-                            sb.Append(c);
+                        if (c == quoteEnd) {
+                            break;
                         }
-                    } else if (c == ' ') {
-                        if (sb.Length > 0) {
-                            args.Add(sb.ToString());
-                            sb.Length = 0;
-                        }
-                    } else {
                         sb.Append(c);
                     }
-                }
-                if (sb.Length > 0) {
-                    args.Add(sb.ToString());
-                    sb.Length = 0;
+                } else if (c == ' ') {
+                    if (sb.Length > 0) {
+                        args.Add(sb.ToString());
+                        sb.Length = 0;
+                    }
+                } else {
+                    sb.Append(c);
                 }
             }
-
-            return args.ToArray();
-
+            if (sb.Length > 0) {
+                args.Add(sb.ToString());
+                sb.Length = 0;
+            }
         }
+
+        return args.ToArray();
+
     }
 }

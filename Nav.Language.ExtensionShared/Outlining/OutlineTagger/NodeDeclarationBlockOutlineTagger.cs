@@ -7,34 +7,33 @@ using Microsoft.VisualStudio.Text.Tagging;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Outlining {
+namespace Pharmatechnik.Nav.Language.Extension.Outlining; 
 
-    class NodeDeclarationBlockOutlineTagger {
+class NodeDeclarationBlockOutlineTagger {
 
-        public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
+    public static IEnumerable<ITagSpan<IOutliningRegionTag>> GetTags(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, IOutliningRegionTagCreator tagCreator) {
 
-            var nodeDeclarationBlocks = syntaxTreeAndSnapshot.SyntaxTree.Root.DescendantNodes<NodeDeclarationBlockSyntax>();
+        var nodeDeclarationBlocks = syntaxTreeAndSnapshot.SyntaxTree.Root.DescendantNodes<NodeDeclarationBlockSyntax>();
 
-            foreach (var nodeDeclarationBlock in nodeDeclarationBlocks) {
+        foreach (var nodeDeclarationBlock in nodeDeclarationBlocks) {
 
-                var extent = nodeDeclarationBlock.Extent;
+            var extent = nodeDeclarationBlock.Extent;
 
-                if (extent.IsEmptyOrMissing) {
-                    continue;
-                }
-
-                var startLine = syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(extent.Start);
-                var endLine =   syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(extent.End);
-                if (startLine == endLine) {
-                    continue;
-                }
-
-                var rgnSpan  = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extent.Start), extent.Length);
-                var hintSpan = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extent.Start), extent.Length);
-                var rgnTag   = tagCreator.CreateTag("Declarations", hintSpan);
-
-                yield return new TagSpan<IOutliningRegionTag>(rgnSpan, rgnTag);
+            if (extent.IsEmptyOrMissing) {
+                continue;
             }
+
+            var startLine = syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(extent.Start);
+            var endLine   =   syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(extent.End);
+            if (startLine == endLine) {
+                continue;
+            }
+
+            var rgnSpan  = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extent.Start), extent.Length);
+            var hintSpan = new SnapshotSpan(new SnapshotPoint(syntaxTreeAndSnapshot.Snapshot, extent.Start), extent.Length);
+            var rgnTag   = tagCreator.CreateTag("Declarations", hintSpan);
+
+            yield return new TagSpan<IOutliningRegionTag>(rgnSpan, rgnTag);
         }
     }
 }
