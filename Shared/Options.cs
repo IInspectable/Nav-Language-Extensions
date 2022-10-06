@@ -1060,7 +1060,7 @@ namespace Mono.Options
 				yield return string.Empty;
 				yield break;
 			}
-			int length = 80 - OptionWidth - 1;
+			int length = 120 - OptionWidth - 1;
 			int start = 0, end;
 			do {
 				end = GetLineEnd (start, length, description);

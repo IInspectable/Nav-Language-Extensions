@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Pharmatechnik.Nav.Utilities.IO;
 using Pharmatechnik.Nav.Language.CodeGen;
 using Pharmatechnik.Nav.Language.Logging;
+using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
@@ -48,9 +49,25 @@ class NavCodeGenerator {
             IwflRootDirectory    = cl.IwflRootDirectory,
 
         };
+
+        ValidateOptions();
+
         var pipeline = NavCodeGeneratorPipeline.Create(options: options, logger: logger, syntaxProviderFactory: syntaxProviderFactory);
 
         return pipeline;
+
+        void ValidateOptions() {
+            if (!options.ProjectRootDirectory.IsNullOrEmpty() &&
+                !Directory.Exists(options.ProjectRootDirectory)) {
+                throw new ArgumentException($"Das Project Wurzelverzeichnis '{options.ProjectRootDirectory}' exisitiert nicht.");
+            }
+
+            if (!options.IwflRootDirectory.IsNullOrEmpty() &&
+                options.ProjectRootDirectory.IsNullOrEmpty()
+               ) {
+                throw new ArgumentException($"es wurde ein alternatives IWFL Wurzelverzeichnis '{options.IwflRootDirectory}' angegeben, aber kein Project Wurzelverzeichnis.");
+            }
+        }
     }
 
     static IEnumerable<FileSpec> CollectFiles(CommandLine cl) {

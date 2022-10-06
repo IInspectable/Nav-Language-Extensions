@@ -9,6 +9,7 @@ using NDesk.Options;
 namespace Pharmatechnik.Nav.Language; 
 
 sealed class CommandLine {
+   
     public CommandLine() {
         Sources = new List<string>();
     }
@@ -33,17 +34,17 @@ sealed class CommandLine {
         bool        showHelp = false;
         CommandLine cla      = new CommandLine();
         var p = new OptionSet {
-            { "d=|directory="       , "Help for dir", v => cla.Directory = v  },
-            { "s=|sources="         , v => cla.Sources.Add(v)  },
-            { "f|force"             , v => cla.Force   = v           != null  },
-            { "t|generatetoclasses" , v => cla.GenerateToClasses = v != null },
-            { "c|useSyntaxCache"    , v => cla.UseSyntaxCache    = v != null },
-            { "nowarnings"          , v => cla.NoWarnings = v        != null },
-            { "v|verbose"           , v => cla.Verbose    = v        != null },
-            { "fullpaths"           , v => cla.FullPaths  = v        != null },
-            { "i=|iwflroot"         , v => cla.IwflRootDirectory = v  },
-            { "r=|projectroot"      , v => cla.ProjectRootDirectory = v  },
-            { "h|?|help"            , v => showHelp = v != null },
+            { "d=|directory="       , "Alle .nav-Dateien im Verzeichnis und allen Unterverzeichnissen sind Eingabedateien.", v => cla.Directory = v },
+            { "s=|sources="         , ".nav-Eingabedatei", v => cla.Sources.Add(v) },
+            { "f|force"             , "Überschreibt die Ausgabedatei(en) auch wenn sich diese nicht geändert haben.", v => cla.Force = v           != null },
+            { "t|generatetoclasses" , "Erzeugt eine leere TO Klasse, wenn diese noch nicht exisitert.", v => cla.GenerateToClasses = v != null },
+            { "c|useSyntaxCache"    , "Cached Syntaxen an statt sie immer wieder neu zu parsen.", v => cla.UseSyntaxCache = v             != null },
+            { "nowarnings"          , "Unterdrückt Warnmeldungen in der Logausgabe.", v => cla.NoWarnings = v                                   != null },
+            { "v|verbose"           , "Schreibt ausführliche Meldungen in die Logausgabe.", v => cla.Verbose = v                                 != null },
+            { "fullpaths"           , "Wenn angegeben, werden in die Logausgaben ganze Pfade geschrieben.", v => cla.FullPaths = v               != null },
+            { "i=|iwflroot"         , "Gibt ein alternatives IWFL Wurzelverzeichnis an.", v => cla.IwflRootDirectory = v },
+            { "r=|projectroot"      , "Gibt das Project Wurzelverzeichnis an.", v => cla.ProjectRootDirectory = v },
+            { "h|?|help"            , "Zeigt diese Hilfe an.", v => showHelp = v != null },
 
         };
 
@@ -63,7 +64,7 @@ sealed class CommandLine {
 
         return cla;          
     }
-    // TODO Helptext
+
     static void ShowHelp(OptionSet p) {
         Console.WriteLine("Usage: nav.exe [OPTIONS]+");            
         Console.WriteLine();
