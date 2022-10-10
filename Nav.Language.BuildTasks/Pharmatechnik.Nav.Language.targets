@@ -14,7 +14,7 @@
     <NavGenerateIwflClasses  Condition="'$(NavGenerateIwflClasses)'  == ''">true</NavGenerateIwflClasses>
     <NavUseSyntaxCache       Condition="'$(NavUseSyntaxCache)'       == ''">false</NavUseSyntaxCache>
     <NavFullPaths            Condition="'$(NavFullPaths)'            == ''">$(BuildingInsideVisualStudio)</NavFullPaths>
-    <NavProjectRootDirectory Condition="'$(NavProjectRootDirectory)' == ''">$(MSBuildProjectDirectory)\</NavProjectRootDirectory>
+    <NavProjectRootDirectory Condition="'$(NavProjectRootDirectory)' == ''"></NavProjectRootDirectory>
     <NavIwflRootDirectory    Condition="'$(NavIwflRootDirectory)'    == ''"></NavIwflRootDirectory>
   </PropertyGroup>
 
