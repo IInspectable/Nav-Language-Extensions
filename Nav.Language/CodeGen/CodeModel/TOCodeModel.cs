@@ -34,7 +34,7 @@ sealed class TOCodeModel : FileGenerationCodeModel {
     [NotNull]
     public string IwflNamespace => Task.IwflNamespace;
 
-    public static IEnumerable<TOCodeModel> FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
+    public static IEnumerable<TOCodeModel> FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider, GenerationOptions options) {
 
         if (taskDefinition == null) {
             throw new ArgumentNullException(nameof(taskDefinition));

@@ -12,6 +12,7 @@ public record GenerationOptions {
     };
 
     public bool Force               { get; init; }
+    public bool Strict              { get; init; }
     public bool GenerateToClasses   { get; init; }
     public bool GenerateWflClasses  { get; init; }
     public bool GenerateIwflClasses { get; init; }

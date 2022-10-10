@@ -14,7 +14,8 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
     public class Nav: ToolTask {
 
-        public bool Force { get; set; }
+        public bool Force  { get; set; }
+        public bool Strict { get; set; }
 
         public ITaskItem[] Sources { get; set; }
 
@@ -62,6 +63,7 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
             var clb = new CommandLineBuilder();
 
             clb.AppendSwitchIfPresent(Force,          "/f");
+            clb.AppendSwitchIfPresent(Strict,         "/t");
             clb.AppendSwitchIfPresent(UseSyntaxCache, "/c");
             clb.AppendSwitchIfPresent(FullPaths,      "/fullpaths");
             clb.AppendSwitch("/v");

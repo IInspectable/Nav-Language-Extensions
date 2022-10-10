@@ -9,6 +9,7 @@
 
   <PropertyGroup>
     <NavForce                Condition="'$(NavForce)'                == ''">false</NavForce>
+    <NavStrict               Condition="'$(NavStrict)'               == ''">false</NavStrict>
     <NavGenerateToClasses    Condition="'$(NavGenerateToClasses)'    == ''">true</NavGenerateToClasses>
     <NavGenerateWflClasses   Condition="'$(NavGenerateWflClasses)'   == ''">true</NavGenerateWflClasses>
     <NavGenerateIwflClasses  Condition="'$(NavGenerateIwflClasses)'  == ''">true</NavGenerateIwflClasses>
@@ -26,6 +27,7 @@
     
     <Nav Sources              = "@(NavFilesToProcess)"
          Force                = "$(NavForce)"
+         Strict               = "$(NavStrict)"
          GenerateToClasses    = "$(NavGenerateToClasses)"
          GenerateWflClasses   = "$(NavGenerateWflClasses)"
          GenerateIwflClasses  = "$(NavGenerateIwflClasses)"

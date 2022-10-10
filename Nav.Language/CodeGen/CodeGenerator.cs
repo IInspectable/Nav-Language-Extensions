@@ -95,11 +95,11 @@ public class CodeGenerator: Generator, ICodeGenerator {
 
         var codeModelResult = new CodeModelResult(
             taskDefinition   : taskDefinition,
-            beginWfsCodeModel: Options.GenerateWflClasses ? IBeginWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider) : null,
-            iwfsCodeModel    : Options.GenerateIwflClasses ? IWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider)     : null,
-            wfsBaseCodeModel : Options.GenerateWflClasses ? WfsBaseCodeModel.FromTaskDefinition(taskDefinition, pathProvider)   : null,
-            wfsCodeModel     : Options.GenerateWflClasses ? WfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider)       : null,
-            toCodeModels     : Options.GenerateToClasses ? TOCodeModel.FromTaskDefinition(taskDefinition, pathProvider)         : null
+            beginWfsCodeModel: Options.GenerateWflClasses ? IBeginWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider, Options) : null,
+            iwfsCodeModel    : Options.GenerateIwflClasses ? IWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider, Options)     : null,
+            wfsBaseCodeModel : Options.GenerateWflClasses ? WfsBaseCodeModel.FromTaskDefinition(taskDefinition, pathProvider, Options)   : null,
+            wfsCodeModel     : Options.GenerateWflClasses ? WfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider, Options)       : null,
+            toCodeModels     : Options.GenerateToClasses ? TOCodeModel.FromTaskDefinition(taskDefinition, pathProvider, Options)         : null
         );
 
         return codeModelResult;

@@ -31,7 +31,7 @@ sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
     public ImmutableList<InitTransitionCodeModel> InitTransitions  { get; }
     public ImmutableList<string>                  CodeDeclarations { get; }
         
-    public static IBeginWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
+    public static IBeginWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider, GenerationOptions options) {
 
         if (taskDefinition == null) {
             throw new ArgumentNullException(nameof(taskDefinition));

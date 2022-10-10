@@ -34,7 +34,7 @@ sealed class WfsCodeModel : FileGenerationCodeModel {
     public ImmutableList<ExitTransitionCodeModel>    ExitTransitions    { get; }
     public ImmutableList<TriggerTransitionCodeModel> TriggerTransitions { get; }
 
-    public static WfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
+    public static WfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider, GenerationOptions options) {
 
         if (taskDefinition == null) {
             throw new ArgumentNullException(nameof(taskDefinition));

@@ -32,6 +32,7 @@ sealed record CommandLine {
     public string       Directory            { get; private set; }
     public List<string> Sources              { get; }
     public bool         Force                { get; private set; }
+    public bool         Strict               { get; private set; }
     public bool         UseSyntaxCache       { get; private set; }
     public bool         Verbose              { get; private set; }
     public bool         FullPaths            { get; private set; }
@@ -52,12 +53,13 @@ sealed record CommandLine {
         var p = new OptionSet {
             { "d=|directory="       , "Alle .nav-Dateien im Verzeichnis und allen Unterverzeichnissen sind Eingabedateien.", v => cla.Directory = v },
             { "s=|sources="         , ".nav-Eingabedatei.", v => cla.Sources.Add(v) },
-            { "f|force"             , "Überschreibt die Ausgabedatei(en) auch wenn sich diese nicht geändert haben.", v => cla.Force = v           != null },
+            { "f|force"             , "Überschreibt die Ausgabedatei(en) auch wenn sich diese nicht geändert haben.", v => cla.Force = v!= null },
+            { "t|strict"            , "Strikte Namespaces. In IWFL-Dateien werden z.B. nur Namespaces mit der Endung IWFL generiert.", v => cla.Strict = v != null },
             { "g=|genopts"          , $"Gibt an, welche Dateien generiert werden sollen ({GenerationOptionsString()}). Standardgemäß werden alle Dateien generiert.", v => cla.GenerationOptions = ParseGenerationOptions(v) },
-            { "c|useSyntaxCache"    , "Cached Syntaxen an statt sie immer wieder neu zu parsen.", v => cla.UseSyntaxCache = v             != null },
-            { "nowarnings"          , "Unterdrückt Warnmeldungen in der Logausgabe.", v => cla.NoWarnings = v                                   != null },
-            { "v|verbose"           , "Schreibt ausführliche Meldungen in die Logausgabe.", v => cla.Verbose = v                                 != null },
-            { "fullpaths"           , "Wenn angegeben, werden in die Logausgaben ganze Pfade geschrieben.", v => cla.FullPaths = v               != null },
+            { "c|useSyntaxCache"    , "Cached Syntaxen an statt sie immer wieder neu zu parsen.", v => cla.UseSyntaxCache = v != null },
+            { "nowarnings"          , "Unterdrückt Warnmeldungen in der Logausgabe.", v => cla.NoWarnings = v != null },
+            { "v|verbose"           , "Schreibt ausführliche Meldungen in die Logausgabe.", v => cla.Verbose = v != null },
+            { "fullpaths"           , "Wenn angegeben, werden in die Logausgaben ganze Pfade geschrieben.", v => cla.FullPaths = v != null },
             { "i=|iwflroot"         , "Gibt ein alternatives IWFL Wurzelverzeichnis an.", v => cla.IwflRootDirectory = v },
             { "w=|wflroot"          , "Gibt ein alternatives WFL Wurzelverzeichnis an.", v => cla.WflRootDirectory = v },
             { "r=|projectroot"      , "Gibt das Project Wurzelverzeichnis an.", v => cla.ProjectRootDirectory = v },

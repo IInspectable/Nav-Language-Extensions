@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 // ReSharper disable InconsistentNaming
 
 #endregion
@@ -30,7 +31,7 @@ sealed class IWfsCodeModel : FileGenerationCodeModel {
     public string                                    BaseInterfaceName  { get; }
     public ImmutableList<TriggerTransitionCodeModel> TriggerTransitions { get; }
 
-    public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider) {
+    public static IWfsCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider, GenerationOptions options) {
 
         if (taskDefinition == null) {
             throw new ArgumentNullException(nameof(taskDefinition));
@@ -42,7 +43,7 @@ sealed class IWfsCodeModel : FileGenerationCodeModel {
         var taskCodeInfo           = TaskCodeInfo.FromTaskDefinition(taskDefinition);
         var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
 
-        var namespaces         = GetUsingNamespaces(taskDefinition, taskCodeInfo);
+        var namespaces         = GetUsingNamespaces(taskDefinition, taskCodeInfo, options);
         var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
             
         return new IWfsCodeModel(
@@ -54,14 +55,21 @@ sealed class IWfsCodeModel : FileGenerationCodeModel {
             triggerTransitions    : triggerTransitions.ToImmutableList());
     }
 
-    private static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
+    private static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo, GenerationOptions options) {
 
         var namespaces = new List<string>();
-
-        namespaces.Add(taskCodeInfo.IwflNamespace);
-        namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
-        namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
+        if (options.Strict) {
+            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
+            namespaces.AddRange(taskDefinition.CodeGenerationUnit
+                                              .GetCodeUsingNamespaces()
+                                              .Where(ns => ns.EndsWith(CodeGenFacts.IwflNamespaceSuffix)));
+        } else {
+            namespaces.Add(taskCodeInfo.IwflNamespace);
+            namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
+            namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
+        }
 
         return namespaces.ToSortedNamespaces();
     }
+
 }
