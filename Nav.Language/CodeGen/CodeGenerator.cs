@@ -95,11 +95,11 @@ public class CodeGenerator: Generator, ICodeGenerator {
 
         var codeModelResult = new CodeModelResult(
             taskDefinition   : taskDefinition,
-            beginWfsCodeModel: IBeginWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
-            iwfsCodeModel    : IWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
-            wfsBaseCodeModel : WfsBaseCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
-            wfsCodeModel     : WfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider),
-            toCodeModels     : Options.GenerateTOClasses ? TOCodeModel.FromTaskDefinition(taskDefinition, pathProvider) : null
+            beginWfsCodeModel: Options.GenerateWflClasses ? IBeginWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider) : null,
+            iwfsCodeModel    : Options.GenerateIwflClasses ? IWfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider)     : null,
+            wfsBaseCodeModel : Options.GenerateWflClasses ? WfsBaseCodeModel.FromTaskDefinition(taskDefinition, pathProvider)   : null,
+            wfsCodeModel     : Options.GenerateWflClasses ? WfsCodeModel.FromTaskDefinition(taskDefinition, pathProvider)       : null,
+            toCodeModels     : Options.GenerateToClasses ? TOCodeModel.FromTaskDefinition(taskDefinition, pathProvider)         : null
         );
 
         return codeModelResult;
@@ -122,7 +122,11 @@ public class CodeGenerator: Generator, ICodeGenerator {
 
     static readonly ThreadLocal<TemplateGroup> IBeginWfsTemplateGroup = new(() => LoadTemplateGroup(Resources.IBeginWfsTemplate));
 
-    static CodeGenerationSpec GenerateIBeginWfsCodeSpec(IBeginWfsCodeModel model, CodeGeneratorContext context) {
+    static CodeGenerationSpec GenerateIBeginWfsCodeSpec([CanBeNull] IBeginWfsCodeModel model, CodeGeneratorContext context) {
+
+        if (model == null) {
+            return CodeGenerationSpec.Empty;
+        }
 
         var template = GetTemplate(IBeginWfsTemplateGroup.Value, model, context);
         var content  = template.Render();
@@ -132,7 +136,11 @@ public class CodeGenerator: Generator, ICodeGenerator {
 
     static readonly ThreadLocal<TemplateGroup> IWfsTemplateGroup = new(() => LoadTemplateGroup(Resources.IWfsTemplate));
 
-    static CodeGenerationSpec GenerateIWfsCodeSpec(IWfsCodeModel model, CodeGeneratorContext context) {
+    static CodeGenerationSpec GenerateIWfsCodeSpec([CanBeNull] IWfsCodeModel model, CodeGeneratorContext context) {
+
+        if (model == null) {
+            return CodeGenerationSpec.Empty;
+        }
 
         var template = GetTemplate(IWfsTemplateGroup.Value, model, context);
         var content  = template.Render();
@@ -142,7 +150,11 @@ public class CodeGenerator: Generator, ICodeGenerator {
 
     static readonly ThreadLocal<TemplateGroup> WfsBaseTemplateGroup = new(() => LoadTemplateGroup(Resources.WfsBaseTemplate));
 
-    static CodeGenerationSpec GenerateWfsBaseCodeSpec(WfsBaseCodeModel model, CodeGeneratorContext context) {
+    static CodeGenerationSpec GenerateWfsBaseCodeSpec([CanBeNull] WfsBaseCodeModel model, CodeGeneratorContext context) {
+
+        if (model == null) {
+            return CodeGenerationSpec.Empty;
+        }
 
         var template = GetTemplate(WfsBaseTemplateGroup.Value, model, context);
         var content  = template.Render();
@@ -152,7 +164,11 @@ public class CodeGenerator: Generator, ICodeGenerator {
 
     static readonly ThreadLocal<TemplateGroup> WfsTemplateGroup = new(() => LoadTemplateGroup(Resources.WFSOneShotTemplate));
 
-    static CodeGenerationSpec GenerateWfsCodeSpec(WfsCodeModel model, CodeGeneratorContext context) {
+    static CodeGenerationSpec GenerateWfsCodeSpec([CanBeNull] WfsCodeModel model, CodeGeneratorContext context) {
+
+        if (model == null) {
+            return CodeGenerationSpec.Empty;
+        }
 
         var template = GetTemplate(WfsTemplateGroup.Value, model, context);
         var content  = template.Render();
@@ -160,18 +176,18 @@ public class CodeGenerator: Generator, ICodeGenerator {
         return new CodeGenerationSpec(content, model.FilePath);
     }
 
-    static IEnumerable<CodeGenerationSpec> GenerateToCodeSpecs(IEnumerable<TOCodeModel> models, CodeGeneratorContext context) {
-        return models.Select(model => GenerateToCodeSpec(model, context));
-    }
-
     static readonly ThreadLocal<TemplateGroup> ToTemplateGroup = new(() => LoadTemplateGroup(Resources.TOTemplate));
 
-    static CodeGenerationSpec GenerateToCodeSpec(TOCodeModel model, CodeGeneratorContext context) {
+    static IEnumerable<CodeGenerationSpec> GenerateToCodeSpecs(IEnumerable<TOCodeModel> models, CodeGeneratorContext context) {
+        return models.Select(model => GenerateToCodeSpec(model, context));
 
-        var template = GetTemplate(ToTemplateGroup.Value, model, context);
-        var content  = template.Render();
+        static CodeGenerationSpec GenerateToCodeSpec(TOCodeModel model, CodeGeneratorContext context) {
 
-        return new CodeGenerationSpec(content, model.FilePath);
+            var template = GetTemplate(ToTemplateGroup.Value, model, context);
+            var content  = template.Render();
+
+            return new CodeGenerationSpec(content, model.FilePath);
+        }
     }
 
     static TemplateGroup LoadTemplateGroup(string resourceName) {

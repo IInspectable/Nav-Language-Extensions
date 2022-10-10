@@ -49,6 +49,63 @@ public class CodeGenTests {
         Assert.That(codeGenResult.IWfsCodeSpec.Content,      Is.Not.Empty);
         Assert.That(codeGenResult.WfsBaseCodeSpec.Content,   Is.Not.Empty);
         Assert.That(codeGenResult.WfsCodeSpec.Content,       Is.Not.Empty);
+
+        Assert.That(codeGenResult.IBeginWfsCodeSpec.IsEmpty, Is.False);
+        Assert.That(codeGenResult.IWfsCodeSpec.IsEmpty,      Is.False);
+        Assert.That(codeGenResult.WfsBaseCodeSpec.IsEmpty,   Is.False);
+        Assert.That(codeGenResult.WfsCodeSpec.IsEmpty,       Is.False);
+    }
+
+    [Test]
+    public void SimpleCodegenOnlyIwflTest() {
+
+        var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(Resources.TaskA, filePath: MkFilename("TaskA.nav"));
+        var codeGenerationUnit       = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
+
+        var options       = GenerationOptions.Default with { GenerateWflClasses = false };
+        var codeGenerator = new CodeGenerator(options);
+
+        var results = codeGenerator.Generate(codeGenerationUnit);
+
+        Assert.That(results.Length, Is.EqualTo(1));
+
+        var codeGenResult = results[0];
+
+        Assert.That(codeGenResult.IBeginWfsCodeSpec.Content, Is.Empty);
+        Assert.That(codeGenResult.IWfsCodeSpec.Content,      Is.Not.Empty);
+        Assert.That(codeGenResult.WfsBaseCodeSpec.Content,   Is.Empty);
+        Assert.That(codeGenResult.WfsCodeSpec.Content,       Is.Empty);
+
+        Assert.That(codeGenResult.IBeginWfsCodeSpec.IsEmpty, Is.True);
+        Assert.That(codeGenResult.IWfsCodeSpec.IsEmpty,      Is.False);
+        Assert.That(codeGenResult.WfsBaseCodeSpec.IsEmpty,   Is.True);
+        Assert.That(codeGenResult.WfsCodeSpec.IsEmpty,       Is.True);
+    }
+
+    [Test]
+    public void SimpleCodegenOnlyWflTest() {
+
+        var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(Resources.TaskA, filePath: MkFilename("TaskA.nav"));
+        var codeGenerationUnit       = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
+
+        var options       = GenerationOptions.Default with { GenerateIwflClasses = false };
+        var codeGenerator = new CodeGenerator(options);
+
+        var results = codeGenerator.Generate(codeGenerationUnit);
+
+        Assert.That(results.Length, Is.EqualTo(1));
+
+        var codeGenResult = results[0];
+
+        Assert.That(codeGenResult.IBeginWfsCodeSpec.Content, Is.Not.Empty);
+        Assert.That(codeGenResult.IWfsCodeSpec.Content,      Is.Empty);
+        Assert.That(codeGenResult.WfsBaseCodeSpec.Content,   Is.Not.Empty);
+        Assert.That(codeGenResult.WfsCodeSpec.Content,       Is.Not.Empty);
+
+        Assert.That(codeGenResult.IBeginWfsCodeSpec.IsEmpty, Is.False);
+        Assert.That(codeGenResult.IWfsCodeSpec.IsEmpty,      Is.True);
+        Assert.That(codeGenResult.WfsBaseCodeSpec.IsEmpty,   Is.False);
+        Assert.That(codeGenResult.WfsCodeSpec.IsEmpty,       Is.False);
     }
 
     public static TestCaseData[] CompileTestCases = {

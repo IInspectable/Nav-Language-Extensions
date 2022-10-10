@@ -12,14 +12,14 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Generator; 
+namespace Pharmatechnik.Nav.Language.Generator;
 
 class NavCodeGenerator {
 
     public int Run(CommandLine cl) {
 
         var logger = new ConsoleLogger(
-            fullPaths : cl.FullPaths, 
+            fullPaths : cl.FullPaths,
             noWarnings: cl.NoWarnings,
             verbose   : cl.Verbose);
 
@@ -44,9 +44,12 @@ class NavCodeGenerator {
 
         var options = new GenerationOptions {
             Force                = cl.Force,
-            GenerateTOClasses    = cl.GenerateToClasses,
+            GenerateToClasses    = (cl.GenerationOptions & CodeGenerationOptions.ToClasses)   != 0,
+            GenerateWflClasses   = (cl.GenerationOptions & CodeGenerationOptions.WflClasses)  != 0,
+            GenerateIwflClasses  = (cl.GenerationOptions & CodeGenerationOptions.IwflClasses) != 0,
             ProjectRootDirectory = cl.ProjectRootDirectory,
             IwflRootDirectory    = cl.IwflRootDirectory,
+            WflRootDirectory     = cl.WflRootDirectory,
 
         };
 
@@ -57,9 +60,16 @@ class NavCodeGenerator {
         return pipeline;
 
         void ValidateOptions() {
+
             if (!options.ProjectRootDirectory.IsNullOrEmpty() &&
                 !Directory.Exists(options.ProjectRootDirectory)) {
                 throw new ArgumentException($"Das Project Wurzelverzeichnis '{options.ProjectRootDirectory}' exisitiert nicht.");
+            }
+
+            if (!options.WflRootDirectory.IsNullOrEmpty() &&
+                options.ProjectRootDirectory.IsNullOrEmpty()
+               ) {
+                throw new ArgumentException($"es wurde ein alternatives WFL Wurzelverzeichnis '{options.IwflRootDirectory}' angegeben, aber kein Project Wurzelverzeichnis.");
             }
 
             if (!options.IwflRootDirectory.IsNullOrEmpty() &&

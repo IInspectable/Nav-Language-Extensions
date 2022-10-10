@@ -35,13 +35,14 @@
 	<s:Int64 x:Key="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue">20</s:Int64>
 	<s:Int64 x:Key="/Default/Environment/SearchAndNavigation/DefaultOccurrencesGroupingIndex/@EntryValue">9</s:Int64>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=feaddfeb_002Df637_002D4617_002D9064_002D9a3a39cea9ba/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="TestGeneratedPaths" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
-  &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::6F82F651-4D21-467D-BD83-68C743BC8DF4::.NETFramework,Version=v4.7.2::Nav.Language.Tests.PathProviderTests&lt;/TestId&gt;&#xD;
-  &lt;/TestAncestor&gt;&#xD;
+  &lt;Or&gt;&#xD;
+    &lt;Project Location="C:\ws\git\Nav.Language.Extensions\Nav.Language.Tests" Presentation="&amp;lt;Nav.Language.Tests&amp;gt;" /&gt;&#xD;
+    &lt;Project Location="C:\ws\git\Nav.Language.Extensions\Nav.Language.Extension.Tests" Presentation="&amp;lt;Nav.Language.Extension.Tests&amp;gt;" /&gt;&#xD;
+  &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
-	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">10/15/2021 10:41:11</s:String>
+	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">10/10/2022 08:37:45</s:String>
 	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialogView/Position/@EntryValue">[0,0](1280,688)</s:String>
-	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/RefactoringWizardWindow/Location/@EntryValue">-640,-338</s:String>
+	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/RefactoringWizardWindow/Location/@EntryValue">-640,-337.6</s:String>
 	<s:String x:Key="/Default/Housekeeping/OptionsDialog/SelectedPageId/@EntryValue">ReSpellerSettings</s:String>
 	<s:Double x:Key="/Default/Housekeeping/TreeModelBrowserPanelPersistence/PreviewSplitterVerticalProportion/=UnitTestSessionDescriptor/@EntryIndexedValue">1.0480069305779998</s:Double>
 	

@@ -1,8 +1,10 @@
 ﻿#region Using Directives
 
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
-
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 
@@ -13,13 +15,38 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
     public class Nav: ToolTask {
 
         public bool Force { get; set; }
-        public bool GenerateToClasses { get; set; }
+
+        public ITaskItem[] Sources { get; set; }
+
+        public bool GenerateToClasses   { get; set; }
+        public bool GenerateWflClasses  { get; set; }
+        public bool GenerateIwflClasses { get; set; }
+
+        IEnumerable<CodeGenerationOptions> GetCodeGenerationOptions() {
+
+            var options = new (Func<bool> IsOn, CodeGenerationOptions EnumValue)[] {
+                (() => GenerateToClasses,   CodeGenerationOptions.ToClasses),
+                (() => GenerateWflClasses,  CodeGenerationOptions.WflClasses),
+                (() => GenerateIwflClasses, CodeGenerationOptions.IwflClasses),
+            };
+
+            if (options.All(o => !o.IsOn())) {
+                yield return CodeGenerationOptions.None;
+                yield break;
+            }
+
+            foreach (var option in options.Where(o => o.IsOn())) {
+                yield return option.EnumValue;
+            }
+           
+        }
+
         public bool UseSyntaxCache { get; set; }
         public bool FullPaths { get; set; }
 
         public ITaskItem   ProjectRootDirectory { get; set; }
         public ITaskItem   IwflRootDirectory    { get; set; }
-        public ITaskItem[] Sources              { get; set; }
+        public ITaskItem   WflRootDirectory     { get; set; }
         
         protected override string GenerateFullPathToTool() {
             // ReSharper disable once AssignNullToNotNullAttribute
@@ -34,16 +61,27 @@ namespace Pharmatechnik.Nav.Language.BuildTasks {
 
             var clb = new CommandLineBuilder();
 
-            clb.AppendSwitchIfPresent(GenerateToClasses, "/t");
-            clb.AppendSwitchIfPresent(Force,             "/f");
-            clb.AppendSwitchIfPresent(UseSyntaxCache,    "/c");
-            clb.AppendSwitchIfPresent(FullPaths,         "/fullpaths");
+            clb.AppendSwitchIfPresent(Force,          "/f");
+            clb.AppendSwitchIfPresent(UseSyntaxCache, "/c");
+            clb.AppendSwitchIfPresent(FullPaths,      "/fullpaths");
             clb.AppendSwitch("/v");
+            clb.AppendSwitchIfNotNull("/g:", GetGetCodeGenerationArg());
             clb.AppendSwitchIfNotNull("/r:", ProjectRootDirectory);
+            clb.AppendSwitchIfNotNull("/w:", WflRootDirectory);
             clb.AppendSwitchIfNotNull("/i:", IwflRootDirectory);
             clb.AppendSwitchIfNotNull("/s:", Sources, " /s:");
 
             return clb.ToString();
+
+
+             string GetGetCodeGenerationArg() {
+                 var options = GetCodeGenerationOptions().ToList();
+                 if (!options.Any()) {
+                     return CodeGenerationOptions.None.ToString();
+                 }
+
+                 return string.Join(",", options);
+             }
         }
 
         protected override bool ValidateParameters() {            

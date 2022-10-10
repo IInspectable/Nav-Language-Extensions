@@ -921,11 +921,13 @@ namespace Mono.Options
 				}
 
 				bool indent = false;
-				string prefix = new string (' ', OptionWidth+2);
+				string prefix = new string (' ', OptionWidth/*+2*/);
 				foreach (string line in GetLines (localizer (GetDescription (p.Description)))) {
-					if (indent) 
-						o.Write (prefix);
-					o.WriteLine (line);
+                    if (indent) {
+                        o.Write (prefix);
+                    }
+						
+					o.WriteLine (line.TrimStart());
 					indent = true;
 				}
 			}
@@ -1060,8 +1062,10 @@ namespace Mono.Options
 				yield return string.Empty;
 				yield break;
 			}
-			int length = 120 - OptionWidth - 1;
-			int start = 0, end;
+
+            var maxWidth = Math.Max(0, Math.Min(Int16.MaxValue - 1, Console.BufferWidth));
+            int length   = maxWidth - OptionWidth - 1;
+            int start    = 0, end;
 			do {
 				end = GetLineEnd (start, length, description);
 				char c = description [end-1];

@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 using JetBrains.Annotations;
 
@@ -59,11 +60,16 @@ public class FileGenerator: Generator, IFileGenerator {
             results.Add(WriteFile(codeGenerationResult.TaskDefinition, toCodeSpec, OverwritePolicy.Never));
         }
 
-        return results.ToImmutableArray();
+        return results.Where(result => result != null)
+                      .ToImmutableArray();
     }
 
-    [NotNull]
+    [CanBeNull]
     FileGeneratorResult WriteFile(ITaskDefinitionSymbol taskDefinition, CodeGenerationSpec codeGenerationSpec, OverwritePolicy overwritePolicy) {
+
+        if (codeGenerationSpec.IsEmpty) {
+            return null;
+        }
 
         EnsureDirectory(codeGenerationSpec.FilePath);
 

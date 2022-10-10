@@ -1,18 +1,24 @@
 ﻿using System.Text;
 
-namespace Pharmatechnik.Nav.Language.CodeGen; 
+namespace Pharmatechnik.Nav.Language.CodeGen;
 
 public record GenerationOptions {
 
     public static GenerationOptions Default => new() {
-        Force             = false,
-        GenerateTOClasses = true
+        Force               = false,
+        GenerateToClasses   = true,
+        GenerateWflClasses  = true,
+        GenerateIwflClasses = true,
     };
 
-    public bool   Force                { get; init; }
-    public bool   GenerateTOClasses    { get; init; }
+    public bool Force               { get; init; }
+    public bool GenerateToClasses   { get; init; }
+    public bool GenerateWflClasses  { get; init; }
+    public bool GenerateIwflClasses { get; init; }
+
     public string ProjectRootDirectory { get; init; }
     public string IwflRootDirectory    { get; init; }
+    public string WflRootDirectory     { get; init; }
 
     public Encoding Encoding => Encoding.UTF8; // Ich sehe keinen Grund, ein anderes Encoding als UTF8 zu verwenden.
 

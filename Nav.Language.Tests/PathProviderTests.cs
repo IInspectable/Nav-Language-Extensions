@@ -2,7 +2,6 @@
 
 using NUnit.Framework;
 using Pharmatechnik.Nav.Language;
-using System.CodeDom.Compiler;
 
 using Pharmatechnik.Nav.Language.CodeGen;
 
@@ -120,6 +119,54 @@ public class PathProviderTests {
         var pathProvider = new PathProvider(syntaxFileName: syntaxFileName, taskName: taskName, generateTo: null, options: options);
 
         Assert.That(pathProvider.IwflGeneratedDirectory, Is.EqualTo(@"C:\ws\xtplus\Main\XTplusApplication\src\XTplus.OffenePosten.Shared\IWFL\generated"));
+    }
+
+
+    [Test]
+    public void TestGeneratedPathsWithWflRootDirectory() {
+
+        var taskName       = "Test";
+        var syntaxFileName = @"n:\av\feature\test.nav";
+
+        var options = GenerationOptions.Default with {
+            WflRootDirectory = @"c:\AnyWhere",
+            ProjectRootDirectory = @"n:\av"
+        };
+
+        var pathProvider = new PathProvider(syntaxFileName: syntaxFileName, taskName: taskName, generateTo: null, options: options);
+
+        Assert.That(pathProvider.TaskName              , Is.EqualTo(taskName));
+        Assert.That(pathProvider.SyntaxFileName        , Is.EqualTo(syntaxFileName));
+
+        Assert.That(pathProvider.WflDirectory          , Is.EqualTo(@"c:\AnyWhere\feature\WFL"));            
+        Assert.That(pathProvider.WfsFileName           , Is.EqualTo(@"c:\AnyWhere\feature\WFL\TestWFS.cs"));
+
+        Assert.That(pathProvider.WflGeneratedDirectory , Is.EqualTo(@"c:\AnyWhere\feature\WFL\generated"));
+        Assert.That(pathProvider.WfsBaseFileName       , Is.EqualTo(@"c:\AnyWhere\feature\WFL\generated\TestWFSBase.generated.cs"));            
+        Assert.That(pathProvider.IBeginWfsFileName     , Is.EqualTo(@"c:\AnyWhere\feature\WFL\generated\IBeginTestWFS.generated.cs"));
+            
+        Assert.That(pathProvider.IwflGeneratedDirectory, Is.EqualTo(@"n:\av\feature\IWFL\generated"));
+        Assert.That(pathProvider.IWfsFileName          , Is.EqualTo(@"n:\av\feature\IWFL\generated\ITestWFS.generated.cs"));
+
+        Assert.That(pathProvider.GetToFileName("MyTo") , Is.EqualTo(@"n:\av\feature\IWFL\generated\MyTo.generated.cs"));
+
+    }
+
+    [Test]
+    public void TestWflRootDirectory() {
+
+        var taskName       = "Test";
+        var syntaxFileName = @"C:\ws\xtplus\Main\XTplusApplication\src\XTplus.OffenePosten\OffenePostenDruckauswahl.nav";
+
+        var options = GenerationOptions.Default with {
+            WflRootDirectory = @"C:\ws\xtplus\Main\XTplusApplication\src\XTplus.OffenePosten.AnyWhere",
+            ProjectRootDirectory = @"C:\ws\xtplus\Main\XTplusApplication\src\XTplus.OffenePosten"
+        };
+
+        var pathProvider = new PathProvider(syntaxFileName: syntaxFileName, taskName: taskName, generateTo: null, options: options);
+
+        Assert.That(pathProvider.WflGeneratedDirectory, Is.EqualTo(@"C:\ws\xtplus\Main\XTplusApplication\src\XTplus.OffenePosten.AnyWhere\WFL\generated"));
+        Assert.That(pathProvider.WflDirectory, Is.EqualTo(@"C:\ws\xtplus\Main\XTplusApplication\src\XTplus.OffenePosten.AnyWhere\WFL"));
     }
 
 }

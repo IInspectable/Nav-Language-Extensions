@@ -139,6 +139,40 @@ public static class PathHelper {
         return relativePath;
     }
 
+    [NotNull]
+    public static string TryTranslateToDirectory([NotNull] string fileName, [CanBeNull] string fromDirectory, [CanBeNull] string toDirectory) {
+
+        if (String.IsNullOrEmpty(fromDirectory) ||
+            String.IsNullOrEmpty(toDirectory)) {
+
+            return fileName;
+        }
+
+        return TranslateToDirectory(fileName, fromDirectory, toDirectory);
+    }
+
+    [NotNull]
+    public static string TranslateToDirectory([NotNull] string fileName, [NotNull] string fromDirectory, [NotNull] string toDirectory) {
+
+        if (String.IsNullOrEmpty(fromDirectory)) {
+            throw new ArgumentNullException(nameof(fromDirectory));
+        }
+
+        if (String.IsNullOrEmpty(toDirectory)) {
+            throw new ArgumentNullException(nameof(toDirectory));
+        }
+
+        var projectRootDirectory = fromDirectory.EndsWith("\\")
+            ? fromDirectory
+            : fromDirectory + "\\";
+
+        var relativeFileName = GetRelativePath(projectRootDirectory, fileName);
+        var newFileName      = Path.Combine(toDirectory, relativeFileName);
+        //var newDir           = Path.GetDirectoryName(newFileName);
+
+        return newFileName;
+    }
+
     static string AppendDirectorySeparatorChar(string path) {
         // Append a slash only if the path is a directory and does not have a slash.
         if (!Path.HasExtension(path) &&

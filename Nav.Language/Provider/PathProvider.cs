@@ -4,7 +4,6 @@ using System;
 using System.IO;
 using System.Linq;
 using Pharmatechnik.Nav.Language.CodeGen;
-using Pharmatechnik.Nav.Language.Text;
 using Pharmatechnik.Nav.Utilities.IO;
 
 #endregion
@@ -40,27 +39,18 @@ public class PathProvider: IPathProvider {
 
         options ??= GenerationOptions.Default;
 
-        var syntaxFileDirectoryName = Path.GetDirectoryName(syntaxFileName);
+        var translatedToWflDir = PathHelper.TryTranslateToDirectory(syntaxFileName, options.ProjectRootDirectory, options.WflRootDirectory);
+        var wflDirectory       = Path.GetDirectoryName(translatedToWflDir);
 
-        var iwflDirectory = syntaxFileDirectoryName;
-        if (!options.IwflRootDirectory.IsNullOrEmpty() &&
-            !options.ProjectRootDirectory.IsNullOrEmpty()) {
-
-            var projectRootDirectory = options.ProjectRootDirectory.EndsWith("\\")
-                ? options.ProjectRootDirectory
-                : options.ProjectRootDirectory + "\\";
-
-            var relativeFileName = GetRelativePath(projectRootDirectory, syntaxFileName);
-            var newFileName      = CombinePath(options.IwflRootDirectory, relativeFileName);
-            iwflDirectory = Path.GetDirectoryName(newFileName);
-        }
+        var translatedToIwflDir = PathHelper.TryTranslateToDirectory(syntaxFileName, options.ProjectRootDirectory, options.IwflRootDirectory);
+        var iwflDirectory       = Path.GetDirectoryName(translatedToIwflDir);
 
         TaskName       = taskName;
         SyntaxFileName = syntaxFileName;
 
         IwflGeneratedDirectory = CombinePath(iwflDirectory,           CodeGenFacts.IwflNamespaceSuffix, generateTo, GeneratedFolderName);
-        WflGeneratedDirectory  = CombinePath(syntaxFileDirectoryName, CodeGenFacts.WflNamespaceSuffix,  generateTo, GeneratedFolderName);
-        WflDirectory           = CombinePath(syntaxFileDirectoryName, CodeGenFacts.WflNamespaceSuffix,  generateTo);
+        WflGeneratedDirectory  = CombinePath(wflDirectory, CodeGenFacts.WflNamespaceSuffix,  generateTo, GeneratedFolderName);
+        WflDirectory           = CombinePath(wflDirectory, CodeGenFacts.WflNamespaceSuffix,  generateTo);
     }
 
     public string TaskName               { get; }

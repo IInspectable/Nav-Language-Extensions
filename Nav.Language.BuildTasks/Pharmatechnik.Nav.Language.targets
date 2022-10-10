@@ -10,6 +10,8 @@
   <PropertyGroup>
     <NavForce                Condition="'$(NavForce)'                == ''">false</NavForce>
     <NavGenerateToClasses    Condition="'$(NavGenerateToClasses)'    == ''">true</NavGenerateToClasses>
+    <NavGenerateWflClasses   Condition="'$(NavGenerateWflClasses)'   == ''">true</NavGenerateWflClasses>
+    <NavGenerateIwflClasses  Condition="'$(NavGenerateIwflClasses)'  == ''">true</NavGenerateIwflClasses>
     <NavUseSyntaxCache       Condition="'$(NavUseSyntaxCache)'       == ''">false</NavUseSyntaxCache>
     <NavFullPaths            Condition="'$(NavFullPaths)'            == ''">$(BuildingInsideVisualStudio)</NavFullPaths>
     <NavProjectRootDirectory Condition="'$(NavProjectRootDirectory)' == ''">$(MSBuildProjectDirectory)\</NavProjectRootDirectory>
@@ -25,6 +27,8 @@
     <Nav Sources              = "@(NavFilesToProcess)"
          Force                = "$(NavForce)"
          GenerateToClasses    = "$(NavGenerateToClasses)"
+         GenerateWflClasses   = "$(NavGenerateWflClasses)"
+         GenerateIwflClasses  = "$(NavGenerateIwflClasses)"
          ProjectRootDirectory = "$(NavProjectRootDirectory)"
          IwflRootDirectory    = "$(NavIwflRootDirectory)"
          UseSyntaxCache       = "$(NavUseSyntaxCache)" 
