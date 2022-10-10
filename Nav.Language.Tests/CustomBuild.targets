@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductName>Nav Language Code Analysis</ProductName>
-    <ProductVersion>5.1.1</ProductVersion>
+    <ProductVersion>5.2.0</ProductVersion>
   </PropertyGroup>
   <Target Name="CleanupBinFolder" BeforeTargets="AfterBuild">
     <ItemGroup>
