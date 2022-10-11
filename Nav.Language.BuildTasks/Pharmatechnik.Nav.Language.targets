@@ -17,6 +17,7 @@
     <NavFullPaths            Condition="'$(NavFullPaths)'            == ''">$(BuildingInsideVisualStudio)</NavFullPaths>
     <NavProjectRootDirectory Condition="'$(NavProjectRootDirectory)' == ''"></NavProjectRootDirectory>
     <NavIwflRootDirectory    Condition="'$(NavIwflRootDirectory)'    == ''"></NavIwflRootDirectory>
+    <NavWflRootDirectory     Condition="'$(NavWflRootDirectory)'     == ''"></NavWflRootDirectory>
   </PropertyGroup>
 
   <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild">
@@ -33,6 +34,7 @@
          GenerateIwflClasses  = "$(NavGenerateIwflClasses)"
          ProjectRootDirectory = "$(NavProjectRootDirectory)"
          IwflRootDirectory    = "$(NavIwflRootDirectory)"
+         WflRootDirectory     = "$(NavWflRootDirectory)"
          UseSyntaxCache       = "$(NavUseSyntaxCache)" 
          FullPaths            = "$(NavFullPaths)" />
   </Target>
