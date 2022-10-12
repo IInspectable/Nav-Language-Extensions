@@ -11,7 +11,7 @@ namespace Pharmatechnik.Nav.Language;
 
 public class PathProviderFactory: IPathProviderFactory {
 
-    public static readonly PathProviderFactory Default = new PathProviderFactory();
+    public static readonly PathProviderFactory Default = new();
 
     [NotNull]
     public virtual IPathProvider CreatePathProvider(ITaskDefinitionSymbol taskDefinition, GenerationOptions options) {

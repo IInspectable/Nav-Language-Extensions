@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Text;
 
 #endregion
 
+// ReSharper disable ForCanBeConvertedToForeach
 namespace Pharmatechnik.Nav.Language.Extension.Common; 
 
 static class TextSnapshotLineExtensions {

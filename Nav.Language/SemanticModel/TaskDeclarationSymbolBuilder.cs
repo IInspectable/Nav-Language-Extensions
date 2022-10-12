@@ -161,7 +161,7 @@ sealed class TaskDeclarationSymbolBuilder {
 
     void ProcessTaskDeclaration(TaskDeclarationSyntax taskDeclarationSyntax) {
 
-        if (null != taskDeclarationSyntax && !taskDeclarationSyntax.Identifier.IsMissing) {
+        if (taskDeclarationSyntax is { Identifier.IsMissing: false }) {
 
             var identifier = taskDeclarationSyntax.Identifier;
             var location   = identifier.GetLocation();
@@ -187,7 +187,7 @@ sealed class TaskDeclarationSymbolBuilder {
 
     void ProcessTaskDefinition(TaskDefinitionSyntax taskDefinitionSyntax) {
 
-        if (null != taskDefinitionSyntax && !taskDefinitionSyntax.Identifier.IsMissing) {
+        if (taskDefinitionSyntax is { Identifier.IsMissing: false }) {
 
             var identifier = taskDefinitionSyntax.Identifier;
             var location   = identifier.GetLocation();

@@ -20,7 +20,7 @@ interface IDialogService {
 class DialogService: IDialogService {
 
     public string ShowInputDialog(string promptText, string title = null, string defaultResonse = null, 
-                                  ImageMoniker iconMoniker = new ImageMoniker(), Func<string, string> validator = null,
+                                  ImageMoniker iconMoniker = new(), Func<string, string> validator = null,
                                   ImageMoniker noteIconMoniker = default, string note = null) {
 
         var viewModel = new InputDialogViewModel {

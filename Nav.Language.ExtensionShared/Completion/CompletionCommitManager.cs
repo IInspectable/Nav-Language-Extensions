@@ -37,13 +37,13 @@ class CompletionCommitManager: IAsyncCompletionCommitManager {
     public CommitResult TryCommit(IAsyncCompletionSession session, ITextBuffer buffer, CompletionItem item, char typedChar, CancellationToken token) {
         if (item.Properties.TryGetProperty<ITrackingSpan>(AsyncCompletionSource.ReplacementTrackingSpanProperty, out var replacementSpan)) {
 
-            using (var edit = buffer.CreateEdit()) {
+            using var edit = buffer.CreateEdit();
 
-                edit.Replace(replacementSpan.GetSpan(buffer.CurrentSnapshot), item.InsertText);
-                edit.Apply();
+            edit.Replace(replacementSpan.GetSpan(buffer.CurrentSnapshot), item.InsertText);
+            edit.Apply();
 
-                return CommitResult.Handled;
-            }
+            return CommitResult.Handled;
+
         }
 
         return CommitResult.Unhandled; // use default commit mechanism.

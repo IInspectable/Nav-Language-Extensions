@@ -4,9 +4,9 @@ using System;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Utilities; 
+namespace Pharmatechnik.Nav.Language.Extension.Utilities;
 
-struct ProjectInfo {
+readonly struct ProjectInfo {
 
     private readonly string _name;
 

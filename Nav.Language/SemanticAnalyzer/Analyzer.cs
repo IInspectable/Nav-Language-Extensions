@@ -47,7 +47,7 @@ public abstract class NavAnalyzer: INavAnalyzer {
 
 static class Analyzer {
 
-    private static readonly Lazy<IList<INavAnalyzer>> TaskDefinitionAnalyzer = new Lazy<IList<INavAnalyzer>>(
+    private static readonly Lazy<IList<INavAnalyzer>> TaskDefinitionAnalyzer = new(
         () => GetInterfaceImplementationsFromAssembly<INavAnalyzer>().ToList(),
         LazyThreadSafetyMode.PublicationOnly);
 

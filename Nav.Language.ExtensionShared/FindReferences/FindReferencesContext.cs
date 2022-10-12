@@ -22,7 +22,7 @@ namespace Pharmatechnik.Nav.Language.Extension.FindReferences;
 
 class FindReferencesContext: IFindReferencesContext, ITableDataSource, ITableEntriesSnapshotFactory {
 
-    readonly object _gate = new object();
+    readonly object _gate = new();
 
     readonly CancellationTokenSource  _cancellationTokenSource;
     readonly IFindAllReferencesWindow _findReferencesWindow;

@@ -26,7 +26,7 @@ class CompletionCommitManagerProvider: IAsyncCompletionCommitManagerProvider {
         }
 
         var manager = new CompletionCommitManager();
-        textView.Closed += (o, e) => _cache.Remove(textView); // clean up memory as files are closed
+        textView.Closed += (_, _) => _cache.Remove(textView); // clean up memory as files are closed
         _cache.Add(textView, manager);
 
         return manager;

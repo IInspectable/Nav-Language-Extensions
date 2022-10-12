@@ -80,7 +80,7 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
     }
 
     static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
-
+        // ReSharper disable once UseObjectOrCollectionInitializer
         var namespaces = new List<string>();
 
         namespaces.Add(typeof(int).Namespace);

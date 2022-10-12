@@ -5,15 +5,13 @@ namespace Pharmatechnik.Nav.Language.Extension.GoToLocation;
 
 public struct LocationInfo {
 
-    string _errorMessage;
-    string _displayName;
+    readonly string _errorMessage;
+    readonly string _displayName;
 
-    public bool IsValid {
-        get { return Location != null; }
-    }
+    public bool IsValid => Location != null;
 
-    public Location     Location     { get; private set; }
-    public ImageMoniker ImageMoniker { get; private set; }
+    public Location     Location     { get; private init; }
+    public ImageMoniker ImageMoniker { get; private init; }
 
     public string DisplayName {
         get {
@@ -22,12 +20,12 @@ public struct LocationInfo {
             }
             return _displayName;
         }
-        private set { _displayName = value; }
+        private init => _displayName = value;
     }
 
     public string ErrorMessage {
-        get { return _errorMessage ??string.Empty; }
-        private set { _errorMessage = value; }
+        get => _errorMessage ??string.Empty;
+        private init => _errorMessage = value;
     }
 
     public static LocationInfo FromError(string errorMessage) {

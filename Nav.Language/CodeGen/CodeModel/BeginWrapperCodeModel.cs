@@ -32,7 +32,7 @@ class BeginWrapperCodeModel: CodeModel {
 
         var taskBegins = new List<TaskBeginCodeModel>();
 
-        foreach (var initConnectionPoint in taskNode.Declaration.Inits().OfType<IInitConnectionPointSymbol>()) {
+        foreach (var initConnectionPoint in taskNode.Declaration.Inits().WhereNotNull()) {
 
             var parameterSyntaxes = GetTaskParameterSyntaxes(initConnectionPoint);
             var taskParameter     = ParameterCodeModel.FromParameterSyntaxes(parameterSyntaxes);

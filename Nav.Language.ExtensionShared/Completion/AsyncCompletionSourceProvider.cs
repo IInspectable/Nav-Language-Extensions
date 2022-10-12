@@ -19,7 +19,7 @@ abstract class AsyncCompletionSourceProvider: IAsyncCompletionSourceProvider {
         }
 
         var source = CreateCompletionSource();
-        textView.Closed += (o, e) => _cache.Remove(textView);
+        textView.Closed += (_, _) => _cache.Remove(textView);
         _cache.Add(textView, source);
 
         return source;

@@ -151,6 +151,7 @@ public class SyntaxTreeTests {
     }
 
     [Test]
+    // ReSharper disable once FunctionComplexityOverflow
     public void TestTaskDeclaration() {
         var syntaxTree      = SyntaxTree.ParseText(Resources.AllRules);
         var taskDeclaration = syntaxTree.Root.DescendantNodes<TaskDeclarationSyntax>().First();

@@ -24,8 +24,8 @@ public readonly struct SyntaxToken: IExtent {
         _classificationAndType = ((int) type << TypeBitShift) | ((int) classification << ClassificationBitShift);
     }
 
-    public static readonly SyntaxToken Missing = new SyntaxToken(null, SyntaxTokenType.Unknown, TextClassification.Unknown, TextExtent.Missing);
-    public static readonly SyntaxToken Empty   = new SyntaxToken(null, SyntaxTokenType.Unknown, TextClassification.Unknown, TextExtent.Empty);
+    public static readonly SyntaxToken Missing = new(null, SyntaxTokenType.Unknown, TextClassification.Unknown, TextExtent.Missing);
+    public static readonly SyntaxToken Empty   = new(null, SyntaxTokenType.Unknown, TextClassification.Unknown, TextExtent.Empty);
 
     public TextExtent Extent { get; }
 

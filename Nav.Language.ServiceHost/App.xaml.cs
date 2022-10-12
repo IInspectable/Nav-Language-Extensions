@@ -30,7 +30,7 @@ public partial class App : Application {
 
         // Step 1
         Logger.Debug("Create the NetNamedPipeBinding.");
-            
+        // ReSharper disable once UseObjectOrCollectionInitializer    
         var binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
         binding.ReceiveTimeout                     = TimeSpan.MaxValue;
         binding.SendTimeout                        = TimeSpan.MaxValue;
@@ -52,7 +52,7 @@ public partial class App : Application {
             Logger.Debug($"Get the parent process {scp.ParentProcessId}.");
             Process parentProcess = Process.GetProcessById(scp.ParentProcessId);
             parentProcess.EnableRaisingEvents =  true;
-            parentProcess.Exited              += (_, __) => Terminate(0);
+            parentProcess.Exited              += (_, _) => Terminate(0);
 
         } catch(Exception ex) {
             Logger.Error(ex, $"Error getting the owner process {scp.ParentProcessId}.");

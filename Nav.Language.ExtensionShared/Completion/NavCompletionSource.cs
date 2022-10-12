@@ -91,12 +91,9 @@ class NavCompletionSource: AsyncCompletionSource {
         var extent = TextExtent.FromBounds(triggerLocation, triggerLocation);
 
         var taskDefinition = codeGenerationUnit.TaskDefinitions
-                                               .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent));
-
-        if (taskDefinition == null) {
-            taskDefinition = codeGenerationUnit.TaskDefinitions
+                                               .FirstOrDefault(td => td.Syntax.Extent.IntersectsWith(extent))
+                          ?? codeGenerationUnit.TaskDefinitions
                                                .LastOrDefault(td => extent.Start > td.Syntax.Start);
-        }
 
         if (taskDefinition != null) {
 

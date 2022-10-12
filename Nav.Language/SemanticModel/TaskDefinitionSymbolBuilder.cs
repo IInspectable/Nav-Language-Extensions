@@ -244,18 +244,18 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
                                      DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0,
                                      sourceNodeSyntax.Name));
                 break;
-            case TaskNodeSymbol _:
+            case TaskNodeSymbol:
                 _diagnostics.Add(new Diagnostic(
                                      sourceNodeLocation,
                                      DiagnosticDescriptors.Semantic.Nav0100TaskNode0MustNotContainLeavingEdges,
                                      sourceNodeSyntax.Name));
                 break;
-            case ExitNodeSymbol _:
+            case ExitNodeSymbol:
                 _diagnostics.Add(new Diagnostic(
                                      sourceNodeLocation,
                                      DiagnosticDescriptors.Semantic.Nav0101ExitNodeMustNotContainLeavingEdges));
                 break;
-            case EndNodeSymbol _:
+            case EndNodeSymbol:
                 _diagnostics.Add(new Diagnostic(
                                      sourceNodeLocation,
                                      DiagnosticDescriptors.Semantic.Nav0102EndNodeMustNotContainLeavingEdges));
@@ -451,7 +451,7 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
                 case null:
                     // Nav0011CannotResolveNode0
                     break;
-                case InitNodeSymbol _:
+                case InitNodeSymbol:
                     // Nav0103InitNodeMustNotContainIncomingEdges
                     break;
                 case EndNodeSymbol endNode:

@@ -110,7 +110,7 @@ public class CodeGenTests {
 
     public static TestCaseData[] CompileTestCases = {
 
-        new TestCaseData(
+        new(
             new TestCase {
                 NavFiles = {
                     new TestCaseFile {FilePath = MkFilename("TaskA.nav"), Content = Resources.TaskA}
@@ -119,14 +119,14 @@ public class CodeGenTests {
         ) {
             TestName = "TaskA should be compilable"
         },
-        new TestCaseData(new TestCase {
+        new(new TestCase {
             NavFiles = {
                 new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskA)}.nav"), Content = Resources.TaskB}
             }
         }) {
             TestName = "TaskB should be compilable"
         },
-        new TestCaseData(new TestCase {
+        new(new TestCase {
             NavFiles = {
                 new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskA)}.nav"), Content = Resources.TaskA},
                 new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskB)}.nav"), Content = Resources.TaskB}
@@ -134,14 +134,14 @@ public class CodeGenTests {
         }) {
             TestName = "TaskA and TaskB should be compilable at the same time"
         },
-        new TestCaseData(new TestCase {
+        new(new TestCase {
             NavFiles = {
                 new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.SingleFileNav)}.nav"), Content = Resources.SingleFileNav},
             }
         }) {
             TestName = "TestNavGeneratorOnSingleFile"
         },
-        new TestCaseData(new TestCase {
+        new(new TestCase {
             NavFiles = {
                 new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskA)}.nav"), Content = Resources.TaskA},
                 new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.TaskB)}.nav"), Content = Resources.TaskB},
@@ -150,14 +150,14 @@ public class CodeGenTests {
         }) {
             TestName = "Task C depends on Task A and Task B"
         },
-        new TestCaseData(new TestCase {
+        new(new TestCase {
             NavFiles = {
                 new TestCaseFile {FilePath = MkFilename($"{nameof(Resources.NestedChoices)}.nav"), Content = Resources.NestedChoices},
             }
         }) {
             TestName = "Nested choices"
         },
-        new TestCaseData(new TestCase {
+        new(new TestCase {
             NavFiles = {
                 new TestCaseFile {
                     FilePath = MkFilename("TaskA.nav"),
@@ -172,7 +172,7 @@ public class CodeGenTests {
         }) {
             TestName = "Tasksresult without explizit name"
         },
-        new TestCaseData(new TestCase {
+        new(new TestCase {
             CsFiles = {
                 new TestCaseFile {
                     FilePath = MkFilename("FrameworkStubsWithoutNS.cs"),
@@ -296,13 +296,13 @@ public class CodeGenTests {
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-        using (var ms = new MemoryStream()) {
-            EmitResult result = compilation.Emit(ms);
+        using var  ms     = new MemoryStream();
+        EmitResult result = compilation.Emit(ms);
 
-            if (!result.Success) {
-                AssertNoDiagnosticErrors(result.Diagnostics);
-            }
+        if (!result.Success) {
+            AssertNoDiagnosticErrors(result.Diagnostics);
         }
+
     }
 
     RoslynSyntaxTree GetFrameworkStubCode() {
@@ -341,8 +341,8 @@ public class CodeGenTests {
 
     public class TestCase {
 
-        public List<TestCaseFile> NavFiles { get; } = new List<TestCaseFile>();
-        public List<TestCaseFile> CsFiles  { get; } = new List<TestCaseFile>();
+        public List<TestCaseFile> NavFiles { get; } = new();
+        public List<TestCaseFile> CsFiles  { get; } = new();
 
     }
 

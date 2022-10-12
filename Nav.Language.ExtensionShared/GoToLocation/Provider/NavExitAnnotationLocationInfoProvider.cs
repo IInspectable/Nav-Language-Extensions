@@ -19,9 +19,9 @@ class NavExitAnnotationLocationInfoProvider : NavAnnotationLocationInfoProvider<
     public NavExitAnnotationLocationInfoProvider(NavExitAnnotation annotation) : base(annotation) {
     }
 
-    static ImageMoniker ImageMoniker { get { return ImageMonikers.ExitConnectionPoint; } }
+    static ImageMoniker ImageMoniker => ImageMonikers.ExitConnectionPoint;
 
-    protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new CancellationToken()) {
+    protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new()) {
 
         try {
 

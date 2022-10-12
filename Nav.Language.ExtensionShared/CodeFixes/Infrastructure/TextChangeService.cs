@@ -38,7 +38,7 @@ class TextChangeService: ITextChangeService {
 
     public ITextSnapshot ApplyTextChanges(ITextView textView, string undoDescription, TextChangesAndSnapshot textChangesAndSnapshot, string waitMessage=null) {
 
-        waitMessage = waitMessage ??undoDescription;
+        waitMessage ??= undoDescription;
 
         using (_waitIndicator.StartWait(undoDescription, waitMessage, allowCancel: false))
         using (var undoTransaction = new TextUndoTransaction(undoDescription, textView, _undoHistoryRegistry, _editorOperationsFactoryService))

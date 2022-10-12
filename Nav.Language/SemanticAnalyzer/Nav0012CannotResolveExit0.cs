@@ -12,7 +12,7 @@ public class Nav0012CannotResolveExit0: NavAnalyzer {
         //==============================
         foreach (var exitTransition in taskDefinition.ExitTransitions) {
 
-            if (exitTransition.ExitConnectionPointReference != null && exitTransition.ExitConnectionPointReference.Declaration == null) {
+            if (exitTransition.ExitConnectionPointReference is { Declaration: null }) {
                 yield return new Diagnostic(
                     exitTransition.ExitConnectionPointReference.Location,
                     Descriptor,

@@ -38,7 +38,7 @@ class UnderlineClassifier : ITagger<ClassificationTag>, IDisposable {
     }
 
     public static UnderlineClassifier GetOrCreateSingelton(IClassificationTypeRegistryService classificationTypeRegistryService, ITextView textView, ITextBuffer buffer, ITagAggregator<UnderlineTag> underlineTagAggregator) {
-        return textView.GetOrCreateAutoClosingProperty(v =>
+        return textView.GetOrCreateAutoClosingProperty(_ =>
                                                            new UnderlineClassifier(buffer, underlineTagAggregator, classificationTypeRegistryService));
     }
 

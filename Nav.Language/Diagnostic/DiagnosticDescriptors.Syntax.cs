@@ -10,7 +10,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// Unexpected character '{0}'
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav0000UnexpectedCharacter = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav0000UnexpectedCharacter = new(
             id             : DiagnosticId.Nav0000,
             messageFormat  : "Unexpected character '{0}'",
             category       : Category,
@@ -23,7 +23,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// Invalid Preprocessor directive
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav3000InvalidPreprocessorDirective = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav3000InvalidPreprocessorDirective = new(
             id             : DiagnosticId.Nav3000,
             messageFormat  : "Invalid Preprocessor directive",
             category       : Category,
@@ -33,7 +33,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// Preprocessor directives must appear as the first non-whitespace character on a line
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav3001PreprocessorDirectiveMustAppearOnFirstNonWhitespacePosition = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav3001PreprocessorDirectiveMustAppearOnFirstNonWhitespacePosition = new(
             id             : DiagnosticId.Nav3001,
             messageFormat  : "Preprocessor directives must appear as the first non-whitespace character on a line",
             category       : Category,

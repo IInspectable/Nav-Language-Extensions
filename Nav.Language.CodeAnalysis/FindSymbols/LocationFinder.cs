@@ -139,7 +139,7 @@ public static class LocationFinder {
         var exitTransitions = task.ExitTransitions
                                   .Where(et => et.SourceReference?.Name        == exitAnnotation.ExitTaskName)
                                   .Where(et => et.ExitConnectionPointReference != null)
-                                  .Select(et => new AmbiguousLocation(et.ExitConnectionPointReference?.Location, et.ExitConnectionPointReference.Name))
+                                  .Select(et => new AmbiguousLocation(et.ExitConnectionPointReference?.Location, et.ExitConnectionPointReference?.Name))
                                   .ToList();
 
         if (!exitTransitions.Any()) {

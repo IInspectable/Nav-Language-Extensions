@@ -11,9 +11,9 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Utilities; 
+namespace Pharmatechnik.Nav.Language.Extension.Utilities;
 
-struct Hierarchy {
+readonly struct Hierarchy {
 
     private readonly IVsHierarchy _vsHierarchy;
 
@@ -75,7 +75,7 @@ struct Hierarchy {
         }
     }
 
-    T GetProperty<T>(__VSHPROPID propId, T defaultValue = default(T)) {
+    T GetProperty<T>(__VSHPROPID propId, T defaultValue = default) {
 
         ThreadHelper.ThrowIfNotOnUIThread();
 

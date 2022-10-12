@@ -20,7 +20,7 @@ class NavTriggerAnnotationLocationInfoProvider : NavAnnotationLocationInfoProvid
 
     static ImageMoniker ImageMoniker { get { return ImageMonikers.SignalTrigger; } }
 
-    protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new CancellationToken()) {
+    protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new()) {
 
         try {
 

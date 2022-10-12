@@ -24,7 +24,7 @@ public class Nav0010CannotResolveTask0: NavAnalyzer {
         // Bei einer Exit-Transition muss der Knoten vor dem Verbindungspunkt ein Task sein
         foreach (var exitTransition in taskDefinition.ExitTransitions) {
 
-            if (exitTransition.TaskNodeSourceReference != null && exitTransition.TaskNodeSourceReference.Declaration == null) {
+            if (exitTransition.TaskNodeSourceReference is { Declaration: null }) {
 
                 yield return new Diagnostic(
                     exitTransition.TaskNodeSourceReference.Location,

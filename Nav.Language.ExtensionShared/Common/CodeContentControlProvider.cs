@@ -224,8 +224,7 @@ sealed class CodeContentControlProvider {
 
         void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if ((bool)e.NewValue) {
-                if (Content == null)
-                    Content = _createView().VisualElement;
+                Content ??= _createView().VisualElement;
             } else {
                 TextView.Close();
                 Content = null;

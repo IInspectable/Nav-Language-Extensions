@@ -24,7 +24,7 @@ abstract class CodeAnalysisLocationInfoProvider: LocationInfoProvider {
         get { return _sourceBuffer; }
     }
 
-    public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
+    public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new()) {
         var project = _sourceBuffer.GetContainingProject();
         if (project == null) {
             // Das kommt vor, wenn das Dokument "extern" ist, also nicht in einem der geöffneten Projekte hängt.

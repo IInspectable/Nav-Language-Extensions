@@ -10,7 +10,7 @@ using Pharmatechnik.Nav.Utilities.IO;
 
 namespace Pharmatechnik.Nav.Language; 
 
-public struct CachedSyntaxProviderStatistic {
+public readonly struct CachedSyntaxProviderStatistic {
 
     public CachedSyntaxProviderStatistic(int cacheHits, int cacheFails) {
         CacheHits  = cacheHits;
@@ -35,7 +35,7 @@ public class CachedSyntaxProvider: ISyntaxProvider {
     readonly ConcurrentDictionary<string, CodeGenerationUnitSyntax> _cache;
     readonly ISyntaxProvider                                        _syntaxProvider;
 
-    private readonly object _gate = new object();
+    private readonly object _gate = new();
 
     public CachedSyntaxProvider(): this(null) {
 

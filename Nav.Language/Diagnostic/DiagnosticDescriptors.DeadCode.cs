@@ -13,7 +13,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The include directive for the file '{0}' appeared previously in this file\r\nInclude Directive is unnecessary
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1001IncludeDirectiveForFile0AppearedPreviously = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1001IncludeDirectiveForFile0AppearedPreviously = new(
             id             : DiagnosticId.Nav1001,
             messageFormat  : "The include directive for the file '{0}' appeared previously in this file",
             category       : Category,
@@ -23,7 +23,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The using directive for '{0}' appeared previously in this file.\r\nUsing Directive is unnecessary
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1002UsingDirective0AppearedPreviously = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1002UsingDirective0AppearedPreviously = new(
             id             : DiagnosticId.Nav1002,
             messageFormat  : "The using directive for '{0}' appeared previously in this file and can be safely removed",
             category       : Category,
@@ -33,7 +33,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// Taskref directive is not required by the code and can be safely removed
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1003IncludeNotRequired = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1003IncludeNotRequired = new(
             id             : DiagnosticId.Nav1003,
             messageFormat  : "Taskref directive is not required by the code and can be safely removed",
             category       : Category,
@@ -43,7 +43,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// Taskref '{0}' is not required by the code and can be safely removed
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1005TaskDeclaration0NotRequired = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1005TaskDeclaration0NotRequired = new(
             id             : DiagnosticId.Nav1005,
             messageFormat  : "Taskref '{0}' is not required by the code and can be safely removed",
             category       : Category,
@@ -53,7 +53,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The self referencing taskref directive is not required by the code and can be safely removed
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1006SelfReferencingIncludeNotRequired = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1006SelfReferencingIncludeNotRequired = new(
             id: DiagnosticId.Nav1006,
             messageFormat  : "The self referencing taskref directive is not required by the code and can be safely removed",
             category       : Category,
@@ -64,7 +64,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The choice node '{0}' has no incoming edges
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1007ChoiceNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1007ChoiceNode0HasNoIncomingEdges = new(
             id             : DiagnosticId.Nav1007,
             messageFormat  : "The choice node '{0}' has no incoming edges",
             category       : Category,
@@ -74,7 +74,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The choice node '{0}' has no outgoing edges
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1008ChoiceNode0HasNoOutgoingEdges = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1008ChoiceNode0HasNoOutgoingEdges = new(
             id             : DiagnosticId.Nav1008,
             messageFormat  : "The choice node '{0}' has no outgoing edges",
             category       : Category,
@@ -84,7 +84,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The choice node '{0}' is not required by the code and can be safely removed
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1009ChoiceNode0NotRequired = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1009ChoiceNode0NotRequired = new(
             id             : DiagnosticId.Nav1009,
             messageFormat  : "The choice node '{0}' is not required by the code and can be safely removed",
             category       : Category,
@@ -95,7 +95,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The task node '{0}' has no incoming edges
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1010TaskNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1010TaskNode0HasNoIncomingEdges = new(
             id             : DiagnosticId.Nav1010,
             messageFormat  : "The task node '{0}' has no incoming edges",
             category       : Category,
@@ -105,7 +105,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The task node '{0}' is not required by the code and can be safely removed
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1012TaskNode0NotRequired = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1012TaskNode0NotRequired = new(
             id             : DiagnosticId.Nav1012,
             messageFormat  : "The task node '{0}' is not required by the code and can be safely removed",
             category       : Category,
@@ -115,7 +115,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The dialog node '{0}' is not required by the code and can be safely removed
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1014DialogNode0NotRequired = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1014DialogNode0NotRequired = new(
             id             : DiagnosticId.Nav1014,
             messageFormat  : "The dialog node '{0}' is not required by the code and can be safely removed",
             category       : Category,
@@ -125,7 +125,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The dialog node '{0}' has no incoming edges
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1015DialogNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1015DialogNode0HasNoIncomingEdges = new(
             id             : DiagnosticId.Nav1015,
             messageFormat  : "The dialog node '{0}' has no incoming edges",
             category       : Category,
@@ -135,7 +135,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The dialog node '{0}' has no outgoing edges
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1016DialogNode0HasNoOutgoingEdges = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1016DialogNode0HasNoOutgoingEdges = new(
             id             : DiagnosticId.Nav1016,
             messageFormat  : "The dialog node '{0}' has no outgoing edges",
             category       : Category,
@@ -145,7 +145,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The view node '{0}' is not required by the code and can be safely removed
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1017ViewNode0NotRequired = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1017ViewNode0NotRequired = new(
             id             : DiagnosticId.Nav1017,
             messageFormat  : "The view node '{0}' is not required by the code and can be safely removed",
             category       : Category,
@@ -155,7 +155,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The view node '{0}' has no incoming edges
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1018ViewNode0HasNoIncomingEdges = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1018ViewNode0HasNoIncomingEdges = new(
             id             : DiagnosticId.Nav1018,
             messageFormat  : "The view node '{0}' has no incoming edges",
             category       : Category,
@@ -165,7 +165,7 @@ public static partial class DiagnosticDescriptors {
         /// <summary>
         /// The view node '{0}' has no outgoing edges
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1019ViewNode0HasNoOutgoingEdges = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor Nav1019ViewNode0HasNoOutgoingEdges = new(
             id             : DiagnosticId.Nav1019,
             messageFormat  : "The view node '{0}' has no outgoing edges",
             category       : Category,

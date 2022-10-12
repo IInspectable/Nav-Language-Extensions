@@ -83,11 +83,8 @@ class ViewCSharpCodeCommandHandler: INavCommandHandler<ViewCodeCommandArgs> {
             return navigateToTagSpan;
         }
 
-        navigateToTagSpan = tags.FirstOrDefault(tagSpan => caretPosition < tagSpan.Span.Start.Position && caretPosition < tagSpan.Span.End.Position);
-        if (navigateToTagSpan == null) {
-            // Den letzten Eintrag wählen
-            navigateToTagSpan = tags.LastOrDefault();
-        }
+        navigateToTagSpan = tags.FirstOrDefault(tagSpan => caretPosition < tagSpan.Span.Start.Position && caretPosition < tagSpan.Span.End.Position)
+                         ?? tags.LastOrDefault(); // Den letzten Eintrag wählen
 
         return navigateToTagSpan;
     }

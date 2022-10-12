@@ -25,7 +25,7 @@ class SimpleLocationInfoProvider: LocationInfoProvider {
         
     public List<LocationInfo> Locations { get; }
 
-    public override Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new CancellationToken()) {
+    public override Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new()) {
         return Task.FromResult(Locations.AsEnumerable());
     }
 }

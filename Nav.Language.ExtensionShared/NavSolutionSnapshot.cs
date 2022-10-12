@@ -7,9 +7,9 @@ using JetBrains.Annotations;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension; 
+namespace Pharmatechnik.Nav.Language.Extension;
 
-struct NavSolutionSnapshot {
+readonly struct NavSolutionSnapshot {
 
     public NavSolutionSnapshot(DateTime creationTime, NavSolution solution) {
         CreationTime = creationTime;
@@ -17,7 +17,7 @@ struct NavSolutionSnapshot {
 
     }
 
-    public static readonly NavSolutionSnapshot Empty = new NavSolutionSnapshot(DateTime.MinValue, NavSolution.Empty);
+    public static readonly NavSolutionSnapshot Empty = new(DateTime.MinValue, NavSolution.Empty);
 
     public DateTime CreationTime { get; }
 

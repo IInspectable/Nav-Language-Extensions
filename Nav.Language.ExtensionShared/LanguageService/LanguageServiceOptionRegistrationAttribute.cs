@@ -7,9 +7,8 @@ namespace Pharmatechnik.Nav.Language.Extension.LanguageService;
 abstract class LanguageServiceOptionRegistrationAttribute: RegistrationAttribute {
 
     public override void Register(RegistrationContext context) {
-        using (Key serviceKey = context.CreateKey(KeyName)) {
-            serviceKey.SetValue(OptionName, 1);
-        }
+        using var serviceKey = context.CreateKey(KeyName);
+        serviceKey.SetValue(OptionName, 1);
     }
 
     public override void Unregister(RegistrationContext context) {

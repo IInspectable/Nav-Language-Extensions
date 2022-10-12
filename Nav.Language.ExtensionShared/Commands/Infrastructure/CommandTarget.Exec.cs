@@ -44,10 +44,6 @@ partial class CommandTarget: IOleCommandTarget {
         int result       = VSConstants.S_OK;
         var guidCmdGroup = pguidCmdGroup;
 
-        void ExecuteNextCommandTarget() {
-            result = NextCommandTarget.Exec(ref guidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
-        }
-
         switch ((VSConstants.VSStd97CmdID) commandId) {
 
             case VSConstants.VSStd97CmdID.ViewCode:
@@ -58,18 +54,19 @@ partial class CommandTarget: IOleCommandTarget {
         }
 
         return result;
+
+        void ExecuteNextCommandTarget() {
+            result = NextCommandTarget.Exec(ref guidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
+        }
     }
 
     protected virtual int ExecuteVisualStudio2000(ref Guid pguidCmdGroup, uint commandId, uint executeInformation, IntPtr pvaIn, IntPtr pvaOut, ITextBuffer subjectBuffer, IContentType contentType) {
 
         ThreadHelper.ThrowIfNotOnUIThread();
 
+        // ReSharper disable once RedundantAssignment
         int result       = VSConstants.S_OK;
         var guidCmdGroup = pguidCmdGroup;
-
-        void ExecuteNextCommandTarget() {
-            result = NextCommandTarget.Exec(ref guidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
-        }
 
         switch ((VSConstants.VSStd2KCmdID) commandId) {
 
@@ -79,6 +76,10 @@ partial class CommandTarget: IOleCommandTarget {
         }
 
         return result;
+
+        void ExecuteNextCommandTarget() {
+            result = NextCommandTarget.Exec(ref guidCmdGroup, commandId, executeInformation, pvaIn, pvaOut);
+        }
     }
 
     protected void ExecuteViewCode(ITextBuffer subjectBuffer, IContentType contentType, Action executeNextCommandTarget) {

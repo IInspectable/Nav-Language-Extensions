@@ -44,7 +44,7 @@ public class Location: IEquatable<Location> {
     public TextExtent   Extent            { get; }
     public LinePosition StartLinePosition { get; }
     public LinePosition EndLinePosition   { get; }
-    public LineRange    LineRange         => new LineRange(StartLinePosition, EndLinePosition);
+    public LineRange    LineRange         => new(StartLinePosition, EndLinePosition);
 
     /// <summary>
     /// The path to the file or null.

@@ -84,7 +84,7 @@ class DefinitionEntry: DefinitionBucket {
                 if (DefinitionItem.TextParts.Any()) {
                     // Damit er Text nicht so am Icon klebt...
                     var inlines = new List<Inline> {new Run(" ")};
-                    inlines.AddRange(Presenter.ToInlines(DefinitionItem.TextParts, (run, _, __) => Presenter.SetBold(run)));
+                    inlines.AddRange(Presenter.ToInlines(DefinitionItem.TextParts, (run, _, _) => Presenter.SetBold(run)));
                     return inlines;
                 }
 

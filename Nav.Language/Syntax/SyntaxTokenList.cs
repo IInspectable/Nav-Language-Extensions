@@ -39,7 +39,7 @@ public sealed class SyntaxTokenList: IReadOnlyList<SyntaxToken> {
         return new SyntaxTokenList(tokens, attachSorted: true);
     }
 
-    public static readonly SyntaxTokenList Empty = new SyntaxTokenList(null);
+    public static readonly SyntaxTokenList Empty = new(null);
 
     public IEnumerator<SyntaxToken> GetEnumerator() {
         return _tokens.GetEnumerator();

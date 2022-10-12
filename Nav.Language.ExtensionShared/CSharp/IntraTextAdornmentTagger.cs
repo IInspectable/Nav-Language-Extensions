@@ -39,9 +39,9 @@ namespace Pharmatechnik.Nav.Language.Extension.CSharp;
 /// </remarks>
 abstract class IntraTextAdornmentTagger<TData, TAdornment>: IDisposable, ITagger<IntraTextAdornmentTag> where TAdornment : UIElement {
 
-    readonly List<SnapshotSpan> _invalidatedSpans = new List<SnapshotSpan>();
+    readonly List<SnapshotSpan> _invalidatedSpans = new();
 
-    Dictionary<SnapshotSpan, TAdornment> _adornmentCache = new Dictionary<SnapshotSpan, TAdornment>();
+    Dictionary<SnapshotSpan, TAdornment> _adornmentCache = new();
 
     protected readonly IWpfTextView  TextView;
     protected          ITextSnapshot Snapshot { get; private set; }

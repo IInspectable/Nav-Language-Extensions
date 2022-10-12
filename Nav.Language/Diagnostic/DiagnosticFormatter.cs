@@ -17,7 +17,7 @@ public class DiagnosticFormatter {
         WorkingDirectory    = workingDirectory;
     }
         
-    public static readonly DiagnosticFormatter Instance = new DiagnosticFormatter(displayEndLocations: false, workingDirectory: null);
+    public static readonly DiagnosticFormatter Instance = new(displayEndLocations: false, workingDirectory: null);
 
     public bool DisplayEndLocations { get; }
     [CanBeNull]

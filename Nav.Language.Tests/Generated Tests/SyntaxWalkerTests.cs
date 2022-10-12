@@ -11,7 +11,7 @@ namespace Nav.Language.Tests;
 
 public sealed class TestSyntaxNodeWalker: SyntaxNodeWalker {
 
-    public readonly Dictionary<string, bool> MethodsCalled = new Dictionary<string, bool>();
+    public readonly Dictionary<string, bool> MethodsCalled = new();
 
     // DoClauseSyntax
     public override bool WalkDoClause(DoClauseSyntax doClauseSyntax) { 

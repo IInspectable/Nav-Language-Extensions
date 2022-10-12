@@ -459,11 +459,8 @@ class NavigationBar: SemanticModelServiceDependent,
                 newIndex = items.IndexOf(activeItem);
             } else {
                 // Den ersten Eintrag nach dem Cursor wählen
-                var closestEntry = items.FirstOrDefault(entry => caretPosition < entry.Start && caretPosition < entry.End);
-                if (closestEntry == null) {
-                    // Den letzten Eintrag wählen
-                    closestEntry = items.Last();
-                }
+                var closestEntry = items.FirstOrDefault(entry => caretPosition < entry.Start && caretPosition < entry.End)
+                                ?? items.Last(); // Den letzten Eintrag wählen
 
                 newIndex = items.IndexOf(closestEntry);
             }
@@ -474,7 +471,7 @@ class NavigationBar: SemanticModelServiceDependent,
 
     IWpfTextView GetCurrentView() {
         _codeWindow.GetLastActiveView(out var lastActiveView);
-        lastActiveView = lastActiveView ?? _trackedViews.Keys.FirstOrDefault();
+        lastActiveView ??= _trackedViews.Keys.FirstOrDefault();
         if (lastActiveView == null) {
             return null;
         }

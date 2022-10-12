@@ -35,7 +35,7 @@ public readonly struct TextChange: IEquatable<TextChange> {
         return new TextChange(extent, text);
     }
 
-    public static readonly TextChange Empty = new TextChange();
+    public static readonly TextChange Empty = new();
 
     public TextExtent Extent { get; }
 

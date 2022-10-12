@@ -13,11 +13,11 @@ public class Nav0011CannotResolveNode0: NavAnalyzer {
         //==============================
         foreach (var targetReference in taskDefinition.Edges().Select(e => e.TargetReference)) {
 
-            if (targetReference != null && targetReference.Declaration == null) {
-                yield return (new Diagnostic(
+            if (targetReference is { Declaration: null }) {
+                yield return new Diagnostic(
                     targetReference.Location,
                     Descriptor,
-                    targetReference.Name));
+                    targetReference.Name);
             }
         }
     }

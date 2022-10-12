@@ -4,7 +4,9 @@ using System;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Common; 
+// ReSharper disable ForCanBeConvertedToForeach
+
+namespace Pharmatechnik.Nav.Language.Extension.Common;
 
 static class StringExtensions {
 
@@ -62,7 +64,5 @@ static class StringExtensions {
 
         return hasSignificantContent ? column : Int32.MaxValue;
     }
-
-       
 
 }

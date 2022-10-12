@@ -23,7 +23,7 @@ public readonly struct LinePosition: IEquatable<LinePosition>, IComparable<LineP
     }
 
     // TODO Missing hinzufügen
-    public static readonly LinePosition Empty = new LinePosition(0, 0);
+    public static readonly LinePosition Empty = new(0, 0);
 
     /// <summary>
     /// The line number. The first line in a file is defined as line 0 (zero based line numbering).

@@ -79,7 +79,7 @@ partial class QuickinfoBuilderService {
 
         public override UIElement VisitChoiceNodeReferenceSymbol(IChoiceNodeReferenceSymbol choiceNodeReferenceSymbol) {
 
-            if (choiceNodeReferenceSymbol.Declaration is IChoiceNodeSymbol choiceNode) {
+            if (choiceNodeReferenceSymbol.Declaration is { } choiceNode) {
                 return VisitChoiceNodeSymbol(choiceNode);
             }
 

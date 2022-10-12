@@ -45,7 +45,7 @@ sealed class IntraTextGoToAdornmentTagger : IntraTextAdornmentTagger<IntraTextGo
     }
 
     internal static ITagger<IntraTextAdornmentTag> GetTagger(IWpfTextView view, Lazy<ITagAggregator<IntraTextGoToTag>> intraTextGoToTagger, GoToLocationService goToLocationService) {
-        return view.GetOrCreateAutoClosingProperty( v => new IntraTextGoToAdornmentTagger(
+        return view.GetOrCreateAutoClosingProperty( _ => new IntraTextGoToAdornmentTagger(
                                                         textView           : view, 
                                                         intraTextGoToTagger: intraTextGoToTagger.Value, 
                                                         goToLocationService: goToLocationService));

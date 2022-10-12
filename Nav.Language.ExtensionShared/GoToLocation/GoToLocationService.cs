@@ -102,7 +102,7 @@ sealed class GoToLocationService {
                 },
                 //InputGestureText = "<XTPlus.OffenePosten>"
             };
-            item.Click += (_, __) => GoToLocationInPreviewTab(locationInfo);
+            item.Click += (_, _) => GoToLocationInPreviewTab(locationInfo);
 
             ctxMenu.Items.Add(item);
         }

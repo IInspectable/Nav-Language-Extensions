@@ -26,15 +26,15 @@ class AdvancedOptionsDialogPage: UIElementDialogPage, IAdvancedOptions {
     public const string PageName = "Advanced";
 
     protected override UIElement Child {
-        get { return _advancedOptionsControl ?? (_advancedOptionsControl = new AdvancedOptionsControl()); }
+        get { return _advancedOptionsControl ??= new AdvancedOptionsControl(); }
     }
 
     public bool SemanticHighlighting           { get; set; }
     public bool HighlightReferencesUnderCursor { get; set; }
 
     public bool HighlightReferencesUnderInclude {
-        get { return _highlightReferencesUnderInclude && HighlightReferencesUnderCursor; }
-        set { _highlightReferencesUnderInclude = value; }
+        get => _highlightReferencesUnderInclude && HighlightReferencesUnderCursor;
+        set => _highlightReferencesUnderInclude = value;
     }
 
     public bool AutoInsertDelimiters { get; set; }

@@ -7,6 +7,8 @@ using JetBrains.Annotations;
 
 #endregion
 
+// ReSharper disable ForCanBeConvertedToForeach
+
 namespace Pharmatechnik.Nav.Language.Text; 
 
 public static class StringExtensions {
@@ -231,6 +233,7 @@ public static class StringExtensions {
         return inQuotation;
     }
 
+    // ReSharper disable once OutParameterValueIsAlwaysDiscarded.Local
     static bool IsInTextBlockImpl(this ReadOnlySpan<char> text, int position, char blockStartChar, char blockEndChar, out int quotationStart) {
 
         if (blockStartChar == blockEndChar) {

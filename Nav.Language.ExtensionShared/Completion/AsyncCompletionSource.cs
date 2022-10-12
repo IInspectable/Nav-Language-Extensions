@@ -131,7 +131,7 @@ abstract class AsyncCompletionSource: IAsyncCompletionSource {
         var directoryName = directory.FullName + Path.DirectorySeparatorChar;
         var relativePath  = PathHelper.GetRelativePath(fromPath: directoryName, toPath: dir.FullName + Path.DirectorySeparatorChar);
 
-        displayText = displayText ?? dir.Name;
+        displayText ??= dir.Name;
 
         var completionItem = new CompletionItem(displayText: displayText,
                                                 source: this,
@@ -159,7 +159,7 @@ abstract class AsyncCompletionSource: IAsyncCompletionSource {
         var directoryName = directory.FullName + Path.DirectorySeparatorChar;
         var relativePath  = PathHelper.GetRelativePath(fromPath: directoryName, toPath: file.FullName);
 
-        displayText = displayText ?? file.Name;
+        displayText ??= file.Name;
 
         var completionItem = new CompletionItem(displayText: displayText,
                                                 source: this,

@@ -1,5 +1,6 @@
 ﻿using System.IO;
 // ReSharper disable InconsistentNaming
+// ReSharper disable AssignNullToNotNullAttribute
 
 namespace Nav.Language.Tests; 
 
@@ -20,11 +21,10 @@ static class Resources {
 
         var fullResourceName = $"{typeof(Resources).Namespace}.Resources.{resourceName}";
 
-        using (Stream stream = typeof(Resources).Assembly.GetManifestResourceStream(fullResourceName))
-            // ReSharper disable once AssignNullToNotNullAttribute Lass krachen...
-        using (StreamReader reader = new StreamReader(stream)) {
-            string result = reader.ReadToEnd();
-            return result;
-        }
+        using Stream       stream = typeof(Resources).Assembly.GetManifestResourceStream(fullResourceName);
+        using StreamReader reader = new StreamReader(stream);
+        string             result = reader.ReadToEnd();
+        return result;
+
     }
 }

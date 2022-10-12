@@ -6,27 +6,27 @@ using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion.Data;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Completion; 
+namespace Pharmatechnik.Nav.Language.Extension.Completion;
 
 static class CompletionFilters {
 
-    public static CompletionFilter Keywords         = new CompletionFilter("Keywords",          "K", CompletionImages.Keyword);
-    public static CompletionFilter Folders          = new CompletionFilter("Folders",           "D", CompletionImages.Folder);
-    public static CompletionFilter Files            = new CompletionFilter("Files",             "F", CompletionImages.File);
-    public static CompletionFilter Choices          = new CompletionFilter("Choices",           "C", CompletionImages.Choice);
-    public static CompletionFilter GuiNodes         = new CompletionFilter("Views and Dialogs", "V", CompletionImages.GuiNode);
-    public static CompletionFilter ConnectionPoints = new CompletionFilter("Connection Points", "P", CompletionImages.ConnectionPoint);
-    public static CompletionFilter Tasks            = new CompletionFilter("Tasks",             "T", CompletionImages.Task);
+    public static CompletionFilter Keywords         = new("Keywords"         , "K", CompletionImages.Keyword);
+    public static CompletionFilter Folders          = new("Folders"          , "D", CompletionImages.Folder);
+    public static CompletionFilter Files            = new("Files"            , "F", CompletionImages.File);
+    public static CompletionFilter Choices          = new("Choices"          , "C", CompletionImages.Choice);
+    public static CompletionFilter GuiNodes         = new("Views and Dialogs", "V", CompletionImages.GuiNode);
+    public static CompletionFilter ConnectionPoints = new("Connection Points", "P", CompletionImages.ConnectionPoint);
+    public static CompletionFilter Tasks            = new("Tasks"            , "T", CompletionImages.Task);
 
     [CanBeNull]
     public static CompletionFilter TryGetFromSymbol(ISymbol symbol) {
         switch (symbol) {
-            case IInitNodeSymbol _:
-            case IExitNodeSymbol _:
-            case IEndNodeSymbol _: return ConnectionPoints;
-            case IChoiceNodeSymbol _: return Choices;
-            case IGuiNodeSymbol _:    return GuiNodes;
-            case ITaskNodeSymbol _:   return Tasks;
+            case IInitNodeSymbol:
+            case IExitNodeSymbol:
+            case IEndNodeSymbol:    return ConnectionPoints;
+            case IChoiceNodeSymbol: return Choices;
+            case IGuiNodeSymbol:    return GuiNodes;
+            case ITaskNodeSymbol:   return Tasks;
         }
 
         return null;

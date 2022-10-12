@@ -4,7 +4,7 @@ using System.Text;
 namespace Nav.Language.Tests; 
 
 static class TestHelper {
-    private static readonly Random Random = new Random();
+    private static readonly Random Random = new();
 
     public static string RandomString(int length) {
 

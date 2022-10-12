@@ -12,7 +12,7 @@ namespace Nav.Language.Tests;
 [TestFixture]
 public class DescendantNodesTests {
 
-    string navContent = @"
+     const string NavContent = @"
             [namespaceprefix NamespacePrefix]
             [using My.Using.Namespace]
 
@@ -32,11 +32,12 @@ public class DescendantNodesTests {
                 TestView --> Ok on Ok;
             }
         ";
+
     CodeGenerationUnitSyntax _codegenerationUnitSyntax;
 
     [SetUp]
     public void Setup() {
-        _codegenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(navContent);
+        _codegenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(NavContent);
     }
 
     [Test]

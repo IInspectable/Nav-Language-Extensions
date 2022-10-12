@@ -20,7 +20,7 @@ class NavInitAnnotationLocationInfoProvider : NavAnnotationLocationInfoProvider<
 
     static ImageMoniker ImageMoniker { get { return ImageMonikers.InitConnectionPoint; } }
 
-    protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new CancellationToken()) {
+    protected override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(string sourceText, CancellationToken cancellationToken = new()) {
 
         try {
 

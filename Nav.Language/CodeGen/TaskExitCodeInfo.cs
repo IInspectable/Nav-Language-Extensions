@@ -42,7 +42,7 @@ public sealed class TaskExitCodeInfo {
             throw new ArgumentNullException(nameof(taskNode));
         }
 
-        containingTaskCodeInfo = containingTaskCodeInfo ?? TaskCodeInfo.FromTaskDefinition(taskNode.ContainingTask);
+        containingTaskCodeInfo ??= TaskCodeInfo.FromTaskDefinition(taskNode.ContainingTask);
 
         return new TaskExitCodeInfo(containingTaskCodeInfo, taskNode.Name);
     }

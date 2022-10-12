@@ -36,9 +36,9 @@ public class NavSolution {
 
     public ImmutableArray<FileInfo> SolutionFiles { get; }
 
-    public static NavSolution Empty = new NavSolution(null, ImmutableArray<FileInfo>.Empty);
+    public static NavSolution Empty = new(null, ImmutableArray<FileInfo>.Empty);
 
-    public static string SearchFilter => $"*.nav";
+    public static string SearchFilter => "*.nav";
 
     public static Task<NavSolution> FromDirectoryAsync(DirectoryInfo directory, CancellationToken cancellationToken) {
 

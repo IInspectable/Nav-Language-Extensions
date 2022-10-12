@@ -162,12 +162,12 @@ public static class SyntaxFacts {
 
     public static bool IsIdentifierCharacter(char c) {
 
-        return c >= 'a' && c <= 'z' ||
-               c >= 'A' && c <= 'Z' ||
-               c >= '0' && c <= '9' ||
-               c == 'Ä'             || c == 'Ö' || c == 'Ü' ||
-               c == 'ä'             || c == 'ö' || c == 'ü' ||
-               c == 'ß'             || c == '.' || c == '_';
+        return c is >= 'a' and <= 'z' ||
+               c is >= 'A' and <= 'Z' ||
+               c is >= '0' and <= '9' ||
+               c == 'Ä'               || c == 'Ö' || c == 'Ü' ||
+               c == 'ä'               || c == 'ö' || c == 'ü' ||
+               c == 'ß'               || c == '.' || c == '_';
     }
 
     public static bool IsValidIdentifier(string value) {

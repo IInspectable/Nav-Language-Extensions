@@ -22,7 +22,7 @@ sealed class ParserService: IDisposable {
 
     static readonly Logger Logger = Logger.Create<ParserService>();
 
-    static readonly object      ParseMethodKey = new Object();
+    static readonly object      ParseMethodKey = new();
     readonly        IDisposable _parserObs;
     SyntaxTreeAndSnapshot       _syntaxTreeAndSnapshot;
     bool                        _waitingForAnalysis;
@@ -125,10 +125,10 @@ sealed class ParserService: IDisposable {
     }
 
     struct BuildResultArgs {
-        public ITextSnapshot Snapshot    { get; set; }
-        public string        Text        { get; set; }
-        public string        FilePath    { get; set; }
-        public ParseMethod   ParseMethod { get; set; }
+        public ITextSnapshot Snapshot    { get; init; }
+        public string        Text        { get; init; }
+        public string        FilePath    { get; init; }
+        public ParseMethod   ParseMethod { get; init; }
     }
 
     /// <summary>

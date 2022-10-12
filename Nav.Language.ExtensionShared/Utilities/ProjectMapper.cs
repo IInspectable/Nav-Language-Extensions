@@ -18,7 +18,7 @@ class ProjectMapper {
 
     public static string MiscellaneousFiles = "Miscellaneous Files";
 
-    public static readonly ProjectMapper Empty = new ProjectMapper(ImmutableArray<ProjectInfo>.Empty);
+    public static readonly ProjectMapper Empty = new(ImmutableArray<ProjectInfo>.Empty);
 
     public ProjectInfo GetProjectInfo(string fileName) {
 

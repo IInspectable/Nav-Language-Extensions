@@ -84,13 +84,13 @@ sealed partial class NavLanguagePackage: AsyncPackage {
         Assumes.Present(shell);
         Assumes.Present(solution);
 
-        AddService(typeof(NavLanguageService), async (container, ct, type)
+        AddService(typeof(NavLanguageService), async (_, ct, _)
                        => {
                        await JoinableTaskFactory.SwitchToMainThreadAsync(ct);
                        return new NavLanguageService(this);
                    }, true);
 
-        AddService(typeof(NavLanguagePackage), async (container, ct, type)
+        AddService(typeof(NavLanguagePackage), async (_, ct, _)
                        => {
                        await JoinableTaskFactory.SwitchToMainThreadAsync(ct);
                        return this;

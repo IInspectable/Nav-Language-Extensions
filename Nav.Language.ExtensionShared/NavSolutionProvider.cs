@@ -160,32 +160,31 @@ partial class NavSolutionProvider {
         var creationTime = DateTime.Now;
         var itemBuilder  = ImmutableArray.CreateBuilder<FileInfo>();
 
-        using (var taskStatus = taskStatusProvider.CreateTaskStatus("Nav Solution Provider")) {
+        using var taskStatus = taskStatusProvider.CreateTaskStatus("Nav Solution Provider");
 
-            await taskStatus.OnProgressChangedAsync("Searching for the edge of eternity");
+        await taskStatus.OnProgressChangedAsync("Searching for the edge of eternity");
 
-            foreach (var file in Directory.EnumerateFiles(directory.FullName,
-                                                          SearchFilter,
-                                                          SearchOption.AllDirectories)) {
+        foreach (var file in Directory.EnumerateFiles(directory.FullName,
+                                                      SearchFilter,
+                                                      SearchOption.AllDirectories)) {
 
-                if (cancellationToken.IsCancellationRequested) {
-                    return NavSolutionSnapshot.Empty;
-                }
-
-                var fileInfo = new FileInfo(file);
-                    
-                itemBuilder.Add(fileInfo);
-
+            if (cancellationToken.IsCancellationRequested) {
+                return NavSolutionSnapshot.Empty;
             }
 
-            var solution = await NavSolution.FromDirectoryAsync(directory, cancellationToken);
+            var fileInfo = new FileInfo(file);
+                    
+            itemBuilder.Add(fileInfo);
 
-            return new NavSolutionSnapshot(creationTime, solution);
         }
+
+        var solution = await NavSolution.FromDirectoryAsync(directory, cancellationToken);
+
+        return new NavSolutionSnapshot(creationTime, solution);
 
     }
 
-    private readonly object _gate = new object();
+    private readonly object _gate = new();
 
     void TrySetSolutionSnapshot(NavSolutionSnapshot navSolutionSnapshot) {
 
@@ -207,7 +206,7 @@ partial class NavSolutionProvider {
             var solution = NavLanguagePackage.GetGlobalService<SVsSolution, IVsSolution>();
             solution.GetProperty((int) __VSPROPID.VSPROPID_IsSolutionOpen, out object value);
 
-            return value is bool isSolOpen && isSolOpen;
+            return value is true;
         }
     }
 

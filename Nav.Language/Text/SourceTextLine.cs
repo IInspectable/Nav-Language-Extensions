@@ -68,7 +68,7 @@ public readonly struct SourceTextLine: IExtent, IEquatable<SourceTextLine> {
     /// <summary>
     /// The extent of the line excluding the line ending
     /// </summary>
-    public TextExtent ExtentWithoutLineEndings => new TextExtent(Extent.Start, Extent.Length - Span.GetNewLineCharCount());
+    public TextExtent ExtentWithoutLineEndings => new(Extent.Start, Extent.Length - Span.GetNewLineCharCount());
 
     public int Start { get; }
     public int End   { get; }

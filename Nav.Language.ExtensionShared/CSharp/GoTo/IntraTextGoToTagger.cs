@@ -302,8 +302,8 @@ class IntraTextGoToTagger: ITagger<IntraTextGoToTag>, IClassAnnotationChangeList
 
     struct BuildTagsArgs {
 
-        public ITextSnapshot Snapshot   { get; set; }
-        public DocumentId    DocumentId { get; set; }
+        public ITextSnapshot Snapshot   { get; init; }
+        public DocumentId    DocumentId { get; init; }
 
     }
 

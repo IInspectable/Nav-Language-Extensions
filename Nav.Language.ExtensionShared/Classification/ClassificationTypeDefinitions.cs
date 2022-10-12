@@ -299,9 +299,8 @@ static class ClassificationTypeDefinitions {
             var underline = new System.Windows.TextDecoration {
                 PenThicknessUnit = System.Windows.TextDecorationUnit.FontRecommended
             };
-            if (TextDecorations == null) {
-                TextDecorations = new System.Windows.TextDecorationCollection();
-            }
+            
+            TextDecorations ??= new System.Windows.TextDecorationCollection();
 
             TextDecorations.Add(underline);
         }

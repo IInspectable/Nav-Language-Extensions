@@ -13,7 +13,7 @@ namespace Pharmatechnik.Nav.Language.Extension.Images;
 
 public static partial class ImageMonikers {
 
-    static readonly Guid CustomMonikerGuid = new Guid("{11e9628b-b9e6-45d6-ae8d-b4440be46fa6}");
+    static readonly Guid CustomMonikerGuid = new("{11e9628b-b9e6-45d6-ae8d-b4440be46fa6}");
 
     public static ImageMoniker ProjectNode  => KnownMonikers.CSProjectNode;
     public static ImageMoniker FolderClosed => KnownMonikers.FolderClosed;
@@ -91,9 +91,9 @@ public static partial class ImageMonikers {
     public static ImageMoniker DialogNode          => KnownMonikers.Dialog;
     public static ImageMoniker SignalTrigger       => KnownMonikers.EventTrigger;
     public static ImageMoniker Edge                => KnownMonikers.AssociationRelationship;
-    public static ImageMoniker ModalEdge           => new ImageMoniker {Guid = CustomMonikerGuid, Id = 1};
-    public static ImageMoniker NonModalEdge        => new ImageMoniker {Guid = CustomMonikerGuid, Id = 2};
-    public static ImageMoniker GoToEdge            => new ImageMoniker {Guid = CustomMonikerGuid, Id = 3};
+    public static ImageMoniker ModalEdge           => new() {Guid = CustomMonikerGuid, Id = 1};
+    public static ImageMoniker NonModalEdge        => new() {Guid = CustomMonikerGuid, Id = 2};
+    public static ImageMoniker GoToEdge            => new() {Guid = CustomMonikerGuid, Id = 3};
 
     public static ImageMoniker FromSymbol(ISymbol symbol) {
         return SymbolImageVisitor.FindImageMoniker(symbol);

@@ -15,7 +15,7 @@ static partial class TextViewExtensions {
     class AutoClosingViewProperty<TProperty, TTextView> where TTextView : ITextView {
 
         readonly TTextView                     _textView;
-        readonly Dictionary<object, TProperty> _map = new Dictionary<object, TProperty>();
+        readonly Dictionary<object, TProperty> _map = new();
 
         public static bool GetOrCreateValue(
             TTextView textView,

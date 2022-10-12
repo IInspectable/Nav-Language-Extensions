@@ -14,10 +14,10 @@ static class SyntaxBuildingExtension {
     }
 
     static T OfSyntaxType<T>(this SyntaxNode syntax) where T : SyntaxNode {
-        if (!(syntax is T)) {
+        if (syntax is not T node) {
             throw new InvalidOperationException($"{typeof(T).Name} expected");
         }
-        return (T) syntax;
+        return node;
     }
 
     public static T OfSyntaxType<T>(this OptionalSyntaxElement optionalSyntaxElement) where T : SyntaxNode {

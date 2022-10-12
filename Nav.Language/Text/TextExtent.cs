@@ -23,8 +23,8 @@ public readonly struct TextExtent: IExtent, IEquatable<TextExtent> {
         Length = length;
     }
 
-    public static readonly TextExtent Empty   = new TextExtent(start: 0,  length: 0);
-    public static readonly TextExtent Missing = new TextExtent(start: -1, length: 0);
+    public static readonly TextExtent Empty   = new(start: 0,  length: 0);
+    public static readonly TextExtent Missing = new(start: -1, length: 0);
 
     public static TextExtent FromBounds(int start, int end) {
         return new TextExtent(start: start, length: end - start);

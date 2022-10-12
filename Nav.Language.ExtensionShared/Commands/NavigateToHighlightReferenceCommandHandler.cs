@@ -66,22 +66,22 @@ class NavigateToHighlightReferenceCommandHandler:
             return false;
         }
 
-        using (var tagger = _tagAggregatorFactory.CreateTagAggregator<ReferenceHighlightTag>(wpfTextView)) {
-            var tagUnderCursor = FindTagUnderCaret(tagger, wpfTextView);
+        using var tagger         = _tagAggregatorFactory.CreateTagAggregator<ReferenceHighlightTag>(wpfTextView);
+        var       tagUnderCursor = FindTagUnderCaret(tagger, wpfTextView);
 
-            if (tagUnderCursor == null) {
-                return false;
-            }
-
-            var spans = GetReferenceSpans(tagger, wpfTextView.TextSnapshot.GetFullSpan()).ToList();
-
-            var destinationSpan = GetDestinationSpan(tagUnderCursor.Value, spans, direction);
-            if (wpfTextView.TryMoveCaretToAndEnsureVisible(destinationSpan.Start, _outliningManagerService)) {
-                wpfTextView.SetSelection(destinationSpan);
-            }
-
-            return true;
+        if (tagUnderCursor == null) {
+            return false;
         }
+
+        var spans = GetReferenceSpans(tagger, wpfTextView.TextSnapshot.GetFullSpan()).ToList();
+
+        var destinationSpan = GetDestinationSpan(tagUnderCursor.Value, spans, direction);
+        if (wpfTextView.TryMoveCaretToAndEnsureVisible(destinationSpan.Start, _outliningManagerService)) {
+            wpfTextView.SetSelection(destinationSpan);
+        }
+
+        return true;
+
     }
 
     static IList<SnapshotSpan> GetReferenceSpans(ITagAggregator<ReferenceHighlightTag> tagAggregator, SnapshotSpan span) {
@@ -112,7 +112,7 @@ class NavigateToHighlightReferenceCommandHandler:
         var tags = GetReferenceSpans(tagAggregator, new SnapshotSpan(textView.TextSnapshot, new Span(caretPosition, 0)));
         return tags.Any()
             ? tags.First()
-            : (SnapshotSpan?) null;
+            : null;
     }
 
     sealed class StartComparer: IComparer<SnapshotSpan> {

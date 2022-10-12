@@ -69,7 +69,7 @@ class ReferenceEntry: Entry {
 
     TextBlock LinePartsToTextBlock() {
 
-        return Presenter.ToTextBlock(ReferenceItem.TextParts, (run, part, position) => {
+        return Presenter.ToTextBlock(ReferenceItem.TextParts, (run, _, position) => {
 
             var highlightExtent = ReferenceItem.TextHighlightExtent;
 
@@ -90,7 +90,7 @@ class ReferenceEntry: Entry {
 
     TextBlock ToolTipPartsToTextBlock() {
 
-        return Presenter.ToTextBlock(ReferenceItem.ToolTipParts, (run, part, position) => {
+        return Presenter.ToTextBlock(ReferenceItem.ToolTipParts, (run, _, position) => {
 
             var highlightExtent = ReferenceItem.ToolTipHighlightExtent;
 

@@ -48,8 +48,7 @@ static class Program  {
         var args = new List<string>();
         var sb   = new StringBuilder();
 
-        string line;
-        while ((line = reader.ReadLine()) != null) {
+        while (reader.ReadLine() is { } line) {
 
             int t = line.Length;
 

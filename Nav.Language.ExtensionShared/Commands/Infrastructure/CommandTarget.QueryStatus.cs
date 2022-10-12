@@ -120,7 +120,8 @@ partial class CommandTarget : IOleCommandTarget {
             return string.Empty;
         }
 
-        return new string((char*) &pText->rgwz, 0, (int) pText->cwActual);
+        // ReSharper disable once RedundantCast ist für vs2019 Build nötig
+        return new string((char*)&pText->rgwz, 0, (int) pText->cwActual);
     }
 
     static unsafe void SetText(IntPtr pCmdTextInt, string text) {
@@ -133,7 +134,8 @@ partial class CommandTarget : IOleCommandTarget {
 
         fixed(char* pinnedText = text) {
             char* src  = pinnedText;
-            char* dest = (char*) (&pText->rgwz);
+            // ReSharper disable once RedundantCast ist für vs2019 Build nötig
+            char* dest = (char*)&pText->rgwz;
 
             // Don't copy too much, and make sure to reserve space for the terminator
             int length = Math.Min(text.Length, (int) pText->cwBuf - 1);

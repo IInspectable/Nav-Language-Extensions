@@ -26,32 +26,22 @@ public class ServiceConnectionParams {
     }
 
     [CommandLineParam]
-    public string EndpointId { get; private set; }
+    public string EndpointId { get; private init; }
 
     [CommandLineParam]
-    public int ParentProcessId { get; private set; }
+    public int ParentProcessId { get; private init; }
 
-    public string ReadyEventName {
-        get { return EndpointId; }
-    }
+    public string ReadyEventName => EndpointId;
 
     Uri HostUri { get; }
 
-    public Uri BaseUri {
-        get { return new Uri(HostUri, EndpointId); }
-    }
+    public Uri BaseUri => new(HostUri, EndpointId);
 
-    public string AutoCompletionAddress {
-        get { return "AutoCompletionSource"; }
-    }
+    public string AutoCompletionAddress => "AutoCompletionSource";
 
-    public Uri AutoCompletionUri {
-        get { return new Uri(HostUri, EndpointId + "/" + AutoCompletionAddress); }
-    }
+    public Uri AutoCompletionUri => new(HostUri, EndpointId + "/" + AutoCompletionAddress);
 
-    public long BindingMaxReceivedMessageSize {
-        get { return 10000000; }
-    }
+    public long BindingMaxReceivedMessageSize => 10000000;
 
     public static ServiceConnectionParams CreateNew() {
         var sca = new ServiceConnectionParams {

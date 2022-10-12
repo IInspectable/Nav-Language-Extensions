@@ -57,7 +57,7 @@ public class SyntaxTree {
                                          Encoding encoding = null,
                                          CancellationToken cancellationToken = default) {
 
-        text = text ?? String.Empty;
+        text ??= String.Empty;
 
         var sourceText  = SourceText.From(text, filePath);
         var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();

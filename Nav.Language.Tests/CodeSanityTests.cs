@@ -31,8 +31,8 @@ public class CodeSanityTests {
             public Type ActualBaseType   { get; }
         }
 
-        public readonly List<BaseFail> BaseFails = new List<BaseFail>();
-        public readonly List<Type>     NameFails = new List<Type>();
+        public readonly List<BaseFail> BaseFails = new();
+        public readonly List<Type>     NameFails = new();
 
         public override bool DefaultWalk(SyntaxNode node) {
             if (node is ArrayRankSpecifierSyntax) {
@@ -96,10 +96,10 @@ public class CodeSanityTests {
         foreach(var expected in expectedTypes.ToList()) {
 
             var candidate =actualTypes.FirstOrDefault(field => field.Name == expected.Name);
-            Assert.That(candidate, Is.Not.Null, "Der folgende Wert fehlt: {0}.{1} = {2}", typeof(SyntaxTokenType).Name, expected.Name, expected.GetRawConstantValue());
+            Assert.That(candidate, Is.Not.Null, "Der folgende Wert fehlt: {0}.{1} = {2}", nameof(SyntaxTokenType), expected.Name, expected.GetRawConstantValue());
 
             Assert.That(candidate.GetRawConstantValue(), Is.EqualTo(expected.GetRawConstantValue()),
-                        "{0}.{1}", typeof(SyntaxTokenType).Name, expected.Name);
+                        "{0}.{1}", nameof(SyntaxTokenType), expected.Name);
 
             actualTypes.Remove(candidate);
         }
@@ -109,14 +109,14 @@ public class CodeSanityTests {
         const int    eofValue  = 255;
 
         var endOfFileField = actualTypes.FirstOrDefault(left => left.Name == endOfFile );
-        Assert.That(endOfFileField,                       Is.Not.Null,          "Der folgende Wert fehlt: {0}.{1} = {2}", typeof(SyntaxTokenType).Name, endOfFile, eofValue);
-        Assert.That(endOfFileField.GetRawConstantValue(), Is.EqualTo(eofValue), "{0}.{1}",                                typeof(SyntaxTokenType).Name, endOfFile );
+        Assert.That(endOfFileField,                       Is.Not.Null,          "Der folgende Wert fehlt: {0}.{1} = {2}", nameof(SyntaxTokenType), endOfFile, eofValue);
+        Assert.That(endOfFileField.GetRawConstantValue(), Is.EqualTo(eofValue), "{0}.{1}",                                nameof(SyntaxTokenType), endOfFile );
 
         actualTypes.Remove(endOfFileField);
 
         foreach (var left in actualTypes) {
             Assert.That(false,
-                        "{0}.{1} ist zuviel", typeof(SyntaxTokenType).Name, left.Name);
+                        "{0}.{1} ist zuviel", nameof(SyntaxTokenType), left.Name);
         }
     }
 

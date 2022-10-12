@@ -86,15 +86,15 @@ sealed partial class QuickinfoBuilderService {
 
     }
 
-    [CanBeNull]
-    TextBlock ToTextBlock(string text, TextClassification classification) {
-        return ToTextBlock(new ClassifiedText(text, classification));
-    }
+    //[CanBeNull]
+    //TextBlock ToTextBlock(string text, TextClassification classification) {
+    //    return ToTextBlock(new ClassifiedText(text, classification));
+    //}
 
-    [CanBeNull]
-    TextBlock ToTextBlock(params ClassifiedText[] parts) {
-        return ToTextBlock(parts.ToImmutableArray());
-    }
+    //[CanBeNull]
+    //TextBlock ToTextBlock(params ClassifiedText[] parts) {
+    //    return ToTextBlock(parts.ToImmutableArray());
+    //}
 
     [CanBeNull]
     TextBlock ToTextBlock(IReadOnlyCollection<ClassifiedText> parts) {

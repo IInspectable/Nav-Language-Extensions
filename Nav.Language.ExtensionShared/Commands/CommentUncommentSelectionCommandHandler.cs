@@ -196,6 +196,7 @@ class CommentUncommentSelectionCommandHandler: ICommandHandler<CommentSelectionC
 
     void TryUncommentContainingBlockComment(SnapshotSpan span, ITextEdit textEdit, List<ITrackingSpan> spansToSelect) {
 
+        // ReSharper disable once RedundantAssignment
         var positionOfStart = -1;
         var positionOfEnd   = -1;
         var spanText        = span.GetText();

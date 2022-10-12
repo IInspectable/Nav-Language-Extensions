@@ -55,10 +55,8 @@ class TaskReferenceOutlineTagger {
         IncludeDirectiveSyntax lastInclude  = null;
         foreach (var syntaxNode in allRelevant) {
             if (syntaxNode is IncludeDirectiveSyntax include) {
-                if (firstInclude == null) {
-                    firstInclude = include;
-                }
-                lastInclude = include;
+                firstInclude ??= include;
+                lastInclude  =   include;
             } else {
                 if (firstInclude != null && firstInclude != lastInclude) {
 

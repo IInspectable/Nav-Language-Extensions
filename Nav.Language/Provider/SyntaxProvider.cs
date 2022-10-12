@@ -29,11 +29,11 @@ public class SyntaxProvider: ISyntaxProvider {
 
     static string ReadAllText(string filePath) {
 
-        using (var sr = new StreamReader(path: filePath,
-                                         encoding: Encoding.Default,
-                                         detectEncodingFromByteOrderMarks: true)) {
-            return sr.ReadToEnd();
-        }
+        using var sr = new StreamReader(path: filePath,
+                                        encoding: Encoding.Default,
+                                        detectEncodingFromByteOrderMarks: true);
+        return sr.ReadToEnd();
+
     }
 
 }

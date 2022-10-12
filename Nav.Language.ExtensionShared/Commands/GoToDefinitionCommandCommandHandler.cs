@@ -40,31 +40,29 @@ class GoToDefinitionCommandCommandHandler: ICommandHandler<GoToDefinitionCommand
 
         ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
 
-            using (var tagAggregator = _viewTagAggregatorFactoryService.CreateTagAggregator<GoToTag>(args.TextView)) {
+            using var tagAggregator = _viewTagAggregatorFactoryService.CreateTagAggregator<GoToTag>(args.TextView);
+            var       textView      = args.TextView as IWpfTextView;
 
-                var textView = args.TextView as IWpfTextView;
-
-                if (textView == null) {
-                    return;
-                }
-
-                var navigateToTagSpan = textView.GetGoToDefinitionTagSpanAtCaretPosition(tagAggregator);
-
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
-                if (navigateToTagSpan == null) {
-                    ShellUtil.ShowInfoMessage("Cannot navigate to the symbol under the caret.");
-                    return;
-                }
-
-                var placementRectangle = textView.TextViewLines.GetTextMarkerGeometry(navigateToTagSpan.Span).Bounds;
-                placementRectangle.Offset(-args.TextView.ViewportLeft, -args.TextView.ViewportTop);
-
-                await _goToLocationService.GoToLocationInPreviewTabAsync(
-                    originatingTextView: textView,
-                    placementRectangle : placementRectangle,
-                    provider           : navigateToTagSpan.Tag.Provider);
+            if (textView == null) {
+                return;
             }
+
+            var navigateToTagSpan = textView.GetGoToDefinitionTagSpanAtCaretPosition(tagAggregator);
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+            if (navigateToTagSpan == null) {
+                ShellUtil.ShowInfoMessage("Cannot navigate to the symbol under the caret.");
+                return;
+            }
+
+            var placementRectangle = textView.TextViewLines.GetTextMarkerGeometry(navigateToTagSpan.Span).Bounds;
+            placementRectangle.Offset(-args.TextView.ViewportLeft, -args.TextView.ViewportTop);
+
+            await _goToLocationService.GoToLocationInPreviewTabAsync(
+                originatingTextView: textView,
+                placementRectangle : placementRectangle,
+                provider           : navigateToTagSpan.Tag.Provider);
         });
 
         return true;

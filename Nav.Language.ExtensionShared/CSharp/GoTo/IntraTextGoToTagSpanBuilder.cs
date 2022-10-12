@@ -94,7 +94,7 @@ class IntraTextGoToTagSpanBuilder: NavTaskAnnotationVisitor<ITagSpan<IntraTextGo
         return new TagSpan<IntraTextGoToTag>(snapshotSpan, tag);
     }
 
-    static readonly Regex BeginMethodRegex = new Regex(pattern: $"^{CodeGenFacts.BeginMethodPrefix}", options: RegexOptions.Singleline | RegexOptions.Compiled);
+    static readonly Regex BeginMethodRegex = new(pattern: $"^{CodeGenFacts.BeginMethodPrefix}", options: RegexOptions.Singleline | RegexOptions.Compiled);
 
     public override ITagSpan<IntraTextGoToTag> VisitNavInitCallAnnotation(NavInitCallAnnotation navInitCallAnnotation) {
 

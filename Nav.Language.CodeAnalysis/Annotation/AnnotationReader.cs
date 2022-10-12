@@ -432,7 +432,7 @@ public static class AnnotationReader {
     }
 
     sealed class NavTag {
-        public string TagName { get; set; }
-        public string Content { get; set; }
+        public string TagName { get; init; }
+        public string Content { get; init; }
     }        
 }

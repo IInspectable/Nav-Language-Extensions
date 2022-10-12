@@ -24,21 +24,22 @@ sealed class VisualStudioWaitIndicator : IWaitIndicator {
 
         ThreadHelper.ThrowIfNotOnUIThread();
 
-        using(var waitContext = StartWait(title, message, allowCancel)) {
-            try {
-                action(waitContext);
+        using var waitContext = StartWait(title, message, allowCancel);
 
-                return WaitIndicatorResult.Completed;
-            } catch(OperationCanceledException) {
+        try {
+            action(waitContext);
+
+            return WaitIndicatorResult.Completed;
+        } catch(OperationCanceledException) {
+            return WaitIndicatorResult.Canceled;
+        } catch(AggregateException e) {
+            if(e.InnerExceptions[0] is OperationCanceledException) {
                 return WaitIndicatorResult.Canceled;
-            } catch(AggregateException e) {
-                if(e.InnerExceptions[0] is OperationCanceledException) {
-                    return WaitIndicatorResult.Canceled;
-                } else {
-                    throw;
-                }
+            } else {
+                throw;
             }
         }
+
     }
 
     VisualStudioWaitContext StartWait(string title, string message, bool allowCancel) {
