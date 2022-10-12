@@ -166,20 +166,30 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text" Version="3.0.0" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.0.0" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="3.0.0" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-2-31512-422" ExcludeAssets="runtime">
+    <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text" Version="4.3.1" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.0.0" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.2155-preview2" ExcludeAssets="runtime">
+    <PackageReference Include="Microsoft.CodeAnalysis" Version="4.3.1" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="NLog" Version="4.6.2" />
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="4.3.1" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.3.32804.24" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.4.2116" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NLog" Version="5.0.4" />
     <PackageReference Include="Rx-Linq" Version="2.2.5" />
     <PackageReference Include="Rx-PlatformServices" Version="2.2.5" />
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" ExcludeAssets="runtime" />
+    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
   <Import Project="..\Nav.Language.ExtensionShared\Nav.Language.ExtensionShared.projitems" Label="Shared" />
