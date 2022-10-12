@@ -20,9 +20,7 @@ abstract class CodeAnalysisLocationInfoProvider: LocationInfoProvider {
         _sourceBuffer = sourceBuffer;
     }
 
-    public ITextBuffer SourceBuffer {
-        get { return _sourceBuffer; }
-    }
+    public ITextBuffer SourceBuffer => _sourceBuffer;
 
     public sealed override async Task<IEnumerable<LocationInfo>> GetLocationsAsync(CancellationToken cancellationToken = new()) {
         var project = _sourceBuffer.GetContainingProject();

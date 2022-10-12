@@ -195,7 +195,12 @@ public static class LocationFinder {
                 throw new LocationNotFoundException(String.Format(MsgUnableToFindMatchingOverloadForMethod0, BeginLogicMethodName));
             }
 
-            var memberSyntax   = beginMethod.DeclaringSyntaxReferences.FirstOrDefault()?.GetSyntax() as MethodDeclarationSyntax;
+            var syntaxReference = beginMethod.DeclaringSyntaxReferences.FirstOrDefault();
+            if (syntaxReference == null) {
+                throw new LocationNotFoundException(MsgUnableToGetMemberLoation);
+            }
+
+            var memberSyntax   = await syntaxReference.GetSyntaxAsync(cancellationToken) as MethodDeclarationSyntax;
             var memberLocation = memberSyntax?.Identifier.GetLocation();
             var location       = ToLocation(memberLocation);
 

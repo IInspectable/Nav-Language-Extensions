@@ -247,7 +247,8 @@ public static partial class WfsReferenceFinder {
                         continue;
                     }
 
-                    var syntaxNode = syntaxTree.GetRoot().FindNode(referenceLocation.Location.SourceSpan);
+                    var rootNode   = await syntaxTree.GetRootAsync();
+                    var syntaxNode = rootNode.FindNode(referenceLocation.Location.SourceSpan);
 
                     // Sicherstellen, dass die Referenz ein Methodenaufruf darstellt
                     // node.Parent => MemberAccessExpressionSyntax
