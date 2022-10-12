@@ -1,6 +1,7 @@
 ﻿
 function GetTargetFile(){
-    Get-ChildItem "$PSScriptRoot\..\CustomBuild.targets" -Recurse
+    Get-ChildItem "$PSScriptRoot\..\Directory.Build.props"
+    #C:\ws\git\Nav.Language.Extensions\Directory.Build.props
 }
 
 function IncreaseMajor(){

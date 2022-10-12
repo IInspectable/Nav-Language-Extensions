@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
     <LangVersion>10.0</LangVersion>
+    <ProductVersion>5.2.2</ProductVersion>
   </PropertyGroup>
 </Project>
