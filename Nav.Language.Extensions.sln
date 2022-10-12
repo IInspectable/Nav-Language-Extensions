@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language", "Nav.Languag
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Cli", "Nav.Cli\Nav.Cli.csproj", "{AB2AC2BC-E10D-4BAD-9740-2FB7FF6EACDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nav.Language.Extension2019", "Nav.Language.Extension2019\Nav.Language.Extension2019.csproj", "{C88AACD6-6973-430B-A94B-4CC45B37F32D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.Tests", "Nav.Language.Tests\Nav.Language.Tests.csproj", "{6F82F651-4D21-467D-BD83-68C743BC8DF4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.CodeAnalysis", "Nav.Language.CodeAnalysis\Nav.Language.CodeAnalysis.csproj", "{32AF2E02-A21A-4D1F-9927-09931715D057}"
@@ -53,10 +51,6 @@ Global
 		{AB2AC2BC-E10D-4BAD-9740-2FB7FF6EACDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB2AC2BC-E10D-4BAD-9740-2FB7FF6EACDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB2AC2BC-E10D-4BAD-9740-2FB7FF6EACDB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C88AACD6-6973-430B-A94B-4CC45B37F32D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C88AACD6-6973-430B-A94B-4CC45B37F32D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C88AACD6-6973-430B-A94B-4CC45B37F32D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C88AACD6-6973-430B-A94B-4CC45B37F32D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6F82F651-4D21-467D-BD83-68C743BC8DF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6F82F651-4D21-467D-BD83-68C743BC8DF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F82F651-4D21-467D-BD83-68C743BC8DF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -108,8 +102,6 @@ Global
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{aa0629b3-af39-4049-9723-7989ec93b0a4}*SharedItemsImports = 5
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{ab2ac2bc-e10d-4bad-9740-2fb7ff6eacdb}*SharedItemsImports = 5
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{c38f8ee6-5dc6-40f3-8994-a33069b05fd8}*SharedItemsImports = 5
-		JetBrains.Annotations\JetBrains.Annotations.projitems*{c88aacd6-6973-430b-a94b-4cc45b37f32d}*SharedItemsImports = 4
-		Nav.Language.ExtensionShared\Nav.Language.ExtensionShared.projitems*{c88aacd6-6973-430b-a94b-4cc45b37f32d}*SharedItemsImports = 4
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{c88aacd6-6973-430b-a94b-4cc45b37f32e}*SharedItemsImports = 4
 		Nav.Language.ExtensionShared\Nav.Language.ExtensionShared.projitems*{c88aacd6-6973-430b-a94b-4cc45b37f32e}*SharedItemsImports = 4
 		Nav.Language.ExtensionShared\Nav.Language.ExtensionShared.projitems*{da1f60b3-96af-4862-aab9-90b0ab7b2504}*SharedItemsImports = 13

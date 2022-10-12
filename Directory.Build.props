@@ -2,6 +2,6 @@
 <Project>
   <PropertyGroup>
     <LangVersion>10.0</LangVersion>
-    <ProductVersion>5.2.3</ProductVersion>
+    <ProductVersion>5.3.0</ProductVersion>
   </PropertyGroup>
 </Project>
