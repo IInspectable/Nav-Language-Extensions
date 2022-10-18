@@ -26,6 +26,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B752DDF-06C7-4B83-A8EC-43029F20825E}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props= Directory.Packages.props
 		_build\GobalAssemblyInfo.cs = _build\GobalAssemblyInfo.cs
 		README.md = README.md
 		_build\WriteThisAssemblyFile.targets = _build\WriteThisAssemblyFile.targets

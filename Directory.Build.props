@@ -4,4 +4,9 @@
     <LangVersion>10.0</LangVersion>
     <ProductVersion>5.3.1</ProductVersion>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);NU1507</NoWarn>
+  </PropertyGroup>
+
 </Project>

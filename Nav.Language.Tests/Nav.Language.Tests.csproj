@@ -8,7 +8,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Nav.Language.Tests</RootNamespace>
     <AssemblyName>Nav.Language.Tests</AssemblyName>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>    
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -30,7 +30,7 @@
     <EmbeddedResource Include="Resources\TaskC.nav" />
     <EmbeddedResource Include="Resources\NestedChoices.nav" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <NoCompile Include="Resources\FrameworkStubs.cs" />
     <NoCompile Include="Resources\FrameworkStubsWithoutNS.cs" />
@@ -40,11 +40,11 @@
 
   <ItemGroup>
     <Compile Remove="@(NoCompile)" />
-    <None Remove="Diagnostics\Tests\SyntaxErrorTokenRecognitionError.nav" />    
+    <None Remove="Diagnostics\Tests\SyntaxErrorTokenRecognitionError.nav" />
     <None Include="@(NoCompile)" />
     <None Include="CustomBuild.targets" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="Generated Tests\TokenPropertyNameTests.tt" />
     <None Include="Generated Tests\ParseEmptyStringTests.tt" />
@@ -136,28 +136,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Antlr4" Version="4.6.6">
+    <PackageReference Include="Antlr4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Antlr4.CodeGenerator" Version="4.6.6" />
-    <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
-    <PackageReference Include="Microsoft.CodeAnalysis" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Composition" Version="1.0.31" />
-    <PackageReference Include="NUnit" Version="3.11.0" />
-    <PackageReference Include="NUnit.Console" Version="3.10.0" />
-    <PackageReference Include="NUnit.Extension.NUnitProjectLoader" Version="3.6.0" />
-    <PackageReference Include="NUnit.Extension.NUnitV2Driver" Version="3.7.0" />
-    <PackageReference Include="NUnit.Extension.NUnitV2ResultWriter" Version="3.6.0" />
-    <PackageReference Include="NUnit.Runners" Version="3.10.0" />
-    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
-    <PackageReference Include="System.Composition" Version="1.2.0" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Include="System.Xml.ReaderWriter" Version="4.3.1" />
+
+    <PackageReference Include="System.Collections.Immutable" />
+
+    <PackageReference Include="Antlr4.Runtime" />
+    <PackageReference Include="Antlr4.CodeGenerator" />
+
+    <PackageReference Include="NUnit" />
+
+    <PackageReference Include="Microsoft.CodeAnalysis" />
+
   </ItemGroup>
 
   <Import Project="CustomBuild.targets" />
-  
+
 
 </Project>
