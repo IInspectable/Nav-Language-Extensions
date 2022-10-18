@@ -3,14 +3,13 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
 
     <PackageVersion Include="System.Memory" Version="4.5.4" />
-    <PackageVersion Include="System.Composition" Version="1.2.0" />
+    <PackageVersion Include="System.Composition" Version="6.0.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="6.0.0" />
-    <!--<PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0" />-->
 
     <PackageVersion Include="NLog" Version="5.0.4" />
     <PackageVersion Include="NUnit" Version="3.13.3" />
