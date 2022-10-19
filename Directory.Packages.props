@@ -24,20 +24,29 @@
     <PackageVersion Include="StringTemplate4" Version="4.0.8" />
 
     <PackageVersion Include="FluentCommandLineParser" Version="1.4.3" />
+    
+    <!-- This package contains helper functionality for MSBuild extenders Achtung: Komische Versionierung!-->
+    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.2.0" />
 
-    <PackageVersion Include="Microsoft.Composition" Version="1.0.31" />
+    <!-- ========= Roslyn ============== -->
 
-    <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.0.0" />
+    <!-- .NET Compiler Platform ("Roslyn").-->
+    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.3.1" />
+    <!-- .NET Compiler Platform ("Roslyn") support for working with Visual Studio text buffers. -->
+    <PackageVersion Include="Microsoft.CodeAnalysis.EditorFeatures.Text" Version="4.3.1" />
+    <!-- .NET Compiler Platform ("Roslyn") support for Visual Studio. -->
+    <PackageVersion Include="Microsoft.VisualStudio.LanguageServices" Version="4.3.1" />
 
-    <PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="17.4.2118" />
+    <!-- ========= Visual Studio extensibility ============== -->
 
-    <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.1.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.EditorFeatures.Text" Version="4.1.0" />
-    <PackageVersion Include="Microsoft.VisualStudio.LanguageServices" Version="4.1.0" />
-
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.3" />
-
+    <!-- Visual Studio extensibility packages-->
     <PackageVersion Include="Microsoft.VisualStudio.SDK" Version="17.3.32804.24" />
+    <!-- Fehlt irgendwie im VS SDK Paket... -->
+    <PackageVersion Include="Microsoft.VisualStudio.Shell.15.0" Version="17.3.32804.24 " />
 
+    <!-- Contains targets and tools to enable the building of managed VSIX projects -->
+    <PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="17.3.2095" />
+
+   
   </ItemGroup>
 </Project>
