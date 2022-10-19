@@ -39,6 +39,5 @@
 
     <PackageVersion Include="Microsoft.VisualStudio.SDK" Version="17.3.32804.24" />
 
-
   </ItemGroup>
 </Project>
