@@ -13,10 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.CodeAnalysis",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Utilities", "Nav.Utilities\Nav.Utilities.csproj", "{AA0629B3-AF39-4049-9723-7989EC93B0A4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.ServiceHost", "Nav.Language.ServiceHost\Nav.Language.ServiceHost.csproj", "{A40D87E9-C07E-432C-9271-058599F0DBB9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.Service", "Nav.Language.Service\Nav.Language.Service.csproj", "{0E07ED6F-4FC9-47DA-96C3-BCD06D583BC9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.Extension.Tests", "Nav.Language.Extension.Tests\Nav.Language.Extension.Tests.csproj", "{F0E023F3-FA98-4A8C-B68F-81C8554F4B5F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nav.Language.BuildTasks", "Nav.Language.BuildTasks\Nav.Language.BuildTasks.csproj", "{DB6EFC93-1185-43B7-A721-8515B59CC3AD}"
@@ -25,14 +21,13 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "JetBrains.Annotations", "Je
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B752DDF-06C7-4B83-A8EC-43029F20825E}"
 	ProjectSection(SolutionItems) = preProject
+		Build.bat = Build.bat
 		Directory.Build.props = Directory.Build.props
-		Directory.Packages.props= Directory.Packages.props
+		Directory.Packages.props = Directory.Packages.props
 		_build\GobalAssemblyInfo.cs = _build\GobalAssemblyInfo.cs
 		README.md = README.md
 		_build\WriteThisAssemblyFile.targets = _build\WriteThisAssemblyFile.targets
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisualSudio.Interop", "VisualSudio.Interop\VisualSudio.Interop.csproj", "{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Nav.Language.ExtensionShared", "Nav.Language.ExtensionShared\Nav.Language.ExtensionShared.shproj", "{DA1F60B3-96AF-4862-AAB9-90B0AB7B2504}"
 EndProject
@@ -64,14 +59,6 @@ Global
 		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA0629B3-AF39-4049-9723-7989EC93B0A4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A40D87E9-C07E-432C-9271-058599F0DBB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A40D87E9-C07E-432C-9271-058599F0DBB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A40D87E9-C07E-432C-9271-058599F0DBB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A40D87E9-C07E-432C-9271-058599F0DBB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E07ED6F-4FC9-47DA-96C3-BCD06D583BC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E07ED6F-4FC9-47DA-96C3-BCD06D583BC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E07ED6F-4FC9-47DA-96C3-BCD06D583BC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E07ED6F-4FC9-47DA-96C3-BCD06D583BC9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F0E023F3-FA98-4A8C-B68F-81C8554F4B5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F0E023F3-FA98-4A8C-B68F-81C8554F4B5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0E023F3-FA98-4A8C-B68F-81C8554F4B5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -80,10 +67,6 @@ Global
 		{DB6EFC93-1185-43B7-A721-8515B59CC3AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB6EFC93-1185-43B7-A721-8515B59CC3AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB6EFC93-1185-43B7-A721-8515B59CC3AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B4843DF2-22E7-4CD2-AF16-7022B0D61EF9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C88AACD6-6973-430B-A94B-4CC45B37F32E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C88AACD6-6973-430B-A94B-4CC45B37F32E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C88AACD6-6973-430B-A94B-4CC45B37F32E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -96,9 +79,7 @@ Global
 		SolutionGuid = {1595EB49-8E1B-4426-AE0F-8AB802FD6757}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		JetBrains.Annotations\JetBrains.Annotations.projitems*{0e07ed6f-4fc9-47da-96c3-bcd06d583bc9}*SharedItemsImports = 5
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{32af2e02-a21a-4d1f-9927-09931715d057}*SharedItemsImports = 5
-		JetBrains.Annotations\JetBrains.Annotations.projitems*{a40d87e9-c07e-432c-9271-058599f0dbb9}*SharedItemsImports = 5
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{a535b35c-5d62-46d8-9ee7-055597f2817a}*SharedItemsImports = 13
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{aa0629b3-af39-4049-9723-7989ec93b0a4}*SharedItemsImports = 5
 		JetBrains.Annotations\JetBrains.Annotations.projitems*{ab2ac2bc-e10d-4bad-9740-2fb7ff6eacdb}*SharedItemsImports = 5
