@@ -165,6 +165,11 @@ public static class LocationFinder {
         var task = Task.Run(async () => {
 
             var compilation = await project.GetCompilationAsync(cancellationToken);
+
+            if (compilation == null) {
+                throw new LocationNotFoundException(String.Format(MsgUnableToFindInterface0, initCallAnnotation.BeginItfFullyQualifiedName));
+            }
+
             var beginItf    = compilation.GetTypeByMetadataName(initCallAnnotation.BeginItfFullyQualifiedName);
             if (beginItf == null) {
                 throw new LocationNotFoundException(String.Format(MsgUnableToFindInterface0, initCallAnnotation.BeginItfFullyQualifiedName));
@@ -172,7 +177,7 @@ public static class LocationFinder {
 
             var metaLocation = beginItf.Locations.FirstOrDefault(l => l.IsInMetadata);
             if (metaLocation != null) {
-                throw new LocationNotFoundException(String.Format(MsgMissingProjectForAssembly0, metaLocation.MetadataModule.MetadataName));
+                throw new LocationNotFoundException(String.Format(MsgMissingProjectForAssembly0, metaLocation.MetadataModule?.MetadataName));
             }
 
             var wfsClass = (await SymbolFinder.FindImplementationsAsync(beginItf, project.Solution, null, cancellationToken))
@@ -265,7 +270,7 @@ public static class LocationFinder {
 
             var metaLocation = beginItf.Locations.FirstOrDefault(l => l.IsInMetadata);
             if(metaLocation != null) {
-                throw new LocationNotFoundException(String.Format(MsgMissingProjectForAssembly0, metaLocation.MetadataModule.MetadataName));
+                throw new LocationNotFoundException(String.Format(MsgMissingProjectForAssembly0, metaLocation.MetadataModule?.MetadataName));
             }
 
             var impls = beginItf.DeclaringSyntaxReferences.Select(dsr=>dsr.GetSyntax()).OfType<InterfaceDeclarationSyntax>();
@@ -303,18 +308,46 @@ public static class LocationFinder {
     /// <exception cref="LocationNotFoundException"/>
     public static Task<IList<Location>> FindTaskDeclarationLocationsAsync(Project project, TaskCodeInfo codegenInfo, CancellationToken cancellationToken) {
 
-        var task = Task.Run(async () => {
+        static async Task<(INamedTypeSymbol Symbol, Project Project)> GetTypeByTaskCodeInfo(Project project, TaskCodeInfo codegenInfo, CancellationToken cancellationToken) {
 
-            var compilation   = await project.GetCompilationAsync(cancellationToken);
+            var compilation   = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
             var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.FullyQualifiedWfsBaseName);
+            if (wfsBaseSymbol != null) {
+                return (wfsBaseSymbol, project);
+            }
 
-            if (wfsBaseSymbol == null) {
+            // Alternative Suche für Shared/Client Style
+            const string sharedSuffix = ".Shared";
+            if (project.Name.EndsWith(sharedSuffix)) {
+
+                var alternativeProjectName = project.Name.Substring(0, project.Name.Length - sharedSuffix.Length);
+
+                foreach (var proj in project.Solution.Projects.Where(p => p.Name == alternativeProjectName)) {
+
+                    compilation   = await proj.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+                    wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.FullyQualifiedWfsBaseName);
+
+                    if (wfsBaseSymbol != null) {
+                        return (wfsBaseSymbol, proj);
+                    }
+                }
+            }
+
+            return (null, null);
+        }
+
+        var task = Task.Run(async () => {
+   
+            var wfsBaseSymbol = await GetTypeByTaskCodeInfo(project, codegenInfo, cancellationToken);
+
+            // TODO Evtl. Hinweis auf Shared Library?
+            if (wfsBaseSymbol.Symbol == null) {
                 throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.FullyQualifiedWfsBaseName));
             }
 
             // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
             // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
-            var derived = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
+            var derived = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol.Symbol, wfsBaseSymbol.Project.Solution, ToImmutableSet(wfsBaseSymbol.Project), cancellationToken);
 
             var derivedSyntaxes = derived.SelectMany(d => d.DeclaringSyntaxReferences)
                                          .Select(dsr => dsr.GetSyntax())
@@ -388,7 +421,7 @@ public static class LocationFinder {
         // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
         // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
         var derived      = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
-        var memberSymbol = derived?.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
+        var memberSymbol = derived.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
 
         return memberSymbol;
     }
@@ -470,7 +503,7 @@ public static class LocationFinder {
             // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
             // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
             var derived        = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
-            var memberSymbol   = derived?.SelectMany(d => d.GetMembers(codegenInfo.AfterLogicMethodName)).FirstOrDefault();
+            var memberSymbol   = derived.SelectMany(d => d.GetMembers(codegenInfo.AfterLogicMethodName)).FirstOrDefault();
             var memberLocation = memberSymbol?.Locations.FirstOrDefault();
                 
             var location = ToLocation(memberLocation);
