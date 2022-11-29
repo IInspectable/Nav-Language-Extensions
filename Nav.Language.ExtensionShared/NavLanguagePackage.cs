@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -132,6 +133,17 @@ sealed partial class NavLanguagePackage: AsyncPackage {
             var workspace      = componentModel.GetService<VisualStudioWorkspace>();
             return workspace;
         }
+    }
+
+    public static IServiceProvider ServiceProvider => GetGlobalService<IServiceProvider, IServiceProvider>();
+
+    public static void InvokeCommand(CommandID commandId) {
+
+        ThreadHelper.ThrowIfNotOnUIThread();
+
+        var oleCommandTarget = ServiceProvider.GetService(typeof(IMenuCommandService)) as IMenuCommandService;
+        oleCommandTarget?.GlobalInvoke(commandId);
+
     }
 
     /// <summary>

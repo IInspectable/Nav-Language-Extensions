@@ -197,6 +197,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)LanguageService\NavLanguageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LanguageService\ProvideShowBraceCompletionAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LanguageService\ProvideShowDropdownBarOptionAttribute.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\KnownCommandIds.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Margin\NavMargin.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Margin\NavMarginControl.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Margin\NavMarginProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationBar\NavigationBarItem.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationBar\NavigationBarProjectItemBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NavigationBar\NavigationBarTaskItemBuilder.cs" />
@@ -275,6 +279,10 @@
     <Page Include="$(MSBuildThisFileDirectory)Diagnostics\DiagnosticSummaryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Margin\NavMarginControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Options\AdvancedOptionsControl.xaml">
       <SubType>Designer</SubType>
