@@ -32,7 +32,7 @@ public class PathProviderFactory: IPathProviderFactory {
         string generateToInfo  = null;
         var    generateToToken = syntax.CodeGenerateToDeclaration?.StringLiteral ?? SyntaxToken.Missing;
         if (!generateToToken.IsMissing) {
-            generateToInfo = generateToToken.ToString();
+            generateToInfo = generateToToken.ToString().Trim('"');
         }
 
         return new PathProvider(syntaxFileName, taskName, generateToInfo, options);
