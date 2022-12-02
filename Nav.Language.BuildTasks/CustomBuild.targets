@@ -21,6 +21,7 @@
     <Deploy Include="$(OutputPath)\System.Collections.Immutable.dll" />
     <Deploy Include="$(OutputPath)\System.Memory.dll" />
     <Deploy Include="$(OutputPath)\System.Runtime.CompilerServices.Unsafe.dll" />
+    <Deploy Include="$(OutputPath)\nav.exe.config" />
   </ItemGroup>
   <Target Name="DeployFiles" AfterTargets="CopyFilesToOutputDirectory">
     <ItemGroup>
