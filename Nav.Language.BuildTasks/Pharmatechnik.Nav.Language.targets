@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
  
-  <UsingTask TaskName="Pharmatechnik.Nav.Language.BuildTasks.Nav" AssemblyFile="Pharmatechnik.Nav.Language.BuildTasks.dll" />
+  <UsingTask TaskName="Pharmatechnik.Nav.Language.BuildTasks.Nav" AssemblyFile="Pharmatechnik.Nav.Language.BuildTasks.dll" TaskFactory="TaskHostFactory" />
 
   <ItemGroup>
     <AvailableItemName Include="GenerateNavCode"/>
