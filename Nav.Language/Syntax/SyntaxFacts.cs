@@ -97,7 +97,6 @@ public static class SyntaxFacts {
     public static readonly ImmutableHashSet<string> HiddenKeywords = new[] {
         SpontaneousKeyword,
         SpontKeyword,
-        GeneratetoKeyword,
         NotimplementedKeyword,
         ModalEdgeKeywordAlt,
         NonModalEdgeKeyword
