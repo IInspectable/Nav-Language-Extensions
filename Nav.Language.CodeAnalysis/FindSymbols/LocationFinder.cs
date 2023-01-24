@@ -164,13 +164,7 @@ public static class LocationFinder {
 
         var task = Task.Run(async () => {
 
-            var compilation = await project.GetCompilationAsync(cancellationToken);
-
-            if (compilation == null) {
-                throw new LocationNotFoundException(String.Format(MsgUnableToFindInterface0, initCallAnnotation.BeginItfFullyQualifiedName));
-            }
-
-            var beginItf    = compilation.GetTypeByMetadataName(initCallAnnotation.BeginItfFullyQualifiedName);
+            (var beginItf, project) = await GetTypeByMetadataNameWithSharedProjectsAsync(project, initCallAnnotation.BeginItfFullyQualifiedName, cancellationToken).ConfigureAwait(false);
             if (beginItf == null) {
                 throw new LocationNotFoundException(String.Format(MsgUnableToFindInterface0, initCallAnnotation.BeginItfFullyQualifiedName));
             }
@@ -261,9 +255,7 @@ public static class LocationFinder {
     public static Task<IList<Location>> FindTaskIBeginInterfaceDeclarationLocations(Project project, TaskDeclarationCodeInfo codegenInfo, CancellationToken cancellationToken) {
         var task = Task.Run(async () => {
 
-            var compilation = await project.GetCompilationAsync(cancellationToken);
-            var beginItf    = compilation?.GetTypeByMetadataName(codegenInfo.FullyQualifiedBeginInterfaceName);
-
+            (var beginItf, project) = await GetTypeByMetadataNameWithSharedProjectsAsync(project, codegenInfo.FullyQualifiedBeginInterfaceName, cancellationToken).ConfigureAwait(false);
             if (beginItf == null) {
                 throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.FullyQualifiedBeginInterfaceName));
             }
@@ -302,52 +294,22 @@ public static class LocationFinder {
 
 
     #endregion
-
+    
     #region FindTaskDeclarationLocationsAsync
 
     /// <exception cref="LocationNotFoundException"/>
     public static Task<IList<Location>> FindTaskDeclarationLocationsAsync(Project project, TaskCodeInfo codegenInfo, CancellationToken cancellationToken) {
 
-        static async Task<(INamedTypeSymbol Symbol, Project Project)> GetTypeByTaskCodeInfo(Project project, TaskCodeInfo codegenInfo, CancellationToken cancellationToken) {
-
-            var compilation   = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
-            var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.FullyQualifiedWfsBaseName);
-            if (wfsBaseSymbol != null) {
-                return (wfsBaseSymbol, project);
-            }
-
-            // Alternative Suche für Shared/Client Style
-            const string sharedSuffix = ".Shared";
-            if (project.Name.EndsWith(sharedSuffix)) {
-
-                var alternativeProjectName = project.Name.Substring(0, project.Name.Length - sharedSuffix.Length);
-
-                foreach (var proj in project.Solution.Projects.Where(p => p.Name == alternativeProjectName)) {
-
-                    compilation   = await proj.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
-                    wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.FullyQualifiedWfsBaseName);
-
-                    if (wfsBaseSymbol != null) {
-                        return (wfsBaseSymbol, proj);
-                    }
-                }
-            }
-
-            return (null, null);
-        }
-
         var task = Task.Run(async () => {
-   
-            var wfsBaseSymbol = await GetTypeByTaskCodeInfo(project, codegenInfo, cancellationToken);
 
-            // TODO Evtl. Hinweis auf Shared Library?
-            if (wfsBaseSymbol.Symbol == null) {
+            (var wfsBaseSymbol, project) = await GetTypeByMetadataNameWithSharedProjectsAsync(project, codegenInfo.FullyQualifiedWfsBaseName, cancellationToken).ConfigureAwait(false);
+            if (wfsBaseSymbol == null) {
                 throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.FullyQualifiedWfsBaseName));
             }
 
             // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
             // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
-            var derived = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol.Symbol, wfsBaseSymbol.Project.Solution, ToImmutableSet(wfsBaseSymbol.Project), cancellationToken);
+            var derived = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
 
             var derivedSyntaxes = derived.SelectMany(d => d.DeclaringSyntaxReferences)
                                          .Select(dsr => dsr.GetSyntax())
@@ -412,8 +374,7 @@ public static class LocationFinder {
     /// <exception cref="LocationNotFoundException"/>
     public static async Task<Microsoft.CodeAnalysis.ISymbol> FindTriggerMethodSymbol(Project project, SignalTriggerCodeInfo codegenInfo, CancellationToken cancellationToken) {
 
-        var compilation   = await project.GetCompilationAsync(cancellationToken);
-        var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.ContainingTask.FullyQualifiedWfsBaseName);
+        (var wfsBaseSymbol, project) = await GetTypeByMetadataNameWithSharedProjectsAsync(project, codegenInfo.ContainingTask.FullyQualifiedWfsBaseName, cancellationToken).ConfigureAwait(false);
         if (wfsBaseSymbol == null) {
             throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.ContainingTask.FullyQualifiedWfsBaseName));
         }
@@ -434,8 +395,7 @@ public static class LocationFinder {
     public static Task<Location> FindTaskBeginDeclarationLocationAsync(Project project, TaskInitCodeInfo codegenInfo, CancellationToken cancellationToken) {
         var task = Task.Run(async () => {
 
-            var compilation   = await project.GetCompilationAsync(cancellationToken);
-            var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.ContainingTask.FullyQualifiedWfsBaseName);
+            (var wfsBaseSymbol, project) = await GetTypeByMetadataNameWithSharedProjectsAsync(project, codegenInfo.ContainingTask.FullyQualifiedWfsBaseName, cancellationToken).ConfigureAwait(false);
             if (wfsBaseSymbol == null) {
                 throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.ContainingTask.FullyQualifiedWfsBaseName));
             }
@@ -494,8 +454,7 @@ public static class LocationFinder {
 
         var task = Task.Run(async () => {
 
-            var compilation   = await project.GetCompilationAsync(cancellationToken);
-            var wfsBaseSymbol = compilation?.GetTypeByMetadataName(codegenInfo.ContainingTask.FullyQualifiedWfsBaseName);
+            (var wfsBaseSymbol, project) = await GetTypeByMetadataNameWithSharedProjectsAsync(project, codegenInfo.ContainingTask.FullyQualifiedWfsBaseName, cancellationToken).ConfigureAwait(false);
             if (wfsBaseSymbol == null) {
                 throw new LocationNotFoundException(String.Format(MsgUnableToFind0, codegenInfo.ContainingTask.FullyQualifiedWfsBaseName));
             }
@@ -519,6 +478,35 @@ public static class LocationFinder {
     }
 
     #endregion
+
+    static async Task<(INamedTypeSymbol Symbol, Project Project)> GetTypeByMetadataNameWithSharedProjectsAsync(Project project, string fullyQualifiedMetadataName, CancellationToken cancellationToken) {
+
+        var compilation = await project.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+
+        var symbol = compilation?.GetTypeByMetadataName(fullyQualifiedMetadataName);
+        if (symbol != null) {
+            return (symbol, project);
+        }
+
+        // Alternative Suche für Shared/Client Style
+        const string sharedSuffix = ".Shared";
+        if (project.Name.EndsWith(sharedSuffix)) {
+
+            var alternativeProjectName = project.Name.Substring(0, project.Name.Length - sharedSuffix.Length);
+
+            foreach (var proj in project.Solution.Projects.Where(p => p.Name == alternativeProjectName)) {
+
+                compilation = await proj.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
+                symbol      = compilation?.GetTypeByMetadataName(fullyQualifiedMetadataName);
+
+                if (symbol != null) {
+                    return (symbol, proj);
+                }
+            }
+        }
+
+        return (null, null);
+    }
 
     [CanBeNull]
     public static Location ToLocation([CanBeNull] Microsoft.CodeAnalysis.Location memberLocation) {
