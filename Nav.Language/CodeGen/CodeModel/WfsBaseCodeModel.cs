@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 #endregion
 
@@ -31,6 +32,8 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
         ExitTransitions    = exitTransitions    ?? throw new ArgumentNullException(nameof(exitTransitions));
         TriggerTransitions = triggerTransitions ?? throw new ArgumentNullException(nameof(triggerTransitions));
         BeginWrappers      = beginWrappers      ?? throw new ArgumentNullException(nameof(beginWrappers));
+
+        ViewParameters     = TriggerTransitions.DistinctBy(ts => ts.ViewParameter.ParameterType).Select(ts => ts.ViewParameter).ToImmutableList();
     }
         
     public string WflNamespace        => Task.WflNamespace;
@@ -46,6 +49,8 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
     public ImmutableList<ExitTransitionCodeModel>    ExitTransitions    { get; }
     public ImmutableList<TriggerTransitionCodeModel> TriggerTransitions { get; }
     public ImmutableList<BeginWrapperCodeModel>      BeginWrappers      { get; }
+
+    public ImmutableList<ParameterCodeModel> ViewParameters { get; }
 
     public static WfsBaseCodeModel FromTaskDefinition(ITaskDefinitionSymbol taskDefinition, IPathProvider pathProvider, GenerationOptions options) {
 

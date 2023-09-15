@@ -20,6 +20,8 @@ namespace <model.WflNamespace> {
             <writeFieldInitList(model.TaskBegins)>
         }
 
+        <writeBeforeTriggerLogicCollapsibleList(model.ViewParameters)><\\>
+
         <writeInitTransitionCollapsibleList(model.InitTransitions)><\\>
 
         <writeExitTransitionCollapsibleList(model.ExitTransitions)><\\>
@@ -47,6 +49,15 @@ namespace <model.WflNamespace> {
         }
     }
 }
+>>
+
+writeBeforeTriggerLogicCollapsibleList(viewParameters) ::=<<
+<viewParameters:writeBeforeTriggerLogic(); separator="\r\n">
+>>
+
+writeBeforeTriggerLogic(viewParameter) ::=<<
+protected virtual <viewParameter.ParameterType> <BeforeTriggerLogicMethodName()>(<writeParameterList(viewParameter)>) => <viewParameter.ParameterName>;
+
 >>
 
 writeInitTransitionCollapsibleList(initTransitions) ::=<<
@@ -97,6 +108,7 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 writeTriggerTransition(triggerTransition) ::=<<
 <writeTriggerAnnotation(triggerTransition.TriggerName)>
 public virtual INavCommand <triggerTransition.TriggerName>(<writeParameterList(triggerTransition.ViewParameter)>) {
+    <triggerTransition.ViewParameter.ParameterName> = <BeforeTriggerLogicMethodName()>(<writeParameterExpression(triggerTransition.ViewParameter)>);
     var body = <triggerTransition.TriggerName><LogicMethodSuffix()>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);    
     <writeTransitionCallBlock(triggerTransition, ([ (triggerTransition.TriggerName), LogicMethodSuffix() ]) )>
 }

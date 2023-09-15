@@ -43,6 +43,8 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             _messageboxOk = messageboxOk;
         }
 
+        protected virtual ViewTO BeforeTriggerLogic(ViewTO to) => to;
+
         #region Nav Annotations
         /// <NavInit>Init1</NavInit>
         #endregion
@@ -184,6 +186,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnEnd</NavTrigger>
         #endregion
         public virtual INavCommand OnEnd(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnEndLogic(to);    
             switch(body) {
                 case END _: 
@@ -204,6 +207,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnContinue</NavTrigger>
         #endregion
         public virtual INavCommand OnContinue(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnContinueLogic(to, _messageboxConinue);    
             switch(body) {
                 case TaskCall taskCall when taskCall.NodeName == MsgContinueNodeName:
@@ -225,6 +229,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnExitClick</NavTrigger>
         #endregion
         public virtual INavCommand OnExitClick(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnExitClickLogic(to, _messageboxOk);    
             switch(body) {
                 case TaskCall taskCall when taskCall.NodeName == MsgExitNodeName:
@@ -246,6 +251,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnDoSomething</NavTrigger>
         #endregion
         public virtual INavCommand OnDoSomething(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnDoSomethingLogic(to);    
             switch(body) {
                 case TaskCall taskCall when taskCall.NodeName == DoSomethingNodeName:
@@ -266,6 +272,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnMsgAbstract</NavTrigger>
         #endregion
         public virtual INavCommand OnMsgAbstract(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnMsgAbstractLogic(to, _messageboxConinue);    
             switch(body) {
                 case TaskCall taskCall when taskCall.NodeName == MsgAbstractNodeName:
@@ -287,6 +294,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnMsgNonModal</NavTrigger>
         #endregion
         public virtual INavCommand OnMsgNonModal(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnMsgNonModalLogic(to, _messageboxConinue);    
             switch(body) {
                 case TaskCall taskCall when taskCall.NodeName == MsgNonModalNodeName:
@@ -308,6 +316,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnReloadClick</NavTrigger>
         #endregion
         public virtual INavCommand OnReloadClick(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnReloadClickLogic(to);    
             switch(body) {
                 case ViewTO viewTO:
@@ -328,6 +337,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnShowMeModal</NavTrigger>
         #endregion
         public virtual INavCommand OnShowMeModal(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnShowMeModalLogic(to);    
             switch(body) {
                 case ViewTO viewTO:
@@ -348,6 +358,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnShowMeNonModal</NavTrigger>
         #endregion
         public virtual INavCommand OnShowMeNonModal(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnShowMeNonModalLogic(to);    
             switch(body) {
                 case ViewTO viewTO:
@@ -368,6 +379,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnNonNotImplemented</NavTrigger>
         #endregion
         public virtual INavCommand OnNonNotImplemented(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnNonNotImplementedLogic(to);    
             switch(body) {
                 case TaskCall taskCall when taskCall.NodeName == FooNodeName:
@@ -389,6 +401,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnGoToNotImplemented</NavTrigger>
         #endregion
         public virtual INavCommand OnGoToNotImplemented(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnGoToNotImplementedLogic(to);    
             switch(body) {
                 case TaskCall taskCall when taskCall.NodeName == FooNodeName:
@@ -410,6 +423,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavTrigger>OnModalNotImplemented</NavTrigger>
         #endregion
         public virtual INavCommand OnModalNotImplemented(ViewTO to) {
+            to = BeforeTriggerLogic(to);
             var body = OnModalNotImplementedLogic(to);    
             switch(body) {
                 case TaskCall taskCall when taskCall.NodeName == FooNodeName:
