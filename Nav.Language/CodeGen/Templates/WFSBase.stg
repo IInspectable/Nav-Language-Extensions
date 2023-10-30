@@ -30,10 +30,10 @@ namespace <model.WflNamespace> {
 
         <writeBeginWrapperCollapsibleList(model.BeginWrappers)><\\>
 
-        protected INavCommandBody TaskResult(<model.TaskResult.ParameterType> <model.TaskResult.ParameterName>) {
-            return InternalTaskResult(<model.TaskResult.ParameterName>);
-        }
-       
+        <writeEscapeTaskOverride(model)><\\>
+
+        protected INavCommandBody TaskResult(<model.TaskResult.ParameterType> <model.TaskResult.ParameterName>) => InternalTaskResult(<model.TaskResult.ParameterName>);
+
     }
 
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
@@ -124,6 +124,12 @@ writeTaskNodeNameFieldCollapsibleList(beginWrapperModels) ::=<<
 
 writeTaskNodeNameField(beginWrapperModel) ::=<<
 const string <beginWrapperModel.TaskNodeNamePascalcase>NodeName = "<beginWrapperModel.TaskNodeName>";
+>>
+
+writeEscapeTaskOverride(model) ::=<<
+<if(model.GenerateEscapeTaskOverride)>
+public override INavCommand EscapeTask(TO to) => base.EscapeTask(to);
+<endif>
 >>
 
 writeBeginWrapperCollapsibleList(beginWrapperModels) ::=<<
