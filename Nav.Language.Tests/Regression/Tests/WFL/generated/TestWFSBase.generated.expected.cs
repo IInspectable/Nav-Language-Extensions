@@ -521,9 +521,9 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             return new TaskCall(DoSomethingNodeName, () => wfs.Begin());
         }
 
-        public override INavCommand EscapeTask(TO to) => base.EscapeTask(to);
-
-        protected INavCommandBody TaskResult(bool par) => InternalTaskResult(par);
+        protected INavCommandBody TaskResult(bool par) {
+            return InternalTaskResult(par);
+        }
 
     }
 

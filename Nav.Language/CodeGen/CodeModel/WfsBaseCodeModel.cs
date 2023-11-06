@@ -41,8 +41,6 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
     public string WfsTypeName         => Task.WfsTypeName;
     public string WfsBaseBaseTypeName => Task.WfsBaseBaseTypeName;
 
-    public bool GenerateEscapeTaskOverride => WfsBaseBaseTypeName != CodeGenFacts.DefaultWfsBaseClass;
-
     public ParameterCodeModel                        TaskResult         { get; }
     public ImmutableList<string>                     UsingNamespaces    { get; }       
     public ImmutableList<ParameterCodeModel>         TaskBegins         { get; }
