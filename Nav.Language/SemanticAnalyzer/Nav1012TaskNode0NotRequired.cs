@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Pharmatechnik.Nav.Language.SemanticAnalyzer; 
+namespace Pharmatechnik.Nav.Language.SemanticAnalyzer;
 
 public class Nav1012TaskNode0NotRequired: NavAnalyzer {
 
@@ -12,6 +12,10 @@ public class Nav1012TaskNode0NotRequired: NavAnalyzer {
         //  The task node '{0}' is not required by the code and can be safely removed
         //==============================
         foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
+
+            if (taskNode.IsWarningDisabled(Descriptor)) {
+                continue;
+            }
 
             if (!taskNode.References.Any()) {
 

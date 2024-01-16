@@ -40,7 +40,6 @@
 
   <ItemGroup>
     <Compile Remove="@(NoCompile)" />
-    <None Remove="Diagnostics\Tests\SyntaxErrorTokenRecognitionError.nav" />
     <None Include="@(NoCompile)" />
     <None Include="CustomBuild.targets" />
   </ItemGroup>
@@ -53,6 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Diagnostics\Tests\Nav1012TaskNode0NotRequiredDisabled.nav" />
     <Content Include="Diagnostics\Tests\SyntaxErrorTokenRecognitionError.nav" />
     <Content Include="Diagnostics\Tests\Nav1010TaskNode0HasNoIncomingEdges.nav" />
     <Content Include="Diagnostics\Tests\Nav1012TaskNode0NotRequired.nav" />
