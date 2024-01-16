@@ -52,10 +52,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Diagnostics\Tests\Nav1012TaskNode0NotRequiredDisabled.nav" />
+    <Content Include="Diagnostics\Tests\Nav1012TaskNode0NotRequired.nav" />
     <Content Include="Diagnostics\Tests\SyntaxErrorTokenRecognitionError.nav" />
     <Content Include="Diagnostics\Tests\Nav1010TaskNode0HasNoIncomingEdges.nav" />
-    <Content Include="Diagnostics\Tests\Nav1012TaskNode0NotRequired.nav" />
+    <Content Include="Diagnostics\Tests\Nav1012TaskNode0NotRequiredDisabled.nav" />
     <Content Include="Diagnostics\Tests\_TaskWithConnectionPointsButNoEdges.nav" />
     <Content Include="Diagnostics\Tests\Nav1001IncludeDirectiveForFile0AppearedPreviously.nav" />
     <Content Include="Diagnostics\Tests\Nav1002UsingDirective0AppearedPreviously.nav" />
