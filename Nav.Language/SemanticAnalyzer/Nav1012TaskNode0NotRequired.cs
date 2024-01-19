@@ -13,7 +13,7 @@ public class Nav1012TaskNode0NotRequired: NavAnalyzer {
         //==============================
         foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
 
-            if (taskNode.IsWarningDisabled(Descriptor)) {
+            if (context.IsWarningDisabled(taskNode, Descriptor)) {
                 continue;
             }
 

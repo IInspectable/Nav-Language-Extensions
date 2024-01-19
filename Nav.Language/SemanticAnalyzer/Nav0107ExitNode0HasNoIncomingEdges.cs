@@ -17,7 +17,7 @@ public class Nav0107ExitNode0HasNoIncomingEdges: NavAnalyzer {
         }
         foreach (var exitNode in taskDefinition.NodeDeclarations.OfType<IExitNodeSymbol>()) {
 
-            if (exitNode.IsWarningDisabled(Descriptor)) {
+            if (context.IsWarningDisabled(exitNode, Descriptor)) {
                 continue;
             }
 

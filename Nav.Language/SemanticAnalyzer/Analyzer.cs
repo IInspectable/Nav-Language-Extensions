@@ -8,11 +8,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.SemanticAnalyzer; 
-
-public class AnalyzerContext {
-
-}
+namespace Pharmatechnik.Nav.Language.SemanticAnalyzer;
 
 public interface INavAnalyzer {
 

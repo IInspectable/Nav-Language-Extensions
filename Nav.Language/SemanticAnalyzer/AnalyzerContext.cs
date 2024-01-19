@@ -1,8 +1,8 @@
 ﻿namespace Pharmatechnik.Nav.Language.SemanticAnalyzer;
 
-public static class AnalyzerExtensions {
+public class AnalyzerContext {
 
-    public static bool IsWarningDisabled(this INodeSymbol node, DiagnosticDescriptor descriptor) {
+    public bool IsWarningDisabled(INodeSymbol node, DiagnosticDescriptor descriptor) {
         var source = node.SyntaxTree?.SourceText;
         if (source == null)
             return false;
