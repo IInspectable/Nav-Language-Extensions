@@ -20,17 +20,10 @@ sealed class OutliningTagger: ParserServiceDependent, ITagger<IOutliningRegionTa
     readonly List<ITagSpan<IOutliningRegionTag>> _outLineTags;
     readonly CodeContentControlProvider          _codeContentControlProvider;
 
-    OutliningTagger(ITextBuffer textBuffer, CodeContentControlProvider codeContentControlProvider): base(textBuffer) {
+    public OutliningTagger(ITextBuffer textBuffer, CodeContentControlProvider codeContentControlProvider): base(textBuffer) {
 
         _outLineTags                = new List<ITagSpan<IOutliningRegionTag>>();
         _codeContentControlProvider = codeContentControlProvider;
-    }
-        
-    public static ITagger<T> GetOrCreateSingelton<T>(ITextBuffer textBuffer, CodeContentControlProvider codeContentControlProvider) where T : ITag {
-        return new TextBufferScopedTagger<T>(
-            textBuffer,
-            typeof(OutliningTagger), () =>
-                new OutliningTagger(textBuffer, codeContentControlProvider) as ITagger<T>);
     }
 
     public event EventHandler<SnapshotSpanEventArgs> TagsChanged;

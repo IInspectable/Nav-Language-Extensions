@@ -27,7 +27,7 @@ sealed class SemanticClassificationTaggerProvider: ITaggerProvider {
 
     public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
 
-        return SemanticClassificationTagger.GetOrCreateSingelton(_classificationTypeRegistryService, buffer) as ITagger<T>;
+        return SemanticClassificationTagger.Create(_classificationTypeRegistryService, buffer) as ITagger<T>;
 
     }
 

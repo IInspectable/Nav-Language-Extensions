@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension.Classification; 
+namespace Pharmatechnik.Nav.Language.Extension.Classification;
 
 [ContentType(NavLanguageContentDefinitions.ContentType)]
 [Export(typeof(ITaggerProvider))]
@@ -26,8 +26,7 @@ sealed class SyntacticClassificationTaggerProvider: ITaggerProvider {
     }
 
     public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-
-        return SyntacticClassificationTagger.GetOrCreateSingelton(_classificationTypeRegistryService, buffer) as ITagger<T>;
+        return new SyntacticClassificationTagger(_classificationTypeRegistryService, buffer) as ITagger<T>;
 
     }
 

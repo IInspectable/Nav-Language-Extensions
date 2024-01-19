@@ -18,11 +18,8 @@ sealed class GoToTagger : SemanticModelServiceDependent, ITagger<GoToTag> {
 
     }
 
-    public static ITagger<T> GetOrCreateSingelton<T>(ITextBuffer textBuffer) where T : ITag {
-        return new TextBufferScopedTagger<T>(
-            textBuffer,
-            typeof(GoToTagger),
-            () => new GoToTagger(textBuffer) as ITagger<T>);
+    public static ITagger<T> Create<T>(ITextBuffer textBuffer) where T : ITag {
+        return new GoToTagger(textBuffer) as ITagger<T>;
     }
 
     public event EventHandler<SnapshotSpanEventArgs> TagsChanged;

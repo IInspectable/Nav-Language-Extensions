@@ -19,15 +19,9 @@ sealed class SyntacticClassificationTagger: ParserServiceDependent, ITagger<ICla
 
     readonly ImmutableDictionary<TextClassification, IClassificationType> _classificationMap;
 
-    internal SyntacticClassificationTagger(IClassificationTypeRegistryService registry, ITextBuffer textBuffer): base(textBuffer) {
+    public SyntacticClassificationTagger(IClassificationTypeRegistryService registry, ITextBuffer textBuffer): base(textBuffer) {
 
         _classificationMap = ClassificationTypeDefinitions.GetSyntaxTokenClassificationMap(registry);
-    }
-
-    public static SyntacticClassificationTagger GetOrCreateSingelton(IClassificationTypeRegistryService registry, ITextBuffer textBuffer) {
-
-        return TextBufferScopedValue<SyntacticClassificationTagger>.GetOrCreate(textBuffer, typeof(SyntacticClassificationTagger), () => new SyntacticClassificationTagger(registry, textBuffer))
-                                                                   .Value;
     }
 
     protected override void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {

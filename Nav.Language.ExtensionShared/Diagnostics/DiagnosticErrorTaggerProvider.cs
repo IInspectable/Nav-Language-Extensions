@@ -14,6 +14,6 @@ namespace Pharmatechnik.Nav.Language.Extension.Diagnostics;
 [TagType(typeof(DiagnosticErrorTag))]
 sealed class DiagnosticErrorTaggerProvider : ITaggerProvider {
     public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-        return DiagnosticErrorTagger.GetOrCreateSingelton<T>(buffer);
+        return DiagnosticErrorTagger.Create<T>(buffer);
     }
 }

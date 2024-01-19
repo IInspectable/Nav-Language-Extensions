@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension; 
+namespace Pharmatechnik.Nav.Language.Extension;
 
 abstract class ParserServiceDependent: IDisposable {
 

@@ -17,6 +17,6 @@ namespace Pharmatechnik.Nav.Language.Extension.GoTo;
 [TagType(typeof(GoToTag))]
 sealed class GoToTaggerProvider : ITaggerProvider {
     public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-        return GoToTagger.GetOrCreateSingelton<T>(buffer);
+        return GoToTagger.Create<T>(buffer);
     }
 }

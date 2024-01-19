@@ -1,13 +1,12 @@
 ﻿#region Using Directives
 
 using System;
-using System.Windows;
 
 using Microsoft.VisualStudio.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.Extension; 
+namespace Pharmatechnik.Nav.Language.Extension;
 
 abstract class SemanticModelServiceDependent: IDisposable {
 
@@ -16,13 +15,13 @@ abstract class SemanticModelServiceDependent: IDisposable {
         TextBuffer           = textBuffer;
         SemanticModelService = SemanticModelService.GetOrCreateSingelton(textBuffer);
 
-        WeakEventManager<SemanticModelService, EventArgs>.AddHandler(SemanticModelService, nameof(SemanticModelService.SemanticModelChanging), OnSemanticModelChanging);
-        WeakEventManager<SemanticModelService, SnapshotSpanEventArgs>.AddHandler(SemanticModelService, nameof(SemanticModelService.SemanticModelChanged), OnSemanticModelChanged);
+        SemanticModelService.SemanticModelChanging += OnSemanticModelChanging;
+        SemanticModelService.SemanticModelChanged  += OnSemanticModelChanged;
     }
 
     public virtual void Dispose() {
-        WeakEventManager<SemanticModelService, EventArgs>.RemoveHandler(SemanticModelService, nameof(SemanticModelService.SemanticModelChanging), OnSemanticModelChanging);
-        WeakEventManager<SemanticModelService, SnapshotSpanEventArgs>.RemoveHandler(SemanticModelService, nameof(SemanticModelService.SemanticModelChanged), OnSemanticModelChanged);
+        SemanticModelService.SemanticModelChanging -= OnSemanticModelChanging;
+        SemanticModelService.SemanticModelChanged  -= OnSemanticModelChanged;
     }
 
     public ITextBuffer TextBuffer { get; }

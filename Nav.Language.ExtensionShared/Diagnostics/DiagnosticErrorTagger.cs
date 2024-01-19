@@ -18,11 +18,8 @@ sealed class DiagnosticErrorTagger : SemanticModelServiceDependent, ITagger<Diag
     DiagnosticErrorTagger(ITextBuffer textBuffer): base(textBuffer) {
     }
 
-    public static ITagger<T> GetOrCreateSingelton<T>(ITextBuffer textBuffer) where T : ITag {
-        return new TextBufferScopedTagger<T>(
-            textBuffer,
-            typeof(DiagnosticErrorTagger), () =>
-                new DiagnosticErrorTagger(textBuffer) as ITagger<T>);
+    public static ITagger<T> Create<T>(ITextBuffer textBuffer) where T : ITag {
+        return new DiagnosticErrorTagger(textBuffer) as ITagger<T>;
     }
 
     public IEnumerable<ITagSpan<DiagnosticErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans) {

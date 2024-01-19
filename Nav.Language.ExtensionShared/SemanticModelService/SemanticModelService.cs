@@ -25,7 +25,7 @@ sealed class SemanticModelService: ParserServiceDependent {
     CodeGenerationUnitAndSnapshot _codeGenerationUnitAndSnapshot;
     bool                          _waitingForAnalysis;
 
-    public SemanticModelService(ITextBuffer textBuffer): base(textBuffer) {
+    SemanticModelService(ITextBuffer textBuffer): base(textBuffer) {
 
         _observable = Observable.FromEventPattern<EventArgs>(
                                      handler => RebuildTriggered += handler,
@@ -42,6 +42,13 @@ sealed class SemanticModelService: ParserServiceDependent {
                                 .Subscribe(TrySetResult);
 
         _waitingForAnalysis = true;
+    }
+
+    public static SemanticModelService GetOrCreateSingelton(ITextBuffer textBuffer)
+    {
+        return textBuffer.Properties.GetOrCreateSingletonProperty(
+            typeof(SemanticModelService),
+            () => new SemanticModelService(textBuffer));
     }
 
     public override void Dispose() {
@@ -63,11 +70,7 @@ sealed class SemanticModelService: ParserServiceDependent {
         get { return _codeGenerationUnitAndSnapshot; }
     }
         
-    public static SemanticModelService GetOrCreateSingelton(ITextBuffer textBuffer) {
-        return textBuffer.Properties.GetOrCreateSingletonProperty (
-            typeof(SemanticModelService),
-            () => new SemanticModelService(textBuffer));
-    }
+    
         
     [CanBeNull]
     public static SemanticModelService TryGet(ITextBuffer textBuffer) {

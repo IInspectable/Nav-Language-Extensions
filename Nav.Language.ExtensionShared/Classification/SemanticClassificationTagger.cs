@@ -26,9 +26,8 @@ sealed class SemanticClassificationTagger: SemanticModelServiceDependent, ITagge
         ClassificationTypeRegistryService = classificationTypeRegistryService;
     }
 
-    public static SemanticClassificationTagger GetOrCreateSingelton(IClassificationTypeRegistryService classificationTypeRegistryService, ITextBuffer textBuffer) {
-        return TextBufferScopedValue<SemanticClassificationTagger>.GetOrCreate(textBuffer, typeof(SemanticClassificationTagger), () => new SemanticClassificationTagger(classificationTypeRegistryService, textBuffer))
-                                                                  .Value;
+    public static SemanticClassificationTagger Create(IClassificationTypeRegistryService classificationTypeRegistryService, ITextBuffer textBuffer) {
+        return new SemanticClassificationTagger(classificationTypeRegistryService, textBuffer);
     }
 
     public IClassificationTypeRegistryService ClassificationTypeRegistryService { get; }

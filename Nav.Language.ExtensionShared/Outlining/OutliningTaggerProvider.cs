@@ -24,6 +24,6 @@ sealed class OutliningTaggerProvider: ITaggerProvider {
     }
        
     public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-        return OutliningTagger.GetOrCreateSingelton<T>(buffer, _codeContentControlProvider);
+        return new OutliningTagger(buffer, _codeContentControlProvider) as ITagger<T>;
     }
 }

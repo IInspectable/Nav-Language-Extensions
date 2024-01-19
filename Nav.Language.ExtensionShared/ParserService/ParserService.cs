@@ -51,7 +51,15 @@ sealed class ParserService: IDisposable {
         // Initiales Parsen antriggern
         Invalidate();
     }
-        
+
+    public static ParserService GetOrCreateSingelton(ITextBuffer textBuffer)
+    {
+        return TextBufferScopedValue<ParserService>.GetOrCreate(
+            textBuffer,
+            typeof(ParserService),
+            () => new ParserService(textBuffer)).Value;
+    }
+
     public void Dispose() {
         _parserObs.Dispose();
     }
@@ -76,13 +84,6 @@ sealed class ParserService: IDisposable {
     public static ParseMethod GetParseMethod(ITextBuffer textBuffer) {
         textBuffer.Properties.TryGetProperty(ParseMethodKey, out ParseMethod parseMethod);
         return parseMethod ?? Syntax.ParseCodeGenerationUnit;
-    }
-
-    public static ParserService GetOrCreateSingelton(ITextBuffer textBuffer) {
-        return TextBufferScopedValue<ParserService>.GetOrCreate(
-            textBuffer,
-            typeof(ParserService),
-            () => new ParserService(textBuffer)).Value;
     }
 
     public static ParserService TryGet(ITextBuffer textBuffer) {
