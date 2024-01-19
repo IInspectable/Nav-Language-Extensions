@@ -1,0 +1,10 @@
+﻿task A
+{
+    init I1;            
+    exit e1; // disable Nav0107
+    view V;
+
+    I1  --> V;
+    V   --> V on Trigger;
+}
+//
