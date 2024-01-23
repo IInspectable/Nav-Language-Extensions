@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 14.05.2017 14:16:42
+// HINWEIS: Diese Datei wurde am 23.01.2024 19:52:27
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -640,12 +640,12 @@ namespace Pharmatechnik.Nav.Language {
 			DefaultVisit(codeResultDeclarationSyntax);
 		}
 
-		public virtual void VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) {
-			DefaultVisit(dialogNodeDeclarationSyntax);
-		}
-
 		public virtual void VisitElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) {
 			DefaultVisit(elseIfConditionClauseSyntax);
+		}
+
+		public virtual void VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) {
+			DefaultVisit(dialogNodeDeclarationSyntax);
 		}
 
 		public virtual void VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) {
@@ -720,8 +720,8 @@ namespace Pharmatechnik.Nav.Language {
 		T VisitChoiceNodeDeclaration(ChoiceNodeDeclarationSyntax choiceNodeDeclarationSyntax); 
 		T VisitCodeParamsDeclaration(CodeParamsDeclarationSyntax codeParamsDeclarationSyntax); 
 		T VisitCodeResultDeclaration(CodeResultDeclarationSyntax codeResultDeclarationSyntax); 
-		T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax); 
 		T VisitElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax); 
+		T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax); 
 		T VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax); 
 		T VisitCodeNamespaceDeclaration(CodeNamespaceDeclarationSyntax codeNamespaceDeclarationSyntax); 
 		T VisitExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax); 
@@ -890,12 +890,12 @@ namespace Pharmatechnik.Nav.Language {
 			return DefaultVisit(codeResultDeclarationSyntax);
 		}
 
-		public virtual T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) {
-			return DefaultVisit(dialogNodeDeclarationSyntax);
-		}
-
 		public virtual T VisitElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) {
 			return DefaultVisit(elseIfConditionClauseSyntax);
+		}
+
+		public virtual T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) {
+			return DefaultVisit(dialogNodeDeclarationSyntax);
 		}
 
 		public virtual T VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) {

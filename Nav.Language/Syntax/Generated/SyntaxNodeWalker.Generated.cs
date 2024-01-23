@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 14.05.2017 14:16:42
+// HINWEIS: Diese Datei wurde am 23.01.2024 19:52:21
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -735,13 +735,13 @@ namespace Pharmatechnik.Nav.Language {
 		public virtual bool WalkCodeResultDeclaration(CodeResultDeclarationSyntax codeResultDeclarationSyntax) { return DefaultWalk(codeResultDeclarationSyntax); }
 		public virtual void PostWalkCodeResultDeclaration(CodeResultDeclarationSyntax codeResultDeclarationSyntax) { }
 
-		// DialogNodeDeclarationSyntax
-		public virtual bool WalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { return DefaultWalk(dialogNodeDeclarationSyntax); }
-		public virtual void PostWalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { }
-
 		// ElseIfConditionClauseSyntax
 		public virtual bool WalkElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) { return DefaultWalk(elseIfConditionClauseSyntax); }
 		public virtual void PostWalkElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) { }
+
+		// DialogNodeDeclarationSyntax
+		public virtual bool WalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { return DefaultWalk(dialogNodeDeclarationSyntax); }
+		public virtual void PostWalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { }
 
 		// IdentifierOrStringListSyntax
 		public virtual bool WalkIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) { return DefaultWalk(identifierOrStringListSyntax); }
