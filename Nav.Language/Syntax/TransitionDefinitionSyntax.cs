@@ -15,15 +15,17 @@ public partial class TransitionDefinitionSyntax: SyntaxNode {
                                         EdgeSyntax edgeSyntax,
                                         TargetNodeSyntax targetNode,
                                         TriggerSyntax trigger,
+                                        ConcatTransitionSyntax concatTransitionSyntax,
                                         ConditionClauseSyntax conditionClause,
                                         DoClauseSyntax doClause): base(extent) {
 
-        AddChildNode(SourceNode      = sourceNode);
-        AddChildNode(Edge            = edgeSyntax);
-        AddChildNode(TargetNode      = targetNode);
-        AddChildNode(Trigger         = trigger);
-        AddChildNode(ConditionClause = conditionClause);
-        AddChildNode(DoClause        = doClause);
+        AddChildNode(SourceNode       = sourceNode);
+        AddChildNode(Edge             = edgeSyntax);
+        AddChildNode(TargetNode       = targetNode);
+        AddChildNode(Trigger          = trigger);
+        AddChildNode(ConcatTransition = concatTransitionSyntax);
+        AddChildNode(ConditionClause  = conditionClause);
+        AddChildNode(DoClause         = doClause);
     }
 
     [CanBeNull]
@@ -37,6 +39,9 @@ public partial class TransitionDefinitionSyntax: SyntaxNode {
 
     [CanBeNull]
     public TriggerSyntax Trigger { get; }
+
+    [CanBeNull]
+    public ConcatTransitionSyntax ConcatTransition { get; }
 
     [CanBeNull]
     public ConditionClauseSyntax ConditionClause { get; }

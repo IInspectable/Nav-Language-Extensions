@@ -71,3 +71,43 @@ public partial class GoToEdgeSyntax: EdgeSyntax {
     public SyntaxToken GoToEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.GoToEdgeKeyword);
 
 }
+
+[Serializable]
+public abstract class ConcatEdgeSyntax: EdgeSyntax {
+
+    protected ConcatEdgeSyntax(TextExtent extent): base(extent) {
+    }
+
+}
+
+[Serializable]
+[SampleSyntax("o-^")]
+public partial class ConcatModalEdgeSyntax: ConcatEdgeSyntax {
+
+    internal ConcatModalEdgeSyntax(TextExtent extent): base(extent) {
+    }
+
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    public override SyntaxToken Keyword => ConcatModalEdgeKeyword;
+
+    public override EdgeMode Mode => EdgeMode.Modal;
+
+    public SyntaxToken ConcatModalEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ConcatModalEdgeKeyword);
+
+}
+
+[Serializable]
+[SampleSyntax("--^")]
+public partial class ConcatGoToEdgeSyntax: ConcatEdgeSyntax {
+
+    internal ConcatGoToEdgeSyntax(TextExtent extent): base(extent) {
+    }
+
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    public override SyntaxToken Keyword => ConcatGoToEdgeSyntaxKeyword;
+
+    public override EdgeMode Mode => EdgeMode.Modal;
+
+    public SyntaxToken ConcatGoToEdgeSyntaxKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ConcatGoToEdgeKeyword);
+
+}

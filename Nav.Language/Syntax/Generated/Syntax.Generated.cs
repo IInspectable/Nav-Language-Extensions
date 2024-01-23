@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 04.05.2018 21:36:14
+// HINWEIS: Diese Datei wurde am 23.01.2024 14:23:30
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -61,6 +61,10 @@ namespace Pharmatechnik.Nav.Language {
 			return (StringLiteralSyntax)SyntaxTree.ParseText(text, parser => parser.stringLiteral(), filePath, null, cancellationToken).Root;		
 		}
 
+		public static ConcatGoToEdgeSyntax ParseConcatGoToEdge(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
+			return (ConcatGoToEdgeSyntax)SyntaxTree.ParseText(text, parser => parser.concatGoToEdge(), filePath, null, cancellationToken).Root;		
+		}
+
 		public static InitSourceNodeSyntax ParseInitSourceNode(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
 			return (InitSourceNodeSyntax)SyntaxTree.ParseText(text, parser => parser.initSourceNode(), filePath, null, cancellationToken).Root;		
 		}
@@ -73,8 +77,16 @@ namespace Pharmatechnik.Nav.Language {
 			return (CodeDeclarationSyntax)SyntaxTree.ParseText(text, parser => parser.codeDeclaration(), filePath, null, cancellationToken).Root;		
 		}
 
+		public static ConcatModalEdgeSyntax ParseConcatModalEdge(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
+			return (ConcatModalEdgeSyntax)SyntaxTree.ParseText(text, parser => parser.concatModalEdge(), filePath, null, cancellationToken).Root;		
+		}
+
 		public static TaskDeclarationSyntax ParseTaskDeclaration(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
 			return (TaskDeclarationSyntax)SyntaxTree.ParseText(text, parser => parser.taskDeclaration(), filePath, null, cancellationToken).Root;		
+		}
+
+		public static ConcatTransitionSyntax ParseConcatTransition(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
+			return (ConcatTransitionSyntax)SyntaxTree.ParseText(text, parser => parser.concatTransition(), filePath, null, cancellationToken).Root;		
 		}
 
 		public static IncludeDirectiveSyntax ParseIncludeDirective(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
@@ -157,12 +169,12 @@ namespace Pharmatechnik.Nav.Language {
 			return (CodeResultDeclarationSyntax)SyntaxTree.ParseText(text, parser => parser.codeResultDeclaration(), filePath, null, cancellationToken).Root;		
 		}
 
-		public static DialogNodeDeclarationSyntax ParseDialogNodeDeclaration(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
-			return (DialogNodeDeclarationSyntax)SyntaxTree.ParseText(text, parser => parser.dialogNodeDeclaration(), filePath, null, cancellationToken).Root;		
-		}
-
 		public static ElseIfConditionClauseSyntax ParseElseIfConditionClause(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
 			return (ElseIfConditionClauseSyntax)SyntaxTree.ParseText(text, parser => parser.elseIfConditionClause(), filePath, null, cancellationToken).Root;		
+		}
+
+		public static DialogNodeDeclarationSyntax ParseDialogNodeDeclaration(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
+			return (DialogNodeDeclarationSyntax)SyntaxTree.ParseText(text, parser => parser.dialogNodeDeclaration(), filePath, null, cancellationToken).Root;		
 		}
 
 		public static IdentifierOrStringListSyntax ParseIdentifierOrStringList(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {

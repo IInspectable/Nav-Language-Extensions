@@ -101,11 +101,11 @@ transitionDefinitionBlock
 transitionDefinition
     :   sourceNode      { NotifyErrorListeners("missing edge"); }
     |   sourceNode edge { NotifyErrorListeners("missing target node"); }
-    |   sourceNode edge targetNode trigger? conditionClause? doClause? Semicolon
+    |   sourceNode edge targetNode concatTransition? trigger? conditionClause? doClause? Semicolon
     ;
 
 exitTransitionDefinition
-    :   identifierSourceNode Colon Identifier edge targetNode conditionClause? doClause? Semicolon
+    :   identifierSourceNode Colon Identifier edge targetNode concatTransition? conditionClause? doClause? Semicolon
     ;
 
 sourceNode
@@ -138,6 +138,19 @@ nonModalEdge
     :   NonModalEdgeKeyword
     ;
 
+concatEdge
+    :   concatModalEdge
+    |   concatGoToEdge
+    ;
+
+concatModalEdge
+    :   ConcatModalEdgeKeyword
+    ;
+
+concatGoToEdge
+    :   ConcatGoToEdgeKeyword
+    ;
+
 targetNode
     :   endTargetNode
     |   identifierTargetNode
@@ -149,6 +162,10 @@ endTargetNode
 
 identifierTargetNode
     :   Identifier (OpenParen identifierOrStringList CloseParen)?
+    ;
+
+concatTransition
+    : concatEdge targetNode
     ;
 
 conditionClause

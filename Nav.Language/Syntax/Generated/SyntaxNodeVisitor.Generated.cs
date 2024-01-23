@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 14.05.2017 14:16:42
+// HINWEIS: Diese Datei wurde am 23.01.2024 14:23:29
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -133,6 +133,33 @@ namespace Pharmatechnik.Nav.Language {
 		}
 		internal override T Accept<T>(ISyntaxNodeVisitor<T> visitor) {
 			return visitor.VisitCodeUsingDeclaration(this);
+		}
+	}
+
+	partial class ConcatGoToEdgeSyntax {
+		internal override void Accept(ISyntaxNodeVisitor visitor) {
+			visitor.VisitConcatGoToEdge(this);
+		}
+		internal override T Accept<T>(ISyntaxNodeVisitor<T> visitor) {
+			return visitor.VisitConcatGoToEdge(this);
+		}
+	}
+
+	partial class ConcatModalEdgeSyntax {
+		internal override void Accept(ISyntaxNodeVisitor visitor) {
+			visitor.VisitConcatModalEdge(this);
+		}
+		internal override T Accept<T>(ISyntaxNodeVisitor<T> visitor) {
+			return visitor.VisitConcatModalEdge(this);
+		}
+	}
+
+	partial class ConcatTransitionSyntax {
+		internal override void Accept(ISyntaxNodeVisitor visitor) {
+			visitor.VisitConcatTransition(this);
+		}
+		internal override T Accept<T>(ISyntaxNodeVisitor<T> visitor) {
+			return visitor.VisitConcatTransition(this);
 		}
 	}
 
@@ -448,6 +475,9 @@ namespace Pharmatechnik.Nav.Language {
 		void VisitCodeParamsDeclaration(CodeParamsDeclarationSyntax codeParamsDeclarationSyntax); 
 		void VisitCodeResultDeclaration(CodeResultDeclarationSyntax codeResultDeclarationSyntax); 
 		void VisitCodeUsingDeclaration(CodeUsingDeclarationSyntax codeUsingDeclarationSyntax); 
+		void VisitConcatGoToEdge(ConcatGoToEdgeSyntax concatGoToEdgeSyntax); 
+		void VisitConcatModalEdge(ConcatModalEdgeSyntax concatModalEdgeSyntax); 
+		void VisitConcatTransition(ConcatTransitionSyntax concatTransitionSyntax); 
 		void VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax); 
 		void VisitDoClause(DoClauseSyntax doClauseSyntax); 
 		void VisitElseConditionClause(ElseConditionClauseSyntax elseConditionClauseSyntax); 
@@ -544,6 +574,10 @@ namespace Pharmatechnik.Nav.Language {
 			DefaultVisit(stringLiteralSyntax);
 		}
 
+		public virtual void VisitConcatGoToEdge(ConcatGoToEdgeSyntax concatGoToEdgeSyntax) {
+			DefaultVisit(concatGoToEdgeSyntax);
+		}
+
 		public virtual void VisitInitSourceNode(InitSourceNodeSyntax initSourceNodeSyntax) {
 			DefaultVisit(initSourceNodeSyntax);
 		}
@@ -556,8 +590,16 @@ namespace Pharmatechnik.Nav.Language {
 			DefaultVisit(codeDeclarationSyntax);
 		}
 
+		public virtual void VisitConcatModalEdge(ConcatModalEdgeSyntax concatModalEdgeSyntax) {
+			DefaultVisit(concatModalEdgeSyntax);
+		}
+
 		public virtual void VisitTaskDeclaration(TaskDeclarationSyntax taskDeclarationSyntax) {
 			DefaultVisit(taskDeclarationSyntax);
+		}
+
+		public virtual void VisitConcatTransition(ConcatTransitionSyntax concatTransitionSyntax) {
+			DefaultVisit(concatTransitionSyntax);
 		}
 
 		public virtual void VisitIncludeDirective(IncludeDirectiveSyntax includeDirectiveSyntax) {
@@ -640,12 +682,12 @@ namespace Pharmatechnik.Nav.Language {
 			DefaultVisit(codeResultDeclarationSyntax);
 		}
 
-		public virtual void VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) {
-			DefaultVisit(dialogNodeDeclarationSyntax);
-		}
-
 		public virtual void VisitElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) {
 			DefaultVisit(elseIfConditionClauseSyntax);
+		}
+
+		public virtual void VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) {
+			DefaultVisit(dialogNodeDeclarationSyntax);
 		}
 
 		public virtual void VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) {
@@ -696,10 +738,13 @@ namespace Pharmatechnik.Nav.Language {
 		T VisitParameterList(ParameterListSyntax parameterListSyntax); 
 		T VisitSignalTrigger(SignalTriggerSyntax signalTriggerSyntax); 
 		T VisitStringLiteral(StringLiteralSyntax stringLiteralSyntax); 
+		T VisitConcatGoToEdge(ConcatGoToEdgeSyntax concatGoToEdgeSyntax); 
 		T VisitInitSourceNode(InitSourceNodeSyntax initSourceNodeSyntax); 
 		T VisitTaskDefinition(TaskDefinitionSyntax taskDefinitionSyntax); 
 		T VisitCodeDeclaration(CodeDeclarationSyntax codeDeclarationSyntax); 
+		T VisitConcatModalEdge(ConcatModalEdgeSyntax concatModalEdgeSyntax); 
 		T VisitTaskDeclaration(TaskDeclarationSyntax taskDeclarationSyntax); 
+		T VisitConcatTransition(ConcatTransitionSyntax concatTransitionSyntax); 
 		T VisitIncludeDirective(IncludeDirectiveSyntax includeDirectiveSyntax); 
 		T VisitIfConditionClause(IfConditionClauseSyntax ifConditionClauseSyntax); 
 		T VisitArrayRankSpecifier(ArrayRankSpecifierSyntax arrayRankSpecifierSyntax); 
@@ -720,8 +765,8 @@ namespace Pharmatechnik.Nav.Language {
 		T VisitChoiceNodeDeclaration(ChoiceNodeDeclarationSyntax choiceNodeDeclarationSyntax); 
 		T VisitCodeParamsDeclaration(CodeParamsDeclarationSyntax codeParamsDeclarationSyntax); 
 		T VisitCodeResultDeclaration(CodeResultDeclarationSyntax codeResultDeclarationSyntax); 
-		T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax); 
 		T VisitElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax); 
+		T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax); 
 		T VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax); 
 		T VisitCodeNamespaceDeclaration(CodeNamespaceDeclarationSyntax codeNamespaceDeclarationSyntax); 
 		T VisitExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax); 
@@ -794,6 +839,10 @@ namespace Pharmatechnik.Nav.Language {
 			return DefaultVisit(stringLiteralSyntax);
 		}
 
+		public virtual T VisitConcatGoToEdge(ConcatGoToEdgeSyntax concatGoToEdgeSyntax) {
+			return DefaultVisit(concatGoToEdgeSyntax);
+		}
+
 		public virtual T VisitInitSourceNode(InitSourceNodeSyntax initSourceNodeSyntax) {
 			return DefaultVisit(initSourceNodeSyntax);
 		}
@@ -806,8 +855,16 @@ namespace Pharmatechnik.Nav.Language {
 			return DefaultVisit(codeDeclarationSyntax);
 		}
 
+		public virtual T VisitConcatModalEdge(ConcatModalEdgeSyntax concatModalEdgeSyntax) {
+			return DefaultVisit(concatModalEdgeSyntax);
+		}
+
 		public virtual T VisitTaskDeclaration(TaskDeclarationSyntax taskDeclarationSyntax) {
 			return DefaultVisit(taskDeclarationSyntax);
+		}
+
+		public virtual T VisitConcatTransition(ConcatTransitionSyntax concatTransitionSyntax) {
+			return DefaultVisit(concatTransitionSyntax);
 		}
 
 		public virtual T VisitIncludeDirective(IncludeDirectiveSyntax includeDirectiveSyntax) {
@@ -890,12 +947,12 @@ namespace Pharmatechnik.Nav.Language {
 			return DefaultVisit(codeResultDeclarationSyntax);
 		}
 
-		public virtual T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) {
-			return DefaultVisit(dialogNodeDeclarationSyntax);
-		}
-
 		public virtual T VisitElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) {
 			return DefaultVisit(elseIfConditionClauseSyntax);
+		}
+
+		public virtual T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) {
+			return DefaultVisit(dialogNodeDeclarationSyntax);
 		}
 
 		public virtual T VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) {

@@ -15,14 +15,16 @@ public partial class ExitTransitionDefinitionSyntax: SyntaxNode {
                                             IdentifierSourceNodeSyntax sourceNode,
                                             EdgeSyntax edge,
                                             TargetNodeSyntax targetNode,
+                                            ConcatTransitionSyntax concatTransitionSyntax,
                                             ConditionClauseSyntax conditionClause,
                                             DoClauseSyntax doClause): base(extent) {
 
-        AddChildNode(SourceNode      = sourceNode);
-        AddChildNode(Edge            = edge);
-        AddChildNode(TargetNode      = targetNode);
-        AddChildNode(ConditionClause = conditionClause);
-        AddChildNode(DoClause        = doClause);
+        AddChildNode(SourceNode       = sourceNode);
+        AddChildNode(Edge             = edge);
+        AddChildNode(TargetNode       = targetNode);
+        AddChildNode(ConcatTransition = concatTransitionSyntax);
+        AddChildNode(ConditionClause  = conditionClause);
+        AddChildNode(DoClause         = doClause);
     }
 
     [CanBeNull]
@@ -38,6 +40,9 @@ public partial class ExitTransitionDefinitionSyntax: SyntaxNode {
 
     [CanBeNull]
     public TargetNodeSyntax TargetNode { get; }
+
+    [CanBeNull]
+    public ConcatTransitionSyntax ConcatTransition { get; }
 
     [CanBeNull]
     public ConditionClauseSyntax ConditionClause { get; }

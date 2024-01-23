@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 14.05.2017 14:16:42
+// HINWEIS: Diese Datei wurde am 23.01.2024 14:23:27
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -10,7 +10,7 @@ namespace Pharmatechnik.Nav.Language {
 	}
 
 	#region SyntaxNode Implementation
-
+	
 	partial class ArrayRankSpecifierSyntax {
 		public override void Walk(SyntaxNodeWalker walker) {
 			if(!walker.WalkArrayRankSpecifier(this)) {
@@ -176,6 +176,42 @@ namespace Pharmatechnik.Nav.Language {
 				child.Walk(walker);
 			}
 			walker.PostWalkCodeUsingDeclaration(this);
+		}
+	}
+
+	partial class ConcatGoToEdgeSyntax {
+		public override void Walk(SyntaxNodeWalker walker) {
+			if(!walker.WalkConcatGoToEdge(this)) {
+				return;
+			}
+			foreach(var child in ChildNodes()) {
+				child.Walk(walker);
+			}
+			walker.PostWalkConcatGoToEdge(this);
+		}
+	}
+
+	partial class ConcatModalEdgeSyntax {
+		public override void Walk(SyntaxNodeWalker walker) {
+			if(!walker.WalkConcatModalEdge(this)) {
+				return;
+			}
+			foreach(var child in ChildNodes()) {
+				child.Walk(walker);
+			}
+			walker.PostWalkConcatModalEdge(this);
+		}
+	}
+
+	partial class ConcatTransitionSyntax {
+		public override void Walk(SyntaxNodeWalker walker) {
+			if(!walker.WalkConcatTransition(this)) {
+				return;
+			}
+			foreach(var child in ChildNodes()) {
+				child.Walk(walker);
+			}
+			walker.PostWalkConcatTransition(this);
 		}
 	}
 
@@ -639,6 +675,10 @@ namespace Pharmatechnik.Nav.Language {
 		public virtual bool WalkStringLiteral(StringLiteralSyntax stringLiteralSyntax) { return DefaultWalk(stringLiteralSyntax); }
 		public virtual void PostWalkStringLiteral(StringLiteralSyntax stringLiteralSyntax) { }
 
+		// ConcatGoToEdgeSyntax
+		public virtual bool WalkConcatGoToEdge(ConcatGoToEdgeSyntax concatGoToEdgeSyntax) { return DefaultWalk(concatGoToEdgeSyntax); }
+		public virtual void PostWalkConcatGoToEdge(ConcatGoToEdgeSyntax concatGoToEdgeSyntax) { }
+
 		// InitSourceNodeSyntax
 		public virtual bool WalkInitSourceNode(InitSourceNodeSyntax initSourceNodeSyntax) { return DefaultWalk(initSourceNodeSyntax); }
 		public virtual void PostWalkInitSourceNode(InitSourceNodeSyntax initSourceNodeSyntax) { }
@@ -651,9 +691,17 @@ namespace Pharmatechnik.Nav.Language {
 		public virtual bool WalkCodeDeclaration(CodeDeclarationSyntax codeDeclarationSyntax) { return DefaultWalk(codeDeclarationSyntax); }
 		public virtual void PostWalkCodeDeclaration(CodeDeclarationSyntax codeDeclarationSyntax) { }
 
+		// ConcatModalEdgeSyntax
+		public virtual bool WalkConcatModalEdge(ConcatModalEdgeSyntax concatModalEdgeSyntax) { return DefaultWalk(concatModalEdgeSyntax); }
+		public virtual void PostWalkConcatModalEdge(ConcatModalEdgeSyntax concatModalEdgeSyntax) { }
+
 		// TaskDeclarationSyntax
 		public virtual bool WalkTaskDeclaration(TaskDeclarationSyntax taskDeclarationSyntax) { return DefaultWalk(taskDeclarationSyntax); }
 		public virtual void PostWalkTaskDeclaration(TaskDeclarationSyntax taskDeclarationSyntax) { }
+
+		// ConcatTransitionSyntax
+		public virtual bool WalkConcatTransition(ConcatTransitionSyntax concatTransitionSyntax) { return DefaultWalk(concatTransitionSyntax); }
+		public virtual void PostWalkConcatTransition(ConcatTransitionSyntax concatTransitionSyntax) { }
 
 		// IncludeDirectiveSyntax
 		public virtual bool WalkIncludeDirective(IncludeDirectiveSyntax includeDirectiveSyntax) { return DefaultWalk(includeDirectiveSyntax); }
@@ -735,13 +783,13 @@ namespace Pharmatechnik.Nav.Language {
 		public virtual bool WalkCodeResultDeclaration(CodeResultDeclarationSyntax codeResultDeclarationSyntax) { return DefaultWalk(codeResultDeclarationSyntax); }
 		public virtual void PostWalkCodeResultDeclaration(CodeResultDeclarationSyntax codeResultDeclarationSyntax) { }
 
-		// DialogNodeDeclarationSyntax
-		public virtual bool WalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { return DefaultWalk(dialogNodeDeclarationSyntax); }
-		public virtual void PostWalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { }
-
 		// ElseIfConditionClauseSyntax
 		public virtual bool WalkElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) { return DefaultWalk(elseIfConditionClauseSyntax); }
 		public virtual void PostWalkElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) { }
+
+		// DialogNodeDeclarationSyntax
+		public virtual bool WalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { return DefaultWalk(dialogNodeDeclarationSyntax); }
+		public virtual void PostWalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { }
 
 		// IdentifierOrStringListSyntax
 		public virtual bool WalkIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) { return DefaultWalk(identifierOrStringListSyntax); }

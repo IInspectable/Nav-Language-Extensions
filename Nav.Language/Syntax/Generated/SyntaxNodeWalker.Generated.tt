@@ -20,7 +20,7 @@ namespace Pharmatechnik.Nav.Language {
 	}
 
 	#region SyntaxNode Implementation
-
+	
 <#
 	var nodeTypes = FindAllDerivedTypesAndSelf<SyntaxNode>()
 							.Where(n=>!n.IsAbstract)

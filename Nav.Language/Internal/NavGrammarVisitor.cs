@@ -404,6 +404,10 @@ sealed class NavGrammarVisitor: NavGrammarBaseVisitor<SyntaxNode> {
             context.trigger()
                    .Optional(VisitTrigger)
                    .OfSyntaxType<TriggerSyntax>(),
+            concatTransitionSyntax:
+            context.concatTransition()
+                   .Optional(VisitConcatTransition)
+                   .OfSyntaxType<ConcatTransitionSyntax>(),
             conditionClause:
             context.conditionClause()
                    .Optional(VisitConditionClause)
@@ -490,6 +494,24 @@ sealed class NavGrammarVisitor: NavGrammarBaseVisitor<SyntaxNode> {
         }
 
         return null;
+    }
+
+    public override SyntaxNode VisitConcatTransition([NotNull] NavGrammar.ConcatTransitionContext context) {
+
+        var node = new ConcatTransitionSyntax(
+            extent:
+            CreateExtent(context),
+            edgeSyntax:
+            context.concatEdge()
+                   .Optional(VisitConcatEdge)
+                   .OfSyntaxType<ConcatEdgeSyntax>(),
+            targetNode:
+            context.targetNode()
+                   .Optional(VisitTargetNode)
+                   .OfSyntaxType<TargetNodeSyntax>()
+        );
+
+        return node;
     }
 
     public override SyntaxNode VisitSpontaneousTrigger(NavGrammar.SpontaneousTriggerContext context) {
@@ -606,6 +628,10 @@ sealed class NavGrammarVisitor: NavGrammarBaseVisitor<SyntaxNode> {
             context.targetNode()
                    .Optional(VisitTargetNode)
                    .OfSyntaxType<TargetNodeSyntax>(),
+            concatTransitionSyntax:
+            context.concatTransition()
+                   .Optional(VisitConcatTransition)
+                   .OfSyntaxType<ConcatTransitionSyntax>(),
             conditionClause:
             context.conditionClause()
                    .Optional(VisitConditionClause)
@@ -669,6 +695,36 @@ sealed class NavGrammarVisitor: NavGrammarBaseVisitor<SyntaxNode> {
         var node = new NonModalEdgeSyntax(CreateExtent(context));
 
         CreateToken(node, context.NonModalEdgeKeyword(), TextClassification.Keyword);
+
+        return node;
+    }
+
+    public override SyntaxNode VisitConcatEdge([NotNull] NavGrammar.ConcatEdgeContext context) {
+
+        if (context.concatGoToEdge() != null) {
+            return VisitConcatGoToEdge(context.concatGoToEdge());
+        }
+
+        if (context.concatModalEdge() != null) {
+            return VisitConcatModalEdge(context.concatModalEdge());
+        }
+
+        return null;
+    }
+
+    public override SyntaxNode VisitConcatGoToEdge([NotNull] NavGrammar.ConcatGoToEdgeContext context) {
+        var node = new ConcatGoToEdgeSyntax(CreateExtent(context));
+
+        CreateToken(node, context.ConcatGoToEdgeKeyword(), TextClassification.Keyword);
+
+        return node;
+    }
+
+    public override SyntaxNode VisitConcatModalEdge([NotNull] NavGrammar.ConcatModalEdgeContext context) {
+
+        var node = new ConcatModalEdgeSyntax(CreateExtent(context));
+
+        CreateToken(node, context.ConcatModalEdgeKeyword(), TextClassification.Keyword);
 
         return node;
     }

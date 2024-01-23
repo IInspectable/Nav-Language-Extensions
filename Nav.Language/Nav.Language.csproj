@@ -57,6 +57,40 @@
       <CustomToolNamespace>Pharmatechnik.Nav.Language.Generated</CustomToolNamespace>
     </Antlr4>
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Syntax\Generated\Syntax.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Syntax.Generated.cs</LastGenOutput>
+    </None>
+    <None Update="Syntax\Generated\SyntaxNodeVisitor.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SyntaxNodeVisitor.Generated.cs</LastGenOutput>
+    </None>
+    <None Update="Syntax\Generated\SyntaxNodeWalker.Generated.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SyntaxNodeWalker.Generated.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Syntax\Generated\Syntax.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Syntax.Generated.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Syntax\Generated\SyntaxNodeVisitor.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SyntaxNodeVisitor.Generated.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Syntax\Generated\SyntaxNodeWalker.Generated.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SyntaxNodeWalker.Generated.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
 
   <Import Project="..\JetBrains.Annotations\JetBrains.Annotations.projitems" Label="Shared" />
   <Import Project="CustomBuild.targets" />
