@@ -148,7 +148,7 @@ endTargetNode
     ;
 
 identifierTargetNode
-    :   Identifier (OpenParen identifierOrStringList CloseParen)?
+    :   Identifier
     ;
 
 conditionClause
@@ -185,10 +185,6 @@ spontaneousTrigger
 
 signalTrigger
     :   OnKeyword identifier
-    ;
-
-identifierOrStringList
-    :   identifierOrString (Comma identifierOrString)*
     ;
 
 identifierOrString

@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 23.01.2024 19:52:27
+// HINWEIS: Diese Datei wurde am 23.01.2024 20:55:46
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -223,15 +223,6 @@ namespace Pharmatechnik.Nav.Language {
 		}
 		internal override T Accept<T>(ISyntaxNodeVisitor<T> visitor) {
 			return visitor.VisitGoToEdge(this);
-		}
-	}
-
-	partial class IdentifierOrStringListSyntax {
-		internal override void Accept(ISyntaxNodeVisitor visitor) {
-			visitor.VisitIdentifierOrStringList(this);
-		}
-		internal override T Accept<T>(ISyntaxNodeVisitor<T> visitor) {
-			return visitor.VisitIdentifierOrStringList(this);
 		}
 	}
 
@@ -458,7 +449,6 @@ namespace Pharmatechnik.Nav.Language {
 		void VisitExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax); 
 		void VisitGenericType(GenericTypeSyntax genericTypeSyntax); 
 		void VisitGoToEdge(GoToEdgeSyntax goToEdgeSyntax); 
-		void VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax); 
 		void VisitIdentifierSourceNode(IdentifierSourceNodeSyntax identifierSourceNodeSyntax); 
 		void VisitIdentifier(IdentifierSyntax identifierSyntax); 
 		void VisitIdentifierTargetNode(IdentifierTargetNodeSyntax identifierTargetNodeSyntax); 
@@ -648,10 +638,6 @@ namespace Pharmatechnik.Nav.Language {
 			DefaultVisit(dialogNodeDeclarationSyntax);
 		}
 
-		public virtual void VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) {
-			DefaultVisit(identifierOrStringListSyntax);
-		}
-
 		public virtual void VisitCodeNamespaceDeclaration(CodeNamespaceDeclarationSyntax codeNamespaceDeclarationSyntax) {
 			DefaultVisit(codeNamespaceDeclarationSyntax);
 		}
@@ -722,7 +708,6 @@ namespace Pharmatechnik.Nav.Language {
 		T VisitCodeResultDeclaration(CodeResultDeclarationSyntax codeResultDeclarationSyntax); 
 		T VisitElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax); 
 		T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax); 
-		T VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax); 
 		T VisitCodeNamespaceDeclaration(CodeNamespaceDeclarationSyntax codeNamespaceDeclarationSyntax); 
 		T VisitExitTransitionDefinition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax); 
 		T VisitCodeGenerateToDeclaration(CodeGenerateToDeclarationSyntax codeGenerateToDeclarationSyntax); 
@@ -896,10 +881,6 @@ namespace Pharmatechnik.Nav.Language {
 
 		public virtual T VisitDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) {
 			return DefaultVisit(dialogNodeDeclarationSyntax);
-		}
-
-		public virtual T VisitIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) {
-			return DefaultVisit(identifierOrStringListSyntax);
 		}
 
 		public virtual T VisitCodeNamespaceDeclaration(CodeNamespaceDeclarationSyntax codeNamespaceDeclarationSyntax) {

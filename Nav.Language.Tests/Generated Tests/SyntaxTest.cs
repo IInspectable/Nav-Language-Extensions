@@ -558,20 +558,6 @@ public class SyntaxTests {
     }
 
     [Test]
-    [Description("Syntax: 'Identifier, \"StringLiteral\"'\r\n")]
-    public void TestIdentifierOrStringListSyntax() {
-        var identifierOrStringListSyntax =Syntax.ParseIdentifierOrStringList(SampleSyntax.Of<IdentifierOrStringListSyntax>());
-			
-        foreach(var diagnostic in identifierOrStringListSyntax.SyntaxTree.Diagnostics) {
-            Assert.Fail("Die Beispiels-Syntax führt zu Syntaxfehlern:\r\n{0}", diagnostic);
-        }
-        Assert.That(identifierOrStringListSyntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
-        foreach (var token in identifierOrStringListSyntax.ChildTokens()) {
-            Assert.That(token.IsMissing, Is.False, "Ein Token ist als 'fehlend' gekennzeichnet:\r\n{0}", token);
-        }
-    }
-
-    [Test]
     [Description("Syntax: '[namespaceprefix Namespace]'\r\n")]
     public void TestCodeNamespaceDeclarationSyntax() {
         var codeNamespaceDeclarationSyntax =Syntax.ParseCodeNamespaceDeclaration(SampleSyntax.Of<CodeNamespaceDeclarationSyntax>());
