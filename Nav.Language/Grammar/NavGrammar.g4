@@ -23,7 +23,7 @@ memberDeclaration
 
 
 includeDirective
-    :   TaskrefKeyword StringLiteral Semicolon?
+    :   TaskrefKeyword StringLiteral Semicolon
     ;
 
 taskDeclaration
@@ -184,7 +184,7 @@ spontaneousTrigger
     ;
 
 signalTrigger
-    :   OnKeyword identifierOrStringList
+    :   OnKeyword identifier
     ;
 
 identifierOrStringList

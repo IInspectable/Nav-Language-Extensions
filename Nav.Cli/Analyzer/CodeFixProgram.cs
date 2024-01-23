@@ -21,7 +21,7 @@ sealed class CodeFixProgram {
         var navFiles  = Directory.EnumerateFiles(cl.Directory, "*.nav", SearchOption.AllDirectories);
         var fileSpecs = navFiles.Select(file => new FileSpec(identity: PathHelper.GetRelativePath(cl.Directory, file), fileName: file));
 
-        pipeline.Run(fileSpecs, Checkout, RemoveSignalTriggerQuotationMarksCodeFixProvider.SuggestCodeFixes);
+        pipeline.Run(fileSpecs, Checkout, RemoveUnusedIncludeDirectiveCodeFixProvider.SuggestCodeFixes);
 
         return 0;
     }

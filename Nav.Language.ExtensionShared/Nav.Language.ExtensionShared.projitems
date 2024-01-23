@@ -40,8 +40,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\Infrastructure\TextChangeService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\IntroduceChoiceSuggestedAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\IntroduceChoiceSuggestedActionProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedAction.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveSignalTriggerQuotationMarksSuggestedActionProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveUnusedIncludeDirectiveSuggestedAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveUnusedIncludeDirectiveSuggestedActionProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CodeFixes\RemoveUnusedNodesSuggestedAction.cs" />

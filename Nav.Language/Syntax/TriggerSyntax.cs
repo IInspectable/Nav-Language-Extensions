@@ -31,14 +31,14 @@ public partial class SpontaneousTriggerSyntax: TriggerSyntax {
 [SampleSyntax("on Trigger")]
 public partial class SignalTriggerSyntax: TriggerSyntax {
 
-    internal SignalTriggerSyntax(TextExtent extent, IdentifierOrStringListSyntax identifierOrStringList)
+    internal SignalTriggerSyntax(TextExtent extent, IdentifierSyntax identifier)
         : base(extent) {
-        AddChildNode(IdentifierOrStringList = identifierOrStringList);
+        AddChildNode(Identifier = identifier);
     }
 
     public SyntaxToken OnKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.OnKeyword);
 
     [CanBeNull]
-    public IdentifierOrStringListSyntax IdentifierOrStringList { get; }
+    public IdentifierSyntax Identifier { get; }
 
 }

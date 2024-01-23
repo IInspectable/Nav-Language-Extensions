@@ -59,17 +59,17 @@ sealed class TriggerSymbolBuilder: SyntaxNodeVisitor {
 
     public override void VisitSignalTrigger(SignalTriggerSyntax signalTriggerSyntax) {
 
-        if (signalTriggerSyntax.IdentifierOrStringList == null) {
+        if (signalTriggerSyntax.Identifier == null) {
             return;
         }
 
-        foreach (var signal in signalTriggerSyntax.IdentifierOrStringList) {
-            var location = signal.GetLocation();
-            if (location != null) {
-                var trigger = new SignalTriggerSymbol(signal.Text, location, signal);
-                _triggers.Add(trigger);
-            }
+        var signal   = signalTriggerSyntax.Identifier;
+        var location = signal.GetLocation();
+        if (location != null) {
+            var trigger = new SignalTriggerSymbol(signal.Text, location, signal);
+            _triggers.Add(trigger);
         }
+
     }
 
 }

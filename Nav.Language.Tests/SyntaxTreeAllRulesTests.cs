@@ -451,7 +451,7 @@ public class SyntaxTreeTests {
         Assert.That(initNodeTransition.Trigger, Is.InstanceOf<SignalTriggerSyntax>());
         var onClause =(SignalTriggerSyntax)initNodeTransition.Trigger;
         Assert.That(onClause.OnKeyword.Type,                 Is.EqualTo(SyntaxTokenType.OnKeyword));
-        Assert.That(onClause.IdentifierOrStringList[0].Text, Is.EqualTo("Something"));
+        Assert.That(onClause.Identifier.Text, Is.EqualTo("Something"));
             
         Assert.That(initNodeTransition.ConditionClause, Is.InstanceOf<IfConditionClauseSyntax>());
         var initIfCondition = (IfConditionClauseSyntax)initNodeTransition.ConditionClause;
