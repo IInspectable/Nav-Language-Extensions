@@ -33,7 +33,7 @@ public class RemoveSignalTriggerQuotationMarksCodeFix: StyleCodeFix {
                      .OfType<StringLiteralSyntax>();
     }
 
-    public IList<TextChange> GetTextChanges() {
+    public override IList<TextChange> GetTextChanges() {
 
         var textChanges = new List<TextChange>();
 

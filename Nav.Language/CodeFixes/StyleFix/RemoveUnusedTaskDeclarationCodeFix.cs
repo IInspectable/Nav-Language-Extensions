@@ -31,7 +31,7 @@ public class RemoveUnusedTaskDeclarationCodeFix: StyleCodeFix {
                TaskDeclaration.IsIncluded       == false;
     }
 
-    public IList<TextChange> GetTextChanges() {
+    public override IList<TextChange> GetTextChanges() {
         if (!CanApplyFix()) {
             throw new InvalidOperationException();
         }
