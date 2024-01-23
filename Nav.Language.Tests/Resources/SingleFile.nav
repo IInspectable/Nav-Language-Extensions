@@ -26,5 +26,5 @@ task ConfirmDialog 					[code "public enum ConfirmDialogResult { Yes, No };"]
     init --> ConfirmDialög;
 
     ConfirmDialög --> Yes on Yes_Clicked;
-    ConfirmDialög --> No  on No_Clicked, Close;
+    ConfirmDialög --> No  on No_Clicked;
 }

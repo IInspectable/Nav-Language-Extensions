@@ -81,7 +81,6 @@
     <Content Include="Diagnostics\Tests\Nav0024OutgoingEdgeForExit0AlreadyDeclared.nav" />
     <Content Include="Diagnostics\Tests\Nav0025NoOutgoingEdgeForExit0Declared_1Edges.nav" />
     <Content Include="Diagnostics\Tests\Nav0025NoOutgoingEdgeForExit0Declared_2Edges.nav" />
-    <Content Include="Diagnostics\Tests\Nav0026TriggerWithName0AlreadyDeclared.nav" />
     <Content Include="Diagnostics\Tests\Nav0100TaskNode0MustNotContainLeavingEdges.nav" />
     <Content Include="Diagnostics\Tests\Nav0101ExitNodeMustNotContainLeavingEdges.nav" />
     <Content Include="Diagnostics\Tests\Nav0103InitNodeMustNotContainIncomingEdges_ExitTransition.nav" />
@@ -111,8 +110,6 @@
     <Content Include="Diagnostics\Tests\Nav0116ViewNode0HasNoIncomingEdges_2Edges.nav" />
     <Content Include="Diagnostics\Tests\Nav0117ViewNode0HasNoOutgoingEdges_2Edges.nav" />
     <Content Include="Diagnostics\Tests\Nav0200SignalTriggerNotAllowedAfterInit.nav" />
-    <Content Include="Diagnostics\Tests\Nav0201SpontaneousNotAllowedInSignalTrigger.nav" />
-    <Content Include="Diagnostics\Tests\Nav0201SpontNotAllowedInSignalTrigger.nav" />
     <Content Include="Diagnostics\Tests\Nav0203TriggerNotAllowedAfterChoice.nav" />
     <Content Include="Diagnostics\Tests\Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodesElse.nav" />
     <Content Include="Diagnostics\Tests\Nav0220ConditionsAreOnlySupportedAfterInitAndChoiceNodesIf.nav" />

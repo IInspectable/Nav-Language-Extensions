@@ -36,7 +36,7 @@ public class RemoveUnusedNodesCodeFix: StyleCodeFix {
                                                           !n.IsConnectionPoint());
     }
         
-    public IList<TextChange> GetTextChanges() {
+    public override IList<TextChange> GetTextChanges() {
 
         var textChanges = new List<TextChange?>();
         foreach (var textChange in GetCandidates().SelectMany(c => GetRemoveSyntaxNodeChanges(c.Syntax))) {

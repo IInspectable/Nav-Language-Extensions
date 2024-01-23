@@ -35,7 +35,7 @@ public class RemoveUnusedIncludeDirectiveCodeFix: StyleCodeFix {
         }
     }
 
-    public IList<TextChange> GetTextChanges() {
+    public override IList<TextChange> GetTextChanges() {
 
         var textChanges = new List<TextChange?>();
         foreach (var textChange in GetCandidates().SelectMany(GetRemoveSyntaxNodeChanges)) {

@@ -28,7 +28,7 @@ public class AddMissingSemicolonsOnIncludeDirectivesCodeFix: StyleCodeFix {
         return Syntax.DescendantNodes<IncludeDirectiveSyntax>().Where(ids => ids.Semicolon.IsMissing);
     }
 
-    public IList<TextChange> GetTextChanges() {
+    public override IList<TextChange> GetTextChanges() {
 
         var textChanges = new List<TextChange>();
 

@@ -30,7 +30,7 @@ NotimplementedKeyword  : 'notimplemented';
 AbstractmethodKeyword  : 'abstractmethod';
 DonotinjectKeyword     : 'donotinject';
 GoToEdgeKeyword        : '-->';
-ModalEdgeKeyword       : '*->' | 'o->';
+ModalEdgeKeyword       : 'o->';
 ConcatGoToEdgeKeyword  : '--^';
 ConcatModalEdgeKeyword : 'o-^';
 NonModalEdgeKeyword    : '==>';

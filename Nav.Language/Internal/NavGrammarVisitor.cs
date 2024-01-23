@@ -531,10 +531,10 @@ sealed class NavGrammarVisitor: NavGrammarBaseVisitor<SyntaxNode> {
         var node = new SignalTriggerSyntax(
             extent:
             CreateExtent(context),
-            identifierOrStringList:
-            context.identifierOrStringList()
-                   .Optional(VisitIdentifierOrStringList)
-                   .OfSyntaxType<IdentifierOrStringListSyntax>()
+            identifier:
+            context.identifier()
+                   .Optional(VisitIdentifier)
+                   .OfSyntaxType<IdentifierSyntax>()
         );
 
         CreateToken(node, context.OnKeyword(), TextClassification.ControlKeyword);

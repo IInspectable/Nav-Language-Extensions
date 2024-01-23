@@ -68,7 +68,7 @@ public class DescendantNodesTests {
     public void CountSyntaxNodeTest1() {
         Assert.That(
             _codegenerationUnitSyntax.DescendantNodes<SyntaxNode>().Count(),
-            Is.EqualTo(32)
+            Is.EqualTo(31)
         );
     }
 
