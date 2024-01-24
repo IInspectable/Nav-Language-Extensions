@@ -1,4 +1,4 @@
-#region Using Directives
+﻿#region Using Directives
 
 using System;
 using System.Collections.Generic;
@@ -52,12 +52,26 @@ sealed partial class TaskDefinitionSymbol: Symbol, ITaskDefinitionSymbol {
             yield return symbol;
         }
 
-        foreach (var symbol in Edges().SelectMany(t => t.Symbols())) {
+        // Die Edges kennen ihre ConcatTransitions und liefern deren Symbole
+        foreach (var symbol in EdgesWithoutConcatTransitions().SelectMany(t => t.Symbols())) {
             yield return symbol;
         }
+      
     }
 
     public IEnumerable<IEdge> Edges() {
+        return EdgesWithoutConcatTransitions().SelectMany(ExpandConcatTransition);
+
+        IEnumerable<IEdge> ExpandConcatTransition(IEdge edge) {
+            yield return edge;
+
+            if (edge is IConcatableEdge { ConcatTransition: { } ct }) {
+                yield return ct;
+            }
+        }
+    }
+
+    IEnumerable<IEdge> EdgesWithoutConcatTransitions() {
         return Enumerable.Empty<IEdge>()
                          .Concat(InitTransitions)
                          .Concat(ChoiceTransitions)

@@ -49,6 +49,7 @@ sealed class ConcatTransition: IConcatTransition {
     public ITaskNodeReferenceSymbol TargetReference { get; }
 
     public IEnumerable<ISymbol> Symbols() {
+
         if (SourceReference != null) {
             yield return SourceReference;
         }

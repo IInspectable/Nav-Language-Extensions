@@ -51,11 +51,9 @@ public static class EdgeExtensions {
                 return false;
             }
 
-            if (seenEdges.Contains(edge)) {
+            if (!seenEdges.Add(edge)) {
                 return false;
             }
-
-            seenEdges.Add(edge);
 
             var sourceNode = edge.SourceReference?.Declaration;
             return sourceNode switch {

@@ -86,7 +86,7 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
 
     static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
 
-        List<string> namespaces = [
+        IEnumerable<string> namespaces = [
             typeof(int).Namespace,
             taskCodeInfo.IwflNamespace,
             CodeGenFacts.NavigationEngineIwflNamespace,

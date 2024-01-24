@@ -24,7 +24,7 @@ task A
     C       --> V --^ V;
     B:e     --> V --^ V;
 }
-//==>>[Semantic](22,23,22,24): error Nav1021: The target node of a concatenation must be a task node
-//==>>[Semantic](23,23,23,24): error Nav1021: The target node of a concatenation must be a task node
-//==>>[Semantic](24,23,24,24): error Nav1021: The target node of a concatenation must be a task node
-//==>>[Semantic](25,23,25,24): error Nav1021: The target node of a concatenation must be a task node
+//==>>[Semantic](22,23,22,24): error Nav1021: The target node 'V' in the concatenation must be a task
+//==>>[Semantic](23,23,23,24): error Nav1021: The target node 'V' in the concatenation must be a task
+//==>>[Semantic](24,23,24,24): error Nav1021: The target node 'V' in the concatenation must be a task
+//==>>[Semantic](25,23,25,24): error Nav1021: The target node 'V' in the concatenation must be a task

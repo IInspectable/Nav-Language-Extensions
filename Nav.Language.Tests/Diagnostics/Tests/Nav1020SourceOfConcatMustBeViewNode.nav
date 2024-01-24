@@ -22,7 +22,8 @@ task A
     C       --> B --^ B;
     B:e     --> e --^B;
 }
-//==>>[Semantic](20,17,20,18): error Nav1020: The source node of a concatenation must be a view node
-//==>>[Semantic](21,17,21,18): error Nav1020: The source node of a concatenation must be a view node
-//==>>[Semantic](22,17,22,18): error Nav1020: The source node of a concatenation must be a view node
-//==>>[Semantic](23,17,23,18): error Nav1020: The source node of a concatenation must be a view node
+//==>>[Semantic](20,17,20,18): error Nav1020: The source node 'B' in the concatenation must be a view or dialog
+//==>>[Semantic](21,17,21,18): error Nav1020: The source node 'B' in the concatenation must be a view or dialog
+//==>>[Semantic](22,17,22,18): error Nav1020: The source node 'B' in the concatenation must be a view or dialog
+//==>>[Semantic](23,17,23,18): error Nav1020: The source node 'e' in the concatenation must be a view or dialog
+

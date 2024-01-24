@@ -442,16 +442,19 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
         // Source
         var sourceNodeDeclaration = _taskDefinition.NodeDeclarations.TryFindSymbol(sourceNodeSyntax.Name);
         if (sourceNodeDeclaration == null) {
+            _diagnostics.Add(new Diagnostic(
+                                 sourceNodeLocation,
+                                 DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0,
+                                 sourceNodeSyntax.Name));
             return null;
         }
 
         var guiNodeDeclaration = sourceNodeDeclaration as IGuiNodeSymbolConstruction;
 
         if (guiNodeDeclaration == null) {
-            // TODO Diagnostic Source must be a dialog/view
             _diagnostics.Add(new Diagnostic(
                                  sourceNodeLocation,
-                                 DiagnosticDescriptors.Semantic.Nav1020SourceOfConcatMustBeViewNode,
+                                 DiagnosticDescriptors.Semantic.Nav1020Source0OfConcatMustBeViewNode,
                                  sourceNodeSyntax.Name));
 
         }
@@ -463,21 +466,28 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
 
     [CanBeNull]
     TaskNodeReferenceSymbol CreateTargetTaskNodeReference(ConcatTransitionSyntax concatTransitionSyntax, TargetNodeSyntax sourceNodeSyntax) {
-        var targetNodeReference = CreateTargetNodeReference(concatTransitionSyntax.TargetNode);
 
-        var targetNodeLocation = concatTransitionSyntax.TargetNode?.GetLocation();
+        var targetNodeSyntax   = concatTransitionSyntax.TargetNode;
+        var targetNodeLocation = targetNodeSyntax?.GetLocation();
         if (targetNodeLocation == null) {
             return null;
         }
 
-        var targetTaskNodeReference = targetNodeReference as TaskNodeReferenceSymbol;
-
-        if (targetTaskNodeReference == null) {
-            // TODO Diagnostic Target must be a task
+        var targetNodeReference = CreateTargetNodeReference(concatTransitionSyntax.TargetNode);
+        if (targetNodeReference?.Declaration == null) {
             _diagnostics.Add(new Diagnostic(
                                  targetNodeLocation,
-                                 DiagnosticDescriptors.Semantic.Nav1021TargetOfConcatMustBeTaskNode,
-                                 sourceNodeSyntax.Name));
+                                 DiagnosticDescriptors.Semantic.Nav0011CannotResolveNode0,
+                                 targetNodeSyntax.Name));
+            return null;
+        }
+
+        var targetTaskNodeReference = targetNodeReference as TaskNodeReferenceSymbol;
+        if (targetTaskNodeReference == null) {
+            _diagnostics.Add(new Diagnostic(
+                                 targetNodeLocation,
+                                 DiagnosticDescriptors.Semantic.Nav1021Target0OfConcatMustBeTaskNode,
+                                 targetNodeSyntax.Name));
 
         }
 

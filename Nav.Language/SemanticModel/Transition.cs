@@ -74,6 +74,12 @@ abstract class Transition: ITransition {
         if (TargetReference != null) {
             yield return TargetReference;
         }
+
+        if (ConcatTransition != null) {
+            foreach (var symbol in ConcatTransition.Symbols()) {
+                yield return symbol;
+            }
+        }
     }
 
 }

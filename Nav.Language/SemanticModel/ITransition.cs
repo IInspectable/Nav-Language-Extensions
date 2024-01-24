@@ -2,13 +2,17 @@
 
 namespace Pharmatechnik.Nav.Language;
 
-public interface ITransition: IEdge {
-
-    [NotNull]
-    TransitionDefinitionSyntax Syntax { get; }
+public interface IConcatableEdge: IEdge {
 
     [CanBeNull]
     IConcatTransition ConcatTransition { get; }
+
+}
+
+public interface ITransition: IConcatableEdge {
+
+    [NotNull]
+    TransitionDefinitionSyntax Syntax { get; }
 
 }
 
@@ -36,7 +40,7 @@ public interface IChoiceTransition: ITransition {
 
 }
 
-public interface IExitTransition: IEdge {
+public interface IExitTransition: IConcatableEdge {
 
     [NotNull]
     ExitTransitionDefinitionSyntax Syntax { get; }

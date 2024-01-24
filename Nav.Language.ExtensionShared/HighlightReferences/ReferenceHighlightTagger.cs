@@ -112,7 +112,7 @@ sealed class ReferenceHighlightTagger : SemanticModelServiceDependent, ITagger<R
             yield break;
         }
 
-        // der erste Span hat immer den Charackter der Definition, die übrigen sind dessen Referenzen.
+        // der erste Span hat immer den Charakter der Definition, die übrigen sind dessen Referenzen.
         var definitionSpan = _referenceSpans.First();
         var referenceSpans = new NormalizedSnapshotSpanCollection(_referenceSpans.Skip(1));
 

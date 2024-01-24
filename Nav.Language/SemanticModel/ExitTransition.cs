@@ -69,7 +69,7 @@ sealed class ExitTransition: IExitTransition {
     public INodeReferenceSymbol TargetReference { get; }
 
     [CanBeNull]
-    public ConcatTransition ConcatTransition { get; }
+    public IConcatTransition ConcatTransition { get; }
 
     [NotNull]
     public IEnumerable<ISymbol> Symbols() {
@@ -88,6 +88,12 @@ sealed class ExitTransition: IExitTransition {
 
         if (TargetReference != null) {
             yield return TargetReference;
+        }
+
+        if (ConcatTransition != null) {
+            foreach (var symbol in ConcatTransition.Symbols()) {
+                yield return symbol;
+            }
         }
     }
 

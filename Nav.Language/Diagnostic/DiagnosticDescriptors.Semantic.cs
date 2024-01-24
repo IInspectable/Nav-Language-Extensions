@@ -318,21 +318,21 @@ public partial class DiagnosticDescriptors {
         );
 
         /// <summary>
-        /// The source node of a concatenation must be a view
+        /// The source node '{0}' in the concatenation must be a view or dialog
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1020SourceOfConcatMustBeViewNode = new(
+        public static readonly DiagnosticDescriptor Nav1020Source0OfConcatMustBeViewNode = new(
             id             : DiagnosticId.Nav1020,
-            messageFormat  : "The source node of a concatenation must be a view node",
+            messageFormat  : "The source node '{0}' in the concatenation must be a view or dialog",
             category       : Category,
             defaultSeverity: DiagnosticSeverity.Error
         );
 
         /// <summary>
-        /// The target node of a concatenation must be a task
+        /// The target node '{0}' in the concatenation must be a task
         /// </summary>
-        public static readonly DiagnosticDescriptor Nav1021TargetOfConcatMustBeTaskNode = new(
+        public static readonly DiagnosticDescriptor Nav1021Target0OfConcatMustBeTaskNode = new(
             id             : DiagnosticId.Nav1021,
-            messageFormat  : "The target node of a concatenation must be a task node",
+            messageFormat  : "The target node '{0}' in the concatenation must be a task",
             category       : Category,
             defaultSeverity: DiagnosticSeverity.Error
         );
