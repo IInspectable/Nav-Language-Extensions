@@ -1,0 +1,28 @@
+﻿task B 
+{
+    init;
+    exit e;
+    init --> e;
+}
+
+task A
+{
+    init;  
+    exit e;
+
+    task B;
+    view V;
+    choice C;
+
+    init    --> V;
+    init    --> C;
+
+    init    --> B --^ B;
+    V       --> B --^ B on OnTrigger;
+    C       --> B --^ B;
+    B:e     --> e --^B;
+}
+//==>>[Semantic](20,17,20,18): error Nav1020: The source node of a concatenation must be a view node
+//==>>[Semantic](21,17,21,18): error Nav1020: The source node of a concatenation must be a view node
+//==>>[Semantic](22,17,22,18): error Nav1020: The source node of a concatenation must be a view node
+//==>>[Semantic](23,17,23,18): error Nav1020: The source node of a concatenation must be a view node

@@ -1,11 +1,14 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
-namespace Pharmatechnik.Nav.Language; 
+namespace Pharmatechnik.Nav.Language;
 
 public interface ITransition: IEdge {
 
     [NotNull]
     TransitionDefinitionSyntax Syntax { get; }
+
+    [CanBeNull]
+    IConcatTransition ConcatTransition { get; }
 
 }
 
@@ -43,5 +46,12 @@ public interface IExitTransition: IEdge {
 
     [CanBeNull]
     IExitConnectionPointReferenceSymbol ExitConnectionPointReference { get; }
+
+}
+
+public interface IConcatTransition: IEdge {
+
+    [NotNull]
+    ConcatTransitionSyntax Syntax { get; }
 
 }

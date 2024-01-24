@@ -1,4 +1,4 @@
-namespace Pharmatechnik.Nav.Language; 
+﻿namespace Pharmatechnik.Nav.Language; 
 
 sealed class InitTransition: Transition, IInitTransition {
 
@@ -6,8 +6,9 @@ sealed class InitTransition: Transition, IInitTransition {
                           ITaskDefinitionSymbol containingTask,
                           InitNodeReferenceSymbol initNodeReference,
                           EdgeModeSymbol edgeMode,
-                          NodeReferenceSymbol targetReference)
-        : base(syntax, containingTask, initNodeReference, edgeMode, targetReference) {
+                          NodeReferenceSymbol targetReference,
+                          ConcatTransition concatTransition)
+        : base(syntax, containingTask, initNodeReference, edgeMode, targetReference, concatTransition) {
     }
 
     public IInitNodeReferenceSymbol InitNodeSourceReference => (IInitNodeReferenceSymbol) SourceReference;

@@ -1,4 +1,4 @@
-#region Using Directives
+﻿#region Using Directives
 
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,8 @@ sealed class ExitTransition: IExitTransition {
                             [CanBeNull] TaskNodeReferenceSymbol taskNodeReference,
                             [CanBeNull] ExitConnectionPointReferenceSymbol exitConnectionPointReference,
                             [CanBeNull] EdgeModeSymbol edgeMode,
-                            [CanBeNull] NodeReferenceSymbol targetReference) {
+                            [CanBeNull] NodeReferenceSymbol targetReference,
+                            [CanBeNull] ConcatTransition concatTransition) {
 
         Syntax                       = syntax         ?? throw new ArgumentNullException(nameof(syntax));
         ContainingTask               = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
@@ -24,6 +25,7 @@ sealed class ExitTransition: IExitTransition {
         ExitConnectionPointReference = exitConnectionPointReference;
         EdgeMode                     = edgeMode;
         TargetReference              = targetReference;
+        ConcatTransition             = concatTransition;
 
         if (taskNodeReference != null) {
             taskNodeReference.Edge = this;
@@ -65,6 +67,9 @@ sealed class ExitTransition: IExitTransition {
 
     [CanBeNull]
     public INodeReferenceSymbol TargetReference { get; }
+
+    [CanBeNull]
+    public ConcatTransition ConcatTransition { get; }
 
     [NotNull]
     public IEnumerable<ISymbol> Symbols() {

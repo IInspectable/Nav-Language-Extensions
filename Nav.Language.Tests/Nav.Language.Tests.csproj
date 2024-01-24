@@ -47,6 +47,8 @@
 
   <ItemGroup>
     <Content Include="Diagnostics\Tests\Nav0107ExitNode0HasNoIncomingEdgesDisabled.nav" />
+    <Content Include="Diagnostics\Tests\Nav1021TargetOfConcatMustBeTaskNode.nav" />
+    <Content Include="Diagnostics\Tests\Nav1020SourceOfConcatMustBeViewNode.nav" />
     <Content Include="Diagnostics\Tests\Nav1012TaskNode0NotRequired.nav" />
     <Content Include="Diagnostics\Tests\SyntaxErrorTokenRecognitionError.nav" />
     <Content Include="Diagnostics\Tests\Nav1010TaskNode0HasNoIncomingEdges.nav" />

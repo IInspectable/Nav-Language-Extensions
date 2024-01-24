@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
@@ -11,8 +11,9 @@ sealed class TriggerTransition: Transition, ITriggerTransition {
                              GuiNodeReferenceSymbol sourceReference,
                              EdgeModeSymbol edgeMode,
                              NodeReferenceSymbol targetReference,
+                             ConcatTransition concatTransition,
                              SymbolCollection<TriggerSymbol> triggers)
-        : base(syntax, containingTask, sourceReference, edgeMode, targetReference) {
+        : base(syntax, containingTask, sourceReference, edgeMode, targetReference, concatTransition) {
 
         Triggers = triggers ?? new SymbolCollection<TriggerSymbol>();
 

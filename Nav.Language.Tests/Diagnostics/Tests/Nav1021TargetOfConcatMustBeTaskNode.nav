@@ -1,0 +1,30 @@
+﻿task B 
+{
+    init;
+    exit e;
+    init --> e;
+}
+
+task A
+{
+    init;  
+    exit e;
+
+    task B;
+    view V;
+    choice C;
+
+    init    --> V;
+    init    --> C;
+    init    --> B;
+    init    --> e;
+
+    init    --> V --^ V;
+    V       --> V --^ V on OnTrigger;
+    C       --> V --^ V;
+    B:e     --> V --^ V;
+}
+//==>>[Semantic](22,23,22,24): error Nav1021: The target node of a concatenation must be a task node
+//==>>[Semantic](23,23,23,24): error Nav1021: The target node of a concatenation must be a task node
+//==>>[Semantic](24,23,24,24): error Nav1021: The target node of a concatenation must be a task node
+//==>>[Semantic](25,23,25,24): error Nav1021: The target node of a concatenation must be a task node

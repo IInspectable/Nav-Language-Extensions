@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Pharmatechnik.Nav.Language.Text;
@@ -34,7 +35,7 @@ sealed class ViewNodeRenameCodeFix: RenameNodeCodeFix<IViewNodeSymbol> {
         textChanges.AddRange(GetRenameSymbolChanges(ViewNode, newName));
 
         // Die Dialog-Referenzen auf der "linken Seite"
-        foreach (var transition in ViewNode.Outgoings) {
+        foreach (var transition in ViewNode.Outgoings.OfType<ITransition>()) {
             var textChange = GetRenameSourceChanges(transition, newName);
             textChanges.AddRange(textChange);
         }

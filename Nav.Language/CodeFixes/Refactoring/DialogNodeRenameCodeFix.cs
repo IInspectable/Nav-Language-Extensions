@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Pharmatechnik.Nav.Language.Text;
 
 #endregion
@@ -34,7 +34,7 @@ sealed class DialogNodeRenameCodeFix: RenameNodeCodeFix<IDialogNodeSymbol> {
         textChanges.AddRange(GetRenameSymbolChanges(DialogNode, newName));
 
         // Die Dialog-Referenzen auf der "linken Seite"
-        foreach (var transition in DialogNode.Outgoings) {
+        foreach (var transition in DialogNode.Outgoings.OfType<ITransition>()) {
             var textChange = GetRenameSourceChanges(transition, newName);
             textChanges.AddRange(textChange);
         }

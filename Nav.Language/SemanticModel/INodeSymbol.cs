@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
@@ -82,8 +82,9 @@ public interface IChoiceNodeSymbol: ISourceNodeSymbol, ITargetNodeSymbol {
 
 public interface IGuiNodeSymbol: ISourceNodeSymbol, ITargetNodeSymbol {
 
-    [NotNull]
-    new IReadOnlyList<ITriggerTransition> Outgoings { get; }
+    // Outgoings können vom Typ IConcatTransition oder ITriggerTransition sein
+    //[NotNull]
+    //new IReadOnlyList<ITriggerTransition> Outgoings { get; }
 
 }
 

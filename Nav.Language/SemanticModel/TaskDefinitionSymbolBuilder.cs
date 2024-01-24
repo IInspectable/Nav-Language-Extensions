@@ -1,7 +1,8 @@
-#region Using Directives
+ï»¿#region Using Directives
 
 using System.Linq;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 #endregion
 
@@ -114,7 +115,7 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
         var nodeIdentifier = taskAlias.IsMissing ? taskIdentifier : taskAlias;
 
         if (nodeIdentifier.IsMissing) {
-            // Diesen Fall haben wir, wenn nur "task ;" eingegeben wird. Dafür gibt es aber bereits einen Syntax Fehler.
+            // Diesen Fall haben wir, wenn nur "task ;" eingegeben wird. DafÃ¼r gibt es aber bereits einen Syntax Fehler.
             return;
         }
 
@@ -217,7 +218,7 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
             }
         }
 
-        // Source: Ohne Source Node können wir keine Transitions hinzufügen, da dieser Knoten relevant ist für die Bestimmung
+        // Source: Ohne Source Node kÃ¶nnen wir keine Transitions hinzufÃ¼gen, da dieser Knoten relevant ist fÃ¼r die Bestimmung
         // der Transition (Init, Choice, Trigger)
 
         var sourceNodeSyntax = transitionDefinitionSyntax.SourceNode;
@@ -227,7 +228,7 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
 
         var sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(sourceNodeSyntax.Name);
 
-        // Special case "init": Hier ist implizit auch Großschreibung erlaubt
+        // Special case "init": Hier ist implizit auch GroÃŸschreibung erlaubt
         if (sourceNode == null && sourceNodeSyntax.Name == SyntaxFacts.InitKeyword) {
             sourceNode = _taskDefinition.NodeDeclarations.TryFindSymbol(SyntaxFacts.InitKeywordAlt);
         }
@@ -346,8 +347,9 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
 
     private void AddExitTransition(ExitTransitionDefinitionSyntax exitTransitionDefinitionSyntax, TaskNodeReferenceSymbol sourceNodeReference, ExitConnectionPointReferenceSymbol exitConnectionPointReference, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
-        var exitTransition = new ExitTransition(exitTransitionDefinitionSyntax, _taskDefinition, sourceNodeReference, exitConnectionPointReference, edgeMode, targetNodeReference);
-        var taskNode       = exitTransition.TaskNodeSourceReference?.Declaration as TaskNodeSymbol;
+        var concatTransition = CreateConcatTransition(exitTransitionDefinitionSyntax.ConcatTransition, exitTransitionDefinitionSyntax.TargetNode);
+        var exitTransition   = new ExitTransition(exitTransitionDefinitionSyntax, _taskDefinition, sourceNodeReference, exitConnectionPointReference, edgeMode, targetNodeReference, concatTransition);
+        var taskNode         = exitTransition.TaskNodeSourceReference?.Declaration as TaskNodeSymbol;
 
         _taskDefinition.ExitTransitions.Add(exitTransition);
 
@@ -359,8 +361,9 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
 
     private void AddInitTransition(InitNodeSymbol initNode, TransitionDefinitionSyntax transitionDefinitionSyntax, SourceNodeSyntax sourceNodeSyntax, Location sourceNodeLocation, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
+        var concatTransition  = CreateConcatTransition(transitionDefinitionSyntax.ConcatTransition, transitionDefinitionSyntax.TargetNode);
         var initNodeReference = new InitNodeReferenceSymbol(sourceNodeSyntax.SyntaxTree, sourceNodeSyntax.Name, sourceNodeLocation, initNode, NodeReferenceType.Source);
-        var initTransition    = new InitTransition(transitionDefinitionSyntax, _taskDefinition, initNodeReference, edgeMode, targetNodeReference);
+        var initTransition    = new InitTransition(transitionDefinitionSyntax, _taskDefinition, initNodeReference, edgeMode, targetNodeReference, concatTransition);
 
         _taskDefinition.InitTransitions.Add(initTransition);
 
@@ -372,8 +375,9 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
 
     private void AddChoiceTransition(ChoiceNodeSymbol choiceNode, TransitionDefinitionSyntax transitionDefinitionSyntax, SourceNodeSyntax sourceNodeSyntax, Location sourceNodelocation, EdgeModeSymbol edgeMode, NodeReferenceSymbol targetNodeReference) {
 
+        var concatTransition    = CreateConcatTransition(transitionDefinitionSyntax.ConcatTransition, transitionDefinitionSyntax.TargetNode);
         var choiceNodeReference = new ChoiceNodeReferenceSymbol(sourceNodeSyntax.SyntaxTree, sourceNodeSyntax.Name, sourceNodelocation, choiceNode, NodeReferenceType.Source);
-        var choiceTransition    = new ChoiceTransition(transitionDefinitionSyntax, _taskDefinition, choiceNodeReference, edgeMode, targetNodeReference);
+        var choiceTransition    = new ChoiceTransition(transitionDefinitionSyntax, _taskDefinition, choiceNodeReference, edgeMode, targetNodeReference, concatTransition);
 
         _taskDefinition.ChoiceTransitions.Add(choiceTransition);
 
@@ -389,8 +393,9 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
 
         _diagnostics.AddRange(diagnostics);
 
+        var concatTransition  = CreateConcatTransition(transitionDefinitionSyntax.ConcatTransition, transitionDefinitionSyntax.TargetNode);
         var guiNodeReference  = new GuiNodeReferenceSymbol(sourceNodeSyntax.SyntaxTree, sourceNodeSyntax.Name, sourceNodelocation, guiNode, NodeReferenceType.Source);
-        var triggerTransition = new TriggerTransition(transitionDefinitionSyntax, _taskDefinition, guiNodeReference, edgeMode, targetNodeReference, triggers);
+        var triggerTransition = new TriggerTransition(transitionDefinitionSyntax, _taskDefinition, guiNodeReference, edgeMode, targetNodeReference, concatTransition, triggers);
 
         _taskDefinition.TriggerTransitions.Add(triggerTransition);
 
@@ -400,6 +405,105 @@ sealed class TaskDefinitionSymbolBuilder: SyntaxNodeVisitor {
         WireTargetNodeReferences(triggerTransition);
     }
 
+    [CanBeNull]
+    private ConcatTransition CreateConcatTransition(ConcatTransitionSyntax concatTransitionSyntax, TargetNodeSyntax sourceNodeSyntax) {
+
+        if (concatTransitionSyntax == null) {
+            return null;
+        }
+
+        var sourceGuiNodeReference  = CreateSourceGuiNodeReference(concatTransitionSyntax, sourceNodeSyntax);
+        var edgeMode                = CreateEdgeModeSymbol(concatTransitionSyntax);
+        var targetTaskNodeReference = CreateTargetTaskNodeReference(concatTransitionSyntax, sourceNodeSyntax);
+
+        if (sourceGuiNodeReference == null || edgeMode == null || targetTaskNodeReference == null) {
+            return null;
+        }
+
+        var concatTransition   = new ConcatTransition(concatTransitionSyntax, _taskDefinition, sourceGuiNodeReference, edgeMode, targetTaskNodeReference);
+        var guiNodeDeclaration = sourceGuiNodeReference.Declaration as IGuiNodeSymbolConstruction;
+
+        guiNodeDeclaration?.Outgoings.Add(concatTransition);
+        guiNodeDeclaration?.References.Add(concatTransition.SourceReference);
+
+        WireTargetNodeReferences(concatTransition);
+
+        return concatTransition;
+
+    }
+
+    GuiNodeReferenceSymbol CreateSourceGuiNodeReference(ConcatTransitionSyntax concatTransitionSyntax, TargetNodeSyntax sourceNodeSyntax) {
+
+        var sourceNodeLocation = sourceNodeSyntax.GetLocation();
+        if (sourceNodeLocation == null) {
+            return null;
+        }
+
+        // Source
+        var sourceNodeDeclaration = _taskDefinition.NodeDeclarations.TryFindSymbol(sourceNodeSyntax.Name);
+        if (sourceNodeDeclaration == null) {
+            return null;
+        }
+
+        var guiNodeDeclaration = sourceNodeDeclaration as IGuiNodeSymbolConstruction;
+
+        if (guiNodeDeclaration == null) {
+            // TODO Diagnostic Source must be a dialog/view
+            _diagnostics.Add(new Diagnostic(
+                                 sourceNodeLocation,
+                                 DiagnosticDescriptors.Semantic.Nav1020SourceOfConcatMustBeViewNode,
+                                 sourceNodeSyntax.Name));
+
+        }
+
+        var sourceGuiNodeReference = new GuiNodeReferenceSymbol(concatTransitionSyntax.SyntaxTree, sourceNodeSyntax.Name, sourceNodeLocation, guiNodeDeclaration, NodeReferenceType.Source);
+
+        return sourceGuiNodeReference;
+    }
+
+    [CanBeNull]
+    TaskNodeReferenceSymbol CreateTargetTaskNodeReference(ConcatTransitionSyntax concatTransitionSyntax, TargetNodeSyntax sourceNodeSyntax) {
+        var targetNodeReference = CreateTargetNodeReference(concatTransitionSyntax.TargetNode);
+
+        var targetNodeLocation = concatTransitionSyntax.TargetNode?.GetLocation();
+        if (targetNodeLocation == null) {
+            return null;
+        }
+
+        var targetTaskNodeReference = targetNodeReference as TaskNodeReferenceSymbol;
+
+        if (targetTaskNodeReference == null) {
+            // TODO Diagnostic Target must be a task
+            _diagnostics.Add(new Diagnostic(
+                                 targetNodeLocation,
+                                 DiagnosticDescriptors.Semantic.Nav1021TargetOfConcatMustBeTaskNode,
+                                 sourceNodeSyntax.Name));
+
+        }
+
+        return targetTaskNodeReference;
+    }
+
+    [CanBeNull]
+    EdgeModeSymbol CreateEdgeModeSymbol(ConcatTransitionSyntax concatTransitionSyntax) {
+
+        var edgeSyntax = concatTransitionSyntax.Edge;
+        if (edgeSyntax == null) {
+            return null;
+        }
+
+        var edgeLocation = edgeSyntax.GetLocation();
+        if (edgeLocation == null) {
+            return null;
+        }
+
+        var edgeMode = new EdgeModeSymbol(concatTransitionSyntax.SyntaxTree, edgeSyntax.ToString(), edgeLocation, edgeSyntax.Mode);
+
+        return edgeMode;
+    }
+
+
+    [CanBeNull]
     private NodeReferenceSymbol CreateTargetNodeReference(TargetNodeSyntax targetNodeSyntax) {
 
         if (targetNodeSyntax == null) {

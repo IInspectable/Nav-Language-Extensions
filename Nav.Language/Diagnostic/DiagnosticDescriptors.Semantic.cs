@@ -318,6 +318,26 @@ public partial class DiagnosticDescriptors {
         );
 
         /// <summary>
+        /// The source node of a concatenation must be a view
+        /// </summary>
+        public static readonly DiagnosticDescriptor Nav1020SourceOfConcatMustBeViewNode = new(
+            id             : DiagnosticId.Nav1020,
+            messageFormat  : "The source node of a concatenation must be a view node",
+            category       : Category,
+            defaultSeverity: DiagnosticSeverity.Error
+        );
+
+        /// <summary>
+        /// The target node of a concatenation must be a task
+        /// </summary>
+        public static readonly DiagnosticDescriptor Nav1021TargetOfConcatMustBeTaskNode = new(
+            id             : DiagnosticId.Nav1021,
+            messageFormat  : "The target node of a concatenation must be a task node",
+            category       : Category,
+            defaultSeverity: DiagnosticSeverity.Error
+        );
+
+        /// <summary>
         /// Trigger not allowed after init
         /// </summary>
         public static readonly DiagnosticDescriptor Nav0200SignalTriggerNotAllowedAfterInit = new(

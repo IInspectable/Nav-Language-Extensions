@@ -1,4 +1,4 @@
-namespace Pharmatechnik.Nav.Language; 
+﻿namespace Pharmatechnik.Nav.Language; 
 
 static class DiagnosticId {
 
@@ -72,6 +72,9 @@ static class DiagnosticId {
     public const string Nav1017 = nameof(Nav1017);
     public const string Nav1018 = nameof(Nav1018);
     public const string Nav1019 = nameof(Nav1019);
+
+    public const string Nav1020 = nameof(Nav1020);
+    public const string Nav1021 = nameof(Nav1021);
 
     public const string Nav2000 = nameof(Nav2000);
 

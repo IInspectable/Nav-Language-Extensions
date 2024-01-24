@@ -179,12 +179,13 @@ sealed partial class TaskNodeSymbol: NodeSymbolWithIncomingsAndOutgoings<TaskNod
 // Gemeinsame Schnittstelle zur Konstruktion von Dialog- und ViewNodes
 internal interface IGuiNodeSymbolConstruction: IGuiNodeSymbol {
 
-    new List<ITriggerTransition>   Outgoings  { get; }
+    // Outgoings können vom Typ IConcatTransition oder ITriggerTransition sein
+    new List<IEdge>                Outgoings  { get; }
     new List<INodeReferenceSymbol> References { get; }
 
 }
 
-sealed partial class DialogNodeSymbol: NodeSymbolWithIncomingsAndOutgoings<DialogNodeDeclarationSyntax, IEdge, ITriggerTransition>,
+sealed partial class DialogNodeSymbol: NodeSymbolWithIncomingsAndOutgoings<DialogNodeDeclarationSyntax, IEdge, IEdge>,
                                        IDialogNodeSymbol, IGuiNodeSymbolConstruction {
 
     public DialogNodeSymbol(string name, Location location, DialogNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask)
@@ -193,11 +194,10 @@ sealed partial class DialogNodeSymbol: NodeSymbolWithIncomingsAndOutgoings<Dialo
 
     IReadOnlyList<IEdge> ITargetNodeSymbol.          Incomings => Incomings;
     IReadOnlyList<IEdge> ISourceNodeSymbol.          Outgoings => Outgoings;
-    IReadOnlyList<ITriggerTransition> IGuiNodeSymbol.Outgoings => Outgoings;
 
 }
 
-sealed partial class ViewNodeSymbol: NodeSymbolWithIncomingsAndOutgoings<ViewNodeDeclarationSyntax, IEdge, ITriggerTransition>,
+sealed partial class ViewNodeSymbol: NodeSymbolWithIncomingsAndOutgoings<ViewNodeDeclarationSyntax, IEdge, IEdge>,
                                      IViewNodeSymbol, IGuiNodeSymbolConstruction {
 
     public ViewNodeSymbol(string name, Location location, ViewNodeDeclarationSyntax syntax, TaskDefinitionSymbol containingTask)
@@ -206,7 +206,6 @@ sealed partial class ViewNodeSymbol: NodeSymbolWithIncomingsAndOutgoings<ViewNod
 
     IReadOnlyList<IEdge> ITargetNodeSymbol.          Incomings => Incomings;
     IReadOnlyList<IEdge> ISourceNodeSymbol.          Outgoings => Outgoings;
-    IReadOnlyList<ITriggerTransition> IGuiNodeSymbol.Outgoings => Outgoings;
 
 }
 

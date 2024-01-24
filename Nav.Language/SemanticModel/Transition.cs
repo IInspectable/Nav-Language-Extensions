@@ -1,4 +1,4 @@
-#region Using Directives
+﻿#region Using Directives
 
 using System;
 using System.Collections.Generic;
@@ -15,13 +15,15 @@ abstract class Transition: ITransition {
                         ITaskDefinitionSymbol containingTask,
                         NodeReferenceSymbol sourceReference,
                         EdgeModeSymbol edgeMode,
-                        NodeReferenceSymbol targetReference) {
+                        NodeReferenceSymbol targetReference,
+                        ConcatTransition concatTransition) {
 
-        ContainingTask  = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
-        Syntax          = syntax         ?? throw new ArgumentNullException(nameof(syntax));
-        SourceReference = sourceReference;
-        EdgeMode        = edgeMode;
-        TargetReference = targetReference;
+        ContainingTask        = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
+        Syntax                = syntax         ?? throw new ArgumentNullException(nameof(syntax));
+        SourceReference       = sourceReference;
+        EdgeMode              = edgeMode;
+        TargetReference       = targetReference;
+        ConcatTransition = concatTransition;
 
         if (sourceReference != null) {
             sourceReference.Edge = this;
@@ -54,6 +56,9 @@ abstract class Transition: ITransition {
 
     [CanBeNull]
     public INodeReferenceSymbol TargetReference { get; }
+
+    [CanBeNull]
+    public IConcatTransition ConcatTransition { get; }
 
     [NotNull]
     public virtual IEnumerable<ISymbol> Symbols() {

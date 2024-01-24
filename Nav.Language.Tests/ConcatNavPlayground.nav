@@ -14,10 +14,11 @@ task A
     init;  
     choice Choice;
     task C Login; // disable Nav1s012 => Kein Nav1012 Warning mehr
+    task C L2; // disable Nav1s012 => Kein Nav1012 Warning mehr
 
     init            --> Login;
 
-    init            --> Gui o-^ Login if "Foo";   // Init Transition    modal Concat
+    init            --> Login o-^ Gui if "Foo";   // Init Transition    modal Concat
     Gui             --> Gui o-^ Login on OnF12;   // Trigger Transition modal Concat
     Choice          --> Gui o-^ Login;            // Choice Transition  modal Concat
     Login:e1        --> Gui --^ Login;            // Exit Transition    non-modal Concat
