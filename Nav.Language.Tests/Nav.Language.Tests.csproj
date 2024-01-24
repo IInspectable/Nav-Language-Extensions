@@ -43,13 +43,7 @@
     <None Include="@(NoCompile)" />
     <None Include="CustomBuild.targets" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Generated Tests\TokenPropertyNameTests.tt" />
-    <None Include="Generated Tests\ParseEmptyStringTests.tt" />
-    <None Include="Generated Tests\SyntaxWalkerTests.tt" />
-    <None Include="Generated Tests\SyntaxTest.tt" />
-  </ItemGroup>
+ 
 
   <ItemGroup>
     <Content Include="Diagnostics\Tests\Nav0107ExitNode0HasNoIncomingEdgesDisabled.nav" />
@@ -148,6 +142,54 @@
 
     <PackageReference Include="Microsoft.CodeAnalysis" />
 
+  </ItemGroup>
+
+  <ItemGroup>
+
+    <None Update="Generated Tests\ParseEmptyStringTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ParseEmptyStringTests.cs</LastGenOutput>
+    </None>
+    <Compile Update="Generated Tests\ParseEmptyStringTests.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ParseEmptyStringTests.tt</DependentUpon>
+    </Compile>
+
+    <None Update="Generated Tests\SyntaxTest.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SyntaxTest.cs</LastGenOutput>
+    </None>
+    <Compile Update="Generated Tests\SyntaxTest.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SyntaxTest.tt</DependentUpon>
+    </Compile>
+
+    <None Update="Generated Tests\SyntaxWalkerTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>SyntaxWalkerTests.cs</LastGenOutput>
+    </None>
+    <Compile Update="Generated Tests\SyntaxWalkerTests.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SyntaxWalkerTests.tt</DependentUpon>
+    </Compile>
+
+    <None Update="Generated Tests\TokenPropertyNameTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TokenPropertyNameTests.cs</LastGenOutput>
+    </None>
+    <Compile Update="Generated Tests\TokenPropertyNameTests.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TokenPropertyNameTests.tt</DependentUpon>
+    </Compile>
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
   <Import Project="CustomBuild.targets" />

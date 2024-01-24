@@ -7,11 +7,11 @@ using Pharmatechnik.Nav.Language.Text;
 namespace Pharmatechnik.Nav.Language;
 
 [Serializable]
-[SampleSyntax("Node o-^ Target")]
+[SampleSyntax("o-^ Target")]
 public partial class ConcatTransitionSyntax: SyntaxNode {
 
     internal ConcatTransitionSyntax(TextExtent extent,
-                                    EdgeSyntax edgeSyntax,
+                                    ConcatEdgeSyntax edgeSyntax,
                                     TargetNodeSyntax targetNode): base(extent) {
 
         AddChildNode(Edge       = edgeSyntax);
@@ -19,7 +19,7 @@ public partial class ConcatTransitionSyntax: SyntaxNode {
     }
 
     [CanBeNull]
-    public EdgeSyntax Edge { get; }
+    public ConcatEdgeSyntax Edge { get; }
 
     [CanBeNull]
     public TargetNodeSyntax TargetNode { get; }
