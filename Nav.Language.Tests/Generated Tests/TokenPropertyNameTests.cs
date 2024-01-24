@@ -756,25 +756,6 @@ public class TokenPropertyNameTests {
         }
     }
 
-    // IdentifierOrStringListSyntax
-    [Test]
-    public void TestIdentifierOrStringListSyntax() {
-		
-        var tokenProps = typeof(IdentifierOrStringListSyntax).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                                             .Where(m => m.PropertyType ==typeof(SyntaxToken)).ToList();	
-        if(!tokenProps.Any()) {
-            return;
-        }		
-        var syntax =Syntax.ParseIdentifierOrStringList(SampleSyntax.Of<IdentifierOrStringListSyntax>());
-        foreach (var prop in tokenProps) {    
-            if(Attribute.IsDefined(prop, typeof(SuppressCodeSanityCheckAttribute))) {
-                continue;
-            }
-            var tokenType = ((SyntaxToken)prop.GetValue(syntax, null)).Type;
-            Assert.That(prop.Name, Is.EqualTo(tokenType.ToString()), "Der Name der Eigenschaft '{0}' sollte '{1}' lauten", prop.Name, tokenType);
-        }
-    }
-
     // CodeNamespaceDeclarationSyntax
     [Test]
     public void TestCodeNamespaceDeclarationSyntax() {

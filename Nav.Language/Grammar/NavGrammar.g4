@@ -161,7 +161,7 @@ endTargetNode
     ;
 
 identifierTargetNode
-    :   Identifier (OpenParen identifierOrStringList CloseParen)?
+    :   Identifier
     ;
 
 concatTransition
@@ -202,10 +202,6 @@ spontaneousTrigger
 
 signalTrigger
     :   OnKeyword identifier
-    ;
-
-identifierOrStringList
-    :   identifierOrString (Comma identifierOrString)*
     ;
 
 identifierOrString

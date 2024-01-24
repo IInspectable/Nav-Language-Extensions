@@ -325,14 +325,6 @@ public sealed class TestSyntaxNodeWalker: SyntaxNodeWalker {
     public override void PostWalkElseIfConditionClause(ElseIfConditionClauseSyntax elseIfConditionClauseSyntax) { 
         MethodsCalled["PostWalkElseIfConditionClause"] = true;
     }
-    // IdentifierOrStringListSyntax
-    public override bool WalkIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) { 
-        MethodsCalled["WalkIdentifierOrStringList"] = true;
-        return true; 
-    }
-    public override void PostWalkIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) { 
-        MethodsCalled["PostWalkIdentifierOrStringList"] = true;
-    }
     // CodeNamespaceDeclarationSyntax
     public override bool WalkCodeNamespaceDeclaration(CodeNamespaceDeclarationSyntax codeNamespaceDeclarationSyntax) { 
         MethodsCalled["WalkCodeNamespaceDeclaration"] = true;
@@ -638,12 +630,6 @@ public class SyntaxWalkerTests {
     public void TestWalkElseIfConditionClause() {
         Assert.That(MethodsCalled.ContainsKey("WalkElseIfConditionClause"),     Is.True, "WalkElseIfConditionClause not called.");	
         Assert.That(MethodsCalled.ContainsKey("PostWalkElseIfConditionClause"), Is.True, "PostWalkElseIfConditionClause not called.");
-    }
-    // IdentifierOrStringList
-    [Test]
-    public void TestWalkIdentifierOrStringList() {
-        Assert.That(MethodsCalled.ContainsKey("WalkIdentifierOrStringList"),     Is.True, "WalkIdentifierOrStringList not called.");	
-        Assert.That(MethodsCalled.ContainsKey("PostWalkIdentifierOrStringList"), Is.True, "PostWalkIdentifierOrStringList not called.");
     }
     // CodeNamespaceDeclaration
     [Test]

@@ -470,16 +470,10 @@ sealed class NavGrammarVisitor: NavGrammarBaseVisitor<SyntaxNode> {
     public override SyntaxNode VisitIdentifierTargetNode(NavGrammar.IdentifierTargetNodeContext context) {
         var node = new IdentifierTargetNodeSyntax(
             extent:
-            CreateExtent(context),
-            identifierOrStringList:
-            context.identifierOrStringList()
-                   .Optional(VisitIdentifierOrStringList)
-                   .OfSyntaxType<IdentifierOrStringListSyntax>()
+            CreateExtent(context)
         );
 
         CreateToken(node, context.Identifier(), TextClassification.Identifier);
-        CreateToken(node, context.OpenParen(),  TextClassification.Punctuation);
-        CreateToken(node, context.CloseParen(), TextClassification.Punctuation);
 
         return node;
     }
@@ -989,21 +983,7 @@ sealed class NavGrammarVisitor: NavGrammarBaseVisitor<SyntaxNode> {
     #endregion
 
     #region IdentifierOrString
-
-    public override SyntaxNode VisitIdentifierOrStringList(NavGrammar.IdentifierOrStringListContext context) {
-
-        var node = new IdentifierOrStringListSyntax(CreateExtent(context),
-                                                    identifierOrStrings:
-                                                    context.identifierOrString()
-                                                           .ZeroOrMore(VisitIdentifierOrString)
-                                                           .OfSyntaxType<IdentifierOrStringSyntax>()
-                                                           .ToReadOnlyList(expectedCapacity: context.identifierOrString().Length)
-        );
-
-        CreateTokens(node, context.Comma(), TextClassification.Punctuation);
-
-        return node;
-    }
+   
 
     public override SyntaxNode VisitIdentifierOrString(NavGrammar.IdentifierOrStringContext context) {
         if (context.identifier() != null) {

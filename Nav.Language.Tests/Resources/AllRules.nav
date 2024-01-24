@@ -34,7 +34,7 @@ task T1 [code "code1"]
 	I3 --> V1 o-^ Tx;
 	I3 --> V1 --^ Tx;
 
-	Tx:Exit o-> V1("Foo", "Bar") if "Condition" do "Action2";
+	Tx:Exit o-> V1 if "Condition" do "Action2";
 
 	C1 --> V4 if "X";
 	C1 --> V5 else if "Y";

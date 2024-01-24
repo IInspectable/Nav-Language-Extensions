@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 23.01.2024 14:23:30
+// HINWEIS: Diese Datei wurde am 23.01.2024 20:55:41
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -175,10 +175,6 @@ namespace Pharmatechnik.Nav.Language {
 
 		public static DialogNodeDeclarationSyntax ParseDialogNodeDeclaration(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
 			return (DialogNodeDeclarationSyntax)SyntaxTree.ParseText(text, parser => parser.dialogNodeDeclaration(), filePath, null, cancellationToken).Root;		
-		}
-
-		public static IdentifierOrStringListSyntax ParseIdentifierOrStringList(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {
-			return (IdentifierOrStringListSyntax)SyntaxTree.ParseText(text, parser => parser.identifierOrStringList(), filePath, null, cancellationToken).Root;		
 		}
 
 		public static CodeNamespaceDeclarationSyntax ParseCodeNamespaceDeclaration(string text, string filePath = null, CancellationToken cancellationToken = default(CancellationToken)) {

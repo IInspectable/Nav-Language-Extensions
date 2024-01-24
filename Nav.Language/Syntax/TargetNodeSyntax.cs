@@ -1,7 +1,5 @@
 using System;
 
-using JetBrains.Annotations;
-
 using Pharmatechnik.Nav.Language.Text;
 
 namespace Pharmatechnik.Nav.Language; 
@@ -32,15 +30,11 @@ public partial class EndTargetNodeSyntax: TargetNodeSyntax {
 [SampleSyntax("Identifier (identifierOrStringList)")]
 public partial class IdentifierTargetNodeSyntax: TargetNodeSyntax {
 
-    internal IdentifierTargetNodeSyntax(TextExtent extent, IdentifierOrStringListSyntax identifierOrStringList)
+    internal IdentifierTargetNodeSyntax(TextExtent extent)
         : base(extent) {
-        AddChildNode(IdentifierOrStringList = identifierOrStringList);
     }
 
     public          SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
     public override string      Name       => Identifier.ToString();
-
-    [CanBeNull]
-    public IdentifierOrStringListSyntax IdentifierOrStringList { get; }
 
 }

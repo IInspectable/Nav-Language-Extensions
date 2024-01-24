@@ -1,6 +1,6 @@
 ﻿ 
 //==================================================
-// HINWEIS: Diese Datei wurde am 23.01.2024 14:23:27
+// HINWEIS: Diese Datei wurde am 23.01.2024 20:55:48
 //			automatisch generiert!
 //==================================================
 namespace Pharmatechnik.Nav.Language {
@@ -332,18 +332,6 @@ namespace Pharmatechnik.Nav.Language {
 				child.Walk(walker);
 			}
 			walker.PostWalkGoToEdge(this);
-		}
-	}
-
-	partial class IdentifierOrStringListSyntax {
-		public override void Walk(SyntaxNodeWalker walker) {
-			if(!walker.WalkIdentifierOrStringList(this)) {
-				return;
-			}
-			foreach(var child in ChildNodes()) {
-				child.Walk(walker);
-			}
-			walker.PostWalkIdentifierOrStringList(this);
 		}
 	}
 
@@ -790,10 +778,6 @@ namespace Pharmatechnik.Nav.Language {
 		// DialogNodeDeclarationSyntax
 		public virtual bool WalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { return DefaultWalk(dialogNodeDeclarationSyntax); }
 		public virtual void PostWalkDialogNodeDeclaration(DialogNodeDeclarationSyntax dialogNodeDeclarationSyntax) { }
-
-		// IdentifierOrStringListSyntax
-		public virtual bool WalkIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) { return DefaultWalk(identifierOrStringListSyntax); }
-		public virtual void PostWalkIdentifierOrStringList(IdentifierOrStringListSyntax identifierOrStringListSyntax) { }
 
 		// CodeNamespaceDeclarationSyntax
 		public virtual bool WalkCodeNamespaceDeclaration(CodeNamespaceDeclarationSyntax codeNamespaceDeclarationSyntax) { return DefaultWalk(codeNamespaceDeclarationSyntax); }
