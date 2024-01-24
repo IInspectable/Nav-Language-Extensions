@@ -85,14 +85,14 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
     }
 
     static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
-        // ReSharper disable once UseObjectOrCollectionInitializer
-        var namespaces = new List<string>();
 
-        namespaces.Add(typeof(int).Namespace);
-        namespaces.Add(taskCodeInfo.IwflNamespace);
-        namespaces.Add(CodeGenFacts.NavigationEngineIwflNamespace);
-        namespaces.Add(CodeGenFacts.NavigationEngineWflNamespace);
-        namespaces.AddRange(taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces());
+        List<string> namespaces = [
+            typeof(int).Namespace,
+            taskCodeInfo.IwflNamespace,
+            CodeGenFacts.NavigationEngineIwflNamespace,
+            CodeGenFacts.NavigationEngineWflNamespace,
+            ..taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces()
+        ];
 
         return namespaces.ToSortedNamespaces();
     }
