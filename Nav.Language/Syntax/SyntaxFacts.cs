@@ -1,4 +1,6 @@
-﻿#region Using Directives
+﻿#nullable enable
+
+#region Using Directives
 
 using System;
 using System.Linq;
@@ -146,7 +148,7 @@ public static class SyntaxFacts {
         Colon
     }.ToImmutableHashSet();
 
-    public static bool IsPunctuation(string value) {
+    public static bool IsPunctuation(string? value) {
 
         if (value?.Length != 1) {
             return false;

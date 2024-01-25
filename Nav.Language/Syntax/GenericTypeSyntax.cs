@@ -1,11 +1,11 @@
+﻿#nullable enable
+
 using System;
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using Pharmatechnik.Nav.Language.Text;
 
-namespace Pharmatechnik.Nav.Language; 
+namespace Pharmatechnik.Nav.Language;
 
 [Serializable]
 [SampleSyntax("Type<T1, T2<T3, T4>>")]
@@ -17,7 +17,6 @@ public partial class GenericTypeSyntax: CodeTypeSyntax {
 
     public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
 
-    [NotNull]
     public IReadOnlyList<CodeTypeSyntax> GenericArguments { get; }
 
 }

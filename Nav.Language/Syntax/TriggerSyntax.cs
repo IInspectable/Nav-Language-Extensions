@@ -1,10 +1,10 @@
-using System;
+﻿#nullable enable
 
-using JetBrains.Annotations;
+using System;
 
 using Pharmatechnik.Nav.Language.Text;
 
-namespace Pharmatechnik.Nav.Language; 
+namespace Pharmatechnik.Nav.Language;
 
 [Serializable]
 public abstract class TriggerSyntax: SyntaxNode {
@@ -31,14 +31,13 @@ public partial class SpontaneousTriggerSyntax: TriggerSyntax {
 [SampleSyntax("on Trigger")]
 public partial class SignalTriggerSyntax: TriggerSyntax {
 
-    internal SignalTriggerSyntax(TextExtent extent, IdentifierSyntax identifier)
+    internal SignalTriggerSyntax(TextExtent extent, IdentifierSyntax? identifier)
         : base(extent) {
         AddChildNode(Identifier = identifier);
     }
 
     public SyntaxToken OnKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.OnKeyword);
 
-    [CanBeNull]
-    public IdentifierSyntax Identifier { get; }
+    public IdentifierSyntax? Identifier { get; }
 
 }

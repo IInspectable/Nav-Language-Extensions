@@ -1,10 +1,10 @@
-﻿using System;
+﻿#nullable enable
 
-using JetBrains.Annotations;
+using System;
 
 using Pharmatechnik.Nav.Language.Text;
 
-namespace Pharmatechnik.Nav.Language; 
+namespace Pharmatechnik.Nav.Language;
 
 [Serializable]
 public abstract class IdentifierOrStringSyntax: SyntaxNode {
@@ -13,8 +13,7 @@ public abstract class IdentifierOrStringSyntax: SyntaxNode {
         : base(extent) {
     }
 
-    [CanBeNull]
-    public abstract string Text { get; }
+    public abstract string? Text { get; }
 
     public abstract Location GetTextLocation();
 

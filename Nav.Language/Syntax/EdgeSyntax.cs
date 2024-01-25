@@ -1,3 +1,5 @@
+ï»¿#nullable enable
+
 using System;
 
 using Pharmatechnik.Nav.Language.Internal;
@@ -31,7 +33,7 @@ public partial class ModalEdgeSyntax: EdgeSyntax {
     internal ModalEdgeSyntax(TextExtent extent): base(extent) {
     }
 
-    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrÃ¼cklich gewollt.")]
     public override SyntaxToken Keyword => ModalEdgeKeyword;
 
     public override EdgeMode Mode => EdgeMode.Modal;
@@ -47,7 +49,7 @@ public partial class NonModalEdgeSyntax: EdgeSyntax {
     internal NonModalEdgeSyntax(TextExtent extent): base(extent) {
     }
 
-    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrÃ¼cklich gewollt.")]
     public override SyntaxToken Keyword => NonModalEdgeKeyword;
 
     public override EdgeMode Mode => EdgeMode.NonModal;
@@ -63,7 +65,7 @@ public partial class GoToEdgeSyntax: EdgeSyntax {
     internal GoToEdgeSyntax(TextExtent extent): base(extent) {
     }
 
-    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrÃ¼cklich gewollt.")]
     public override SyntaxToken Keyword => GoToEdgeKeyword;
 
     public override EdgeMode Mode => EdgeMode.Goto;
@@ -87,7 +89,7 @@ public partial class ConcatModalEdgeSyntax: ConcatEdgeSyntax {
     internal ConcatModalEdgeSyntax(TextExtent extent): base(extent) {
     }
 
-    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrÃ¼cklich gewollt.")]
     public override SyntaxToken Keyword => ConcatModalEdgeKeyword;
 
     public override EdgeMode Mode => EdgeMode.Modal;
@@ -103,7 +105,7 @@ public partial class ConcatGoToEdgeSyntax: ConcatEdgeSyntax {
     internal ConcatGoToEdgeSyntax(TextExtent extent): base(extent) {
     }
 
-    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
+    [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrÃ¼cklich gewollt.")]
     public override SyntaxToken Keyword => ConcatGoToEdgeKeyword;
 
     public override EdgeMode Mode => EdgeMode.Modal;

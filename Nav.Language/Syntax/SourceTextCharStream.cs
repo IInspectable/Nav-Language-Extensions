@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
@@ -125,12 +127,13 @@ sealed class SourceTextCharStream: ICharStream {
 
     public string SourceName {
         get {
-            var fileName = _sourceText.FileInfo?.FullName;
+            const string unknown  = "<unknown>";
+            var          fileName = _sourceText.FileInfo?.FullName;
             if (string.IsNullOrEmpty(fileName)) {
-                return "<unknown>";
+                return unknown;
             }
 
-            return fileName;
+            return fileName ?? unknown;
         }
     }
 

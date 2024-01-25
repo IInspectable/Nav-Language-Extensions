@@ -1,7 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+﻿#nullable enable
 
-using JetBrains.Annotations;
+using System;
+using System.Diagnostics;
 
 using Pharmatechnik.Nav.Language.Text;
 
@@ -17,7 +17,7 @@ public readonly struct SyntaxToken: IExtent {
 
     readonly int _classificationAndType;
 
-    internal SyntaxToken(SyntaxNode parent, SyntaxTokenType type, TextClassification classification, TextExtent extent) {
+    internal SyntaxToken(SyntaxNode? parent, SyntaxTokenType type, TextClassification classification, TextExtent extent) {
         Extent = extent;
         Parent = parent;
 
@@ -29,8 +29,7 @@ public readonly struct SyntaxToken: IExtent {
 
     public TextExtent Extent { get; }
 
-    [CanBeNull]
-    public Location GetLocation() {
+    public Location? GetLocation() {
         return SyntaxTree?.SourceText.GetLocation(Extent);
     }
 
@@ -43,11 +42,9 @@ public readonly struct SyntaxToken: IExtent {
     public int  End       => Extent.End;
     public bool IsMissing => Parent == null || Extent.IsMissing;
 
-    [CanBeNull]
-    public SyntaxNode Parent { get; }
+    public SyntaxNode? Parent { get; }
 
-    [CanBeNull]
-    public SyntaxTree SyntaxTree => Parent?.SyntaxTree;
+    public SyntaxTree? SyntaxTree => Parent?.SyntaxTree;
 
     public SyntaxToken NextToken() {
         return SyntaxTree?.Tokens.NextOrPrevious(Parent, this, nextToken: true) ?? Missing;

@@ -1,6 +1,6 @@
-using System;
+﻿#nullable enable
 
-using JetBrains.Annotations;
+using System;
 
 using Pharmatechnik.Nav.Language.Text;
 
@@ -11,17 +11,15 @@ namespace Pharmatechnik.Nav.Language;
 public partial class ConcatTransitionSyntax: SyntaxNode {
 
     internal ConcatTransitionSyntax(TextExtent extent,
-                                    ConcatEdgeSyntax edgeSyntax,
-                                    TargetNodeSyntax targetNode): base(extent) {
+                                    ConcatEdgeSyntax? edgeSyntax,
+                                    TargetNodeSyntax? targetNode): base(extent) {
 
         AddChildNode(Edge       = edgeSyntax);
         AddChildNode(TargetNode = targetNode);
     }
 
-    [CanBeNull]
-    public ConcatEdgeSyntax Edge { get; }
+    public ConcatEdgeSyntax? Edge { get; }
 
-    [CanBeNull]
-    public TargetNodeSyntax TargetNode { get; }
+    public TargetNodeSyntax? TargetNode { get; }
 
 }

@@ -1,6 +1,6 @@
-using System;
+﻿#nullable enable
 
-using JetBrains.Annotations;
+using System;
 
 using Pharmatechnik.Nav.Language.Text;
 
@@ -10,14 +10,13 @@ namespace Pharmatechnik.Nav.Language;
 [SampleSyntax("Type param")]
 public partial class ParameterSyntax: SyntaxNode {
 
-    readonly CodeTypeSyntax _type;
+    readonly CodeTypeSyntax? _type;
 
-    internal ParameterSyntax(TextExtent extent, CodeTypeSyntax type): base(extent) {
+    internal ParameterSyntax(TextExtent extent, CodeTypeSyntax? type): base(extent) {
         AddChildNode(_type = type);
     }
 
-    [CanBeNull]
-    public CodeTypeSyntax Type => _type;
+    public CodeTypeSyntax? Type => _type;
 
     public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
 

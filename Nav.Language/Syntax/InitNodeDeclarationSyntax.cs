@@ -1,19 +1,19 @@
-using System;
+﻿#nullable enable
 
-using JetBrains.Annotations;
+using System;
 
 using Pharmatechnik.Nav.Language.Text;
 
-namespace Pharmatechnik.Nav.Language; 
+namespace Pharmatechnik.Nav.Language;
 
 [Serializable]
 [SampleSyntax("init Identifier [abstractmethod] [params T1 param1, T2<T3, T4<T5>> param2, T6[][] param3] do Instruction;")]
 public partial class InitNodeDeclarationSyntax: ConnectionPointNodeSyntax {
 
     internal InitNodeDeclarationSyntax(TextExtent extent,
-                                       CodeAbstractMethodDeclarationSyntax codeAbstractMethodDeclaration,
-                                       CodeParamsDeclarationSyntax codeParamsDeclaration,
-                                       DoClauseSyntax doClause)
+                                       CodeAbstractMethodDeclarationSyntax? codeAbstractMethodDeclaration,
+                                       CodeParamsDeclarationSyntax? codeParamsDeclaration,
+                                       DoClauseSyntax? doClause)
         : base(extent) {
 
         AddChildNode(CodeAbstractMethodDeclaration = codeAbstractMethodDeclaration);
@@ -25,13 +25,10 @@ public partial class InitNodeDeclarationSyntax: ConnectionPointNodeSyntax {
 
     public SyntaxToken Identifier => ChildTokens().FirstOrMissing(SyntaxTokenType.Identifier);
 
-    [CanBeNull]
-    public CodeParamsDeclarationSyntax CodeParamsDeclaration { get; }
+    public CodeParamsDeclarationSyntax? CodeParamsDeclaration { get; }
 
-    [CanBeNull]
-    public CodeAbstractMethodDeclarationSyntax CodeAbstractMethodDeclaration { get; }
+    public CodeAbstractMethodDeclarationSyntax? CodeAbstractMethodDeclaration { get; }
 
-    [CanBeNull]
-    public DoClauseSyntax DoClause { get; }
+    public DoClauseSyntax? DoClause { get; }
 
 }

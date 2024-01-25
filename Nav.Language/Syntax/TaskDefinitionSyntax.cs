@@ -1,6 +1,6 @@
-﻿using System;
+﻿#nullable enable
 
-using JetBrains.Annotations;
+using System;
 
 using Pharmatechnik.Nav.Language.Text;
 
@@ -11,13 +11,13 @@ namespace Pharmatechnik.Nav.Language;
 public partial class TaskDefinitionSyntax: MemberDeclarationSyntax {
 
     internal TaskDefinitionSyntax(TextExtent extent,
-                                  CodeDeclarationSyntax codeDeclaration,
-                                  CodeBaseDeclarationSyntax codeBaseDeclaration,
-                                  CodeGenerateToDeclarationSyntax codeGenerateToDeclaration,
-                                  CodeParamsDeclarationSyntax codeParamsDeclaration,
-                                  CodeResultDeclarationSyntax codeResultDeclaration,
-                                  NodeDeclarationBlockSyntax nodeDeclarationBlock,
-                                  TransitionDefinitionBlockSyntax transitionDefinitionBlock)
+                                  CodeDeclarationSyntax? codeDeclaration,
+                                  CodeBaseDeclarationSyntax? codeBaseDeclaration,
+                                  CodeGenerateToDeclarationSyntax? codeGenerateToDeclaration,
+                                  CodeParamsDeclarationSyntax? codeParamsDeclaration,
+                                  CodeResultDeclarationSyntax? codeResultDeclaration,
+                                  NodeDeclarationBlockSyntax? nodeDeclarationBlock,
+                                  TransitionDefinitionBlockSyntax? transitionDefinitionBlock)
         : base(extent) {
 
         AddChildNode(CodeDeclaration           = codeDeclaration);
@@ -34,26 +34,19 @@ public partial class TaskDefinitionSyntax: MemberDeclarationSyntax {
     public SyntaxToken OpenBrace   => ChildTokens().FirstOrMissing(SyntaxTokenType.OpenBrace);
     public SyntaxToken CloseBrace  => ChildTokens().FirstOrMissing(SyntaxTokenType.CloseBrace);
 
-    [CanBeNull]
-    public CodeDeclarationSyntax CodeDeclaration { get; }
+    public CodeDeclarationSyntax? CodeDeclaration { get; }
 
-    [CanBeNull]
-    public CodeBaseDeclarationSyntax CodeBaseDeclaration { get; }
+    public CodeBaseDeclarationSyntax? CodeBaseDeclaration { get; }
 
-    [CanBeNull]
-    public CodeGenerateToDeclarationSyntax CodeGenerateToDeclaration { get; }
+    public CodeGenerateToDeclarationSyntax? CodeGenerateToDeclaration { get; }
 
-    [CanBeNull]
-    public CodeParamsDeclarationSyntax CodeParamsDeclaration { get; }
+    public CodeParamsDeclarationSyntax? CodeParamsDeclaration { get; }
 
-    [CanBeNull]
-    public CodeResultDeclarationSyntax CodeResultDeclaration { get; }
+    public CodeResultDeclarationSyntax? CodeResultDeclaration { get; }
 
-    [CanBeNull]
-    public NodeDeclarationBlockSyntax NodeDeclarationBlock { get; }
+    public NodeDeclarationBlockSyntax? NodeDeclarationBlock { get; }
 
-    [CanBeNull]
-    public TransitionDefinitionBlockSyntax TransitionDefinitionBlock { get; }
+    public TransitionDefinitionBlockSyntax? TransitionDefinitionBlock { get; }
 
     private protected override bool PromiseNoDescendantNodeOfSameType => true;
 

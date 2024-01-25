@@ -1,10 +1,8 @@
-﻿#region Using Directives
+﻿#nullable enable
 
 using System.Collections.Generic;
 
-#endregion
-
-namespace Pharmatechnik.Nav.Language; 
+namespace Pharmatechnik.Nav.Language;
 
 sealed class SyntaxTokenComparer: IComparer<SyntaxToken> {
 

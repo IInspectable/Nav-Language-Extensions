@@ -1,4 +1,6 @@
-﻿#region Using Directives
+﻿#nullable enable
+
+#region Using Directives
 
 using System;
 using System.Text;
@@ -8,8 +10,6 @@ using System.Collections.Immutable;
 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-
-using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;
 using Pharmatechnik.Nav.Language.Internal;
@@ -21,9 +21,9 @@ namespace Pharmatechnik.Nav.Language;
 
 public class SyntaxTree {
 
-    internal SyntaxTree(SourceText sourceText,
+    internal SyntaxTree(SourceText? sourceText,
                         SyntaxNode root,
-                        SyntaxTokenList tokens,
+                        SyntaxTokenList? tokens,
                         ImmutableArray<Diagnostic> diagnostics) {
 
         Root        = root       ?? throw new ArgumentNullException(nameof(root));
@@ -32,18 +32,15 @@ public class SyntaxTree {
         Diagnostics = diagnostics;
     }
 
-    [NotNull]
     public SyntaxNode Root { get; }
 
-    [NotNull]
     public SourceText SourceText { get; }
 
-    [NotNull]
     public SyntaxTokenList Tokens { get; }
 
     public ImmutableArray<Diagnostic> Diagnostics { get; }
 
-    public static SyntaxTree ParseText(string text, string filePath = null, CancellationToken cancellationToken = default) {
+    public static SyntaxTree ParseText(string? text, string? filePath = null, CancellationToken cancellationToken = default) {
 
         return ParseText(text: text,
                          treeCreator: parser => parser.codeGenerationUnit(),
@@ -51,10 +48,10 @@ public class SyntaxTree {
                          cancellationToken: cancellationToken);
     }
 
-    internal static SyntaxTree ParseText(string text,
+    internal static SyntaxTree ParseText(string? text,
                                          Func<NavGrammar, IParseTree> treeCreator,
-                                         string filePath,
-                                         Encoding encoding = null,
+                                         string? filePath,
+                                         Encoding? encoding = null,
                                          CancellationToken cancellationToken = default) {
 
         text ??= String.Empty;
@@ -98,7 +95,7 @@ public class SyntaxTree {
         NavCommonTokenStream cts,
         SyntaxNode syntax,
         ImmutableArray<Diagnostic>.Builder diagnostics,
-        string filePath,
+        string? filePath,
         CancellationToken cancellationToken) {
 
         var finalTokens = new List<SyntaxToken>(cts.AllTokens.Count);

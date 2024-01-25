@@ -1,3 +1,5 @@
+ï»¿#nullable enable
+
 #region Using Directives
 
 using System;
@@ -5,7 +7,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using JetBrains.Annotations;
 
 using Pharmatechnik.Nav.Language.Text;
 
@@ -17,15 +18,16 @@ namespace Pharmatechnik.Nav.Language;
 [DebuggerDisplay("{" + nameof(ToDebuggerDisplayString) + "(), nq}")]
 public abstract partial class SyntaxNode: IExtent {
 
-    List<SyntaxNode> _childNodes;
+    List<SyntaxNode>? _childNodes;
     SyntaxTree       _syntaxTree;
-    SyntaxNode       _parent;
+    SyntaxNode?       _parent;
 
     internal SyntaxNode(TextExtent extent) {
         Extent = extent;
+        _syntaxTree = null!; // Wird in FinalConstruct befÃ¼llt
     }
 
-    internal void FinalConstruct(SyntaxTree syntaxTree, SyntaxNode parent) {
+    internal void FinalConstruct(SyntaxTree syntaxTree, SyntaxNode? parent) {
 
         EnsureConstructionMode();
 
@@ -47,8 +49,7 @@ public abstract partial class SyntaxNode: IExtent {
 
     public TextExtent Extent { get; }
 
-    [CanBeNull]
-    public SyntaxNode Parent {
+    public SyntaxNode? Parent {
         get {
             EnsureConstructed();
             return _parent;
@@ -60,40 +61,33 @@ public abstract partial class SyntaxNode: IExtent {
         return SyntaxTree.SourceText.GetLocation(Extent);
     }
 
-    [NotNull]
     public IEnumerable<SyntaxToken> ChildTokens() {
         return SyntaxTree.Tokens[Extent].Where(token => token.Parent == this);
     }
 
     static readonly IReadOnlyList<SyntaxNode> EmptyNodeList = new List<SyntaxNode>();
 
-    [NotNull]
     public IReadOnlyList<SyntaxNode> ChildNodes() {
         EnsureConstructed();
         return _childNodes ?? EmptyNodeList;
     }
 
-    [NotNull]
     public IEnumerable<SyntaxNode> DescendantNodes() {
         return DescendantNodes<SyntaxNode>();
     }
 
-    [NotNull]
     public IEnumerable<SyntaxNode> DescendantNodesAndSelf() {
         return DescendantNodesAndSelf<SyntaxNode>();
     }
 
-    [NotNull]
     public IEnumerable<T> DescendantNodes<T>() where T : SyntaxNode {
         return DescendantNodesAndSelfImpl<T>(includeSelf: false);
     }
 
-    [NotNull]
     public IEnumerable<T> DescendantNodesAndSelf<T>() where T : SyntaxNode {
         return DescendantNodesAndSelfImpl<T>(includeSelf: true);
     }
 
-    [NotNull]
     IEnumerable<T> DescendantNodesAndSelfImpl<T>(bool includeSelf) where T : SyntaxNode {
         EnsureConstructed();
         if (includeSelf && this is T) {
@@ -110,11 +104,11 @@ public abstract partial class SyntaxNode: IExtent {
     }
 
     /// <summary>
-    /// Für Knoten, die sehr weit "oben" liegen, kann die Implementierung von DescendantNodes&lt;T&gt;
+    /// FÃ¼r Knoten, die sehr weit "oben" liegen, kann die Implementierung von DescendantNodes&lt;T&gt;
     /// massiv beschleunigt werden, wenn sichergestellt werden kann, dass ein Knoten keine untergeordnenten 
     /// Knoten vom selben Typ haben kann, und deshalb die Suche in den Kindknoten vorzeitig abgebrochen
     /// werden kann.
-    /// Eigentlich müsste diese Eigenschaft systematisch überschrieben werden. Bisweilen werden hiermit nur
+    /// Eigentlich mÃ¼sste diese Eigenschaft systematisch Ã¼berschrieben werden. Bisweilen werden hiermit nur
     /// die Hotspots optimiert.
     /// </summary>
     private protected virtual bool PromiseNoDescendantNodeOfSameType => false;
@@ -139,7 +133,7 @@ public abstract partial class SyntaxNode: IExtent {
         return SyntaxTree.Tokens.FindAtPosition(position);          
     }
 
-    public SyntaxNode FindNode(int position) {
+    public SyntaxNode? FindNode(int position) {
         var token = SyntaxTree.Tokens.FindAtPosition(position);
         if (token.IsMissing) {
             return null;
@@ -184,7 +178,7 @@ public abstract partial class SyntaxNode: IExtent {
         return TextExtent.FromBounds(start, Start);
     }
 
-    // Die Trailing Trivias gehen bis zum nächsten Token, respektive zum Ende der Zeile
+    // Die Trailing Trivias gehen bis zum nÃ¤chsten Token, respektive zum Ende der Zeile
     public TextExtent GetTrailingTriviaExtent(bool onlyWhiteSpace = false) {
 
         var isTrivia       = GetIsTriviaFunc(onlyWhiteSpace);
@@ -204,7 +198,6 @@ public abstract partial class SyntaxNode: IExtent {
         return onlyWhiteSpace ? (c => c == TextClassification.Whitespace) : new Func<TextClassification, bool>(SyntaxFacts.IsTrivia);
     }
 
-    [NotNull]
     public SyntaxTree SyntaxTree {
         get {
             EnsureConstructed();
@@ -212,10 +205,10 @@ public abstract partial class SyntaxNode: IExtent {
         }
     }
 
-    protected void AddChildNode(SyntaxNode syntaxNode) {
+    protected void AddChildNode(SyntaxNode? syntaxNode) {
         EnsureConstructionMode();
         EnsureChildNodes();
-        if (syntaxNode != null) {
+        if (syntaxNode != null && _childNodes!=null) {
             _childNodes.Add(syntaxNode);
         }
     }
