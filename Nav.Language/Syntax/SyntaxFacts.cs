@@ -43,8 +43,9 @@ public static class SyntaxFacts {
     public static readonly string DonotinjectKeyword     = GetLiteralName(NavGrammar.DonotinjectKeyword);
     public static readonly string GoToEdgeKeyword        = GetLiteralName(NavGrammar.GoToEdgeKeyword);
     public static readonly string NonModalEdgeKeyword    = GetLiteralName(NavGrammar.NonModalEdgeKeyword);
-    public static readonly string ModalEdgeKeyword       = "o->";
-    public static readonly string ModalEdgeKeywordAlt    = "*->";
+    public static readonly string ModalEdgeKeyword       = GetLiteralName(NavGrammar.ModalEdgeKeyword);
+    public static readonly string ConcatGoToEdgeKeyword  = GetLiteralName(NavGrammar.ConcatGoToEdgeKeyword);
+    public static readonly string ConcatModalEdgeKeyword = GetLiteralName(NavGrammar.ConcatModalEdgeKeyword);
 
     public static readonly ImmutableHashSet<string> NavKeywords = new[] {
         TaskKeyword,
@@ -65,7 +66,8 @@ public static class SyntaxFacts {
         GoToEdgeKeyword,
         NonModalEdgeKeyword,
         ModalEdgeKeyword,
-        ModalEdgeKeywordAlt
+        ConcatModalEdgeKeyword,
+        ConcatGoToEdgeKeyword
     }.ToImmutableHashSet();
 
     public static bool IsNavKeyword(string value) {
@@ -100,7 +102,6 @@ public static class SyntaxFacts {
         SpontaneousKeyword,
         SpontKeyword,
         NotimplementedKeyword,
-        ModalEdgeKeywordAlt,
         NonModalEdgeKeyword
 
     }.ToImmutableHashSet();
@@ -113,7 +114,8 @@ public static class SyntaxFacts {
         GoToEdgeKeyword,
         NonModalEdgeKeyword,
         ModalEdgeKeyword,
-        ModalEdgeKeywordAlt
+        ConcatGoToEdgeKeyword,
+        ConcatModalEdgeKeyword
 
     }.ToImmutableHashSet();
 

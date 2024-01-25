@@ -36,8 +36,9 @@ public class SyntaxFactsTest {
         "notimplemented",
         "abstractmethod",
         "-->",
-        "*->",
+        "--^",
         "o->",
+        "o-^",
         "==>",
         "code"
     };
@@ -218,13 +219,18 @@ public class SyntaxFactsTest {
     }
 
     [Test]
-    public void ModalEdgeKeywordAltTest() {
-        Assert.That(SyntaxFacts.ModalEdgeKeywordAlt, Is.EqualTo("*->"));
+    public void NonModalEdgeKeywordTest() {
+        Assert.That(SyntaxFacts.NonModalEdgeKeyword, Is.EqualTo("==>"));
     }
 
     [Test]
-    public void NonModalEdgeKeywordTest() {
-        Assert.That(SyntaxFacts.NonModalEdgeKeyword, Is.EqualTo("==>"));
+    public void ConcatGoToEdgeKeywordTest() {
+        Assert.That(SyntaxFacts.ConcatGoToEdgeKeyword, Is.EqualTo("--^"));
+    }
+
+    [Test]
+    public void ConcatModalEdgeKeywordTest() {
+        Assert.That(SyntaxFacts.ConcatModalEdgeKeyword, Is.EqualTo("o-^"));
     }
 
     [Test]
