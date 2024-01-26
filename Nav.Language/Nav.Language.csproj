@@ -43,6 +43,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Antlr4.Runtime" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" />
     <PackageReference Include="StringTemplate4" />
     <PackageReference Include="System.Collections.Immutable" />
   </ItemGroup>

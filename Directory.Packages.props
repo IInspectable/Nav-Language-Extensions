@@ -1,52 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
-
+    <PackageVersion Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageVersion Include="System.Memory" Version="4.5.4" />
     <PackageVersion Include="System.Composition" Version="6.0.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="6.0.0" />
-
     <PackageVersion Include="NLog" Version="5.0.4" />
     <PackageVersion Include="NUnit" Version="3.13.3" />
-
     <PackageVersion Include="Rx-Linq" Version="2.2.5" />
     <PackageVersion Include="Rx-PlatformServices" Version="2.2.5" />
-
     <PackageVersion Include="Antlr4" Version="4.6.6" />
     <PackageVersion Include="Antlr4.Runtime" Version="4.6.6" />
     <PackageVersion Include="Antlr4.CodeGenerator" Version="4.6.6" />
-
     <PackageVersion Include="StringTemplate4" Version="4.0.8" />
-
     <PackageVersion Include="FluentCommandLineParser" Version="1.4.3" />
-    
     <!-- This package contains helper functionality for MSBuild extenders Achtung: Komische Versionierung!-->
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="17.2.0" />
-
     <!-- ========= Roslyn ============== -->
-
     <!-- .NET Compiler Platform ("Roslyn").-->
     <PackageVersion Include="Microsoft.CodeAnalysis" Version="4.3.1" />
     <!-- .NET Compiler Platform ("Roslyn") support for working with Visual Studio text buffers. -->
     <PackageVersion Include="Microsoft.CodeAnalysis.EditorFeatures.Text" Version="4.3.1" />
     <!-- .NET Compiler Platform ("Roslyn") support for Visual Studio. -->
     <PackageVersion Include="Microsoft.VisualStudio.LanguageServices" Version="4.3.1" />
-
     <!-- ========= Visual Studio extensibility ============== -->
-
     <!-- Visual Studio extensibility packages-->
     <PackageVersion Include="Microsoft.VisualStudio.SDK" Version="17.3.32804.24" />
     <!-- Fehlt irgendwie im VS SDK Paket... -->
     <PackageVersion Include="Microsoft.VisualStudio.Shell.15.0" Version="17.3.32804.24 " />
-
     <!-- Contains targets and tools to enable the building of managed VSIX projects -->
     <PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="17.3.2095" />
-
-   
   </ItemGroup>
 </Project>

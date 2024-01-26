@@ -19,11 +19,9 @@ public static class EdgeExtensions {
                 yield break;
             }
 
-            if (seenEdges.Contains(edge)) {
+            if (!seenEdges.Add(edge)) {
                 yield break;
             }
-
-            seenEdges.Add(edge);
 
             if (edge.TargetReference?.Declaration is not T targetNode) {
                 yield break;
@@ -36,7 +34,7 @@ public static class EdgeExtensions {
                 }
             } else if (edge.EdgeMode != null) {
                 // Nur Edges mit einem definiertem Edge Mode ergeben einen Call
-                yield return new Call(targetNode, edge.EdgeMode);
+                yield return new Call(targetNode, edge);
             }
         }
     }

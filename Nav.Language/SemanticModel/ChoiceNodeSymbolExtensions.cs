@@ -33,7 +33,7 @@ public static class ChoiceNodeSymbolExtensions {
                 } else if (edge.TargetReference?.Declaration is T targetNode &&
                            edge.EdgeMode != null) {
                     // Nur Edges mit einem definiertem Edge Mode ergeben einen Call
-                    yield return new Call(targetNode, edge.EdgeMode);
+                    yield return new Call(targetNode, edge);
                 }
             }
         }
