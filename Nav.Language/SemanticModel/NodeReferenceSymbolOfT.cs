@@ -4,7 +4,7 @@ namespace Pharmatechnik.Nav.Language;
 
 abstract class NodeReferenceSymbol<T>: NodeReferenceSymbol, INodeReferenceSymbol<T> where T : INodeSymbol {
 
-    protected NodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, T declaration, NodeReferenceType nodeReferenceType)
+    protected NodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, T? declaration, NodeReferenceType nodeReferenceType)
         : base(syntaxTree, name, location, declaration, nodeReferenceType) {
         Declaration = declaration;
     }
@@ -15,7 +15,7 @@ abstract class NodeReferenceSymbol<T>: NodeReferenceSymbol, INodeReferenceSymbol
 
 sealed partial class InitNodeReferenceSymbol: NodeReferenceSymbol<IInitNodeSymbol>, IInitNodeReferenceSymbol {
 
-    public InitNodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, IInitNodeSymbol declaration, NodeReferenceType nodeReferenceType)
+    public InitNodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, IInitNodeSymbol? declaration, NodeReferenceType nodeReferenceType)
         : base(syntaxTree, name, location, declaration, nodeReferenceType) {
     }
 
@@ -23,7 +23,7 @@ sealed partial class InitNodeReferenceSymbol: NodeReferenceSymbol<IInitNodeSymbo
 
 sealed partial class ChoiceNodeReferenceSymbol: NodeReferenceSymbol<IChoiceNodeSymbol>, IChoiceNodeReferenceSymbol {
 
-    public ChoiceNodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, IChoiceNodeSymbol declaration, NodeReferenceType nodeReferenceType)
+    public ChoiceNodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, IChoiceNodeSymbol? declaration, NodeReferenceType nodeReferenceType)
         : base(syntaxTree, name, location, declaration, nodeReferenceType) {
     }
 
@@ -31,7 +31,7 @@ sealed partial class ChoiceNodeReferenceSymbol: NodeReferenceSymbol<IChoiceNodeS
 
 sealed partial class GuiNodeReferenceSymbol: NodeReferenceSymbol<IGuiNodeSymbol>, IGuiNodeReferenceSymbol {
 
-    public GuiNodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, IGuiNodeSymbol declaration, NodeReferenceType nodeReferenceType)
+    public GuiNodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, IGuiNodeSymbol? declaration, NodeReferenceType nodeReferenceType)
         : base(syntaxTree, name, location, declaration, nodeReferenceType) {
     }
 
@@ -39,7 +39,7 @@ sealed partial class GuiNodeReferenceSymbol: NodeReferenceSymbol<IGuiNodeSymbol>
 
 sealed partial class TaskNodeReferenceSymbol: NodeReferenceSymbol<ITaskNodeSymbol>, ITaskNodeReferenceSymbol {
 
-    public TaskNodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, ITaskNodeSymbol declaration, NodeReferenceType nodeReferenceType)
+    public TaskNodeReferenceSymbol(SyntaxTree syntaxTree, string name, Location location, ITaskNodeSymbol? declaration, NodeReferenceType nodeReferenceType)
         : base(syntaxTree, name, location, declaration, nodeReferenceType) {
     }
 

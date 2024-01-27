@@ -1,5 +1,3 @@
 ﻿namespace Pharmatechnik.Nav.Language.CodeGen; 
 
-public abstract class CodeModel {
-
-}
+public abstract class CodeModel;

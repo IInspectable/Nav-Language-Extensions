@@ -72,7 +72,7 @@ public static class TaskNodeSymbolExtensions {
 
         IEnumerable<IConnectionPointSymbol> GetConnectedExitsImpl() {
             return taskNode.Outgoings
-                           .Select(et => et?.ExitConnectionPointReference?.Declaration)
+                           .Select(et => et.ExitConnectionPointReference?.Declaration)
                            .Where(cps => cps != null);
 
         }

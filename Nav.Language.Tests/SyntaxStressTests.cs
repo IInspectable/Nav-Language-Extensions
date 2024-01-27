@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +18,7 @@ public class SyntaxStressTests {
 
         Assert.That(syntax.CodeBaseDeclaration, Is.Not.Null);
 
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
         var nullSyntaxen = syntax.CodeBaseDeclaration.BaseTypes.Where(b => b == null);
         Assert.That(nullSyntaxen.Any(), Is.False);
     }

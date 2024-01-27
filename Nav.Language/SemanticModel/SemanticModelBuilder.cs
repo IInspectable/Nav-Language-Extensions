@@ -1,4 +1,4 @@
-#region Using Directives
+ï»¿#region Using Directives
 
 using System;
 using System.Linq;
@@ -71,7 +71,7 @@ sealed class CodeGenerationUnitBuilder {
             diagnostics.AddRange(analyzer.Analyze(tempModel, context));
         }
 
-        // Bisherige Diagnostics anhängen
+        // Bisherige Diagnostics anhÃ¤ngen
         diagnostics.AddRange(tempModel.Diagnostics);
 
         // Finales Model mit allen Diagnostics
@@ -126,7 +126,7 @@ sealed class CodeGenerationUnitBuilder {
         // Alle Symbole und deren "Kinder" der Taskdefinitionen
         _symbols.AddRange(_taskDefinitions.SelectMany(td => td.SymbolsAndSelf()));
 
-        // Alle Includes (= taskref "filepath") hinzufügen
+        // Alle Includes (= taskref "filepath") hinzufÃ¼gen
         _symbols.AddRange(_includes);
     }
 
@@ -141,7 +141,7 @@ sealed class CodeGenerationUnitBuilder {
             return;
         }
 
-        // Doppelte Einträge überspringen. Fehler existiert schon wegen der Taskdeclarations.
+        // Doppelte EintrÃ¤ge Ã¼berspringen. Fehler existiert schon wegen der Taskdeclarations.
         if (!_taskDefinitions.Contains(taskDefinition.Name)) {
             _taskDefinitions.Add(taskDefinition);
         }
@@ -152,7 +152,7 @@ sealed class CodeGenerationUnitBuilder {
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            if (codeUsingDeclarationSyntax?.Namespace == null) {
+            if (codeUsingDeclarationSyntax.Namespace == null) {
                 return;
             }
 

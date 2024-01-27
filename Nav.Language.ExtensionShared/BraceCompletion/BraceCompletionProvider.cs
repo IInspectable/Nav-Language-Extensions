@@ -1,4 +1,4 @@
-#region Using Directives
+﻿#region Using Directives
 
 using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text.BraceCompletion;
@@ -14,5 +14,4 @@ namespace Pharmatechnik.Nav.Language.Extension.BraceCompletion;
 [BracePair('(', ')')]
 [BracePair('[', ']')]
 [BracePair('"', '"')]
-class BraceCompletionProvider : IBraceCompletionDefaultProvider {
-}
+class BraceCompletionProvider : IBraceCompletionDefaultProvider;

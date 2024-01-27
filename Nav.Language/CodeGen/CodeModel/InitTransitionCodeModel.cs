@@ -17,6 +17,7 @@ sealed class InitTransitionCodeModel: TransitionCodeModel {
 
         Parameter              = parameter ?? throw new ArgumentNullException(nameof(parameter));
         GenerateAbstractMethod = generateAbstractMethod;
+        // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
         NodeName               = nodeName ?? String.Empty;
 
     }

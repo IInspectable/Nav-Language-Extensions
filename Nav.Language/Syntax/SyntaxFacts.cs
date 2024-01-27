@@ -173,8 +173,8 @@ public static class SyntaxFacts {
                c == 'ß'               || c == '.' || c == '_';
     }
 
-    public static bool IsValidIdentifier(string value) {
-        if (string.IsNullOrEmpty(value)) {
+    public static bool IsValidIdentifier(string? value) {
+        if (value.IsNullOrEmpty()) {
             return false;
         }
 
