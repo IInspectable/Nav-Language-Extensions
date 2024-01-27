@@ -1,17 +1,54 @@
-﻿task A
+﻿taskref B {
+    init;
+    exit e1;
+    exit e2;
+}
+
+task A
 {
     init I1;  
     exit e1;
+    task B;
+    task B X;
     choice C;
     view v1;
 
     I1  --> v1;
+    I1 --> v1 --^ B;
+    I1 --> v1 o-^ B;
 
     v1  --> C;
     C   --> v1;             
     C   o-> v1;
     C   --> v1; 
     C   --> e1;
+    C   --> v1 --^ X;
+    C   --> v1 o-^ X;
+
+    X:e1 --> v1 --^ B;
+    X:e2 --> v1 o-^ B;
+
+    B:e1 --> B;
+    B:e2 o-> B;
 }
-//==>>[Semantic](11,9,11,12): error Nav0222: Node v1 is reachable by different edge modes
-//==>>[Semantic](12,9,12,12): error Nav0222: Node v1 is reachable by different edge modes
+//==>>[Semantic](17,15,17,18): error Nav0222: Node B is reachable by different edge modes
+//==>>[Semantic](18,15,18,18): error Nav0222: Node B is reachable by different edge modes
+//==>>[Semantic](21,9,21,12): error Nav0222: Node v1 is reachable by different edge modes
+//==>>[Semantic](22,9,22,12): error Nav0222: Node v1 is reachable by different edge modes
+//==>>[Semantic](25,9,25,12): error Nav0222: Node v1 is reachable by different edge modes
+//==>>[Semantic](25,16,25,19): error Nav0222: Node X is reachable by different edge modes
+//==>>[Semantic](26,9,26,12): error Nav0222: Node v1 is reachable by different edge modes
+//==>>[Semantic](26,16,26,19): error Nav0222: Node X is reachable by different edge modes
+//==>>[Semantic](28,17,28,20): error Nav0222: Node B is reachable by different edge modes
+//==>>[Semantic](29,17,29,20): error Nav0222: Node B is reachable by different edge modes
+//==>>[Semantic](31,10,31,13): error Nav0222: Node B is reachable by different edge modes
+//==>>[Semantic](32,10,32,13): error Nav0222: Node B is reachable by different edge modes
+
+
+
+
+
+
+
+
+

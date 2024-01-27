@@ -9,78 +9,61 @@ public class Nav0222Node0IsReachableByDifferentEdgeModes: NavAnalyzer {
 
     public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
 
-        // TODO Inits und Trigger betrachten
-
         //==============================
         // Node {0} is reachable by different edge modes
         //==============================
-        foreach (IEdge edge in taskDefinition.Edges()) {
 
-            foreach (var nodeCalls in edge.GetReachableCalls().GroupBy(c => c.Node)) {
+        // Init Transitions betrachten
+        foreach (var initNodeSymbol in taskDefinition.NodeDeclarations.OfType<IInitNodeSymbol>()) {
+            // die "normalen inits" erlauben sowieso nur  --> (Nav0110)
+         
+            // Continuations
+            foreach (var diagnostic in Analyze(initNodeSymbol.Outgoings.SelectMany(exitTransition => exitTransition.GetReachableContinuations()))) {
+                yield return diagnostic;
+            }
+        }
 
-                if (nodeCalls.GroupBy(c => c.EdgeMode.EdgeMode).Count() > 1) {
-
-                    yield return new Diagnostic(
-                        nodeCalls.First().EdgeMode.Location,
-                        nodeCalls.Skip(1).Select(call => call.EdgeMode.Location),
-                        Descriptor,
-                        nodeCalls.Key.Name
-                    );
-                }
+        // Trigger Transitions betrachten
+        foreach (var triggerTransition in taskDefinition.Edges().OfType<ITriggerTransition>()) {
+            foreach (var diagnostic in Analyze(triggerTransition.AsEnumerable())) {
+                yield return diagnostic;
             }
 
             // Continuations
-            foreach (var continuationCalls in edge.GetReachableContinuationCalls().GroupBy(c => c.Node)) {
-
-                if (continuationCalls.GroupBy(c => c.EdgeMode.EdgeMode).Count() > 1) {
-
-                    yield return new Diagnostic(
-                        continuationCalls.First().EdgeMode.Location,
-                        continuationCalls.Skip(1).Select(call => call.EdgeMode.Location),
-                        Descriptor,
-                        continuationCalls.Key.Name
-                    );
-                }
+            foreach (var diagnostic in Analyze(triggerTransition.GetReachableContinuations())) {
+                yield return diagnostic;
             }
-
         }
 
         // Exit Transitions betrachten
         foreach (var taskNode in taskDefinition.NodeDeclarations.OfType<ITaskNodeSymbol>()) {
 
-            foreach (var nodeCalls in taskNode.Outgoings
-                                              .SelectMany(exitTransition => exitTransition.GetReachableCalls())
-                                              .GroupBy(c => c.Node)) {
-
-                if (nodeCalls.GroupBy(c => c.EdgeMode.EdgeMode).Count() > 1) {
-
-                    yield return new Diagnostic(
-                        nodeCalls.First().EdgeMode.Location,
-                        nodeCalls.Skip(1).Select(call => call.EdgeMode.Location),
-                        Descriptor,
-                        nodeCalls.Key.Name
-                    );
-                }
+            foreach (var diagnostic in Analyze(taskNode.Outgoings)) {
+                yield return diagnostic;
             }
 
             // Continuations
-            foreach (var continuationCalls in taskNode.Outgoings
-                                                      .SelectMany(exitTransition => exitTransition.GetReachableContinuationCalls())
-                                                      .GroupBy(c => c.Node)) {
-
-                if (continuationCalls.GroupBy(c => c.EdgeMode.EdgeMode).Count() > 1) {
-
-                    yield return new Diagnostic(
-                        continuationCalls.First().EdgeMode.Location,
-                        continuationCalls.Skip(1).Select(call => call.EdgeMode.Location),
-                        Descriptor,
-                        continuationCalls.Key.Name
-                    );
-                }
+            foreach (var diagnostic in Analyze(taskNode.Outgoings.SelectMany(exitTransition => exitTransition.GetReachableContinuations()))) {
+                yield return diagnostic;
             }
-
         }
 
+    }
+
+    IEnumerable<Diagnostic> Analyze(IEnumerable<IEdge> edges) {
+
+        foreach (var nodeCalls in edges.SelectMany(edge => edge.GetReachableCalls())
+                                       .GroupBy(c => c.Node)) {
+
+            if (nodeCalls.GroupBy(c => c.EdgeMode.EdgeMode).Count() > 1) {
+                yield return new Diagnostic(
+                    nodeCalls.First().EdgeMode.Location,
+                    nodeCalls.Skip(1).Select(call => call.EdgeMode.Location),
+                    Descriptor,
+                    nodeCalls.Key.Name
+                );
+            }
+        }
     }
 
 }
