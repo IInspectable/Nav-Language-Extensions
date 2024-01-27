@@ -1,11 +1,10 @@
-﻿task C 
+﻿taskref C 
 {
     init I1;
-    init I2;
+    init I2 [params string message];
     exit e1;
     exit e2;
-    I1 --> e1;
-    I2 --> e2;
+
 }
 
 task A
@@ -13,16 +12,20 @@ task A
     view Gui;
     init;  
     choice Choice;
-    task C Login; // disable Nav1s012 => Kein Nav1012 Warning mehr
-    task C L2; // disable Nav1s012 => Kein Nav1012 Warning mehr
+    task C Login; 
+    //task C L2; 
 
     init            --> Login;
 
-    init            --> Login o-^ Gui if "Foo";   // Init Transition    modal Concat
-    Gui             --> Gui o-^ Login on OnF12;   // Trigger Transition modal Concat
-    Choice          --> Gui o-^ Login;            // Choice Transition  modal Concat
-    Login:e1        --> Gui --^ Login;            // Exit Transition    non-modal Concat
-
-    Login:e2        --> Choice;
+   // init            --> Login o-^ Gui if "Foo";   // Init Transition    modal Concat
+    init            --> Gui --^ Login  if "Foo";   // Init Transition    modal Concat
+ //   init            --> Gui if "Foo";   // Init Transition    modal Concat
+  
+    Gui             --> Gui --^ Login on OnF12;   // Trigger Transition modal Concat
+    Choice          --> Gui ;            // Choice Transition  modal Concat
+   // Choice          o-> Gui --^ Login;      // Choice Transition  modal Concat
+     
+    Login:e1        --> Choice;            // Exit Transition    non-modal Concat
+    Login:e2        --> Gui --^ Login;
 }
 //

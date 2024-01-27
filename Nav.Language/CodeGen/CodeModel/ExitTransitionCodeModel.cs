@@ -1,4 +1,6 @@
-﻿#region Using Directives
+﻿#nullable enable
+
+#region Using Directives
 
 using System;
 using System.Collections.Immutable;
@@ -11,9 +13,12 @@ namespace Pharmatechnik.Nav.Language.CodeGen;
 
 class ExitTransitionCodeModel: TransitionCodeModel {
 
-    public ExitTransitionCodeModel(ImmutableList<Call> calls,
-                                   ParameterCodeModel taskResult, bool generateAbstractMethod, string nodeName)
-        : base(calls) {
+    public ExitTransitionCodeModel(TaskCodeInfo containingTask,
+                                   ImmutableList<Call> calls,
+                                   ParameterCodeModel taskResult, 
+                                   bool generateAbstractMethod, 
+                                   string? nodeName)
+        : base(containingTask, calls) {
 
         TaskResult             = taskResult ?? throw new ArgumentNullException(nameof(taskResult));
         GenerateAbstractMethod = generateAbstractMethod;
@@ -25,7 +30,9 @@ class ExitTransitionCodeModel: TransitionCodeModel {
     public string             NodeName               { get; }
     public string             NodeNamePascalcase     => NodeName.ToPascalcase();
 
-    public static ExitTransitionCodeModel FromTaskNode(ITaskNodeSymbol taskNode, TaskCodeInfo taskCodeInfo) {
+    public override string GetCallContextClassName() => $"{CodeGenFacts.ExitMethodPrefix}{NodeNamePascalcase}{CodeGenFacts.CallContextClassSuffix}";
+
+    public static ExitTransitionCodeModel FromTaskNode(TaskCodeInfo containingTask, ITaskNodeSymbol taskNode) {
 
         if (taskNode == null) {
             throw new ArgumentNullException(nameof(taskNode));
@@ -35,6 +42,7 @@ class ExitTransitionCodeModel: TransitionCodeModel {
         var taskResult     = ParameterCodeModel.TaskResult(taskNode.Declaration);
 
         return new ExitTransitionCodeModel(
+            containingTask        : containingTask,
             calls                 : reachableCalls.ToImmutableList(),
             taskResult            : taskResult,
             generateAbstractMethod: taskNode.CodeGenerateAbstractMethod(),

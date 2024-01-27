@@ -108,7 +108,7 @@ public partial class ConcatGoToEdgeSyntax: ConcatEdgeSyntax {
     [SuppressCodeSanityCheck("Der Name Keyword ist hier ausdrücklich gewollt.")]
     public override SyntaxToken Keyword => ConcatGoToEdgeKeyword;
 
-    public override EdgeMode Mode => EdgeMode.Modal;
+    public override EdgeMode Mode => EdgeMode.Goto;
 
     public SyntaxToken ConcatGoToEdgeKeyword => ChildTokens().FirstOrMissing(SyntaxTokenType.ConcatGoToEdgeKeyword);
 

@@ -44,9 +44,9 @@ sealed class WfsCodeModel : FileGenerationCodeModel {
         var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsFileName, pathProvider.SyntaxFileName);
 
         var usingNamespaces    = GetUsingNamespaces(taskDefinition, taskCodeInfo).ToImmutableList();
-        var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition   , taskCodeInfo);
-        var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskDefinition   , taskCodeInfo);
-        var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
+        var initTransitions    = CodeModelBuilder.GetInitTransitions(taskCodeInfo, taskDefinition);
+        var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskCodeInfo     , taskDefinition);
+        var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskCodeInfo, taskDefinition);
 
         return new WfsCodeModel(
             taskCodeInfo          : taskCodeInfo,

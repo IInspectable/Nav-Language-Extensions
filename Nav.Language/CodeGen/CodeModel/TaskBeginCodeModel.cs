@@ -13,21 +13,29 @@ class TaskBeginCodeModel : CodeModel {
 
     public TaskBeginCodeModel(string taskNodeName,
                               ParameterCodeModel taskBeginParameter,
+                              ParameterCodeModel taskBeginFieldParameter,
                               ImmutableList<ParameterCodeModel> taskParameter,
                               bool notImplemented = false) {
 
-        TaskNodeName       = taskNodeName       ?? String.Empty;
-        TaskBeginParameter = taskBeginParameter ?? throw new ArgumentNullException(nameof(taskBeginParameter));
-        TaskParameter      = taskParameter      ?? throw new ArgumentNullException(nameof(taskParameter));
-        NotImplemented     = notImplemented;
+        TaskNodeName            = taskNodeName            ?? String.Empty;
+        TaskBeginParameter      = taskBeginParameter      ?? throw new ArgumentNullException(nameof(taskBeginParameter));
+        TaskBeginFieldParameter = taskBeginFieldParameter ?? throw new ArgumentNullException(nameof(taskBeginFieldParameter));
+        TaskParameter           = taskParameter           ?? throw new ArgumentNullException(nameof(taskParameter));
+        NotImplemented          = notImplemented;
+        TaskBeginField          = new FieldCodeModel(taskBeginFieldParameter.ParameterType, taskBeginFieldParameter.ParameterName);
     }
 
     public string TaskNodeName           { get; }
     public string TaskNodeNamePascalcase => TaskNodeName.ToPascalcase();
+
     /// <summary>
     /// Parameter, der das IBegin...WFS interface des Tasks darstellt.
     /// </summary>
     public ParameterCodeModel TaskBeginParameter { get; }
+
+    public ParameterCodeModel TaskBeginFieldParameter { get; }
+    public FieldCodeModel     TaskBeginField          { get; }
+
     /// <summary>
     /// Die Parameter, die zum Aufrufen des Tasks nötig sind.
     /// </summary>

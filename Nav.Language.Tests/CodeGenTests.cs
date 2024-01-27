@@ -31,6 +31,35 @@ namespace Nav.Language.Tests;
 public class CodeGenTests {
 
     [Test]
+    public void ConcatNavPlaygroundTest() {
+
+        var fileName                 =@"C:\ws\git\IInspectable\Nav.Language.Extensions\Nav.Language.Tests\ConcatNavPlayground.nav";
+        var text                     =File.ReadAllText(fileName);
+        var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(text, filePath: fileName);
+        var codeGenerationUnit       = CodeGenerationUnit.FromCodeGenerationUnitSyntax(codeGenerationUnitSyntax);
+
+        var options       = GenerationOptions.Default;
+        var codeGenerator = new CodeGenerator(options);
+
+        var results = codeGenerator.Generate(codeGenerationUnit);
+
+        Assert.That(results.Length, Is.EqualTo(1));
+
+        var codeGenResult = results[0];
+
+        Assert.That(codeGenResult.IBeginWfsCodeSpec.Content, Is.Not.Empty);
+        Assert.That(codeGenResult.IWfsCodeSpec.Content,      Is.Not.Empty);
+        Assert.That(codeGenResult.WfsBaseCodeSpec.Content,   Is.Not.Empty);
+
+        Assert.That(codeGenResult.WfsCodeSpec.Content,       Is.Not.Empty);
+
+        Assert.That(codeGenResult.IBeginWfsCodeSpec.IsEmpty, Is.False);
+        Assert.That(codeGenResult.IWfsCodeSpec.IsEmpty,      Is.False);
+        Assert.That(codeGenResult.WfsBaseCodeSpec.IsEmpty,   Is.False);
+        Assert.That(codeGenResult.WfsCodeSpec.IsEmpty,       Is.False);
+    }
+
+    [Test]
     public void SimpleCodegenTest() {
 
         var codeGenerationUnitSyntax = Syntax.ParseCodeGenerationUnit(Resources.TaskA, filePath: MkFilename("TaskA.nav"));

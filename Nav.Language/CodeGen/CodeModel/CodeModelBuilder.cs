@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
@@ -6,11 +6,11 @@ namespace Pharmatechnik.Nav.Language.CodeGen;
 
 sealed class CodeModelBuilder {
 
-    public static IEnumerable<InitTransitionCodeModel> GetInitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
+    public static IEnumerable<InitTransitionCodeModel> GetInitTransitions(TaskCodeInfo containingTask, ITaskDefinitionSymbol taskDefinition) {
         return taskDefinition.NodeDeclarations
                              .OfType<IInitNodeSymbol>()
                               // TODO Was ist mit Inits, die keine Outgoings haben, also eigentlich unbenutzt sind?
-                             .Select(initNode => InitTransitionCodeModel.FromInitTransition(initNode, taskCodeInfo));
+                             .Select((initNode, index) => InitTransitionCodeModel.FromInitTransition(containingTask, initNode, containingTask, index));
     }
         
     public static IEnumerable<ParameterCodeModel> GetTaskBeginParameter(ITaskDefinitionSymbol taskDefinition) {
@@ -26,15 +26,15 @@ sealed class CodeModelBuilder {
         return taskBegins;
     }
 
-    public static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
-        return GetReachableTaskNodes(taskDefinition)
-           .Select(taskNode => BeginWrapperCodeModel.FromTaskNode(taskNode, taskCodeInfo));
+    public static IEnumerable<BeginWrapperCodeModel> GetBeginWrappers(TaskCodeInfo containingTask, ITaskDefinitionSymbol taskDefinition) {
+        // Wir wollen für Tasks, die ausschließlich via Concats aufgerufen werden, keine BeginXY Methoden generieren.
+        return GetDirectReachableTaskNodes(taskDefinition).Select(tns => BeginWrapperCodeModel.FromTaskNode(containingTask, tns));
     }
 
-    public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
+    public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(TaskCodeInfo containingTask, ITaskDefinitionSymbol taskDefinition) {
         return GetReachableTaskNodes(taskDefinition)
               .Where(taskNode => !taskNode.CodeNotImplemented())
-              .Select(taskNode => ExitTransitionCodeModel.FromTaskNode(taskNode, taskCodeInfo));
+              .Select(taskNode => ExitTransitionCodeModel.FromTaskNode(containingTask, taskNode));
     }
 
     static ImmutableList<ITaskNodeSymbol> GetImplementedTaskNodes(ITaskDefinitionSymbol taskDefinition) {
@@ -43,6 +43,20 @@ sealed class CodeModelBuilder {
                                               .OfType<ITaskNodeSymbol>()
                                               .Where(taskNode => !taskNode.CodeDoNotInject())
                                               .Where(taskNode => !taskNode.CodeNotImplemented())
+                                              .Distinct();
+
+        return relevantTaskNodes.ToImmutableList();
+    }
+
+
+    /// <summary>
+    ///  Liefert alle direkt, also nicht via Concats aufgerufene Tasks
+    /// </summary>
+    static ImmutableList<ITaskNodeSymbol> GetDirectReachableTaskNodes(ITaskDefinitionSymbol taskDefinition) {
+
+        var relevantTaskNodes = taskDefinition.NodeDeclarations
+                                              .OfType<ITaskNodeSymbol>()
+                                              .Where(taskNode => taskNode.Incomings.OfType<IConcatableEdge>().Any(e => e.ConcatTransition == null))
                                               .Distinct();
 
         return relevantTaskNodes.ToImmutableList();
@@ -58,10 +72,10 @@ sealed class CodeModelBuilder {
         return relevantTaskNodes.ToImmutableList();
     }
 
-    public static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
+    public static IEnumerable<TriggerTransitionCodeModel> GetTriggerTransitions(TaskCodeInfo containingTask, ITaskDefinitionSymbol taskDefinition) {
         // Trigger Transitions sind per Defininition "used"
         return taskDefinition.TriggerTransitions
-                             .SelectMany(triggerTransition => TriggerTransitionCodeModel.FromTriggerTransition(taskCodeInfo, triggerTransition))
+                             .SelectMany(triggerTransition => TriggerTransitionCodeModel.FromTriggerTransition(containingTask, triggerTransition))
                              .OrderBy(st => st.TriggerName.Length)
                              .ThenBy(st => st.TriggerName);
     }

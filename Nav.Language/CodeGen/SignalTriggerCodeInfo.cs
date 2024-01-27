@@ -28,7 +28,7 @@ public sealed class SignalTriggerCodeInfo {
         return FromSignalTrigger(signalTriggerSymbol, null);
     }
 
-    internal static SignalTriggerCodeInfo FromSignalTrigger(ISignalTriggerSymbol signalTriggerSymbol, TaskCodeInfo taskCodeInfo) {
+    internal static SignalTriggerCodeInfo FromSignalTrigger(ISignalTriggerSymbol signalTriggerSymbol, TaskCodeInfo containingTask) {
 
         if (signalTriggerSymbol == null) {
             throw new ArgumentNullException(nameof(signalTriggerSymbol));
@@ -39,9 +39,9 @@ public sealed class SignalTriggerCodeInfo {
         var triggerName  = signalTriggerSymbol.Name;
 
         return new SignalTriggerCodeInfo(
-            containingTask: taskCodeInfo ?? TaskCodeInfo.FromTaskDefinition(task),
-            triggerName: triggerName,
-            viewNodeName: viewNodeName
+            containingTask: containingTask ?? TaskCodeInfo.FromTaskDefinition(task),
+            triggerName   : triggerName,
+            viewNodeName  : viewNodeName
         );
     }
 

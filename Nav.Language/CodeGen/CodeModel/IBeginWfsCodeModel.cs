@@ -45,7 +45,7 @@ sealed class IBeginWfsCodeModel : FileGenerationCodeModel {
 
         var namespaces       = GetUsingNamespaces(taskDefinition, taskCodeInfo);
         var codeDeclarations = CodeModelBuilder.GetCodeDeclarations(taskDefinition);
-        var initTransitions  = CodeModelBuilder.GetInitTransitions(taskDefinition, taskCodeInfo);
+        var initTransitions  = CodeModelBuilder.GetInitTransitions(taskCodeInfo, taskDefinition);
             
         return new IBeginWfsCodeModel(
             taskCodeInfo          : taskCodeInfo,

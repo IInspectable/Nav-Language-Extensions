@@ -1,4 +1,6 @@
-﻿#region Using Directives
+﻿#nullable enable
+
+#region Using Directives
 
 using System;
 
@@ -6,13 +8,14 @@ using Pharmatechnik.Nav.Language.Text;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen; 
+namespace Pharmatechnik.Nav.Language.CodeGen;
 
 abstract class CallCodeModel: CodeModel {
 
-    protected CallCodeModel(string name, EdgeMode edgeMode) {
-        Name     = name ?? String.Empty;
-        EdgeMode = edgeMode;
+    protected CallCodeModel(string? name, EdgeMode edgeMode, CallCodeModel? continuation = null) {
+        Name         = name ?? String.Empty;
+        EdgeMode     = edgeMode;
+        Continuation = continuation;
     }
 
     public EdgeMode EdgeMode       { get; }
@@ -20,14 +23,16 @@ abstract class CallCodeModel: CodeModel {
     public string   PascalcaseName => Name.ToPascalcase();
     public string   CamelcaseName  => Name.ToCamelcase();
 
+    public CallCodeModel? Continuation { get; }
+
     public abstract string TemplateName { get; }
     public abstract int    SortOrder    { get; }
 
 }
 
-sealed class CanceCallCodeModel: CallCodeModel {
+sealed class CancelCallCodeModel: CallCodeModel {
 
-    public CanceCallCodeModel(): base(String.Empty, EdgeMode.Goto) {
+    public CancelCallCodeModel(): base(String.Empty, EdgeMode.Goto) {
     }
 
     public override string TemplateName => "cancel";
@@ -47,16 +52,12 @@ sealed class TaskCallCodeModel: CallCodeModel {
 
     public override string TemplateName {
         get {
-            switch (EdgeMode) {
-                case EdgeMode.Modal:
-                    return "openModalTask";
-                case EdgeMode.NonModal:
-                    return "startNonModalTask";
-                case EdgeMode.Goto:
-                    return "gotoTask";
-                default:
-                    return "";
-            }
+            return EdgeMode switch {
+                EdgeMode.Modal    => "openModalTask",
+                EdgeMode.NonModal => "startNonModalTask",
+                EdgeMode.Goto     => "gotoTask",
+                _                 => ""
+            };
         }
     }
 
@@ -66,21 +67,26 @@ sealed class TaskCallCodeModel: CallCodeModel {
 
 sealed class GuiCallCodeModel: CallCodeModel {
 
-    public GuiCallCodeModel(string name, EdgeMode edgeMode): base(name, edgeMode) {
+    public GuiCallCodeModel(string name, EdgeMode edgeMode, CallCodeModel? continuation): base(name, edgeMode, continuation) {
     }
 
     public override string TemplateName {
         get {
-            switch (EdgeMode) {
-                case EdgeMode.Modal:
-                    return "openModalGUI";
-                case EdgeMode.NonModal:
-                    return "startNonModalGUI";
-                case EdgeMode.Goto:
-                    return "gotoGUI";
-                default:
-                    return "";
+            if (Continuation != null) {
+                return EdgeMode switch {
+                    EdgeMode.Modal    => "openModalGUIConcat",
+                    EdgeMode.NonModal => "startNonModalGUIConcat",
+                    EdgeMode.Goto     => "gotoGUIConcat",
+                    _                 => ""
+                };
             }
+
+            return EdgeMode switch {
+                EdgeMode.Modal    => "openModalGUI",
+                EdgeMode.NonModal => "startNonModalGUI",
+                EdgeMode.Goto     => "gotoGUI",
+                _                 => ""
+            };
         }
     }
 

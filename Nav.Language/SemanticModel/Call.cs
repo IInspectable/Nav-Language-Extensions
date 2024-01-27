@@ -49,17 +49,21 @@ public class CallComparer: IEqualityComparer<Call> {
         if (x == null || y == null) {
             return false;
         }
+
         return x.Node.Name     == y.Node.Name     &&
                x.EdgeMode.Name == y.EdgeMode.Name &&
-               x.ContinuationCall  == y.ContinuationCall;
+               Equals(x.ContinuationCall, y.ContinuationCall);
     }
 
-    public virtual int GetHashCode(Call call) {
+    public virtual int GetHashCode(Call? call) {
+        if (call == null) {
+            return 0;
+        }
 
         return HashCode.Combine(
             call.Node.Name,
             call.EdgeMode.Name,
-            call.ContinuationCall);
+            GetHashCode(call.ContinuationCall));
 
     }
 
@@ -78,8 +82,8 @@ class FoldExitsCallComparer: CallComparer {
         return x?.Node is IExitNodeSymbol && y?.Node is IExitNodeSymbol;
     }
 
-    public override int GetHashCode(Call call) {
-        if (call.Node is IExitNodeSymbol) {
+    public override int GetHashCode(Call? call) {
+        if (call?.Node is IExitNodeSymbol) {
             return typeof(IExitNodeSymbol).GetHashCode();
         }
 

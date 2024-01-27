@@ -9,6 +9,13 @@ namespace Pharmatechnik.Nav.Language;
 
 public static class EdgeExtensions {
 
+    public static IEnumerable<Call> GetReachableContinuationCalls(this IEdge source) {
+
+        return source.GetReachableCalls()
+                     .Select(call => call.ContinuationCall)
+                     .WhereNotNull();
+    }
+
     public static IEnumerable<Call> GetReachableCalls(this IEdge source) {
 
         return GetReachableCallsImpl<INodeSymbol>(source, new HashSet<IEdge>()).Distinct(CallComparer.Default);

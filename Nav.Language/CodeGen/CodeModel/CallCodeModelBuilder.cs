@@ -1,27 +1,43 @@
-﻿#region Using Directives
+﻿#nullable enable
+
+#region Using Directives
 
 using System.Linq;
 using System.Collections.Generic;
 
 #endregion
 
-namespace Pharmatechnik.Nav.Language.CodeGen; 
+namespace Pharmatechnik.Nav.Language.CodeGen;
 
 sealed class CallCodeModelBuilder: SymbolVisitor<CallCodeModel> {
 
-    public CallCodeModelBuilder(EdgeMode edgeMode) {
-        EdgeMode = edgeMode;
+    public CallCodeModelBuilder(EdgeMode edgeMode, CallCodeModel? continuationCall) {
+        EdgeMode         = edgeMode;
+        ContinuationCall = continuationCall;
     }
 
-    public EdgeMode EdgeMode { get; }
+    public EdgeMode       EdgeMode         { get; }
+    public CallCodeModel? ContinuationCall { get; }
 
     public static IEnumerable<CallCodeModel> FromCalls(IEnumerable<Call> calls) {
-        return calls.Select(call => GetCallCodeModel(call.Node, call.EdgeMode));
+        return calls.Select(GetCallCodeModel);
     }
 
-    static CallCodeModel GetCallCodeModel(INodeSymbol node, IEdgeModeSymbol edgeEdgeMode) {
-        var builder = new CallCodeModelBuilder(edgeEdgeMode.EdgeMode);
-        return builder.Visit(node);
+    static CallCodeModel GetCallCodeModel(Call call) {
+
+        var continuationCall = TryGetContinuationCall(call);
+        var builder          = new CallCodeModelBuilder(call.EdgeMode.EdgeMode, continuationCall);
+
+        return builder.Visit(call.Node);
+
+        static CallCodeModel? TryGetContinuationCall(Call call) {
+            if (call.ContinuationCall is { } conti) {
+                var builderConti = new CallCodeModelBuilder(conti.EdgeMode.EdgeMode, continuationCall: null);
+                return builderConti.Visit(conti.Node);
+            }
+
+            return null;
+        }
     }
 
     public override CallCodeModel VisitExitNodeSymbol(IExitNodeSymbol exitNodeSymbol) {
@@ -40,11 +56,11 @@ sealed class CallCodeModelBuilder: SymbolVisitor<CallCodeModel> {
     }
 
     public override CallCodeModel VisitDialogNodeSymbol(IDialogNodeSymbol dialogNodeSymbol) {
-        return new GuiCallCodeModel(dialogNodeSymbol.Name, EdgeMode);
+        return new GuiCallCodeModel(dialogNodeSymbol.Name, EdgeMode, ContinuationCall);
     }
 
     public override CallCodeModel VisitViewNodeSymbol(IViewNodeSymbol viewNodeSymbol) {
-        return new GuiCallCodeModel(viewNodeSymbol.Name, EdgeMode);
+        return new GuiCallCodeModel(viewNodeSymbol.Name, EdgeMode, ContinuationCall);
     }
 
 }

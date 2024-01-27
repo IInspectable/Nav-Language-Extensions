@@ -69,14 +69,16 @@ writeInitTransition(initTransition) ::=<<
 <writeNavInitAnnotation(initTransition.NodeName)>
 public abstract IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>);
 <else>
+<writeCallContextClassDeclaration(initTransition)>
 <writeNavInitAnnotation(initTransition.NodeName)>
 public virtual IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>) {
-    var body = <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressionsInline([initTransition.Parameter, initTransition.TaskBeginFields])>);
+    <writeCallContextDeclaration(initTransition)>
+    var body = <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterExpressionsInline([initTransition.Parameter, initTransition.CallContextParameter, initTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(initTransition, ([ BeginMethodPrefix(), LogicMethodSuffix() ]) )>
 }
 
 <writeNavInitAnnotation(initTransition.NodeName)>
-protected abstract INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList([initTransition.Parameter, initTransition.TaskBegins])>);
+protected abstract INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList([initTransition.Parameter, initTransition.CallContextParameter, initTransition.TaskBegins])>);
 <endif>
 >>
 
@@ -89,14 +91,16 @@ writeExitTransition(exitTransition) ::=<<
 <writeNavExitAnnotation(exitTransition.NodeName)>
 protected abstract INavCommand <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterList(exitTransition.TaskResult)>);
 <else>
+<writeCallContextClassDeclaration(exitTransition)>
 <writeNavExitAnnotation(exitTransition.NodeName)>
 private INavCommand <ExitMethodPrefix()><exitTransition.NodeNamePascalcase>(<writeParameterList(exitTransition.TaskResult)>) {
-    var body = <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterExpressionsInline([exitTransition.TaskResult, exitTransition.TaskBeginFields])>);
+    <writeCallContextDeclaration(exitTransition)>
+    var body = <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterExpressionsInline([exitTransition.TaskResult, exitTransition.CallContextParameter, exitTransition.TaskBeginFields])>);
     <writeTransitionCallBlock(exitTransition, ([ ExitMethodPrefix(), (exitTransition.NodeNamePascalcase), LogicMethodSuffix() ]) )>
 }
 
 <writeNavExitAnnotation(exitTransition.NodeName)>
-protected abstract INavCommandBody <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>);
+protected abstract INavCommandBody <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterList([exitTransition.TaskResult, exitTransition.CallContextParameter, exitTransition.TaskBegins])>);
 <endif>
 >>
 
@@ -106,15 +110,17 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
+<writeCallContextClassDeclaration(triggerTransition)>
 <writeTriggerAnnotation(triggerTransition.TriggerName)>
 public virtual INavCommand <triggerTransition.TriggerName>(<writeParameterList(triggerTransition.ViewParameter)>) {
     <triggerTransition.ViewParameter.ParameterName> = <BeforeTriggerLogicMethodName()>(<writeParameterExpression(triggerTransition.ViewParameter)>);
-    var body = <triggerTransition.TriggerName><LogicMethodSuffix()>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.TaskBeginFields])>);    
+    <writeCallContextDeclaration(triggerTransition)>
+    var body = <triggerTransition.TriggerName><LogicMethodSuffix()>(<writeParameterExpressionsInline([triggerTransition.ViewParameter, triggerTransition.CallContextParameter, triggerTransition.TaskBeginFields])>);    
     <writeTransitionCallBlock(triggerTransition, ([ (triggerTransition.TriggerName), LogicMethodSuffix() ]) )>
 }
 
 <writeTriggerAnnotation(triggerTransition.TriggerName)>
-protected abstract INavCommandBody <triggerTransition.TriggerName><LogicMethodSuffix()>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBegins])>);
+protected abstract INavCommandBody <triggerTransition.TriggerName><LogicMethodSuffix()>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.CallContextParameter, triggerTransition.TaskBegins])>);
 >>
 
 writeTaskNodeNameFieldCollapsibleList(beginWrapperModels) ::=<<
@@ -148,6 +154,55 @@ protected INavCommandBody <BeginMethodPrefix()><taskBegin.TaskNodeNamePascalcase
     return new TaskCall(<taskBegin.TaskNodeNamePascalcase>NodeName, () => <taskBegin.TaskBeginParameter.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(taskBegin.TaskParameter)>));
     <endif>
 }
+>>
+
+writeCallContextClassDeclaration(transition) ::=<<
+<if(transition.EmitCallContext)>
+protected sealed record <transition.CallContext.ClassName>(<transition.CallContext.ContainingTask.WfsBaseTypeName> wfs) {
+
+    public Continuation Show(<transition.CallContext.ViewName><ToClassNameSuffix()> to) => new (wfs, to);
+
+    public sealed record Continuation(<transition.CallContext.ContainingTask.WfsBaseTypeName> wfs, <transition.CallContext.ViewName><ToClassNameSuffix()> to) {
+
+        <writeContinuationsCollapsibleList(transition.CallContext.Continuations)>
+    }
+}
+<endif>
+>>
+
+writeContinuationsCollapsibleList(continuationCodeModels) ::=<<
+<continuationCodeModels:writeContinuationBeginWrapper(); separator="\r\n\r\n">
+
+>>
+
+writeContinuationBeginWrapper(continuationCodeModel) ::=<<
+<writeContinuationBeginMethodList(continuationCodeModel.Call, continuationCodeModel.BeginWrapper.TaskBegins)>
+>>
+
+writeContinuationBeginMethodList(callModel, taskBegins) ::=<<
+<taskBegins:{it | <writeContinuationBeginMethod(it, callModel)>}; separator="\r\n\r\n">
+>>
+
+writeContinuationBeginMethod(taskBegin, callModel) ::=<<
+public INavCommandBody <BeginMethodPrefix()><taskBegin.TaskNodeNamePascalcase>(<writeParameterList([taskBegin.TaskParameter])>) {
+    return new ConcatCommand {
+        TO           = to,
+        Continuation = <({writeContinuation<callModel.TemplateName>})(taskBegin, callModel)>,
+    };
+}
+>>
+
+writeContinuationgotoTask(taskBegin, taskCall) ::=<<
+wfs.GotoTask\<<taskCall.TaskResult.ParameterType>\>(() => wfs.<taskBegin.TaskBeginField.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(taskBegin.TaskParameter)>), wfs.<ExitMethodPrefix()><taskCall.PascalcaseName>)
+>>
+
+writeContinuationopenModalTask(taskBegin, taskCall) ::=<<
+wfs.OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(() => wfs.<taskBegin.TaskBeginField.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(taskBegin.TaskParameter)>), wfs.<ExitMethodPrefix()><taskCall.PascalcaseName>)
+>>
+
+writeCallContextDeclaration(transition) ::=<<
+<if(transition.EmitCallContext)>
+var callContext = new <transition.CallContext.ClassName>(this);<endif>
 >>
 
 writeTransitionCallBlock(transition, logicMethodName) ::=<<
@@ -217,4 +272,19 @@ case <call.PascalcaseName><ToClassNameSuffix()> <call.CamelcaseName><ToClassName
 gotoGUI(call) ::=<<
 case <call.PascalcaseName><ToClassNameSuffix()> <call.CamelcaseName><ToClassNameSuffix()>:
     return GotoGUI(<call.CamelcaseName><ToClassNameSuffix()>);
+>>
+
+openModalGUIConcat(call) ::=<<
+case ConcatCommand concatCommand when concatCommand.TO is <call.PascalcaseName><ToClassNameSuffix()> to:
+    return OpenModalGUI(to).Concat(concatCommand.Continuation);
+>>
+
+startNonModalGUIConcat(call) ::=<<
+case ConcatCommand concatCommand when concatCommand.TO is <call.PascalcaseName><ToClassNameSuffix()> to:
+    return StartNonModalGUI(to).Concat(concatCommand.Continuation);
+>>
+
+gotoGUIConcat(call) ::=<<
+case ConcatCommand concatCommand when concatCommand.TO is <call.PascalcaseName><ToClassNameSuffix()> to:
+    return GotoGUI(to).Concat(concatCommand.Continuation);
 >>

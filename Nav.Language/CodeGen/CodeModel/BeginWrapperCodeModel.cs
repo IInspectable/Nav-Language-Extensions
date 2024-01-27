@@ -1,4 +1,6 @@
-﻿#region Using Directives
+﻿#nullable enable
+
+#region Using Directives
 
 using System;
 using System.Linq;
@@ -13,18 +15,21 @@ namespace Pharmatechnik.Nav.Language.CodeGen;
 
 class BeginWrapperCodeModel: CodeModel {
 
-    public BeginWrapperCodeModel(string taskNodeName, ImmutableList<TaskBeginCodeModel> ctors) {
+    public BeginWrapperCodeModel(TaskCodeInfo containingTask, string taskNodeName, ImmutableList<TaskBeginCodeModel> ctors) {
 
-        TaskNodeName = taskNodeName;
-        TaskBegins   = ctors ?? throw new ArgumentNullException(nameof(ctors));
+        ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
+        TaskNodeName   = taskNodeName;
+        TaskBegins     = ctors ?? throw new ArgumentNullException(nameof(ctors));
     }
 
-    public string TaskNodeName           { get; }
-    public string TaskNodeNamePascalcase => TaskNodeName.ToPascalcase();
+    public TaskCodeInfo ContainingTask         { get; }
+    public string       TaskNodeName           { get; }
+    public string       TaskNodeNamePascalcase => TaskNodeName.ToPascalcase();
+
 
     public ImmutableList<TaskBeginCodeModel> TaskBegins { get;}
 
-    public static BeginWrapperCodeModel FromTaskNode(ITaskNodeSymbol taskNode, TaskCodeInfo taskCodeInfo) {
+    public static BeginWrapperCodeModel FromTaskNode(TaskCodeInfo containingTask, ITaskNodeSymbol taskNode) {
             
         if (taskNode.Declaration == null) {
             throw new InvalidOperationException();
@@ -44,23 +49,28 @@ class BeginWrapperCodeModel: CodeModel {
                     taskBeginParameter: new ParameterCodeModel(
                         parameterType : CodeGenFacts.DefaultIwfsBaseType,
                         parameterName : CodeGenFacts.TaskBeginParameterName),
+                    taskBeginFieldParameter:new ParameterCodeModel(
+                        parameterType : CodeGenFacts.DefaultIwfsBaseType,
+                        parameterName : CodeGenFacts.TaskBeginParameterName),
                     taskParameter: taskParameter.ToImmutableList(),
                     notImplemented: true);
 
                 taskBegins.Add(taskBegin);
 
             } else {
+
+                var taskBeginParameter = ParameterCodeModel.GetTaskBeginAsParameter(taskNode.Declaration);
                 var taskBegin = new TaskBeginCodeModel(
-                    taskNodeName      : taskNode.Name, 
-                    taskBeginParameter: ParameterCodeModel.GetTaskBeginAsParameter(taskNode.Declaration)
-                                                          .WithParameterName(CodeGenFacts.TaskBeginParameterName), 
-                    taskParameter     : taskParameter.ToImmutableList());
+                    taskNodeName           : taskNode.Name,
+                    taskBeginParameter     : taskBeginParameter.WithParameterName(CodeGenFacts.TaskBeginParameterName),
+                    taskBeginFieldParameter: taskBeginParameter,
+                    taskParameter          : taskParameter.ToImmutableList());
 
                 taskBegins.Add(taskBegin);
-            }                
+            }
         }
            
-        return new BeginWrapperCodeModel(taskNode.Name, taskBegins.ToImmutableList());
+        return new BeginWrapperCodeModel(containingTask, taskNode.Name, taskBegins.ToImmutableList());
     }
 
     static IEnumerable<ParameterSyntax> GetTaskParameterSyntaxes(IInitConnectionPointSymbol initConnectionPoint) {

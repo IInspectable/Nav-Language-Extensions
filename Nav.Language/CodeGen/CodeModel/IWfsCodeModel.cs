@@ -44,7 +44,7 @@ sealed class IWfsCodeModel : FileGenerationCodeModel {
         var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.IWfsFileName, pathProvider.SyntaxFileName);
 
         var namespaces         = GetUsingNamespaces(taskDefinition, taskCodeInfo, options);
-        var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
+        var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskCodeInfo, taskDefinition);
             
         return new IWfsCodeModel(
             taskCodeInfo          : taskCodeInfo,

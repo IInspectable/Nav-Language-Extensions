@@ -11,19 +11,19 @@ namespace Pharmatechnik.Nav.Language.CodeGen;
 
 sealed class WfsBaseCodeModel : FileGenerationCodeModel {
 
-    WfsBaseCodeModel(TaskCodeInfo taskCodeInfo, 
-                     string relativeSyntaxFileName, 
-                     string filePath, 
-                     ImmutableList<string> usingNamespaces, 
-                     ParameterCodeModel taskResult, 
-                     ImmutableList<ParameterCodeModel> taskBegins, 
+    WfsBaseCodeModel(TaskCodeInfo taskCodeInfo,
+                     string relativeSyntaxFileName,
+                     string filePath,
+                     ImmutableList<string> usingNamespaces,
+                     ParameterCodeModel taskResult,
+                     ImmutableList<ParameterCodeModel> taskBegins,
                      ImmutableList<ParameterCodeModel> taskParameter,
                      ImmutableList<InitTransitionCodeModel> initTransitions,
                      ImmutableList<ExitTransitionCodeModel> exitTransitions,
                      ImmutableList<TriggerTransitionCodeModel> triggerTransitions,
-                     ImmutableList<BeginWrapperCodeModel> beginWrappers) 
+                     ImmutableList<BeginWrapperCodeModel> beginWrappers)
         : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
-            
+
         UsingNamespaces    = usingNamespaces    ?? throw new ArgumentNullException(nameof(usingNamespaces));
         TaskResult         = taskResult         ?? throw new ArgumentNullException(nameof(taskResult));
         TaskBegins         = taskBegins         ?? throw new ArgumentNullException(nameof(taskBegins));
@@ -33,7 +33,7 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
         TriggerTransitions = triggerTransitions ?? throw new ArgumentNullException(nameof(triggerTransitions));
         BeginWrappers      = beginWrappers      ?? throw new ArgumentNullException(nameof(beginWrappers));
 
-        ViewParameters     = TriggerTransitions.DistinctBy(ts => ts.ViewParameter.ParameterType).Select(ts => ts.ViewParameter).ToImmutableList();
+        ViewParameters = TriggerTransitions.DistinctBy(ts => ts.ViewParameter.ParameterType).Select(ts => ts.ViewParameter).ToImmutableList();
     }
         
     public string WflNamespace        => Task.WflNamespace;
@@ -62,13 +62,13 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
         var relativeSyntaxFileName = pathProvider.GetRelativePath(pathProvider.WfsBaseFileName, pathProvider.SyntaxFileName);
 
         var taskResult         = ParameterCodeModel.TaskResult(taskDefinition);
-        var usingNamespaces    = GetUsingNamespaces(taskDefinition, taskCodeInfo);
+        var usingNamespaces    = GetUsingNamespaces(taskCodeInfo, taskDefinition);
         var taskBegins         = CodeModelBuilder.GetTaskBeginParameter(taskDefinition);
         var taskParameter      = CodeModelBuilder.GetTaskParameter(taskDefinition);
-        var initTransitions    = CodeModelBuilder.GetInitTransitions(taskDefinition   , taskCodeInfo);
-        var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskDefinition   , taskCodeInfo);
-        var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskDefinition, taskCodeInfo);
-        var beginWrappers      = CodeModelBuilder.GetBeginWrappers(taskDefinition     , taskCodeInfo);
+        var initTransitions    = CodeModelBuilder.GetInitTransitions(taskCodeInfo   , taskDefinition);
+        var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskCodeInfo   , taskDefinition);
+        var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskCodeInfo, taskDefinition);
+        var beginWrappers      = CodeModelBuilder.GetBeginWrappers(taskCodeInfo     , taskDefinition);
 
         return new WfsBaseCodeModel(
             taskCodeInfo          : taskCodeInfo,
@@ -84,11 +84,11 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
             beginWrappers         : beginWrappers.ToImmutableList());
     }
 
-    static IEnumerable<string> GetUsingNamespaces(ITaskDefinitionSymbol taskDefinition, TaskCodeInfo taskCodeInfo) {
+    static IEnumerable<string> GetUsingNamespaces(TaskCodeInfo containingTask, ITaskDefinitionSymbol taskDefinition) {
 
         IEnumerable<string> namespaces = [
             typeof(int).Namespace,
-            taskCodeInfo.IwflNamespace,
+            containingTask.IwflNamespace,
             CodeGenFacts.NavigationEngineIwflNamespace,
             CodeGenFacts.NavigationEngineWflNamespace,
             ..taskDefinition.CodeGenerationUnit.GetCodeUsingNamespaces()

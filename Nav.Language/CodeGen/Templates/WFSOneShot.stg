@@ -26,7 +26,7 @@ public override IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransit
     throw new NotImplementedException();
 }
 <else>
-protected override INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList([initTransition.Parameter, initTransition.TaskBegins])>) {
+protected override INavCommandBody <BeginMethodPrefix()><LogicMethodSuffix()>(<writeParameterList([initTransition.Parameter, initTransition.CallContextParameter, initTransition.TaskBegins])>) {
     throw new NotImplementedException();
 }
 <endif>
@@ -42,7 +42,7 @@ protected override INavCommand <ExitMethodPrefix()><exitTransition.NodeNamePasca
     throw new NotImplementedException();
 }
 <else>
-protected override INavCommandBody <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterList([exitTransition.TaskResult, exitTransition.TaskBegins])>) {
+protected override INavCommandBody <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterList([exitTransition.TaskResult, exitTransition.CallContextParameter, exitTransition.TaskBegins])>) {
      throw new NotImplementedException();
 }
 <endif>
@@ -53,7 +53,7 @@ writeTriggerTransitionList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
-protected override INavCommandBody <triggerTransition.TriggerName><LogicMethodSuffix()>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.TaskBegins])>) {
+protected override INavCommandBody <triggerTransition.TriggerName><LogicMethodSuffix()>(<writeParameterList([triggerTransition.ViewParameter, triggerTransition.CallContextParameter, triggerTransition.TaskBegins])>) {
     throw new NotImplementedException();
 }
 >>
