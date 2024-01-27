@@ -25,7 +25,7 @@ sealed class InitTransitionCodeModel: TransitionCodeModel {
     public string NodeName               { get; }
     public int    Index                  { get; }
 
-    public override string GetCallContextClassName() => $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.CallContextClassSuffix}" + (Index > 0 ? "${index}" : "");
+    public override string GetCallContextClassName() => $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.CallContextClassSuffix}" + (Index > 0 ? $"{Index}" : "");
 
     public ImmutableList<ParameterCodeModel> Parameter { get; }
 

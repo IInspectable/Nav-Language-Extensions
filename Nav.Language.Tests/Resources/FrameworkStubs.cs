@@ -56,6 +56,13 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
 
     }
 
+    public sealed class ConcatCommand: INavCommandBody {
+
+        public TO             TO           { get; set; }
+        public ITASK_BOUNDARY Continuation { get; set; }
+
+    }
+
     public interface INavCommand {
     }
 
@@ -68,6 +75,9 @@ namespace Pharmatechnik.Apotheke.XTplus.Framework.NavigationEngine.IWFL {
     }
 
     public interface TASK_RESULT : IINIT_TASK, INavCommand {
+    }
+
+    public interface ITASK_BOUNDARY: INavCommand {
     }
 
     public delegate IINIT_TASK BeginTaskWrapper();

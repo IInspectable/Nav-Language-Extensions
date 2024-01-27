@@ -1,0 +1,72 @@
+﻿[namespaceprefix Nav.Language.Tests.Regression.Test1]
+
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.WFL]
+[using Pharmatechnik.Apotheke.XTplus.Framework.Core.IWFL]
+
+[using Pharmatechnik.Apotheke.XTplus.Common.IWFL]
+[using Pharmatechnik.Apotheke.XTplus.Common.WFL]
+
+taskref A [namespaceprefix NS.A]		
+		  [result FooResult r1] {
+
+    init I1;
+    init I2[params string a1];
+    exit Exit;
+}
+
+taskref B [namespaceprefix NS.B]		
+		  [result FooResult r1] {
+
+    init I1;
+    init I2[params string b1];
+
+    exit Exit;
+}
+
+taskref C [namespaceprefix NS.C]		
+		  [result FooResult r1] {
+
+    init I1;
+    init I2[params string c1];
+    exit Exit;
+}
+
+task ConcatSample 
+  
+    [base StandardWFS : IWFServiceBase]
+    [params ITestBS testBS, 
+            ISozFactory SOZFactory]
+    [result bool]
+{
+
+    init Init1 ;
+    init Init2 [params string message];
+    exit    Exit;
+    task A;
+    task B;
+    task C;
+    
+    view View;
+    choice  Choice_Init;
+    choice  Choice_OnFoo;
+
+    Init1               --> View ; 
+    Init2               --> Choice_Init;
+
+    Choice_Init         --> View if "Foo";
+    Choice_Init         --> View o-^ A;
+
+    A:Exit              --> View;
+
+    View                --> Choice_OnFoo on OnFoo;
+
+    Choice_OnFoo        --> View;
+    Choice_OnFoo        --> View o-^ B if "Fehler";
+
+    B:Exit              --> View o-^C;
+
+    C:Exit              --> Exit;
+
+    
+
+}

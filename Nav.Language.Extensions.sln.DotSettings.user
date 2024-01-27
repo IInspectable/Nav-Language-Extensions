@@ -48,6 +48,7 @@
     &lt;TestId&gt;NUnit3x::6F82F651-4D21-467D-BD83-68C743BC8DF4::.NETFramework,Version=v4.7.2::Nav.Language.Tests.TokenPropertyNameTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;NUnit3x::6F82F651-4D21-467D-BD83-68C743BC8DF4::.NETFramework,Version=v4.7.2::Nav.Language.Tests.SyntaxFactsTest.ModalEdgeKeywordTest&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;NUnit3x::6F82F651-4D21-467D-BD83-68C743BC8DF4::.NETFramework,Version=v4.7.2::Nav.Language.Tests.SyntaxFactsTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::6F82F651-4D21-467D-BD83-68C743BC8DF4::.NETFramework,Version=v4.7.2::Nav.Language.Tests.RegressionTests.GenerateFiles&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UpdatesManger/LastUpdateCheck/@EntryValue">01/27/2024 07:59:13</s:String>

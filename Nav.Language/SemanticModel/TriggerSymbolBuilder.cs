@@ -50,25 +50,25 @@ sealed class TriggerSymbolBuilder: SyntaxNodeVisitor {
     }
 
     public override void VisitSpontaneousTrigger(SpontaneousTriggerSyntax spontaneousTriggerSyntax) {
-        var location = spontaneousTriggerSyntax.GetLocation();
-        if (location != null) {
-            var trigger = new SpontaneousTriggerSymbol(location, spontaneousTriggerSyntax);
-            _triggers.Add(trigger);
+        if (spontaneousTriggerSyntax.SpontaneousKeyword.IsMissing) {
+            return;
         }
+
+        var location = spontaneousTriggerSyntax.GetLocation();
+        var trigger  = new SpontaneousTriggerSymbol(location, spontaneousTriggerSyntax);
+        _triggers.Add(trigger);
     }
 
     public override void VisitSignalTrigger(SignalTriggerSyntax signalTriggerSyntax) {
 
-        if (signalTriggerSyntax.Identifier == null) {
-            return;
+        if (signalTriggerSyntax.Identifier == null || signalTriggerSyntax.Identifier.Identifier.IsMissing) {
+             return;
         }
 
         var signal   = signalTriggerSyntax.Identifier;
         var location = signal.GetLocation();
-        if (location != null) {
-            var trigger = new SignalTriggerSymbol(signal.Text, location, signal);
-            _triggers.Add(trigger);
-        }
+        var trigger  = new SignalTriggerSymbol(signal.Text, location, signal);
+        _triggers.Add(trigger);
 
     }
 

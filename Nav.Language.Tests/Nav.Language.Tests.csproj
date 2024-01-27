@@ -120,6 +120,7 @@
     <Content Include="Diagnostics\Tests\Nav1017ViewNode0NotRequired.nav" />
     <Content Include="Diagnostics\Tests\Nav1019ViewNode0HasNoOutgoingEdges_1Edge.nav" />
     <Content Include="Diagnostics\Tests\ATaskWithoutErrors.nav" />
+    <Content Include="Regression\Tests\ConcatSample.nav" />
     <Content Include="Regression\Tests\Test.nav" />
     <Content Include="Regression\Tests\SimpleTask.nav" />
   </ItemGroup>

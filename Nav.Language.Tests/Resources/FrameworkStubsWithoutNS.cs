@@ -51,6 +51,13 @@ public static class NavCommandBody {
 
 }
 
+public sealed class ConcatCommand: INavCommandBody {
+
+    public TO             TO           { get; set; }
+    public ITASK_BOUNDARY Continuation { get; set; }
+
+}
+
 public interface INavCommand {
 }
 
@@ -63,6 +70,9 @@ public interface CANCEL : IINIT_TASK {
 }
 
 public interface TASK_RESULT : IINIT_TASK, INavCommand {
+}
+
+public interface ITASK_BOUNDARY: INavCommand {
 }
 
 public delegate IINIT_TASK BeginTaskWrapper();

@@ -160,9 +160,9 @@ writeCallContextClassDeclaration(transition) ::=<<
 <if(transition.EmitCallContext)>
 protected sealed record <transition.CallContext.ClassName>(<transition.CallContext.ContainingTask.WfsBaseTypeName> wfs) {
 
-    public Continuation Show(<transition.CallContext.ViewName><ToClassNameSuffix()> to) => new (wfs, to);
+    internal Continuation Show(<transition.CallContext.ViewName><ToClassNameSuffix()> to) => new (wfs, to);
 
-    public sealed record Continuation(<transition.CallContext.ContainingTask.WfsBaseTypeName> wfs, <transition.CallContext.ViewName><ToClassNameSuffix()> to) {
+    internal sealed record Continuation(<transition.CallContext.ContainingTask.WfsBaseTypeName> wfs, <transition.CallContext.ViewName><ToClassNameSuffix()> to) {
 
         <writeContinuationsCollapsibleList(transition.CallContext.Continuations)>
     }
