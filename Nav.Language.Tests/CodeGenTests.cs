@@ -30,7 +30,7 @@ namespace Nav.Language.Tests;
 [TestFixture]
 public class CodeGenTests {
 
-    [Test]
+    [Test, Explicit]
     public void ConcatNavPlaygroundTest() {
 
         var fileName                 =@"C:\ws\git\IInspectable\Nav.Language.Extensions\Nav.Language.Tests\ConcatNavPlayground.nav";
