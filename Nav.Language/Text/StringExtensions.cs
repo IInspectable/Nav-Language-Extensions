@@ -13,6 +13,13 @@ namespace Pharmatechnik.Nav.Language.Text;
 
 public static class StringExtensions {
 
+    public static string PrefixNotNullOrEmpty([CanBeNull] this string value, string prefix) {
+        return value.IsNullOrEmpty()
+            ? ""
+            : $"{prefix}{value}";
+
+    }
+
     [ContractAnnotation("null=>false")]
     public static bool IsEmpty([NotNull] this string value) {
         return value.Length == 0;

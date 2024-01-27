@@ -68,20 +68,38 @@ public class IntroduceChoiceCodeFix: RefactoringCodeFix {
         var nodeDeclarationLine = SyntaxTree.SourceText.GetTextLineAtPosition(nodeSymbol.Start);
         var nodeTransitionLine  = SyntaxTree.SourceText.GetTextLineAtPosition(NodeReference.End);
 
+        // ConcatTransition mitnehmen, wenn vorhanden
+        var concatTextChange = GetConcatTransitionTextChange();
+        var concatText       = concatTextChange.ReplacementText.PrefixNotNullOrEmpty(" ");
+
         var choiceDeclaration = $"{GetIndentAsSpaces(nodeDeclarationLine)}{SyntaxFacts.ChoiceKeyword}{WhiteSpaceBetweenChoiceKeywordAndIdentifier(nodeSymbol)}{choiceName}{SyntaxFacts.Semicolon}";
-        var choiceTransition  = $"{GetIndentAsSpaces(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{SyntaxFacts.Semicolon}";
+        var choiceTransition  = $"{GetIndentAsSpaces(nodeTransitionLine)}{choiceName}{WhiteSpaceBetweenSourceAndEdgeMode(edge, choiceName)}{edge.EdgeMode?.Name}{WhiteSpaceBetweenEdgeModeAndTarget(edge)}{NodeReference.Name}{concatText}{SyntaxFacts.Semicolon}";
 
         var textChanges = new List<TextChange>();
         // Die Choice Deklaration: choice NeueChoice;
         textChanges.AddRange(GetInsertChanges(nodeDeclarationLine.Extent.End, $"{choiceDeclaration}{Context.TextEditorSettings.NewLine}"));
         // Die Node Reference wird nun umgebogen auf die choice
         textChanges.AddRange(GetRenameSymbolChanges(NodeReference, choiceName));
+        // Die ConcatTransition an der ursprünglichen Edge ggf. löchen
+        textChanges.Add(TextChange.NewRemove(concatTextChange.Extent));
         // Die Edge der choice ist immer '-->'
         textChanges.AddRange(GetRenameSymbolChanges(edgeMode, SyntaxFacts.GoToEdgeKeyword));
         // Die neue choice Transition 
         textChanges.AddRange(GetInsertChanges(nodeTransitionLine.Extent.End, $"{choiceTransition}{Context.TextEditorSettings.NewLine}"));
 
         return textChanges;
+
+        TextChange GetConcatTransitionTextChange() {
+
+            if (edge is not IConcatableEdge { ConcatTransition: { } ct }) {
+                return TextChange.Empty;
+            }
+
+            var ctExtend = ct.Syntax.Extent;
+            var ctText   = SyntaxTree.SourceText.Substring(ctExtend);
+
+            return TextChange.NewReplace(ctExtend, ctText);
+        }
     }
 
     string WhiteSpaceBetweenChoiceKeywordAndIdentifier(INodeSymbol sampleNode) {
