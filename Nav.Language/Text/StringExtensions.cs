@@ -1,37 +1,29 @@
-﻿#region Using Directives
+﻿#nullable enable
 
 using System;
 using System.Collections.Immutable;
-
-using JetBrains.Annotations;
-
-#endregion
-
-// ReSharper disable ForCanBeConvertedToForeach
+using System.Diagnostics.CodeAnalysis;
 
 namespace Pharmatechnik.Nav.Language.Text; 
 
 public static class StringExtensions {
 
-    public static string PrefixNotNullOrEmpty([CanBeNull] this string value, string prefix) {
+    public static string PrefixNotNullOrEmpty(this string? value, string prefix) {
         return value.IsNullOrEmpty()
             ? ""
             : $"{prefix}{value}";
 
     }
 
-    [ContractAnnotation("null=>false")]
-    public static bool IsEmpty([NotNull] this string value) {
+    public static bool IsEmpty(this string value) {
         return value.Length == 0;
     }
 
-    [ContractAnnotation("null=>true")]
-    public static bool IsNullOrEmpty([CanBeNull] this string value) {
+    public static bool IsNullOrEmpty([NotNullWhen(false)] this string? value) {
         return String.IsNullOrEmpty(value);
     }
 
-    [ContractAnnotation("null=>true")]
-    public static bool IsNullOrWhiteSpace([CanBeNull] this string value) {
+    public static bool IsNullOrWhiteSpace([NotNullWhen(false)] this string? value) {
         return String.IsNullOrWhiteSpace(value);
     }
 
@@ -39,8 +31,7 @@ public static class StringExtensions {
     /// Liefert null, wenn die angegebene Zeichenfolge null oder String.Empty ist;
     /// andernfalls wird die angegebene Zeichenfolge zurückgegeben.
     /// </summary>
-    [CanBeNull]
-    public static string NullIfEmpty([CanBeNull] this string value) {
+    public static string? NullIfEmpty(this string? value) {
         return value.IsNullOrEmpty() ? null : value;
     }
 
@@ -48,8 +39,7 @@ public static class StringExtensions {
     /// Liefert null, wenn die angegebene Zeichenfolge null oder String.Empty ist, oder nur aus Whitespaces besteht;
     /// andernfalls wird die angegebene Zeichenfolge zurückgegeben.
     /// </summary>
-    [CanBeNull]
-    public static string NullIfWhiteSpace([CanBeNull] this string value) {
+    public static string? NullIfWhiteSpace(this string? value) {
         return value.IsNullOrWhiteSpace() ? null : value;
     }
 
@@ -270,20 +260,18 @@ public static class StringExtensions {
         return blockEntered > 0;
     }
 
-    [NotNull]
-    public static string ToCamelcase(this string s) {
+    public static string ToCamelcase(this string? s) {
 
-        if (String.IsNullOrEmpty(s)) {
+        if (s.IsNullOrEmpty()) {
             return s ?? String.Empty;
         }
 
         return s.Substring(0, 1).ToLowerInvariant() + s.Substring(1);
     }
 
-    [NotNull]
-    public static string ToPascalcase(this string s) {
+    public static string ToPascalcase(this string? s) {
 
-        if (String.IsNullOrEmpty(s)) {
+        if (s.IsNullOrEmpty()) {
             return s ?? String.Empty;
         }
 

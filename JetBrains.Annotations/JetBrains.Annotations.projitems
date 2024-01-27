@@ -10,5 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)JetBrains.Annotations.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NullableAttributes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)RecordCompilerAttributes.cs" />
   </ItemGroup>
 </Project>

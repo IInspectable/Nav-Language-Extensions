@@ -11,33 +11,6 @@ using System.Collections.Immutable;
 
 namespace Pharmatechnik.Nav.Language.CodeGen;
 
-// TODO init required
-sealed class ContinuationCodeModel: CodeModel {
-
-    public CallCodeModel         Call         { get; init; }
-    public BeginWrapperCodeModel BeginWrapper { get; init; }
-
-}
-
-// TODO in eigene files
-sealed class CallContextCodeModel: CodeModel {
-
-    public CallContextCodeModel(TaskCodeInfo containingTask, TransitionCodeModel parent, string viewName, ImmutableList<ContinuationCodeModel> continuations) {
-        ContainingTask = containingTask ?? throw new ArgumentNullException(nameof(containingTask));
-        Parent         = parent;
-        ViewName  = viewName;
-        Continuations  = continuations ?? throw new ArgumentNullException(nameof(continuations));
-
-    }
-
-    public string                               ClassName      => Parent.GetCallContextClassName();
-    public TaskCodeInfo                         ContainingTask { get; }
-    public TransitionCodeModel                  Parent         { get; }
-    public string                               ViewName       { get; }
-    public ImmutableList<ContinuationCodeModel> Continuations  { get; }
-
-}
-
 abstract class TransitionCodeModel: CodeModel {
 
     protected TransitionCodeModel(TaskCodeInfo containingTask, IEnumerable<Call> reachableCalls) {
@@ -73,7 +46,7 @@ abstract class TransitionCodeModel: CodeModel {
         if (continuationEdges.Any()) {
 
             var continuationCalls = continuationEdges.Select(cc => cc.Continuation).ToImmutableArray();
-            var guiCall           = continuationEdges.FirstOrDefault()?.Call; // Muss pper Definition ein GUI Node sein. // TODO Nav Error, wenn mehr als eine GUI im Spiel ist
+            var guiCall           = continuationEdges.FirstOrDefault()?.Call; // Muss per Definition _ein_ GUI Node sein -> Nav1022
 
             var viewName=guiCall?.Node.Name??String.Empty;
 
@@ -90,7 +63,12 @@ abstract class TransitionCodeModel: CodeModel {
                                                            })
                                                           .ToImmutableList();
 
-            CallContext = new CallContextCodeModel(containingTask, this, viewName,continuations);
+            CallContext = new CallContextCodeModel {
+                ContainingTask = containingTask,
+                Parent         = this,
+                ViewName       = viewName,
+                Continuations  = continuations
+            };
 
         } else {
             CallContext = null;
@@ -126,11 +104,10 @@ abstract class TransitionCodeModel: CodeModel {
     }
 
     static IEnumerable<ITaskDeclarationSymbol> GetTaskDeclarations(IEnumerable<Call> reachableCalls) {
-
         return reachableCalls.Select(call => call.Node)
                              .OfType<ITaskNodeSymbol>()
                              .Select(node => node.Declaration)
-                             .Where(taskDeclaration => taskDeclaration != null)
+                             .WhereNotNull()
                              .Distinct();
     }
 

@@ -33,8 +33,7 @@ public static class EdgeExtensions {
             if (edge.TargetReference?.Declaration is not T targetNode) {
                 yield break;
             }
-            // TODO Exit Transitions auflösen?
-            // TODO Init Transitions auflösen?
+
             // Choices auflösen
             if (targetNode is IChoiceNodeSymbol choiceNode) {
                 foreach (var call in choiceNode.Outgoings.SelectMany(e => GetReachableCallsImpl<T>(e, seenEdges))) {
@@ -75,8 +74,7 @@ public static class EdgeExtensions {
             if (edge.TargetReference?.Declaration is not T targetNode) {
                 yield break;
             }
-            // TODO Exit Transitions auflösen?
-            // TODO Init Transitions auflösen?
+
             // Choices auflösen
             if (targetNode is IChoiceNodeSymbol choiceNode) {
                 foreach (var reachableEdge in choiceNode.Outgoings.SelectMany(e => GetReachableEdgesImpl<T>(e, seenEdges))) {

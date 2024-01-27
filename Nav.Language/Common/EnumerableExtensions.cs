@@ -29,6 +29,14 @@ static class EnumerableExtensions {
         return source.Where(t => t != null)!;
     }
 
+    /// <summary>
+    /// Filtert aus einer Sequenz von Elementen alle Null-Objekte, und alle Objekte auf denen der angegebene 
+    /// Selektor Null liefert, heraus.
+    /// </summary>
+    public static IEnumerable<T> WhereNotNull<T, TR>(this IEnumerable<T?>? source, Func<T, TR> selector) {
+        return source.WhereNotNull().Where(t => selector(t) != null);
+    }
+
     public static IEnumerable<T> AsEnumerable<T>(this T value) {
         return Enumerable.Repeat(value, 1);
     }
