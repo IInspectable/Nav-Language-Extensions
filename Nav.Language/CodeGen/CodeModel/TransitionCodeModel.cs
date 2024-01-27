@@ -107,7 +107,6 @@ abstract class TransitionCodeModel: CodeModel {
 
     public abstract string GetCallContextClassName();
 
-    // TODO in CallConectModel
     public ParameterCodeModel? CallContextParameter => EmitCallContext ? new(parameterType: GetCallContextClassName(), parameterName: CodeGenFacts.CallContextParamtername) : null;
     
     static IEnumerable<ParameterCodeModel> GetTaskBegins(IEnumerable<Call> reachableCalls) {

@@ -69,7 +69,7 @@ writeInitTransition(initTransition) ::=<<
 <writeNavInitAnnotation(initTransition.NodeName)>
 public abstract IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>);
 <else>
-<writeCallContextClassDeclaration(initTransition)>
+<writeCallContextClassDeclaration(initTransition)><\\>
 <writeNavInitAnnotation(initTransition.NodeName)>
 public virtual IINIT_TASK <BeginMethodPrefix()>(<writeParameterList(initTransition.Parameter)>) {
     <writeCallContextDeclaration(initTransition)>
@@ -91,7 +91,7 @@ writeExitTransition(exitTransition) ::=<<
 <writeNavExitAnnotation(exitTransition.NodeName)>
 protected abstract INavCommand <ExitMethodPrefix()><exitTransition.NodeNamePascalcase><LogicMethodSuffix()>(<writeParameterList(exitTransition.TaskResult)>);
 <else>
-<writeCallContextClassDeclaration(exitTransition)>
+<writeCallContextClassDeclaration(exitTransition)><\\>
 <writeNavExitAnnotation(exitTransition.NodeName)>
 private INavCommand <ExitMethodPrefix()><exitTransition.NodeNamePascalcase>(<writeParameterList(exitTransition.TaskResult)>) {
     <writeCallContextDeclaration(exitTransition)>
@@ -110,7 +110,7 @@ writeTriggerTransitionCollapsibleList(triggerTransitions) ::=<<
 >>
 
 writeTriggerTransition(triggerTransition) ::=<<
-<writeCallContextClassDeclaration(triggerTransition)>
+<writeCallContextClassDeclaration(triggerTransition)><\\>
 <writeTriggerAnnotation(triggerTransition.TriggerName)>
 public virtual INavCommand <triggerTransition.TriggerName>(<writeParameterList(triggerTransition.ViewParameter)>) {
     <triggerTransition.ViewParameter.ParameterName> = <BeforeTriggerLogicMethodName()>(<writeParameterExpression(triggerTransition.ViewParameter)>);
@@ -167,6 +167,7 @@ protected sealed record <transition.CallContext.ClassName>(<transition.CallConte
         <writeContinuationsCollapsibleList(transition.CallContext.Continuations)>
     }
 }
+
 <endif>
 >>
 
