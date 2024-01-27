@@ -1,0 +1,38 @@
+﻿taskref C 
+{
+    init I1;
+    init I2 [params string message];
+    exit e1;
+    exit e2;
+
+}
+
+task A
+{
+    view Gui;
+    view Gui2;
+    init I1;  
+    init I2;  
+    choice Choice;
+    task C Login; 
+
+    I1              --> Choice;
+
+    Choice          --> Gui  o-^ Login;       
+    Choice          --> Gui2 o-^ Login; 
+
+    I2              --> Gui  --^ Login  if "Foo"; 
+    I2              --> Gui2 --^ Login  if "Foo"; 
+  
+    Gui             --> Gui  --^ Login on OnF12;
+     
+    Login:e1        --> Gui2 o-^ Login;         
+    Login:e2        --> Gui  o-^ Login;
+}
+//==>>[Semantic](21,25,21,28): error Nav1022: Different views are not supported in a concatenation
+//==>>[Semantic](22,25,22,29): error Nav1022: Different views are not supported in a concatenation
+//==>>[Semantic](24,25,24,28): error Nav1022: Different views are not supported in a concatenation
+//==>>[Semantic](25,25,25,29): error Nav1022: Different views are not supported in a concatenation
+//==>>[Semantic](29,25,29,29): error Nav1022: Different views are not supported in a concatenation
+//==>>[Semantic](30,25,30,28): error Nav1022: Different views are not supported in a concatenation
+

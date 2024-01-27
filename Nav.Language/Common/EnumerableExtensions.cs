@@ -1,12 +1,8 @@
-﻿#region Using Directives
+﻿#nullable enable
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-
-using JetBrains.Annotations;
-
-#endregion
+using System.Linq;
 
 namespace Pharmatechnik.Nav.Language; 
 
@@ -25,14 +21,16 @@ static class EnumerableExtensions {
     /// <summary>
     /// Filtert aus einer Sequenz von Elementen alle Null-Objekte heraus.
     /// </summary>
-    [NotNull]
-    [ItemNotNull]
-    public static IEnumerable<T> WhereNotNull<T>([CanBeNull] this IEnumerable<T> source) {
+    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?>? source) {
         if (source == null) {
             return Enumerable.Empty<T>();
         }
 
-        return source.Where(t => t != null);
+        return source.Where(t => t != null)!;
+    }
+
+    public static IEnumerable<T> AsEnumerable<T>(this T value) {
+        return Enumerable.Repeat(value, 1);
     }
 
 }

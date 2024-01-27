@@ -33,7 +33,8 @@ public static class EdgeExtensions {
             if (edge.TargetReference?.Declaration is not T targetNode) {
                 yield break;
             }
-
+            // TODO Exit Transitions auflösen?
+            // TODO Init Transitions auflösen?
             // Choices auflösen
             if (targetNode is IChoiceNodeSymbol choiceNode) {
                 foreach (var call in choiceNode.Outgoings.SelectMany(e => GetReachableCallsImpl<T>(e, seenEdges))) {
@@ -42,6 +43,48 @@ public static class EdgeExtensions {
             } else if (edge.EdgeMode != null) {
                 // Nur Edges mit einem definiertem Edge Mode ergeben einen Call
                 yield return new Call(targetNode, edge);
+            }
+        }
+    }
+
+    public static IEnumerable<IConcatTransition> GetReachableContinuations(this IEdge source) {
+        return source.GetReachableEdges()
+                     .OfType<IConcatableEdge>()
+                     .Select(edge => edge.ConcatTransition)
+                     .WhereNotNull();
+    }
+
+    public static IEnumerable<IEdge> GetReachableEdges(this IEdge source) {
+        return GetReachableEdges<INodeSymbol>(source);
+    }
+
+    public static IEnumerable<IEdge> GetReachableEdges<TTargetNode>(this IEdge source) where TTargetNode : class, INodeSymbol {
+
+        return GetReachableEdgesImpl<TTargetNode>(source, new HashSet<IEdge>()).Distinct();
+
+        static IEnumerable<IEdge> GetReachableEdgesImpl<T>(IEdge edge, ISet<IEdge> seenEdges) where T : class, INodeSymbol {
+
+            if (edge == null) {
+                yield break;
+            }
+
+            if (!seenEdges.Add(edge)) {
+                yield break;
+            }
+
+            if (edge.TargetReference?.Declaration is not T targetNode) {
+                yield break;
+            }
+            // TODO Exit Transitions auflösen?
+            // TODO Init Transitions auflösen?
+            // Choices auflösen
+            if (targetNode is IChoiceNodeSymbol choiceNode) {
+                foreach (var reachableEdge in choiceNode.Outgoings.SelectMany(e => GetReachableEdgesImpl<T>(e, seenEdges))) {
+                    yield return reachableEdge;
+                }
+            } else if (edge.EdgeMode != null) {
+                // Nur Edges mit einem definiertem Edge Mode ergeben einen Call
+                yield return edge;
             }
         }
     }

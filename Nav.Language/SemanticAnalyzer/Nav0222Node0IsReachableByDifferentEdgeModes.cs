@@ -8,6 +8,9 @@ public class Nav0222Node0IsReachableByDifferentEdgeModes: NavAnalyzer {
     public override DiagnosticDescriptor Descriptor => DiagnosticDescriptors.Semantic.Nav0222Node0IsReachableByDifferentEdgeModes;
 
     public override IEnumerable<Diagnostic> Analyze(ITaskDefinitionSymbol taskDefinition, AnalyzerContext context) {
+
+        // TODO Inits und Trigger betrachten
+
         //==============================
         // Node {0} is reachable by different edge modes
         //==============================

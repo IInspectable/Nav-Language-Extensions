@@ -338,6 +338,16 @@ public partial class DiagnosticDescriptors {
         );
 
         /// <summary>
+        /// Different views are not supported in a concatenation
+        /// </summary>
+        public static readonly DiagnosticDescriptor Nav1022DifferentViewsInConcatNotSupported = new(
+            id             : DiagnosticId.Nav1022,
+            messageFormat  : "Different views are not supported in a concatenation",
+            category       : Category,
+            defaultSeverity: DiagnosticSeverity.Error
+        );
+
+        /// <summary>
         /// Trigger not allowed after init
         /// </summary>
         public static readonly DiagnosticDescriptor Nav0200SignalTriggerNotAllowedAfterInit = new(
