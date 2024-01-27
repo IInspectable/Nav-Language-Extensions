@@ -60,7 +60,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #endregion
         protected abstract INavCommandBody BeginLogic();
 
-        protected sealed record BeginCallContext1(ConcatSampleWFSBase wfs) {
+        protected sealed record Init2CallContext(ConcatSampleWFSBase wfs) {
 
             internal Continuation Show(ViewTO to) => new (wfs, to);
 
@@ -87,7 +87,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavInit>Init2</NavInit>
         #endregion
         public virtual IINIT_TASK Begin(string message) {
-            var callContext = new BeginCallContext1(this);
+            var callContext = new Init2CallContext(this);
             var body = BeginLogic(message, callContext);
             switch(body) {
                 case ViewTO viewTO:
@@ -105,7 +105,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         /// <NavInit>Init2</NavInit>
         #endregion
         protected abstract INavCommandBody BeginLogic(string message,
-                                                      BeginCallContext1 callContext);
+                                                      Init2CallContext callContext);
 
         #region Nav Annotations
         /// <NavExit>A</NavExit>

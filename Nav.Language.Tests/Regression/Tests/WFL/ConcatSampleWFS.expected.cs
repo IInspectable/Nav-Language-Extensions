@@ -16,7 +16,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         }
 
         protected override INavCommandBody BeginLogic(string message,
-                                                      BeginCallContext1 callContext) {
+                                                      Init2CallContext callContext) {
             throw new NotImplementedException();
         }
 

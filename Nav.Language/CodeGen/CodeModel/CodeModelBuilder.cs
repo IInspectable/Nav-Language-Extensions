@@ -10,7 +10,7 @@ sealed class CodeModelBuilder {
         return taskDefinition.NodeDeclarations
                              .OfType<IInitNodeSymbol>()
                               // TODO Was ist mit Inits, die keine Outgoings haben, also eigentlich unbenutzt sind?
-                             .Select((initNode, index) => InitTransitionCodeModel.FromInitTransition(containingTask, initNode, containingTask, index));
+                             .Select(initNode => InitTransitionCodeModel.FromInitTransition(containingTask, initNode));
     }
         
     public static IEnumerable<ParameterCodeModel> GetTaskBeginParameter(ITaskDefinitionSymbol taskDefinition) {

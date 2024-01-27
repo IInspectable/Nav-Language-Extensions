@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Immutable;
 
+using Pharmatechnik.Nav.Language.Text;
+
 namespace Pharmatechnik.Nav.Language.CodeGen;
 
 sealed class InitTransitionCodeModel: TransitionCodeModel {
@@ -10,43 +12,39 @@ sealed class InitTransitionCodeModel: TransitionCodeModel {
     InitTransitionCodeModel(TaskCodeInfo containingTask,
                             ImmutableList<ParameterCodeModel> parameter, ImmutableList<Call> reachableCalls,
                             bool generateAbstractMethod,
-                            string nodeName,
-                            int index)
+                            string nodeName)
         : base(containingTask, reachableCalls) {
 
         Parameter              = parameter ?? throw new ArgumentNullException(nameof(parameter));
         GenerateAbstractMethod = generateAbstractMethod;
         NodeName               = nodeName ?? String.Empty;
-        Index                  = index;
 
     }
 
     public bool   GenerateAbstractMethod { get; }
     public string NodeName               { get; }
-    public int    Index                  { get; }
 
-    public override string GetCallContextClassName() => $"{CodeGenFacts.BeginMethodPrefix}{CodeGenFacts.CallContextClassSuffix}" + (Index > 0 ? $"{Index}" : "");
+    public override string GetCallContextClassName() => $"{NodeName.ToPascalcase()}{CodeGenFacts.CallContextClassSuffix}";
 
     public ImmutableList<ParameterCodeModel> Parameter { get; }
 
-    internal static InitTransitionCodeModel FromInitTransition(TaskCodeInfo containingTask, IInitNodeSymbol initNode, TaskCodeInfo taskCodeInfo, int index) {
+    internal static InitTransitionCodeModel FromInitTransition(TaskCodeInfo containingTask, IInitNodeSymbol initNode) {
         if (initNode == null) {
             throw new ArgumentNullException(nameof(initNode));
         }
 
-        if (taskCodeInfo == null) {
-            throw new ArgumentNullException(nameof(taskCodeInfo));
+        if (containingTask == null) {
+            throw new ArgumentNullException(nameof(containingTask));
         }
 
         var parameter = ParameterCodeModel.FromParameterSyntaxes(initNode.Syntax.CodeParamsDeclaration?.ParameterList);
 
         return new InitTransitionCodeModel(
-            containingTask        :containingTask,
+            containingTask        : containingTask,
             parameter             : parameter.ToImmutableList(),
             reachableCalls        : initNode.GetReachableCalls().ToImmutableList(),
             generateAbstractMethod: initNode.CodeGenerateAbstractMethod(),
-            nodeName              : initNode.Name,
-            index                 : index);
+            nodeName              : initNode.Name);
     }
 
 }
