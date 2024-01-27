@@ -21,6 +21,6 @@ public record GenerationOptions {
     public string IwflRootDirectory    { get; init; }
     public string WflRootDirectory     { get; init; }
 
-    public Encoding Encoding => Encoding.UTF8; // Ich sehe keinen Grund, ein anderes Encoding als UTF8 zu verwenden.
+    public Encoding Encoding => new UTF8Encoding(encoderShouldEmitUTF8Identifier: true); // Ich sehe keinen Grund, ein anderes Encoding als UTF8 zu verwenden.
 
 }
