@@ -1,4 +1,4 @@
-#region Using Directives
+ï»¿#region Using Directives
 
 using System;
 using System.Linq;
@@ -111,7 +111,7 @@ public static class LocationFinder {
                           .FirstOrDefault(t => t.Name == triggerAnnotation.TriggerName);
 
         if (trigger == null) {
-            // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
+            // TODO Evtl. sollte es Locations mit Fehlern geben? Dann wÃ¼rden wir in diesem Fall wenigstens zum task selbst navigieren,
             //      nachdem wir eine Fehlermeldung angezeigt haben.
             throw new LocationNotFoundException(String.Format(MsgUnableToFindSignalTrigger0InTask1, triggerAnnotation.TriggerName, task.Name));
         }
@@ -126,7 +126,7 @@ public static class LocationFinder {
                            .FirstOrDefault(n => n.Name == initAnnotation.InitName);
 
         if (initNode == null) {
-            // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
+            // TODO Evtl. sollte es Locations mit Fehlern geben? Dann wÃ¼rden wir in diesem Fall wenigstens zum task selbst navigieren,
             //      nachdem wir eine Fehlermeldung angezeigt haben.
             throw new LocationNotFoundException(String.Format(MsgUnableToFindInit0InTask1, initAnnotation.InitName, task.Name));
         }
@@ -143,7 +143,7 @@ public static class LocationFinder {
                                   .ToList();
 
         if (!exitTransitions.Any()) {
-            // TODO Evtl. sollte es Locations mit Fehlern geben? Dann würden wir in diesem Fall wenigstens zum task selbst navigieren,
+            // TODO Evtl. sollte es Locations mit Fehlern geben? Dann wÃ¼rden wir in diesem Fall wenigstens zum task selbst navigieren,
             //      nachdem wir eine Fehlermeldung angezeigt haben.
             throw new LocationNotFoundException(String.Format(MsgUnableToFindTheExitTransitionsInTask0, exitAnnotation.ExitTaskName));
         }
@@ -308,7 +308,7 @@ public static class LocationFinder {
             }
 
             // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
-            // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
+            // anderen Namespace liegen kÃ¶nnen. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
             var derived = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
 
             var derivedSyntaxes = derived.SelectMany(d => d.DeclaringSyntaxReferences)
@@ -380,7 +380,7 @@ public static class LocationFinder {
         }
 
         // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
-        // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
+        // anderen Namespace liegen kÃ¶nnen. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
         var derived      = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
         var memberSymbol = derived.SelectMany(d => d.GetMembers(codegenInfo.TriggerLogicMethodName)).FirstOrDefault();
 
@@ -460,7 +460,7 @@ public static class LocationFinder {
             }
 
             // Wir kennen de facto nur den Basisklassen Namespace + Namen, da die abgeleiteten Klassen theoretisch in einem
-            // anderen Namespace liegen können. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
+            // anderen Namespace liegen kÃ¶nnen. Deshalb steigen wir von der Basisklasse zu den abgeleiteten Klassen ab.
             var derived        = await SymbolFinder.FindDerivedClassesAsync(wfsBaseSymbol, project.Solution, ToImmutableSet(project), cancellationToken);
             var memberSymbol   = derived.SelectMany(d => d.GetMembers(codegenInfo.AfterLogicMethodName)).FirstOrDefault();
             var memberLocation = memberSymbol?.Locations.FirstOrDefault();
@@ -488,13 +488,14 @@ public static class LocationFinder {
             return (symbol, project);
         }
 
-        // Alternative Suche für Shared/Client Style
+        // Alternative Suche fÃ¼r Shared/Client Style
         const string sharedSuffix = ".Shared";
-        if (project.Name.EndsWith(sharedSuffix)) {
+        if (project.AssemblyName.EndsWith(sharedSuffix)) {
 
-            var alternativeProjectName = project.Name.Substring(0, project.Name.Length - sharedSuffix.Length);
+            var newLength               = project.AssemblyName.Length - sharedSuffix.Length;
+            var alternativeAssemblyName = project.AssemblyName.Substring(0, newLength);
 
-            foreach (var proj in project.Solution.Projects.Where(p => p.Name == alternativeProjectName)) {
+            foreach (var proj in project.Solution.Projects.Where(p => p.AssemblyName == alternativeAssemblyName)) {
 
                 compilation = await proj.GetCompilationAsync(cancellationToken).ConfigureAwait(false);
                 symbol      = compilation?.GetTypeByMetadataName(fullyQualifiedMetadataName);
