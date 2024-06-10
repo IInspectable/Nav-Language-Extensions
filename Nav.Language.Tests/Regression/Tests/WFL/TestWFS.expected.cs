@@ -20,23 +20,23 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             throw new NotImplementedException();
         }
 
-        protected override INavCommandBody AfterMsgExitLogic(MessageboxOkResult result) {
+        protected override INavCommandBody AfterMsgExitLogic(MessageboxOkResult r) {
              throw new NotImplementedException();
         }
 
-        protected override INavCommandBody AfterNoResultsLogic(MessageboxOkResult result) {
+        protected override INavCommandBody AfterNoResultsLogic(MessageboxOkResult r) {
              throw new NotImplementedException();
         }
 
-        protected override INavCommandBody AfterMsgNonModalLogic(MessageboxOkResult result) {
+        protected override INavCommandBody AfterMsgNonModalLogic(MessageboxOkResult r) {
              throw new NotImplementedException();
         }
 
-        protected override INavCommandBody AfterMsgContinueLogic(MessageboxOkResult result) {
+        protected override INavCommandBody AfterMsgContinueLogic(MessageboxOkResult r) {
              throw new NotImplementedException();
         }
 
-        protected override INavCommand AfterMsgAbstract(MessageboxOkResult result) {
+        protected override INavCommand AfterMsgAbstract(MessageboxOkResult r) {
             throw new NotImplementedException();
         }
 

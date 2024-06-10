@@ -39,12 +39,15 @@ class ParameterCodeModel : CodeModel {
 
     public static ParameterCodeModel TaskResult(ITaskDeclarationSymbol? taskDeclaration) {
         var codeParameter = taskDeclaration?.CodeTaskResult;
+       
         if (codeParameter == null) {
             // TODO New Error in Semantic Model: No result type defined with [result] - cannot use this task with exit edges.
             // Alternativ: #error pragma rausschreiben, und warning/Info in nav-file.
             return new ParameterCodeModel("bool", "result");
         }
-        return new ParameterCodeModel(codeParameter.ParameterType, "result");
+
+        var parameterName = codeParameter.ParameterName.NullIfEmpty() ?? "result";
+        return new ParameterCodeModel(codeParameter.ParameterType, parameterName);
     }        
 
     public static IEnumerable<ParameterCodeModel> FromParameterSyntaxes(IEnumerable<ParameterSyntax>? parameters) {

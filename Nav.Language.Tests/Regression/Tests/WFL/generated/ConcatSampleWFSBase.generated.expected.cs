@@ -52,8 +52,8 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             switch(body) {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), body));
             }
@@ -104,16 +104,16 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                     return GotoGUI(viewTO);
                 case ConcatCommand concatCommand when concatCommand.TO is ViewTO to:
                     return GotoGUI(to).Concat(ContinueWith(concatCommand.Continuation));
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), body));
             }
 
             ITASK_BOUNDARY ContinueWith(INavCommandBody continuationBody) {
                 switch(continuationBody) {
-                    case TaskCall taskCall when taskCall.NodeName == ANodeName:
-                        return OpenModalTask<FooResult>(taskCall.BeginWrapper, AfterA);
+                    case TaskCall taskCall__ when taskCall__.NodeName == ANodeName:
+                        return OpenModalTask<FooResult>(taskCall__.BeginWrapper, AfterA);
                     default:
                         throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), continuationBody));
                 }
@@ -129,13 +129,13 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>A</NavExit>
         #endregion
-        private INavCommand AfterA(FooResult result) {
-            var body = AfterALogic(result);
+        private INavCommand AfterA(FooResult r1) {
+            var body = AfterALogic(r1);
             switch(body) {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterALogic), body));
             }
@@ -144,7 +144,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>A</NavExit>
         #endregion
-        protected abstract INavCommandBody AfterALogic(FooResult result);
+        protected abstract INavCommandBody AfterALogic(FooResult r1);
 
         protected sealed record AfterBCallContext(ConcatSampleWFSBase wfs) {
 
@@ -178,22 +178,22 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>B</NavExit>
         #endregion
-        private INavCommand AfterB(FooResult result) {
+        private INavCommand AfterB(FooResult r1) {
             var callContext = new AfterBCallContext(this);
-            var body = AfterBLogic(result, callContext);
+            var body = AfterBLogic(r1, callContext);
             switch(body) {
                 case ConcatCommand concatCommand when concatCommand.TO is ViewTO to:
                     return GotoGUI(to).Concat(ContinueWith(concatCommand.Continuation));
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterBLogic), body));
             }
 
             ITASK_BOUNDARY ContinueWith(INavCommandBody continuationBody) {
                 switch(continuationBody) {
-                    case TaskCall taskCall when taskCall.NodeName == CNodeName:
-                        return OpenModalTask<FooResult>(taskCall.BeginWrapper, AfterC);
+                    case TaskCall taskCall__ when taskCall__.NodeName == CNodeName:
+                        return OpenModalTask<FooResult>(taskCall__.BeginWrapper, AfterC);
                     default:
                         throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterBLogic), continuationBody));
                 }
@@ -203,19 +203,19 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>B</NavExit>
         #endregion
-        protected abstract INavCommandBody AfterBLogic(FooResult result,
+        protected abstract INavCommandBody AfterBLogic(FooResult r1,
                                                        AfterBCallContext callContext);
 
         #region Nav Annotations
         /// <NavExit>C</NavExit>
         #endregion
-        private INavCommand AfterC(FooResult result) {
-            var body = AfterCLogic(result);
+        private INavCommand AfterC(FooResult r1) {
+            var body = AfterCLogic(r1);
             switch(body) {
-                case TASK_RESULT taskResult:
-                    return taskResult;
-                case CANCEL cancel:
-                    return cancel;
+                case TASK_RESULT taskResult__:
+                    return taskResult__;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterCLogic), body));
             }
@@ -224,7 +224,7 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>C</NavExit>
         #endregion
-        protected abstract INavCommandBody AfterCLogic(FooResult result);
+        protected abstract INavCommandBody AfterCLogic(FooResult r1);
 
         protected sealed record OnFooCallContext(ConcatSampleWFSBase wfs) {
 
@@ -267,16 +267,16 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                     return GotoGUI(viewTO);
                 case ConcatCommand concatCommand when concatCommand.TO is ViewTO to:
                     return GotoGUI(to).Concat(ContinueWith(concatCommand.Continuation));
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnFooLogic), body));
             }
 
             ITASK_BOUNDARY ContinueWith(INavCommandBody continuationBody) {
                 switch(continuationBody) {
-                    case TaskCall taskCall when taskCall.NodeName == BNodeName:
-                        return OpenModalTask<FooResult>(taskCall.BeginWrapper, AfterB);
+                    case TaskCall taskCall__ when taskCall__.NodeName == BNodeName:
+                        return OpenModalTask<FooResult>(taskCall__.BeginWrapper, AfterB);
                     default:
                         throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnFooLogic), continuationBody));
                 }

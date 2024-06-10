@@ -35,10 +35,10 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         public virtual IINIT_TASK Begin() {
             var body = BeginLogic();
             switch(body) {
-                case TASK_RESULT taskResult:
-                    return taskResult;
-                case CANCEL cancel:
-                    return cancel;
+                case TASK_RESULT taskResult__:
+                    return taskResult__;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), body));
             }

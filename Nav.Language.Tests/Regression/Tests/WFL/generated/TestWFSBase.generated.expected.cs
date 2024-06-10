@@ -51,12 +51,12 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         public virtual IINIT_TASK Begin(TestInitParams p1) {
             var body = BeginLogic(p1, _messageboxOk);
             switch(body) {
-                case TaskCall taskCall when taskCall.NodeName == NoResultsNodeName:
-                    return GotoTask<MessageboxOkResult>(taskCall.BeginWrapper, AfterNoResults);
+                case TaskCall taskCall__ when taskCall__.NodeName == NoResultsNodeName:
+                    return GotoTask<MessageboxOkResult>(taskCall__.BeginWrapper, AfterNoResults);
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), body));
             }
@@ -76,15 +76,15 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>MsgExit</NavExit>
         #endregion
-        private INavCommand AfterMsgExit(MessageboxOkResult result) {
-            var body = AfterMsgExitLogic(result);
+        private INavCommand AfterMsgExit(MessageboxOkResult r) {
+            var body = AfterMsgExitLogic(r);
             switch(body) {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
-                case TASK_RESULT taskResult:
-                    return taskResult;
-                case CANCEL cancel:
-                    return cancel;
+                case TASK_RESULT taskResult__:
+                    return taskResult__;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterMsgExitLogic), body));
             }
@@ -93,20 +93,20 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>MsgExit</NavExit>
         #endregion
-        protected abstract INavCommandBody AfterMsgExitLogic(MessageboxOkResult result);
+        protected abstract INavCommandBody AfterMsgExitLogic(MessageboxOkResult r);
 
         #region Nav Annotations
         /// <NavExit>NoResults</NavExit>
         #endregion
-        private INavCommand AfterNoResults(MessageboxOkResult result) {
-            var body = AfterNoResultsLogic(result);
+        private INavCommand AfterNoResults(MessageboxOkResult r) {
+            var body = AfterNoResultsLogic(r);
             switch(body) {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
-                case TASK_RESULT taskResult:
-                    return taskResult;
-                case CANCEL cancel:
-                    return cancel;
+                case TASK_RESULT taskResult__:
+                    return taskResult__;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterNoResultsLogic), body));
             }
@@ -115,18 +115,18 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>NoResults</NavExit>
         #endregion
-        protected abstract INavCommandBody AfterNoResultsLogic(MessageboxOkResult result);
+        protected abstract INavCommandBody AfterNoResultsLogic(MessageboxOkResult r);
 
         #region Nav Annotations
         /// <NavExit>MsgNonModal</NavExit>
         #endregion
-        private INavCommand AfterMsgNonModal(MessageboxOkResult result) {
-            var body = AfterMsgNonModalLogic(result);
+        private INavCommand AfterMsgNonModal(MessageboxOkResult r) {
+            var body = AfterMsgNonModalLogic(r);
             switch(body) {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterMsgNonModalLogic), body));
             }
@@ -135,18 +135,18 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>MsgNonModal</NavExit>
         #endregion
-        protected abstract INavCommandBody AfterMsgNonModalLogic(MessageboxOkResult result);
+        protected abstract INavCommandBody AfterMsgNonModalLogic(MessageboxOkResult r);
 
         #region Nav Annotations
         /// <NavExit>MsgContinue</NavExit>
         #endregion
-        private INavCommand AfterMsgContinue(MessageboxOkResult result) {
-            var body = AfterMsgContinueLogic(result);
+        private INavCommand AfterMsgContinue(MessageboxOkResult r) {
+            var body = AfterMsgContinueLogic(r);
             switch(body) {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterMsgContinueLogic), body));
             }
@@ -155,12 +155,12 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
         #region Nav Annotations
         /// <NavExit>MsgContinue</NavExit>
         #endregion
-        protected abstract INavCommandBody AfterMsgContinueLogic(MessageboxOkResult result);
+        protected abstract INavCommandBody AfterMsgContinueLogic(MessageboxOkResult r);
 
         #region Nav Annotations
         /// <NavExit>MsgAbstract</NavExit>
         #endregion
-        protected abstract INavCommand AfterMsgAbstractLogic(MessageboxOkResult result);
+        protected abstract INavCommand AfterMsgAbstractLogic(MessageboxOkResult r);
 
         #region Nav Annotations
         /// <NavExit>DoSomething</NavExit>
@@ -170,8 +170,8 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             switch(body) {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterDoSomethingLogic), body));
             }
@@ -191,8 +191,8 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             switch(body) {
                 case END _: 
                     return EndNonModal();
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnEndLogic), body));
             }
@@ -210,10 +210,10 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             to = BeforeTriggerLogic(to);
             var body = OnContinueLogic(to, _messageboxConinue);    
             switch(body) {
-                case TaskCall taskCall when taskCall.NodeName == MsgContinueNodeName:
-                    return OpenModalTask<MessageboxOkResult>(taskCall.BeginWrapper, AfterMsgContinue);
-                case CANCEL cancel:
-                    return cancel;
+                case TaskCall taskCall__ when taskCall__.NodeName == MsgContinueNodeName:
+                    return OpenModalTask<MessageboxOkResult>(taskCall__.BeginWrapper, AfterMsgContinue);
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnContinueLogic), body));
             }
@@ -232,10 +232,10 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             to = BeforeTriggerLogic(to);
             var body = OnExitClickLogic(to, _messageboxOk);    
             switch(body) {
-                case TaskCall taskCall when taskCall.NodeName == MsgExitNodeName:
-                    return OpenModalTask<MessageboxOkResult>(taskCall.BeginWrapper, AfterMsgExit);
-                case CANCEL cancel:
-                    return cancel;
+                case TaskCall taskCall__ when taskCall__.NodeName == MsgExitNodeName:
+                    return OpenModalTask<MessageboxOkResult>(taskCall__.BeginWrapper, AfterMsgExit);
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnExitClickLogic), body));
             }
@@ -254,10 +254,10 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             to = BeforeTriggerLogic(to);
             var body = OnDoSomethingLogic(to);    
             switch(body) {
-                case TaskCall taskCall when taskCall.NodeName == DoSomethingNodeName:
-                    return OpenModalTask<bool>(taskCall.BeginWrapper, AfterDoSomething);
-                case CANCEL cancel:
-                    return cancel;
+                case TaskCall taskCall__ when taskCall__.NodeName == DoSomethingNodeName:
+                    return OpenModalTask<bool>(taskCall__.BeginWrapper, AfterDoSomething);
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnDoSomethingLogic), body));
             }
@@ -275,10 +275,10 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             to = BeforeTriggerLogic(to);
             var body = OnMsgAbstractLogic(to, _messageboxConinue);    
             switch(body) {
-                case TaskCall taskCall when taskCall.NodeName == MsgAbstractNodeName:
-                    return OpenModalTask<MessageboxOkResult>(taskCall.BeginWrapper, AfterMsgAbstract);
-                case CANCEL cancel:
-                    return cancel;
+                case TaskCall taskCall__ when taskCall__.NodeName == MsgAbstractNodeName:
+                    return OpenModalTask<MessageboxOkResult>(taskCall__.BeginWrapper, AfterMsgAbstract);
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnMsgAbstractLogic), body));
             }
@@ -297,10 +297,10 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             to = BeforeTriggerLogic(to);
             var body = OnMsgNonModalLogic(to, _messageboxConinue);    
             switch(body) {
-                case TaskCall taskCall when taskCall.NodeName == MsgNonModalNodeName:
-                    return StartNonModalTask(taskCall.BeginWrapper, AfterMsgNonModal);
-                case CANCEL cancel:
-                    return cancel;
+                case TaskCall taskCall__ when taskCall__.NodeName == MsgNonModalNodeName:
+                    return StartNonModalTask(taskCall__.BeginWrapper, AfterMsgNonModal);
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnMsgNonModalLogic), body));
             }
@@ -321,8 +321,8 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             switch(body) {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnReloadClickLogic), body));
             }
@@ -342,8 +342,8 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             switch(body) {
                 case ViewTO viewTO:
                     return OpenModalGUI(viewTO);
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnShowMeModalLogic), body));
             }
@@ -363,8 +363,8 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             switch(body) {
                 case ViewTO viewTO:
                     return StartNonModalGUI(viewTO);
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnShowMeNonModalLogic), body));
             }
@@ -382,11 +382,11 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             to = BeforeTriggerLogic(to);
             var body = OnNonNotImplementedLogic(to);    
             switch(body) {
-                case TaskCall taskCall when taskCall.NodeName == FooNodeName:
+                case TaskCall taskCall__ when taskCall__.NodeName == FooNodeName:
                     throw new NotImplementedException("Task Foo is specified as [notimplemented]");
 
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnNonNotImplementedLogic), body));
             }
@@ -404,11 +404,11 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             to = BeforeTriggerLogic(to);
             var body = OnGoToNotImplementedLogic(to);    
             switch(body) {
-                case TaskCall taskCall when taskCall.NodeName == FooNodeName:
+                case TaskCall taskCall__ when taskCall__.NodeName == FooNodeName:
                     throw new NotImplementedException("Task Foo is specified as [notimplemented]");
 
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnGoToNotImplementedLogic), body));
             }
@@ -426,11 +426,11 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             to = BeforeTriggerLogic(to);
             var body = OnModalNotImplementedLogic(to);    
             switch(body) {
-                case TaskCall taskCall when taskCall.NodeName == FooNodeName:
+                case TaskCall taskCall__ when taskCall__.NodeName == FooNodeName:
                     throw new NotImplementedException("Task Foo is specified as [notimplemented]");
 
-                case CANCEL cancel:
-                    return cancel;
+                case CANCEL cancel__:
+                    return cancel__;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnModalNotImplementedLogic), body));
             }

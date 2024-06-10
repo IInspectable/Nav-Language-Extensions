@@ -232,13 +232,13 @@ writeCall(call) ::=<<
 >>
 
 cancel(call) ::=<<
-case CANCEL cancel:
-    return cancel;
+case CANCEL cancel__:
+    return cancel__;
 >>
 
 goToExit(call) ::=<<
-case TASK_RESULT taskResult:
-    return taskResult;
+case TASK_RESULT taskResult__:
+    return taskResult__;
 >>
 
 goToEnd(call) ::=<<
@@ -247,29 +247,29 @@ case END _:
 >>
 
 openModalTask(taskCall) ::=<<
-case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalcaseName>NodeName:
+case TaskCall taskCall__ when taskCall__.NodeName == <taskCall.PascalcaseName>NodeName:
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
-    return OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalcaseName>);<\\>
+    return OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(taskCall__.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalcaseName>);<\\>
     <endif>
 >>
 
 startNonModalTask(taskCall) ::=<<
-case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalcaseName>NodeName:
+case TaskCall taskCall__ when taskCall__.NodeName == <taskCall.PascalcaseName>NodeName:
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
-    return StartNonModalTask(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalcaseName>);<\\>
+    return StartNonModalTask(taskCall__.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalcaseName>);<\\>
     <endif>
 >>
 
 gotoTask(taskCall) ::=<<
-case TaskCall taskCall when taskCall.NodeName == <taskCall.PascalcaseName>NodeName:
+case TaskCall taskCall__ when taskCall__.NodeName == <taskCall.PascalcaseName>NodeName:
     <if(taskCall.NotImplemented)>
     throw new NotImplementedException("Task <taskCall.Name> is specified as [notimplemented]");
     <else>
-    return GotoTask\<<taskCall.TaskResult.ParameterType>\>(taskCall.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalcaseName>);<\\>
+    return GotoTask\<<taskCall.TaskResult.ParameterType>\>(taskCall__.BeginWrapper, <ExitMethodPrefix()><taskCall.PascalcaseName>);<\\>
     <endif>
 >>
 
