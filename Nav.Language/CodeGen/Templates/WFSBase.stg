@@ -10,7 +10,7 @@ namespace <model.WflNamespace> {
     <writeTaskAnnotation(model.RelativeSyntaxFileName, model.Task.TaskName)>
     public abstract partial class <model.WfsBaseTypeName>: <model.WfsBaseBaseTypeName> {
         
-        <writeTaskNodeNameFieldCollapsibleList(model.BeginWrappers)><\\>
+        <writeTaskNodeNameFieldCollapsibleList(model.AllBeginWrappers)><\\>
 
         <writeFieldDeclarationCollapsibleList(model.TaskBegins)><\\>
 
@@ -185,21 +185,22 @@ writeContinuationBeginMethodList(callModel, taskBegins) ::=<<
 >>
 
 writeContinuationBeginMethod(taskBegin, callModel) ::=<<
+<writeInitCallAnnotation(taskBegin.TaskBeginParameter.ParameterType)>
 public INavCommandBody <BeginMethodPrefix()><taskBegin.TaskNodeNamePascalcase>(<writeParameterList([taskBegin.TaskParameter])>) {
     return new ConcatCommand {
         TO           = to,
-        Continuation = <({writeContinuation<callModel.TemplateName>})(taskBegin, callModel)>,
+        Continuation = <writeContinuationTaskCall(taskBegin, callModel)>,
     };
 }
 >>
 
-writeContinuationgotoTask(taskBegin, taskCall) ::=<<
-wfs.GotoTask\<<taskCall.TaskResult.ParameterType>\>(() => wfs.<taskBegin.TaskBeginField.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(taskBegin.TaskParameter)>), wfs.<ExitMethodPrefix()><taskCall.PascalcaseName>)
->>
-
-writeContinuationopenModalTask(taskBegin, taskCall) ::=<<
-wfs.OpenModalTask\<<taskCall.TaskResult.ParameterType>\>(() => wfs.<taskBegin.TaskBeginField.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(taskBegin.TaskParameter)>), wfs.<ExitMethodPrefix()><taskCall.PascalcaseName>)
->>
+writeContinuationTaskCall(taskBegin, taskCall) ::=<%
+    <if(taskBegin.NotImplemented)>
+    new TaskCall(<taskBegin.TaskNodeNamePascalcase>NodeName, null);
+    <else>
+    new TaskCall(<taskBegin.TaskNodeNamePascalcase>NodeName, () => wfs.<taskBegin.TaskBeginField.ParameterName>.<BeginMethodPrefix()>(<writeParameterExpressionsInline(taskBegin.TaskParameter)>))
+    <endif>
+%>
 
 writeCallContextDeclaration(transition) ::=<<
 <if(transition.EmitCallContext)>
@@ -211,7 +212,19 @@ switch(body) {
     <transition.ReachableCalls:writeCall(); separator="\r\n">
     default:
         throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(<logicMethodName>), body));
-}
+}<writeContinuationCallBlock(transition, logicMethodName)>
+>>
+
+writeContinuationCallBlock(transition, logicMethodName) ::=<<
+<if(transition.ReachableContinuationCalls)>
+
+ITASK_BOUNDARY ContinueWith(INavCommandBody continuationBody) {
+    switch(continuationBody) {
+        <transition.ReachableContinuationCalls:writeCall(); separator="\r\n">
+        default:
+            throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(<logicMethodName>), continuationBody));
+    }
+}<endif>
 >>
 
 writeCall(call) ::=<<
@@ -277,15 +290,15 @@ case <call.PascalcaseName><ToClassNameSuffix()> <call.CamelcaseName><ToClassName
 
 openModalGUIConcat(call) ::=<<
 case ConcatCommand concatCommand when concatCommand.TO is <call.PascalcaseName><ToClassNameSuffix()> to:
-    return OpenModalGUI(to).Concat(concatCommand.Continuation);
+    return OpenModalGUI(to).Concat(ContinueWith(concatCommand.Continuation));
 >>
 
 startNonModalGUIConcat(call) ::=<<
 case ConcatCommand concatCommand when concatCommand.TO is <call.PascalcaseName><ToClassNameSuffix()> to:
-    return StartNonModalGUI(to).Concat(concatCommand.Continuation);
+    return StartNonModalGUI(to).Concat(ContinueWith(concatCommand.Continuation));
 >>
 
 gotoGUIConcat(call) ::=<<
 case ConcatCommand concatCommand when concatCommand.TO is <call.PascalcaseName><ToClassNameSuffix()> to:
-    return GotoGUI(to).Concat(concatCommand.Continuation);
+    return GotoGUI(to).Concat(ContinueWith(concatCommand.Continuation));
 >>

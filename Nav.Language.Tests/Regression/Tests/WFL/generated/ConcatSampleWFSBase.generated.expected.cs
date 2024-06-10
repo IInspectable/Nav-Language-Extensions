@@ -24,6 +24,10 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
     #endregion
     public abstract partial class ConcatSampleWFSBase: StandardWFS {
 
+        const string ANodeName = "A";
+        const string BNodeName = "B";
+        const string CNodeName = "C";
+
         readonly NS.A.WFL.IBeginAWFS _a;
         readonly NS.B.WFL.IBeginBWFS _b;
         readonly NS.C.WFL.IBeginCWFS _c;
@@ -66,17 +70,23 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
 
             internal sealed record Continuation(ConcatSampleWFSBase wfs, ViewTO to) {
 
+                #region Nav Annotations
+                /// <NavInitCall>NS.A.WFL.IBeginAWFS</NavInitCall>
+                #endregion
                 public INavCommandBody BeginA() {
                     return new ConcatCommand {
                         TO           = to,
-                        Continuation = wfs.OpenModalTask<FooResult>(() => wfs._a.Begin(), wfs.AfterA),
+                        Continuation = new TaskCall(ANodeName, () => wfs._a.Begin()),
                     };
                 }
 
+                #region Nav Annotations
+                /// <NavInitCall>NS.A.WFL.IBeginAWFS</NavInitCall>
+                #endregion
                 public INavCommandBody BeginA(string a1) {
                     return new ConcatCommand {
                         TO           = to,
-                        Continuation = wfs.OpenModalTask<FooResult>(() => wfs._a.Begin(a1), wfs.AfterA),
+                        Continuation = new TaskCall(ANodeName, () => wfs._a.Begin(a1)),
                     };
                 }
 
@@ -93,11 +103,20 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
                 case ConcatCommand concatCommand when concatCommand.TO is ViewTO to:
-                    return GotoGUI(to).Concat(concatCommand.Continuation);
+                    return GotoGUI(to).Concat(ContinueWith(concatCommand.Continuation));
                 case CANCEL cancel:
                     return cancel;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), body));
+            }
+
+            ITASK_BOUNDARY ContinueWith(INavCommandBody continuationBody) {
+                switch(continuationBody) {
+                    case TaskCall taskCall when taskCall.NodeName == ANodeName:
+                        return OpenModalTask<FooResult>(taskCall.BeginWrapper, AfterA);
+                    default:
+                        throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(BeginLogic), continuationBody));
+                }
             }
         }
 
@@ -133,17 +152,23 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
 
             internal sealed record Continuation(ConcatSampleWFSBase wfs, ViewTO to) {
 
+                #region Nav Annotations
+                /// <NavInitCall>NS.C.WFL.IBeginCWFS</NavInitCall>
+                #endregion
                 public INavCommandBody BeginC() {
                     return new ConcatCommand {
                         TO           = to,
-                        Continuation = wfs.OpenModalTask<FooResult>(() => wfs._c.Begin(), wfs.AfterC),
+                        Continuation = new TaskCall(CNodeName, () => wfs._c.Begin()),
                     };
                 }
 
+                #region Nav Annotations
+                /// <NavInitCall>NS.C.WFL.IBeginCWFS</NavInitCall>
+                #endregion
                 public INavCommandBody BeginC(string c1) {
                     return new ConcatCommand {
                         TO           = to,
-                        Continuation = wfs.OpenModalTask<FooResult>(() => wfs._c.Begin(c1), wfs.AfterC),
+                        Continuation = new TaskCall(CNodeName, () => wfs._c.Begin(c1)),
                     };
                 }
 
@@ -158,11 +183,20 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
             var body = AfterBLogic(result, callContext);
             switch(body) {
                 case ConcatCommand concatCommand when concatCommand.TO is ViewTO to:
-                    return GotoGUI(to).Concat(concatCommand.Continuation);
+                    return GotoGUI(to).Concat(ContinueWith(concatCommand.Continuation));
                 case CANCEL cancel:
                     return cancel;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterBLogic), body));
+            }
+
+            ITASK_BOUNDARY ContinueWith(INavCommandBody continuationBody) {
+                switch(continuationBody) {
+                    case TaskCall taskCall when taskCall.NodeName == CNodeName:
+                        return OpenModalTask<FooResult>(taskCall.BeginWrapper, AfterC);
+                    default:
+                        throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(AfterBLogic), continuationBody));
+                }
             }
         }
 
@@ -198,17 +232,23 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
 
             internal sealed record Continuation(ConcatSampleWFSBase wfs, ViewTO to) {
 
+                #region Nav Annotations
+                /// <NavInitCall>NS.B.WFL.IBeginBWFS</NavInitCall>
+                #endregion
                 public INavCommandBody BeginB() {
                     return new ConcatCommand {
                         TO           = to,
-                        Continuation = wfs.OpenModalTask<FooResult>(() => wfs._b.Begin(), wfs.AfterB),
+                        Continuation = new TaskCall(BNodeName, () => wfs._b.Begin()),
                     };
                 }
 
+                #region Nav Annotations
+                /// <NavInitCall>NS.B.WFL.IBeginBWFS</NavInitCall>
+                #endregion
                 public INavCommandBody BeginB(string b1) {
                     return new ConcatCommand {
                         TO           = to,
-                        Continuation = wfs.OpenModalTask<FooResult>(() => wfs._b.Begin(b1), wfs.AfterB),
+                        Continuation = new TaskCall(BNodeName, () => wfs._b.Begin(b1)),
                     };
                 }
 
@@ -226,11 +266,20 @@ namespace Nav.Language.Tests.Regression.Test1.WFL {
                 case ViewTO viewTO:
                     return GotoGUI(viewTO);
                 case ConcatCommand concatCommand when concatCommand.TO is ViewTO to:
-                    return GotoGUI(to).Concat(concatCommand.Continuation);
+                    return GotoGUI(to).Concat(ContinueWith(concatCommand.Continuation));
                 case CANCEL cancel:
                     return cancel;
                 default:
                     throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnFooLogic), body));
+            }
+
+            ITASK_BOUNDARY ContinueWith(INavCommandBody continuationBody) {
+                switch(continuationBody) {
+                    case TaskCall taskCall when taskCall.NodeName == BNodeName:
+                        return OpenModalTask<FooResult>(taskCall.BeginWrapper, AfterB);
+                    default:
+                        throw new InvalidOperationException(NavCommandBody.ComposeUnexpectedTransitionMessage(nameof(OnFooLogic), continuationBody));
+                }
             }
         }
 

@@ -31,6 +31,10 @@ sealed class CodeModelBuilder {
         return GetDirectReachableTaskNodes(taskDefinition).Select(tns => BeginWrapperCodeModel.FromTaskNode(containingTask, tns));
     }
 
+    public static IEnumerable<BeginWrapperCodeModel> GetAllBeginWrappers(TaskCodeInfo containingTask, ITaskDefinitionSymbol taskDefinition) {
+        return GetReachableTaskNodes(taskDefinition).Select(tns => BeginWrapperCodeModel.FromTaskNode(containingTask, tns));
+    }
+
     public static IEnumerable<ExitTransitionCodeModel> GetExitTransitions(TaskCodeInfo containingTask, ITaskDefinitionSymbol taskDefinition) {
         return GetReachableTaskNodes(taskDefinition)
               .Where(taskNode => !taskNode.CodeNotImplemented())

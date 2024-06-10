@@ -21,7 +21,8 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
                      ImmutableList<InitTransitionCodeModel> initTransitions,
                      ImmutableList<ExitTransitionCodeModel> exitTransitions,
                      ImmutableList<TriggerTransitionCodeModel> triggerTransitions,
-                     ImmutableList<BeginWrapperCodeModel> beginWrappers)
+                     ImmutableList<BeginWrapperCodeModel> beginWrappers,
+                     ImmutableList<BeginWrapperCodeModel> allBeginWrappers)
         : base(taskCodeInfo, relativeSyntaxFileName, filePath) {
 
         UsingNamespaces    = usingNamespaces    ?? throw new ArgumentNullException(nameof(usingNamespaces));
@@ -32,6 +33,7 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
         ExitTransitions    = exitTransitions    ?? throw new ArgumentNullException(nameof(exitTransitions));
         TriggerTransitions = triggerTransitions ?? throw new ArgumentNullException(nameof(triggerTransitions));
         BeginWrappers      = beginWrappers      ?? throw new ArgumentNullException(nameof(beginWrappers));
+        AllBeginWrappers   = allBeginWrappers   ?? throw new ArgumentNullException(nameof(allBeginWrappers));
 
         ViewParameters = TriggerTransitions.DistinctBy(ts => ts.ViewParameter.ParameterType).Select(ts => ts.ViewParameter).ToImmutableList();
     }
@@ -49,6 +51,7 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
     public ImmutableList<ExitTransitionCodeModel>    ExitTransitions    { get; }
     public ImmutableList<TriggerTransitionCodeModel> TriggerTransitions { get; }
     public ImmutableList<BeginWrapperCodeModel>      BeginWrappers      { get; }
+    public ImmutableList<BeginWrapperCodeModel>      AllBeginWrappers   { get; }
 
     public ImmutableList<ParameterCodeModel> ViewParameters { get; }
 
@@ -65,10 +68,11 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
         var usingNamespaces    = GetUsingNamespaces(taskCodeInfo, taskDefinition);
         var taskBegins         = CodeModelBuilder.GetTaskBeginParameter(taskDefinition);
         var taskParameter      = CodeModelBuilder.GetTaskParameter(taskDefinition);
-        var initTransitions    = CodeModelBuilder.GetInitTransitions(taskCodeInfo   , taskDefinition);
-        var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskCodeInfo   , taskDefinition);
+        var initTransitions    = CodeModelBuilder.GetInitTransitions(taskCodeInfo, taskDefinition);
+        var exitTransitions    = CodeModelBuilder.GetExitTransitions(taskCodeInfo, taskDefinition);
         var triggerTransitions = CodeModelBuilder.GetTriggerTransitions(taskCodeInfo, taskDefinition);
-        var beginWrappers      = CodeModelBuilder.GetBeginWrappers(taskCodeInfo     , taskDefinition);
+        var beginWrappers      = CodeModelBuilder.GetBeginWrappers(taskCodeInfo, taskDefinition);
+        var allBeginWrappers   = CodeModelBuilder.GetAllBeginWrappers(taskCodeInfo, taskDefinition);
 
         return new WfsBaseCodeModel(
             taskCodeInfo          : taskCodeInfo,
@@ -81,7 +85,9 @@ sealed class WfsBaseCodeModel : FileGenerationCodeModel {
             initTransitions       : initTransitions.ToImmutableList(),
             exitTransitions       : exitTransitions.ToImmutableList(),
             triggerTransitions    : triggerTransitions.ToImmutableList(),
-            beginWrappers         : beginWrappers.ToImmutableList());
+            beginWrappers         : beginWrappers.ToImmutableList(),
+            allBeginWrappers      : allBeginWrappers.ToImmutableList());
+
     }
 
     static IEnumerable<string> GetUsingNamespaces(TaskCodeInfo containingTask, ITaskDefinitionSymbol taskDefinition) {

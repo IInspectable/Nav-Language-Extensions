@@ -50,7 +50,8 @@ abstract class TransitionCodeModel: CodeModel {
 
             var viewName=guiCall?.Node.Name??String.Empty;
 
-            var continuationCallCodeModels = CallCodeModelBuilder.FromCalls(continuationCalls);
+            var reachableContinuationCalls = CallCodeModelBuilder.FromCalls(continuationCalls)
+                                                                 .ToImmutableList();
             var continuationBeginsCodeModels = continuationCalls.Select(c => c?.Node)
                                                                 .OfType<ITaskNodeSymbol>()
                                                                 .Select(tns => BeginWrapperCodeModel.FromTaskNode(containingTask, tns))
@@ -58,10 +59,12 @@ abstract class TransitionCodeModel: CodeModel {
 
          
 
-            var continuations = continuationCallCodeModels.Zip(continuationBeginsCodeModels, (call, bein) => new ContinuationCodeModel {
+            var continuations = reachableContinuationCalls.Zip(continuationBeginsCodeModels, (call, bein) => new ContinuationCodeModel {
                                                                Call = call, BeginWrapper = bein
                                                            })
                                                           .ToImmutableList();
+
+            ReachableContinuationCalls = reachableContinuationCalls;
 
             CallContext = new CallContextCodeModel {
                 ContainingTask = containingTask,
@@ -71,17 +74,20 @@ abstract class TransitionCodeModel: CodeModel {
             };
 
         } else {
-            CallContext = null;
+            CallContext                = null;
+            ReachableContinuationCalls = Enumerable.Empty<CallCodeModel>().ToImmutableList();
         }
 
     }
 
-    public ImmutableList<CallCodeModel>      ReachableCalls  { get; }
-    public ImmutableList<ParameterCodeModel> TaskBegins      { get; }
-    public ImmutableList<FieldCodeModel>     TaskBeginFields { get; }
-    public CallContextCodeModel?             CallContext     { get; }
+    public ImmutableList<CallCodeModel>      ReachableCalls             { get; }
+    public ImmutableList<CallCodeModel>      ReachableContinuationCalls { get; }
+    public ImmutableList<ParameterCodeModel> TaskBegins                 { get; }
+    public ImmutableList<FieldCodeModel>     TaskBeginFields            { get; }
+    public CallContextCodeModel?             CallContext                { get; }
 
-    public bool EmitCallContext => CallContext != null;
+    public bool EmitCallContext               => CallContext != null;
+    public bool HasReachableContinuationCalls => ReachableContinuationCalls.Any();
 
     public abstract string GetCallContextClassName();
 
