@@ -367,12 +367,8 @@ public static class AnnotationReader {
         }
 
         foreach (var invocationExpression in invocationExpressions) {
-
-            if (!(invocationExpression.Expression is IdentifierNameSyntax identifier)) {
-                continue;
-            }
-
-            if (!(semanticModel.GetSymbolInfo(identifier).Symbol is IMethodSymbol methodSymbol)) {
+                      
+            if (!TryGetMethodSymbol(invocationExpression, out var methodSymbol, out var identifier)) {
                 continue;
             }
 
@@ -390,6 +386,33 @@ public static class AnnotationReader {
 
 
             yield return callAnnotation;
+        }
+
+        bool TryGetMethodSymbol(InvocationExpressionSyntax invocationExpression, out IMethodSymbol methodSymbol, out SimpleNameSyntax identifier) {
+
+            if (invocationExpression.Expression is IdentifierNameSyntax id) {
+
+                if (semanticModel.GetSymbolInfo(id).Symbol is IMethodSymbol ms) {
+                    identifier = id;
+                    methodSymbol = ms;
+                    return true;
+                }
+            }
+
+            // Für die Continuations...
+            if(invocationExpression.Expression is MemberAccessExpressionSyntax s) {
+
+                if (semanticModel.GetSymbolInfo(s.Name).Symbol is IMethodSymbol ms) {
+                    identifier   = s.Name;
+                    methodSymbol = ms;
+                    return true;
+                }
+
+            }
+
+            identifier = null;
+            methodSymbol = null;
+            return false;
         }
     }
 
