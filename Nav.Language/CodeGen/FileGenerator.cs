@@ -67,20 +67,27 @@ public class FileGenerator: Generator, IFileGenerator {
     [CanBeNull]
     FileGeneratorResult WriteFile(ITaskDefinitionSymbol taskDefinition, CodeGenerationSpec codeGenerationSpec, OverwritePolicy overwritePolicy) {
 
-        if (codeGenerationSpec.IsEmpty) {
-            return null;
+        return Resilience.Execute(WriteFileImpl,
+                                 maxAttempts: 3,
+                                 retryDelay: TimeSpan.FromMilliseconds(10));
+
+        FileGeneratorResult WriteFileImpl() {
+
+            if (codeGenerationSpec.IsEmpty) {
+                return null;
+            }
+
+            EnsureDirectory(codeGenerationSpec.FilePath);
+
+            var action = FileGeneratorAction.Skiped;
+
+            if (ShouldWrite(codeGenerationSpec, overwritePolicy)) {
+                File.WriteAllText(codeGenerationSpec.FilePath, codeGenerationSpec.Content, Options.Encoding);
+                action = FileGeneratorAction.Updated;
+            }
+
+            return new FileGeneratorResult(taskDefinition, action, codeGenerationSpec.FilePath);
         }
-
-        EnsureDirectory(codeGenerationSpec.FilePath);
-
-        var action = FileGeneratorAction.Skiped;
-
-        if (ShouldWrite(codeGenerationSpec, overwritePolicy)) {
-            File.WriteAllText(codeGenerationSpec.FilePath, codeGenerationSpec.Content, Options.Encoding);
-            action = FileGeneratorAction.Updated;
-        }
-
-        return new FileGeneratorResult(taskDefinition, action, codeGenerationSpec.FilePath);
     }
 
     static void EnsureDirectory(string fileName) {

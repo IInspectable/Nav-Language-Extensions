@@ -20,7 +20,7 @@
     <NavWflRootDirectory     Condition="'$(NavWflRootDirectory)'     == ''"></NavWflRootDirectory>
   </PropertyGroup>
 
-  <Target Name="GenerateNavCode" BeforeTargets="PrepareForBuild">
+  <Target Name="GenerateNavCode" BeforeTargets="PreBuildCodeGen">
     
     <ItemGroup>
       <NavFilesToProcess Include="@(GenerateNavCode)" Exclude="@(SkipNavCode)"/>
